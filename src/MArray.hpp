@@ -394,7 +394,8 @@ namespace LibraryLinkUtils {
 		});
 		if (!dimsOk)
 			throw LibraryLinkError(LLErrorCode::DimensionsError, "Invalid input vector with array dimensions");
-		dims = dimensions;
+		dims.reserve(depth);
+		std::copy(std::begin(dimensions), std::end(dimensions), std::back_inserter(dims));
 		flattenedLength = totalLengthFromDims();
 		fillOffsets();
 	}

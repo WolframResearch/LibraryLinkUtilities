@@ -221,7 +221,7 @@ namespace LibraryLinkUtils {
 
 	template<typename T>
 	template<class Container, typename>
-	RawArray<T>::RawArray(T init, Container&& dims) : MArray<T>(dims) {
+	RawArray<T>::RawArray(T init, Container&& dims) : MArray<T>(std::forward<Container>(dims)) {
 		createInternal();
 		this->arrayOwnerQ = true;
 		std::fill(this->begin(), this->end(), init);
@@ -236,10 +236,10 @@ namespace LibraryLinkUtils {
 
 	template<typename T>
 	template<class InputIt, class Container, typename>
-	RawArray<T>::RawArray(InputIt first, InputIt last, Container&& dims) : MArray<T>(dims) {
+	RawArray<T>::RawArray(InputIt first, InputIt last, Container&& dims) : MArray<T>(std::forward<Container>(dims)) {
 		createInternal();
 		if (std::distance(first, last) != this->flattenedLength)
-			LibraryLinkError(LLErrorCode::RawArrayNewError, "Length of data range does not match specified dimensions");
+			throw LibraryLinkError(LLErrorCode::RawArrayNewError, "Length of data range does not match specified dimensions");
 		this->arrayOwnerQ = true;
 		std::copy(first, last, this->begin());
 	}
@@ -250,7 +250,7 @@ namespace LibraryLinkUtils {
 		std::cout << "RawArray of depth = " << this->depth << " and length " << this->flattenedLength << std::endl;
 		createInternal();
 		if (std::distance(first, last) != this->flattenedLength)
-			LibraryLinkError(LLErrorCode::RawArrayNewError, "Length of data range does not match specified dimensions");
+			throw LibraryLinkError(LLErrorCode::RawArrayNewError, "Length of data range does not match specified dimensions");
 		this->arrayOwnerQ = true;
 		std::copy(first, last, this->begin());
 	}

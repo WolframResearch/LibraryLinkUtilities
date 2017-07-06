@@ -9,9 +9,10 @@
 #ifndef LLUTILS_TENSOR_H_
 #define LLUTILS_TENSOR_H_
 
-#include "WolframLibrary.h"
+#include <initializer_list>
+#include <type_traits>
 
-#include <vector>
+#include "WolframLibrary.h"
 
 #include "LibraryLinkError.hpp"
 #include "MArray.hpp"
@@ -211,7 +212,7 @@ namespace LibraryLinkUtils {
 
 	template<typename T>
 	template<class Container, typename>
-	Tensor<T>::Tensor(T init, Container&& dims) : MArray<T>(dims) {
+	Tensor<T>::Tensor(T init, Container&& dims) : MArray<T>(std::forward<Container>(dims)) {
 		createInternal();
 		this->arrayOwnerQ = true;
 		std::fill(this->begin(), this->end(), init);
@@ -227,10 +228,10 @@ namespace LibraryLinkUtils {
 
 	template<typename T>
 	template<class InputIt, class Container, typename>
-	Tensor<T>::Tensor(InputIt first, InputIt last, Container&& dims) : MArray<T>(dims) {
+	Tensor<T>::Tensor(InputIt first, InputIt last, Container&& dims) : MArray<T>(std::forward<Container>(dims)) {
 		createInternal();
 		if (std::distance(first, last) != this->flattenedLength)
-			LibraryLinkError(LLErrorCode::TensorNewError, "Length of data range does not match specified dimensions");
+			throw LibraryLinkError(LLErrorCode::TensorNewError, "Length of data range does not match specified dimensions");
 		this->arrayOwnerQ = true;
 		std::copy(first, last, this->begin());
 	}
@@ -240,7 +241,7 @@ namespace LibraryLinkUtils {
 	Tensor<T>::Tensor(InputIt first, InputIt last, std::initializer_list<mint> dims) : MArray<T>(dims) {
 		createInternal();
 		if (std::distance(first, last) != this->flattenedLength)
-			LibraryLinkError(LLErrorCode::TensorNewError, "Length of data range does not match specified dimensions");
+			throw LibraryLinkError(LLErrorCode::TensorNewError, "Length of data range does not match specified dimensions");
 		this->arrayOwnerQ = true;
 		std::copy(first, last, this->begin());
 	}
