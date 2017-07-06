@@ -132,14 +132,6 @@ namespace LibraryLinkUtils {
 		void setComplex(std::complex<double> c) const noexcept;
 
 		/**
-		 *   @brief         Get const reference to MArgument of type \b "UTF8String" at position \c index
-		 *   @param[in]     index - position of desired MArgument in \c Args
-		 *   @returns       Constant reference to \b std::string which is copied from MArgument at position \c index, string itself is stored in MArgumentManager
-		 *   @throws        LLErrorCode::MArgumentIndexError - if \c index is out-of-bounds
-		 **/
-		const std::string& getString(unsigned int index);
-
-		/**
 		 *   @brief         Get reference to MArgument of type \b "UTF8String" at position \c index
 		 *   @param[in]     index - position of desired MArgument in \c Args
 		 *   @returns       Reference to \b std::string which is copied from MArgument at position \c index, string itself is stored in MArgumentManager

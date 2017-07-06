@@ -44,7 +44,7 @@ namespace LibraryLinkUtils {
 		return static_cast<double>(MArgument_getReal(getArgs(index)));
 	}
 
-	const std::string& MArgumentManager::getString(unsigned int index) {
+	std::string& MArgumentManager::getString(unsigned int index) {
 		char* strArg = MArgument_getUTF8String(getArgs(index));
 		if (!stringArgs.at(index)) {
 			stringArgs[index] = make_unique<std::string>(strArg);
