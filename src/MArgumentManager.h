@@ -1,7 +1,7 @@
 /**
  * @file	MArgumentManager.h
  * @author	Rafal Chojna <rafalc@wolfram.com>
- * @date	18/04/2017
+ * @date	6/07/2017
  *
  * @brief	Declaration of MArgumentManager class
  *
@@ -132,12 +132,22 @@ namespace LibraryLinkUtils {
 		void setComplex(std::complex<double> c) const noexcept;
 
 		/**
-		 *   @brief         Get MArgument of type \b "UTF8String" at position \c index
+		 *   @brief         Get const reference to MArgument of type \b "UTF8String" at position \c index
 		 *   @param[in]     index - position of desired MArgument in \c Args
-		 *   @returns       Reference to MArgument value at position \c index converted to \b std::string
+		 *   @returns       Constant reference to \b std::string which is copied from MArgument at position \c index, string itself is stored in MArgumentManager
 		 *   @throws        LLErrorCode::MArgumentIndexError - if \c index is out-of-bounds
 		 **/
 		const std::string& getString(unsigned int index);
+
+		/**
+		 *   @brief         Get reference to MArgument of type \b "UTF8String" at position \c index
+		 *   @param[in]     index - position of desired MArgument in \c Args
+		 *   @returns       Reference to \b std::string which is copied from MArgument at position \c index, string itself is stored in MArgumentManager
+		 *   @throws        LLErrorCode::MArgumentIndexError - if \c index is out-of-bounds
+		 *
+		 *   @warning		MArgument is copied to \b std::string only once so if you use the reference to modify the string you will not be able to get the original value back
+		 **/
+		std::string& getString(unsigned int index);
 
 		/**
 		 *   @brief         Set \c str as output MArgument
