@@ -1,7 +1,7 @@
 /**
  * @file	MArray.hpp
  * @author	Rafal Chojna <rafalc@wolfram.com>
- * @date	19/04/2017
+ * @date	6/07/2017
  *
  * @brief	Template base class for C++ wrappers of LibraryLink containers
  *
@@ -65,8 +65,8 @@ namespace LibraryLinkUtils {
 
 		/**
 		 * 	@brief		Constructs uninitialized container with given dimensions
-		 *	@param[in]	dims - const& to vector of dimensions
-		 *	@tparam		U - any type convertible to mint
+		 *	@param[in]	dims - container with MArray dimensions
+		 *	@tparam		Container - any type of container that has member ::value_type and this type is convertible to mint
 		 *	@throws		LLErrorCode::DimensionsError - if \c dims are invalid
 		 *	@throws		LLErrorCode::FunctionError - if any of Wolfram*Library structures was not initialized
 		 **/

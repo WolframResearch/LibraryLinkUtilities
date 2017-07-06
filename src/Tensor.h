@@ -1,7 +1,7 @@
 /** 
  * @file	Tensor.h
  * @author	Rafal Chojna <rafalc@wolfram.com>
- * @date	18/04/2017
+ * @date	6/07/2017
  *
  * @brief	Templated C++ wrapper for MTensor
  *
@@ -35,23 +35,44 @@ namespace LibraryLinkUtils {
 
 	public:
 		/**
-		 *   @brief         Constructs flat Tensor based on a vector of elements
-		 *   @param[in]     v - const& to vector of elements of type \b T
-		 *   @throws		see Tensor<T>::Tensor(T init, const std::vector<mint>&)
+		 *   @brief         Constructs flat Tensor based on a container of elements
+		 *   @param[in]     v - container
+		 *   @tparam		Container - any container with elements convertible to type \b T
+		 *   @throws		see Tensor<T>::Tensor(InputIt, InputIt, std::initializer_list<mint>)
 		 *
-		 *   @note			It is user's responsibility to make sure that length of v fits into mint!
+		 *   @warning		It is user's responsibility to make sure that length of v fits into mint!
 		 **/
-		Tensor(const std::vector<T>& v);
+		template<typename Container>
+		Tensor(Container&& v);
 
-		/// @copydoc Tensor::Tensor(const std::vector<T>&)
+		/**
+		 *   @brief         Constructs flat Tensor based on a list of elements
+		 *   @param[in]     v - initializer list with Tensor elements
+		 *   @throws		see Tensor<T>::Tensor(InputIt, InputIt, std::initializer_list<mint>)
+		 *
+		 *   @warning		It is user's responsibility to make sure that length of v fits into mint!
+		 **/
 		Tensor(std::initializer_list<T> v);
+
+		/**
+		 *   @brief         Constructs flat Tensor with elements from range [first, last)
+		 *   @param[in]     first - iterator to the beginning of range
+		 *   @param[in]		last - iterator past the end of range
+		 *   @tparam		InputIt - any iterator conforming to InputIterator concept
+		 *   @throws		see Tensor<T>::Tensor(InputIt, InputIt, std::initializer_list<mint>)
+		 *
+		 *   @warning		It is user's responsibility to make sure that length of range fits into mint!
+		 *   @note			Be aware that efficiency of this constructor strongly depends on whether the InputIt is also a RandomAccessIterator
+		 **/
+		template<class InputIt>
+		Tensor(InputIt first, InputIt last);
 
 		/**
 		 *   @brief         Constructs the Tensor of given shape with all elements initialized to given value
 		 *   @param[in]     init - value of type \b T to initialize all elements of the Tensor
-		 *   @param[in]     dims - const& to vector of dimensions
-		 *   @tparam		U - any type convertible to mint
-		 *   @throws		see Tensor<T>::createInternal() and MArray<T>::MArray(const std::vector<U>&)
+		 *   @param[in]     dims - container with Tensor dimensions
+		 *   @tparam		Container - any type of container that has member ::value_type and this type is convertible to mint
+		 *   @throws		see Tensor<T>::createInternal() and MArray<T>::MArray(Container&&)
 		 **/
 		template<class Container, typename = typename std::enable_if<std::is_convertible<typename Container::value_type, mint>::value>::type>
 		Tensor(T init, Container&& dims);
@@ -60,29 +81,32 @@ namespace LibraryLinkUtils {
 		 *   @brief         Constructs the Tensor of given shape with all elements initialized to given value
 		 *   @param[in]     init - value of type \b T to initialize all elements of the Tensor
 		 *   @param[in]     dims - initializer list with Tensor dimensions
-		 *   @throws		see Tensor<T>::createInternal() and MArray<T>::MArray(const std::vector<U>&)
+		 *   @throws		see Tensor<T>::createInternal() and MArray<T>::MArray(std::initializer_list<mint>)
 		 **/
 		Tensor(T init, std::initializer_list<mint> dims);
 
 		/**
-		 *   @brief         Constructs the Tensor of given shape with element values taken from a given vector
-		 *   @param[in]     v - const& to vector of values of type \b T to initialize all elements of the Tensor
-		 *   @param[in]     dims - const& to vector of dimensions
-		 *   @tparam		U - any type convertible to mint
+		 *   @brief         Constructs the Tensor of given shape with elements from range [first, last)
+		 *   @param[in]     first - iterator to the beginning of range
+		 *   @param[in]		last - iterator past the end of range
+		 *   @param[in]     dims - container with Tensor dimensions
+		 *   @tparam		Container - any type of container that has member ::value_type and this type is convertible to mint
 		 *   @throws		LLErrorCode::TensorNewError - if number of elements in \c v does not match total Tensor size indicated by \c dims
-		 *   @throws		see Tensor<T>::createInternal() and MArray<T>::MArray(const std::vector<U>&)
+		 *   @throws		see Tensor<T>::createInternal() and MArray<T>::MArray(Container&&)
 		 **/
-		template<class Container, typename = typename std::enable_if<std::is_convertible<typename Container::value_type, mint>::value>::type>
-		Tensor(const std::vector<T>& v, Container&& dims);
+		template<class InputIt, class Container, typename = typename std::enable_if<std::is_convertible<typename Container::value_type, mint>::value>::type>
+		Tensor(InputIt first, InputIt last, Container&& dims);
 
 		/**
-		 *   @brief         Constructs the Tensor of given shape with element values taken from a given vector
-		 *   @param[in]     v - const& to vector of values of type \b T to initialize all elements of the Tensor
+		 *   @brief         Constructs the Tensor of given shape with elements from range [first, last)
+		 *   @param[in]     first - iterator to the beginning of range
+		 *   @param[in]		last - iterator past the end of range
 		 *   @param[in]     dims - initializer list with Tensor dimensions
 		 *   @throws		LLErrorCode::TensorNewError - if number of elements in \c v does not match total Tensor size indicated by \c dims
 		 *   @throws		see Tensor<T>::createInternal() and MArray<T>::MArray(const std::vector<U>&)
 		 **/
-		Tensor(const std::vector<T>& v, std::initializer_list<mint> dims);
+		template<class InputIt>
+		Tensor(InputIt first, InputIt last, std::initializer_list<mint> dims);
 
 		/**
 		 *   @brief         Constructs Tensor based on MTensor
@@ -175,13 +199,14 @@ namespace LibraryLinkUtils {
 	};
 
 	template<typename T>
-	Tensor<T>::Tensor(const std::vector<T>& v) :
-			Tensor<T>(v, { static_cast<mint>(v.size()) }) {
+	template<typename Container>
+	Tensor<T>::Tensor(Container&& v) :
+			Tensor<T>(std::begin(v), std::end(v), { static_cast<mint>(v.size()) }) {
 	}
 
 	template<typename T>
 	Tensor<T>::Tensor(std::initializer_list<T> v) :
-			Tensor<T>(v, { static_cast<mint>(v.size()) }) {
+			Tensor<T>(std::begin(v), std::end(v), { static_cast<mint>(v.size()) }) {
 	}
 
 	template<typename T>
@@ -201,22 +226,23 @@ namespace LibraryLinkUtils {
 
 
 	template<typename T>
-	template<class Container, typename>
-	Tensor<T>::Tensor(const std::vector<T>& v, Container&& dims) : MArray<T>(dims) {
+	template<class InputIt, class Container, typename>
+	Tensor<T>::Tensor(InputIt first, InputIt last, Container&& dims) : MArray<T>(dims) {
 		createInternal();
-		if (v.size() != this->flattenedLength)
-			LibraryLinkError(LLErrorCode::TensorNewError, "Input data vector does not match specified dimensions");
+		if (std::distance(first, last) != this->flattenedLength)
+			LibraryLinkError(LLErrorCode::TensorNewError, "Length of data range does not match specified dimensions");
 		this->arrayOwnerQ = true;
-		std::copy(std::begin(v), std::end(v), this->begin());
+		std::copy(first, last, this->begin());
 	}
 
 	template<typename T>
-	Tensor<T>::Tensor(const std::vector<T>& v, std::initializer_list<mint> dims) : MArray<T>(dims) {
+	template<class InputIt>
+	Tensor<T>::Tensor(InputIt first, InputIt last, std::initializer_list<mint> dims) : MArray<T>(dims) {
 		createInternal();
-		if (v.size() != this->flattenedLength)
-			LibraryLinkError(LLErrorCode::TensorNewError, "Input data vector does not match specified dimensions");
+		if (std::distance(first, last) != this->flattenedLength)
+			LibraryLinkError(LLErrorCode::TensorNewError, "Length of data range does not match specified dimensions");
 		this->arrayOwnerQ = true;
-		std::copy(std::begin(v), std::end(v), this->begin());
+		std::copy(first, last, this->begin());
 	}
 
 	template<typename T>

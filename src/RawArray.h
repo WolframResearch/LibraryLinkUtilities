@@ -1,7 +1,7 @@
 /**
  * @file	RawArray.h
  * @author	Rafal Chojna <rafalc@wolfram.com>
- * @date	18/04/2017
+ * @date	6/07/2017
  *
  * @brief	Templated C++ wrapper for MRawArray
  *
@@ -38,23 +38,44 @@ namespace LibraryLinkUtils {
 	public:
 
 		/**
-		 *   @brief         Constructs flat RawArray based on a vector of elements
-		 *   @param[in]     v - const& to vector of elements of type \b T
-		 *   @throws		see RawArray<T>::RawArray(T init, const std::vector<mint>&)
+		 *   @brief         Constructs flat RawArray based on a container of elements
+		 *   @param[in]     v - container
+		 *   @tparam		Container - any container with elements convertible to type \b T
+		 *   @throws		see RawArray<T>::RawArray(InputIt, InputIt, std::initializer_list<mint>)
 		 *
-		 *   @note			It is user's responsibility to make sure that length of v fits into mint!
+		 *   @warning		It is user's responsibility to make sure that length of v fits into mint!
 		 **/
-		RawArray(const std::vector<T>& v);
+		template<typename Container>
+		RawArray(Container&& v);
 
-		/// @copydoc RawArray::RawArray(const std::vector<T>&)
+		/**
+		 *   @brief         Constructs flat RawArray based on a list of elements
+		 *   @param[in]     v - initializer list with RawArray elements
+		 *   @throws		see RawArray<T>::RawArray(InputIt, InputIt, std::initializer_list<mint>)
+		 *
+		 *   @warning		It is user's responsibility to make sure that length of v fits into mint!
+		 **/
 		RawArray(std::initializer_list<T> v);
+
+		/**
+		 *   @brief         Constructs flat RawArray with elements from range [first, last)
+		 *   @param[in]     first - iterator to the beginning of range
+		 *   @param[in]		last - iterator past the end of range
+		 *   @tparam		InputIt - any iterator conforming to InputIterator concept
+		 *   @throws		see RawArray<T>::RawArray(InputIt, InputIt, std::initializer_list<mint>)
+		 *
+		 *   @warning		It is user's responsibility to make sure that length of range fits into mint!
+		 *   @note			Be aware that efficiency of this constructor strongly depends on whether the InputIt is also a RandomAccessIterator
+		 **/
+		template<class InputIt>
+		RawArray(InputIt first, InputIt last);
 
 		/**
 		 *   @brief         Constructs the RawArray of given shape with all elements initialized to given value
 		 *   @param[in]     init - value of type \b T to initialize all elements of the RawArray
-		 *   @param[in]     dims - const& to vector of dimensions
-		 *   @tparam		U - any type convertible to mint
-		 *   @throws		see RawArray<T>::createInternal() and MArray<T>::MArray(const std::vector<U>&)
+		 *   @param[in]     dims - container with RawArray dimensions
+		 *   @tparam		Container - any type of container that has member ::value_type and this type is convertible to mint
+		 *   @throws		see RawArray<T>::createInternal() and MArray<T>::MArray(Container&&)
 		 **/
 		template<class Container, typename = typename std::enable_if<std::is_convertible<typename Container::value_type, mint>::value>::type>
 		RawArray(T init, Container&& dims);
@@ -63,29 +84,32 @@ namespace LibraryLinkUtils {
 		 *   @brief         Constructs the RawArray of given shape with all elements initialized to given value
 		 *   @param[in]     init - value of type \b T to initialize all elements of the RawArray
 		 *   @param[in]     dims - initializer list with RawArray dimensions
-		 *   @throws		see RawArray<T>::createInternal() and MArray<T>::MArray(const std::vector<U>&)
+		 *   @throws		see RawArray<T>::createInternal() and MArray<T>::MArray(std::initializer_list<mint>)
 		 **/
 		RawArray(T init, std::initializer_list<mint> dims);
 
 		/**
-		 *   @brief         Constructs the RawArray of given shape with element values taken from a given vector
-		 *   @param[in]     v - const& to vector of values of type \b T to initialize all elements of the RawArray
-		 *   @param[in]     dims - const& to vector of dimensions
-		 *   @tparam		U - any type convertible to mint
+		 *   @brief         Constructs the RawArray of given shape with elements from range [first, last)
+		 *   @param[in]     first - iterator to the beginning of range
+		 *   @param[in]		last - iterator past the end of range
+		 *   @param[in]     dims - container with RawArray dimensions
+		 *   @tparam		Container - any type of container that has member ::value_type and this type is convertible to mint
 		 *   @throws		LLErrorCode::RawArrayNewError - if number of elements in \c v does not match total RawArray size indicated by \c dims
-		 *   @throws		see RawArray<T>::createInternal() and MArray<T>::MArray(const std::vector<U>&)
+		 *   @throws		see RawArray<T>::createInternal() and MArray<T>::MArray(Container&&)
 		 **/
-		template<class Container, typename = typename std::enable_if<std::is_convertible<typename Container::value_type, mint>::value>::type>
-		RawArray(const std::vector<T>& v, Container&& dims);
+		template<class InputIt, class Container, typename = typename std::enable_if<std::is_convertible<typename Container::value_type, mint>::value>::type>
+		RawArray(InputIt first, InputIt last, Container&& dims);
 
 		/**
-		 *   @brief         Constructs the RawArray of given shape with element values taken from a given vector
-		 *   @param[in]     v - const& to vector of values of type \b T to initialize all elements of the RawArray
+		 *   @brief         Constructs the RawArray of given shape with elements from range [first, last)
+		 *   @param[in]     first - iterator to the beginning of range
+		 *   @param[in]		last - iterator past the end of range
 		 *   @param[in]     dims - initializer list with RawArray dimensions
 		 *   @throws		LLErrorCode::RawArrayNewError - if number of elements in \c v does not match total RawArray size indicated by \c dims
 		 *   @throws		see RawArray<T>::createInternal() and MArray<T>::MArray(const std::vector<U>&)
 		 **/
-		RawArray(const std::vector<T>& v, std::initializer_list<mint> dims);
+		template<class InputIt>
+		RawArray(InputIt first, InputIt last, std::initializer_list<mint> dims);
 
 		/**
 		 *   @brief         Constructs RawArray based on MRawArray
@@ -179,13 +203,20 @@ namespace LibraryLinkUtils {
 	};
 
 	template<typename T>
-	RawArray<T>::RawArray(const std::vector<T>& v) :
-			RawArray<T>(v, { static_cast<mint>(v.size()) }) {
+	template<typename Container>
+	RawArray<T>::RawArray(Container&& v) :
+			RawArray<T>(std::begin(v), std::end(v), { static_cast<mint>(v.size()) }) {
 	}
 
 	template<typename T>
 	RawArray<T>::RawArray(std::initializer_list<T> v) :
-			RawArray<T>(v, { static_cast<mint>(v.size()) }) {
+			RawArray<T>(std::begin(v), std::end(v), { static_cast<mint>(v.size()) }) {
+	}
+
+	template<typename T>
+	template<class InputIt>
+	RawArray<T>::RawArray(InputIt first, InputIt last) :
+			RawArray<T>(first, last, { static_cast<mint>(std::distance(first, last)) }) {
 	}
 
 	template<typename T>
@@ -203,25 +234,25 @@ namespace LibraryLinkUtils {
 		std::fill(this->begin(), this->end(), init);
 	}
 
-
 	template<typename T>
-	template<class Container, typename>
-	RawArray<T>::RawArray(const std::vector<T>& v, Container&& dims) : MArray<T>(dims) {
+	template<class InputIt, class Container, typename>
+	RawArray<T>::RawArray(InputIt first, InputIt last, Container&& dims) : MArray<T>(dims) {
 		createInternal();
-		if (v.size() != this->flattenedLength)
-			LibraryLinkError(LLErrorCode::RawArrayNewError, "Input data vector does not match specified dimensions");
+		if (std::distance(first, last) != this->flattenedLength)
+			LibraryLinkError(LLErrorCode::RawArrayNewError, "Length of data range does not match specified dimensions");
 		this->arrayOwnerQ = true;
-		std::copy(std::begin(v), std::end(v), this->begin());
+		std::copy(first, last, this->begin());
 	}
 
 	template<typename T>
-	RawArray<T>::RawArray(const std::vector<T>& v, std::initializer_list<mint> dims) : MArray<T>(dims) {
+	template<class InputIt>
+	RawArray<T>::RawArray(InputIt first, InputIt last, std::initializer_list<mint> dims) : MArray<T>(dims) {
 		std::cout << "RawArray of depth = " << this->depth << " and length " << this->flattenedLength << std::endl;
 		createInternal();
-		if (v.size() != this->flattenedLength)
-			LibraryLinkError(LLErrorCode::RawArrayNewError, "Input data vector does not match specified dimensions");
+		if (std::distance(first, last) != this->flattenedLength)
+			LibraryLinkError(LLErrorCode::RawArrayNewError, "Length of data range does not match specified dimensions");
 		this->arrayOwnerQ = true;
-		std::copy(std::begin(v), std::end(v), this->begin());
+		std::copy(first, last, this->begin());
 	}
 
 	template<typename T>
