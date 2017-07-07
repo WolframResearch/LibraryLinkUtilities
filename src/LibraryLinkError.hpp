@@ -14,7 +14,10 @@
 
 namespace LibraryLinkUtils {
 
-	/// Error codes used in LibraryLink Utilities
+	/**
+	 * @enum 	LLErrorCode
+	 * @brief 	Error codes used in LibraryLink Utilities
+	 */
 	enum class LLErrorCode : short {
 
 		// Original LibraryLink error codes:

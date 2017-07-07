@@ -1,3 +1,5 @@
 .project
 .cproject
 .settings/
+docs/html
+docs/latex
