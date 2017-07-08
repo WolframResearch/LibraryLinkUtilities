@@ -9,9 +9,10 @@
 
 #include "MArgumentManager.h"
 
-#include "WolframImageLibrary.h"
+#include <algorithm>
 
 #include "MArray.hpp"
+#include "Utilities.hpp"
 
 namespace LibraryLinkUtils {
 
