@@ -66,7 +66,7 @@ namespace LibraryLinkUtils {
 		/**
 		 * 	@brief		Constructs uninitialized container with given dimensions
 		 *	@param[in]	dims - container with MArray dimensions
-		 *	@tparam		Container - any type of container that has member ::value_type and this type is convertible to mint
+		 *	@tparam		Container - any type of container that has member \b value_type and this type is convertible to mint
 		 *	@throws		LLErrorCode::DimensionsError - if \c dims are invalid
 		 *	@throws		LLErrorCode::FunctionError - if any of Wolfram*Library structures was not initialized
 		 **/

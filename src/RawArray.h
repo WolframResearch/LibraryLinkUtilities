@@ -74,7 +74,7 @@ namespace LibraryLinkUtils {
 		 *   @brief         Constructs the RawArray of given shape with all elements initialized to given value
 		 *   @param[in]     init - value of type \b T to initialize all elements of the RawArray
 		 *   @param[in]     dims - container with RawArray dimensions
-		 *   @tparam		Container - any type of container that has member ::value_type and this type is convertible to mint
+		 *   @tparam		Container - any type of container that has member \b value_type and this type is convertible to mint
 		 *   @throws		see RawArray<T>::createInternal() and MArray<T>::MArray(Container&&)
 		 **/
 		template<class Container, typename = typename std::enable_if<std::is_convertible<typename Container::value_type, mint>::value>::type>
@@ -93,7 +93,7 @@ namespace LibraryLinkUtils {
 		 *   @param[in]     first - iterator to the beginning of range
 		 *   @param[in]		last - iterator past the end of range
 		 *   @param[in]     dims - container with RawArray dimensions
-		 *   @tparam		Container - any type of container that has member ::value_type and this type is convertible to mint
+		 *   @tparam		Container - any type of container that has member \b value_type and this type is convertible to mint
 		 *   @throws		LLErrorCode::RawArrayNewError - if number of elements in \c v does not match total RawArray size indicated by \c dims
 		 *   @throws		see RawArray<T>::createInternal() and MArray<T>::MArray(Container&&)
 		 **/
