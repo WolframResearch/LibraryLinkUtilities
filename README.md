@@ -161,12 +161,13 @@ and C++ version with _LibraryLink Utilities_:
 
 ## How should you incorporate _LibraryLink Utilities_ into your project?
 
-Currently the best way to include LLU into your project is by using git submodule. Submodules are simply git repos inside other repos but working with them may sometimes be tricky. I recommend this excellent [tutorial on submodules](https://git-scm.com/book/en/v2/Git-Tools-Submodules).
+Currently the best way to include LLU into your project is by using git submodule. Submodules are simply git repos inside other repos but working with them may sometimes be tricky. See this excellent [tutorial on submodules](https://git-scm.com/book/en/v2/Git-Tools-Submodules).
 
 In most cases you will access _LibraryLink Utilities_ in "read-only" manner, i.e. you will just update the submodule to make sure you use the most recent version. 
 
 When you work on your paclet you may occasionally find a bug in LLU or a missing feature. You should either report it or try to make changes yourself following the usual workflow: create new branch - implement changes - open PR - merge. It is possible to do it with LLU as submodule in your project but you should really read the tutorial before you try.
 
+** Remember to modify your build script so that LLU sources also get compiled **
 
 ### Quick guide for Import/Export developers
 Here is a list of commands that will be useful to developers working on Import/Export paclets (names ending with "Tools"). Usually these paclets have _CPPSource/_ directory containing the source code. It is easy to modify these commands so that they work for arbitrary project.
@@ -179,6 +180,7 @@ Here is a list of commands that will be useful to developers working on Import/E
 
 #### Updating _LibraryLink Utilities_ in your project
 `git submodule update --remote CPPSource/LibraryLinkUtilities/`
+
 
 ## API Reference
 
