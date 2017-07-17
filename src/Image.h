@@ -12,7 +12,6 @@
 #include "WolframLibrary.h"
 #include "WolframImageLibrary.h"
 
-
 #include "LibraryLinkError.hpp"
 #include "MArray.hpp"
 
