@@ -119,6 +119,13 @@ namespace LibraryLinkUtils {
 		}
 
 		/**
+		 *	@brief Check whether container is empty
+		 **/
+		mint empty() const noexcept {
+			return flattenedLength == 0;
+		}
+
+		/**
 		 *	@brief Get raw pointer to underlying data
 		 **/
 		T* data() noexcept {
