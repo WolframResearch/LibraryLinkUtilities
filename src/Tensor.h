@@ -36,6 +36,11 @@ namespace LibraryLinkUtils {
 
 	public:
 		/**
+		 *	@brief Default constructor. There is no internal MTensor stored.
+		 **/
+		Tensor() = default;
+
+		/**
 		 *   @brief         Constructs flat Tensor based on a container of elements
 		 *   @param[in]     v - container
 		 *   @tparam		Container - any container with elements convertible to type \b T
@@ -118,10 +123,28 @@ namespace LibraryLinkUtils {
 		Tensor(const MTensor v);
 
 		/**
+		 *   @brief         Copy constructor
+		 *   @param[in]     t2 - const reference to a Tensor of matching type
+		 **/
+		Tensor(const Tensor<T>& t2);
+
+		/**
 		 *   @brief         Move constructor
 		 *   @param[in]     t2 - rvalue reference to a Tensor of matching type
 		 **/
 		Tensor(Tensor<T>&& t2);
+
+		/**
+		 *   @brief         Copy-assignment operator
+		 *   @param[in]     t2 - const reference to a Tensor of matching type
+		 **/
+		void operator=(const Tensor<T>& t2);
+
+		/**
+		 *   @brief         Move-assignment operator
+		 *   @param[in]     t2 - rvalue reference to a Tensor of matching type
+		 **/
+		void operator=(Tensor<T>&& t2);
 
 		/**
 		 *   @brief	Free internal MTensor if necessary
@@ -134,6 +157,41 @@ namespace LibraryLinkUtils {
 		unsigned char getType() const noexcept {
 			return type;
 		}
+
+		/**
+		 *   @brief 	Return internal MTensor. You should rarely need this function.
+		 *   @warning 	Do not modify MTensor returned from this function!
+		 **/
+		MTensor getInternal() const noexcept {
+			return internalMT;
+		}
+
+		/**
+		 *   @brief 	Return share count of internal MTensor.
+		 *   Use this to manually manage shared MTensors.
+		 *
+		 *   @see 		<http://reference.wolfram.com/language/LibraryLink/ref/callback/MTensor_shareCount.html>
+		 *   @note		LibraryLink does not provide any way to check whether MTensor was passed or will be returned as "Shared".
+		 *   Therefore passing or returning MTensors as "Shared" is discouraged and if you do that you are responsible for managing MTensor memory.
+		 **/
+		mint shareCount() const noexcept {
+			if (internalMT == nullptr)
+				return 0;
+			return this->libData->MTensor_shareCount(internalMT);
+		}
+
+		/**
+		 *   @brief 	Disown internal MTensor that is shared with Mathematica.
+		 *   Use this to manually manage shared MTensors.
+		 *
+		 *   @see 		<http://reference.wolfram.com/language/LibraryLink/ref/callback/MTensor_disown.html>
+		 *   @note		LibraryLink does not provide any way to check whether MTensor was passed or will be returned as "Shared".
+		 *   Therefore passing or returning MTensors as "Shared" is discouraged and if you do that you are responsible for managing MTensor memory.
+		 **/
+		void disown() const noexcept {
+			this->libData->MTensor_disown(internalMT);
+		}
+
 	private:
 		/**
 		 *   @brief Return raw pointer to underlying data
@@ -173,7 +231,7 @@ namespace LibraryLinkUtils {
 		 *
 		 **/
 		void createInternal() override {
-			if (this->libData->MTensor_new(type, 1, &(this->flattenedLength), &internalMT))
+			if (this->libData->MTensor_new(type, this->depth, this->dimensionsData(), &internalMT))
 				throw LibraryLinkError(LLErrorCode::TensorNewError);
 		}
 
@@ -182,7 +240,12 @@ namespace LibraryLinkUtils {
 		 *   @see 		<http://reference.wolfram.com/language/LibraryLink/ref/callback/MTensor_free.html>
 		 **/
 		void freeInternal() noexcept override {
-			this->libData->MTensor_free(internalMT);
+			if (internalMT == nullptr)
+				return;
+			if (shareCount() > 0)
+				disown();
+			if (this->arrayOwnerQ)
+				this->libData->MTensor_free(internalMT);
 		}
 
 		/**
@@ -208,6 +271,13 @@ namespace LibraryLinkUtils {
 	template<typename T>
 	Tensor<T>::Tensor(std::initializer_list<T> v) :
 			Tensor<T>(std::begin(v), std::end(v), { static_cast<mint>(v.size()) }) {
+	}
+
+
+	template<typename T>
+	template<class InputIt>
+	Tensor<T>::Tensor(InputIt first, InputIt last)  :
+			Tensor<T>(first, last, { static_cast<mint>(std::distance(first, last)) }) {
 	}
 
 	template<typename T>
@@ -261,17 +331,46 @@ namespace LibraryLinkUtils {
 		this->fillOffsets();
 	}
 
+
 	template<typename T>
-	Tensor<T>::Tensor(Tensor<T> && t2) : MArray<T>(std::move(t2)) {
+	Tensor<T>::Tensor(const Tensor<T>& t2) : MArray<T>(t2) {
+		if (this->libData->MTensor_clone(t2.internalMT, &this->internalMT)) {
+			throw LibraryLinkError(LLErrorCode::TensorCloneError);
+		}
+		this->arrayOwnerQ = true;
+	}
+
+	template<typename T>
+	Tensor<T>::Tensor(Tensor<T>&& t2) : MArray<T>(std::move(t2)) {
 		this->internalMT = t2.internalMT;
+		t2.internalMT = nullptr;
+		t2.arrayOwnerQ = false;
+	}
+
+
+	template<typename T>
+	void Tensor<T>::operator=(const Tensor<T>& t2) {
+		MArray<T>::operator=(t2);
+		this->freeInternal();
+		if (this->libData->MTensor_clone(t2.internalMT, &this->internalMT)) {
+			throw LibraryLinkError(LLErrorCode::TensorCloneError);
+		}
+		this->arrayOwnerQ = true;
+	}
+
+	template<typename T>
+	void Tensor<T>::operator=(Tensor<T>&& t2) {
+		MArray<T>::operator=(std::move(t2));
+		this->freeInternal();
+		this->internalMT = t2.internalMT;
+		this->arrayOwnerQ = t2.arrayOwnerQ;
 		t2.internalMT = nullptr;
 		t2.arrayOwnerQ = false;
 	}
 
 	template<typename T>
 	Tensor<T>::~Tensor() {
-		if (this->arrayOwnerQ)
-			this->freeInternal();
+		this->freeInternal();
 	}
 } /* namespace LibraryLinkUtils */
 

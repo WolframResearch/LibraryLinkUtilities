@@ -9,11 +9,11 @@
 #ifndef LLUTILS_RAWARRAY_H_
 #define LLUTILS_RAWARRAY_H_
 
+#include <type_traits>
+#include <initializer_list>
+
 #include "WolframLibrary.h"
 #include "WolframRawArrayLibrary.h"
-
-#include <type_traits>
-#include <vector>
 
 #include "LibraryLinkError.hpp"
 #include "MArray.hpp"
@@ -36,6 +36,10 @@ namespace LibraryLinkUtils {
 		using LibraryLinkError = LibraryLinkUtils::LibraryLinkError<LLErrorCode>;
 
 	public:
+		/**
+		 *	@brief Default constructor. There is no internal MRawArray stored.
+		 **/
+		RawArray() = default;
 
 		/**
 		 *   @brief         Constructs flat RawArray based on a container of elements
@@ -120,10 +124,30 @@ namespace LibraryLinkUtils {
 		RawArray(const MRawArray ra);
 
 		/**
+		 *   @brief         Copy constructor
+		 *   @param[in]     ra2 - const reference to a RawArray of matching type
+		 **/
+		RawArray(const RawArray<T>& ra2);
+		
+		/**
 		 *   @brief         Move constructor
 		 *   @param[in]     ra2 - rvalue reference to a RawArray of matching type
 		 **/
 		RawArray(RawArray<T> && ra2);
+
+
+		/**
+		 *   @brief         Copy-assignment operator
+		 *   @param[in]     ra2 - const reference to a RawArray of matching type
+		 **/
+		void operator=(const RawArray<T>& ra2);
+
+		/**
+		 *   @brief         Move-assignment operator
+		 *   @param[in]     ra2 - rvalue reference to a RawArray of matching type
+		 **/
+		void operator=(RawArray<T>&& ra2);
+
 
 		/**
 		 *   @brief	Free internal MRawArray if necessary
@@ -136,6 +160,38 @@ namespace LibraryLinkUtils {
 		 **/
 		static rawarray_t getType() noexcept {
 			return type;
+		}
+
+		/**
+		 *   @brief 	Return internal MRawArray. You should rarely need this function.
+		 *   @warning 	Do not modify MRawArray returned from this function!
+		 **/
+		MRawArray getInternal() const noexcept {
+			return internalRA;
+		}
+
+		/**
+		 *   @brief 	Return share count of internal MRawArray.
+		 *   Use this to manually manage shared MRawArrays.
+		 *
+		 *   @note		LibraryLink does not provide any way to check whether MRawArray was passed or will be returned as "Shared".
+		 *   Therefore passing or returning MRawArrays as "Shared" is discouraged and if you do that you are responsible for managing MRawArray memory.
+		 **/
+		mint shareCount() const noexcept {
+			if (internalRA == nullptr)
+				return 0;
+			return this->raFuns->MRawArray_shareCount(internalRA);
+		}
+
+		/**
+		 *   @brief 	Disown internal MRawArray that is shared with Mathematica.
+		 *   Use this to manually manage shared MRawArrays.
+		 *
+		 *   @note		LibraryLink does not provide any way to check whether MRawArray was passed or will be returned as "Shared".
+		 *   Therefore passing or returning MRawArrays as "Shared" is discouraged and if you do that you are responsible for managing MRawArray memory.
+		 **/
+		void disown() const noexcept {
+			this->raFuns->MRawArray_disown(internalRA);
 		}
 
 	private:
@@ -185,7 +241,12 @@ namespace LibraryLinkUtils {
 		 *   @brief 	Sub-class implementation of virtual void MArray<T>::freeInternal(). It frees internal MRawArray.
 		 **/
 		void freeInternal() noexcept override {
-			this->raFuns->MRawArray_free(internalRA);
+			if (internalRA == nullptr)
+				return;
+			if (shareCount() > 0)
+				disown();
+			if (this->arrayOwnerQ)
+				this->raFuns->MRawArray_free(internalRA);
 		}
 
 		/**
@@ -247,7 +308,6 @@ namespace LibraryLinkUtils {
 	template<typename T>
 	template<class InputIt>
 	RawArray<T>::RawArray(InputIt first, InputIt last, std::initializer_list<mint> dims) : MArray<T>(dims) {
-		std::cout << "RawArray of depth = " << this->depth << " and length " << this->flattenedLength << std::endl;
 		createInternal();
 		if (std::distance(first, last) != this->flattenedLength)
 			throw LibraryLinkError(LLErrorCode::RawArrayNewError, "Length of data range does not match specified dimensions");
@@ -271,17 +331,45 @@ namespace LibraryLinkUtils {
 	}
 
 	template<typename T>
-	RawArray<T>::RawArray(RawArray<T> && t2) :
-			MArray<T>(std::move(t2)) {
-		this->internalRA = t2.internalRA;
-		t2.internalRA = nullptr;
-		t2.arrayOwnerQ = false;
+	RawArray<T>::RawArray(const RawArray<T>& ra2) : MArray<T>(ra2) {
+		if (this->raFuns->MRawArray_clone(ra2.internalRA, &this->internalRA)) {
+			throw LibraryLinkError(LLErrorCode::RawArrayCloneError);
+		}
+		this->arrayOwnerQ = true;
+	}
+
+	template<typename T>
+	RawArray<T>::RawArray(RawArray<T>&& ra2) :
+			MArray<T>(std::move(ra2)) {
+		this->internalRA = ra2.internalRA;
+		ra2.internalRA = nullptr;
+		ra2.arrayOwnerQ = false;
+	}
+
+
+	template<typename T>
+	void RawArray<T>::operator=(const RawArray<T>& ra2) {
+		MArray<T>::operator=(ra2);
+		this->freeInternal();
+		if (this->raFuns->MRawArray_clone(ra2.internalRA, &this->internalRA)) {
+			throw LibraryLinkError(LLErrorCode::RawArrayCloneError);
+		}
+		this->arrayOwnerQ = true;
+	}
+
+	template<typename T>
+	void RawArray<T>::operator=(RawArray<T>&& ra2) {
+		MArray<T>::operator=(std::move(ra2));
+		this->freeInternal();
+		this->internalRA = ra2.internalRA;
+		this->arrayOwnerQ = ra2.arrayOwnerQ;
+		ra2.internalRA = nullptr;
+		ra2.arrayOwnerQ = false;
 	}
 
 	template<typename T>
 	RawArray<T>::~RawArray() {
-		if (this->arrayOwnerQ)
-			this->freeInternal();
+		this->freeInternal();
 	}
 } /* namespace LibraryLinkUtils */
 
