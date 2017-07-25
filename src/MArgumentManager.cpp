@@ -12,7 +12,6 @@
 #include <algorithm>
 
 #include "MArray.hpp"
-#include "Utilities.hpp"
 
 namespace LibraryLinkUtils {
 
@@ -48,7 +47,7 @@ namespace LibraryLinkUtils {
 	std::string& MArgumentManager::getString(unsigned int index) {
 		char* strArg = MArgument_getUTF8String(getArgs(index));
 		if (!stringArgs.at(index)) {
-			stringArgs[index] = make_unique<std::string>(strArg);
+			stringArgs[index] = std::make_unique<std::string>(strArg);
 			libData->UTF8String_disown(strArg);
 		}
 		return *stringArgs.at(index);

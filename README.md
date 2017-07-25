@@ -169,8 +169,6 @@ In most cases you will access _LibraryLink Utilities_ in "read-only" manner, i.e
 
 When you work on your paclet you may occasionally find a bug in LLU or a missing feature. You should either report it or try to make changes yourself following the usual workflow: create new branch - implement changes - open PR - merge. It is possible to do it with LLU as submodule in your project but you should really read the tutorial before you try.
 
-__Remember to modify your build script so that LLU sources also get compiled__
-
 ### Quick guide for Import/Export developers
 Here is a list of commands that will be useful to developers working on Import/Export paclets (names ending with "Tools"). Usually these paclets have _CPPSource/_ directory containing the source code. It is easy to modify these commands so that they work for arbitrary project.
 
@@ -184,6 +182,11 @@ Here is a list of commands that will be useful to developers working on Import/E
 `git submodule update --remote CPPSource/LibraryLinkUtilities/`
 
 
+### Compilation
+After checking out the submodule remember to modify your build script accordingly so that LLU sources also get compiled. Since the source code uses C++14 features, you have to make sure you enabled C++14 support in your compiler. *Visual Studio 2015* or later provides the support by default and in *gcc* or *clang* you may have to add **-std=c++14** flag. 
+
+Minimum required version of *gcc* is 5 and for *clang* it is 3.4.
+
 ## API Reference
 
 Doxygen is used to generate documentation for _LibraryLink Utilities_ API. You can browse generated docs online here: 
@@ -194,7 +197,6 @@ Doxygen is used to generate documentation for _LibraryLink Utilities_ API. You c
 Here is a list of LLU features that should be implemented, improved or more comprehensively tested:
 
 - Implement creating new Image from data via `Image<T>::createInternal()`
-- Make sure all MArgument passing modes ("Constant", "Shared", etc.) are correctly handled
 
 ## Contributors
 
