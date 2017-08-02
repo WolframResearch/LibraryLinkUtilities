@@ -29,9 +29,9 @@ namespace LibraryLinkUtils {
 
 	}
 
-	MArgumentManager::MArgumentManager(WolframLibraryData ld, mint Argc, MArgument* Args, MArgument& Res) noexcept :
+	MArgumentManager::MArgumentManager(WolframLibraryData ld, mint Argc, MArgument* Args, MArgument& Res) :
 			argc(Argc), args(Args), res(Res), stringArgs(Argc) {
-		libData = ld;
+		setLibraryData(ld);
 	}
 
 	/* Other member functions */
@@ -111,7 +111,7 @@ namespace LibraryLinkUtils {
 		return args[index];
 	}
 
-	void MArgumentManager::setLibraryData(WolframLibraryData ld) {
+	void MArgumentManager::setLibraryData(WolframLibraryData ld) noexcept {
 		libData = ld;
 		MArray<std::int8_t>::setLibraryData(libData);
 		MArray<std::uint8_t>::setLibraryData(libData);

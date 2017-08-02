@@ -57,7 +57,7 @@ namespace LibraryLinkUtils {
 		 *   @param[in]     Args - MArguments provided
 		 *   @param[in]		Res - reference to output MArgument
 		 **/
-		MArgumentManager(WolframLibraryData ld, mint Argc, MArgument* Args, MArgument& Res) noexcept;
+		MArgumentManager(WolframLibraryData ld, mint Argc, MArgument* Args, MArgument& Res);
 
 		/**
 		 *   @brief Default destructor
@@ -239,6 +239,16 @@ namespace LibraryLinkUtils {
 		template<class Operator, class ... Args>
 		void operateOnTensor(unsigned int index, Args&&... args);
 
+		/**
+		 *   @brief         Perform operation on Tensor argument at position \c index in \c Args
+		 *   @tparam		Operator - any callable class
+		 *   @param[in]     index - position of MTensor in \c Args
+		 *   @param[in]     op - callable object (possibly lambda) that takes only one argument - a Tensor
+		 *   @throws        LLErrorCode::MArgumentIndexError - if \c index is out-of-bounds
+		 *   @throws        LLErrorCode::MArgumentTensorError - if MTensor argument has incorrect type
+		 **/
+		template<class Operator>
+		void operateOnTensor(unsigned int index, Operator&& op);
 
 		/**
 		 *   @brief         Get MArgument of type MImage at position \c index
@@ -281,13 +291,24 @@ namespace LibraryLinkUtils {
 		void operateOnImage(unsigned int index, Args&&... args);
 
 		/**
+		 *   @brief         Perform operation on Image argument at position \c index in \c Args
+		 *   @tparam		Operator - any callable class
+		 *   @param[in]     index - position of MImage in \c Args
+		 *   @param[in]     op - callable object (possibly lambda) that takes only one argument - an Image
+		 *   @throws        LLErrorCode::MArgumentIndexError - if \c index is out-of-bounds
+		 *   @throws        LLErrorCode::MArgumentImageError - if MImage argument has incorrect type
+		 **/
+		template<class Operator>
+		void operateOnImage(unsigned int index, Operator&& op);
+
+		/**
 		 *   @brief         Set WolframLibraryData structure as static member for MArgumentManager class and for all supported
 		 *   				specializations of MArray<>
 		 *   @param[in]     ld - WolframLibraryData
 		 *   @warning		This function should be called before constructing MArgumentManager
 		 *   				unless you use a constructor that takes WolframLibraryData as argument
 		 **/
-		static void setLibraryData(WolframLibraryData ld);
+		static void setLibraryData(WolframLibraryData ld) noexcept;
 
 	private:
 		/**
@@ -435,6 +456,25 @@ namespace LibraryLinkUtils {
 		}
 	}
 
+
+	template<class Operator>
+	void MArgumentManager::operateOnTensor(unsigned int index, Operator&& op) {
+		switch (getTensorType(index)) {
+			case MType_Integer:
+				op(this->getTensor<mint>(index));
+				break;
+			case MType_Real:
+				op(this->getTensor<double>(index));
+				break;
+			case MType_Complex:
+				op(this->getTensor<std::complex<double>>(index));
+				break;
+			default:
+				throw MArgumentError(LLErrorCode::MArgumentTensorError, "Incorrect type of Tensor argument. Argument index: " + std::to_string(index));
+		}
+	}
+
+
 	template<typename T>
 	Image<T> MArgumentManager::getImage(unsigned int index) const {
 		return Image<T>(MArgument_getMImage(getArgs(index)));
@@ -463,6 +503,29 @@ namespace LibraryLinkUtils {
 				break;
 			case MImage_Type_Real:
 				op(this->getImage<double>(index), std::forward<Args>(args)...);
+				break;
+			default:
+				throw MArgumentError(LLErrorCode::MArgumentImageError, "Incorrect type of Image argument. Argument index: " + std::to_string(index));
+		}
+	}
+
+	template<class Operator>
+	void MArgumentManager::operateOnImage(unsigned int index, Operator&& op) {
+		switch (getImageType(index)) {
+			case MImage_Type_Bit:
+				op(this->getImage<int8_t>(index));
+				break;
+			case MImage_Type_Bit8:
+				op(this->getImage<uint8_t>(index));
+				break;
+			case MImage_Type_Bit16:
+				op(this->getImage<uint16_t>(index));
+				break;
+			case MImage_Type_Real32:
+				op(this->getImage<float>(index));
+				break;
+			case MImage_Type_Real:
+				op(this->getImage<double>(index));
 				break;
 			default:
 				throw MArgumentError(LLErrorCode::MArgumentImageError, "Incorrect type of Image argument. Argument index: " + std::to_string(index));
