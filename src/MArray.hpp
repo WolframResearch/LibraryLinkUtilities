@@ -40,15 +40,18 @@ namespace LibraryLinkUtils {
 	template<typename T>
 	class MArray {
 
+		///	Short name for exception class
+		using LibraryLinkError = LibraryLinkUtils::LibraryLinkError<LLErrorCode>;
+	public:
+
 		/// Iterator type
 		using iterator = T*;
 
 		/// Constant iterator type
 		using const_iterator = const T*;
 
-		///	Short name for exception class
-		using LibraryLinkError = LibraryLinkUtils::LibraryLinkError<LLErrorCode>;
-	public:
+		/// Type of elements stored
+		using value_type = T;
 
 		/**
 		 *	@brief Default constructor
@@ -70,9 +73,16 @@ namespace LibraryLinkUtils {
 		 *	@throws		LLErrorCode::DimensionsError - if \c dims are invalid
 		 *	@throws		LLErrorCode::FunctionError - if any of Wolfram*Library structures was not initialized
 		 **/
-		template<class Container, typename = typename std::enable_if<std::is_convertible<typename Container::value_type, mint>::value>::type>
+		template<class Container, typename = typename std::enable_if_t<std::is_convertible<typename std::remove_reference_t<Container>::value_type, mint>::value>>
 		MArray(Container&& dims);
 
+		/**
+		 * 	@brief		Constructs MArray by converting MArray of different type
+		 *	@param[in]	m2 - MArray of different type
+		 *	@tparam		U - any type that MArray supports
+		 **/
+		template<typename U>
+		MArray(const MArray<U>& m2);
 
 		/**
 		 *	@brief Default destructor
@@ -367,7 +377,7 @@ namespace LibraryLinkUtils {
 
 	template<typename T>
 	mint MArray<T>::getIndex(const std::vector<mint>& indices) const {
-		if (indices.size() != static_cast<std::make_unsigned<mint>::type>(rank()))
+		if (indices.size() != static_cast<std::make_unsigned_t<mint>>(rank()))
 			indexError();
 		mint flatIndex = 0;
 		auto dimsIt = dims.cbegin();
@@ -395,8 +405,8 @@ namespace LibraryLinkUtils {
 	MArray<T>::MArray(Container&& dimensions) {
 		if (!libData || !raFuns || !imgFuns)
 			initError();
-		depth = checkContainerSize(dimensions);
-		auto dimsOk = std::all_of(std::begin(dimensions), std::end(dimensions), [](typename Container::value_type d) {
+		depth = checkContainerSize(std::forward<Container>(dimensions));
+		auto dimsOk = std::all_of(std::begin(dimensions), std::end(dimensions), [](typename std::remove_reference_t<Container>::value_type d) {
 			return (d > 0) && (d <= std::numeric_limits<mint>::max());
 		});
 		if (!dimsOk)
@@ -405,6 +415,13 @@ namespace LibraryLinkUtils {
 		std::copy(std::begin(dimensions), std::end(dimensions), std::back_inserter(dims));
 		flattenedLength = totalLengthFromDims();
 		fillOffsets();
+	}
+
+	template<typename T>
+	template<typename U>
+	MArray<T>::MArray(const MArray<U>& m2) : flattenedLength(m2.flattenedLength), depth(m2.depth), dims(m2.dims), offsets(m2.offsets) {
+		// whatever we create, we own
+		arrayOwnerQ = true;
 	}
 
 	template<typename T>
