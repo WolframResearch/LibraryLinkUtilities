@@ -198,6 +198,16 @@ namespace LibraryLinkUtils {
 		template<class Operator, class ... OpArgs>
 		void operateOnRawArray(unsigned int index, OpArgs&&... args);
 
+		/**
+		 *   @brief         Perform operation on RawArray argument at position \c index in \c Args
+		 *   @tparam		Operator - any callable class
+		 *   @param[in]     index - position of MRawArray in \c Args
+		 *   @param[in]     op - callable object (possibly lambda) that takes only one argument - a RawArray
+		 *   @throws        LLErrorCode::MArgumentIndexError - if \c index is out-of-bounds
+		 *   @throws        LLErrorCode::MArgumentRawArrayError - if MRawArray argument has incorrect type
+		 **/
+		template<class Operator>
+		void operateOnRawArray(unsigned int index, Operator&& op);
 
 		/**
 		 *   @brief         Get MArgument of type MTensor at position \c index
@@ -425,7 +435,49 @@ namespace LibraryLinkUtils {
 		}
 	}
 
-
+	template<class Operator>
+	void MArgumentManager::operateOnRawArray(unsigned int index, Operator&& op) {
+		switch (getRawArrayType(index)) {
+			case MRawArray_Type_Bit8:
+				op(this->getRawArray<int8_t>(index));
+				break;
+			case MRawArray_Type_Ubit8:
+				op(this->getRawArray<uint8_t>(index));
+				break;
+			case MRawArray_Type_Bit16:
+				op(this->getRawArray<int16_t>(index));
+				break;
+			case MRawArray_Type_Ubit16:
+				op(this->getRawArray<uint16_t>(index));
+				break;
+			case MRawArray_Type_Bit32:
+				op(this->getRawArray<int32_t>(index));
+				break;
+			case MRawArray_Type_Ubit32:
+				op(this->getRawArray<uint32_t>(index));
+				break;
+			case MRawArray_Type_Bit64:
+				op(this->getRawArray<int64_t>(index));
+				break;
+			case MRawArray_Type_Ubit64:
+				op(this->getRawArray<uint64_t>(index));
+				break;
+			case MRawArray_Type_Real32:
+				op(this->getRawArray<float>(index));
+				break;
+			case MRawArray_Type_Real64:
+				op(this->getRawArray<double>(index));
+				break;
+			case MRawArray_Type_Float_Complex:
+				op(this->getRawArray<std::complex<float>>(index));
+				break;
+			case MRawArray_Type_Double_Complex:
+				op(this->getRawArray<std::complex<double>>(index));
+				break;
+			default:
+				throw MArgumentError(LLErrorCode::MArgumentRawArrayError, "Incorrect type of RawArray argument. Argument index: " + std::to_string(index));
+		}
+	}
 
 	template<typename T>
 	Tensor<T> MArgumentManager::getTensor(unsigned int index) const {
