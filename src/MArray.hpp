@@ -355,9 +355,9 @@ namespace LibraryLinkUtils {
 	void MArray<T>::fillOffsets() {
 		offsets.assign(rank(), 1);
 		if (rank() >= 2) {
-			auto dimsIt = dims.crbegin() + 1;
-			for (auto it = offsets.rbegin() + 1; it != offsets.rend(); ++it)
-				*it = *(it - 1) * (*dimsIt++);
+			std::transform(std::rbegin(offsets), std::rend(offsets) - 1, std::crbegin(dims), std::rbegin(offsets) + 1, [](auto off, auto dim) {
+				return off * dim;
+			});
 		}
 	}
 
