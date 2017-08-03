@@ -11,12 +11,15 @@
 
 #include <complex>
 #include <cstdint>
-#include <utility>
+#include <type_traits>
 
 #include "WolframLibrary.h"
 #include "WolframRawArrayLibrary.h"
 
 namespace LibraryLinkUtils {
+
+	template<typename A, typename B>
+	using disable_if_same_or_derived = typename std::enable_if_t<!std::is_base_of<A,typename std::remove_reference_t<B>>::value>;
 
 	template<rawarray_t>
 	struct RawArrayFromEnum {

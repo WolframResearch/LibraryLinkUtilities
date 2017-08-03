@@ -24,6 +24,7 @@
 #include <vector>
 
 #include "LibraryLinkError.hpp"
+#include "Utilities.h"
 
 namespace LibraryLinkUtils {
 
@@ -73,7 +74,11 @@ namespace LibraryLinkUtils {
 		 *	@throws		LLErrorCode::DimensionsError - if \c dims are invalid
 		 *	@throws		LLErrorCode::FunctionError - if any of Wolfram*Library structures was not initialized
 		 **/
-		template<class Container, typename = typename std::enable_if_t<std::is_convertible<typename std::remove_reference_t<Container>::value_type, mint>::value>>
+		template<
+			class Container,
+			typename = disable_if_same_or_derived<MArray, Container>,
+			typename = typename std::enable_if_t<std::is_convertible<typename std::remove_reference_t<Container>::value_type, mint>::value>
+		>
 		MArray(Container&& dims);
 
 		/**
@@ -401,7 +406,7 @@ namespace LibraryLinkUtils {
 	}
 
 	template<typename T>
-	template<class Container, typename>
+	template<class Container, typename, typename>
 	MArray<T>::MArray(Container&& dimensions) {
 		if (!libData || !raFuns || !imgFuns)
 			initError();

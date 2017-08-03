@@ -17,6 +17,7 @@
 
 #include "LibraryLinkError.hpp"
 #include "MArray.hpp"
+#include "Utilities.h"
 
 namespace LibraryLinkUtils {
 
@@ -49,7 +50,7 @@ namespace LibraryLinkUtils {
 		 *
 		 *   @warning		It is user's responsibility to make sure that length of v fits into mint!
 		 **/
-		template<typename Container>
+		template<typename Container, typename = disable_if_same_or_derived<RawArray, Container>>
 		RawArray(Container&& v);
 
 		/**
@@ -264,7 +265,7 @@ namespace LibraryLinkUtils {
 	};
 
 	template<typename T>
-	template<typename Container>
+	template<typename Container, typename>
 	RawArray<T>::RawArray(Container&& v) :
 			RawArray<T>(std::begin(v), std::end(v), { static_cast<mint>(v.size()) }) {
 	}
