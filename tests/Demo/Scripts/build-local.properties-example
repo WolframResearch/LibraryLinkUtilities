@@ -1,0 +1,14 @@
+# Copy this file to build-local.properties to customize your development build.
+
+# You must have AntCCompilerBuildHelper, found in CVS in Mathematica/AddOns.
+ExtraPath=${basedir}/../AntCCompilerBuildHelper
+
+# CompilerIncludes is a path to a directory holding WolframLibrary.h (defaults to a location from the Mathematica layout)
+# MathLink is a path to a directory holding a MathLink SDK; namely, it should have a CompilerAdditions subdirectory (defaults to a location from the Mathematica layout)
+# targetID is the $SystemID of the target you want to build (defaults to $SystemID)
+# system_id is also the $SystemID of the target you want to build (defaults to $SystemID)
+# mathematicaInstallDir is the location of the Mathematica installation you want to run the build script
+# mathExe is the location of the kernel you want to run the build script
+# build_platform is the RE code for the compiler that should be used (things like centos5-gcc4.4 and vc100)
+# dist is the location of the build output
+# build_platform has values like vc100 on Windows, centos5-gcc4.4 on Linux, and snowleopard-gcc4.2 on Mac. Check the RE build system for what values are actually being passed in.

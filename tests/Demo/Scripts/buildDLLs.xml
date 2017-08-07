@@ -1,0 +1,56 @@
+
+<!-- ANT build.xml for DemoTests -->
+
+<project name="DemoTests" default="build" basedir="..">
+
+	<property name="rootdir" value="${basedir}" />
+	<property name="dist" value="${basedir}/build" />
+	<property file="scripts/build-local.properties" />
+    <property name="targetID" value="Automatic" />
+
+	<target name="clean">
+		<delete  dir="${dist}" />
+	</target>
+
+	<target name="init">
+		<mkdir dir="${dist}" />
+	</target>
+
+	<target name="build" depends="clean,init,runBuild" >
+	</target>
+
+	<target name="runBuild">
+		<property name="mathematicaInstallDir" value="C:\Program Files\Wolfram Research\Mathematica\11.2\"/>
+		<property name="mathExe" value="C:\Program Files\Wolfram Research\Mathematica\11.2\MathKernel.exe"/>
+		<property name="jlinkpath" value="${mathematicaInstallDir}/SystemFiles/Links/JLink"/>
+
+		<property name="sourceDir" value="${basedir}/Source" />
+		<property name="outputDir" value="${dist}" />
+		<property name="outputName" value="DemoTests" />
+		<property name="LLUSourceFiles" value="${basedir}/../../src/" />
+		<property name="LLUIncludeFiles" value="${LLUSourceFiles}" />
+
+	  	<path id="jlink.lib">
+	    	<fileset dir="${jlinkpath}">
+	      		<include name="**/JLink.jar"/>
+	      		<include name="**/SystemFiles/*"/>
+	    		</fileset>
+	  	</path>
+
+	  	<!-- Load JLink -->
+	  	<taskdef name="mathematica"
+	      	classname="com.wolfram.jlink.util.MathematicaTask" >
+	    	<classpath refid="jlink.lib" />
+	  	</taskdef>
+
+	    <mathematica exe="${mathExe}" fresh="true" quit="true">
+			<![CDATA[
+	    		Print["Running in ",Directory[]];
+	    		Get["BuildLibrary.m"]
+			]]>
+	      </mathematica>
+
+	</target>
+
+
+</project>
