@@ -16,7 +16,7 @@
 
 #include "LibraryLinkError.hpp"
 #include "MArray.hpp"
-#include "Utilities.h"
+#include "Utilities.hpp"
 
 namespace LibraryLinkUtils {
 

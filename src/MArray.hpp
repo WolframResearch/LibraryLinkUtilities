@@ -24,7 +24,7 @@
 #include <vector>
 
 #include "LibraryLinkError.hpp"
-#include "Utilities.h"
+#include "Utilities.hpp"
 
 namespace LibraryLinkUtils {
 
