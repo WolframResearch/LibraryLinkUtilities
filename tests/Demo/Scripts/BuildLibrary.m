@@ -21,10 +21,10 @@ targetID = AntProperty["targetID"];
 If[ !StringQ[targetID] || targetID === "Automatic",
 	targetID = $SystemID
 ];
-
+Print[targetID];
 Switch[targetID,
 	"MacOSX-x86-64",
-	compoptions = "-std=c++14 -install_name " <> outputName <> ".dylib",
+	compoptions = "-std=c++14"  (*-install_name " <> outputName <> ".dylib"*),
 
 	"Linux-x86-64" | "Linux",
 	compoptions = "-O2 -fPIC -std=c++14 -Wall",

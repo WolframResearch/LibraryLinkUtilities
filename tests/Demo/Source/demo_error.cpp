@@ -16,6 +16,7 @@ EXTERN_C DLLEXPORT mint WolframLibrary_getVersion() {
 }
 
 EXTERN_C DLLEXPORT int WolframLibrary_initialize(WolframLibraryData libData) {
+	MArgumentManager::setLibraryData(libData);
 	return 0;
 }
 

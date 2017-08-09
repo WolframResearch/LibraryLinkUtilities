@@ -17,6 +17,15 @@ using namespace LibraryLinkUtils;
 template<typename T>
 static Tensor<T> tensor;
 
+template<>
+Tensor<double> tensor<double>;
+
+template<>
+Tensor<std::complex<double>> tensor<std::complex<double>>;
+
+template<>
+Tensor<mint> tensor<mint>;
+
 EXTERN_C DLLEXPORT mint WolframLibrary_getVersion( ) {
 	return WolframLibraryVersion;
 }
