@@ -43,7 +43,7 @@ struct ImageNegator {
 EXTERN_C DLLEXPORT int ImageNegate(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
 	auto err = LLErrorCode::NoError;
 	try {
-		MArgumentManager mngr(Argc, Args, Res);
+		MArgumentManager mngr(libData, Argc, Args, Res);
 		mngr.operateOnImage<ImageNegator>(0, mngr);
 	}
 	catch (LibraryLinkError<LLErrorCode>& e) {

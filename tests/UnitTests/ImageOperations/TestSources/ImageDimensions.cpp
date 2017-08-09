@@ -9,7 +9,7 @@ using namespace LibraryLinkUtils;
 EXTERN_C DLLEXPORT int ImageColumnCount(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
 	auto err = LLErrorCode::NoError;
 	try {
-		MArgumentManager mngr(Argc, Args, Res);
+		MArgumentManager mngr(libData, Argc, Args, Res);
 		mngr.operateOnImage(0, [&mngr](auto&& image) {
 			mngr.setInteger(image.columns());
 		});
@@ -27,7 +27,7 @@ EXTERN_C DLLEXPORT int ImageColumnCount(WolframLibraryData libData, mint Argc, M
 EXTERN_C DLLEXPORT int ImageRank(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
 	auto err = LLErrorCode::NoError;
 	try {
-		MArgumentManager mngr(Argc, Args, Res);
+		MArgumentManager mngr(libData, Argc, Args, Res);
 		mngr.operateOnImage(0, [&mngr](auto&& image) {
 			mngr.setInteger(image.rank());
 		});
@@ -45,7 +45,7 @@ EXTERN_C DLLEXPORT int ImageRank(WolframLibraryData libData, mint Argc, MArgumen
 EXTERN_C DLLEXPORT int ImageRowCount(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
 	auto err = LLErrorCode::NoError;
 	try {
-		MArgumentManager mngr(Argc, Args, Res);
+		MArgumentManager mngr(libData, Argc, Args, Res);
 		mngr.operateOnImage(0, [&mngr](auto&& image) {
 			mngr.setInteger(image.rows());
 		});
