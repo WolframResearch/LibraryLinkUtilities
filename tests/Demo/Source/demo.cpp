@@ -3,6 +3,7 @@
 
 #include "MArgumentManager.h"
 #include "LibraryLinkError.hpp"
+#include "LibraryLinkFunctionMacro.h"
 
 using namespace LibraryLinkUtils;
 
@@ -286,7 +287,7 @@ EXTERN_C DLLEXPORT int demo_TTT_T(WolframLibraryData libData, mint Argc, MArgume
  * Constructs a copy of the input tensor with the number of elements,
  * rank, and type appended at the end.
  **/
-EXTERN_C DLLEXPORT int demo_T_T(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
+LIBRARY_LINK_FUNCTION(demo_T_T) {
 	auto err = LLErrorCode::NoError;
 	try {
 		MArgumentManager mngr(Argc, Args, Res);
@@ -328,7 +329,7 @@ EXTERN_C DLLEXPORT int demo_T_T(WolframLibraryData libData, mint Argc, MArgument
  * Constructs a copy of the input tensor with the number of elements,
  * rank, and type appended at the end.
  **/
-EXTERN_C DLLEXPORT int demo1_T_T(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
+LIBRARY_LINK_FUNCTION(demo1_T_T) {
 	auto err = LLErrorCode::NoError;
 	try {
 		MArgumentManager mngr(Argc, Args, Res);
@@ -377,7 +378,7 @@ EXTERN_C DLLEXPORT int demo1_I_T(WolframLibraryData libData, mint Argc, MArgumen
 		MArgumentManager mngr(Argc, Args, Res);
 		auto i = mngr.getInteger<mint>(0);
 
-		Tensor<mint> T0(0L, { i });
+		Tensor<mint> T0(static_cast<mint>(0), { i });
 		mint k = 1;
 		for (auto& elem : T0)
 			elem = 2 * k++;

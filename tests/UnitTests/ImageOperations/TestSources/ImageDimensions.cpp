@@ -3,10 +3,11 @@
 
 #include "MArgumentManager.h"
 #include "Image.h"
+#include "LibraryLinkFunctionMacro.h"
 
 using namespace LibraryLinkUtils;
 
-EXTERN_C DLLEXPORT int ImageColumnCount(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
+LIBRARY_LINK_FUNCTION(ImageColumnCount) {
 	auto err = LLErrorCode::NoError;
 	try {
 		MArgumentManager mngr(libData, Argc, Args, Res);
@@ -24,7 +25,7 @@ EXTERN_C DLLEXPORT int ImageColumnCount(WolframLibraryData libData, mint Argc, M
 }
 
 
-EXTERN_C DLLEXPORT int ImageRank(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
+LIBRARY_LINK_FUNCTION(ImageRank) {
 	auto err = LLErrorCode::NoError;
 	try {
 		MArgumentManager mngr(libData, Argc, Args, Res);
@@ -42,7 +43,7 @@ EXTERN_C DLLEXPORT int ImageRank(WolframLibraryData libData, mint Argc, MArgumen
 }
 
 
-EXTERN_C DLLEXPORT int ImageRowCount(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
+LIBRARY_LINK_FUNCTION(ImageRowCount) {
 	auto err = LLErrorCode::NoError;
 	try {
 		MArgumentManager mngr(libData, Argc, Args, Res);

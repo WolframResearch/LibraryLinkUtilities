@@ -2,6 +2,7 @@
 #include "WolframRawArrayLibrary.h"
 
 #include "MArgumentManager.h"
+#include "LibraryLinkFunctionMacro.h"
 
 using namespace LibraryLinkUtils;
 
@@ -16,16 +17,13 @@ EXTERN_C DLLEXPORT int WolframLibrary_initialize(WolframLibraryData libData) {
 	return 0;
 }
 
-EXTERN_C DLLEXPORT int echoRawArray(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
+LIBRARY_LINK_FUNCTION(echoRawArray) {
 	auto err = LLErrorCode::NoError;
 	try {
 		MArgumentManager mngr(Argc, Args, Res);
 		mngr.operateOnRawArray(0, [&mngr](auto&& rarray1) {
-			std::cout << "RawArray to be moved" << std::endl;
 			auto rarray2(std::move(rarray1));
-			std::cout << "RawArray moved" << std::endl;
 			mngr.setRawArray(rarray2);
-			std::cout << "RawArray returned" << std::endl;
 		});
 	}
 	catch (LibraryLinkError<LLErrorCode>& e) {
@@ -41,7 +39,7 @@ EXTERN_C DLLEXPORT int echoRawArray(WolframLibraryData libData, mint Argc, MArgu
 /*
  * Raw array library functions
  */
-EXTERN_C DLLEXPORT int getRawArrayLength(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
+LIBRARY_LINK_FUNCTION(getRawArrayLength) {
 	auto err = LLErrorCode::NoError;
 	try {
 		MArgumentManager mngr(Argc, Args, Res);
@@ -58,7 +56,7 @@ EXTERN_C DLLEXPORT int getRawArrayLength(WolframLibraryData libData, mint Argc, 
 	return static_cast<int>(err);
 }
 
-EXTERN_C DLLEXPORT int getRawArrayRank(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
+LIBRARY_LINK_FUNCTION(getRawArrayRank) {
 	auto err = LLErrorCode::NoError;
 	try {
 		MArgumentManager mngr(Argc, Args, Res);
@@ -76,7 +74,7 @@ EXTERN_C DLLEXPORT int getRawArrayRank(WolframLibraryData libData, mint Argc, MA
 }
 
 //create new raw array
-EXTERN_C DLLEXPORT int newRawArray(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
+LIBRARY_LINK_FUNCTION(newRawArray) {
 	auto err = LLErrorCode::NoError;
 	try {
 		MArgumentManager mngr(Argc, Args, Res);
@@ -93,7 +91,7 @@ EXTERN_C DLLEXPORT int newRawArray(WolframLibraryData libData, mint Argc, MArgum
 }
 
 //clone RawArray
-EXTERN_C DLLEXPORT int cloneRawArray(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
+LIBRARY_LINK_FUNCTION(cloneRawArray) {
 	auto err = LLErrorCode::NoError;
 	try {
 		MArgumentManager mngr(Argc, Args, Res);
@@ -111,7 +109,7 @@ EXTERN_C DLLEXPORT int cloneRawArray(WolframLibraryData libData, mint Argc, MArg
 	return static_cast<int>(err);
 }
 
-EXTERN_C DLLEXPORT int changeSharedRawArray(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
+LIBRARY_LINK_FUNCTION(changeSharedRawArray) {
 	WolframRawArrayLibrary_Functions rawArrayFunctions = libData->rawarrayLibraryFunctions;
 	int err = LIBRARY_NO_ERROR;
 

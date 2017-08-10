@@ -11,6 +11,7 @@
 #include "MArgumentManager.h"
 #include "Tensor.h"
 #include "LibraryLinkError.hpp"
+#include "LibraryLinkFunctionMacro.h"
 
 using namespace LibraryLinkUtils;
 
@@ -36,7 +37,7 @@ EXTERN_C DLLEXPORT int WolframLibrary_initialize( WolframLibraryData libData) {
 	return 0;
 }
 
-EXTERN_C DLLEXPORT int loadArray(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
+LIBRARY_LINK_FUNCTION(loadArray) {
 	MArgumentManager mngr(Argc, Args, Res);
 	mngr.operateOnTensor(0, [&](auto&& t) {
 		using T = typename std::remove_reference_t<decltype(t)>::value_type;

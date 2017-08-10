@@ -1,6 +1,9 @@
 /*
  An example that demonstrates calling back to Mathematica inside a Wolfram Library function.
 */
+#ifdef _WIN32
+#define NOMINMAX
+#endif /* _WIN32 */
 
 #include "mathlink.h"
 #include "WolframLibrary.h"

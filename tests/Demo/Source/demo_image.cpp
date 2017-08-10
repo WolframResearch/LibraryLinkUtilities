@@ -12,6 +12,7 @@
 #include "MArgumentManager.h"
 #include "Image.h"
 #include "LibraryLinkError.hpp"
+#include "LibraryLinkFunctionMacro.h"
 
 using namespace LibraryLinkUtils;
 using std::log2;
@@ -59,10 +60,10 @@ template<> raw_t_real64 maxValue<raw_t_real64>() {
 }
 
 /* Negate image colors */
-EXTERN_C DLLEXPORT int color_negate(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument res) {
+LIBRARY_LINK_FUNCTION(color_negate) {
 	auto err = LLErrorCode::NoError;
 	try {
-		MArgumentManager mngr(Argc, Args, res);
+		MArgumentManager mngr(Argc, Args, Res);
 
 		mngr.operateOnImage(0, [&](const auto& image_in) {
 			auto image_out = image_in;

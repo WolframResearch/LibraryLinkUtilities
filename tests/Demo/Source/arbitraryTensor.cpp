@@ -7,6 +7,7 @@
 
 #include "MArgumentManager.h"
 #include "LibraryLinkError.hpp"
+#include "LibraryLinkFunctionMacro.h"
 
 using namespace LibraryLinkUtils;
 
@@ -31,7 +32,7 @@ EXTERN_C DLLEXPORT int WolframLibrary_initialize( WolframLibraryData libData) {
 	return 0;
 }
 
-EXTERN_C DLLEXPORT int loadArray(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
+LIBRARY_LINK_FUNCTION(loadArray) {
 	auto err = LLErrorCode::NoError;
 	try {
 		MArgumentManager mngr(Argc, Args, Res);

@@ -2,13 +2,13 @@
 #include "MArgumentManager.h"
 #include "Image.h"
 #include "LibraryLinkError.hpp"
+#include "LibraryLinkFunctionMacro.h"
 
 #include <type_traits>
-#include <iostream>
 
 using namespace LibraryLinkUtils;
 
-EXTERN_C DLLEXPORT int EchoImage1(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
+LIBRARY_LINK_FUNCTION(EchoImage1) {
 	auto err = LLErrorCode::NoError;
 	try {
 		MArgumentManager mngr(libData, Argc, Args, Res);
@@ -26,7 +26,7 @@ EXTERN_C DLLEXPORT int EchoImage1(WolframLibraryData libData, mint Argc, MArgume
 	return static_cast<int>(err);
 }
 
-EXTERN_C DLLEXPORT int EchoImage2(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
+LIBRARY_LINK_FUNCTION(EchoImage2) {
 	auto err = LLErrorCode::NoError;
 	try {
 		MArgumentManager mngr(libData, Argc, Args, Res);
@@ -38,13 +38,10 @@ EXTERN_C DLLEXPORT int EchoImage2(WolframLibraryData libData, mint Argc, MArgume
 			auto channels = in.channels();
 			auto colorspace = in.colorspace();
 			auto interleaving = in.interleavedQ();
-			std::cout << std::boolalpha << in.is3D() << std::endl;
-			std::cout << slices << std::endl;
 
 			using T = typename std::remove_reference_t<decltype(in)>::value_type;
 			Image<T> out(slices, columns, rows, channels, colorspace, interleaving);
-			std::cout << std::boolalpha << out.is3D() << std::endl;
-
+			
 			for (mint column = 1; column <= columns; column++) {
 				for (mint row = 1; row <= rows; row++) {
 					if (in.is3D()) {
@@ -56,7 +53,6 @@ EXTERN_C DLLEXPORT int EchoImage2(WolframLibraryData libData, mint Argc, MArgume
 					}
 				}
 			}
-			std::cout << "Image copied" << std::endl;
 			mngr.setImage(out);
 		});
 	}

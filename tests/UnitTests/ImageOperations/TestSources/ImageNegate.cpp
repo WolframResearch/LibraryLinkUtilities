@@ -3,6 +3,7 @@
 
 #include "MArgumentManager.h"
 #include "Image.h"
+#include "LibraryLinkFunctionMacro.h"
 
 using namespace LibraryLinkUtils;
 
@@ -39,8 +40,7 @@ struct ImageNegator {
 };
 
 
-
-EXTERN_C DLLEXPORT int ImageNegate(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
+LIBRARY_LINK_FUNCTION(ImageNegate) {
 	auto err = LLErrorCode::NoError;
 	try {
 		MArgumentManager mngr(libData, Argc, Args, Res);
