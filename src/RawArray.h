@@ -15,7 +15,7 @@
 #include "WolframLibrary.h"
 #include "WolframRawArrayLibrary.h"
 
-#include "LibraryLinkError.hpp"
+#include "LibraryLinkError.h"
 #include "MArray.hpp"
 
 namespace LibraryLinkUtils {
@@ -31,10 +31,6 @@ namespace LibraryLinkUtils {
 	 */
 	template<typename T>
 	class RawArray: public MArray<T> {
-
-		///	Short name for exception class
-		using LibraryLinkError = LibraryLinkUtils::LibraryLinkError<LLErrorCode>;
-
 	public:
 		/**
 		 *	@brief Default constructor. There is no internal MRawArray stored.
@@ -207,7 +203,7 @@ namespace LibraryLinkUtils {
 		 *   @throws 	LibraryLinkError(LLErrorCode::RawArrayIndexError)
 		 **/
 		void indexError() const override {
-			throw LibraryLinkError(LLErrorCode::RawArrayIndexError);
+			ErrorManager::throwException(LLErrorCode::RawArrayIndexError);
 		}
 
 		/**
@@ -215,7 +211,7 @@ namespace LibraryLinkUtils {
 		 *   @throws 	LibraryLinkError(LLErrorCode::RawArrayInitError)
 		 **/
 		void initError() const override {
-			throw LibraryLinkError(LLErrorCode::RawArrayInitError);
+			ErrorManager::throwException(LLErrorCode::RawArrayInitError);
 		}
 
 		/**
@@ -223,7 +219,7 @@ namespace LibraryLinkUtils {
 		 *   @throws 	LibraryLinkError(LLErrorCode::RawArraySizeError)
 		 **/
 		void sizeError() const override {
-			throw LibraryLinkError(LLErrorCode::RawArraySizeError);
+			ErrorManager::throwException(LLErrorCode::RawArraySizeError);
 		}
 
 
@@ -234,7 +230,7 @@ namespace LibraryLinkUtils {
 		 **/
 		void createInternal() override {
 			if (this->raFuns->MRawArray_new(type, this->depth, this->dimensionsData(), &internalRA))
-				throw LibraryLinkError(LLErrorCode::RawArrayNewError);
+				ErrorManager::throwException(LLErrorCode::RawArrayNewError);
 		}
 
 		/**
@@ -300,7 +296,7 @@ namespace LibraryLinkUtils {
 	RawArray<T>::RawArray(InputIt first, InputIt last, Container&& dims) : MArray<T>(std::forward<Container>(dims)) {
 		createInternal();
 		if (std::distance(first, last) != this->flattenedLength)
-			throw LibraryLinkError(LLErrorCode::RawArrayNewError, "Length of data range does not match specified dimensions");
+			ErrorManager::throwException(LLErrorCode::RawArrayNewError, "Length of data range does not match specified dimensions");
 		this->arrayOwnerQ = true;
 		std::copy(first, last, this->begin());
 	}
@@ -310,7 +306,7 @@ namespace LibraryLinkUtils {
 	RawArray<T>::RawArray(InputIt first, InputIt last, std::initializer_list<mint> dims) : MArray<T>(dims) {
 		createInternal();
 		if (std::distance(first, last) != this->flattenedLength)
-			throw LibraryLinkError(LLErrorCode::RawArrayNewError, "Length of data range does not match specified dimensions");
+			ErrorManager::throwException(LLErrorCode::RawArrayNewError, "Length of data range does not match specified dimensions");
 		this->arrayOwnerQ = true;
 		std::copy(first, last, this->begin());
 	}
@@ -320,7 +316,7 @@ namespace LibraryLinkUtils {
 		if (!this->raFuns)
 			initError();
 		if (type != this->raFuns->MRawArray_getType(ra))
-			throw LibraryLinkError(LLErrorCode::RawArrayTypeError);
+			ErrorManager::throwException(LLErrorCode::RawArrayTypeError);
 		this->arrayOwnerQ = false;
 		internalRA = ra;
 		this->depth = this->raFuns->MRawArray_getRank(internalRA);
@@ -333,7 +329,7 @@ namespace LibraryLinkUtils {
 	template<typename T>
 	RawArray<T>::RawArray(const RawArray<T>& ra2) : MArray<T>(ra2) {
 		if (this->raFuns->MRawArray_clone(ra2.internalRA, &this->internalRA)) {
-			throw LibraryLinkError(LLErrorCode::RawArrayCloneError);
+			ErrorManager::throwException(LLErrorCode::RawArrayCloneError);
 		}
 		this->arrayOwnerQ = true;
 	}
@@ -352,7 +348,7 @@ namespace LibraryLinkUtils {
 		MArray<T>::operator=(ra2);
 		this->freeInternal();
 		if (this->raFuns->MRawArray_clone(ra2.internalRA, &this->internalRA)) {
-			throw LibraryLinkError(LLErrorCode::RawArrayCloneError);
+			ErrorManager::throwException(LLErrorCode::RawArrayCloneError);
 		}
 		this->arrayOwnerQ = true;
 	}

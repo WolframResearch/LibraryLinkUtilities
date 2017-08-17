@@ -23,7 +23,7 @@
 #include <type_traits>
 #include <vector>
 
-#include "LibraryLinkError.hpp"
+#include "LibraryLinkError.h"
 
 namespace LibraryLinkUtils {
 
@@ -46,8 +46,6 @@ namespace LibraryLinkUtils {
 		/// Constant iterator type
 		using const_iterator = const T*;
 
-		///	Short name for exception class
-		using LibraryLinkError = LibraryLinkUtils::LibraryLinkError<LLErrorCode>;
 	public:
 
 		/**
@@ -303,7 +301,7 @@ namespace LibraryLinkUtils {
 		 *   @throws 	LibraryLinkError(LLErrorCode::FunctionError)
 		 **/
 		virtual void initError() const {
-			throw LibraryLinkError(LLErrorCode::FunctionError);
+			ErrorManager::throwException(LLErrorCode::FunctionError);
 		}
 
 		/**
@@ -311,7 +309,7 @@ namespace LibraryLinkUtils {
 		 *   @throws 	LibraryLinkError(LLErrorCode::DimensionsError)
 		 **/
 		virtual void sizeError() const {
-			throw LibraryLinkError(LLErrorCode::DimensionsError);
+			ErrorManager::throwException(LLErrorCode::DimensionsError);
 		}
 
 		/**
@@ -400,7 +398,7 @@ namespace LibraryLinkUtils {
 			return (d > 0) && (d <= std::numeric_limits<mint>::max());
 		});
 		if (!dimsOk)
-			throw LibraryLinkError(LLErrorCode::DimensionsError, "Invalid input vector with array dimensions");
+			ErrorManager::throwException(LLErrorCode::DimensionsError, "Invalid input vector with array dimensions");
 		dims.reserve(depth);
 		std::copy(std::begin(dimensions), std::end(dimensions), std::back_inserter(dims));
 		flattenedLength = totalLengthFromDims();

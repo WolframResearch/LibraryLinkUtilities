@@ -14,7 +14,7 @@
 
 #include "WolframLibrary.h"
 
-#include "LibraryLinkError.hpp"
+#include "LibraryLinkError.h"
 #include "MArray.hpp"
 
 namespace LibraryLinkUtils {
@@ -30,10 +30,6 @@ namespace LibraryLinkUtils {
 	 */
 	template<typename T>
 	class Tensor: public MArray<T> {
-
-		///	Short name for exception class
-		using LibraryLinkError = LibraryLinkUtils::LibraryLinkError<LLErrorCode>;
-
 	public:
 		/**
 		 *	@brief Default constructor. There is no internal MTensor stored.
@@ -203,7 +199,7 @@ namespace LibraryLinkUtils {
 		 *   @throws 	LibraryLinkError(LLErrorCode::TensorIndexError)
 		 **/
 		void indexError() const override {
-			throw LibraryLinkError(LLErrorCode::TensorIndexError);
+			ErrorManager::throwException(LLErrorCode::TensorIndexError);
 		}
 
 		/**
@@ -211,7 +207,7 @@ namespace LibraryLinkUtils {
 		 *   @throws 	LibraryLinkError(LLErrorCode::TensorInitError)
 		 **/
 		void initError() const override {
-			throw LibraryLinkError(LLErrorCode::TensorInitError);
+			ErrorManager::throwException(LLErrorCode::TensorInitError);
 		}
 
 		/**
@@ -219,7 +215,7 @@ namespace LibraryLinkUtils {
 		 *   @throws 	LibraryLinkError(LLErrorCode::TensorSizeError)
 		 **/
 		void sizeError() const override {
-			throw LibraryLinkError(LLErrorCode::TensorSizeError);
+			ErrorManager::throwException(LLErrorCode::TensorSizeError);
 		}
 
 
@@ -232,7 +228,7 @@ namespace LibraryLinkUtils {
 		 **/
 		void createInternal() override {
 			if (this->libData->MTensor_new(type, this->depth, this->dimensionsData(), &internalMT))
-				throw LibraryLinkError(LLErrorCode::TensorNewError);
+				ErrorManager::throwException(LLErrorCode::TensorNewError);
 		}
 
 		/**
@@ -301,7 +297,7 @@ namespace LibraryLinkUtils {
 	Tensor<T>::Tensor(InputIt first, InputIt last, Container&& dims) : MArray<T>(std::forward<Container>(dims)) {
 		createInternal();
 		if (std::distance(first, last) != this->flattenedLength)
-			throw LibraryLinkError(LLErrorCode::TensorNewError, "Length of data range does not match specified dimensions");
+			ErrorManager::throwException(LLErrorCode::TensorNewError, "Length of data range does not match specified dimensions");
 		this->arrayOwnerQ = true;
 		std::copy(first, last, this->begin());
 	}
@@ -311,7 +307,7 @@ namespace LibraryLinkUtils {
 	Tensor<T>::Tensor(InputIt first, InputIt last, std::initializer_list<mint> dims) : MArray<T>(dims) {
 		createInternal();
 		if (std::distance(first, last) != this->flattenedLength)
-			throw LibraryLinkError(LLErrorCode::TensorNewError, "Length of data range does not match specified dimensions");
+			ErrorManager::throwException(LLErrorCode::TensorNewError, "Length of data range does not match specified dimensions");
 		this->arrayOwnerQ = true;
 		std::copy(first, last, this->begin());
 	}
@@ -321,7 +317,7 @@ namespace LibraryLinkUtils {
 		if (!this->libData)
 			initError();
 		if (type != this->libData->MTensor_getType(t))
-			throw LibraryLinkError(LLErrorCode::TensorTypeError);
+			ErrorManager::throwException(LLErrorCode::TensorTypeError);
 		this->arrayOwnerQ = false;
 		internalMT = t;
 		this->depth = this->libData->MTensor_getRank(internalMT);
@@ -335,7 +331,7 @@ namespace LibraryLinkUtils {
 	template<typename T>
 	Tensor<T>::Tensor(const Tensor<T>& t2) : MArray<T>(t2) {
 		if (this->libData->MTensor_clone(t2.internalMT, &this->internalMT)) {
-			throw LibraryLinkError(LLErrorCode::TensorCloneError);
+			ErrorManager::throwException(LLErrorCode::TensorCloneError);
 		}
 		this->arrayOwnerQ = true;
 	}
@@ -353,7 +349,7 @@ namespace LibraryLinkUtils {
 		MArray<T>::operator=(t2);
 		this->freeInternal();
 		if (this->libData->MTensor_clone(t2.internalMT, &this->internalMT)) {
-			throw LibraryLinkError(LLErrorCode::TensorCloneError);
+			ErrorManager::throwException(LLErrorCode::TensorCloneError);
 		}
 		this->arrayOwnerQ = true;
 	}

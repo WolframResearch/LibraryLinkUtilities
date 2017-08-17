@@ -22,7 +22,7 @@
 #include <vector>
 
 #include "Image.h"
-#include "LibraryLinkError.hpp"
+#include "LibraryLinkError.h"
 #include "RawArray.h"
 #include "Tensor.h"
 
@@ -38,7 +38,6 @@ namespace LibraryLinkUtils {
 	 * @todo	Make sure all MArgument passing modes ("Constant", "Shared", etc.) are correctly handled
 	 **/
 	class MArgumentManager {
-		using MArgumentError = LibraryLinkError<LLErrorCode>;
 	public:
 
 		/**
@@ -400,7 +399,7 @@ namespace LibraryLinkUtils {
 				op(this->getRawArray<std::complex<double>>(index), std::forward<Args>(args)...);
 				break;
 			default:
-				throw MArgumentError(LLErrorCode::MArgumentRawArrayError, "Incorrect type of RawArray argument. Argument index: " + std::to_string(index));
+				ErrorManager::throwException(LLErrorCode::MArgumentRawArrayError, "Incorrect type of RawArray argument. Argument index: " + std::to_string(index));
 		}
 	}
 
@@ -431,7 +430,7 @@ namespace LibraryLinkUtils {
 				op(this->getTensor<std::complex<double>>(index), std::forward<Args>(args)...);
 				break;
 			default:
-				throw MArgumentError(LLErrorCode::MArgumentTensorError, "Incorrect type of Tensor argument. Argument index: " + std::to_string(index));
+				ErrorManager::throwException(LLErrorCode::MArgumentTensorError, "Incorrect type of Tensor argument. Argument index: " + std::to_string(index));
 		}
 	}
 
@@ -465,7 +464,7 @@ namespace LibraryLinkUtils {
 				op(this->getImage<double>(index), std::forward<Args>(args)...);
 				break;
 			default:
-				throw MArgumentError(LLErrorCode::MArgumentImageError, "Incorrect type of Image argument. Argument index: " + std::to_string(index));
+				ErrorManager::throwException(LLErrorCode::MArgumentImageError, "Incorrect type of Image argument. Argument index: " + std::to_string(index));
 		}
 	}
 

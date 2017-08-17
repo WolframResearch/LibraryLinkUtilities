@@ -12,7 +12,7 @@
 #include "WolframLibrary.h"
 #include "WolframImageLibrary.h"
 
-#include "LibraryLinkError.hpp"
+#include "LibraryLinkError.h"
 #include "MArray.hpp"
 
 namespace LibraryLinkUtils {
@@ -31,9 +31,6 @@ namespace LibraryLinkUtils {
 
 		/// Functions from WolframImageLibrary
 		using MArray<T>::imgFuns;
-
-		///	Short name for exception class
-		using LibraryLinkError = LibraryLinkUtils::LibraryLinkError<LLErrorCode>;
 
 	public:
 		/**
@@ -151,7 +148,7 @@ namespace LibraryLinkUtils {
 		 *   @throws 	LibraryLinkError(LLErrorCode::ImageIndexError)
 		 **/
 		void indexError() const override {
-			throw LibraryLinkError(LLErrorCode::ImageIndexError);
+			ErrorManager::throwException(LLErrorCode::ImageIndexError);
 		}
 
 		/**
@@ -159,7 +156,7 @@ namespace LibraryLinkUtils {
 		 *   @throws 	LibraryLinkError(LLErrorCode::ImageInitError)
 		 **/
 		void initError() const override {
-			throw LibraryLinkError(LLErrorCode::ImageInitError);
+			ErrorManager::throwException(LLErrorCode::ImageInitError);
 		}
 
 		/**
@@ -167,7 +164,7 @@ namespace LibraryLinkUtils {
 		 *   @throws 	LibraryLinkError(LLErrorCode::ImageSizeError)
 		 **/
 		void sizeError() const override {
-			throw LibraryLinkError(LLErrorCode::ImageSizeError);
+			ErrorManager::throwException(LLErrorCode::ImageSizeError);
 		}
 
 		/**
@@ -178,7 +175,7 @@ namespace LibraryLinkUtils {
 		 *   @todo		Implement creating new MImage via Image<T>::createInternal()
 		 **/
 		void createInternal() override {
-			throw LibraryLinkError(LLErrorCode::ImageNewError);
+			ErrorManager::throwException(LLErrorCode::ImageNewError);
 		}
 
 		/**
@@ -219,7 +216,7 @@ namespace LibraryLinkUtils {
 		int error = (nFrames > 0) ? imgFuns->MImage_new3D(nFrames, w, h, channels, type, cs, interleavingQ, &internalMI) :
 				imgFuns->MImage_new2D(w, h, channels, type, cs, interleavingQ, &internalMI);
 		if (error)
-			throw LibraryLinkError(LLErrorCode::ImageNewError);
+			ErrorManager::throwException(LLErrorCode::ImageNewError);
 		this->arrayOwnerQ = true;
 		initDataMembers();
 	}
@@ -229,7 +226,7 @@ namespace LibraryLinkUtils {
 		if (!imgFuns)
 			this->initError();
 		if (type != imgFuns->MImage_getDataType(mi))
-			throw LibraryLinkError(LLErrorCode::ImageTypeError);
+			ErrorManager::throwException(LLErrorCode::ImageTypeError);
 		this->arrayOwnerQ = false;
 		internalMI = mi;
 		initDataMembers();

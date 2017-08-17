@@ -26,7 +26,7 @@ namespace LibraryLinkUtils {
 	MArgumentManager::MArgumentManager(mint Argc, MArgument* Args, MArgument& Res) :
 			argc(Argc), args(Args), res(Res), stringArgs(Argc) {
 		if (!libData)
-			throw LibraryLinkError<LLErrorCode>(LLErrorCode::MArgumentInitError);
+			ErrorManager::throwException(LLErrorCode::MArgumentInitError);
 
 	}
 
@@ -108,7 +108,7 @@ namespace LibraryLinkUtils {
 
 	MArgument MArgumentManager::getArgs(unsigned int index) const {
 		if (index >= argc)
-			throw LibraryLinkError<LLErrorCode>(LLErrorCode::MArgumentIndexError, "Index " + std::to_string(index) + " out-of-bound when accessing LibraryLink argument");
+			ErrorManager::throwException(LLErrorCode::MArgumentIndexError, "Index " + std::to_string(index) + " out-of-bound when accessing LibraryLink argument");
 		return args[index];
 	}
 
