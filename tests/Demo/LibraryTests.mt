@@ -664,7 +664,7 @@ Test[
 	TestID->"DLLTests-20090211-K7N9I6"
 ]
 
-$SaveMemoryLimit = $TestMemoryLimit;
+(*$SaveMemoryLimit = $TestMemoryLimit;
 $TestMemoryLimit = None; (* The following tests tend to fail if there is any memory constraint. *)
 
 (* This tests the ability to continue when 
@@ -677,7 +677,7 @@ Test[
 	{General::nomem}
 	,
 	TestID->"DLLTests-20090211-T0T8P7-bug-192992-273269"
-]
+]*)
 
 Test[
 	Head[ef6 = LibraryFunctionLoad[edll, "errordemo6", {Integer, {Integer, 1, "Shared"}}, "Void"]]
