@@ -205,7 +205,7 @@ EXTERN_C DLLEXPORT int demo_I_T(WolframLibraryData libData, mint Argc, MArgument
 	try {
 		MArgumentManager mngr(Argc, Args, Res);
 		auto i0 = mngr.getInteger<mint>(0);
-		Tensor<mint> t0(0L, { i0 });
+		Tensor<mint> t0(static_cast<mint>(0), { i0 });
 		for (mint i = 1; i <= i0; i++)
 			t0[i - 1] = 2 * i;
 		mngr.setTensor(t0);
@@ -269,7 +269,7 @@ EXTERN_C DLLEXPORT int demo_TTT_T(WolframLibraryData libData, mint Argc, MArgume
 		auto R0 = T_R_arg[0];
 		R0 += T_arg[T_I_arg[0] - 1];
 
-		Tensor<mint> T_res(0L, { });
+		Tensor<mint> T_res(static_cast<mint>(0), { });
 		T_res[0] = static_cast<mint>(R0);
 
 		mngr.setTensor(T_res);
