@@ -692,6 +692,47 @@ Test[
 	TestID->"LibraryTests-20170818-D4D3N0"
 ]
 
+Test[
+	Head[getCErrorCodes = LibraryFunctionLoad[edll, "sendRegisteredErrors", LinkObject, LinkObject]]
+	,
+	LibraryFunction
+	,
+	TestID->"LibraryTests-20170818-R2D0U9"
+]
+
+Test[
+	Head @ getCErrorCodes[]
+	,
+	Association
+	,
+	TestID->"LibraryTests-20170818-V9E2F2"
+]
+
+Test[
+	Length @ getCErrorCodes[]
+	,
+	36
+	,
+	TestID->"LibraryTests-20170818-R7K6X2"
+]
+
+Test[
+	getCErrorCodes[]["TensorTypeError"]
+	,
+	{ -304, "Tensor type mismatch" }
+	,
+	TestID->"LibraryTests-20170818-H4B5A2"
+]
+
+Test[
+	getCErrorCodes[]["ąęError"]
+	,
+	{ -2, "Let me try non-ASCII: łódź" }
+	,
+	TestID->"LibraryTests-20170818-G4W2V6"
+]
+
+
 (* Last two examples in this section will make more sense as soon as we start extracting error descriptions from C++ code *)
 Test[
 	Head[nonASCIIError = LibraryFunctionLoad[edll, "nonASCIIError", {Integer}, Real]]

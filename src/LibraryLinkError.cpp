@@ -4,6 +4,7 @@
  * @details	<more detailed description>
  */
 
+#include "mathlink.h"
 #include "LibraryLinkError.h"
 
 namespace LibraryLinkUtils {
@@ -72,6 +73,12 @@ namespace LibraryLinkUtils {
 		}
 	}
 
+	void ErrorManager::registerPacletErrors(std::vector<std::pair<std::string, std::string>>&& errors) {
+		for (auto&& err : errors) {
+			set(std::move(err.first), std::move(err.second));
+		}
+	}
+
 	void ErrorManager::set(std::string errorName, std::string errorData) {
 		auto elem = errors.emplace_hint(insertionHint, std::make_pair(errorName, LibraryLinkError { nextErrorId, errorName, errorData }));
 		if (elem->second.id() != nextErrorId) {
@@ -115,6 +122,37 @@ namespace LibraryLinkUtils {
 			throw errors.find("ErrorManagerThrowNameError")->second;
 		}
 		return exception->second;
+	}
+
+	// Initial implementation, no error checking. Will be nicer when I wrap MLINK into stream class.
+	void ErrorManager::sendRegisteredErrorsViaMathlink(MLINK mlp) {
+		long len;
+		MLCheckFunction(mlp, "List", &len);
+		MLNewPacket(mlp);
+		MLPutFunction(mlp, "Association", errors.size());
+		for (const auto& err : errors) {
+			MLPutFunction(mlp, "Rule", 2);
+			MLPutUTF8String(mlp, reinterpret_cast<const unsigned char*>(err.first.c_str()), static_cast<int>(err.first.size()));
+			MLPutFunction(mlp, "List", 2);
+			MLPutInteger32(mlp, err.second.id());
+			MLPutUTF8String(mlp, reinterpret_cast<const unsigned char*>(err.second.message().c_str()), static_cast<int>(err.second.message().size()));
+		}
+		MLEndPacket(mlp);
+		MLFlush(mlp);
+	}
+
+	EXTERN_C DLLEXPORT int sendRegisteredErrors(WolframLibraryData libData, MLINK mlp) {
+		auto err = LLErrorCode::NoError;
+		try {
+			ErrorManager::sendRegisteredErrorsViaMathlink(mlp);
+		}
+		catch (LibraryLinkError& e) {
+			err = e.which();
+		}
+		catch (std::exception& e) {
+			err = LLErrorCode::FunctionError;
+		}
+		return err;
 	}
 } /* namespace LibraryLinkUtils */
 

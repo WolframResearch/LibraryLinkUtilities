@@ -16,6 +16,8 @@
 #include <unordered_map>
 #include <utility>
 
+#include "WolframLibrary.h"
+
 namespace LibraryLinkUtils {
 
 
@@ -144,6 +146,7 @@ namespace LibraryLinkUtils {
 		ErrorManager() = delete;
 
 		static void registerPacletErrors(const std::vector<std::pair<std::string, std::string>>& errors);
+		static void registerPacletErrors(std::vector<std::pair<std::string, std::string>>&& errors);
 
 		static void set(std::string errorName, std::string errorData);
 
@@ -152,6 +155,7 @@ namespace LibraryLinkUtils {
 		static void throwException(const std::string& errorName);
 		static void throwException(const std::string& errorName, const std::string& debugInfo);
 
+		static void sendRegisteredErrorsViaMathlink(MLINK mlp);
 	private:
 		static const LibraryLinkError& findError(int errorId);
 		static const LibraryLinkError& findError(const std::string& errorName);
