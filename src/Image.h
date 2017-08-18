@@ -204,6 +204,7 @@ namespace LibraryLinkUtils {
 		 *   @param[in]     row - pixel row (in Mathematica-style indexing - starting from 1)
 		 *   @param[in]     col - pixel column (in Mathematica-style indexing - starting from 1)
 		 *   @param[in]     channel - desired channel (in Mathematica-style indexing - starting from 1)
+		 *   @param[in]		newValue - new channel value
 		 *   @throws		LLErrorCode::ImageIndexError - if the specified coordinates are out-of-bound
 		 **/
 		void set(mint row, mint col, mint channel, T newValue);
@@ -214,6 +215,7 @@ namespace LibraryLinkUtils {
 		 *   @param[in]     row - pixel row (in Mathematica-style indexing - starting from 1)
 		 *   @param[in]     col - pixel column (in Mathematica-style indexing - starting from 1)
 		 *   @param[in]     channel - desired channel (in Mathematica-style indexing - starting from 1)
+		 *   @param[in]		newValue - new channel value
 		 *   @throws		LLErrorCode::ImageIndexError - if the specified coordinates are out-of-bound
 		 **/
 		void set(mint slice, mint row, mint col, mint channel, T newValue);

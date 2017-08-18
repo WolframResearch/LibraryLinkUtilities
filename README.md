@@ -153,9 +153,18 @@ and C++ version with _LibraryLink Utilities_:
 	}
 ```
 
-### Limitations with respect to LibraryLink
+### Paclets that currently use _LibraryLink Utilities_
+
+- [PacletTemplate](https://stash.wolfram.com/projects/IMEX/repos/paclettemplate) - this is a model paclet for Import/Export developers
+- [GIFTools](https://stash.wolfram.com/projects/IMEX/repos/giftools)
+- [MediaTools](https://stash.wolfram.com/projects/IMEX/repos/mediatools)
+- [HDF5Tools](https://stash.wolfram.com/projects/IMEX/repos/hdf5tools)
+- [RAWTools](https://stash.wolfram.com/projects/IMEX/repos/rawtools)
+
+## Limitations with respect to LibraryLink
 
 There are some LibraryLink features currently not covered by _LLU_, most notably:
+
 - Sparse Arrays
 - Tensor subsetting: `MTensor_getTensor`
 - Raw Array type conversion: `MRawArray_convertType`
@@ -165,12 +174,6 @@ There are some LibraryLink features currently not covered by _LLU_, most notably
 
 For now LibraryLink does not allow to write generic code that would clean up memory after Tensors, RawArrays, etc. independently of passing mode used ("Automatic", "Shared", ...). See [this suggestion](http://bugs.wolfram.com/show?number=337331) for more details. In consequence, _LLU_ guarantees to correctly handle only those data structures that were created with _LLU_. Structures received as MArguments will not be automatically freed, therefore you may want to use passing modes that do not require clean-up (like "Constant" or Automatic). In case of "Shared" passing, the only guarantee is that `disown()` will be called on destruction of each object that has positive `shareCount()`. Please consult [LibraryLink tutorial](https://reference.wolfram.com/language/LibraryLink/tutorial/InteractionWithMathematica.html#97446640) for more details.
 
-### Paclets that currently use _LibraryLink Utilities_
-
-- [PacletTemplate](https://stash.wolfram.com/projects/IMEX/repos/paclettemplate) - this is a model paclet for Import/Export developers
-- [GIFTools](https://stash.wolfram.com/projects/IMEX/repos/giftools)
-- [MediaTools](https://stash.wolfram.com/projects/IMEX/repos/mediatools)
-- [HDF5Tools](https://stash.wolfram.com/projects/IMEX/repos/hdf5tools)
 
 ## How should you incorporate _LibraryLink Utilities_ into your project?
 
