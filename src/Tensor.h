@@ -16,6 +16,7 @@
 
 #include "LibraryLinkError.h"
 #include "MArray.hpp"
+#include "Utilities.hpp"
 
 namespace LibraryLinkUtils {
 
@@ -44,7 +45,7 @@ namespace LibraryLinkUtils {
 		 *
 		 *   @warning		It is user's responsibility to make sure that length of v fits into mint!
 		 **/
-		template<typename Container>
+		template<typename Container, typename = disable_if_same_or_derived<Tensor, Container>>
 		Tensor(Container&& v);
 
 		/**
@@ -73,10 +74,10 @@ namespace LibraryLinkUtils {
 		 *   @brief         Constructs the Tensor of given shape with all elements initialized to given value
 		 *   @param[in]     init - value of type \b T to initialize all elements of the Tensor
 		 *   @param[in]     dims - container with Tensor dimensions
-		 *   @tparam		Container - any type of container that has member \b value_type and this type is convertible to mint
+		 *   @tparam		Container - any type of container that has member \b value_type and this type is integral
 		 *   @throws		see Tensor<T>::createInternal() and MArray<T>::MArray(Container&&)
 		 **/
-		template<class Container, typename = typename std::enable_if<std::is_convertible<typename Container::value_type, mint>::value>::type>
+		template<class Container, typename = typename std::enable_if_t<std::is_integral<typename std::remove_reference_t<Container>::value_type>::value>>
 		Tensor(T init, Container&& dims);
 
 		/**
@@ -96,7 +97,7 @@ namespace LibraryLinkUtils {
 		 *   @throws		LLErrorCode::TensorNewError - if number of elements in \c v does not match total Tensor size indicated by \c dims
 		 *   @throws		see Tensor<T>::createInternal() and MArray<T>::MArray(Container&&)
 		 **/
-		template<class InputIt, class Container, typename = typename std::enable_if<std::is_convertible<typename Container::value_type, mint>::value>::type>
+		template<class InputIt, class Container, typename = typename std::enable_if_t<std::is_convertible<typename std::remove_reference_t<Container>::value_type, mint>::value>>
 		Tensor(InputIt first, InputIt last, Container&& dims);
 
 		/**
@@ -185,7 +186,8 @@ namespace LibraryLinkUtils {
 		 *   Therefore passing or returning MTensors as "Shared" is discouraged and if you do that you are responsible for managing MTensor memory.
 		 **/
 		void disown() const noexcept {
-			this->libData->MTensor_disown(internalMT);
+			if (internalMT)
+				this->libData->MTensor_disown(internalMT);
 		}
 
 	private:
@@ -259,7 +261,7 @@ namespace LibraryLinkUtils {
 	};
 
 	template<typename T>
-	template<typename Container>
+	template<typename Container, typename>
 	Tensor<T>::Tensor(Container&& v) :
 			Tensor<T>(std::begin(v), std::end(v), { static_cast<mint>(v.size()) }) {
 	}

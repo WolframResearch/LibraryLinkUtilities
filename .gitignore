@@ -1,5 +1,7 @@
 .project
 .cproject
 .settings/
+**/build-local.properties
 docs/html
 docs/latex
+tests/Demo/bin

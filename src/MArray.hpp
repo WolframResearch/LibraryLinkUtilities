@@ -24,6 +24,7 @@
 #include <vector>
 
 #include "LibraryLinkError.h"
+#include "Utilities.hpp"
 
 namespace LibraryLinkUtils {
 
@@ -40,6 +41,7 @@ namespace LibraryLinkUtils {
 	template<typename T>
 	class MArray {
 	public:
+
 		/// Iterator type
 		using iterator = T*;
 
@@ -69,7 +71,11 @@ namespace LibraryLinkUtils {
 		 *	@throws		LLErrorCode::DimensionsError - if \c dims are invalid
 		 *	@throws		LLErrorCode::FunctionError - if any of Wolfram*Library structures was not initialized
 		 **/
-		template<class Container, typename = typename std::enable_if<std::is_convertible<typename Container::value_type, mint>::value>::type>
+		template<
+			class Container,
+			typename = disable_if_same_or_derived<MArray, Container>,
+			typename = typename std::enable_if_t<std::is_convertible<typename std::remove_reference_t<Container>::value_type, mint>::value>
+		>
 		MArray(Container&& dims);
 
 		/**
@@ -351,9 +357,9 @@ namespace LibraryLinkUtils {
 	void MArray<T>::fillOffsets() {
 		offsets.assign(rank(), 1);
 		if (rank() >= 2) {
-			auto dimsIt = dims.crbegin() + 1;
-			for (auto it = offsets.rbegin() + 1; it != offsets.rend(); ++it)
-				*it = *(it - 1) * (*dimsIt++);
+			std::transform(std::rbegin(offsets), std::rend(offsets) - 1, std::crbegin(dims), std::rbegin(offsets) + 1, [](auto off, auto dim) {
+				return off * dim;
+			});
 		}
 	}
 
@@ -373,7 +379,7 @@ namespace LibraryLinkUtils {
 
 	template<typename T>
 	mint MArray<T>::getIndex(const std::vector<mint>& indices) const {
-		if (indices.size() != static_cast<std::make_unsigned<mint>::type>(rank()))
+		if (indices.size() != static_cast<std::make_unsigned_t<mint>>(rank()))
 			indexError();
 		mint flatIndex = 0;
 		auto dimsIt = dims.cbegin();
@@ -397,12 +403,12 @@ namespace LibraryLinkUtils {
 	}
 
 	template<typename T>
-	template<class Container, typename>
+	template<class Container, typename, typename>
 	MArray<T>::MArray(Container&& dimensions) {
 		if (!libData || !raFuns || !imgFuns)
 			initError();
-		depth = checkContainerSize(dimensions);
-		auto dimsOk = std::all_of(std::begin(dimensions), std::end(dimensions), [](typename Container::value_type d) {
+		depth = checkContainerSize(std::forward<Container>(dimensions));
+		auto dimsOk = std::all_of(std::begin(dimensions), std::end(dimensions), [](typename std::remove_reference_t<Container>::value_type d) {
 			return (d > 0) && (d <= std::numeric_limits<mint>::max());
 		});
 		if (!dimsOk)

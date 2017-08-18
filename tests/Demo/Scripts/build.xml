@@ -1,0 +1,53 @@
+<!-- ANT build.xml for DemoTests -->
+
+<project name="DemoTests" default="buildAll" basedir="..">
+
+    <property name="rootdir" value="${basedir}"/>
+    <property name="dist" value="${basedir}/bin"/>
+    <property name="properties" value="scripts/build-local.properties"/>
+    <property name="pacletName" value="DemoTests"/>
+
+
+    <target name="clean">
+        <delete dir="${dist}"/>
+    </target>
+
+    <target name="init">
+        <mkdir dir="${dist}"/>
+    </target>
+
+    <target name="createDirs">
+        <!--
+        Copy main contents
+        -->
+        <copy todir="${dist}">
+            <fileset dir="${rootdir}" includes="${pacletName}/**/*.m"/>
+        </copy>
+        <copy todir="${dist}">
+            <fileset dir="${rootdir}" includes="${pacletName}/Data/*"/>
+        </copy>
+    </target>
+
+    <target name="createZips">
+        <zip destfile="${dist}/${pacletName}.zip">
+            <zipfileset dir="${dist}/${pacletName}" prefix="${pacletName}"/>
+        </zip>
+
+    </target>
+
+    <target name="build" depends="clean,init">
+        <antcall target="createDirs"/>
+        <antcall target="createZips"/>
+    </target>
+
+    <target name="buildAll" depends="clean,init">
+        <antcall target="createDirs"/>
+        <mkdir dir="${dist}/${pacletName}/LibraryResources"/>
+        <ant antfile="Scripts/buildDLLs.xml"
+             target="runBuild">
+            <property name="outputDir" value="${dist}/${pacletName}/LibraryResources"/>
+        </ant>
+        <antcall target="createZips"/>
+    </target>
+
+</project>

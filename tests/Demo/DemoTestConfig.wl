@@ -1,0 +1,1 @@
+$DllDemoDir = FileNameJoin[ {FileNameDrop[ $CurrentFile, -1], "bin", "DemoTests"}];

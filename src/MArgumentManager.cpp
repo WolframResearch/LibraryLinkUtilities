@@ -12,7 +12,6 @@
 #include <algorithm>
 
 #include "MArray.hpp"
-#include "Utilities.hpp"
 
 namespace LibraryLinkUtils {
 
@@ -30,9 +29,9 @@ namespace LibraryLinkUtils {
 
 	}
 
-	MArgumentManager::MArgumentManager(WolframLibraryData ld, mint Argc, MArgument* Args, MArgument& Res) noexcept :
+	MArgumentManager::MArgumentManager(WolframLibraryData ld, mint Argc, MArgument* Args, MArgument& Res) :
 			argc(Argc), args(Args), res(Res), stringArgs(Argc) {
-		libData = ld;
+		setLibraryData(ld);
 	}
 
 	/* Other member functions */
@@ -48,7 +47,7 @@ namespace LibraryLinkUtils {
 	std::string& MArgumentManager::getString(unsigned int index) {
 		char* strArg = MArgument_getUTF8String(getArgs(index));
 		if (!stringArgs.at(index)) {
-			stringArgs[index] = make_unique<std::string>(strArg);
+			stringArgs[index] = std::make_unique<std::string>(strArg);
 			libData->UTF8String_disown(strArg);
 		}
 		return *stringArgs.at(index);
@@ -112,7 +111,7 @@ namespace LibraryLinkUtils {
 		return args[index];
 	}
 
-	void MArgumentManager::setLibraryData(WolframLibraryData ld) {
+	void MArgumentManager::setLibraryData(WolframLibraryData ld) noexcept {
 		libData = ld;
 		MArray<std::int8_t>::setLibraryData(libData);
 		MArray<std::uint8_t>::setLibraryData(libData);
