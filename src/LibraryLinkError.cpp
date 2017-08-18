@@ -75,7 +75,7 @@ namespace LibraryLinkUtils {
 	void ErrorManager::set(std::string errorName, std::string errorData) {
 		auto elem = errors.emplace_hint(insertionHint, std::make_pair(errorName, LibraryLinkError { nextErrorId, errorName, errorData }));
 		if (elem->second.id() != nextErrorId) {
-			//throw errors["ErrorManagerCreateNameError"];
+			throw errors.find("ErrorManagerCreateNameError")->second;
 		}
 		nextErrorId--;
 	}
@@ -106,13 +106,13 @@ namespace LibraryLinkUtils {
 				return err.second;
 			}
 		}
-		throw errors["ErrorManagerThrowIdError"];
+		throw errors.find("ErrorManagerThrowIdError")->second;
 	}
 
 	const LibraryLinkError& ErrorManager::findError(const std::string& errorName) {
 		const auto& exception = errors.find(errorName);
 		if (exception == errors.end()) {
-			throw errors["ErrorManagerThrowNameError"];
+			throw errors.find("ErrorManagerThrowNameError")->second;
 		}
 		return exception->second;
 	}
