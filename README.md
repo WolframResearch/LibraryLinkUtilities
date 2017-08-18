@@ -152,6 +152,19 @@ and C++ version with _LibraryLink Utilities_:
 		return static_cast<int>(err);
 	}
 ```
+
+### Limitations with respect to LibraryLink
+
+There are some LibraryLink features currently not covered by _LLU_, most notably:
+- Sparse Arrays
+- Tensor subsetting: `MTensor_getTensor`
+- Raw Array type conversion: `MRawArray_convertType`
+- Managed Library Expressions
+- Callbacks
+- Wolfram IO Library (asynchronous tasks and Data Store)
+
+For now LibraryLink does not allow to write generic code that would clean up memory after Tensors, RawArrays, etc. independently of passing mode used ("Automatic", "Shared", ...). See [this suggestion](http://bugs.wolfram.com/show?number=337331) for more details. In consequence, _LLU_ guarantees to correctly handle only those data structures that were created with _LLU_. Structures received as MArguments will not be automatically freed, therefore you may want to use passing modes that do not require clean-up (like "Constant" or Automatic). In case of "Shared" passing, the only guarantee is that `disown()` will be called on destruction of each object that has positive `shareCount()`. Please consult [LibraryLink tutorial](https://reference.wolfram.com/language/LibraryLink/tutorial/InteractionWithMathematica.html#97446640) for more details.
+
 ### Paclets that currently use _LibraryLink Utilities_
 
 - [PacletTemplate](https://stash.wolfram.com/projects/IMEX/repos/paclettemplate) - this is a model paclet for Import/Export developers
@@ -183,7 +196,7 @@ Here is a list of commands that will be useful to developers working on Import/E
 
 
 ### Compilation
-After checking out the submodule remember to modify your build script accordingly so that LLU sources also get compiled. Since the source code uses C++14 features, you have to make sure you enabled C++14 support in your compiler. *Visual Studio 2015* or later provides the support by default and in *gcc* or *clang* you may have to add **-std=c++14** flag. 
+After checking out the submodule remember to modify your build script accordingly so that _LLU_ sources also get compiled. Since the source code uses C++14 features, you have to make sure you enabled C++14 support in your compiler. *Visual Studio 2015* or later provides the support by default and in *gcc* or *clang* you may have to add **-std=c++14** flag. 
 
 Minimum required version of *gcc* is 5 and for *clang* it is 3.4.
 
@@ -193,10 +206,6 @@ Doxygen is used to generate documentation for _LibraryLink Utilities_ API. You c
 
 <https://files.wolfram.com/temp-store/rafalc/LibraryLinkUtilities/index.html>
 
-## ToDo
-Here is a list of LLU features that should be implemented, improved or more comprehensively tested:
-
-- Implement creating new Image from data via `Image<T>::createInternal()`
 
 ## Contributors
 
