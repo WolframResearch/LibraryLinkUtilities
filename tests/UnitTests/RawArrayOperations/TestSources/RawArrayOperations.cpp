@@ -26,7 +26,7 @@ LIBRARY_LINK_FUNCTION(echoRawArray) {
 			mngr.setRawArray(rarray2);
 		});
 	}
-	catch (LibraryLinkError<LLErrorCode>& e) {
+	catch (LibraryLinkError& e) {
 		err = e.which();
 		std::cout << e.what() << std::endl;
 	}
@@ -47,7 +47,7 @@ LIBRARY_LINK_FUNCTION(getRawArrayLength) {
 			mngr.setInteger(rarray.size());
 		});
 	}
-	catch (LibraryLinkError<LLErrorCode>& e) {
+	catch (LibraryLinkError& e) {
 		err = e.which();
 	}
 	catch (std::exception& e) {
@@ -64,7 +64,7 @@ LIBRARY_LINK_FUNCTION(getRawArrayRank) {
 			mngr.setInteger(rarray.rank());
 		});
 	}
-	catch (LibraryLinkError<LLErrorCode>& e) {
+	catch (LibraryLinkError& e) {
 		err = e.which();
 	}
 	catch (std::exception& e) {
@@ -81,7 +81,7 @@ LIBRARY_LINK_FUNCTION(newRawArray) {
 		RawArray<float> ra(0., { 3, 3 });
 		mngr.setRawArray(ra);
 	}
-	catch (LibraryLinkError<LLErrorCode>& e) {
+	catch (LibraryLinkError& e) {
 		err = e.which();
 	}
 	catch (std::exception& e) {
@@ -100,7 +100,7 @@ LIBRARY_LINK_FUNCTION(cloneRawArray) {
 			mngr.setRawArray(rarray2);
 		});
 	}
-	catch (LibraryLinkError<LLErrorCode>& e) {
+	catch (LibraryLinkError& e) {
 		err = e.which();
 	}
 	catch (std::exception& e) {
@@ -138,7 +138,7 @@ EXTERN_C DLLEXPORT int getSharedRawArray(WolframLibraryData libData, mint Argc, 
 struct ZeroReal64 {
 	template<typename T>
 	void operator()(RawArray<T>, MArgumentManager&) {
-		throw LibraryLinkError<LLErrorCode>(LLErrorCode::FunctionError);
+		ErrorManager::throwException(LLErrorCode::FunctionError);
 	}
 
 	void operator()(RawArray<double>& ra, MArgumentManager& mngr) {
@@ -154,7 +154,7 @@ EXTERN_C DLLEXPORT int rawZeroData(WolframLibraryData libData, mint Argc, MArgum
 		MArgumentManager mngr(Argc, Args, Res);
 		mngr.operateOnRawArray<ZeroReal64>(0, mngr);
 	}
-	catch (LibraryLinkError<LLErrorCode>& e) {
+	catch (LibraryLinkError& e) {
 		err = e.which();
 	}
 	catch (std::exception& e) {

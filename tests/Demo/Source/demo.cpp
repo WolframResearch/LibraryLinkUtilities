@@ -2,7 +2,7 @@
 #include "WolframLibrary.h"
 
 #include "MArgumentManager.h"
-#include "LibraryLinkError.hpp"
+#include "LibraryLinkError.h"
 #include "LibraryLinkFunctionMacro.h"
 
 using namespace LibraryLinkUtils;
@@ -31,7 +31,7 @@ EXTERN_C DLLEXPORT int demo_I_I(WolframLibraryData libData, mint Argc, MArgument
 		auto i = mngr.getInteger<mint>(0);
 		mngr.setInteger(i + 1);
 	}
-	catch (LibraryLinkError<LLErrorCode>& e) {
+	catch (LibraryLinkError& e) {
 		err = e.which();
 	}
 	catch (std::exception& e) {
@@ -48,7 +48,7 @@ EXTERN_C DLLEXPORT int demo1_I_I(WolframLibraryData libData, mint Argc, MArgumen
 		auto i = mngr.getInteger<mint>(0);
 		mngr.setInteger(i + 1);
 	}
-	catch (LibraryLinkError<LLErrorCode>& e) {
+	catch (LibraryLinkError& e) {
 		err = e.which();
 	}
 	catch (std::exception& e) {
@@ -65,7 +65,7 @@ EXTERN_C DLLEXPORT int demo_R_R(WolframLibraryData libData, mint Argc, MArgument
 		auto r1 = mngr.getReal(0);
 		mngr.setReal(r1 * r1);
 	}
-	catch (LibraryLinkError<LLErrorCode>& e) {
+	catch (LibraryLinkError& e) {
 		err = e.which();
 	}
 	catch (std::exception& e) {
@@ -82,7 +82,7 @@ EXTERN_C DLLEXPORT int demo1_R_R(WolframLibraryData libData, mint Argc, MArgumen
 		auto r1 = mngr.getReal(0);
 		mngr.setReal(r1 * r1);
 	}
-	catch (LibraryLinkError<LLErrorCode>& e) {
+	catch (LibraryLinkError& e) {
 		err = e.which();
 	}
 	catch (std::exception& e) {
@@ -104,7 +104,7 @@ EXTERN_C DLLEXPORT int demo_IR_R(WolframLibraryData libData, mint Argc, MArgumen
 		}
 		mngr.setReal(r1);
 	}
-	catch (LibraryLinkError<LLErrorCode>& e) {
+	catch (LibraryLinkError& e) {
 		err = e.which();
 	}
 	catch (std::exception& e) {
@@ -126,7 +126,7 @@ EXTERN_C DLLEXPORT int demo1_IR_R(WolframLibraryData libData, mint Argc, MArgume
 		}
 		mngr.setReal(r1);
 	}
-	catch (LibraryLinkError<LLErrorCode>& e) {
+	catch (LibraryLinkError& e) {
 		err = e.which();
 	}
 	catch (std::exception& e) {
@@ -144,7 +144,7 @@ EXTERN_C DLLEXPORT int demo_TI_R(WolframLibraryData libData, mint Argc, MArgumen
 		auto i0 = mngr.getInteger<mint>(1) - 1;
 		mngr.setReal(t0[i0]);
 	}
-	catch (LibraryLinkError<LLErrorCode>& e) {
+	catch (LibraryLinkError& e) {
 		err = e.which();
 	}
 	catch (std::exception& e) {
@@ -164,7 +164,7 @@ EXTERN_C DLLEXPORT int demo1_TI_R(WolframLibraryData libData, mint Argc, MArgume
 		auto i0 = mngr.getInteger<mint>(1) - 1;
 		mngr.setReal(t0[i0]);
 	}
-	catch (LibraryLinkError<LLErrorCode>& e) {
+	catch (LibraryLinkError& e) {
 		err = e.which();
 	}
 	catch (std::exception& e) {
@@ -186,7 +186,7 @@ EXTERN_C DLLEXPORT int demo2_TI_R(WolframLibraryData libData, mint Argc, MArgume
 		auto i0 = mngr.getInteger<mint>(1) - 1;
 		mngr.setReal(t0[i0]);
 	}
-	catch (LibraryLinkError<LLErrorCode>& e) {
+	catch (LibraryLinkError& e) {
 		err = e.which();
 	}
 	catch (std::exception& e) {
@@ -210,7 +210,7 @@ EXTERN_C DLLEXPORT int demo_I_T(WolframLibraryData libData, mint Argc, MArgument
 			t0[i - 1] = 2 * i;
 		mngr.setTensor(t0);
 	}
-	catch (LibraryLinkError<LLErrorCode>& e) {
+	catch (LibraryLinkError& e) {
 		err = e.which();
 	}
 	catch (std::exception& e) {
@@ -235,7 +235,7 @@ EXTERN_C DLLEXPORT int demo_TT_T(WolframLibraryData libData, mint Argc, MArgumen
 
 		mngr.setTensor(t2);
 	}
-	catch (LibraryLinkError<LLErrorCode>& e) {
+	catch (LibraryLinkError& e) {
 		err = e.which();
 	}
 	catch (std::exception& e) {
@@ -274,7 +274,7 @@ EXTERN_C DLLEXPORT int demo_TTT_T(WolframLibraryData libData, mint Argc, MArgume
 
 		mngr.setTensor(T_res);
 	}
-	catch (LibraryLinkError<LLErrorCode>& e) {
+	catch (LibraryLinkError& e) {
 		err = e.which();
 	}
 	catch (std::exception& e) {
@@ -316,7 +316,7 @@ LIBRARY_LINK_FUNCTION(demo_T_T) {
 			mngr.setTensor(T_res);
 		});
 	}
-	catch (LibraryLinkError<LLErrorCode>& e) {
+	catch (LibraryLinkError& e) {
 		err = e.which();
 	}
 	catch (std::exception& e) {
@@ -358,7 +358,7 @@ LIBRARY_LINK_FUNCTION(demo1_T_T) {
 			mngr.setTensor(T_res);
 		});
 	}
-	catch (LibraryLinkError<LLErrorCode>& e) {
+	catch (LibraryLinkError& e) {
 		err = e.which();
 	}
 	catch (std::exception& e) {
@@ -384,7 +384,7 @@ EXTERN_C DLLEXPORT int demo1_I_T(WolframLibraryData libData, mint Argc, MArgumen
 			elem = 2 * k++;
 		mngr.setTensor(T0);
 	}
-	catch (LibraryLinkError<LLErrorCode>& e) {
+	catch (LibraryLinkError& e) {
 		err = e.which();
 	}
 	catch (std::exception& e) {
@@ -402,7 +402,7 @@ EXTERN_C DLLEXPORT int demo_T_I(WolframLibraryData libData, mint Argc, MArgument
 		auto i0 = mngr.getInteger<mint>(1);
 		mngr.setInteger(t0[i0 - 1]);
 	}
-	catch (LibraryLinkError<LLErrorCode>& e) {
+	catch (LibraryLinkError& e) {
 		err = e.which();
 	}
 	catch (std::exception& e) {
@@ -417,7 +417,7 @@ EXTERN_C DLLEXPORT int demo_MintSize(WolframLibraryData libData, mint Argc, MArg
 		MArgumentManager mngr(Argc, Args, Res);
 		mngr.setInteger(sizeof(mint));
 	}
-	catch (LibraryLinkError<LLErrorCode>& e) {
+	catch (LibraryLinkError& e) {
 		err = e.which();
 	}
 	catch (std::exception& e) {
@@ -436,7 +436,7 @@ EXTERN_C DLLEXPORT int demo_TII_I(WolframLibraryData libData, mint Argc, MArgume
 		auto i1 = mngr.getInteger<mint>(2) - 1;
 		mngr.setInteger(t0[ { i0, i1 }]);
 	}
-	catch (LibraryLinkError<LLErrorCode>& e) {
+	catch (LibraryLinkError& e) {
 		err = e.which();
 	}
 	catch (std::exception& e) {
@@ -457,7 +457,7 @@ EXTERN_C DLLEXPORT int demo_TIII_I(WolframLibraryData libData, mint Argc, MArgum
 		t0[ { i0, i1 }] = value;
 		mngr.setInteger(t0[ { i0, i1 }]);
 	}
-	catch (LibraryLinkError<LLErrorCode>& e) {
+	catch (LibraryLinkError& e) {
 		err = e.which();
 	}
 	catch (std::exception& e) {
@@ -476,7 +476,7 @@ EXTERN_C DLLEXPORT int demo_TII_R(WolframLibraryData libData, mint Argc, MArgume
 		auto i1 = mngr.getInteger<mint>(2) - 1;
 		mngr.setReal(t0[ { i0, i1 }]);
 	}
-	catch (LibraryLinkError<LLErrorCode>& e) {
+	catch (LibraryLinkError& e) {
 		err = e.which();
 	}
 	catch (std::exception& e) {
@@ -497,7 +497,7 @@ EXTERN_C DLLEXPORT int demo_TIIR_R(WolframLibraryData libData, mint Argc, MArgum
 		t0[ { i0, i1 }] = value;
 		mngr.setReal(t0[ { i0, i1 }]);
 	}
-	catch (LibraryLinkError<LLErrorCode>& e) {
+	catch (LibraryLinkError& e) {
 		err = e.which();
 	}
 	catch (std::exception& e) {

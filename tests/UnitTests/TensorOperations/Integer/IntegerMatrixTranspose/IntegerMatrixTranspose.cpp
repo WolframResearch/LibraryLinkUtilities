@@ -19,7 +19,7 @@ EXTERN_C DLLEXPORT int IntegerMatrixTranspose(WolframLibraryData libData, mint A
 		}
 		mngr.setTensor(out);
 	}
-	catch (LibraryLinkError<LLErrorCode>& e) {
+	catch (LibraryLinkError& e) {
 		err = e.which();
 	}
 	catch (std::exception& e) {

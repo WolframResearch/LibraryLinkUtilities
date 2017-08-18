@@ -6,7 +6,7 @@
 #include "WolframLibrary.h"
 
 #include "MArgumentManager.h"
-#include "LibraryLinkError.hpp"
+#include "LibraryLinkError.h"
 #include "LibraryLinkFunctionMacro.h"
 
 using namespace LibraryLinkUtils;
@@ -41,7 +41,7 @@ LIBRARY_LINK_FUNCTION(loadArray) {
 			tensor<T> = std::move(t);
 		});
 	}
-	catch (LibraryLinkError<LLErrorCode>& e) {
+	catch (LibraryLinkError& e) {
 		err = e.which();
 	}
 	catch (std::exception& e) {
@@ -57,7 +57,7 @@ EXTERN_C DLLEXPORT int getElementShared(WolframLibraryData libData, mint Argc, M
 		auto pos = mngr.getInteger<mint>(0);
 		mngr.setReal(tensor<double>[pos]);
 	}
-	catch (LibraryLinkError<LLErrorCode>& e) {
+	catch (LibraryLinkError& e) {
 		err = e.which();
 	}
 	catch (std::exception& e) {
@@ -74,7 +74,7 @@ EXTERN_C DLLEXPORT int getElementNonShared(WolframLibraryData libData, mint Argc
 		auto T0 = mngr.getTensor<double>(1);
 		mngr.setReal(T0[pos]);
 	}
-	catch (LibraryLinkError<LLErrorCode>& e) {
+	catch (LibraryLinkError& e) {
 		err = e.which();
 	}
 	catch (std::exception& e) {

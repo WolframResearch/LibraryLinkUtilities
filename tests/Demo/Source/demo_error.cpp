@@ -34,7 +34,7 @@ EXTERN_C DLLEXPORT int errordemo1(WolframLibraryData libData, mint Argc, MArgume
 
 		mngr.setReal(T0[I0 - 1]);
 	}
-	catch (LibraryLinkError<LLErrorCode>& e) {
+	catch (LibraryLinkError& e) {
 		err = e.which();
 	}
 	return static_cast<int>(err);
@@ -49,7 +49,7 @@ EXTERN_C DLLEXPORT int errordemo2(WolframLibraryData libData, mint Argc, MArgume
 
 		mngr.setReal(T0[I0 - 1]);
 	}
-	catch (LibraryLinkError<LLErrorCode>& e) {
+	catch (LibraryLinkError& e) {
 		std::cout << e.what() << std::endl;
 		mngr.setReal(0.);
 	}
@@ -67,7 +67,7 @@ EXTERN_C DLLEXPORT int errordemo3(WolframLibraryData libData, mint Argc, MArgume
 
 		mngr.setReal(T0[I0 - 1]);
 	}
-	catch (LibraryLinkError<LLErrorCode>& e) {
+	catch (LibraryLinkError& e) {
 		std::cout << e.what() << std::endl;
 		err = e.which();
 	}
@@ -85,18 +85,18 @@ EXTERN_C DLLEXPORT int errordemo4(WolframLibraryData libData, mint Argc, MArgume
 
 		if (T0.rank() != 1) {
 			libData->Message("rankerror");
-			throw LibraryLinkError<LLErrorCode>(LLErrorCode::RankError);
+			ErrorManager::throwException(LLErrorCode::RankError);
 		}
 
 		auto& dims = T0.dimensions();
 		if ((I0 < 1) || (I0 > dims[0])) {
 			libData->Message("outofrange");
-			throw LibraryLinkError<LLErrorCode>(LLErrorCode::DimensionsError);
+			ErrorManager::throwException(LLErrorCode::DimensionsError);
 		}
 
 		mngr.setReal(T0[I0 - 1]);
 	}
-	catch (LibraryLinkError<LLErrorCode>& e) {
+	catch (LibraryLinkError& e) {
 		err = e.which();
 	}
 	return static_cast<int>(err);
@@ -148,7 +148,7 @@ EXTERN_C DLLEXPORT int errordemo6(WolframLibraryData libData, mint Argc, MArgume
 		}
 		T[0] = i;
 	}
-	catch (LibraryLinkError<LLErrorCode>& e) {
+	catch (LibraryLinkError& e) {
 		err = e.which();
 	}
 	catch (std::exception& e) {

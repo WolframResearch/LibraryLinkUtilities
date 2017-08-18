@@ -10,7 +10,7 @@
 #include "WolframLibrary.h"
 
 #include "MArgumentManager.h"
-#include "LibraryLinkError.hpp"
+#include "LibraryLinkError.h"
 
 using namespace LibraryLinkUtils;
 
@@ -49,7 +49,7 @@ EXTERN_C DLLEXPORT int countSubstring(WolframLibraryData libData, mint Argc, MAr
 		}
 		mngr.setInteger(c);
 	}
-	catch (LibraryLinkError<LLErrorCode>& e) {
+	catch (LibraryLinkError& e) {
 		err = e.which();
 	}
 	catch (std::exception& e) {
@@ -81,7 +81,7 @@ EXTERN_C DLLEXPORT int encodeString(WolframLibraryData libData, mint Argc, MArgu
 		}
 		mngr.setString(s);
 	}
-	catch (LibraryLinkError<LLErrorCode>& e) {
+	catch (LibraryLinkError& e) {
 		err = e.which();
 	}
 	catch (std::exception& e) {
@@ -109,7 +109,7 @@ EXTERN_C DLLEXPORT int reverseString(WolframLibraryData libData, mint Argc, MArg
 		}
 		mngr.setString(s);
 	}
-	catch (LibraryLinkError<LLErrorCode>& e) {
+	catch (LibraryLinkError& e) {
 		err = e.which();
 	}
 	catch (std::exception& e) {

@@ -3,7 +3,7 @@
 #include "WolframSparseLibrary.h"
 
 #include "MArgumentManager.h"
-#include "LibraryLinkError.hpp"
+#include "LibraryLinkError.h"
 
 using namespace LibraryLinkUtils;
 
@@ -62,13 +62,13 @@ EXTERN_C DLLEXPORT int sparse_properties(WolframLibraryData libData, mint Argc, 
 			err = LIBRARY_FUNCTION_ERROR;
 		}
 		if (err)
-			throw LibraryLinkError<LLErrorCode>(LLErrorCode::FunctionError);
+			ErrorManager::throwException(LLErrorCode::FunctionError);
 		if (!Tres)
 			libData->MTensor_clone(*T, &Tres);
 
 		MArgument_setMTensor(Res, Tres);
 	}
-	catch (LibraryLinkError<LLErrorCode>& e) {
+	catch (LibraryLinkError& e) {
 		error = e.which();
 	}
 	catch (std::exception& e) {
@@ -99,7 +99,7 @@ EXTERN_C DLLEXPORT int sparse_modify_values(WolframLibraryData libData, mint Arg
 		if (!err)
 			MArgument_setMSparseArray(Res, Sout);
 	}
-	catch (LibraryLinkError<LLErrorCode>& e) {
+	catch (LibraryLinkError& e) {
 		err = e.which();
 	}
 	catch (std::exception& e) {

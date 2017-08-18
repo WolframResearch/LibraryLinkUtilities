@@ -101,6 +101,13 @@ namespace LibraryLinkUtils {
 		}
 
 		/**
+		 *   @brief Alias for id() to preserve backwards compatibility
+		 **/
+		IdType which() const noexcept {
+			return errorId;
+		}
+
+		/**
 		 *   @brief Get the value of error code
 		 **/
 		const std::string& name() const noexcept {

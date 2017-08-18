@@ -11,7 +11,7 @@
 
 #include "MArgumentManager.h"
 #include "Image.h"
-#include "LibraryLinkError.hpp"
+#include "LibraryLinkError.h"
 #include "LibraryLinkFunctionMacro.h"
 
 using namespace LibraryLinkUtils;
@@ -74,7 +74,7 @@ LIBRARY_LINK_FUNCTION(color_negate) {
 		});
 
 	}
-	catch (LibraryLinkError<LLErrorCode>& e) {
+	catch (LibraryLinkError& e) {
 		err = e.which();
 	}
 	catch (std::exception& e) {
@@ -114,10 +114,10 @@ struct RGBImageToGrayscale {
 	template<typename T>
 	void operator()(Image<T> imageIn, MArgumentManager& mngr) {
 		if (imageIn.colorspace() != MImage_CS_RGB)
-			throw LibraryLinkError<LLErrorCode>(LLErrorCode::FunctionError);
+			ErrorManager::throwException(LLErrorCode::FunctionError);
 		/* This function accepts only 2D images, but can be easily extended to work with Image3D.*/
 		if (imageIn.is3D())
-			throw LibraryLinkError<LLErrorCode>(LLErrorCode::FunctionError);
+			ErrorManager::throwException(LLErrorCode::FunctionError);
 
 		auto rows = imageIn.rows();
 		auto columns = imageIn.columns();
@@ -131,7 +131,7 @@ struct RGBImageToGrayscale {
 
 template<>
 inline void RGBImageToGrayscale::operator()(Image<std::int8_t>, MArgumentManager&) {
-	throw LibraryLinkError<LLErrorCode>(LLErrorCode::FunctionError);
+	ErrorManager::throwException(LLErrorCode::FunctionError);
 }
 
 /* Convert interleaved RGB image to grayscale */
@@ -141,7 +141,7 @@ EXTERN_C DLLEXPORT int rgb_to_gray(WolframLibraryData libData, mint Argc, MArgum
 		MArgumentManager mngr(Argc, Args, res);
 		mngr.operateOnImage<RGBImageToGrayscale>(0, mngr);
 	}
-	catch (LibraryLinkError<LLErrorCode>& e) {
+	catch (LibraryLinkError& e) {
 		err = e.which();
 	}
 	catch (std::exception& e) {
@@ -154,10 +154,10 @@ struct RGBHistogramEqualization {
 	template<typename T>
 	void operator()(Image<T> imageIn, MArgumentManager& mngr) {
 		if (imageIn.colorspace() != MImage_CS_RGB)
-			throw LibraryLinkError<LLErrorCode>(LLErrorCode::FunctionError);
+			ErrorManager::throwException(LLErrorCode::FunctionError);
 		/* This function accepts only 2D images, but can be easily extended to work with Image3D.*/
 		if (imageIn.is3D())
-			throw LibraryLinkError<LLErrorCode>(LLErrorCode::FunctionError);
+			ErrorManager::throwException(LLErrorCode::FunctionError);
 
 		auto rows = imageIn.rows();
 		auto columns = imageIn.columns();
@@ -194,7 +194,7 @@ struct RGBHistogramEqualization {
 
 template<>
 inline void RGBHistogramEqualization::operator()(Image<std::int8_t>, MArgumentManager&) {
-	throw LibraryLinkError<LLErrorCode>(LLErrorCode::FunctionError);
+	ErrorManager::throwException(LLErrorCode::FunctionError);
 }
 
 EXTERN_C DLLEXPORT int rgbHistogramEqualization(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument res) {
@@ -203,7 +203,7 @@ EXTERN_C DLLEXPORT int rgbHistogramEqualization(WolframLibraryData libData, mint
 		MArgumentManager mngr(Argc, Args, res);
 		mngr.operateOnImage<RGBHistogramEqualization>(0, mngr);
 	}
-	catch (LibraryLinkError<LLErrorCode>& e) {
+	catch (LibraryLinkError& e) {
 		err = e.which();
 	}
 	catch (std::exception& e) {
@@ -252,7 +252,7 @@ EXTERN_C DLLEXPORT int Upsample(WolframLibraryData libData, mint Argc, MArgument
 		MArgumentManager mngr(Argc, Args, Res);
 		mngr.operateOnImage<iUpsample>(0, mngr);
 	}
-	catch (LibraryLinkError<LLErrorCode>& e) {
+	catch (LibraryLinkError& e) {
 		err = e.which();
 	}
 	catch (std::exception& e) {
@@ -351,10 +351,10 @@ EXTERN_C DLLEXPORT int reinhard_global(WolframLibraryData libData, mint Argc, MA
 
 		auto imageIn = mngr.getImage<raw_t_real32>(0);
 		if (imageIn.colorspace() != MImage_CS_RGB)
-			throw LibraryLinkError<LLErrorCode>(LLErrorCode::FunctionError);
+			ErrorManager::throwException(LLErrorCode::FunctionError);
 		/* This function accepts only 2D images, but can be easily extended to work with Image3D.*/
 		if (imageIn.is3D())
-			throw LibraryLinkError<LLErrorCode>(LLErrorCode::FunctionError);
+			ErrorManager::throwException(LLErrorCode::FunctionError);
 
 		auto height = imageIn.rows();
 		auto width = imageIn.columns();
@@ -366,7 +366,7 @@ EXTERN_C DLLEXPORT int reinhard_global(WolframLibraryData libData, mint Argc, MA
 
 		mngr.setImage(imageOut);
 	}
-	catch (LibraryLinkError<LLErrorCode>& e) {
+	catch (LibraryLinkError& e) {
 		err = e.which();
 	}
 	catch (std::exception& e) {
@@ -639,10 +639,10 @@ EXTERN_C DLLEXPORT int reinhard_local(WolframLibraryData libData, mint Argc, MAr
 
 		auto imageIn = mngr.getImage<raw_t_real32>(0);
 		if (imageIn.colorspace() != MImage_CS_RGB)
-			throw LibraryLinkError<LLErrorCode>(LLErrorCode::FunctionError);
+			ErrorManager::throwException(LLErrorCode::FunctionError);
 		/* This function accepts only 2D images, but can be easily extended to work with Image3D.*/
 		if (imageIn.is3D())
-			throw LibraryLinkError<LLErrorCode>(LLErrorCode::FunctionError);
+			ErrorManager::throwException(LLErrorCode::FunctionError);
 
 		auto height = imageIn.rows();
 		auto width = imageIn.columns();
@@ -654,7 +654,7 @@ EXTERN_C DLLEXPORT int reinhard_local(WolframLibraryData libData, mint Argc, MAr
 
 		mngr.setImage(imageOut);
 	}
-	catch (LibraryLinkError<LLErrorCode>& e) {
+	catch (LibraryLinkError& e) {
 		err = e.which();
 	}
 	catch (std::exception& e) {
@@ -871,10 +871,10 @@ EXTERN_C DLLEXPORT int sepia(WolframLibraryData libData, mint Argc, MArgument *A
 
 		auto imageIn = mngr.getImage<raw_t_real32>(0);
 		if (imageIn.colorspace() != MImage_CS_RGB)
-			throw LibraryLinkError<LLErrorCode>(LLErrorCode::FunctionError);
+			ErrorManager::throwException(LLErrorCode::FunctionError);
 		/* This function accepts only 2D images, but can be easily extended to work with Image3D.*/
 		if (imageIn.is3D())
-			throw LibraryLinkError<LLErrorCode>(LLErrorCode::FunctionError);
+			ErrorManager::throwException(LLErrorCode::FunctionError);
 
 		auto height = imageIn.rows();
 		auto width = imageIn.columns();
@@ -886,7 +886,7 @@ EXTERN_C DLLEXPORT int sepia(WolframLibraryData libData, mint Argc, MArgument *A
 
 		mngr.setImage(imageOut);
 	}
-	catch (LibraryLinkError<LLErrorCode>& e) {
+	catch (LibraryLinkError& e) {
 		err = e.which();
 	}
 	catch (std::exception& e) {
@@ -979,10 +979,10 @@ EXTERN_C DLLEXPORT int lomography(WolframLibraryData libData, mint Argc, MArgume
 
 		auto imageIn = mngr.getImage<raw_t_real32>(0);
 		if (imageIn.colorspace() != MImage_CS_RGB)
-			throw LibraryLinkError<LLErrorCode>(LLErrorCode::FunctionError);
+			ErrorManager::throwException(LLErrorCode::FunctionError);
 		/* This function accepts only 2D images, but can be easily extended to work with Image3D.*/
 		if (imageIn.is3D())
-			throw LibraryLinkError<LLErrorCode>(LLErrorCode::FunctionError);
+			ErrorManager::throwException(LLErrorCode::FunctionError);
 
 		auto height = imageIn.rows();
 		auto width = imageIn.columns();
@@ -994,7 +994,7 @@ EXTERN_C DLLEXPORT int lomography(WolframLibraryData libData, mint Argc, MArgume
 
 		mngr.setImage(imageOut);
 	}
-	catch (LibraryLinkError<LLErrorCode>& e) {
+	catch (LibraryLinkError& e) {
 		err = e.which();
 	}
 	catch (std::exception& e) {

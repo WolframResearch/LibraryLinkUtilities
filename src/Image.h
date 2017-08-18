@@ -376,7 +376,7 @@ namespace LibraryLinkUtils {
 	Image<T>::Image(const Image<T>& i2) : MArray<T>(i2) {
 		allowSlices = i2.allowSlices;
 		if (this->imgFuns->MImage_clone(i2.internalMI, &this->internalMI)) {
-			throw LibraryLinkError(LLErrorCode::ImageCloneError);
+			ErrorManager::throwException(LLErrorCode::ImageCloneError);
 		}
 		this->arrayOwnerQ = true;
 	}
@@ -394,7 +394,7 @@ namespace LibraryLinkUtils {
 		MArray<T>::operator=(i2);
 		this->freeInternal();
 		if (this->imgFuns->MImage_clone(i2.internalMI, &this->internalMI)) {
-			throw LibraryLinkError(LLErrorCode::ImageCloneError);
+			ErrorManager::throwException(LLErrorCode::ImageCloneError);
 		}
 		this->arrayOwnerQ = true;
 	}

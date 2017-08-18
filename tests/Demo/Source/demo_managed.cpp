@@ -41,14 +41,14 @@ EXTERN_C DLLEXPORT int setInstanceState(WolframLibraryData libData, mint Argc, M
 		auto T = mngr.getTensor<mint>(1);
 
 		if (T.rank() != 1)
-			throw LibraryLinkError<LLErrorCode>(LLErrorCode::RankError);
+			ErrorManager::throwException(LLErrorCode::RankError);
 		if (T.dimension(0) != 4)
-			throw LibraryLinkError<LLErrorCode>(LLErrorCode::DimensionsError);
+			ErrorManager::throwException(LLErrorCode::DimensionsError);
 
 		map[id] = std::make_unique<Tensor<mint>>(T);
 
 	}
-	catch (LibraryLinkError<LLErrorCode>& e) {
+	catch (LibraryLinkError& e) {
 		err = e.which();
 	}
 	catch (std::exception& e) {
@@ -69,7 +69,7 @@ EXTERN_C DLLEXPORT int getInstanceState(WolframLibraryData libData, mint Argc, M
 		mngr.setTensor(Tcopy);
 
 	}
-	catch (LibraryLinkError<LLErrorCode>& e) {
+	catch (LibraryLinkError& e) {
 		err = e.which();
 	}
 	catch (std::exception& e) {
@@ -87,7 +87,7 @@ EXTERN_C DLLEXPORT int generateFromInstance(WolframLibraryData libData, mint Arg
 		auto* T = map.at(id).get();
 		auto* p = T->data();
 		if (!p)
-			throw LibraryLinkError<LLErrorCode>(LLErrorCode::FunctionError);
+			ErrorManager::throwException(LLErrorCode::FunctionError);
 
 		auto a = p[A_];
 		auto c = p[C_];
@@ -96,7 +96,7 @@ EXTERN_C DLLEXPORT int generateFromInstance(WolframLibraryData libData, mint Arg
 
 		auto Tdims = mngr.getTensor<mint>(1);
 		if (Tdims.rank() != 1) {
-			throw LibraryLinkError<LLErrorCode>(LLErrorCode::TypeError);
+			ErrorManager::throwException(LLErrorCode::TypeError);
 		}
 
 		Tensor<double> Tres(0., std::move(Tdims));
@@ -109,7 +109,7 @@ EXTERN_C DLLEXPORT int generateFromInstance(WolframLibraryData libData, mint Arg
 
 		mngr.setTensor(Tres);
 	}
-	catch (LibraryLinkError<LLErrorCode>& e) {
+	catch (LibraryLinkError& e) {
 		err = e.which();
 	}
 	catch (std::exception& e) {
@@ -133,7 +133,7 @@ EXTERN_C DLLEXPORT int getAllInstanceIDs(WolframLibraryData libData, mint Argc, 
 		Tensor<mint> Tres(keys);
 		mngr.setTensor(Tres);
 	}
-	catch (LibraryLinkError<LLErrorCode>& e) {
+	catch (LibraryLinkError& e) {
 		err = e.which();
 	}
 	catch (std::exception& e) {

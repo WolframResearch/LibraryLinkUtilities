@@ -10,7 +10,7 @@
 
 #include "MArgumentManager.h"
 #include "Tensor.h"
-#include "LibraryLinkError.hpp"
+#include "LibraryLinkError.h"
 #include "LibraryLinkFunctionMacro.h"
 
 using namespace LibraryLinkUtils;
@@ -66,7 +66,7 @@ EXTERN_C DLLEXPORT int getElementVector(WolframLibraryData libData, mint Argc, M
 		auto pos = mngr.getInteger<mint>(0);
 		mngr.setReal(tensor<double>[pos - 1]);
 	}
-	catch (LibraryLinkError<LLErrorCode>& e) {
+	catch (LibraryLinkError& e) {
 		err = e.which();
 	}
 	catch (std::exception& e) {
@@ -97,7 +97,7 @@ EXTERN_C DLLEXPORT int getElement(WolframLibraryData libData, mint Argc, MArgume
 		auto pos2 = mngr.getInteger<mint>(1) - 1;
 		mngr.setReal(tensor<double>[{pos1, pos2}]);
 	}
-	catch (LibraryLinkError<LLErrorCode>& e) {
+	catch (LibraryLinkError& e) {
 		err = e.which();
 	}
 	catch (std::exception& e) {

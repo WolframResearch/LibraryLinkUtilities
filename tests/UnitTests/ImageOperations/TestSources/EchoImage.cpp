@@ -1,7 +1,7 @@
 #include "WolframLibrary.h"
 #include "MArgumentManager.h"
 #include "Image.h"
-#include "LibraryLinkError.hpp"
+#include "LibraryLinkError.h"
 #include "LibraryLinkFunctionMacro.h"
 
 #include <type_traits>
@@ -17,7 +17,7 @@ LIBRARY_LINK_FUNCTION(EchoImage1) {
 			mngr.setImage(out);
 		});
 	}
-	catch (LibraryLinkError<LLErrorCode>& e) {
+	catch (LibraryLinkError& e) {
 		err = e.which();
 	}
 	catch (std::exception& e) {
@@ -56,7 +56,7 @@ LIBRARY_LINK_FUNCTION(EchoImage2) {
 			mngr.setImage(out);
 		});
 	}
-	catch (LibraryLinkError<LLErrorCode>& e) {
+	catch (LibraryLinkError& e) {
 		err = e.which();
 	}
 	catch (std::exception& e) {
