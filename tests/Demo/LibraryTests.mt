@@ -664,6 +664,53 @@ Test[
 	TestID->"DLLTests-20090211-K7N9I6"
 ]
 
+Test[
+	Head[customError = LibraryFunctionLoad[edll, "customError", {Integer}, Real]]
+	,
+	LibraryFunction
+	,
+	TestID->"LibraryTests-20170818-B3D3Q1"
+]
+
+Test[
+	customError[42]
+	,
+	LibraryFunctionError["LIBRARY_USER_ERROR", -1]
+	,
+	{LibraryFunction::rterr}
+	,
+	TestID->"LibraryTests-20170818-O3S6S4"
+]
+
+Test[
+	customError[-42]
+	,
+	LibraryFunctionError["LIBRARY_USER_ERROR", -152] (* ErrorManagerThrowNameError *)
+	,
+	{LibraryFunction::rterr}
+	,
+	TestID->"LibraryTests-20170818-D4D3N0"
+]
+
+(* Last two examples in this section will make more sense as soon as we start extracting error descriptions from C++ code *)
+Test[
+	Head[nonASCIIError = LibraryFunctionLoad[edll, "nonASCIIError", {Integer}, Real]]
+	,
+	LibraryFunction
+	,
+	TestID->"LibraryTests-20170818-K0N6G3"
+]
+
+Test[
+	nonASCIIError[42]
+	,
+	LibraryFunctionError["LIBRARY_USER_ERROR", -2]
+	,
+	{LibraryFunction::rterr}
+	,
+	TestID->"LibraryTests-20170818-E6A4U8"
+]
+
 (*$SaveMemoryLimit = $TestMemoryLimit;
 $TestMemoryLimit = None; (* The following tests tend to fail if there is any memory constraint. *)
 

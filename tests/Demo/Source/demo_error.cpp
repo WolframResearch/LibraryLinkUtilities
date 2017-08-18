@@ -3,11 +3,16 @@
  a Wolfram Library function from Mathematica.
  */
 
-#include "setjmp.h"
-#include "stdio.h"  /* for printf */
-#include "string.h" /* for memset */
 #include "WolframLibrary.h"
 #include "MArgumentManager.h"
+
+#include <cstring>
+#include <iostream>
+#include <ostream>
+
+#include "LibraryLinkError.h"
+#include "Tensor.h"
+#include "LibraryLinkFunctionMacro.h"
 
 using namespace LibraryLinkUtils;
 
@@ -17,6 +22,10 @@ EXTERN_C DLLEXPORT mint WolframLibrary_getVersion() {
 
 EXTERN_C DLLEXPORT int WolframLibrary_initialize(WolframLibraryData libData) {
 	MArgumentManager::setLibraryData(libData);
+	ErrorManager::registerPacletErrors({
+		{"DemoError1", "Something went wrong"},
+		{"ąęError", "Let me try non-ASCII: łódź"}
+	});
 	return 0;
 }
 
@@ -165,3 +174,40 @@ EXTERN_C DLLEXPORT int errorTest_Return(WolframLibraryData libData, mint Argc, M
 	return (int) retVal;
 }
 
+
+LIBRARY_LINK_FUNCTION(customError) {
+	auto err = LLErrorCode::NoError;
+	try {
+		MArgumentManager mngr(Argc, Args, Res);
+		auto in = mngr.getInteger<mint>(0);
+		if (in > 0) {
+			ErrorManager::throwException("DemoError1");
+		} else {
+			ErrorManager::throwException("NoSuchError");
+		}
+		mngr.setReal(3.14);
+	}
+	catch (LibraryLinkError& e) {
+		err = e.which();
+	}
+	catch (std::exception& e) {
+		err = LLErrorCode::FunctionError;
+	}
+	return err;
+}
+
+LIBRARY_LINK_FUNCTION(nonASCIIError) {
+	auto err = LLErrorCode::NoError;
+	try {
+		MArgumentManager mngr(Argc, Args, Res);
+		ErrorManager::throwException("ąęError");
+		mngr.setReal(3.14);
+	}
+	catch (LibraryLinkError& e) {
+		err = e.which();
+	}
+	catch (std::exception& e) {
+		err = LLErrorCode::FunctionError;
+	}
+	return err;
+}
