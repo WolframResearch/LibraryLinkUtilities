@@ -9,16 +9,16 @@
 
 namespace LibraryLinkUtils {
 
-	ErrorManager::ErrorMap ErrorManager::errors = {
+	ErrorManager::ErrorMap ErrorManager::errors = initErrorMap({
 		// Original LibraryLink error codes:
-		{ "VersionError", LibraryLinkError { LLErrorCode::VersionError, "VersionError", "same as LIBRARY_VERSION_ERROR" } },
-		{ "FunctionError", LibraryLinkError { LLErrorCode::FunctionError, "FunctionError", "same as LIBRARY_FUNCTION_ERROR" } },
-		{ "MemoryError", LibraryLinkError { LLErrorCode::MemoryError, "MemoryError", "same as LIBRARY_MEMORY_ERROR" } },
-		{ "NumericalError", LibraryLinkError { LLErrorCode::NumericalError, "NumericalError", "same as LIBRARY_NUMERICAL_ERROR" } },
-		{ "DimensionsError", LibraryLinkError { LLErrorCode::DimensionsError, "DimensionsError", "same as LIBRARY_DIMENSIONS_ERROR" } },
-		{ "RankError", LibraryLinkError { LLErrorCode::RankError, "RankError", "same as LIBRARY_RANK_ERROR" } },
-		{ "TypeError", LibraryLinkError { LLErrorCode::TypeError, "TypeError", "same as LIBRARY_TYPE_ERROR" } },
-		{ "NoError", LibraryLinkError { LLErrorCode::NoError, "NoError", "same as LIBRARY_NO_ERROR" } },
+		{ LLErrorCode::VersionError, "VersionError", "same as LIBRARY_VERSION_ERROR" },
+		{ LLErrorCode::FunctionError, "FunctionError", "same as LIBRARY_FUNCTION_ERROR" },
+		{ LLErrorCode::MemoryError, "MemoryError", "same as LIBRARY_MEMORY_ERROR" },
+		{ LLErrorCode::NumericalError, "NumericalError", "same as LIBRARY_NUMERICAL_ERROR" },
+		{ LLErrorCode::DimensionsError, "DimensionsError", "same as LIBRARY_DIMENSIONS_ERROR" },
+		{ LLErrorCode::RankError, "RankError", "same as LIBRARY_RANK_ERROR" },
+		{ LLErrorCode::TypeError, "TypeError", "same as LIBRARY_TYPE_ERROR" },
+		{ LLErrorCode::NoError, "NoError", "same as LIBRARY_NO_ERROR" },
 
 		// Reserved for use in paclets:
 		// -1
@@ -26,46 +26,52 @@ namespace LibraryLinkUtils {
 		// -100
 
 		// MArgument errors: [-101 : -150]
-		{ "MArgumentInitError", LibraryLinkError { LLErrorCode::MArgumentInitError, "MArgumentInitError", "MArgumentManager construction failed" } },
-		{ "MArgumentIndexError", LibraryLinkError { LLErrorCode::MArgumentIndexError, "MArgumentIndexError", "wrong argument index" } },
-		{ "MArgumentRawArrayError", LibraryLinkError { LLErrorCode::MArgumentRawArrayError, "MArgumentRawArrayError", "error involving RawArray argument" } },
-		{ "MArgumentTensorError", LibraryLinkError { LLErrorCode::MArgumentTensorError, "MArgumentTensorError", "error involving Tensor argument" } },
-		{ "MArgumentImageError", LibraryLinkError { LLErrorCode::MArgumentImageError, "MArgumentImageError", "error involving Image argument" } },
+		{ LLErrorCode::MArgumentInitError, "MArgumentInitError", "MArgumentManager construction failed" },
+		{ LLErrorCode::MArgumentIndexError, "MArgumentIndexError", "wrong argument index" },
+		{ LLErrorCode::MArgumentRawArrayError, "MArgumentRawArrayError", "error involving RawArray argument" },
+		{ LLErrorCode::MArgumentTensorError, "MArgumentTensorError", "error involving Tensor argument" },
+		{ LLErrorCode::MArgumentImageError, "MArgumentImageError", "error involving Image argument" },
 
 		// ErrorManager errors: [-151 : -200]
-		{ "ErrorManagerThrowIdError", LibraryLinkError { LLErrorCode::ErrorManagerThrowIdError, "ErrorManagerThrowIdError", "trying to throw exception with non-existent id" } },
-		{ "ErrorManagerThrowNameError", LibraryLinkError { LLErrorCode::ErrorManagerThrowNameError, "ErrorManagerThrowNameError", "trying to throw exception with non-existent name" } },
-		{ "ErrorManagerCreateNameError", LibraryLinkError { LLErrorCode::ErrorManagerCreateNameError, "ErrorManagerCreateNameError", "trying to register exception with already existing name" } },
+		{ LLErrorCode::ErrorManagerThrowIdError, "ErrorManagerThrowIdError", "trying to throw exception with non-existent id" },
+		{ LLErrorCode::ErrorManagerThrowNameError, "ErrorManagerThrowNameError", "trying to throw exception with non-existent name" },
+		{ LLErrorCode::ErrorManagerCreateNameError, "ErrorManagerCreateNameError", "trying to register exception with already existing name" },
 
 		// RawArray errors: [-201 : -300]
-		{ "RawArrayInitError", LibraryLinkError { LLErrorCode::RawArrayInitError, "RawArrayInitError", "construction of RawArray failed" } },
-		{ "RawArrayNewError", LibraryLinkError { LLErrorCode::RawArrayNewError, "RawArrayNewError", "creating new MRawArray failed" } },
-		{ "RawArrayCloneError", LibraryLinkError { LLErrorCode::RawArrayCloneError, "RawArrayCloneError", "MRawArray cloning failed" } },
-		{ "RawArrayTypeError", LibraryLinkError { LLErrorCode::RawArrayTypeError, "RawArrayTypeError", "MRawArray type mismatch" } },
-		{ "RawArraySizeError", LibraryLinkError { LLErrorCode::RawArraySizeError, "RawArraySizeError", "wrong assumption about RawArray size" } },
-		{ "RawArrayIndexError", LibraryLinkError { LLErrorCode::RawArrayIndexError, "RawArrayIndexError", "trying to access non-existing element" } },
+		{ LLErrorCode::RawArrayInitError, "RawArrayInitError", "construction of RawArray failed" },
+		{ LLErrorCode::RawArrayNewError, "RawArrayNewError", "creating new MRawArray failed" },
+		{ LLErrorCode::RawArrayCloneError, "RawArrayCloneError", "MRawArray cloning failed" },
+		{ LLErrorCode::RawArrayTypeError, "RawArrayTypeError", "MRawArray type mismatch" },
+		{ LLErrorCode::RawArraySizeError, "RawArraySizeError", "wrong assumption about RawArray size" },
+		{ LLErrorCode::RawArrayIndexError, "RawArrayIndexError", "trying to access non-existing element" },
 
 		// MTensor errors: [-301 : -400]
-		{ "TensorInitError", LibraryLinkError { LLErrorCode::TensorInitError, "TensorInitError", "Tensor construction failed" } },
-		{ "TensorNewError", LibraryLinkError { LLErrorCode::TensorNewError, "TensorNewError", "creating new MTensor failed" } },
-		{ "TensorCloneError", LibraryLinkError { LLErrorCode::TensorCloneError, "TensorCloneError", "MTensor cloning failed" } },
-		{ "TensorTypeError", LibraryLinkError { LLErrorCode::TensorTypeError, "TensorTypeError", "Tensor type mismatch" } },
-		{ "TensorSizeError", LibraryLinkError { LLErrorCode::TensorSizeError, "TensorSizeError", "wrong assumption about Tensor size" } },
-		{ "TensorIndexError", LibraryLinkError { LLErrorCode::TensorIndexError, "TensorIndexError", "trying to access non-existing element" } },
+		{ LLErrorCode::TensorInitError, "TensorInitError", "Tensor construction failed" },
+		{ LLErrorCode::TensorNewError, "TensorNewError", "creating new MTensor failed" },
+		{ LLErrorCode::TensorCloneError, "TensorCloneError", "MTensor cloning failed" },
+		{ LLErrorCode::TensorTypeError, "TensorTypeError", "Tensor type mismatch" },
+		{ LLErrorCode::TensorSizeError, "TensorSizeError", "wrong assumption about Tensor size" },
+		{ LLErrorCode::TensorIndexError, "TensorIndexError", "trying to access non-existing element" },
 
 		// MImage errors: [-401 : -500]
-		{ "ImageInitError", LibraryLinkError { LLErrorCode::ImageInitError, "ImageInitError", "Image construction failed" } },
-		{ "ImageNewError", LibraryLinkError { LLErrorCode::ImageNewError, "ImageNewError", "creating new MImage failed" } },
-		{ "ImageCloneError", LibraryLinkError { LLErrorCode::ImageCloneError, "ImageCloneError", "MImage cloning failed" } },
-		{ "ImageTypeError", LibraryLinkError { LLErrorCode::ImageTypeError, "ImageTypeError", "Image type mismatch" } },
-		{ "ImageSizeError", LibraryLinkError { LLErrorCode::ImageSizeError, "ImageSizeError", "wrong assumption about Image size" } },
-		{ "ImageIndexError", LibraryLinkError { LLErrorCode::ImageIndexError, "ImageIndexError", "trying to access non-existing element" } },
-
-	};
+		{ LLErrorCode::ImageInitError, "ImageInitError", "Image construction failed" },
+		{ LLErrorCode::ImageNewError, "ImageNewError", "creating new MImage failed" },
+		{ LLErrorCode::ImageCloneError, "ImageCloneError", "MImage cloning failed" },
+		{ LLErrorCode::ImageTypeError, "ImageTypeError", "Image type mismatch" },
+		{ LLErrorCode::ImageSizeError, "ImageSizeError", "wrong assumption about Image size" },
+		{ LLErrorCode::ImageIndexError, "ImageIndexError", "trying to access non-existing element" }
+	});
 
 	const ErrorManager::ErrorMap::const_iterator ErrorManager::insertionHint = errors.find("MArgumentInitError");
 	int ErrorManager::nextErrorId = LLErrorCode::NoError - 1;
 
+	auto ErrorManager::initErrorMap(std::initializer_list<LibraryLinkError> initList) -> ErrorMap {
+		ErrorMap errMap;
+		for (auto&& err : initList) {
+			errMap.insert({ err.name(), std::move(err)});
+		}
+		return errMap;
+	}
 
 	void ErrorManager::registerPacletErrors(const std::vector<std::pair<std::string, std::string>>& errors) {
 		for (auto&& err : errors) {
