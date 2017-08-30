@@ -732,6 +732,22 @@ Test[
 	TestID->"LibraryTests-20170818-G4W2V6"
 ]
 
+Test[
+	Get[FileNameJoin[{FileNameDrop[$CurrentFile, -3], "LibraryLinkUtilities.wl"}]];
+	RegisterPacletErrors[edll,
+		<|
+			"TestError1" -> "Test message 1."
+		|>
+	];
+	Head@CreatePacletFailure["TestError1"]
+	,
+	Failure
+	,
+	TestID->"LibraryTests-20170829-f48611"
+]
+
+
+
 
 (* Last two examples in this section will make more sense as soon as we start extracting error descriptions from C++ code *)
 Test[
