@@ -746,7 +746,21 @@ Test[
 	TestID->"LibraryTests-20170829-f48611"
 ]
 
+Test[
+	CatchLibraryLinkError[StringQ@"Clearly not an error"]
+	,
+	True
+	,
+	TestID->"LibraryTests-20170829-4996a6"
+]
 
+Test[
+	Head@CatchLibraryLinkError[LibraryFunctionError["LIBRARY_USER_ERROR", -1]]
+	,
+	Failure
+	,
+	TestID->"LibraryTests-20170829-81b559"
+]
 
 
 (* Last two examples in this section will make more sense as soon as we start extracting error descriptions from C++ code *)
