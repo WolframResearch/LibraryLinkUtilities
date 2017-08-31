@@ -76,7 +76,7 @@ Block[{cErrorCodes, max},
 		Return@Failure["LoadFailure",
 			<|
 				"MessageTemplate" -> "Error loading library functions.",
-				"MessageParameters" -> {},
+				"MessageParameters" -> <||>,
 				"ErrorCode" -> 0,
 				"Parameters" -> {}
 			|>
@@ -115,11 +115,11 @@ RegisterPacletErrors[___] :=
 	Failure["RegisterFailure",
 		<|
 			"MessageTemplate" -> "Error loading library functions.",
-			"MessageParameters" -> {},
+			"MessageParameters" -> <||>,
 			"ErrorCode" -> 0,
 			"Parameters" -> {}
 		|>
-	];
+	]
 )
 
 
