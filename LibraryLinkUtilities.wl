@@ -38,7 +38,7 @@ If[TrueQ[$InitLibraryLinkUtils],
 (* ------------------------------------------------------------------------- *)
 (* ------------------------------------------------------------------------- *)
 
-$errID = 0;
+$ErrorCount = 0;
 
 $corePacletFailureLUT = <||>;
 
@@ -72,12 +72,13 @@ Block[{name = Select[$corePacletFailureLUT, MatchQ[#, {errorCode, _}] &]},
 RegisterPacletErrors[libPath_?StringQ, errors_?AssociationQ] :=
 Block[{cErrorCodes, max},
 	If[FailureQ[InitLibraryLinkUtils[libPath]],
+		$ErrorCount++;
 		Return@Failure["LoadFailure",
 			<|
 				"MessageTemplate" -> "Error loading library functions.",
 				"MessageParameters" -> {},
 				"ErrorCode" -> 0,
-				"Parameters" -> param
+				"Parameters" -> {}
 			|>
 		];
 	];
@@ -109,15 +110,17 @@ Block[{cErrorCodes, max},
 ]
 
 RegisterPacletErrors[___] :=
-Failure["RegisterFailure",
-	<|
-		"MessageTemplate" -> "Error loading library functions.",
-		"MessageParameters" -> {},
-		"ErrorCode" -> 0,
-		"Parameters" -> param
-
-	|>
-];
+(
+	$ErrorCount++;
+	Failure["RegisterFailure",
+		<|
+			"MessageTemplate" -> "Error loading library functions.",
+			"MessageParameters" -> {},
+			"ErrorCode" -> 0,
+			"Parameters" -> {}
+		|>
+	];
+)
 
 
 (* ::SubSection:: *)
@@ -135,6 +138,7 @@ Block[{msgParam, param, lookup},
 	msgParam = Replace[OptionValue["MessageParameters"], Except[_?AssociationQ] -> <||>];
 	param = Replace[OptionValue["Parameters"], {p_?StringQ :> {p}, Except[{_?StringQ.. }] -> {}}];
 	lookup = Lookup[$corePacletFailureLUT, type, 0 -> "Unknown error."];
+	$ErrorCount++;
 	Failure[type,
 		<|
 			"MessageTemplate" -> lookup[[2]],
