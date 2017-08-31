@@ -158,7 +158,7 @@ With[{result = Quiet[f, {
 		LibraryFunction::rterr
 	}]}, 
 	
-	If[Head[result] == LibraryFunctionError,
+	If[Head[result] === LibraryFunctionError,
 		CreatePacletFailure[errorCodeToName[result[[2]]]]
 	, (* else *)
 		result
