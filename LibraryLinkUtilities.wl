@@ -76,7 +76,6 @@ Block[{name = Select[$corePacletFailureLUT, MatchQ[#, {errorCode, _}] &]},
 RegisterPacletErrors[libPath_?StringQ, errors_?AssociationQ] :=
 Block[{cErrorCodes, max},
 	If[FailureQ[InitLibraryLinkUtils[libPath]],
-		$ErrorCount++;
 		Return@CreatePacletFailure["LoadFailure"];
 	];
 	cErrorCodes = $getCErrorCodes[]; (* <|"TestError1" -> (-1 -> "TestError1 message."), "TestError2" -> (-2 -> "TestError2 message.")|> *)
@@ -107,10 +106,7 @@ Block[{cErrorCodes, max},
 ]
 
 RegisterPacletErrors[___] :=
-(
-	$ErrorCount++;
 	CreatePacletFailure["RegisterFailure"]
-)
 
 
 (* ::SubSection:: *)
