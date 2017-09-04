@@ -1,0 +1,206 @@
+/*
+ * MArrayBase.h
+ *
+ *  Created on: 04.09.2017
+ *      Author: RaV
+ */
+
+#ifndef LLUTILS_MARRAYBASE_H_
+#define LLUTILS_MARRAYBASE_H_
+
+#include "LibraryLinkError.h"
+
+namespace LibraryLinkUtils {
+
+	class MArrayBase {
+	public:
+		/**
+		 *	@brief Default constructor
+		 **/
+		MArrayBase() = default;
+
+		/**
+		 * 	@brief		Constructs uninitialized container with given dimensions
+		 *	@param[in]	dims - list of MArray dimensions
+		 *	@throws		LLErrorCode::DimensionsError - if \c dims are invalid
+		 *	@throws		LLErrorCode::FunctionError - if any of Wolfram*Library structures was not initialized
+		 **/
+		MArrayBase(std::initializer_list<mint> dims);
+
+		/**
+		 * 	@brief		Constructs uninitialized container with given dimensions
+		 *	@param[in]	dims - container with MArray dimensions
+		 *	@tparam		Container - any type of container that has member \b value_type and this type is convertible to mint
+		 *	@throws		LLErrorCode::DimensionsError - if \c dims are invalid
+		 *	@throws		LLErrorCode::FunctionError - if any of Wolfram*Library structures was not initialized
+		 **/
+		template<
+			class Container,
+			typename = typename std::enable_if_t<std::is_integral_v<typename std::remove_reference_t<Container>::value_type>>
+		>
+		MArrayBase(Container&& dims);
+
+		/**
+		 *	@brief Get container rank
+		 **/
+		mint rank() const noexcept {
+			return depth;
+		}
+
+		/**
+		 *	@brief Get raw pointer to container dimensions
+		 **/
+		const mint* dimensionsData() const noexcept {
+			return dims.data();
+		}
+
+		/**
+		 *	@brief Get container dimensions in the form of const& to \b std::vector
+		 **/
+		const std::vector<mint>& dimensions() const noexcept {
+			return dims;
+		}
+
+		/**
+		 *	@brief 		Get single dimension
+		 *	@param[in]	dim - index of desired dimension
+		 *	@throws		indexError() - if \c dim is out-of-bounds
+		 **/
+		mint dimension(mint dim) const {
+			if (dim >= rank() || dim < 0)
+				indexError();
+			return dims[dim];
+		}
+
+		/**
+		 *	@brief Get total number of elements in the container
+		 **/
+		mint size() const noexcept {
+			return flattenedLength;
+		}
+
+		/**
+		 *	@brief Check whether container is empty
+		 **/
+		mint empty() const noexcept {
+			return flattenedLength == 0;
+		}
+
+		/**
+		 *	@brief Default destructor
+		 **/
+		virtual ~MArrayBase() = default;
+
+
+		/**
+		 *	@brief 		Pass the container as a result to LibraryLink via MArgument
+		 *	@param[out]	res - MArgument that will carry the internal container
+		 **/
+		void passAsResult(MArgument& res) noexcept {
+			passInternal(res);
+			arrayOwnerQ = false;
+		}
+
+		/**
+		 *   @brief         Set Wolfram*Library structures as static members of MArray
+		 *   @param[in]     ld - WolframLibraryData
+		 *   @note			If you use MArgumentManeger you probably will never have to call this function directly
+		 **/
+		static void setLibraryData(WolframLibraryData ld) noexcept {
+			libData = ld;
+			raFuns = ld->rawarrayLibraryFunctions;
+			imgFuns = ld->imageLibraryFunctions;
+		}
+
+
+	protected:
+		/// Total number of elements in the container
+		mint flattenedLength = 0;
+
+		/// Container rank
+		mint depth = 0;
+
+		/// Container dimensions
+		std::vector<mint> dims;
+
+		/// This helps to convert coordinates \f$ (x_1, \ldots, x_n) \f$ in multidimensional MArray to the corresponding index in a flat list of elements
+		std::vector<mint> offsets;
+
+		/// Determines if MArray should free the underlying container
+		bool arrayOwnerQ = false;
+
+		static WolframLibraryData libData;
+		static WolframRawArrayLibrary_Functions raFuns;
+		static WolframImageLibrary_Functions imgFuns;
+
+		/// Populate \c offsets member
+		void fillOffsets();
+
+	private:
+		/**
+		 *	@brief 		Convert coordinates of an element in a multidimensional MArray to the corresponding index in a flat list of elements
+		 *	@param[in]	indices - vector with coordinates of desired data element
+		 *	@throws		indexError() - if \c indices are out-of-bounds
+		 **/
+		mint getIndex(const std::vector<mint>& indices) const;
+
+
+		/**
+		 *	@brief 		Check if container size will fit into \b mint
+		 *	@param[in]	v - a container
+		 *	@throws		LLErrorCode::DimensionsError - if \c v is too big
+		 **/
+		template<typename Container>
+		mint checkContainerSize(Container&& v) const;
+
+		/**
+		 *	@brief 		Check if initializer list size will fit into \b mint
+		 *	@param[in]	v - an initializer list
+		 *	@throws		LLErrorCode::DimensionsError - if \c v is too big
+		 **/
+		mint checkContainerSize(std::initializer_list<mint> v) const;
+
+		/**
+		 *   @brief 	Purely virtual method for throwing exception concerning index validity within the container
+		 **/
+		virtual void indexError() const = 0;
+
+		/**
+		 *   @brief 	Throw exception relating to container initialization
+		 *   @throws 	LibraryLinkError(LLErrorCode::FunctionError)
+		 **/
+		virtual void initError() const {
+			ErrorManager::throwException(LLErrorCode::FunctionError);
+		}
+
+		/**
+		 *   @brief 	Throw exception relating to container size
+		 *   @throws 	LibraryLinkError(LLErrorCode::DimensionsError)
+		 **/
+		virtual void sizeError() const {
+			ErrorManager::throwException(LLErrorCode::DimensionsError);
+		}
+
+		/**
+		 *   @brief 	Create internal container
+		 **/
+		virtual void createInternal() = 0;
+
+		/**
+		 *   @brief 	Free internal container
+		 **/
+		virtual void freeInternal() noexcept = 0;
+
+		/**
+		 *   @brief 		Set internal container as result for LibraryLink.
+		 *   @param[out]	res - MArgument that will carry the internal container
+		 **/
+		virtual void passInternal(MArgument& res) noexcept = 0;
+
+		/// Calculate total array length based on current value of dims
+		mint totalLengthFromDims() const noexcept;
+	};
+
+} /* namespace LibraryLinkUtils */
+
+#endif /* LLUTILS_MARRAYBASE_H_ */
