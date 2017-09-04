@@ -5,6 +5,8 @@
 #include "LibraryLinkError.h"
 #include "LibraryLinkFunctionMacro.h"
 
+#include <exception>
+
 using namespace LibraryLinkUtils;
 
 /* Return the version of Library Link */
@@ -37,7 +39,7 @@ EXTERN_C DLLEXPORT int demo_I_I(WolframLibraryData libData, mint Argc, MArgument
 	catch (std::exception& e) {
 		err = LLErrorCode::FunctionError;
 	}
-	return static_cast<int>(err);
+	return err;
 }
 
 /* Adds one to the input, returning the result */
@@ -54,7 +56,7 @@ EXTERN_C DLLEXPORT int demo1_I_I(WolframLibraryData libData, mint Argc, MArgumen
 	catch (std::exception& e) {
 		err = LLErrorCode::FunctionError;
 	}
-	return static_cast<int>(err);
+	return err;
 }
 
 /* Multiply two reals together, returning the result */
@@ -71,7 +73,7 @@ EXTERN_C DLLEXPORT int demo_R_R(WolframLibraryData libData, mint Argc, MArgument
 	catch (std::exception& e) {
 		err = LLErrorCode::FunctionError;
 	}
-	return static_cast<int>(err);
+	return err;
 }
 
 /* Multiply two reals together, returning the result */
@@ -88,7 +90,7 @@ EXTERN_C DLLEXPORT int demo1_R_R(WolframLibraryData libData, mint Argc, MArgumen
 	catch (std::exception& e) {
 		err = LLErrorCode::FunctionError;
 	}
-	return static_cast<int>(err);
+	return err;
 }
 
 /* Returns Sum[i*R0, {i, I0}] */
@@ -110,7 +112,7 @@ EXTERN_C DLLEXPORT int demo_IR_R(WolframLibraryData libData, mint Argc, MArgumen
 	catch (std::exception& e) {
 		err = LLErrorCode::FunctionError;
 	}
-	return static_cast<int>(err);
+	return err;
 }
 
 /* Returns Sum[i*R0, {i, I0}] */
@@ -132,7 +134,7 @@ EXTERN_C DLLEXPORT int demo1_IR_R(WolframLibraryData libData, mint Argc, MArgume
 	catch (std::exception& e) {
 		err = LLErrorCode::FunctionError;
 	}
-	return static_cast<int>(err);
+	return err;
 }
 
 /* Gets the I0 th Real number from the rank 1 tensor T0 */
@@ -150,7 +152,7 @@ EXTERN_C DLLEXPORT int demo_TI_R(WolframLibraryData libData, mint Argc, MArgumen
 	catch (std::exception& e) {
 		err = LLErrorCode::FunctionError;
 	}
-	return static_cast<int>(err);
+	return err;
 }
 
 /**
@@ -170,7 +172,7 @@ EXTERN_C DLLEXPORT int demo1_TI_R(WolframLibraryData libData, mint Argc, MArgume
 	catch (std::exception& e) {
 		err = LLErrorCode::FunctionError;
 	}
-	return static_cast<int>(err);
+	return err;
 }
 
 /**
@@ -193,7 +195,7 @@ EXTERN_C DLLEXPORT int demo2_TI_R(WolframLibraryData libData, mint Argc, MArgume
 		err = LLErrorCode::FunctionError;
 	}
 	t0.disown();
-	return static_cast<int>(err);
+	return err;
 }
 
 /**
@@ -216,7 +218,7 @@ EXTERN_C DLLEXPORT int demo_I_T(WolframLibraryData libData, mint Argc, MArgument
 	catch (std::exception& e) {
 		err = LLErrorCode::FunctionError;
 	}
-	return static_cast<int>(err);
+	return err;
 }
 
 /**
@@ -241,7 +243,7 @@ EXTERN_C DLLEXPORT int demo_TT_T(WolframLibraryData libData, mint Argc, MArgumen
 	catch (std::exception& e) {
 		err = LLErrorCode::FunctionError;
 	}
-	return static_cast<int>(err);
+	return err;
 }
 
 /**
@@ -280,7 +282,7 @@ EXTERN_C DLLEXPORT int demo_TTT_T(WolframLibraryData libData, mint Argc, MArgume
 	catch (std::exception& e) {
 		err = LLErrorCode::FunctionError;
 	}
-	return static_cast<int>(err);
+	return err;
 }
 
 /**
@@ -307,7 +309,9 @@ LIBRARY_LINK_FUNCTION(demo_T_T) {
 			Tensor<TensorType> T_res(static_cast<TensorType>(0), {len});
 
 			std::copy(std::begin(T_arg), std::end(T_arg), std::begin(T_res));
-			std::copy(std::begin(dims), std::end(dims), std::begin(T_res) + num);
+			std::transform(std::begin(dims), std::end(dims), std::begin(T_res) + num, [](auto d) {
+				return static_cast<TensorType>(d);
+			});
 
 			T_res[num + rank] = num;
 			T_res[num + rank + 1] = rank;
@@ -322,7 +326,7 @@ LIBRARY_LINK_FUNCTION(demo_T_T) {
 	catch (std::exception& e) {
 		err = LLErrorCode::FunctionError;
 	}
-	return static_cast<int>(err);
+	return err;
 }
 
 /**
@@ -349,7 +353,9 @@ LIBRARY_LINK_FUNCTION(demo1_T_T) {
 			Tensor<TensorType> T_res(static_cast<TensorType>(0), {len} );
 
 			std::copy(std::begin(T_arg), std::end(T_arg), std::begin(T_res));
-			std::copy(std::begin(dims), std::end(dims), std::begin(T_res) + num);
+			std::transform(std::begin(dims), std::end(dims), std::begin(T_res) + num, [](auto d) {
+				return static_cast<TensorType>(d);
+			});
 
 			T_res[num + rank] = num;
 			T_res[num + rank + 1] = rank;
@@ -364,7 +370,7 @@ LIBRARY_LINK_FUNCTION(demo1_T_T) {
 	catch (std::exception& e) {
 		err = LLErrorCode::FunctionError;
 	}
-	return static_cast<int>(err);
+	return err;
 }
 
 /**
@@ -390,7 +396,7 @@ EXTERN_C DLLEXPORT int demo1_I_T(WolframLibraryData libData, mint Argc, MArgumen
 	catch (std::exception& e) {
 		err = LLErrorCode::FunctionError;
 	}
-	return static_cast<int>(err);
+	return err;
 }
 
 /* Gets the I0th element of T0, returning that value */
@@ -408,7 +414,7 @@ EXTERN_C DLLEXPORT int demo_T_I(WolframLibraryData libData, mint Argc, MArgument
 	catch (std::exception& e) {
 		err = LLErrorCode::FunctionError;
 	}
-	return static_cast<int>(err);
+	return err;
 }
 
 EXTERN_C DLLEXPORT int demo_MintSize(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
@@ -423,7 +429,7 @@ EXTERN_C DLLEXPORT int demo_MintSize(WolframLibraryData libData, mint Argc, MArg
 	catch (std::exception& e) {
 		err = LLErrorCode::FunctionError;
 	}
-	return static_cast<int>(err);
+	return err;
 }
 
 /* Gets the I0,I1 th integer element of T0 returning that value */
@@ -442,7 +448,7 @@ EXTERN_C DLLEXPORT int demo_TII_I(WolframLibraryData libData, mint Argc, MArgume
 	catch (std::exception& e) {
 		err = LLErrorCode::FunctionError;
 	}
-	return static_cast<int>(err);
+	return err;
 }
 
 /* Sets the I0,I1 th integer element of T0 with value, returning that position */
@@ -463,7 +469,7 @@ EXTERN_C DLLEXPORT int demo_TIII_I(WolframLibraryData libData, mint Argc, MArgum
 	catch (std::exception& e) {
 		err = LLErrorCode::FunctionError;
 	}
-	return static_cast<int>(err);
+	return err;
 }
 
 /* Gets the I0,I1 th real element of T0 returning that value */
@@ -482,7 +488,7 @@ EXTERN_C DLLEXPORT int demo_TII_R(WolframLibraryData libData, mint Argc, MArgume
 	catch (std::exception& e) {
 		err = LLErrorCode::FunctionError;
 	}
-	return static_cast<int>(err);
+	return err;
 }
 
 /* Sets the I0,I1 th real element of T0 with value, returning that position */
@@ -503,7 +509,7 @@ EXTERN_C DLLEXPORT int demo_TIIR_R(WolframLibraryData libData, mint Argc, MArgum
 	catch (std::exception& e) {
 		err = LLErrorCode::FunctionError;
 	}
-	return static_cast<int>(err);
+	return err;
 }
 
 /* Gets the subpart of the input tensor starting at the I0 th position */

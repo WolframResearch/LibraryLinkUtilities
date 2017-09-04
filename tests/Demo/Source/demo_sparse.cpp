@@ -105,6 +105,6 @@ EXTERN_C DLLEXPORT int sparse_modify_values(WolframLibraryData libData, mint Arg
 	catch (std::exception& e) {
 		err = LLErrorCode::FunctionError;
 	}
-	return static_cast<int>(err);
+	return err;
 }
 

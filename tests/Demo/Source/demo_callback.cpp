@@ -102,7 +102,7 @@ EXTERN_C DLLEXPORT int apply_callback(WolframLibraryData libData, mint Argc, MAr
 	catch (std::exception& e) {
 		err = LLErrorCode::FunctionError;
 	}
-	return static_cast<int>(err);
+	return err;
 }
 
 EXTERN_C DLLEXPORT int apply_sin(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {

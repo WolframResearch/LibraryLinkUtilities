@@ -54,7 +54,7 @@ EXTERN_C DLLEXPORT int setInstanceState(WolframLibraryData libData, mint Argc, M
 	catch (std::exception& e) {
 		err = LLErrorCode::FunctionError;
 	}
-	return static_cast<int>(err);
+	return err;
 }
 
 EXTERN_C DLLEXPORT int getInstanceState(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
@@ -75,7 +75,7 @@ EXTERN_C DLLEXPORT int getInstanceState(WolframLibraryData libData, mint Argc, M
 	catch (std::exception& e) {
 		err = LLErrorCode::FunctionError;
 	}
-	return static_cast<int>(err);
+	return err;
 }
 
 EXTERN_C DLLEXPORT int generateFromInstance(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
@@ -115,7 +115,7 @@ EXTERN_C DLLEXPORT int generateFromInstance(WolframLibraryData libData, mint Arg
 	catch (std::exception& e) {
 		err = LLErrorCode::FunctionError;
 	}
-	return static_cast<int>(err);
+	return err;
 }
 
 EXTERN_C DLLEXPORT int getAllInstanceIDs(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
@@ -139,7 +139,7 @@ EXTERN_C DLLEXPORT int getAllInstanceIDs(WolframLibraryData libData, mint Argc, 
 	catch (std::exception& e) {
 		err = LLErrorCode::FunctionError;
 	}
-	return static_cast<int>(err);
+	return err;
 }
 
 /* Return the version of Library Link */

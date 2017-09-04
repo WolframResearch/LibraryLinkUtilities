@@ -46,7 +46,7 @@ EXTERN_C DLLEXPORT int errordemo1(WolframLibraryData libData, mint Argc, MArgume
 	catch (LibraryLinkError& e) {
 		err = e.which();
 	}
-	return static_cast<int>(err);
+	return err;
 }
 
 EXTERN_C DLLEXPORT int errordemo2(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
@@ -62,7 +62,7 @@ EXTERN_C DLLEXPORT int errordemo2(WolframLibraryData libData, mint Argc, MArgume
 		std::cout << e.what() << std::endl;
 		mngr.setReal(0.);
 	}
-	return static_cast<int>(err);
+	return err;
 }
 
 EXTERN_C DLLEXPORT int errordemo3(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
@@ -80,7 +80,7 @@ EXTERN_C DLLEXPORT int errordemo3(WolframLibraryData libData, mint Argc, MArgume
 		std::cout << e.what() << std::endl;
 		err = e.which();
 	}
-	return static_cast<int>(err);
+	return err;
 }
 
 EXTERN_C DLLEXPORT int errordemo4(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
@@ -108,7 +108,7 @@ EXTERN_C DLLEXPORT int errordemo4(WolframLibraryData libData, mint Argc, MArgume
 	catch (LibraryLinkError& e) {
 		err = e.which();
 	}
-	return static_cast<int>(err);
+	return err;
 }
 
 EXTERN_C DLLEXPORT int errordemo5(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
@@ -163,7 +163,7 @@ EXTERN_C DLLEXPORT int errordemo6(WolframLibraryData libData, mint Argc, MArgume
 	catch (std::exception& e) {
 		err = LLErrorCode::FunctionError;
 	}
-	return static_cast<int>(err);
+	return err;
 }
 
 EXTERN_C DLLEXPORT int errorTest_Return(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {

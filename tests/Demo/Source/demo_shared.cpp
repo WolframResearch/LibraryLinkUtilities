@@ -72,7 +72,7 @@ EXTERN_C DLLEXPORT int getElementVector(WolframLibraryData libData, mint Argc, M
 	catch (std::exception& e) {
 		err = LLErrorCode::FunctionError;
 	}
-	return static_cast<int>(err);
+	return err;
 }
 
 
@@ -103,7 +103,7 @@ EXTERN_C DLLEXPORT int getElement(WolframLibraryData libData, mint Argc, MArgume
 	catch (std::exception& e) {
 		err = LLErrorCode::FunctionError;
 	}
-	return static_cast<int>(err);
+	return err;
 }
 
 

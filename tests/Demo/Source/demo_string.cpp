@@ -55,7 +55,7 @@ EXTERN_C DLLEXPORT int countSubstring(WolframLibraryData libData, mint Argc, MAr
 	catch (std::exception& e) {
 		err = LLErrorCode::FunctionError;
 	}
-	return static_cast<int>(err);
+	return err;
 }
 
 EXTERN_C DLLEXPORT int encodeString(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
@@ -87,7 +87,7 @@ EXTERN_C DLLEXPORT int encodeString(WolframLibraryData libData, mint Argc, MArgu
 	catch (std::exception& e) {
 		err = LLErrorCode::FunctionError;
 	}
-	return static_cast<int>(err);
+	return err;
 }
 
 EXTERN_C DLLEXPORT int reverseString(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
@@ -115,6 +115,6 @@ EXTERN_C DLLEXPORT int reverseString(WolframLibraryData libData, mint Argc, MArg
 	catch (std::exception& e) {
 		err = LLErrorCode::FunctionError;
 	}
-	return static_cast<int>(err);
+	return err;
 }
 

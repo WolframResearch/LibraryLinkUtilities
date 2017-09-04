@@ -80,7 +80,7 @@ LIBRARY_LINK_FUNCTION(color_negate) {
 	catch (std::exception& e) {
 		err = LLErrorCode::FunctionError;
 	}
-	return static_cast<int>(err);
+	return err;
 }
 
 template<typename T>
@@ -147,7 +147,7 @@ EXTERN_C DLLEXPORT int rgb_to_gray(WolframLibraryData libData, mint Argc, MArgum
 	catch (std::exception& e) {
 		err = LLErrorCode::FunctionError;
 	}
-	return static_cast<int>(err);
+	return err;
 }
 
 struct RGBHistogramEqualization {
@@ -209,7 +209,7 @@ EXTERN_C DLLEXPORT int rgbHistogramEqualization(WolframLibraryData libData, mint
 	catch (std::exception& e) {
 		err = LLErrorCode::FunctionError;
 	}
-	return static_cast<int>(err);
+	return err;
 }
 
 struct iUpsample {
@@ -223,7 +223,7 @@ struct iUpsample {
 
 		Image<T> imageOut(n * width, n * height, channels, imageIn.colorspace(), imageIn.interleavedQ());
 
-		std::fill(std::begin(imageOut), std::end(imageOut), 0);
+		std::fill(std::begin(imageOut), std::end(imageOut), static_cast<T>(0));
 
 		auto* inIter = imageIn.data();
 		auto* outIter = imageOut.data();
@@ -258,7 +258,7 @@ EXTERN_C DLLEXPORT int Upsample(WolframLibraryData libData, mint Argc, MArgument
 	catch (std::exception& e) {
 		err = LLErrorCode::FunctionError;
 	}
-	return static_cast<int>(err);
+	return err;
 }
 
 /* TONE Mapping Operators */
@@ -372,7 +372,7 @@ EXTERN_C DLLEXPORT int reinhard_global(WolframLibraryData libData, mint Argc, MA
 	catch (std::exception& e) {
 		err = LLErrorCode::FunctionError;
 	}
-	return static_cast<int>(err);
+	return err;
 }
 
 /*
@@ -660,7 +660,7 @@ EXTERN_C DLLEXPORT int reinhard_local(WolframLibraryData libData, mint Argc, MAr
 	catch (std::exception& e) {
 		err = LLErrorCode::FunctionError;
 	}
-	return static_cast<int>(err);
+	return err;
 }
 
 /* Chromatic Adaptation */
@@ -892,7 +892,7 @@ EXTERN_C DLLEXPORT int sepia(WolframLibraryData libData, mint Argc, MArgument *A
 	catch (std::exception& e) {
 		err = LLErrorCode::FunctionError;
 	}
-	return static_cast<int>(err);
+	return err;
 }
 
 /*
@@ -1000,5 +1000,5 @@ EXTERN_C DLLEXPORT int lomography(WolframLibraryData libData, mint Argc, MArgume
 	catch (std::exception& e) {
 		err = LLErrorCode::FunctionError;
 	}
-	return static_cast<int>(err);
+	return err;
 }
