@@ -14,11 +14,10 @@ testFiles = FileNames["Image*Operations.mt", { DirectoryName[$CurrentFile] }];
 TestSuite[testFiles];
 
 LibraryUnload[ImgEchoLib];
-(* LibraryUnload[ImgNegLib]; <-  Kernel crashes if you try to unload both ImgNegLib and ImgDimLib, not sure why *)
+LibraryUnload[ImgNegLib]; (* <-  Kernel crashes if you try to unload both ImgNegLib and ImgDimLib, not sure why *)
 LibraryUnload[ImgDimLib];
 
 (*Delete all created libraries(to avoid CopyFile::filex error seen on windows)*)
 DeleteFile[ImgEchoLib];
 DeleteFile[ImgNegLib];
 DeleteFile[ImgDimLib];
-
