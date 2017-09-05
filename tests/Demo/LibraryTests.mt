@@ -349,8 +349,7 @@ Test[
 ]
 
 Test[
-	loadFun = LibraryFunctionLoad[dll1, 
-   				"loadArray", {{Real, _, "Shared"}}, Integer];
+	loadFun = LibraryFunctionLoad[dll1, "loadArray", {{Real, _, "Shared"}}, Integer];
 	unloadFun = LibraryFunctionLoad[dll1, "unloadArray", {}, Integer];
 	setFunVector = LibraryFunctionLoad[dll1, "setElementVector", {Integer, Real}, Integer];
 	getFunVector = LibraryFunctionLoad[dll1, "getElementVector", {Integer}, Real];
@@ -448,6 +447,10 @@ Test[
 
 
 
+(*
+Exclude the following tests since LLU is not fully compatible with LibraryLink in terms of shared data structures.
+See https://bugs.wolfram.com/show?number=337331
+
 Test[
 	unloadFun[]
 	,
@@ -464,6 +467,7 @@ Test[
 	,
 	TestID->"DLLTests-20081204-E2F0V8"
 ]
+*)
 
 
 Test[
@@ -584,9 +588,9 @@ Test[
 Test[
 	ef1[{2,1}, 1]
 	,
-	LibraryFunctionError["LIBRARY_TYPE_ERROR", 1]
+	LibraryFunctionError["LIBRARY_USER_ERROR", -304]
 	,
-	{LibraryFunction::typerr}
+	{LibraryFunction::rterr}
 	,
 	TestID->"DLLTests-20090211-T9W0H6"
 ]
@@ -622,9 +626,9 @@ Test[
 Test[
 	ef3[{2,1}, 1]
 	,
-	LibraryFunctionError["LIBRARY_TYPE_ERROR", 1]
+	LibraryFunctionError["LIBRARY_USER_ERROR", -304]
 	,
-	{LibraryFunction::typerr}
+	{LibraryFunction::rterr}
 	,
 	TestID->"DLLTests-20090211-X0W7I6"
 ]
