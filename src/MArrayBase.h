@@ -210,6 +210,29 @@ namespace LibraryLinkUtils {
 		mint totalLengthFromDims() const noexcept;
 	};
 
+	template<class Container, typename, typename>
+	MArrayBase::MArrayBase(Container&& dimensions) {
+		if (!libData || !raFuns || !imgFuns)
+			initError();
+		depth = checkContainerSize(std::forward<Container>(dimensions));
+		auto dimsOk = std::all_of(std::begin(dimensions), std::end(dimensions), [](typename std::remove_reference_t<Container>::value_type d) {
+			return (d > 0) && (d <= std::numeric_limits<mint>::max());
+		});
+		if (!dimsOk)
+			ErrorManager::throwException(LLErrorCode::DimensionsError, "Invalid input vector with array dimensions");
+		dims.reserve(depth);
+		std::copy(std::begin(dimensions), std::end(dimensions), std::back_inserter(dims));
+		flattenedLength = totalLengthFromDims();
+		fillOffsets();
+	}
+
+	template<class Container>
+	mint MArrayBase::checkContainerSize(Container&& v) const {
+		if (v.size() > std::numeric_limits<mint>::max())
+			sizeError();
+		return static_cast<mint>(v.size());
+	}
+
 } /* namespace LibraryLinkUtils */
 
 #endif /* LLUTILS_MARRAYBASE_H_ */
