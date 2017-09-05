@@ -21,7 +21,7 @@ EXTERN_C DLLEXPORT int getNthRealFromTR1(WolframLibraryData libData, mint Argc, 
 	catch (std::exception& e) {
 		err = LLErrorCode::FunctionError;
 	}
-	return static_cast<int>(err);
+	return err;
 }
 
 /* Gets the (m,n) Real number from the rank 2 tensor T0 */
@@ -43,7 +43,7 @@ EXTERN_C DLLEXPORT int getNthRealFromTR2(WolframLibraryData libData, mint Argc, 
 	catch (std::exception& e) {
 		err = LLErrorCode::FunctionError;
 	}
-	return static_cast<int>(err);
+	return err;
 }
 
 /* Gets the (m,n) Integer number from the rank 2 tensor T0 */
@@ -64,7 +64,7 @@ EXTERN_C DLLEXPORT int getNthIntegerFromTR2(WolframLibraryData libData, mint Arg
 	catch (std::exception& e) {
 		err = LLErrorCode::FunctionError;
 	}
-	return static_cast<int>(err);
+	return err;
 }
 
 /**
@@ -92,7 +92,7 @@ EXTERN_C DLLEXPORT int setNthIntegerT(WolframLibraryData libData, mint Argc, MAr
 	catch (std::exception& e) {
 		err = LLErrorCode::FunctionError;
 	}
-	return static_cast<int>(err);
+	return err;
 }
 
 /* Sets the element in the I0,I1 position in T0 to its value in T1, returning T0 */

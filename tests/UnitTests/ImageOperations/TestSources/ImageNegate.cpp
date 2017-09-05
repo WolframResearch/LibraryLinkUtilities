@@ -52,5 +52,5 @@ LIBRARY_LINK_FUNCTION(ImageNegate) {
 	catch (std::exception& e) {
 		err = LLErrorCode::FunctionError;
 	}
-	return static_cast<int>(err);
+	return err;
 }

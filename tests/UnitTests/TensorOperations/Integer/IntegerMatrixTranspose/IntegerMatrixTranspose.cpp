@@ -25,5 +25,5 @@ EXTERN_C DLLEXPORT int IntegerMatrixTranspose(WolframLibraryData libData, mint A
 	catch (std::exception& e) {
 		err = LLErrorCode::FunctionError;
 	}
-	return static_cast<int>(err);
+	return err;
 }

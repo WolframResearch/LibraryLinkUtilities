@@ -1,6 +1,8 @@
 #include "WolframLibrary.h"
 #include "MArgumentManager.h"
 
+#include <numeric>
+
 using namespace LibraryLinkUtils;
 
 EXTERN_C DLLEXPORT int MeanValue(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {

@@ -23,7 +23,7 @@ LIBRARY_LINK_FUNCTION(EchoImage1) {
 	catch (std::exception& e) {
 		err = LLErrorCode::FunctionError;
 	}
-	return static_cast<int>(err);
+	return err;
 }
 
 LIBRARY_LINK_FUNCTION(EchoImage2) {
@@ -62,5 +62,46 @@ LIBRARY_LINK_FUNCTION(EchoImage2) {
 	catch (std::exception& e) {
 		err = LLErrorCode::FunctionError;
 	}
-	return static_cast<int>(err);
+	return err;
+}
+
+LIBRARY_LINK_FUNCTION(ConvertImageToByte) {
+	auto err = LLErrorCode::NoError;
+	try {
+		MArgumentManager mngr(libData, Argc, Args, Res);
+		mngr.operateOnImage(0, [&mngr](auto&& in) {
+			Image<std::uint8_t> out(in);
+			mngr.setImage(out);
+		});
+	}
+	catch (LibraryLinkError& e) {
+		err = e.which();
+	}
+	catch (std::exception& e) {
+		err = LLErrorCode::FunctionError;
+	}
+	return err;
+}
+
+LIBRARY_LINK_FUNCTION(UnifyImageTypes) {
+	auto err = LLErrorCode::NoError;
+	try {
+		MArgumentManager mngr(libData, Argc, Args, Res);
+		mngr.operateOnImage(0, [&mngr](auto&& in) {
+			using T = typename std::remove_reference_t<decltype(in)>::value_type;
+			T x = 0;
+			mngr.operateOnImage(1, [&mngr, x](auto&& in2) {
+				Image<decltype(x)> out(in2);
+				mngr.setImage(out);
+			});
+
+		});
+	}
+	catch (LibraryLinkError& e) {
+		err = e.which();
+	}
+	catch (std::exception& e) {
+		err = LLErrorCode::FunctionError;
+	}
+	return err;
 }
