@@ -23,7 +23,7 @@ LIBRARY_LINK_FUNCTION(EchoImage1) {
 	catch (std::exception& e) {
 		err = LLErrorCode::FunctionError;
 	}
-	return err;
+	return static_cast<int>(err);
 }
 
 LIBRARY_LINK_FUNCTION(EchoImage2) {
@@ -62,7 +62,7 @@ LIBRARY_LINK_FUNCTION(EchoImage2) {
 	catch (std::exception& e) {
 		err = LLErrorCode::FunctionError;
 	}
-	return err;
+	return static_cast<int>(err);
 }
 
 LIBRARY_LINK_FUNCTION(ConvertImageToByte) {
@@ -80,7 +80,7 @@ LIBRARY_LINK_FUNCTION(ConvertImageToByte) {
 	catch (std::exception& e) {
 		err = LLErrorCode::FunctionError;
 	}
-	return err;
+	return static_cast<int>(err);
 }
 
 LIBRARY_LINK_FUNCTION(UnifyImageTypes) {
@@ -103,5 +103,5 @@ LIBRARY_LINK_FUNCTION(UnifyImageTypes) {
 	catch (std::exception& e) {
 		err = LLErrorCode::FunctionError;
 	}
-	return err;
+	return static_cast<int>(err);
 }

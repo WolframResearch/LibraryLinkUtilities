@@ -33,7 +33,7 @@ LIBRARY_LINK_FUNCTION(echoRawArray) {
 	catch (std::exception& e) {
 		err = LLErrorCode::FunctionError;
 	}
-	return err;
+	return static_cast<int>(err);
 }
 
 /*
@@ -53,7 +53,7 @@ LIBRARY_LINK_FUNCTION(getRawArrayLength) {
 	catch (std::exception& e) {
 		err = LLErrorCode::FunctionError;
 	}
-	return err;
+	return static_cast<int>(err);
 }
 
 LIBRARY_LINK_FUNCTION(getRawArrayRank) {
@@ -70,7 +70,7 @@ LIBRARY_LINK_FUNCTION(getRawArrayRank) {
 	catch (std::exception& e) {
 		err = LLErrorCode::FunctionError;
 	}
-	return err;
+	return static_cast<int>(err);
 }
 
 //create new raw array
@@ -87,7 +87,7 @@ LIBRARY_LINK_FUNCTION(newRawArray) {
 	catch (std::exception& e) {
 		err = LLErrorCode::FunctionError;
 	}
-	return err;
+	return static_cast<int>(err);
 }
 
 //clone RawArray
@@ -106,7 +106,7 @@ LIBRARY_LINK_FUNCTION(cloneRawArray) {
 	catch (std::exception& e) {
 		err = LLErrorCode::FunctionError;
 	}
-	return err;
+	return static_cast<int>(err);
 }
 
 LIBRARY_LINK_FUNCTION(changeSharedRawArray) {
@@ -160,5 +160,5 @@ EXTERN_C DLLEXPORT int rawZeroData(WolframLibraryData libData, mint Argc, MArgum
 	catch (std::exception& e) {
 		err = LLErrorCode::FunctionError;
 	}
-	return err;
+	return static_cast<int>(err);
 }

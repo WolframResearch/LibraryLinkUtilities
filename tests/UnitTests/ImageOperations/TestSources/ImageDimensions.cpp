@@ -21,7 +21,7 @@ LIBRARY_LINK_FUNCTION(ImageColumnCount) {
 	catch (std::exception& e) {
 		err = LLErrorCode::FunctionError;
 	}
-	return err;
+	return static_cast<int>(err);
 }
 
 
@@ -39,7 +39,7 @@ LIBRARY_LINK_FUNCTION(ImageRank) {
 	catch (std::exception& e) {
 		err = LLErrorCode::FunctionError;
 	}
-	return err;
+	return static_cast<int>(err);
 }
 
 
@@ -57,5 +57,5 @@ LIBRARY_LINK_FUNCTION(ImageRowCount) {
 	catch (std::exception& e) {
 		err = LLErrorCode::FunctionError;
 	}
-	return err;
+	return static_cast<int>(err);
 }
