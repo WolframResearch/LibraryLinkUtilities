@@ -45,7 +45,7 @@ namespace LibraryLinkUtils {
 		 *
 		 *   @warning		It is user's responsibility to make sure that length of v fits into mint!
 		 **/
-		template<typename Container, typename = disable_if_same_or_derived<Tensor, Container>>
+		template<typename Container, typename = disable_if_same_or_derived<Tensor<T>, Container>>
 		Tensor(Container&& v);
 
 		/**

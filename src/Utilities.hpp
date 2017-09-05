@@ -20,7 +20,7 @@
 namespace LibraryLinkUtils {
 
 	template<typename A, typename B>
-	using disable_if_same_or_derived = typename std::enable_if_t<!std::is_base_of<A, typename std::remove_cv_t<typename std::remove_reference_t<B>>>::value>;
+	using disable_if_same_or_derived = typename std::enable_if_t<!std::is_same<A, B>::value && !std::is_base_of<A, typename std::remove_cv_t<typename std::remove_reference_t<B>>>::value>;
 
 	template<rawarray_t>
 	struct RawArrayFromEnum;
