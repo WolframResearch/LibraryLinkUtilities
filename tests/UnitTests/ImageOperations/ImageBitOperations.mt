@@ -42,6 +42,40 @@ Test[
 ]
 
 Test[
+	ConvertImageToByte[testImage]
+	,
+	Image[testImage, "Byte"]
+	,
+	TestID->"ImageBitOperations-20170904-J4P2U1"
+];
+
+
+Test[
+	ConvertImageToByte[testImage3D]
+	,
+	Image3D[testImage3D, "Byte"]
+	,
+	TestID->"ImageBitOperations-20170904-U9Q4T8"
+];
+
+Test[
+	UnifyImageTypes[ConvertImageToByte[testImage3D], testImage]
+	,
+	Image[testImage, "Byte"]
+	,
+	TestID->"ImageBitOperations-20170904-M7Y3X8"
+];
+
+
+Test[
+	UnifyImageTypes[ConvertImageToByte[testImage], testImage3D]
+	,
+	Image3D[testImage3D, "Byte"]
+	,
+	TestID->"ImageBitOperations-20170904-O5V0V7"
+];
+
+Test[
 	ImageNegate[Image[{{1}},"Bit"]]//ImageData
 	,
 	{{0}}

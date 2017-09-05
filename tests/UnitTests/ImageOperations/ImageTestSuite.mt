@@ -1,4 +1,5 @@
 Needs["MUnit`"]
+Needs["CCompilerDriver`"];
 
 currentDirectory = DirectoryName[$CurrentFile];
 Get[FileNameJoin[{ParentDirectory[currentDirectory], "TestConfig.wl"}]];
@@ -12,15 +13,12 @@ Get[FileNameJoin[{sourceDirectory, "ImageDimensions.wl"}]];
 testFiles = FileNames["Image*Operations.mt", { DirectoryName[$CurrentFile] }];
 TestSuite[testFiles];
 
+LibraryUnload[ImgEchoLib];
+(* LibraryUnload[ImgNegLib]; <-  Kernel crashes if you try to unload both ImgNegLib and ImgDimLib, not sure why *)
+LibraryUnload[ImgDimLib];
 
-LibraryFunctionUnload[EchoImage1];
-LibraryFunctionUnload[EchoImage2];
-LibraryFunctionUnload[ImageNegate];
-LibraryFunctionUnload[ImageRowCount];
-LibraryFunctionUnload[ImageColumnCount];
-LibraryFunctionUnload[ImageRank];
 (*Delete all created libraries(to avoid CopyFile::filex error seen on windows)*)
-DeleteFile[FindLibrary["EchoImage"]];
-DeleteFile[FindLibrary["ImageNegate"]];
-DeleteFile[FindLibrary["ImageDimensions"]];
+DeleteFile[ImgEchoLib];
+DeleteFile[ImgNegLib];
+DeleteFile[ImgDimLib];
 
