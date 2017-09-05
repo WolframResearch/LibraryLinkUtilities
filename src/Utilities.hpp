@@ -16,35 +16,11 @@
 #include "WolframLibrary.h"
 #include "WolframRawArrayLibrary.h"
 
-//#include "MArray.hpp"
-//#include "RawArray.h"
-//#include "Tensor.h"
 
 namespace LibraryLinkUtils {
 
 	template<typename A, typename B>
 	using disable_if_same_or_derived = typename std::enable_if_t<!std::is_base_of<A, typename std::remove_cv_t<typename std::remove_reference_t<B>>>::value>;
-
-	template<typename T>
-	struct is_MArray : std::false_type {};
-
-//	template<typename T>
-//	struct is_MArray<MArray<T>> : std::true_type {};
-//
-//	template<typename T>
-//	bool is_MArray_v = is_MArray<T>::value;
-
-//	template<typename T>
-//	struct is_RawArray : std::false_type {};
-//
-//	template<typename T>
-//	struct is_RawArray<RawArray<T>> : std::true_type {};
-//
-//	template<typename T>
-//	struct is_Tensor : std::false_type {};
-//
-//	template<typename T>
-//	struct is_Tensor<Tensor<T>> : std::true_type {};
 
 	template<rawarray_t>
 	struct RawArrayFromEnum;

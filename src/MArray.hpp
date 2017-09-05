@@ -9,22 +9,11 @@
 #ifndef LLUTILS_MARRAY_HPP_
 #define LLUTILS_MARRAY_HPP_
 
-#include "WolframLibrary.h"
-#include "WolframImageLibrary.h"
-#include "WolframRawArrayLibrary.h"
-
-#include <algorithm>
-#include <functional>
-#include <initializer_list>
 #include <iostream>
-#include <iterator>
-#include <limits>
-#include <numeric>
-#include <type_traits>
+#include <ostream>
 #include <vector>
 
 #include "MArrayBase.h"
-#include "Utilities.hpp"
 
 namespace LibraryLinkUtils {
 
@@ -49,6 +38,13 @@ namespace LibraryLinkUtils {
 
 		/// Type of elements stored
 		using value_type = T;
+
+		using MArrayBase::MArrayBase;
+
+		MArray() = default;
+
+		template<typename U>
+		MArray(const MArray<U>& ma2) : MArrayBase(ma2) {};
 
 		/**
 		 *	@brief Get raw pointer to underlying data

@@ -113,19 +113,7 @@ namespace LibraryLinkUtils {
 
 	void MArgumentManager::setLibraryData(WolframLibraryData ld) noexcept {
 		libData = ld;
-		MArray<std::int8_t>::setLibraryData(libData);
-		MArray<std::uint8_t>::setLibraryData(libData);
-		MArray<std::int16_t>::setLibraryData(libData);
-		MArray<std::uint16_t>::setLibraryData(libData);
-		MArray<std::int32_t>::setLibraryData(libData);
-		MArray<std::uint32_t>::setLibraryData(libData);
-		MArray<std::int64_t>::setLibraryData(libData);
-		MArray<std::uint64_t>::setLibraryData(libData);
-		MArray<mint>::setLibraryData(libData);
-		MArray<float>::setLibraryData(libData);
-		MArray<double>::setLibraryData(libData);
-		MArray<std::complex<float>>::setLibraryData(libData);
-		MArray<std::complex<double>>::setLibraryData(libData);
+		MArrayBase::setLibraryData(libData);
 	}
 
 } /* namespace LibraryLinkUtils */

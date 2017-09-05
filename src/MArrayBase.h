@@ -8,7 +8,16 @@
 #ifndef LLUTILS_MARRAYBASE_H_
 #define LLUTILS_MARRAYBASE_H_
 
+#include "WolframLibrary.h"
+#include "WolframImageLibrary.h"
+#include "WolframRawArrayLibrary.h"
+
+#include <initializer_list>
+#include <type_traits>
+#include <vector>
+
 #include "LibraryLinkError.h"
+#include "Utilities.hpp"
 
 namespace LibraryLinkUtils {
 
@@ -36,7 +45,8 @@ namespace LibraryLinkUtils {
 		 **/
 		template<
 			class Container,
-			typename = typename std::enable_if_t<std::is_integral_v<typename std::remove_reference_t<Container>::value_type>>
+			typename = disable_if_same_or_derived<MArrayBase, Container>,
+			typename = typename std::enable_if_t<std::is_integral<typename std::remove_reference_t<Container>::value_type>::value>
 		>
 		MArrayBase(Container&& dims);
 
@@ -136,29 +146,12 @@ namespace LibraryLinkUtils {
 		/// Populate \c offsets member
 		void fillOffsets();
 
-	private:
 		/**
 		 *	@brief 		Convert coordinates of an element in a multidimensional MArray to the corresponding index in a flat list of elements
 		 *	@param[in]	indices - vector with coordinates of desired data element
 		 *	@throws		indexError() - if \c indices are out-of-bounds
 		 **/
 		mint getIndex(const std::vector<mint>& indices) const;
-
-
-		/**
-		 *	@brief 		Check if container size will fit into \b mint
-		 *	@param[in]	v - a container
-		 *	@throws		LLErrorCode::DimensionsError - if \c v is too big
-		 **/
-		template<typename Container>
-		mint checkContainerSize(Container&& v) const;
-
-		/**
-		 *	@brief 		Check if initializer list size will fit into \b mint
-		 *	@param[in]	v - an initializer list
-		 *	@throws		LLErrorCode::DimensionsError - if \c v is too big
-		 **/
-		mint checkContainerSize(std::initializer_list<mint> v) const;
 
 		/**
 		 *   @brief 	Purely virtual method for throwing exception concerning index validity within the container
@@ -180,6 +173,22 @@ namespace LibraryLinkUtils {
 		virtual void sizeError() const {
 			ErrorManager::throwException(LLErrorCode::DimensionsError);
 		}
+
+	private:
+		/**
+		 *	@brief 		Check if container size will fit into \b mint
+		 *	@param[in]	v - a container
+		 *	@throws		LLErrorCode::DimensionsError - if \c v is too big
+		 **/
+		template<typename Container>
+		mint checkContainerSize(Container&& v) const;
+
+		/**
+		 *	@brief 		Check if initializer list size will fit into \b mint
+		 *	@param[in]	v - an initializer list
+		 *	@throws		LLErrorCode::DimensionsError - if \c v is too big
+		 **/
+		mint checkContainerSize(std::initializer_list<mint> v) const;
 
 		/**
 		 *   @brief 	Create internal container

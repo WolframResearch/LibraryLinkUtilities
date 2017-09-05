@@ -7,7 +7,11 @@
 
 #include "MArrayBase.h"
 
-#include <vector>
+#include <algorithm>
+#include <functional>
+#include <iterator>
+#include <limits>
+#include <numeric>
 
 namespace LibraryLinkUtils {
 
