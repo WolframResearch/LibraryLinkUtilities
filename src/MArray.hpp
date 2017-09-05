@@ -9,11 +9,16 @@
 #ifndef LLUTILS_MARRAY_HPP_
 #define LLUTILS_MARRAY_HPP_
 
-#include <iostream>
+#include "WolframLibrary.h"
+
+#include <initializer_list>
 #include <ostream>
+#include <type_traits>
+#include <utility>
 #include <vector>
 
 #include "MArrayBase.h"
+#include "Utilities.hpp"
 
 namespace LibraryLinkUtils {
 
@@ -39,10 +44,36 @@ namespace LibraryLinkUtils {
 		/// Type of elements stored
 		using value_type = T;
 
-		using MArrayBase::MArrayBase;
-
 		MArray() = default;
 
+		/**
+		 * 	@brief		Constructs uninitialized container with given dimensions
+		 *	@param[in]	dims - list of MArray dimensions
+		 *	@throws		LLErrorCode::DimensionsError - if \c dims are invalid
+		 *	@throws		LLErrorCode::FunctionError - if any of Wolfram*Library structures was not initialized
+		 **/
+		MArray(std::initializer_list<mint> dims) : MArrayBase(dims) {};
+
+		/**
+		 * 	@brief		Constructs uninitialized container with given dimensions
+		 *	@param[in]	dims - container with MArray dimensions
+		 *	@tparam		Container - any type of container that has member \b value_type and this type is convertible to mint
+		 *	@throws		LLErrorCode::DimensionsError - if \c dims are invalid
+		 *	@throws		LLErrorCode::FunctionError - if any of Wolfram*Library structures was not initialized
+		 **/
+		template<
+			class Container,
+			typename = disable_if_same_or_derived<MArrayBase, Container>,
+			typename = typename std::enable_if_t<std::is_integral<typename std::remove_reference_t<Container>::value_type>::value>
+		>
+		MArray(Container&& dims) : MArrayBase(std::forward<Container>(dims)) {};
+
+
+		/**
+		 * 	@brief		Converts given MArray of type U into MArray of type T
+		 *	@param[in]	dims - container with MArray dimensions
+		 *	@tparam		U - any type convertible to T
+		 **/
 		template<typename U>
 		MArray(const MArray<U>& ma2) : MArrayBase(ma2) {};
 

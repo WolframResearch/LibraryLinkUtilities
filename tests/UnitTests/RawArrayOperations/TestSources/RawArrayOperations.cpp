@@ -1,6 +1,8 @@
 #include "WolframLibrary.h"
 #include "WolframRawArrayLibrary.h"
 
+#include <iostream>
+
 #include "MArgumentManager.h"
 #include "LibraryLinkFunctionMacro.h"
 

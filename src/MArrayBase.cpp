@@ -1,8 +1,10 @@
-/*
- * MArrayBase.cpp
+/**
+ * @file	MArrayBase.cpp
+ * @author	Rafal Chojna <rafalc@wolfram.com>
+ * @date	4/09/2017
  *
- *  Created on: 04.09.2017
- *      Author: RaV
+ * @brief	Definitions of non-template member functions and static data members from MArrayBase class
+ *
  */
 
 #include "MArrayBase.h"

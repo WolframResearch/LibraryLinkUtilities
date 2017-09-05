@@ -1,8 +1,10 @@
-/*
- * MArrayBase.h
+/**
+ * @file	MArrayBase.h
+ * @author	Rafal Chojna <rafalc@wolfram.com>
+ * @date	4/09/2017
  *
- *  Created on: 04.09.2017
- *      Author: RaV
+ * @brief	Base class for all C++ wrappers of LibraryLink containers
+ *
  */
 
 #ifndef LLUTILS_MARRAYBASE_H_
