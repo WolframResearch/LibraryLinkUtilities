@@ -79,7 +79,7 @@ EXTERN_C DLLEXPORT int apply_callback(WolframLibraryData libData, mint Argc, MAr
 		for (auto j = 1; j < call_nargs; j++) {
 			T = mngr.getTensor<double>(j);
 			if (T.size() != n)
-				ErrorManager::throwException(LLErrorCode::DimensionsError);
+				ErrorManager::throwException("DimensionsError");
 			tdata[j] = T.data();
 		}
 
@@ -91,7 +91,7 @@ EXTERN_C DLLEXPORT int apply_callback(WolframLibraryData libData, mint Argc, MAr
 				MArgument_getRealAddress(cbArgs[j]) = tdata[j] + i;
 			MArgument_getRealAddress(cbArgs[call_nargs]) = r + i;
 			if ((*libData->callLibraryCallbackFunction)(call_id, call_nargs, cbArgs, cbArgs[1])) {
-				ErrorManager::throwException(LLErrorCode::FunctionError);
+				ErrorManager::throwException("FunctionError");
 			}
 		}
 		mngr.setTensor(Tres);

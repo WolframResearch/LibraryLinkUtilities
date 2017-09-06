@@ -62,7 +62,7 @@ EXTERN_C DLLEXPORT int sparse_properties(WolframLibraryData libData, mint Argc, 
 			err = LIBRARY_FUNCTION_ERROR;
 		}
 		if (err)
-			ErrorManager::throwException(LLErrorCode::FunctionError);
+			ErrorManager::throwException("FunctionError");
 		if (!Tres)
 			libData->MTensor_clone(*T, &Tres);
 

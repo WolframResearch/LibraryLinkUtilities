@@ -114,10 +114,10 @@ struct RGBImageToGrayscale {
 	template<typename T>
 	void operator()(Image<T> imageIn, MArgumentManager& mngr) {
 		if (imageIn.colorspace() != MImage_CS_RGB)
-			ErrorManager::throwException(LLErrorCode::FunctionError);
+			ErrorManager::throwException("FunctionError");
 		/* This function accepts only 2D images, but can be easily extended to work with Image3D.*/
 		if (imageIn.is3D())
-			ErrorManager::throwException(LLErrorCode::FunctionError);
+			ErrorManager::throwException("FunctionError");
 
 		auto rows = imageIn.rows();
 		auto columns = imageIn.columns();
@@ -131,7 +131,7 @@ struct RGBImageToGrayscale {
 
 template<>
 inline void RGBImageToGrayscale::operator()(Image<std::int8_t>, MArgumentManager&) {
-	ErrorManager::throwException(LLErrorCode::FunctionError);
+	ErrorManager::throwException("FunctionError");
 }
 
 /* Convert interleaved RGB image to grayscale */
@@ -154,10 +154,10 @@ struct RGBHistogramEqualization {
 	template<typename T>
 	void operator()(Image<T> imageIn, MArgumentManager& mngr) {
 		if (imageIn.colorspace() != MImage_CS_RGB)
-			ErrorManager::throwException(LLErrorCode::FunctionError);
+			ErrorManager::throwException("FunctionError");
 		/* This function accepts only 2D images, but can be easily extended to work with Image3D.*/
 		if (imageIn.is3D())
-			ErrorManager::throwException(LLErrorCode::FunctionError);
+			ErrorManager::throwException("FunctionError");
 
 		auto rows = imageIn.rows();
 		auto columns = imageIn.columns();
@@ -194,7 +194,7 @@ struct RGBHistogramEqualization {
 
 template<>
 inline void RGBHistogramEqualization::operator()(Image<std::int8_t>, MArgumentManager&) {
-	ErrorManager::throwException(LLErrorCode::FunctionError);
+	ErrorManager::throwException("FunctionError");
 }
 
 EXTERN_C DLLEXPORT int rgbHistogramEqualization(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument res) {
@@ -351,10 +351,10 @@ EXTERN_C DLLEXPORT int reinhard_global(WolframLibraryData libData, mint Argc, MA
 
 		auto imageIn = mngr.getImage<raw_t_real32>(0);
 		if (imageIn.colorspace() != MImage_CS_RGB)
-			ErrorManager::throwException(LLErrorCode::FunctionError);
+			ErrorManager::throwException("FunctionError");
 		/* This function accepts only 2D images, but can be easily extended to work with Image3D.*/
 		if (imageIn.is3D())
-			ErrorManager::throwException(LLErrorCode::FunctionError);
+			ErrorManager::throwException("FunctionError");
 
 		auto height = imageIn.rows();
 		auto width = imageIn.columns();
@@ -639,10 +639,10 @@ EXTERN_C DLLEXPORT int reinhard_local(WolframLibraryData libData, mint Argc, MAr
 
 		auto imageIn = mngr.getImage<raw_t_real32>(0);
 		if (imageIn.colorspace() != MImage_CS_RGB)
-			ErrorManager::throwException(LLErrorCode::FunctionError);
+			ErrorManager::throwException("FunctionError");
 		/* This function accepts only 2D images, but can be easily extended to work with Image3D.*/
 		if (imageIn.is3D())
-			ErrorManager::throwException(LLErrorCode::FunctionError);
+			ErrorManager::throwException("FunctionError");
 
 		auto height = imageIn.rows();
 		auto width = imageIn.columns();
@@ -871,10 +871,10 @@ EXTERN_C DLLEXPORT int sepia(WolframLibraryData libData, mint Argc, MArgument *A
 
 		auto imageIn = mngr.getImage<raw_t_real32>(0);
 		if (imageIn.colorspace() != MImage_CS_RGB)
-			ErrorManager::throwException(LLErrorCode::FunctionError);
+			ErrorManager::throwException("FunctionError");
 		/* This function accepts only 2D images, but can be easily extended to work with Image3D.*/
 		if (imageIn.is3D())
-			ErrorManager::throwException(LLErrorCode::FunctionError);
+			ErrorManager::throwException("FunctionError");
 
 		auto height = imageIn.rows();
 		auto width = imageIn.columns();
@@ -979,10 +979,10 @@ EXTERN_C DLLEXPORT int lomography(WolframLibraryData libData, mint Argc, MArgume
 
 		auto imageIn = mngr.getImage<raw_t_real32>(0);
 		if (imageIn.colorspace() != MImage_CS_RGB)
-			ErrorManager::throwException(LLErrorCode::FunctionError);
+			ErrorManager::throwException("FunctionError");
 		/* This function accepts only 2D images, but can be easily extended to work with Image3D.*/
 		if (imageIn.is3D())
-			ErrorManager::throwException(LLErrorCode::FunctionError);
+			ErrorManager::throwException("FunctionError");
 
 		auto height = imageIn.rows();
 		auto width = imageIn.columns();

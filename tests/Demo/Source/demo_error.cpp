@@ -94,13 +94,13 @@ EXTERN_C DLLEXPORT int errordemo4(WolframLibraryData libData, mint Argc, MArgume
 
 		if (T0.rank() != 1) {
 			libData->Message("rankerror");
-			ErrorManager::throwException(LLErrorCode::RankError);
+			ErrorManager::throwException("RankError");
 		}
 
 		auto& dims = T0.dimensions();
 		if ((I0 < 1) || (I0 > dims[0])) {
 			libData->Message("outofrange");
-			ErrorManager::throwException(LLErrorCode::DimensionsError);
+			ErrorManager::throwException("DimensionsError");
 		}
 
 		mngr.setReal(T0[I0 - 1]);

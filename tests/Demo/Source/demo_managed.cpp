@@ -41,9 +41,9 @@ EXTERN_C DLLEXPORT int setInstanceState(WolframLibraryData libData, mint Argc, M
 		auto T = mngr.getTensor<mint>(1);
 
 		if (T.rank() != 1)
-			ErrorManager::throwException(LLErrorCode::RankError);
+			ErrorManager::throwException("RankError");
 		if (T.dimension(0) != 4)
-			ErrorManager::throwException(LLErrorCode::DimensionsError);
+			ErrorManager::throwException("DimensionsError");
 
 		map[id] = std::make_unique<Tensor<mint>>(T);
 
@@ -87,7 +87,7 @@ EXTERN_C DLLEXPORT int generateFromInstance(WolframLibraryData libData, mint Arg
 		auto* T = map.at(id).get();
 		auto* p = T->data();
 		if (!p)
-			ErrorManager::throwException(LLErrorCode::FunctionError);
+			ErrorManager::throwException("FunctionError");
 
 		auto a = p[A_];
 		auto c = p[C_];
@@ -96,7 +96,7 @@ EXTERN_C DLLEXPORT int generateFromInstance(WolframLibraryData libData, mint Arg
 
 		auto Tdims = mngr.getTensor<mint>(1);
 		if (Tdims.rank() != 1) {
-			ErrorManager::throwException(LLErrorCode::TypeError);
+			ErrorManager::throwException("TypeError");
 		}
 
 		Tensor<double> Tres(0., std::move(Tdims));
