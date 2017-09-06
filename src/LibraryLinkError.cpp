@@ -11,14 +11,14 @@ namespace LibraryLinkUtils {
 
 	ErrorManager::ErrorMap ErrorManager::errors = initErrorMap({
 		// Original LibraryLink error codes:
-		{ LLErrorCode::VersionError, "VersionError", "same as LIBRARY_VERSION_ERROR" },
-		{ LLErrorCode::FunctionError, "FunctionError", "same as LIBRARY_FUNCTION_ERROR" },
-		{ LLErrorCode::MemoryError, "MemoryError", "same as LIBRARY_MEMORY_ERROR" },
-		{ LLErrorCode::NumericalError, "NumericalError", "same as LIBRARY_NUMERICAL_ERROR" },
-		{ LLErrorCode::DimensionsError, "DimensionsError", "same as LIBRARY_DIMENSIONS_ERROR" },
-		{ LLErrorCode::RankError, "RankError", "same as LIBRARY_RANK_ERROR" },
-		{ LLErrorCode::TypeError, "TypeError", "same as LIBRARY_TYPE_ERROR" },
-		{ LLErrorCode::NoError, "NoError", "same as LIBRARY_NO_ERROR" },
+		{ LLErrorCode::VersionError, "VersionError", "An error due to an incompatible function call was encountered. The library was compiled with a previous WolframLibrary version." },
+		{ LLErrorCode::FunctionError, "FunctionError", "An error occurred in library function." },
+		{ LLErrorCode::MemoryError, "MemoryError", "An error caused by failed memory allocation or insufficient memory was encountered." },
+		{ LLErrorCode::NumericalError, "NumericalError", "A numerical error was encountered." },
+		{ LLErrorCode::DimensionsError, "DimensionsError", "An error caused by inconsistent dimensions or exceeding array bounds was encountered." },
+		{ LLErrorCode::RankError, "RankError", "An error caused by inconsistent tensor rank was encountered." },
+		{ LLErrorCode::TypeError, "TypeError", "An error caused by inconsistent types was encountered." },
+		{ LLErrorCode::NoError, "NoError", "Everything was OK." },
 
 		// Reserved for use in paclets:
 		// -1
