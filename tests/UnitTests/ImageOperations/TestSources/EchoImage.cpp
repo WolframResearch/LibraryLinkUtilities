@@ -5,6 +5,7 @@
 #include "LibraryLinkFunctionMacro.h"
 
 #include <type_traits>
+#include <cstdint>
 
 using namespace LibraryLinkUtils;
 

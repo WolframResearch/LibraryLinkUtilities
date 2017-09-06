@@ -1,9 +1,10 @@
 #include "WolframLibrary.h"
-#include "WolframImageLibrary.h"
 
 #include "MArgumentManager.h"
 #include "Image.h"
+#include "LibraryLinkError.h"
 #include "LibraryLinkFunctionMacro.h"
+#include <cstdint>
 
 using namespace LibraryLinkUtils;
 
