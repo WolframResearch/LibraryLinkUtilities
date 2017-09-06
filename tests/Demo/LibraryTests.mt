@@ -723,7 +723,7 @@ Test[
 Test[
 	getCErrorCodes[]["TensorTypeError"]
 	,
-	{ -304, "Tensor type mismatch" }
+	{ -304, "An error was caused by an MTensor type mismatch." }
 	,
 	TestID->"LibraryTests-20170818-H4B5A2"
 ]
