@@ -29,7 +29,7 @@ EXTERN_C DLLEXPORT int loadRealArray(WolframLibraryData libData, mint Argc, MArg
 	catch (std::exception& e) {
 		err = LLErrorCode::FunctionError;
 	}
-	return static_cast<int>(err);
+	return err;
 }
 
 EXTERN_C DLLEXPORT int getRealArray(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
@@ -48,7 +48,7 @@ EXTERN_C DLLEXPORT int getRealArray(WolframLibraryData libData, mint Argc, MArgu
 	catch (std::exception& e) {
 		err = LLErrorCode::FunctionError;
 	}
-	return static_cast<int>(err);
+	return err;
 }
 
 EXTERN_C DLLEXPORT int doubleRealArray(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
@@ -68,7 +68,7 @@ EXTERN_C DLLEXPORT int doubleRealArray(WolframLibraryData libData, mint Argc, MA
 	catch (std::exception& e) {
 		err = LLErrorCode::FunctionError;
 	}
-	return static_cast<int>(err);
+	return err;
 }
 
 EXTERN_C DLLEXPORT int unloadRealArray(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
@@ -84,7 +84,7 @@ EXTERN_C DLLEXPORT int unloadRealArray(WolframLibraryData libData, mint Argc, MA
 	catch (std::exception& e) {
 		err = LLErrorCode::FunctionError;
 	}
-	return static_cast<int>(err);
+	return err;
 }
 
 //Modify the contents of tensor in C function
@@ -104,5 +104,5 @@ EXTERN_C DLLEXPORT int add1(WolframLibraryData libData, mint Argc, MArgument *Ar
 	catch (std::exception& e) {
 		err = LLErrorCode::FunctionError;
 	}
-	return static_cast<int>(err);
+	return err;
 }
