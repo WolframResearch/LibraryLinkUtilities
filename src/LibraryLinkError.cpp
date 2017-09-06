@@ -9,7 +9,7 @@
 
 namespace LibraryLinkUtils {
 
-	ErrorManager::ErrorMap ErrorManager::errors = initErrorMap({
+	ErrorManager::ErrorMap& ErrorManager::errors = initErrorMap({
 		// Original LibraryLink error codes:
 		{ LLErrorCode::VersionError, "VersionError", "An error due to an incompatible function call was encountered. The library was compiled with a previous WolframLibrary version." },
 		{ LLErrorCode::FunctionError, "FunctionError", "An error occurred in library function." },
@@ -65,8 +65,8 @@ namespace LibraryLinkUtils {
 	const ErrorManager::ErrorMap::const_iterator ErrorManager::insertionHint = errors.find("MArgumentInitError");
 	int ErrorManager::nextErrorId = LLErrorCode::NoError - 1;
 
-	auto ErrorManager::initErrorMap(std::initializer_list<LibraryLinkError> initList) -> ErrorMap {
-		ErrorMap errMap;
+	auto ErrorManager::initErrorMap(std::initializer_list<LibraryLinkError> initList) -> ErrorMap& {
+		static ErrorMap errMap;
 		for (auto&& err : initList) {
 			errMap.insert({ err.name(), std::move(err)});
 		}

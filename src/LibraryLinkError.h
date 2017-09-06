@@ -161,8 +161,8 @@ namespace LibraryLinkUtils {
 		static const LibraryLinkError& findError(const std::string& errorName);
 
 		using ErrorMap = std::unordered_map<std::string, const LibraryLinkError>;
-		static ErrorMap errors;
-		static ErrorMap initErrorMap(std::initializer_list<LibraryLinkError> initList);
+		static ErrorMap& errors;
+		static ErrorMap& initErrorMap(std::initializer_list<LibraryLinkError> initList);
 
 		static const ErrorMap::const_iterator insertionHint;
 		static int nextErrorId;
