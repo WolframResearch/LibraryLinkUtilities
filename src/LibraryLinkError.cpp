@@ -11,14 +11,14 @@ namespace LibraryLinkUtils {
 
 	ErrorManager::ErrorMap& ErrorManager::errors = initErrorMap({
 		// Original LibraryLink error codes:
-		{ LLErrorCode::VersionError, "VersionError", "An error due to an incompatible function call was encountered. The library was compiled with a previous WolframLibrary version." },
-		{ LLErrorCode::FunctionError, "FunctionError", "An error occurred in library function." },
-		{ LLErrorCode::MemoryError, "MemoryError", "An error caused by failed memory allocation or insufficient memory was encountered." },
+		{ LLErrorCode::VersionError, "VersionError", "An error was caused by an incompatible function call. The library was compiled with a previous WolframLibrary version." },
+		{ LLErrorCode::FunctionError, "FunctionError", "An error occurred in the library function." },
+		{ LLErrorCode::MemoryError, "MemoryError", "An error was caused by failed memory allocation or insufficient memory." },
 		{ LLErrorCode::NumericalError, "NumericalError", "A numerical error was encountered." },
-		{ LLErrorCode::DimensionsError, "DimensionsError", "An error caused by inconsistent dimensions or exceeding array bounds was encountered." },
-		{ LLErrorCode::RankError, "RankError", "An error caused by inconsistent tensor rank was encountered." },
+		{ LLErrorCode::DimensionsError, "DimensionsError", "An error caused by inconsistent dimensions or by exceeding array bounds." },
+		{ LLErrorCode::RankError, "RankError", "An error was caused by a tensor with an inconsistent rank." },
 		{ LLErrorCode::TypeError, "TypeError", "An error caused by inconsistent types was encountered." },
-		{ LLErrorCode::NoError, "NoError", "Everything was OK." },
+		{ LLErrorCode::NoError, "NoError", "No errors occurred." },
 
 		// Reserved for use in paclets:
 		// -1
@@ -26,40 +26,40 @@ namespace LibraryLinkUtils {
 		// -100
 
 		// MArgument errors: [-101 : -150]
-		{ LLErrorCode::MArgumentInitError, "MArgumentInitError", "MArgumentManager construction failed" },
-		{ LLErrorCode::MArgumentIndexError, "MArgumentIndexError", "wrong argument index" },
-		{ LLErrorCode::MArgumentRawArrayError, "MArgumentRawArrayError", "error involving RawArray argument" },
-		{ LLErrorCode::MArgumentTensorError, "MArgumentTensorError", "error involving Tensor argument" },
-		{ LLErrorCode::MArgumentImageError, "MArgumentImageError", "error involving Image argument" },
+		{ LLErrorCode::MArgumentInitError, "MArgumentInitError", "MArgumentManager construction failed." },
+		{ LLErrorCode::MArgumentIndexError, "MArgumentIndexError", "An error was caused by an incorrect argument index." },
+		{ LLErrorCode::MArgumentRawArrayError, "MArgumentRawArrayError", "An error was caused by a RawArray argument." },
+		{ LLErrorCode::MArgumentTensorError, "MArgumentTensorError", "An error was caused by a Tensor argument." },
+		{ LLErrorCode::MArgumentImageError, "MArgumentImageError", "An error was caused by an Image argument." },
 
 		// ErrorManager errors: [-151 : -200]
-		{ LLErrorCode::ErrorManagerThrowIdError, "ErrorManagerThrowIdError", "trying to throw exception with non-existent id" },
-		{ LLErrorCode::ErrorManagerThrowNameError, "ErrorManagerThrowNameError", "trying to throw exception with non-existent name" },
-		{ LLErrorCode::ErrorManagerCreateNameError, "ErrorManagerCreateNameError", "trying to register exception with already existing name" },
+		{ LLErrorCode::ErrorManagerThrowIdError, "ErrorManagerThrowIdError", "An exception was thrown with a non-existent id." },
+		{ LLErrorCode::ErrorManagerThrowNameError, "ErrorManagerThrowNameError", "An exception was thrown with a non-existent name." },
+		{ LLErrorCode::ErrorManagerCreateNameError, "ErrorManagerCreateNameError", "An exception was registered with a name that already exists." },
 
 		// RawArray errors: [-201 : -300]
-		{ LLErrorCode::RawArrayInitError, "RawArrayInitError", "construction of RawArray failed" },
-		{ LLErrorCode::RawArrayNewError, "RawArrayNewError", "creating new MRawArray failed" },
-		{ LLErrorCode::RawArrayCloneError, "RawArrayCloneError", "MRawArray cloning failed" },
-		{ LLErrorCode::RawArrayTypeError, "RawArrayTypeError", "MRawArray type mismatch" },
-		{ LLErrorCode::RawArraySizeError, "RawArraySizeError", "wrong assumption about RawArray size" },
-		{ LLErrorCode::RawArrayIndexError, "RawArrayIndexError", "trying to access non-existing element" },
+		{ LLErrorCode::RawArrayInitError, "RawArrayInitError", "Failed to construct RawArray." },
+		{ LLErrorCode::RawArrayNewError, "RawArrayNewError", "Failed to create a new MRawArray." },
+		{ LLErrorCode::RawArrayCloneError, "RawArrayCloneError", "Failed to clone MRawArray." },
+		{ LLErrorCode::RawArrayTypeError, "RawArrayTypeError", "An error was caused by an MRawArray type mismatch." },
+		{ LLErrorCode::RawArraySizeError, "RawArraySizeError", "An error was caused by an incorrect RawArray size." },
+		{ LLErrorCode::RawArrayIndexError, "RawArrayIndexError", "An error was caused by attempting to access a nonexistent RawArray element." },
 
 		// MTensor errors: [-301 : -400]
-		{ LLErrorCode::TensorInitError, "TensorInitError", "Tensor construction failed" },
-		{ LLErrorCode::TensorNewError, "TensorNewError", "creating new MTensor failed" },
-		{ LLErrorCode::TensorCloneError, "TensorCloneError", "MTensor cloning failed" },
-		{ LLErrorCode::TensorTypeError, "TensorTypeError", "Tensor type mismatch" },
-		{ LLErrorCode::TensorSizeError, "TensorSizeError", "wrong assumption about Tensor size" },
-		{ LLErrorCode::TensorIndexError, "TensorIndexError", "trying to access non-existing element" },
+		{ LLErrorCode::TensorInitError, "TensorInitError", "Failed to construct Tensor." },
+		{ LLErrorCode::TensorNewError, "TensorNewError", "Failed to create a new MTensor." },
+		{ LLErrorCode::TensorCloneError, "TensorCloneError", "Failed to clone MTensor." },
+		{ LLErrorCode::TensorTypeError, "TensorTypeError", "An error was caused by an MTensor type mismatch." },
+		{ LLErrorCode::TensorSizeError, "TensorSizeError", "An error was caused by an incorrect Tensor size." },
+		{ LLErrorCode::TensorIndexError, "TensorIndexError", "An error was caused by attempting to access a nonexistent Tensor element." },
 
 		// MImage errors: [-401 : -500]
-		{ LLErrorCode::ImageInitError, "ImageInitError", "Image construction failed" },
-		{ LLErrorCode::ImageNewError, "ImageNewError", "creating new MImage failed" },
-		{ LLErrorCode::ImageCloneError, "ImageCloneError", "MImage cloning failed" },
-		{ LLErrorCode::ImageTypeError, "ImageTypeError", "Image type mismatch" },
-		{ LLErrorCode::ImageSizeError, "ImageSizeError", "wrong assumption about Image size" },
-		{ LLErrorCode::ImageIndexError, "ImageIndexError", "trying to access non-existing element" }
+		{ LLErrorCode::ImageInitError, "ImageInitError", "Failed to construct Image." },
+		{ LLErrorCode::ImageNewError, "ImageNewError", "Failed to create a new MImage." },
+		{ LLErrorCode::ImageCloneError, "ImageCloneError", "Failed to clone MImage." },
+		{ LLErrorCode::ImageTypeError, "ImageTypeError", "An error was caused by an MImage type mismatch." },
+		{ LLErrorCode::ImageSizeError, "ImageSizeError", "An error was caused by an incorrect Image size." },
+		{ LLErrorCode::ImageIndexError, "ImageIndexError", "An error was caused by attempting to access a nonexistent Image element." }
 	});
 
 	const ErrorManager::ErrorMap::const_iterator ErrorManager::insertionHint = errors.find("MArgumentInitError");
