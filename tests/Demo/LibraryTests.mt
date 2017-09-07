@@ -3,7 +3,6 @@
 Get[FileNameJoin[{ FileNameDrop[ $CurrentFile, -1], "DemoTestConfig.wl"}]];
 
 Print[ $Version]
-
 Print[ $CommandLine]
 
 Print[$DllDemoDir]
@@ -727,9 +726,9 @@ Test[
 	,
 	TestID->"LibraryTests-20170818-H4B5A2"
 ]
-
+$CharacterEncoding = "UTF8";
 Test[
-	getCErrorCodes[]["ąęError"]
+	getCErrorCodes[][FromCharacterCode[{261, 281, 69, 114, 114, 111, 114}, "UTF8"]] (* The key is "ąęError" *)
 	,
 	{ -2, "Let me try non-ASCII: łódź" }
 	,
