@@ -23,6 +23,13 @@
 
 namespace LibraryLinkUtils {
 
+	/**
+	 * @class MArrayBase
+	 * @brief This is the base class for all LLU containers.
+	 *
+	 * It mostly carries meta-information about container's size and dimensions, as these are independent of the data type.
+	 *
+	 */
 	class MArrayBase {
 	public:
 		/**
