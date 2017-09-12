@@ -71,7 +71,7 @@ namespace LibraryLinkUtils {
 
 		/**
 		 * 	@brief		Converts given MArray of type U into MArray of type T
-		 *	@param[in]	dims - container with MArray dimensions
+		 *	@param[in]	ma2 - MArray of any type
 		 *	@tparam		U - any type convertible to T
 		 **/
 		template<typename U>

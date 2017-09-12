@@ -9,7 +9,7 @@ _LibraryLink Utilities_ (abbr. LLU) is a set of modern C++ wrappers for most ele
 | MImage              	| Image<T>         	|
 | MArgument           	| MArgumentManager 	|
 
-For more details about each class see [the documentation](https://files.wolfram.com/temp-store/rafalc/LibraryLinkUtilities/index.html).
+For more details about each class see [the documentation](http://malgorithmswin.wri.wolfram.com:8080/importexport/LLU).
 
 __The project is new and not really field-tested. Please send all your suggestions and bugs to <rafalc@wolfram.com>__
 
@@ -20,6 +20,8 @@ But as more and more paclets are now being developed in modern C++ the integrati
 * Automatic resource management
 * Exception handling
 * Iterators for MTensor and MRawArray
+* Class-like interface for LibraryLink data structures, for example `rank()` as member function of Tensor class instead of separate function 
+`mint (*MTensor_getRank)(MTensor)`, or a copy constructor instead of `int (*MTensor_clone)(MTensor, MTensor*)`
 * Type safety
 
 The motivation behind _LibraryLink Utilities_ is to provide the aforementioned features without touching _LibraryLink_ sources.
@@ -108,11 +110,11 @@ C - style implementation:
 and C++ version with _LibraryLink Utilities_:
 ```cpp
 
-	EXTERN_C DLLEXPORT int repeatCharacters(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
-		LLErrorCode err = LLErrorCode::NoError;
+	EXTERN_C DLLEXPORT int repeatCharactersNew(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
+		auto err = LLErrorCode::NoError;
 		try {
 			// Create manager object
-			MArgumentManager mngr(Argc, Args, Res);
+			MArgumentManager mngr(libData, Argc, Args, Res);
 	
 			// Read string and RawArray arguments
 			auto& string = mngr.getString(0);
@@ -120,12 +122,12 @@ and C++ version with _LibraryLink Utilities_:
 	
 			// check RawArray rank
 			if (counts.rank() != 1) {
-				throw LLError(LLErrorCode::RankError);
+				ErrorManager::throwException(LLErrorCode::RankError);
 			}
 	
 			// check if RawArray length is equal to input string length
 			if (counts.size() != string.size()) {
-				throw LLError(LLErrorCode::DimensionsError);
+				ErrorManager::throwException(LLErrorCode::DimensionsError);
 			}
 	
 			// before we allocate memory for the output string, we have to sum all RawArray elements to see how many bytes are needed
@@ -140,16 +142,16 @@ and C++ version with _LibraryLink Utilities_:
 				outString.append(std::string(counts[i], string[i]));
 			}
 	
-			// no clean-up, just set the result
+			// clean up and set result
 			mngr.setString(std::move(outString));
 		}
-		catch (LLError& e) {
-			err = e.which();
+		catch (LibraryLinkError& e) {
+			err = e.id();
 		}
 		catch (std::exception&) {
 			err = LLErrorCode::FunctionError;
 		}
-		return static_cast<int>(err);
+		return err;
 	}
 ```
 
@@ -207,9 +209,10 @@ Minimum required version of *gcc* is 5 and for *clang* it is 3.4.
 
 Doxygen is used to generate documentation for _LibraryLink Utilities_ API. You can browse generated docs online here: 
 
-<https://files.wolfram.com/temp-store/rafalc/LibraryLinkUtilities/index.html>
+<http://malgorithmswin.wri.wolfram.com:8080/importexport/LLU>
 
 
 ## Contributors
 
-Rafał Chojna - <rafalc@wolfram.com>
+* Rafał Chojna (<rafalc@wolfram.com>) - main developer
+* Sean Cheren  (<scheren@wolfram.com>) - top-level code for error handling

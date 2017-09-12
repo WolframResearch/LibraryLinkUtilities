@@ -18,12 +18,15 @@
 
 #include "WolframLibrary.h"
 
+/**
+ * @namespace LibraryLinkUtils
+ * @brief Main namespace of LibraryLinkUtilities
+ */
 namespace LibraryLinkUtils {
 
 
 	/**
-	 * @namespace	LLErrorCode
-	 * @brief		Error codes used in LibraryLink Utilities
+	 * @brief Error codes predefined in LibraryLinkUtilities
 	 */
 	namespace LLErrorCode {
 
@@ -220,8 +223,8 @@ namespace LibraryLinkUtils {
 		static const LibraryLinkError& findError(int errorId);
 
 		/**
-		 * @brief Find error by id.
-		 * @param errorId - error id
+		 * @brief Find error by name.
+		 * @param errorName - error name
 		 * @return const& to the desired error
 		 */
 		static const LibraryLinkError& findError(const std::string& errorName);

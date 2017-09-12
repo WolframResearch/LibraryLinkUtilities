@@ -1,7 +1,10 @@
 /** 
  * @file	LibraryLinkError.cpp
- * @brief	<brief description>
- * @details	<more detailed description>
+ * @author	Rafal Chojna <rafalc@wolfram.com>
+ * @date	20/04/2017
+ *
+ * @brief	Contains definitions of ErrorManager members and implementation of interface function sendRegisteredErrors used by PacletFailure framework in LLU
+ *
  */
 
 #include "mathlink.h"

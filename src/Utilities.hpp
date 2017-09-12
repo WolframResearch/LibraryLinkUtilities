@@ -1,5 +1,5 @@
 /** 
- * @file	Utilities.h
+ * @file	Utilities.hpp
  * @author	Rafal Chojna <rafalc@wolfram.com>
  * @date	8/07/2017
  *
@@ -19,9 +19,16 @@
 
 namespace LibraryLinkUtils {
 
+	/**
+	 * @brief 	Utility type that is valid only if B is not A and not a subclass of A
+	 * @tparam	A - any type
+	 * @tparam	B - any type, will be stripped of reference and cv-qualifiers before comparing with A
+	 */
 	template<typename A, typename B>
 	using disable_if_same_or_derived = typename std::enable_if_t<!std::is_same<A, B>::value && !std::is_base_of<A, typename std::remove_cv_t<typename std::remove_reference_t<B>>>::value>;
 
+
+	/// Utility structure that matches an MRawArray data type with corresponding C++ type
 	template<rawarray_t>
 	struct RawArrayFromEnum;
 
@@ -65,6 +72,13 @@ namespace LibraryLinkUtils {
 	template<rawarray_t rat>
 	using RawArrayTypeFromEnum = typename RawArrayFromEnum<rat>::type;
 
+	/**
+	 * @brief Calls an overload of \c f() with template type matching an MRawArray type \c rat
+	 * @param raType - MRawArray type
+	 * @param f - any callable structure
+	 * @param args - additional arguments for f::operator()
+	 * @warning This function is a prototype, has not been tested yet and is likely to change in the future.
+	 */
 	template<typename Callable, typename ... Args>
 	void applyToRawArray(rawarray_t raType, Callable&& f, Args&&... args) {
 		switch (raType) {
