@@ -1,5 +1,5 @@
 /**
- * @file	LibraryLinkError.hpp
+ * @file	LibraryLinkError.h
  * @author	Rafal Chojna <rafalc@wolfram.com>
  * @date	20/04/2017
  *
@@ -22,8 +22,8 @@ namespace LibraryLinkUtils {
 
 
 	/**
-	 * @enum 	LLErrorCode
-	 * @brief 	Error codes used in LibraryLink Utilities
+	 * @namespace	LLErrorCode
+	 * @brief		Error codes used in LibraryLink Utilities
 	 */
 	namespace LLErrorCode {
 
@@ -82,9 +82,10 @@ namespace LibraryLinkUtils {
 
 	/**
 	 * @class	LibraryLinkError
-	 * @brief	This is a class template, where template parameter is an enumerated type containing (possibly user-defined) error codes.
-	 * @tparam	Enum - enumerated type with error codes
-	 * @note	Within LibraryLink Utilities \b Enum class will always be LLErrorCode
+	 * @brief	Class representing an exception in paclet code
+	 *
+	 * All exceptions that are thrown from paclet code should be of this class. To prevent users from overriding predefined LLU exceptions the constructor
+	 * of LibraryLinkError class is private. Developers should use ErrorManager::throwException method to throw exceptions.
 	 **/
 	class LibraryLinkError: public std::runtime_error {
 		friend class ErrorManager;
@@ -126,8 +127,10 @@ namespace LibraryLinkUtils {
 	private:
 		/**
 		 *   @brief         Constructs an exception with given error code and predefined error message
-		 *   @param[in]     which - error code of template type \b Enum
-		 *   @warning		Default error message assumes that the value of error code will fit into \b int
+		 *   @param[in]     which - error code
+		 *   @param[in]		t - error type/name
+		 *   @param[in]		msg - error description
+		 *   @warning		This is constructor is not supposed to be used directly by paclet developers. All errors should be thrown by ErrorManager.
 		 **/
 		LibraryLinkError(IdType which, std::string t, std::string msg) :
 				std::runtime_error(t), errorId(which), type(std::move(t)), messageTemplate(std::move(msg)) {
@@ -141,30 +144,105 @@ namespace LibraryLinkUtils {
 	};
 
 
+	/**
+	 * @class	ErrorManager
+	 * @brief	"Static" class responsible for error registration and throwing
+	 *
+	 * ErrorManager holds a map with all errors that may be thrown from paclet code. These are: LLU errors (with codes between 0 and 7 or smaller than -100)
+	 * plus paclet-specific errors which should be registered (for example in WolframLibrary_initialize) using registerPacletErrors function.
+	 * Developers must never throw LibraryLinkErrors directly, instead they should use one of ErrorManager::throwException overloads.
+	 **/
 	class ErrorManager {
 	public:
+
+		/**
+		 * @brief Default constructor is deleted since ErrorManager is supposed to be completely static
+		 */
 		ErrorManager() = delete;
 
+		/**
+		 * @brief 	Function used to register paclet-specific errors.
+		 * @param 	errors - a list of pairs: {"ErrorName", "Short string with error description"}
+		 */
 		static void registerPacletErrors(const std::vector<std::pair<std::string, std::string>>& errors);
 		static void registerPacletErrors(std::vector<std::pair<std::string, std::string>>&& errors);
 
+		/**
+		 * @brief 	Use this function to add new entry to the map of registered errors.
+		 * @param 	errorName - string with error name
+		 * @param 	errorData - string with error description
+		 */
 		static void set(std::string errorName, std::string errorData);
 
+		/**
+		 * @brief 	Throw exception with given id.
+		 * @param 	errorId - id of error to be thrown
+		 * @note	Developers are not allowed to make any assumptions about error ids of paclet-specific errors other than that they are in range -1 : -100.
+		 * So this overload of throwException should be only used to throw LLU-specific exceptions whose ids are known at compile time and documented.
+		 */
 		static void throwException(int errorId);
+
+		/**
+		 * @brief 	Throw exception with given id and some additional debug information.
+		 * @param 	errorId - id of error to be thrown
+		 * @param 	debugInfo - additional message with debug info, this message will not be passed to top-level Failure object
+		 */
 		static void throwException(int errorId, const std::string& debugInfo);
+
+		/**
+		 * @brief 	Throw exception with given name.
+		 * @param 	errorName - name of the error that will be thrown
+		 */
 		static void throwException(const std::string& errorName);
+
+		/**
+		 * @brief 	Throw exception with given name and some additional debug information.
+		 * @param 	errorName - name of the error that will be thrown
+		 * @param	debugInfo - additional message with debug info, this message will not be passed to top-level Failure object
+		 */
 		static void throwException(const std::string& errorName, const std::string& debugInfo);
 
+		/**
+		 * @brief Function used to send all registered errors to top-level Mathematica code.
+		 *
+		 * Sending registered errors allows for nice and meaningful Failure objects to be generated when paclet function fails in top level,
+		 * instead of usual LibraryFunctionError expressions.
+		 * @param mlp - active MathLink connection
+		 */
 		static void sendRegisteredErrorsViaMathlink(MLINK mlp);
+
 	private:
+		/**
+		 * @brief Find error by id.
+		 * @param errorId - error id
+		 * @return const& to the desired error
+		 */
 		static const LibraryLinkError& findError(int errorId);
+
+		/**
+		 * @brief Find error by id.
+		 * @param errorId - error id
+		 * @return const& to the desired error
+		 */
 		static const LibraryLinkError& findError(const std::string& errorName);
 
+		/// Errors are stored in a map with elements of the form { "ErrorName", immutable LibraryLinkError object }
 		using ErrorMap = std::unordered_map<std::string, const LibraryLinkError>;
+
+		/// Static map of registered errors
 		static ErrorMap& errors;
+
+		/***
+		 * @brief Initialization of static error map
+		 * @param initList - list of errors used internally by LLU
+		 * @return reference to static error map
+		 */
 		static ErrorMap& initErrorMap(std::initializer_list<LibraryLinkError> initList);
 
+		/// Helper data to speed up error registering
 		static const ErrorMap::const_iterator insertionHint;
+
+		/// Id that will be assigned to the next registered errors. Developers should not make any assumptions about this value
 		static int nextErrorId;
 	};
 
