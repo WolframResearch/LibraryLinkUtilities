@@ -41,9 +41,9 @@ If[TrueQ[$InitLibraryLinkUtils],
 $ErrorCount = 0;
 
 $corePacletFailureLUT = <|
-	"LoadFailure" -> {20, "LibraryLinkUtilities initialization failed."},
-	"RegisterFailure" -> {21, "Incorrect arguments to RegisterPacletErrors"},
-	"UnknownFailure" -> {22, "Trying to throw error that was not registered."}
+	"LoadFailure" -> {20, "Library initialization failed."},
+	"RegisterFailure" -> {21, "Incorrect arguments to RegisterPacletErrors."},
+	"UnknownFailure" -> {22, "The error `ErrorName` has not been registered."}
 |>;
 
 
@@ -75,8 +75,8 @@ Block[{name = Select[$corePacletFailureLUT, MatchQ[#, {errorCode, _}] &]},
 
 RegisterPacletErrors[libPath_?StringQ, errors_?AssociationQ] :=
 Block[{cErrorCodes, max},
-	If[FailureQ[InitLibraryLinkUtils[libPath]],
-		Return@CreatePacletFailure["LoadFailure"];
+	If[!TrueQ[InitLibraryLinkUtils[libPath]],
+		Throw[$Failed];
 	];
 	cErrorCodes = $getCErrorCodes[]; (* <|"TestError1" -> (-1 -> "TestError1 message."), "TestError2" -> (-2 -> "TestError2 message.")|> *)
 	If[Length[$corePacletFailureLUT] > 0,
@@ -123,9 +123,19 @@ CreatePacletFailure[type_?StringQ, opts:OptionsPattern[]] :=
 Block[{msgParam, param, lookup},
 	msgParam = Replace[OptionValue["MessageParameters"], Except[_?AssociationQ] -> <||>];
 	param = Replace[OptionValue["Parameters"], {p_?StringQ :> {p}, Except[{_?StringQ.. }] -> {}}];
-	lookup = Lookup[$corePacletFailureLUT, type, $corePacletFailureLUT["UnknownFailure"]];
+	lookup =
+		Lookup[
+			$corePacletFailureLUT
+			,
+			errorType = type
+			,
+			(	
+				AppendTo[msgParam, "ErrorName" -> type];
+				$corePacletFailureLUT[errorType = "UnknownFailure"]
+			)
+		];
 	$ErrorCount++;
-	Failure[type,
+	Failure[errorType,
 		<|
 			"MessageTemplate" -> lookup[[2]],
 			"MessageParameters" -> msgParam,
