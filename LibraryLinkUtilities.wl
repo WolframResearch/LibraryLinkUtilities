@@ -141,9 +141,10 @@ Block[{msgParam, param, lookup},
 (* ------------------------------------------------------------------------- *)
 (* ------------------------------------------------------------------------- *)
 
-Attributes[CatchLibraryLinkError] = {HoldAll};
+Attributes[CatchLibraryFunctionError] = {HoldAll};
+Attributes[CatchAndThrowLibraryFunctionError] = {HoldAll};
 
-CatchLibraryLinkError[f_] := 	
+CatchLibraryFunctionError[f_] :=
 With[{result = Quiet[f, {
 		LibraryFunction::typerr, 
 		LibraryFunction::rnkerr, 
@@ -159,5 +160,22 @@ With[{result = Quiet[f, {
 	, (* else *)
 		result
 	]
-];
+]
 
+CatchAndThrowLibraryFunctionError[f_] :=
+With[{result = Quiet[f, {
+		LibraryFunction::typerr, 
+		LibraryFunction::rnkerr, 
+		LibraryFunction::dimerr, 
+		LibraryFunction::numerr, 
+		LibraryFunction::memerr, 
+		LibraryFunction::verserr, 
+		LibraryFunction::rterr
+	}]}, 
+	
+	If[Head[result] === LibraryFunctionError,
+		Throw@CreatePacletFailure[errorCodeToName[result[[2]]]]
+	, (* else *)
+		result
+	]
+]
