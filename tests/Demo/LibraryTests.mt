@@ -750,7 +750,7 @@ Test[
 ]
 
 Test[
-	CatchLibraryLinkError[StringQ@"Clearly not an error"]
+	CatchLibraryFunctionError[StringQ@"Clearly not an error"]
 	,
 	True
 	,
@@ -758,7 +758,7 @@ Test[
 ]
 
 Test[
-	Head@CatchLibraryLinkError[LibraryFunctionError["LIBRARY_USER_ERROR", -1]]
+	Head@CatchLibraryFunctionError[LibraryFunctionError["LIBRARY_USER_ERROR", -1]]
 	,
 	Failure
 	,
