@@ -11,17 +11,8 @@ If[TrueQ[$InitLibraryLinkUtils],
 	,
 	$InitLibraryLinkUtils =
 		Catch[
-			Quiet@Check[
-				LibraryLoad[libPath];
-				,
-				Throw[$InitLibraryLinkUtils = $Failed];
-			];
-			$getCErrorCodes =
-				Quiet@Check[
-					LibraryFunctionLoad[libPath, "sendRegisteredErrors", LinkObject, LinkObject]
-					,
-					Throw[$InitLibraryLinkUtils = $Failed];
-				];
+			SafeLibraryLoad[libPath];
+			$GetCErrorCodes = SafeLibraryFunctionLoad["sendRegisteredErrors", LinkObject, LinkObject];
 			True
 		]
 ]	
@@ -38,12 +29,18 @@ If[TrueQ[$InitLibraryLinkUtils],
 (* ------------------------------------------------------------------------- *)
 (* ------------------------------------------------------------------------- *)
 
+(* Path to the paclet library *)
+$PacletLibrary = None;
+
+(* Count how many failures was produced by the paclet during current Kernel session *)
 $ErrorCount = 0;
 
-$corePacletFailureLUT = <|
-	"LoadFailure" -> {20, "Library initialization failed."},
-	"RegisterFailure" -> {21, "Incorrect arguments to RegisterPacletErrors."},
-	"UnknownFailure" -> {22, "The error `ErrorName` has not been registered."}
+(* Global association for all registered errors *)
+$CorePacletFailureLUT = <|
+	"LibraryLoadFailure" -> {20, "Failed to load library `LibraryName`."},
+	"FunctionLoadFailure" -> {21, "Failed to load the function `FunctionName` from `LibraryName`."},
+	"RegisterFailure" -> {22, "Incorrect arguments to RegisterPacletErrors."},
+	"UnknownFailure" -> {23, "The error `ErrorName` has not been registered."}
 |>;
 
 
@@ -52,8 +49,8 @@ $corePacletFailureLUT = <|
 (* ------------------------------------------------------------------------- *)
 (* ------------------------------------------------------------------------- *)
 
-errorCodeToName[errorCode_Integer]:=
-Block[{name = Select[$corePacletFailureLUT, MatchQ[#, {errorCode, _}] &]},
+ErrorCodeToName[errorCode_Integer]:=
+Block[{name = Select[$CorePacletFailureLUT, MatchQ[#, {errorCode, _}] &]},
 	If[Length@name > 0 && Depth[name] > 2,
 		First@Keys@name
 		,
@@ -69,6 +66,38 @@ Block[{name = Select[$corePacletFailureLUT, MatchQ[#, {errorCode, _}] &]},
 
 
 (* ::SubSection:: *)
+(* SafeLibrary* *)
+(* ------------------------------------------------------------------------- *)
+(* ------------------------------------------------------------------------- *)
+
+SetPacletLibrary[lib_?StringQ] := $PacletLibrary = lib;
+
+SafeLibraryLoad[lib_] :=
+	Quiet[
+		$PacletLibrary = lib;
+		Check[
+			LibraryLoad[$PacletLibrary]
+			,
+			Throw @ CreatePacletFailure["LibraryLoadFailure", "MessageParameters" -> <|"LibraryName" -> $PacletLibrary|>];
+		]
+	]
+
+SafeLibraryFunctionLoad[args___] :=
+	Quiet[
+		Check[
+			LibraryFunctionLoad[$PacletLibrary, args]
+			,
+			Throw @ CreatePacletFailure["FunctionLoadFailure", "MessageParameters" -> <|"FunctionName" -> First[args], "LibraryName" -> $PacletLibrary|>];
+		]
+	]
+
+Options[SafeLibraryFunction] = { "Throws" -> False };
+
+SafeLibraryFunction[args___, opts : OptionsPattern[SafeLibraryFunction]] := 
+	If[TrueQ[OptionValue["Throws"]], CatchAndThrowLibraryFunctionError, CatchLibraryFunctionError] @* SafeLibraryFunctionLoad[args]
+	
+
+(* ::SubSection:: *)
 (* RegisterPacletErrors *)
 (* ------------------------------------------------------------------------- *)
 (* ------------------------------------------------------------------------- *)
@@ -76,26 +105,26 @@ Block[{name = Select[$corePacletFailureLUT, MatchQ[#, {errorCode, _}] &]},
 RegisterPacletErrors[libPath_?StringQ, errors_?AssociationQ] :=
 Block[{cErrorCodes, max},
 	If[!TrueQ[InitLibraryLinkUtils[libPath]],
-		Throw[$Failed];
+		Throw @ CreatePacletFailure["LibraryLoadFailure", "MessageParameters" -> <|"LibraryName" -> libPath|>];
 	];
-	cErrorCodes = $getCErrorCodes[]; (* <|"TestError1" -> (-1 -> "TestError1 message."), "TestError2" -> (-2 -> "TestError2 message.")|> *)
-	If[Length[$corePacletFailureLUT] > 0,
-		max = MaximalBy[$corePacletFailureLUT, First];
+	cErrorCodes = $GetCErrorCodes[]; (* <|"TestError1" -> (-1 -> "TestError1 message."), "TestError2" -> (-2 -> "TestError2 message.")|> *)
+	If[Length[$CorePacletFailureLUT] > 0,
+		max = MaximalBy[$CorePacletFailureLUT, First];
 		max = If[Depth[max] > 2 && IntegerQ[max[[1, 1]]] && max[[1, 1]] >= 100,
 			max[[1, 1]]
 			,
 			99
 		];
-		$corePacletFailureLUT =
+		$CorePacletFailureLUT =
 			Association[
-				$corePacletFailureLUT
+				$CorePacletFailureLUT
 				,
 				MapIndexed[#[[1]] -> {(First[#2] + max), #[[2]]} &, Normal[errors]]
 				,
 				cErrorCodes
 			];
 		,
-		AssociateTo[$corePacletFailureLUT,
+		AssociateTo[$CorePacletFailureLUT,
 			Association[
 				MapIndexed[#[[1]] -> {(First[#2] + 99), #[[2]]} &, Normal[errors]]
 				,
@@ -106,7 +135,7 @@ Block[{cErrorCodes, max},
 ]
 
 RegisterPacletErrors[___] :=
-	CreatePacletFailure["RegisterFailure"]
+	Throw @ CreatePacletFailure["RegisterFailure"]
 
 
 (* ::SubSection:: *)
@@ -125,13 +154,13 @@ Block[{msgParam, param, lookup},
 	param = Replace[OptionValue["Parameters"], {p_?StringQ :> {p}, Except[{_?StringQ.. }] -> {}}];
 	lookup =
 		Lookup[
-			$corePacletFailureLUT
+			$CorePacletFailureLUT
 			,
 			errorType = type
 			,
 			(	
 				AppendTo[msgParam, "ErrorName" -> type];
-				$corePacletFailureLUT[errorType = "UnknownFailure"]
+				$CorePacletFailureLUT[errorType = "UnknownFailure"]
 			)
 		];
 	$ErrorCount++;
@@ -166,7 +195,7 @@ With[{result = Quiet[f, {
 	}]}, 
 	
 	If[Head[result] === LibraryFunctionError,
-		CreatePacletFailure[errorCodeToName[result[[2]]]]
+		CreatePacletFailure[ErrorCodeToName[result[[2]]]]
 	, (* else *)
 		result
 	]
@@ -184,7 +213,7 @@ With[{result = Quiet[f, {
 	}]}, 
 	
 	If[Head[result] === LibraryFunctionError,
-		Throw@CreatePacletFailure[errorCodeToName[result[[2]]]]
+		Throw@CreatePacletFailure[ErrorCodeToName[result[[2]]]]
 	, (* else *)
 		result
 	]
