@@ -81,7 +81,7 @@ namespace LibraryLinkUtils {
 		constexpr int ImageSizeError = -405; 		///< wrong assumption about Image size
 		constexpr int ImageIndexError = -406; 		///< trying to access non-existing element
 
-	};
+	}
 
 	/**
 	 * @class	LibraryLinkError

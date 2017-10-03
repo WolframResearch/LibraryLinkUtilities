@@ -52,7 +52,7 @@ namespace LibraryLinkUtils {
 		 *	@throws		LLErrorCode::DimensionsError - if \c dims are invalid
 		 *	@throws		LLErrorCode::FunctionError - if any of Wolfram*Library structures was not initialized
 		 **/
-		MArray(std::initializer_list<mint> dims) : MArrayBase(dims) {};
+		MArray(std::initializer_list<mint> dims) : MArrayBase(dims) {}
 
 		/**
 		 * 	@brief		Constructs uninitialized container with given dimensions
@@ -66,7 +66,7 @@ namespace LibraryLinkUtils {
 			typename = disable_if_same_or_derived<MArrayBase, Container>,
 			typename = typename std::enable_if_t<std::is_integral<typename std::remove_reference_t<Container>::value_type>::value>
 		>
-		MArray(Container&& dims) : MArrayBase(std::forward<Container>(dims)) {};
+		MArray(Container&& dims) : MArrayBase(std::forward<Container>(dims)) {}
 
 
 		/**
@@ -75,7 +75,7 @@ namespace LibraryLinkUtils {
 		 *	@tparam		U - any type convertible to T
 		 **/
 		template<typename U>
-		MArray(const MArray<U>& ma2) : MArrayBase(ma2) {};
+		MArray(const MArray<U>& ma2) : MArrayBase(ma2) {}
 
 		/**
 		 *	@brief Get raw pointer to underlying data
