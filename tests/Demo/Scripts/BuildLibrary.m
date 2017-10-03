@@ -27,7 +27,7 @@ Switch[targetID,
 	compoptions = "-std=c++14"  (*-install_name " <> outputName <> ".dylib"*),
 
 	"Linux-x86-64" | "Linux",
-	compoptions = "-O2 -fPIC -std=c++14 -Wall",
+	compoptions = "-O2 -fPIC -std=c++14 -Wall -Wextra -Wpedantic -Wno-unused-parameter",
 
 	"Windows-x86-64" | "Windows",
 	compoptions = "/O2 /EHsc",

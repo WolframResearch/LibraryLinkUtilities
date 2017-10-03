@@ -8,12 +8,8 @@
 
 #include "WolframLibrary.h"
 
-#include "MArgumentManager.h"
-#include "Tensor.h"
-#include "LibraryLinkError.h"
+#include "LLU.h"
 #include "LibraryLinkFunctionMacro.h"
-
-using namespace LibraryLinkUtils;
 
 template<typename T>
 static Tensor<T> tensor;

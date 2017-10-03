@@ -7,6 +7,9 @@
 
 #include <exception>
 
+// We don't use anything from windows.h, this is just for testing purposes:
+#include "NoMinMaxWindows.h"
+
 using namespace LibraryLinkUtils;
 
 /* Return the version of Library Link */
