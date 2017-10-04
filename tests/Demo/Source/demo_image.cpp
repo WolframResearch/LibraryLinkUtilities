@@ -2,6 +2,14 @@
 #include "WolframLibrary.h"
 #include "WolframImageLibrary.h"
 
+// In this file std::max is used so if you want to include windows.h you should not do it directly:
+//
+//#include <windows.h>
+//
+// but rather using LLU wrapper:
+//
+#include "NoMinMaxWindows.h"
+
 #include <algorithm>
 #include <cmath>
 #include <complex>

@@ -1,14 +1,14 @@
 /* Include required header */
 #include "WolframLibrary.h"
 
+// We don't use anything from windows.h, this is just for testing purposes:
+#include <windows.h>
+
 #include "MArgumentManager.h"
 #include "LibraryLinkError.h"
 #include "LibraryLinkFunctionMacro.h"
 
 #include <exception>
-
-// We don't use anything from windows.h, this is just for testing purposes:
-#include "NoMinMaxWindows.h"
 
 using namespace LibraryLinkUtils;
 
