@@ -337,10 +337,10 @@ namespace LibraryLinkUtils {
 		static std::string stringResultBuffer;
 
 		/// Max \b mint value
-		static constexpr mint MINT_MAX = std::numeric_limits<mint>::max();
+		static constexpr mint MINT_MAX = (std::numeric_limits<mint>::max)();
 
 		/// Min \b mint value
-		static constexpr mint MINT_MIN = std::numeric_limits<mint>::min();
+		static constexpr mint MINT_MIN = (std::numeric_limits<mint>::min)();
 
 		/// Number of input arguments expected from LibraryLink
 		mint argc;

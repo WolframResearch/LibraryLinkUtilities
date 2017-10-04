@@ -225,7 +225,7 @@ namespace LibraryLinkUtils {
 			initError();
 		depth = checkContainerSize(std::forward<Container>(dimensions));
 		auto dimsOk = std::all_of(std::begin(dimensions), std::end(dimensions), [](typename std::remove_reference_t<Container>::value_type d) {
-			return (d > 0) && (d <= std::numeric_limits<mint>::max());
+			return (d > 0) && (d <= (std::numeric_limits<mint>::max)());
 		});
 		if (!dimsOk)
 			ErrorManager::throwException(LLErrorCode::DimensionsError, "Invalid input vector with array dimensions");
@@ -237,7 +237,7 @@ namespace LibraryLinkUtils {
 
 	template<class Container>
 	mint MArrayBase::checkContainerSize(Container&& v) const {
-		if (v.size() > std::numeric_limits<mint>::max())
+		if (v.size() > (std::numeric_limits<mint>::max)())
 			sizeError();
 		return static_cast<mint>(v.size());
 	}
