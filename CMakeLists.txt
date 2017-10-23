@@ -75,7 +75,6 @@ if(NOT TARGET LLU)
 		target_compile_options(LLU
 			PRIVATE "-Wall"
 			PRIVATE "-Wextra"
-			PRIVATE "-Wmissing-braces"
 			PRIVATE "-pedantic"
 			PRIVATE "-Werror-implicit-function-declaration"
 			PRIVATE "$<$<NOT:$<CONFIG:Debug>>:-O3>"

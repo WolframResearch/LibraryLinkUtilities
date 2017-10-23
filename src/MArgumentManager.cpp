@@ -86,7 +86,7 @@ namespace LibraryLinkUtils {
 	}
 
 	void MArgumentManager::setComplex(std::complex<double> c) const noexcept {
-		mcomplex mc {c.real(), c.imag()};
+		mcomplex mc { { c.real(), c.imag() } };
 		MArgument_setComplex(res, mc);
 	}
 
