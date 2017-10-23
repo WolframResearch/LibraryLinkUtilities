@@ -5,3 +5,5 @@
 docs/html
 docs/latex
 tests/Demo/bin
+Debug/
+lib/
