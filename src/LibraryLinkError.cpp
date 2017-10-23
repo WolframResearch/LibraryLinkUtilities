@@ -9,6 +9,7 @@
 
 #include "mathlink.h"
 #include "LibraryLinkError.h"
+#include "Utilities.hpp"
 
 namespace LibraryLinkUtils {
 
@@ -151,6 +152,7 @@ namespace LibraryLinkUtils {
 	}
 
 	EXTERN_C DLLEXPORT int sendRegisteredErrors(WolframLibraryData libData, MLINK mlp) {
+		Unused(libData);
 		auto err = LLErrorCode::NoError;
 		try {
 			ErrorManager::sendRegisteredErrorsViaMathlink(mlp);

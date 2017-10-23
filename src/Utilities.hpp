@@ -28,6 +28,14 @@ namespace LibraryLinkUtils {
 	using disable_if_same_or_derived = typename std::enable_if_t<!std::is_same<A, B>::value && !std::is_base_of<A, typename std::remove_cv_t<typename std::remove_reference_t<B>>>::value>;
 
 
+	/**
+	 * @brief 	Dummy function called on otherwise unused parameters to eliminate compiler warnings.
+	 * @tparam 	Ts - variadic template parameter, any number of arbitrary types
+	 */
+	template<typename... Ts>
+	void Unused(Ts&&...) {}
+
+
 	/// Utility structure that matches an MRawArray data type with corresponding C++ type
 	template<rawarray_t>
 	struct RawArrayFromEnum;
