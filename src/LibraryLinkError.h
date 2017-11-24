@@ -81,6 +81,8 @@ namespace LibraryLinkUtils {
 		constexpr int ImageSizeError = -405; 		///< wrong assumption about Image size
 		constexpr int ImageIndexError = -406; 		///< trying to access non-existing element
 
+		// MathLink errors: [-501 : -600]
+		// see MathLinkStream.h
 	}
 
 	/**
@@ -127,6 +129,12 @@ namespace LibraryLinkUtils {
 			return messageTemplate;
 		}
 
+		/**
+		 *   @brief Get debug info
+		 **/
+		const std::string& debug() const noexcept {
+			return debugInfo;
+		}
 	private:
 		/**
 		 *   @brief         Constructs an exception with given error code and predefined error message
