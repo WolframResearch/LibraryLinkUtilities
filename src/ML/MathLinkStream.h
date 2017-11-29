@@ -7,77 +7,18 @@
 #ifndef LLUTILS_MATHLINKSTREAM_H_
 #define LLUTILS_MATHLINKSTREAM_H_
 
-#include <functional>
 #include <iostream> //debug
 #include <map>
-#include <stack>
 #include <type_traits>
 #include <vector>
 
 #include "mathlink.h"
 
 #include "Utilities.h"
+#include "MLGet.h"
+#include "MLPut.h"
 
 namespace LibraryLinkUtils {
-
-	namespace LLErrorCode {
-		// MathLink errors: [-501 : -600]
-		constexpr int MLTestHeadError = -501; 		///< Image construction failed
-		constexpr int MLPutSymbolError = -502; 		///<
-		constexpr int MLPutFunctionError = -503; 	///<
-		constexpr int MLTestSymbolError = -504;
-		constexpr int MLWrongSymbolForBool = -505;
-	}
-
-	class MathLinkStream;
-
-	namespace ML {
-		struct Symbol {
-			Symbol() = default;
-			Symbol(std::string h) : head(std::move(h)) {};
-
-			const std::string& getHead() const;
-			void setHead(std::string h);
-		private:
-			std::string head;
-		};
-
-		struct Function : Symbol {
-			Function() : Function("", -1) {};
-			Function(const std::string& h) : Function(h, -1) {}
-			Function(const std::string& h, int argCount) : Symbol(h), argc(argCount) {}
-
-			int getArgc() const;
-			void setArgc(int newArgc);
-		private:
-			int argc;
-		};
-
-		struct Association : Function {
-			Association() : Function("Association") {}
-			Association(int argCount) : Function("Association", argCount) {}
-		};
-
-		struct List : Function {
-			List() : Function("List") {}
-			List(int argCount) : Function("List", argCount) {}
-		};
-
-
-		enum class Direction : bool {
-			Get,
-			Put
-		};
-
-
-		MathLinkStream& NewPacket(MathLinkStream& ms);
-
-		MathLinkStream& EndPacket(MathLinkStream& ms);
-
-		MathLinkStream& Flush(MathLinkStream& ms);
-
-		MathLinkStream& Rule(MathLinkStream& ms, Direction dir);
-	}
 
 
 	/** 
@@ -93,7 +34,7 @@ namespace LibraryLinkUtils {
 
 		MLINK& get() noexcept {
 			// The invariant is that "links" is never empty, so no need to check
-			return links.top();
+			return m;
 		}
 
 		using StreamToken = MathLinkStream& (*)(MathLinkStream&);
@@ -155,54 +96,14 @@ namespace LibraryLinkUtils {
 		MathLinkStream& operator>>(T& value);
 
 	private:
-		template<typename T>
-		using MLPutListFunc = std::function<int(MLINK, const T*, int)>;
-
-		template<typename T>
-		using MLPutScalarFunc = std::function<int(MLINK, T)>;
-
-		template<typename T>
-		struct MLPut {
-			static MLPutListFunc<T> List;
-			static MLPutListFunc<T> String;
-			static MLPutScalarFunc<T> Scalar;
-		};
-
-		template<typename T>
-		using MLGetListFunc = std::function<int(MLINK, T**, int*)>;
-
-		template<typename T>
-		using MLGetStringFunc = std::function<int(MLINK, const T**, int*, int*)>;
-
-		template<typename T>
-		using MLGetScalarFunc = std::function<int(MLINK, T*)>;
-
-		template<typename T>
-		struct MLGet {
-			static MLGetListFunc<T> List;
-			static MLGetStringFunc<T> String;
-			static MLGetScalarFunc<T> Scalar;
-		};
-
-		template<typename T>
-		using MLReleaseListFunc = std::function<void(MLINK, T*, int)>;
-
-		template<typename T>
-		using MLReleaseStringFunc = std::function<void(MLINK, const T*, int)>;
-
-		template<typename T>
-		struct MLRelease {
-			static MLReleaseListFunc<T> List;
-			static MLReleaseStringFunc<T> String;
-		};
-
-		void checkMLError(int statusOk, int errorCode, const std::string& debugInfo = "");
-		void checkMLError(int statusOk, const std::string& errorName, const std::string& debugInfo = "");
+		void check(int statusOk, int errorCode, const std::string& debugInfo = "");
+		void check(int statusOk, const std::string& errorName, const std::string& debugInfo = "");
 
 		int testHead(const std::string& head);
 		void testHead(const std::string& head, int argc);
+
 	private:
-		std::stack<MLINK> links; //TODO change back to single MLINK
+		MLINK m;
 	};
 
 
@@ -212,13 +113,14 @@ namespace LibraryLinkUtils {
 
 	template<typename T>
 	MathLinkStream& MathLinkStream::operator<<(const std::vector<T>& l) {
-		MLPut<T>::List(get(), l.data(), l.size());
+		ML::PutList<T>::put(m, l.data(), l.size());
 		return *this;
 	}
 
 	template<typename T>
 	MathLinkStream& MathLinkStream::operator<<(const std::basic_string<T>& s) {
-		MLPut<T>::String(get(), s.c_str(), s.size());
+		std::cout << "Writing string " << s.c_str() << " of length " << s.size() << std::endl;
+		ML::PutString<T>::put(m, s.c_str(), s.size());
 		return *this;
 	}
 
@@ -229,7 +131,7 @@ namespace LibraryLinkUtils {
 
 	template<typename T, typename>
 	MathLinkStream& MathLinkStream::operator<<(T value) {
-		MLPut<T>::Scalar(get(), value);
+		ML::PutScalar<T>::put(m, value);
 		return *this;
 	}
 
@@ -248,23 +150,23 @@ namespace LibraryLinkUtils {
 
 	template<typename T>
 	MathLinkStream& MathLinkStream::operator>>(std::vector<T>& l) {
-		T* raw;
-		int len;
-		MLGet<T>::List(get(), &raw, &len);
-		l = std::vector<T> { raw, len };
-		MLRelease<T>::List(get(), raw, len);
+		auto list = ML::GetList<T>::get(m);
+		T* start = list.get();
+		auto listLen = list.get_deleter().getListLength();
+		l = std::vector<T> { start, start + listLen };
 		return *this;
 	}
 
 	template<typename T>
 	MathLinkStream& MathLinkStream::operator>>(std::basic_string<T>& s) {
-		const T* raw;
-		int bytes, chars;
-		MLGet<T>::String(get(), &raw, &bytes, &chars);
-		std::cout << "Read string: " << raw << ", bytes: " << bytes << ", chars: " << chars << std::endl;
-		s = (bytes < 0? std::basic_string<T> { raw } : std::basic_string<T> { raw, static_cast<typename std::basic_string<T>::size_type>(bytes) });
-		std::cout << "Converted string size: " << s.size() << std::endl;
-		MLRelease<T>::String(get(), raw, bytes);
+		using StringType = std::basic_string<T>;
+
+		auto rawString = ML::GetString<T>::get(m);
+		auto bytes = rawString.get_deleter().getStringLength();
+		std::cout << "Read string: " << rawString.get() << ", bytes: " << bytes << std::endl;
+		s = (bytes < 0? StringType { rawString.get() } : StringType { rawString.get(), static_cast<typename StringType::size_type>(bytes) });
+		std::cout << "Converted string: " << s.c_str() << " of size " << s.size() << std::endl;
+
 		return *this;
 	}
 
@@ -284,7 +186,7 @@ namespace LibraryLinkUtils {
 
 	template<typename T, typename>
 	MathLinkStream& MathLinkStream::operator>>(T& value) {
-		MLGet<T>::Scalar(get(), value);
+		value = ML::GetScalar<T>::get(m);
 		return *this;
 	}
 
