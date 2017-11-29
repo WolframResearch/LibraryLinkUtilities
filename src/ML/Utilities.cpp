@@ -49,6 +49,29 @@ namespace LibraryLinkUtils {
 			else
 				return ms >> Function("Rule", 2);
 		}
-	}
 
+		std::string getMLErrorText(MLINK mlp) {
+			std::string err = "Error code reported by MathLink: " + std::to_string(MLError(mlp)) + "\n";
+			auto mlErrorMsg = MLErrorMessage(mlp);
+			err += "\"" + std::string(mlErrorMsg) + "\"\nAdditional debug info: ";
+			MLReleaseErrorMessage(mlp, mlErrorMsg);
+			MLClearError(mlp);
+			return err;
+		}
+
+
+		void checkError(MLINK m, int statusOk, int errorCode, const std::string& debugInfo) {
+			if (!statusOk) {
+				ErrorManager::throwException(errorCode, getMLErrorText(m) + debugInfo);
+			}
+		}
+
+		void checkError(MLINK m, int statusOk, const std::string& errorName, const std::string& debugInfo) {
+			if (!statusOk) {
+				ErrorManager::throwException(errorName, getMLErrorText(m) + debugInfo);
+			}
+		}
+
+	}
 }
+
