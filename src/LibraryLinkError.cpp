@@ -8,21 +8,25 @@
  */
 
 #include "mathlink.h"
+
 #include "LibraryLinkError.h"
+
 #include "Utilities.hpp"
+#include "ML/MathLinkStream.h"
+#include "ML/Utilities.h"
 
 namespace LibraryLinkUtils {
 
 	ErrorManager::ErrorMap& ErrorManager::errors = initErrorMap({
 		// Original LibraryLink error codes:
-		{ LLErrorCode::VersionError, "VersionError", "An error was caused by an incompatible function call. The library was compiled with a previous WolframLibrary version." },
-		{ LLErrorCode::FunctionError, "FunctionError", "An error occurred in the library function." },
-		{ LLErrorCode::MemoryError, "MemoryError", "An error was caused by failed memory allocation or insufficient memory." },
-		{ LLErrorCode::NumericalError, "NumericalError", "A numerical error was encountered." },
-		{ LLErrorCode::DimensionsError, "DimensionsError", "An error caused by inconsistent dimensions or by exceeding array bounds." },
-		{ LLErrorCode::RankError, "RankError", "An error was caused by a tensor with an inconsistent rank." },
-		{ LLErrorCode::TypeError, "TypeError", "An error caused by inconsistent types was encountered." },
-		{ LLErrorCode::NoError, "NoError", "No errors occurred." },
+		{ LLErrorCode::VersionError, 	"VersionError", 	"An error was caused by an incompatible function call. The library was compiled with a previous WolframLibrary version." },
+		{ LLErrorCode::FunctionError, 	"FunctionError", 	"An error occurred in the library function." },
+		{ LLErrorCode::MemoryError, 	"MemoryError", 		"An error was caused by failed memory allocation or insufficient memory." },
+		{ LLErrorCode::NumericalError, 	"NumericalError", 	"A numerical error was encountered." },
+		{ LLErrorCode::DimensionsError, "DimensionsError", 	"An error caused by inconsistent dimensions or by exceeding array bounds." },
+		{ LLErrorCode::RankError, 		"RankError", 		"An error was caused by a tensor with an inconsistent rank." },
+		{ LLErrorCode::TypeError, 		"TypeError", 		"An error caused by inconsistent types was encountered." },
+		{ LLErrorCode::NoError, 		"NoError", 			"No errors occurred." },
 
 		// Reserved for use in paclets:
 		// -1
@@ -30,40 +34,53 @@ namespace LibraryLinkUtils {
 		// -100
 
 		// MArgument errors: [-101 : -150]
-		{ LLErrorCode::MArgumentInitError, "MArgumentInitError", "MArgumentManager construction failed." },
-		{ LLErrorCode::MArgumentIndexError, "MArgumentIndexError", "An error was caused by an incorrect argument index." },
-		{ LLErrorCode::MArgumentRawArrayError, "MArgumentRawArrayError", "An error was caused by a RawArray argument." },
-		{ LLErrorCode::MArgumentTensorError, "MArgumentTensorError", "An error was caused by a Tensor argument." },
-		{ LLErrorCode::MArgumentImageError, "MArgumentImageError", "An error was caused by an Image argument." },
+		{ LLErrorCode::MArgumentInitError, 		"MArgumentInitError", 		"MArgumentManager construction failed." },
+		{ LLErrorCode::MArgumentIndexError, 	"MArgumentIndexError", 		"An error was caused by an incorrect argument index." },
+		{ LLErrorCode::MArgumentRawArrayError, 	"MArgumentRawArrayError", 	"An error was caused by a RawArray argument." },
+		{ LLErrorCode::MArgumentTensorError, 	"MArgumentTensorError", 	"An error was caused by a Tensor argument." },
+		{ LLErrorCode::MArgumentImageError, 	"MArgumentImageError", 		"An error was caused by an Image argument." },
 
 		// ErrorManager errors: [-151 : -200]
-		{ LLErrorCode::ErrorManagerThrowIdError, "ErrorManagerThrowIdError", "An exception was thrown with a non-existent id." },
-		{ LLErrorCode::ErrorManagerThrowNameError, "ErrorManagerThrowNameError", "An exception was thrown with a non-existent name." },
-		{ LLErrorCode::ErrorManagerCreateNameError, "ErrorManagerCreateNameError", "An exception was registered with a name that already exists." },
+		{ LLErrorCode::ErrorManagerThrowIdError, 	"ErrorManagerThrowIdError", 	"An exception was thrown with a non-existent id." },
+		{ LLErrorCode::ErrorManagerThrowNameError, 	"ErrorManagerThrowNameError", 	"An exception was thrown with a non-existent name." },
+		{ LLErrorCode::ErrorManagerCreateNameError, "ErrorManagerCreateNameError", 	"An exception was registered with a name that already exists." },
 
 		// RawArray errors: [-201 : -300]
-		{ LLErrorCode::RawArrayInitError, "RawArrayInitError", "Failed to construct RawArray." },
-		{ LLErrorCode::RawArrayNewError, "RawArrayNewError", "Failed to create a new MRawArray." },
-		{ LLErrorCode::RawArrayCloneError, "RawArrayCloneError", "Failed to clone MRawArray." },
-		{ LLErrorCode::RawArrayTypeError, "RawArrayTypeError", "An error was caused by an MRawArray type mismatch." },
-		{ LLErrorCode::RawArraySizeError, "RawArraySizeError", "An error was caused by an incorrect RawArray size." },
-		{ LLErrorCode::RawArrayIndexError, "RawArrayIndexError", "An error was caused by attempting to access a nonexistent RawArray element." },
+		{ LLErrorCode::RawArrayInitError, 	"RawArrayInitError", 	"Failed to construct RawArray." },
+		{ LLErrorCode::RawArrayNewError, 	"RawArrayNewError", 	"Failed to create a new MRawArray." },
+		{ LLErrorCode::RawArrayCloneError, 	"RawArrayCloneError", 	"Failed to clone MRawArray." },
+		{ LLErrorCode::RawArrayTypeError, 	"RawArrayTypeError", 	"An error was caused by an MRawArray type mismatch." },
+		{ LLErrorCode::RawArraySizeError, 	"RawArraySizeError", 	"An error was caused by an incorrect RawArray size." },
+		{ LLErrorCode::RawArrayIndexError,	"RawArrayIndexError", 	"An error was caused by attempting to access a nonexistent RawArray element." },
 
 		// MTensor errors: [-301 : -400]
-		{ LLErrorCode::TensorInitError, "TensorInitError", "Failed to construct Tensor." },
-		{ LLErrorCode::TensorNewError, "TensorNewError", "Failed to create a new MTensor." },
-		{ LLErrorCode::TensorCloneError, "TensorCloneError", "Failed to clone MTensor." },
-		{ LLErrorCode::TensorTypeError, "TensorTypeError", "An error was caused by an MTensor type mismatch." },
-		{ LLErrorCode::TensorSizeError, "TensorSizeError", "An error was caused by an incorrect Tensor size." },
-		{ LLErrorCode::TensorIndexError, "TensorIndexError", "An error was caused by attempting to access a nonexistent Tensor element." },
+		{ LLErrorCode::TensorInitError, 	"TensorInitError", 	"Failed to construct Tensor." },
+		{ LLErrorCode::TensorNewError, 		"TensorNewError", 	"Failed to create a new MTensor." },
+		{ LLErrorCode::TensorCloneError, 	"TensorCloneError", "Failed to clone MTensor." },
+		{ LLErrorCode::TensorTypeError, 	"TensorTypeError", 	"An error was caused by an MTensor type mismatch." },
+		{ LLErrorCode::TensorSizeError, 	"TensorSizeError", 	"An error was caused by an incorrect Tensor size." },
+		{ LLErrorCode::TensorIndexError, 	"TensorIndexError", "An error was caused by attempting to access a nonexistent Tensor element." },
 
 		// MImage errors: [-401 : -500]
-		{ LLErrorCode::ImageInitError, "ImageInitError", "Failed to construct Image." },
-		{ LLErrorCode::ImageNewError, "ImageNewError", "Failed to create a new MImage." },
-		{ LLErrorCode::ImageCloneError, "ImageCloneError", "Failed to clone MImage." },
-		{ LLErrorCode::ImageTypeError, "ImageTypeError", "An error was caused by an MImage type mismatch." },
-		{ LLErrorCode::ImageSizeError, "ImageSizeError", "An error was caused by an incorrect Image size." },
-		{ LLErrorCode::ImageIndexError, "ImageIndexError", "An error was caused by attempting to access a nonexistent Image element." }
+		{ LLErrorCode::ImageInitError, 	"ImageInitError", 	"Failed to construct Image." },
+		{ LLErrorCode::ImageNewError, 	"ImageNewError", 	"Failed to create a new MImage." },
+		{ LLErrorCode::ImageCloneError, "ImageCloneError", 	"Failed to clone MImage." },
+		{ LLErrorCode::ImageTypeError, 	"ImageTypeError", 	"An error was caused by an MImage type mismatch." },
+		{ LLErrorCode::ImageSizeError, 	"ImageSizeError", 	"An error was caused by an incorrect Image size." },
+		{ LLErrorCode::ImageIndexError, "ImageIndexError", 	"An error was caused by attempting to access a nonexistent Image element." },
+
+		// MathLink errors: [-501 : -600]
+		{ LLErrorCode::MLTestHeadError, 		"MLTestHeadError", 		"MLTestHead failed (wrong head or number of arguments)." },
+		{ LLErrorCode::MLPutSymbolError, 		"MLPutSymbolError", 	"MLPutSymbol failed." },
+		{ LLErrorCode::MLPutFunctionError, 		"MLPutFunctionError", 	"MLPutFunction failed." },
+		{ LLErrorCode::MLTestSymbolError, 		"MLTestSymbolError", 	"MLTestSymbol failed (different symbol on the link than expected)." },
+		{ LLErrorCode::MLWrongSymbolForBool, 	"MLWrongSymbolForBool", "Tried to read something else than \"True\" or \"False\" as boolean." },
+		{ LLErrorCode::MLGetListError, 			"MLGetListError", 		"Could not get list from MathLink." },
+		{ LLErrorCode::MLGetScalarError, 		"MLGetScalarError", 	"Could not get scalar from MathLink." },
+		{ LLErrorCode::MLGetStringError, 		"MLGetStringError", 	"Could not get string from MathLink." },
+		{ LLErrorCode::MLPutListError, 			"MLPutListError", 		"Could not send list via MathLink." },
+		{ LLErrorCode::MLPutScalarError, 		"MLPutScalarError", 	"Could not send scalar via MathLink." },
+		{ LLErrorCode::MLPutStringError, 		"MLPutStringError", 	"Could not send string via MathLink." }
 	});
 
 	const ErrorManager::ErrorMap::const_iterator ErrorManager::insertionHint = errors.find("MArgumentInitError");
@@ -136,19 +153,15 @@ namespace LibraryLinkUtils {
 
 	// Initial implementation, no error checking. Will be nicer when I wrap MLINK into stream class.
 	void ErrorManager::sendRegisteredErrorsViaMathlink(MLINK mlp) {
-		long len;
-		MLCheckFunction(mlp, "List", &len);
-		MLNewPacket(mlp);
-		MLPutFunction(mlp, "Association", errors.size());
+		MathLinkStream ms(mlp, "List", 0);
+
+		ms << ML::NewPacket << ML::Association(errors.size());
+
 		for (const auto& err : errors) {
-			MLPutFunction(mlp, "Rule", 2);
-			MLPutUTF8String(mlp, reinterpret_cast<const unsigned char*>(err.first.c_str()), static_cast<int>(err.first.size()));
-			MLPutFunction(mlp, "List", 2);
-			MLPutInteger32(mlp, err.second.id());
-			MLPutUTF8String(mlp, reinterpret_cast<const unsigned char*>(err.second.message().c_str()), static_cast<int>(err.second.message().size()));
+			ms << ML::Rule << err.first << ML::List(2) << err.second.id() << err.second.message();
 		}
-		MLEndPacket(mlp);
-		MLFlush(mlp);
+
+		ms << ML::EndPacket << ML::Flush;
 	}
 
 	EXTERN_C DLLEXPORT int sendRegisteredErrors(WolframLibraryData libData, MLINK mlp) {
