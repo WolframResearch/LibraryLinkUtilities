@@ -17,17 +17,42 @@
 namespace LibraryLinkUtils {
 
 	namespace ML {
+		template<typename T>
+		using StringData = std::unique_ptr<const T[], ReleaseString<T>>;
+
+		template<typename T>
+		using ListData = std::unique_ptr<T[], ReleaseList<T>>;
+
+		template<typename T>
+		using ArrayData = std::unique_ptr<T[], ReleaseArray<T>>;
+
+		template<typename T>
+		struct GetArray {
+			using Func = std::function<int(MLINK, T**, int**, char***, int*)>;
+
+			static ArrayData<T> get(MLINK m) {
+				T* rawResult;
+				int* dims;
+				char** heads;
+				int rank;
+				checkError(m, ArrayF(m, &rawResult, &dims, &heads, &rank), LLErrorCode::MLGetArrayError, ArrayFName);
+				return { rawResult, ReleaseArray<T> { m, dims, heads, rank } };
+			}
+
+		private:
+			static const std::string ArrayFName;
+			static Func ArrayF;
+		};
 
 		template<typename T>
 		struct GetList {
 			using Func = std::function<int(MLINK, T**, int*)>;
-			using MLList = std::unique_ptr<T[], ReleaseList<T>>;
 
-			static MLList get(MLINK m) {
+			static ListData<T> get(MLINK m) {
 				T* rawResult;
 				int len;
 				checkError(m, ListF(m, &rawResult, &len), LLErrorCode::MLGetListError, ListFName);
-				return MLList { rawResult, ReleaseList<T> { m, len } };
+				return { rawResult, ReleaseList<T> { m, len } };
 			}
 
 		private:
@@ -53,13 +78,12 @@ namespace LibraryLinkUtils {
 		template<typename T>
 		struct GetString {
 			using Func = std::function<int(MLINK, const T**, int*, int*)>;
-			using MLString = std::unique_ptr<const T[], ReleaseString<T>>;
 
-			static MLString get(MLINK m) {
+			static StringData<T> get(MLINK m) {
 				const T* rawResult;
 				int bytes, characters;
 				checkError(m, StringF(m, &rawResult, &bytes, &characters), LLErrorCode::MLGetStringError, StringFName);
-				return MLString { rawResult, ReleaseString<T> { m, bytes , characters} };
+				return { rawResult, ReleaseString<T> { m, bytes , characters} };
 			}
 
 		private:

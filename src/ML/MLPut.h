@@ -16,6 +16,23 @@ namespace LibraryLinkUtils {
 	namespace ML {
 
 		template<typename T>
+		struct PutArray {
+			using Func = std::function<int(MLINK, const T*, const int*, const char**, int)>;
+
+			static void put(MLINK m, const T* array, const int* dims, const char** heads, int len) {
+				checkError(m, ArrayF(m, array, dims, heads, len), LLErrorCode::MLPutArrayError, ArrayFName);
+			}
+
+			static void put(MLINK m, const T* array, const int* dims, char** heads, int len) {
+				checkError(m, ArrayF(m, array, dims, const_cast<const char**>(heads), len), LLErrorCode::MLPutArrayError, ArrayFName);
+			}
+
+		private:
+			static const std::string ArrayFName;
+			static Func ArrayF;
+		};
+
+		template<typename T>
 		struct PutList {
 			using Func = std::function<int(MLINK, const T*, int)>;
 

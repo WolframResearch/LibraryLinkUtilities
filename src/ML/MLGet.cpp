@@ -11,6 +11,13 @@
 namespace LibraryLinkUtils {
 
 	namespace ML {
+
+		template<typename T>
+		typename GetArray<T>::Func GetArray<T>::ArrayF  = [] (auto&&...) {
+			static_assert(sizeof(T) < 0, "Trying to use ML::GetArray<T> for unsupported type T");
+			return 0;
+		};
+
 		template<typename T>
 		typename GetList<T>::Func GetList<T>::ListF  = [] (auto&&...) {
 			static_assert(sizeof(T) < 0, "Trying to use ML::GetList<T> for unsupported type T");
@@ -41,6 +48,12 @@ namespace LibraryLinkUtils {
 
 
 		template<>
+		GetArray<unsigned char>::Func GetArray<unsigned char>::ArrayF = MLGetInteger8Array;
+
+		template<>
+		const std::string GetArray<unsigned char>::ArrayFName = "MLGetInteger8Array";
+
+		template<>
 		GetList<unsigned char>::Func GetList<unsigned char>::ListF = MLGetInteger8List;
 
 		template<>
@@ -60,6 +73,12 @@ namespace LibraryLinkUtils {
 
 
 		template<>
+		GetArray<short>::Func GetArray<short>::ArrayF = MLGetInteger16Array;
+
+		template<>
+		const std::string GetArray<short>::ArrayFName = "MLGetInteger16Array";
+
+		template<>
 		GetList<short>::Func GetList<short>::ListF = MLGetInteger16List;
 
 		template<>
@@ -77,6 +96,12 @@ namespace LibraryLinkUtils {
 		template<>
 		const std::string GetScalar<short>::ScalarFName = "MLGetInteger16";
 
+
+		template<>
+		GetArray<int>::Func GetArray<int>::ArrayF = MLGetInteger32Array;
+
+		template<>
+		const std::string GetArray<int>::ArrayFName = "MLGetInteger32Array";
 
 		template<>
 		GetList<int>::Func GetList<int>::ListF = MLGetInteger32List;
@@ -102,6 +127,12 @@ namespace LibraryLinkUtils {
 
 
 		template<>
+		GetArray<mlint64>::Func GetArray<mlint64>::ArrayF = MLGetInteger64Array;
+
+		template<>
+		const std::string GetArray<mlint64>::ArrayFName = "MLGetInteger64Array";
+
+		template<>
 		GetList<mlint64>::Func GetList<mlint64>::ListF = MLGetInteger64List;
 
 		template<>
@@ -114,6 +145,13 @@ namespace LibraryLinkUtils {
 		const std::string GetScalar<mlint64>::ScalarFName = "MLGetInteger64";
 
 
+
+		template<>
+		GetArray<float>::Func GetArray<float>::ArrayF = MLGetReal32Array;
+
+		template<>
+		const std::string GetArray<float>::ArrayFName = "MLGetReal32Array";
+
 		template<>
 		GetList<float>::Func GetList<float>::ListF = MLGetReal32List;
 
@@ -125,6 +163,13 @@ namespace LibraryLinkUtils {
 
 		template<>
 		const std::string GetScalar<float>::ScalarFName = "MLGetReal32";
+
+
+		template<>
+		GetArray<double>::Func GetArray<double>::ArrayF = MLGetReal64Array;
+
+		template<>
+		const std::string GetArray<double>::ArrayFName = "MLGetReal64Array";
 
 		template<>
 		GetList<double>::Func GetList<double>::ListF = MLGetReal64List;

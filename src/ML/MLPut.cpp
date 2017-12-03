@@ -40,6 +40,13 @@ namespace LibraryLinkUtils {
 		const std::string PutString<char>::StringFName = "MLPutString";
 
 
+
+		template<>
+		PutArray<unsigned char>::Func PutArray<unsigned char>::ArrayF = MLPutInteger8Array;
+
+		template<>
+		const std::string PutArray<unsigned char>::ArrayFName = "MLPutInteger8Array";
+
 		template<>
 		PutList<unsigned char>::Func PutList<unsigned char>::ListF = MLPutInteger8List;
 
@@ -58,6 +65,12 @@ namespace LibraryLinkUtils {
 		template<>
 		const std::string PutScalar<unsigned char>::ScalarFName = "MLPutInteger8";
 
+
+		template<>
+		PutArray<short>::Func PutArray<short>::ArrayF = MLPutInteger16Array;
+
+		template<>
+		const std::string PutArray<short>::ArrayFName = "MLPutInteger16Array";
 
 		template<>
 		PutList<short>::Func PutList<short>::ListF = MLPutInteger16List;
@@ -79,6 +92,12 @@ namespace LibraryLinkUtils {
 
 
 		template<>
+		PutArray<int>::Func PutArray<int>::ArrayF = MLPutInteger32Array;
+
+		template<>
+		const std::string PutArray<int>::ArrayFName = "MLPutInteger32Array";
+
+		template<>
 		PutList<int>::Func PutList<int>::ListF = MLPutInteger32List;
 
 		template<>
@@ -98,6 +117,12 @@ namespace LibraryLinkUtils {
 
 
 		template<>
+		PutArray<mlint64>::Func PutArray<mlint64>::ArrayF = MLPutInteger64Array;
+
+		template<>
+		const std::string PutArray<mlint64>::ArrayFName = "MLPutInteger64Array";
+
+		template<>
 		PutList<mlint64>::Func PutList<mlint64>::ListF = MLPutInteger64List;
 
 		template<>
@@ -111,6 +136,12 @@ namespace LibraryLinkUtils {
 
 
 		template<>
+		PutArray<float>::Func PutArray<float>::ArrayF = MLPutReal32Array;
+
+		template<>
+		const std::string PutArray<float>::ArrayFName = "MLPutReal32Array";
+
+		template<>
 		PutList<float>::Func PutList<float>::ListF = MLPutReal32List;
 
 		template<>
@@ -122,6 +153,12 @@ namespace LibraryLinkUtils {
 		template<>
 		const std::string PutScalar<float>::ScalarFName = "MLPutReal32";
 
+
+		template<>
+		PutArray<double>::Func PutArray<double>::ArrayF = MLPutReal64Array;
+
+		template<>
+		const std::string PutArray<double>::ArrayFName = "MLPutReal64Array";
 
 		template<>
 		PutList<double>::Func PutList<double>::ListF = MLPutReal64List;
