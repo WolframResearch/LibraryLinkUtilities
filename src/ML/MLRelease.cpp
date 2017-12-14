@@ -10,22 +10,6 @@ namespace LibraryLinkUtils {
 
 	namespace ML {
 
-		template<typename T>
-		typename ReleaseArray<T>::Func ReleaseArray<T>::Release  = [] (auto&&...) {
-			static_assert(sizeof(T) < 0, "Trying to use ML::ReleaseArray<T>::Release for unsupported type T");
-		};
-
-		template<typename T>
-		typename ReleaseList<T>::Func ReleaseList<T>::Release  = [] (auto&&...) {
-			static_assert(sizeof(T) < 0, "Trying to use ML::ReleaseList<T>::Release for unsupported type T");
-		};
-
-		template<typename T>
-		typename ReleaseString<T>::Func ReleaseString<T>::Release = [] (auto&&...) {
-			static_assert(sizeof(T) < 0, "Trying to use ML::ReleaseString<T>::Release for unsupported type T");
-		};
-
-
 		template<>
 		ReleaseString<char>::Func ReleaseString<char>::Release = [](MLINK m, const char* d, int) {
 			MLReleaseString(m, d);

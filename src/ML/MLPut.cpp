@@ -12,25 +12,6 @@ namespace LibraryLinkUtils {
 
 	namespace ML {
 
-		template<typename T>
-		typename PutList<T>::Func PutList<T>::ListF = [] (auto&&...) {
-			static_assert(sizeof(T) < 0, "Trying to use ML::PutList<T> for unsupported type T");
-			return 0;
-		};
-
-		template<typename T>
-		typename PutString<T>::Func PutString<T>::StringF = [] (auto&&...) {
-			static_assert(sizeof(T) < 0, "Trying to use ML::PutString<T> for unsupported type T");
-			return 0;
-		};
-
-		template<typename T>
-		typename PutScalar<T>::Func PutScalar<T>::ScalarF = [] (auto&&...) {
-			static_assert(sizeof(T) < 0, "Trying to use ML::PutScalar<T> for unsupported type T");
-			return 0;
-		};
-
-
 		template<>
 		PutString<char>::Func PutString<char>::StringF = [](MLINK m, const char* d, int l) {
 			return MLPutString(m, d);

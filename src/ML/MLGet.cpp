@@ -11,32 +11,6 @@
 namespace LibraryLinkUtils {
 
 	namespace ML {
-
-		template<typename T>
-		typename GetArray<T>::Func GetArray<T>::ArrayF  = [] (auto&&...) {
-			static_assert(sizeof(T) < 0, "Trying to use ML::GetArray<T> for unsupported type T");
-			return 0;
-		};
-
-		template<typename T>
-		typename GetList<T>::Func GetList<T>::ListF  = [] (auto&&...) {
-			static_assert(sizeof(T) < 0, "Trying to use ML::GetList<T> for unsupported type T");
-			return 0;
-		};
-
-		template<typename T>
-		typename GetString<T>::Func GetString<T>::StringF = [] (auto&&...) {
-			static_assert(sizeof(T) < 0, "Trying to use ML::GetString<T> for unsupported type T");
-			return 0;
-		};
-
-		template<typename T>
-		typename GetScalar<T>::Func GetScalar<T>::ScalarF = [] (auto&&...) {
-			static_assert(sizeof(T) < 0, "Trying to use ML::GetScalar<T> for unsupported type T");
-			return 0;
-		};
-
-
 		template<>
 		GetString<char>::Func GetString<char>::StringF = [](MLINK m, const char** d, int* l, int* c) {
 			*l = *c = -1;
