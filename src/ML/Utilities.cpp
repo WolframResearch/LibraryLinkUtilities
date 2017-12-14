@@ -20,6 +20,10 @@ namespace LibraryLinkUtils {
 			return head;
 		}
 
+		void Symbol::setHead(std::string h) {
+			head = std::move(h);
+		}
+
 		int Function::getArgc() const {
 			return argc;
 		}
@@ -53,7 +57,7 @@ namespace LibraryLinkUtils {
 		std::string getMLErrorText(MLINK mlp) {
 			std::string err = "Error code reported by MathLink: " + std::to_string(MLError(mlp)) + "\n";
 			auto mlErrorMsg = MLErrorMessage(mlp);
-			err += "\"" + std::string(mlErrorMsg) + "\"\nAdditional debug info: ";
+			err += "\"" + std::string(mlErrorMsg) + "\"\nDebug info: ";
 			MLReleaseErrorMessage(mlp, mlErrorMsg);
 			MLClearError(mlp);
 			return err;
@@ -74,4 +78,5 @@ namespace LibraryLinkUtils {
 
 	}
 }
+
 
