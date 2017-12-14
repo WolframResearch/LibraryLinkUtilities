@@ -5,8 +5,9 @@
  * @brief	<brief description>
  */
 
+#include <algorithm>
 #include <iostream>
-#include <cstring>
+#include <map>
 #include <string>
 #include <vector>
 
@@ -639,3 +640,40 @@ EXTERN_C DLLEXPORT int TakeLibraryFunction(WolframLibraryData libData, MLINK mlp
 //
 // Associations/Maps
 //
+
+EXTERN_C DLLEXPORT int ReadNestedMap(WolframLibraryData libData, MLINK mlp) {
+	auto err = LLErrorCode::NoError;
+	try {
+		MathLinkStream ml(mlp, "List", 1);
+
+		std::map<std::string, std::map<int, std::vector<double>>> myNestedMap;
+
+		ml >> myNestedMap;
+
+		for (auto& outerRule : myNestedMap) {
+			const auto& outerKey = outerRule.first;
+			auto& innerMap = outerRule.second;
+			for (auto& innerRule : innerMap) {
+				auto& innerMapVal = innerRule.second;
+				if (outerKey == "Negate") {
+					std::transform(innerMapVal.cbegin(), innerMapVal.cend(), innerMapVal.begin(), std::negate<double>());
+				} else if (outerKey == "Add") {
+					std::transform(innerMapVal.cbegin(), innerMapVal.cend(), innerMapVal.begin(), [&innerRule](auto d) { return d + innerRule.first; });
+				} else if (outerKey == "Multiply") {
+					std::transform(innerMapVal.cbegin(), innerMapVal.cend(), innerMapVal.begin(), [&innerRule](auto d) { return d * innerRule.first; });
+				}
+			}
+		}
+
+		ml << myNestedMap;
+	}
+	catch (LibraryLinkError& e) {
+		err = e.which();
+		std::cerr << e.debug() << std::endl;
+	}
+	catch (...) {
+		err = LLErrorCode::FunctionError;
+	}
+	return err;
+}
+

@@ -225,8 +225,8 @@ Test[
 
 Test[ (* Test if releasing memory works, if not the memory usage should drastically increase after this test *)
 	ReceiveAndFreeArray = SafeMathLinkFunction["ReceiveAndFreeArray"];
-	r = RandomReal[1., {100, 100, 100}];
-	Do[ReceiveAndFreeArray[r], 1000];
+	r = RandomReal[1., {1000, 1000, 100}];
+	Do[ReceiveAndFreeArray[r], 500];
 	Clear[r];
 	,
 	Null
@@ -274,8 +274,8 @@ Test[
 
 Test[ (* Test if releasing strings works, if not the memory usage should drastically increase after this test *)
 	ReceiveAndFreeString = SafeMathLinkFunction["ReceiveAndFreeString"];
-	s = StringJoin[RandomChoice[CharacterRange["A", "z"], 1000]];
-	Do[ReceiveAndFreeString[s], 1000]
+	s = StringJoin[RandomChoice[CharacterRange["A", "z"], 10000]];
+	Do[ReceiveAndFreeString[s], 500]
 	,
 	Null
 	,
@@ -320,7 +320,25 @@ Test[
 ]
 
 (* Associations/Maps *)
-
+Test[
+	ReadNestedMap = SafeMathLinkFunction["ReadNestedMap"];
+	r = RandomReal[{-Pi, Pi}, 10];
+	Sort @ ReadNestedMap[<|
+		"Multiply" -> <|3 -> r, 0 -> r, -3 -> r|>,
+		"DoNothing" -> <|3 -> r, 0 -> r|>,
+		"Negate" -> <|3 -> r, 0 -> r|>,
+		"Add" -> <|-5 -> r|>
+	|>]
+	,
+	Sort @ <|
+		"Multiply" -> <|-3 -> -3r, 0 -> 0r, 3 -> 3r|>,
+		"DoNothing" -> <|0 -> r, 3 -> r|>,
+		"Negate" -> <|0 -> -r, 3 -> -r|>,
+		"Add" -> <|-5 -> r - 5|>
+	|>
+	,
+	TestID->"MathLinkTestSuite-20171214-F6N1C7"
+]
 
 (* Local Loopback Link *)
 (* not implemented yet *)
