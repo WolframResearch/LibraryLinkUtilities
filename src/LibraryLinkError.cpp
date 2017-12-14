@@ -82,7 +82,9 @@ namespace LibraryLinkUtils {
 		{ LLErrorCode::MLPutListError, 			"MLPutListError", 		"Could not send list via MathLink." },
 		{ LLErrorCode::MLPutScalarError, 		"MLPutScalarError", 	"Could not send scalar via MathLink." },
 		{ LLErrorCode::MLPutStringError, 		"MLPutStringError", 	"Could not send string via MathLink." },
-		{ LLErrorCode::MLPutArrayError, 		"MLPutArrayError", 		"Could not send array via MathLink." }
+		{ LLErrorCode::MLPutArrayError, 		"MLPutArrayError", 		"Could not send array via MathLink." },
+		{ LLErrorCode::MLGetSymbolError, 		"MLGetSymbolError", 	"MLGetSymbol failed." },
+		{ LLErrorCode::MLGetFunctionError, 		"MLGetFunctionError", 	"MLGetFunction failed." }
 	});
 
 	const ErrorManager::ErrorMap::const_iterator ErrorManager::insertionHint = errors.find("MArgumentInitError");

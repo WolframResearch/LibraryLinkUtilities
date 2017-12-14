@@ -24,9 +24,13 @@ namespace LibraryLinkUtils {
 		constexpr int MLGetListError = -506;		///< Could not get list from MathLink
 		constexpr int MLGetScalarError = -507;		///< Could not get scalar from MathLink
 		constexpr int MLGetStringError = -508;		///< Could not get string from MathLink
-		constexpr int MLPutListError = -509;		///< Could not send list via MathLink
-		constexpr int MLPutScalarError = -510;		///< Could not send scalar via MathLink
-		constexpr int MLPutStringError = -511;		///< Could not send string via MathLink
+		constexpr int MLGetArrayError = -509;		///< Could not get array from MathLink
+		constexpr int MLPutListError = -510;		///< Could not send list via MathLink
+		constexpr int MLPutScalarError = -511;		///< Could not send scalar via MathLink
+		constexpr int MLPutStringError = -512;		///< Could not send string via MathLink
+		constexpr int MLPutArrayError = -513;		///< Could not send array via MathLink
+		constexpr int MLGetSymbolError = -514; 		///< MLGetSymbol failed
+		constexpr int MLGetFunctionError = -515; 	///< MLGetFunction failed
 	}
 
 	class MathLinkStream;
