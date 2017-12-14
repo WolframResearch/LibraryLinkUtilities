@@ -7,7 +7,6 @@
 #ifndef LLUTILS_MATHLINKSTREAM_H_
 #define LLUTILS_MATHLINKSTREAM_H_
 
-#include <iostream> //debug
 #include <map>
 #include <type_traits>
 #include <vector>
@@ -27,6 +26,8 @@ namespace LibraryLinkUtils {
 	class MathLinkStream {
 	public:
 		MathLinkStream(MLINK mlp);
+
+		MathLinkStream(MLINK mlp, int argc);
 
 		MathLinkStream(MLINK mlp, const std::string& head, int argc);
 
@@ -55,7 +56,16 @@ namespace LibraryLinkUtils {
 		MathLinkStream& operator<<(bool b);
 
 		template<typename T>
+		MathLinkStream& operator<<(const ML::ArrayData<T>& a);
+
+		template<typename T>
+		MathLinkStream& operator<<(const ML::ListData<T>& l);
+	
+		template<typename T>
 		MathLinkStream& operator<<(const std::vector<T>& l);
+
+		template<typename T>
+		MathLinkStream& operator<<(const ML::StringData<T>& s);
 
 		template<typename T>
 		MathLinkStream& operator<<(const std::basic_string<T>& s);
@@ -77,6 +87,8 @@ namespace LibraryLinkUtils {
 
 		MathLinkStream& operator>>(const ML::Symbol& s);
 
+		MathLinkStream& operator>>(ML::Symbol& s);
+
 		MathLinkStream& operator>>(const ML::Function& f);
 
 		MathLinkStream& operator>>(ML::Function& f);
@@ -84,7 +96,16 @@ namespace LibraryLinkUtils {
 		MathLinkStream& operator>>(bool& b);
 
 		template<typename T>
+		MathLinkStream& operator>>(ML::ArrayData<T>& s);
+
+		template<typename T>
+		MathLinkStream& operator>>(ML::ListData<T>& s);
+
+		template<typename T>
 		MathLinkStream& operator>>(std::vector<T>& l);
+
+		template<typename T>
+		MathLinkStream& operator>>(ML::StringData<T>& s);
 
 		template<typename T>
 		MathLinkStream& operator>>(std::basic_string<T>& s);
@@ -112,14 +133,33 @@ namespace LibraryLinkUtils {
 	//
 
 	template<typename T>
+	MathLinkStream& MathLinkStream::operator<<(const ML::ArrayData<T>& a) {
+		const auto& del = a.get_deleter();
+		ML::PutArray<T>::put(m, a.get(), del.getDims(), del.getHeads(), del.getRank());
+		return *this;
+	}
+
+	template<typename T>
+	MathLinkStream& MathLinkStream::operator<<(const ML::ListData<T>& l) {
+		const auto& del = l.get_deleter();
+		ML::PutList<T>::put(m, l.get(), del.getLength());
+		return *this;
+	}
+
+	template<typename T>
 	MathLinkStream& MathLinkStream::operator<<(const std::vector<T>& l) {
 		ML::PutList<T>::put(m, l.data(), l.size());
 		return *this;
 	}
 
 	template<typename T>
+	MathLinkStream& MathLinkStream::operator<<(const ML::StringData<T>& s) {
+		ML::PutString<T>::put(m, s.get(), s.get_deleter().getLength());
+		return *this;
+	}
+
+	template<typename T>
 	MathLinkStream& MathLinkStream::operator<<(const std::basic_string<T>& s) {
-		std::cout << "Writing string " << s.c_str() << " of length " << s.size() << std::endl;
 		ML::PutString<T>::put(m, s.c_str(), s.size());
 		return *this;
 	}
@@ -149,11 +189,29 @@ namespace LibraryLinkUtils {
 	//
 
 	template<typename T>
+	MathLinkStream& MathLinkStream::operator>>(ML::ArrayData<T>& a) {
+		a = ML::GetArray<T>::get(m);
+		return *this;
+	}
+
+	template<typename T>
+	MathLinkStream& MathLinkStream::operator>>(ML::ListData<T>& l) {
+		l = ML::GetList<T>::get(m);
+		return *this;
+	}
+
+	template<typename T>
 	MathLinkStream& MathLinkStream::operator>>(std::vector<T>& l) {
 		auto list = ML::GetList<T>::get(m);
 		T* start = list.get();
-		auto listLen = list.get_deleter().getListLength();
+		auto listLen = list.get_deleter().getLength();
 		l = std::vector<T> { start, start + listLen };
+		return *this;
+	}
+
+	template<typename T>
+	MathLinkStream& MathLinkStream::operator>>(ML::StringData<T>& s) {
+		s = ML::GetString<T>::get(m);
 		return *this;
 	}
 
@@ -162,10 +220,8 @@ namespace LibraryLinkUtils {
 		using StringType = std::basic_string<T>;
 
 		auto rawString = ML::GetString<T>::get(m);
-		auto bytes = rawString.get_deleter().getStringLength();
-		std::cout << "Read string: " << rawString.get() << ", bytes: " << bytes << std::endl;
+		auto bytes = rawString.get_deleter().getLength();
 		s = (bytes < 0? StringType { rawString.get() } : StringType { rawString.get(), static_cast<typename StringType::size_type>(bytes) });
-		std::cout << "Converted string: " << s.c_str() << " of size " << s.size() << std::endl;
 
 		return *this;
 	}

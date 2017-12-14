@@ -16,6 +16,9 @@ namespace LibraryLinkUtils {
 	MathLinkStream::MathLinkStream(MLINK mlp) : m(mlp) {
 	}
 
+	MathLinkStream::MathLinkStream(MLINK mlp, int argc) : MathLinkStream(mlp, "List", argc) {
+	}
+
 	MathLinkStream::MathLinkStream(MLINK mlp, const std::string& head, int argc) : m(mlp) {
 		testHead(head, argc);
 	}
@@ -78,13 +81,38 @@ namespace LibraryLinkUtils {
 		return *this;
 	}
 
+	MathLinkStream& MathLinkStream::operator>>(ML::Symbol& s) {
+		if (!s.getHead().empty()) {
+			check(MLTestSymbol(m, s.getHead().c_str()), LLErrorCode::MLTestSymbolError, "Cannot get symbol: \"" + s.getHead() + "\"");
+		} else {
+			const char* head;
+			check(MLGetSymbol(m, &head), LLErrorCode::MLGetSymbolError, "Cannot get symbol");
+			s.setHead(head);
+			MLReleaseSymbol(m, head);
+		}
+		return *this;
+	}
+
 	MathLinkStream& MathLinkStream::operator>>(const ML::Function& f) {
 		testHead(f.getHead().c_str(), f.getArgc());
 		return *this;
 	}
 
 	MathLinkStream& MathLinkStream::operator>>(ML::Function& f) {
-		f.setArgc(testHead(f.getHead().c_str()));
+		if (!f.getHead().empty()) {
+			if (f.getArgc() < 0) {
+				f.setArgc(testHead(f.getHead().c_str()));
+			} else {
+				testHead(f.getHead().c_str(), f.getArgc());
+			}
+		} else {
+			const char* head;
+			int argc;
+			check(MLGetFunction(m, &head, &argc), LLErrorCode::MLGetFunctionError, "Cannot get function");
+			f.setHead(head);
+			MLReleaseSymbol(m, head);
+			f.setArgc(argc);
+		}
 		return *this;
 	}
 
