@@ -97,6 +97,9 @@ SafeLibraryFunction[args___, opts : OptionsPattern[SafeLibraryFunction]] :=
 	If[TrueQ[OptionValue["Throws"]], CatchAndThrowLibraryFunctionError, CatchLibraryFunctionError] @* SafeLibraryFunctionLoad[args]
 	
 
+SafeMathLinkFunction[fname_String, opts : OptionsPattern[SafeLibraryFunction]] := 
+	If[TrueQ[OptionValue["Throws"]], CatchAndThrowLibraryFunctionError, CatchLibraryFunctionError] @* SafeLibraryFunctionLoad[fname, LinkObject, LinkObject]
+
 (* ::SubSection:: *)
 (* RegisterPacletErrors *)
 (* ------------------------------------------------------------------------- *)
