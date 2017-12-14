@@ -5,13 +5,13 @@ $baseDir = FileNameDrop[$CurrentFile, -3];
 $LLUPath = FileNameJoin[{$baseDir, "src"}];
 
 (* LLU source files *)
-$LLUSources = FileNames["*.cpp", {$LLUPath}];
+$LLUSources = FileNames["*.cpp", {$LLUPath},2];
 
 (* Compilations options for all tests *)
 options = {
 	"CleanIntermediate" -> True,
-	"IncludeDirectories" -> {$LLUPath},
-	"CompileOptions" -> If[MatchQ[$SystemID, "Windows-x86-64" | "Windows"], "/O2 /EHsc" , "-O2 -std=c++14 -Wall"],
+	"IncludeDirectories" -> {$LLUPath, FileNameJoin[{$LLUPath, "ML"}]},
+	"CompileOptions" -> If[MatchQ[$SystemID, "Windows-x86-64" | "Windows"], "/O2 /EHsc" , "-O2 -std=c++14 -Wall --pedantic"],
 	"ShellOutputFunction" -> Print,
 	"ShellCommandFunction" -> Print,
 	"Language" -> "C++"
