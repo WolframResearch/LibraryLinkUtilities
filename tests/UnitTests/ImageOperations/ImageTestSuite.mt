@@ -12,12 +12,3 @@ Get[FileNameJoin[{sourceDirectory, "ImageDimensions.wl"}]];
 
 testFiles = FileNames["Image*Operations.mt", { DirectoryName[$CurrentFile] }];
 TestSuite[testFiles];
-
-LibraryUnload[ImgEchoLib];
-LibraryUnload[ImgNegLib];
-LibraryUnload[ImgDimLib];
-
-(*Delete all created libraries(to avoid CopyFile::filex error seen on windows)*)
-DeleteFile[ImgEchoLib];
-DeleteFile[ImgNegLib];
-DeleteFile[ImgDimLib];
