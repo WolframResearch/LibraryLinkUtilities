@@ -1,11 +1,11 @@
 /** 
  * @file	MLPut.h
  * @date	Nov 28, 2017
- * @author	rafal
- * @brief	<brief description>
+ * @author	Rafal Chojna <rafalc@wolfram.com>
+ * @brief	Header file with classes related to sending data through MathLink.
  */
-#ifndef MLPUT_H_
-#define MLPUT_H_
+#ifndef LLUTILS_ML_MLPUT_H_
+#define LLUTILS_ML_MLPUT_H_
 
 #include <functional>
 
@@ -173,4 +173,4 @@ namespace LibraryLinkUtils {
 
 } /* namespace LibraryLinkUtils */
 
-#endif /* MLPUT_H_ */
+#endif /* LLUTILS_ML_MLPUT_H_ */

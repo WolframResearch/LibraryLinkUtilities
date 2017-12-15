@@ -1,8 +1,8 @@
 /** 
- * @file	MLGet.cpp
+ * @file	MLGet.h
  * @date	Nov 28, 2017
- * @author	rafalc
- * @brief	<brief description>
+ * @author	Rafal Chojna <rafalc@wolfram.com>
+ * @brief	Implementation file with classes related to reading data from MathLink.
  */
 #include "MLGet.h"
 

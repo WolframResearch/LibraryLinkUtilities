@@ -1,8 +1,8 @@
 /** 
- * @file	MLRelease.cpp
+ * @file	MLRelease.h
  * @date	Nov 28, 2017
- * @author	rafal
- * @brief	<brief description>
+ * @author	Rafal Chojna <rafalc@wolfram.com>
+ * @brief	Implementation file with classes responsible for releasing memory allocated by MathLink when receiving data.
  */
 #include "MLRelease.h"
 

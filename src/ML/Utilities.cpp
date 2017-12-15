@@ -1,8 +1,8 @@
 /** 
- * @file	Utilities.cpp
+ * @file	Utilities.h
  * @date	Nov 26, 2017
- * @author	rafalc
- * @brief	<brief description>
+ * @author	Rafal Chojna <rafalc@wolfram.com>
+ * @brief	Implementation file with miscellaneous definitions used throughout the MathLink-related part of LibraryLinkUtilities
  */
 
 #include "Utilities.h"

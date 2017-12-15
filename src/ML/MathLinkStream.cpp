@@ -1,8 +1,8 @@
 /** 
  * @file	MathLinkStream.cpp
  * @date	Nov 23, 2017
- * @author	rafal
- * @brief	<brief description>
+ * @author	Rafal Chojna <rafalc@wolfram.com>
+ * @brief	Implementation file for MathLinkStream class.
  */
 #include "MathLinkStream.h"
 

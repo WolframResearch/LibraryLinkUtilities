@@ -1,8 +1,8 @@
 /** 
- * @file	MLPut.cpp
+ * @file	MLPut.h
  * @date	Nov 28, 2017
- * @author	rafalc
- * @brief	<brief description>
+ * @author	Rafal Chojna <rafalc@wolfram.com>
+ * @brief	Implementation file with classes related to sending data through MathLink.
  */
 #include "MLPut.h"
 

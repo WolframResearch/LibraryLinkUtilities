@@ -1,8 +1,8 @@
 /** 
  * @file	MathLinkStream.h
  * @date	Nov 23, 2017
- * @author	rafalc
- * @brief	<brief description>
+ * @author	Rafal Chojna <rafalc@wolfram.com>
+ * @brief	Header file for MathLinkStream class.
  */
 #ifndef LLUTILS_MATHLINKSTREAM_H_
 #define LLUTILS_MATHLINKSTREAM_H_
@@ -20,62 +20,185 @@
 namespace LibraryLinkUtils {
 
 
-	/** 
-	 * TODO <comment>
+	/**
+	 * @class MathLinkStream
+	 * @brief Wrapper class over MathLink with a stream-like interface. So far covers only the most important types.
+	 *
+	 * MathLinkSrtream resides in LibraryLinkUtils namespace, whereas other MathLink-related classes can be found in LibraryLinkUtils::ML namespace.
 	 */
 	class MathLinkStream {
 	public:
+
+		/**
+		 *   @brief			Constructs new MathLinkStream
+		 *   @param[in] 	mlp - low-level object of type MLINK received from LibraryLink
+		 **/
 		MathLinkStream(MLINK mlp);
 
+		/**
+		 *   @brief         Constructs new MathLinkStream and checks whether there is a list of \c argc arguments on the LinkObject waiting to be read
+		 *   @param[in]     mlp - low-level object of type MLINK received from LibraryLink
+		 *   @param[in] 	argc - expected number of arguments
+		 **/
 		MathLinkStream(MLINK mlp, int argc);
 
+		/**
+		 *   @brief         Constructs new MathLinkStream and checks whether there is a function with head \c head and \c argc arguments on the LinkObject waiting to be read
+		 *   @param[in]     mlp - low-level object of type MLINK received from LibraryLink\
+		 *   @param[in]		head - expected head of expression on the Link
+		 *   @param[in] 	argc - expected number of arguments
+		 *   @throws 		see MathLinkStream::testHead(const std::string&, int);
+		 *
+		 *   @note			arguments passed to the library function will almost always be wrapped in a List, so if not sure pass "List" as \c head
+		 **/
 		MathLinkStream(MLINK mlp, const std::string& head, int argc);
 
+		/**
+		 *   @brief Default destructor
+		 **/
 		~MathLinkStream() = default;
 
+		/**
+		 *   @brief Returns a reference to underlying low-level MathLink handle
+		 **/
 		MLINK& get() noexcept {
-			// The invariant is that "links" is never empty, so no need to check
 			return m;
 		}
 
+	public:
+		/// Type of elements that can be send via MathLink with no arguments, for example ML::Flush
 		using StreamToken = MathLinkStream& (*)(MathLinkStream&);
+
+		/// Type of elements that can be either send or received via MathLink with no arguments, for example ML::Rule
 		using BidirStreamToken = MathLinkStream& (*)(MathLinkStream&, ML::Direction);
+
 
 		//
 		//	operator<<
 		//
 
+		/**
+		 *   @brief			Sends a stream token via MathLink
+		 *   @param[in] 	f - a stream token, i.e. an element that can be send via MathLink with no arguments, for example ML::Flush
+		 **/
 		MathLinkStream& operator<<(StreamToken f);
 
+		/**
+		 *   @brief			Sends a bidirectional stream token via MathLink
+		 *   @param[in] 	f - an element that can be either send or received via MathLink with no arguments, for example ML::Rule
+		 **/
 		MathLinkStream& operator<<(BidirStreamToken f);
 
+		/**
+		 *   @brief			Sends a top-level symbol via MathLink
+		 *   @param[in] 	s - a symbol
+		 *   @see 			ML::Symbol
+		 *   @throws 		LLErrorCode::MLPutSymbolError
+		 **/
 		MathLinkStream& operator<<(const ML::Symbol& s);
 
+		/**
+		 *   @brief			Sends a top-level function via MathLink, function arguments should be send immediately after
+		 *   @param[in] 	f - a function
+		 *   @see 			ML::Function
+		 *   @throws 		LLErrorCode::MLPutFunctionError
+		 **/
 		MathLinkStream& operator<<(const ML::Function& f);
 
+		/**
+		 *   @brief			Sends a boolean value via MathLink, it is translated to True or False in Mathematica
+		 *   @param[in] 	b - a boolean value
+		 *
+		 *   @throws 		LLErrorCode::MLPutSymbolError
+		 **/
 		MathLinkStream& operator<<(bool b);
 
+		/**
+		 *   @brief			Sends a MathLink array
+		 *   @tparam		T - array element type
+		 *   @param[in] 	a - ArrayData to be sent
+		 *   @see 			ML::ArrayData<T>
+		 *   @see			http://reference.wolfram.com/language/guide/WSTPCFunctionsForExchangingMultidimensionalArrays.html
+		 *   @throws 		LLErrorCode::MLPutArrayError
+		 **/
 		template<typename T>
 		MathLinkStream& operator<<(const ML::ArrayData<T>& a);
 
+		/**
+		 *   @brief			Sends a MathLink list
+		 *   @tparam		T - list element type
+		 *   @param[in] 	l - ListData to be sent
+		 *   @see 			ML::ListData<T>
+		 *   @see			http://reference.wolfram.com/language/guide/WSTPCFunctionsForExchangingLists.html
+		 *   @throws 		LLErrorCode::MLPutListError
+		 **/
 		template<typename T>
 		MathLinkStream& operator<<(const ML::ListData<T>& l);
 	
+		/**
+		 *   @brief			Sends a std::vector via MathLink, it is interpreted as a List in Mathematica
+		 *   @tparam		T - vector element type
+		 *   @param[in] 	l - std::vector to be sent
+		 *
+		 *   @throws 		LLErrorCode::MLPutListError
+		 **/
 		template<typename T>
 		MathLinkStream& operator<<(const std::vector<T>& l);
 
+		/**
+		 *   @brief			Sends a MathLink string
+		 *   @tparam		T - string character type
+		 *   @param[in] 	s - ML::StringData to be sent
+		 *   @see 			ML::StringData<T>
+		 *   @see			http://reference.wolfram.com/language/guide/WSTPCFunctionsForExchangingStrings.html
+		 *   @throws 		LLErrorCode::MLPutStringError
+		 **/
 		template<typename T>
 		MathLinkStream& operator<<(const ML::StringData<T>& s);
 
+		/**
+		 *   @brief			Sends std::basic_string
+		 *   @tparam		T - string character type
+		 *   @param[in] 	s - std::basic_string<T> to be sent
+		 *
+		 *   @see			http://reference.wolfram.com/language/guide/WSTPCFunctionsForExchangingStrings.html
+		 *   @throws 		LLErrorCode::MLPutStringError
+		 *
+		 *   @note			std::string is just std::basic_string<char>
+		 **/
 		template<typename T>
 		MathLinkStream& operator<<(const std::basic_string<T>& s);
 
+		/**
+		 *   @brief			Sends a character array (or a string literal)
+		 *   @tparam		T - character type
+		 *   @tparam		N - length of character array
+		 *   @param[in] 	s - character array to be sent as String
+		 *
+		 *   @see			http://reference.wolfram.com/language/guide/WSTPCFunctionsForExchangingStrings.html
+		 *   @throws 		LLErrorCode::MLPutStringError
+		 **/
 		template<typename T, std::size_t N>
 		MathLinkStream& operator<<(const T (&s)[N]);
 
+		/**
+		 *   @brief			Sends a std::map via MathLink, it is translated to an Association in Mathematica
+		 *   @tparam		K - map key type, must be supported in MathLinkStream
+		 *   @tparam		V - map value type, must be supported in MathLinkStream
+		 *   @param[in] 	m - map to be sent as Association
+		 *
+		 *   @throws 		LLErrorCode::MLPutFunctionError plus whatever can be thrown sending keys and values
+		 **/
 		template<typename K, typename V>
-		MathLinkStream& operator<<(const std::map<K, V>& s);
+		MathLinkStream& operator<<(const std::map<K, V>& m);
 
+		/**
+		 *   @brief			Sends a scalar value (int, float, double, etc)
+		 *   @tparam		T - scalar type
+		 *   @param[in] 	value - numeric value to be sent
+		 *
+		 *   @throws 		LLErrorCode::MLPutScalarError
+		 **/
 		template<typename T, typename = typename std::enable_if_t<std::is_arithmetic<std::remove_reference_t<T>>::value>>
 		MathLinkStream& operator<<(T value);
 
@@ -83,47 +206,186 @@ namespace LibraryLinkUtils {
 		//	operator>>
 		//
 
+		/**
+		 *   @brief			Receives a bidirectional stream token via MathLink
+		 *   @param[in] 	f - an element that can be either send or received via MathLink with no arguments, for example ML::Rule
+		 **/
 		MathLinkStream& operator>>(BidirStreamToken f);
 
+		/**
+		 *   @brief			Receives a symbol from MathLink.
+		 *
+		 *   Parameter \c s must have head specified and it has to match the head that was read from MathLink
+		 *
+		 *   @param[in] 	s - a symbol
+		 *   @see 			ML::Symbol
+		 *   @throws 		LLErrorCode::MLGetSymbolError, LLErrorCode::MLTestHeadError
+		 **/
 		MathLinkStream& operator>>(const ML::Symbol& s);
 
+		/**
+		 *   @brief				Receives a symbol from MathLink.
+		 *
+		 *   If the parameter \c s has head specified, than it has to match the head that was read from MathLink, otherwise the head read from MathLink
+		 *   will be assigned to s
+		 *
+		 *   @param[in, out] 	s - a symbol
+		 *   @see 				ML::Symbol
+		 *   @throws 			LLErrorCode::MLGetSymbolError, LLErrorCode::MLTestHeadError
+		 **/
 		MathLinkStream& operator>>(ML::Symbol& s);
 
+		/**
+		 *   @brief			Receives a function from MathLink.
+		 *
+		 *   Parameter \c f must have head and argument count specified and they need to match the head and argument count that was read from MathLink
+		 *
+		 *   @param[in] 	f - a function with head and argument count specified
+		 *   @see 			ML::Function
+		 *   @throws 		LLErrorCode::MLGetFunctionError, LLErrorCode::MLTestHeadError
+		 **/
 		MathLinkStream& operator>>(const ML::Function& f);
 
+		/**
+		 *   @brief				Receives a function from MathLink.
+		 *
+		 *   If the parameter \c f has head or argument count set, than it has to match the head or argument count that was read from MathLink
+		 *
+		 *   @param[in, out] 	f - a function which may have head or argument count specified
+		 *   @see 				ML::Function
+		 *   @throws 			LLErrorCode::MLGetFunctionError, LLErrorCode::MLTestHeadError
+		 **/
 		MathLinkStream& operator>>(ML::Function& f);
 
+		/**
+		 *   @brief			Receives a True or False symbol from Mathematica and converts it to bool
+		 *   @param[out] 	b - argument to which the boolean received from MathLink will be assigned
+		 *
+		 *   @throws 		LLErrorCode::MLGetSymbolError, LLErrorCode::MLWrongSymbolForBool
+		 **/
 		MathLinkStream& operator>>(bool& b);
 
+		/**
+		 *   @brief			Receives a MathLink array
+		 *   @tparam		T - array element type
+		 *   @param[out] 	a - argument to which the ML::ArrayData received from MathLink will be assigned
+		 *   @see 			ML::ArrayData<T>
+		 *   @see			http://reference.wolfram.com/language/guide/WSTPCFunctionsForExchangingMultidimensionalArrays.html
+		 *   @throws 		LLErrorCode::MLGetArrayError
+		 **/
 		template<typename T>
 		MathLinkStream& operator>>(ML::ArrayData<T>& s);
 
+		/**
+		 *   @brief			Receives a MathLink list
+		 *   @tparam		T - list element type
+		 *   @param[out] 	l - argument to which the ML::ListData received from MathLink will be assigned
+		 *   @see 			ML::ListData<T>
+		 *   @see			http://reference.wolfram.com/language/guide/WSTPCFunctionsForExchangingLists.html
+		 *   @throws 		LLErrorCode::MLGetListError
+		 **/
 		template<typename T>
 		MathLinkStream& operator>>(ML::ListData<T>& s);
 
+		/**
+		 *   @brief			Receives a List from MathLink and assigns it to std::vector
+		 *   @tparam		T - vector element type
+		 *   @param[out] 	l - argument to which the List received from MathLink will be assigned
+		 *
+		 *   @throws 		LLErrorCode::MLGetListError
+		 **/
 		template<typename T>
 		MathLinkStream& operator>>(std::vector<T>& l);
 
+		/**
+		 *   @brief			Receives a MathLink string
+		 *   @tparam		T - string character type
+		 *   @param[out] 	s - argument to which the ML::StringData received from MathLink will be assigned
+		 *   @see 			ML::StringData<T>
+		 *   @see			http://reference.wolfram.com/language/guide/WSTPCFunctionsForExchangingStrings.html
+		 *   @throws 		LLErrorCode::MLGetStringError
+		 **/
 		template<typename T>
 		MathLinkStream& operator>>(ML::StringData<T>& s);
 
+		/**
+		 *   @brief			Receives std::basic_string
+		 *   @tparam		T - string character type
+		 *   @param[out] 	s - argument to which the std::basic_string<T> received from MathLink will be assigned
+		 *
+		 *   @see			http://reference.wolfram.com/language/guide/WSTPCFunctionsForExchangingStrings.html
+		 *   @throws 		LLErrorCode::MLGetStringError
+		 *
+		 *   @note			std::string is just std::basic_string<char>
+		 **/
 		template<typename T>
 		MathLinkStream& operator>>(std::basic_string<T>& s);
 
+		/**
+		 *   @brief			Received a std::map via MathLink
+		 *   @tparam		K - map key type, must be supported in MathLinkStream
+		 *   @tparam		V - map value type, must be supported in MathLinkStream
+		 *   @param[out] 	m - argument to which the std::map received from MathLink will be assigned
+		 *
+		 *   @throws 		LLErrorCode::MLGetFunctionError plus whatever can be thrown receiving keys and values
+		 *
+		 *   @note			The top-level Association must have all values of the same type because this is how std::map works
+		 **/
 		template<typename K, typename V>
 		MathLinkStream& operator>>(std::map<K, V>& s);
 
+		/**
+		 *   @brief			Receives a scalar value (int, float, double, etc)
+		 *   @tparam		T - scalar type
+		 *   @param[out] 	value - argument to which the value received from MathLink will be assigned
+		 *
+		 *   @throws 		LLErrorCode::MLGetScalarError
+		 **/
 		template<typename T, typename = typename std::enable_if_t<std::is_arithmetic<std::remove_reference_t<T>>::value>>
 		MathLinkStream& operator>>(T& value);
 
 	private:
+
+		/**
+		 *   @brief			Check if the call to MathLink API succeeded, throw an exception otherwise
+		 *   @param[in] 	statusOk - error code returned from MathLink API function, usually 0 means error
+		 *   @param[in]		errorCode - error code to be included in the exception thrown by ErrorManager
+		 *   @param[in]		debugInfo - additional information to include in the exception, should it be thrown
+		 *
+		 *   @throws 		errorCode
+		 **/
 		void check(int statusOk, int errorCode, const std::string& debugInfo = "");
+
+		/**
+		 *   @brief			Check if the call to MathLink API succeeded, throw an exception otherwise
+		 *   @param[in] 	statusOk - error code returned from MathLink API function, usually 0 means error
+		 *   @param[in]		errorName - name of the error to be included in the exception thrown by ErrorManager
+		 *   @param[in]		debugInfo - additional information to include in the exception, should it be thrown
+		 *
+		 *   @throws 		errorName
+		 **/
 		void check(int statusOk, const std::string& errorName, const std::string& debugInfo = "");
 
+		/**
+		 * 	 @brief			Test if the next expression to be read from MathLink has given head
+		 * 	 @param[in] 	head - expression head to test for
+		 * 	 @return		Number of arguments for the next expression on the Link (only if head is correct)
+		 *
+		 * 	 @throws		LLErrorCode::MLTestHeadError
+		 */
 		int testHead(const std::string& head);
+
+		/**
+		 * 	 @brief			Test if the next expression to be read from MathLink has given head and given number of arguments
+		 * 	 @param[in] 	head - expression head to test for
+		 * 	 @param[in]		argc - number of arguments to test for
+		 *
+		 * 	 @throws		LLErrorCode::MLTestHeadError
+		 */
 		void testHead(const std::string& head, int argc);
 
 	private:
+		/// Internal low-level handle to MathLink, it is assumed that the handle is valid
 		MLINK m;
 	};
 

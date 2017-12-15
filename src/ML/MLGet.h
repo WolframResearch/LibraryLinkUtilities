@@ -1,11 +1,11 @@
 /** 
  * @file	MLGet.h
  * @date	Nov 28, 2017
- * @author	rafal
- * @brief	<brief description>
+ * @author	Rafal Chojna <rafalc@wolfram.com>
+ * @brief	Header file with classes related to reading data from MathLink.
  */
-#ifndef MLGET_H_
-#define MLGET_H_
+#ifndef LLUTILS_ML_MLGET_H_
+#define LLUTILS_ML_MLGET_H_
 
 #include <functional>
 #include <memory>
@@ -195,4 +195,4 @@ namespace LibraryLinkUtils {
 
 } /* namespace LibraryLinkUtils */
 
-#endif /* MLGET_H_ */
+#endif /* LLUTILS_ML_MLGET_H_ */
