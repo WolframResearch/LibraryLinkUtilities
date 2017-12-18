@@ -11,7 +11,9 @@
 #include <memory>
 #include <string>
 
-#include "Utilities.h"
+#include "mathlink.h"
+
+#include "../LibraryLinkError.h"
 #include "MLRelease.h"
 
 namespace LibraryLinkUtils {

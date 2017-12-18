@@ -9,7 +9,9 @@
 
 #include <functional>
 
-#include "Utilities.h"
+#include "mathlink.h"
+
+#include "../LibraryLinkError.h"
 
 namespace LibraryLinkUtils {
 

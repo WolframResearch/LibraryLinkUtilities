@@ -82,7 +82,23 @@ namespace LibraryLinkUtils {
 		constexpr int ImageIndexError = -406; 		///< trying to access non-existing element
 
 		// MathLink errors: [-501 : -600]
-		// see MathLinkStream.h
+		constexpr int MLTestHeadError = -501; 		///< MLTestHead failed (wrong head or number of arguments)
+		constexpr int MLPutSymbolError = -502; 		///< MLPutSymbol failed
+		constexpr int MLPutFunctionError = -503; 	///< MLPutFunction failed
+		constexpr int MLTestSymbolError = -504;		///< MLTestSymbol failed (different symbol on the link than expected)
+		constexpr int MLWrongSymbolForBool = -505;	///< Tried to read something else than "True" or "False" as boolean
+		constexpr int MLGetListError = -506;		///< Could not get list from MathLink
+		constexpr int MLGetScalarError = -507;		///< Could not get scalar from MathLink
+		constexpr int MLGetStringError = -508;		///< Could not get string from MathLink
+		constexpr int MLGetArrayError = -509;		///< Could not get array from MathLink
+		constexpr int MLPutListError = -510;		///< Could not send list via MathLink
+		constexpr int MLPutScalarError = -511;		///< Could not send scalar via MathLink
+		constexpr int MLPutStringError = -512;		///< Could not send string via MathLink
+		constexpr int MLPutArrayError = -513;		///< Could not send array via MathLink
+		constexpr int MLGetSymbolError = -514; 		///< MLGetSymbol failed
+		constexpr int MLGetFunctionError = -515; 	///< MLGetFunction failed
+		constexpr int MLPacketHandleError = -516;	///< One of the packet handling functions failed
+		constexpr int MLFlowControlError = -517;	///< One of the flow control functions failed
 	}
 
 	/**
