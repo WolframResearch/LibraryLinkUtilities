@@ -33,7 +33,11 @@ namespace LibraryLinkUtils {
 	}
 
 	MathLinkStream& MathLinkStream::operator<<(const ML::Symbol& s) {
-		check(MLPutSymbol(m, s.getHead().c_str()), LLErrorCode::MLPutSymbolError, "Cannot put symbol: \"" + s.getHead() + "\"");
+		check(
+			MLPutSymbol(m, s.getHead().c_str()),
+			LLErrorCode::MLPutSymbolError,
+			"Cannot put symbol: \"" + s.getHead() + "\""
+		);
 		return *this;
 	}
 
@@ -61,7 +65,11 @@ namespace LibraryLinkUtils {
 
 	int MathLinkStream::testHead(const std::string& head) {
 		int argcount;
-		check(MLTestHead(m, head.c_str(), &argcount), LLErrorCode::MLTestHeadError, "Expected \"" + head + "\"");
+		check(
+			MLTestHead(m, head.c_str(), &argcount),
+			LLErrorCode::MLTestHeadError,
+			"Expected \"" + head + "\""
+		);
 		return argcount;
 	}
 
@@ -77,16 +85,28 @@ namespace LibraryLinkUtils {
 	}
 
 	MathLinkStream& MathLinkStream::operator>>(const ML::Symbol& s) {
-		check(MLTestSymbol(m, s.getHead().c_str()), LLErrorCode::MLTestSymbolError, "Cannot get symbol: \"" + s.getHead() + "\"");
+		check(
+			MLTestSymbol(m, s.getHead().c_str()),
+			LLErrorCode::MLTestSymbolError,
+			"Cannot get symbol: \"" + s.getHead() + "\""
+		);
 		return *this;
 	}
 
 	MathLinkStream& MathLinkStream::operator>>(ML::Symbol& s) {
 		if (!s.getHead().empty()) {
-			check(MLTestSymbol(m, s.getHead().c_str()), LLErrorCode::MLTestSymbolError, "Cannot get symbol: \"" + s.getHead() + "\"");
+			check(
+				MLTestSymbol(m, s.getHead().c_str()),
+				LLErrorCode::MLTestSymbolError,
+				"Cannot get symbol: \"" + s.getHead() + "\""
+			);
 		} else {
 			const char* head;
-			check(MLGetSymbol(m, &head), LLErrorCode::MLGetSymbolError, "Cannot get symbol");
+			check(
+				MLGetSymbol(m, &head),
+				LLErrorCode::MLGetSymbolError,
+				"Cannot get symbol"
+			);
 			s.setHead(head);
 			MLReleaseSymbol(m, head);
 		}
@@ -108,7 +128,11 @@ namespace LibraryLinkUtils {
 		} else {
 			const char* head;
 			int argc;
-			check(MLGetFunction(m, &head, &argc), LLErrorCode::MLGetFunctionError, "Cannot get function");
+			check(
+				MLGetFunction(m, &head, &argc),
+				LLErrorCode::MLGetFunctionError,
+				"Cannot get function"
+			);
 			f.setHead(head);
 			MLReleaseSymbol(m, head);
 			f.setArgc(argc);

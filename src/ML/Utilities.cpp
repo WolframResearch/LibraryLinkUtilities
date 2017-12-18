@@ -11,6 +11,7 @@
 
 #include "mathlink.h"
 #include "MathLinkStream.h"
+#include "../LibraryLinkError.h"
 
 namespace LibraryLinkUtils {
 
@@ -33,17 +34,32 @@ namespace LibraryLinkUtils {
 		}
 
 		MathLinkStream& NewPacket(MathLinkStream& ms) {
-			MLNewPacket(ms.get()); //TODO error checking
+			checkError(
+				ms.get(),
+				MLNewPacket(ms.get()),
+				LLErrorCode::MLPacketHandleError,
+				"Error in MLNewPacket"
+			);
 			return ms;
 		}
 
 		MathLinkStream& EndPacket(MathLinkStream& ms) {
-			MLEndPacket(ms.get()); //TODO error checking
+			checkError(
+				ms.get(),
+				MLEndPacket(ms.get()),
+				LLErrorCode::MLPacketHandleError,
+				"Error in MLEndPacket"
+			);
 			return ms;
 		}
 
 		MathLinkStream& Flush(MathLinkStream& ms) {
-			MLFlush(ms.get()); //TODO error checking
+			checkError(
+				ms.get(),
+				MLFlush(ms.get()),
+				LLErrorCode::MLFlowControlError,
+				"Error in MLFlush"
+			);
 			return ms;
 		}
 
