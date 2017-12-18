@@ -237,10 +237,11 @@ Test[ (* Test if releasing memory works, if not the memory usage should drastica
 (* Strings *)
 Test[
 	testString = FromCharacterCode[{97, 322, 945, 63488, 63264}];
+	expected = StringRepeat[testString, 2];
 	RepeatString = SafeMathLinkFunction["RepeatString"];
 	RepeatString[testString]
 	,
-	StringRepeat[testString, 2]
+	expected
 	,
 	TestID->"MathLinkTestSuite-20171205-C3X0I2"
 ]
@@ -249,7 +250,7 @@ Test[
 	RepeatUTF8 = SafeMathLinkFunction["RepeatUTF8"];
 	RepeatUTF8[testString]
 	,
-	StringRepeat[testString, 2]
+	expected
 	,
 	TestID->"MathLinkTestSuite-20171205-F0A7B0"
 ]
@@ -258,7 +259,7 @@ Test[
 	RepeatUTF16 = SafeMathLinkFunction["RepeatUTF16"];
 	RepeatUTF16[testString]
 	,
-	StringRepeat[testString, 2]
+	expected
 	,
 	TestID->"MathLinkTestSuite-20171205-M2B7E4"
 ]
@@ -267,7 +268,7 @@ Test[
 	RepeatUTF32 = SafeMathLinkFunction["RepeatUTF32"];
 	RepeatUTF32[testString]
 	,
-	StringRepeat[testString, 2]
+	expected
 	,
 	TestID->"MathLinkTestSuite-20171205-S9R5Q1"
 ]
