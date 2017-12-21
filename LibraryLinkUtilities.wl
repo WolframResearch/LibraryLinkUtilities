@@ -74,11 +74,10 @@ SetPacletLibrary[lib_?StringQ] := $PacletLibrary = lib;
 
 SafeLibraryLoad[lib_] :=
 	Quiet[
-		$PacletLibrary = lib;
 		Check[
-			LibraryLoad[$PacletLibrary]
+			LibraryLoad[lib]
 			,
-			Throw @ CreatePacletFailure["LibraryLoadFailure", "MessageParameters" -> <|"LibraryName" -> $PacletLibrary|>];
+			Throw @ CreatePacletFailure["LibraryLoadFailure", "MessageParameters" -> <|"LibraryName" -> lib|>];
 		]
 	]
 
