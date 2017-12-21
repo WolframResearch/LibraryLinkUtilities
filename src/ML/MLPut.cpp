@@ -8,6 +8,8 @@
 
 #include "mathlink.h"
 
+#include "../Utilities.hpp"
+
 namespace LibraryLinkUtils {
 
 	namespace ML {
@@ -21,6 +23,7 @@ namespace LibraryLinkUtils {
 
 		template<>
 		PutString<char>::Func PutString<char>::StringF = [](MLINK m, const char* d, int l) {
+			Unused(l);
 			return MLPutString(m, d);
 		};
 

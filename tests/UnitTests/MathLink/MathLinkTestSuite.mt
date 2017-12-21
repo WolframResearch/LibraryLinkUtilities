@@ -226,7 +226,7 @@ Test[
 Test[ (* Test if releasing memory works, if not the memory usage should drastically increase after this test *)
 	ReceiveAndFreeArray = SafeMathLinkFunction["ReceiveAndFreeArray"];
 	r = RandomReal[1., {1000, 1000, 100}];
-	Do[ReceiveAndFreeArray[r], 500];
+	Do[ReceiveAndFreeArray[r], 100];
 	Clear[r];
 	,
 	Null
@@ -276,7 +276,7 @@ Test[
 Test[ (* Test if releasing strings works, if not the memory usage should drastically increase after this test *)
 	ReceiveAndFreeString = SafeMathLinkFunction["ReceiveAndFreeString"];
 	s = StringJoin[RandomChoice[CharacterRange["A", "z"], 10000]];
-	Do[ReceiveAndFreeString[s], 500]
+	Do[ReceiveAndFreeString[s], 100]
 	,
 	Null
 	,
