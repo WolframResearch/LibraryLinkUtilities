@@ -11,8 +11,9 @@ If[TrueQ[$InitLibraryLinkUtils],
 	,
 	$InitLibraryLinkUtils =
 		Catch[
+			SetPacletLibrary[libPath];
 			SafeLibraryLoad[libPath];
-			$GetCErrorCodes = SafeLibraryFunctionLoad["sendRegisteredErrors", LinkObject, LinkObject];
+			$GetCErrorCodes = SafeMathLinkFunction["sendRegisteredErrors"];
 			True
 		]
 ]	
