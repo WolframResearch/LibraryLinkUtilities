@@ -7,12 +7,14 @@
 #ifndef LLUTILS_MATHLINKSTREAM_H_
 #define LLUTILS_MATHLINKSTREAM_H_
 
+#include <iterator>
 #include <map>
 #include <type_traits>
 #include <vector>
 
 #include "mathlink.h"
 
+#include "../Utilities.hpp"
 #include "Utilities.h"
 #include "MLGet.h"
 #include "MLPut.h"
@@ -65,6 +67,26 @@ namespace LibraryLinkUtils {
 			return m;
 		}
 
+		/**
+		 *   @brief			Sends any range as List
+		 *   @tparam		InputIterator - type that is an iterator
+		 *   @param[in] 	begin - iterator to the first element of the range
+		 *	 @param[in] 	end - iterator past the last element of the range
+		 *
+		 **/
+		template<typename Iterator, typename = enable_if_same_or_derived<std::input_iterator_tag, typename std::iterator_traits<Iterator>::iterator_category>>
+		void sendRange(Iterator begin, Iterator end);
+
+		/**
+		 *   @brief			Sends a range of elements as top-level expression with arbitrary head
+		 *   @tparam		InputIterator - type that is an iterator
+		 *   @param[in] 	begin - iterator to the first element of the range
+		 *	 @param[in] 	end - iterator past the last element of the range
+		 *	 @param[in]		head - head of the top-level expression
+		 *
+		 **/
+		template<typename Iterator, typename = enable_if_same_or_derived<std::input_iterator_tag, typename std::iterator_traits<Iterator>::iterator_category>>
+		void sendRange(Iterator begin, Iterator end, const std::string& head);
 	public:
 		/// Type of elements that can be send via MathLink with no arguments, for example ML::Flush
 		using StreamToken = MathLinkStream& (*)(MathLinkStream&);
@@ -201,6 +223,21 @@ namespace LibraryLinkUtils {
 		 **/
 		template<typename T, typename = typename std::enable_if_t<std::is_arithmetic<std::remove_reference_t<T>>::value>>
 		MathLinkStream& operator<<(T value);
+
+		/**
+		 *   @brief			Sends any container (a class with begin(), end() and size()) as List
+		 *   @tparam		Container - type that is a collection of some elements
+		 *   @param[in] 	c - container to be sent
+		 *
+		 *   @throws 		LLErrorCode::MLPutContainerError
+		 *
+		 *   @note			Size() is not technically necessary, but needed for performance reason. Most STL containers have size() anyway.
+		 **/
+		template<typename Container>
+		auto operator<<(const Container& c) -> typename std::enable_if_t<sizeof(c.begin() == c.end()) && sizeof(c.size() > 0), MathLinkStream&> {
+			this->sendRange(c.begin(), c.end());
+			return *this;
+		}
 
 		//
 		//	operator>>
@@ -390,6 +427,17 @@ namespace LibraryLinkUtils {
 	};
 
 
+	template<typename Iterator, typename>
+	void MathLinkStream::sendRange(Iterator begin, Iterator end) {
+		sendRange(begin, end, "List");
+	}
+
+	template<typename Iterator, typename>
+	void MathLinkStream::sendRange(Iterator begin, Iterator end, const std::string& head) {
+		*this << ML::Function(head, std::distance(begin, end));
+		std::for_each(begin, end, [this](const auto& elem) { *this << elem; });
+	}
+
 	//
 	//	Definitions of MathLinkStream::operator<<
 	//
@@ -508,7 +556,7 @@ namespace LibraryLinkUtils {
 		return *this;
 	}
 
-
 } /* namespace LibraryLinkUtils */
+
 
 #endif /* LLUTILS_MATHLINKSTREAM_H_ */

@@ -27,6 +27,14 @@ namespace LibraryLinkUtils {
 	template<typename A, typename B>
 	using disable_if_same_or_derived = typename std::enable_if_t<!std::is_same<A, B>::value && !std::is_base_of<A, typename std::remove_cv_t<typename std::remove_reference_t<B>>>::value>;
 
+	/**
+	 * @brief 	Utility type that is valid only if B is A or a subclass of A
+	 * @tparam	A - any type
+	 * @tparam	B - any type, will be stripped of reference and cv-qualifiers before comparing with A
+	 */
+	template<typename A, typename B>
+	using enable_if_same_or_derived = typename std::enable_if_t<std::is_same<A, B>::value || std::is_base_of<A, typename std::remove_cv_t<typename std::remove_reference_t<B>>>::value>;
+
 
 	/**
 	 * @brief 	Dummy function called on otherwise unused parameters to eliminate compiler warnings.

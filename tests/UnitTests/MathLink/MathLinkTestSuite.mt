@@ -17,8 +17,6 @@ TestExecute[
 	
 	Get[FileNameJoin[{ParentDirectory[currentDirectory, 3], "LibraryLinkUtilities.wl"}]];
 	
-	InitLibraryLinkUtils[lib];
-	
 	RegisterPacletErrors[lib, <||>];
 	
 	i8Range = {0, 255};
@@ -320,6 +318,24 @@ Test[
 	TestID->"MathLinkTestSuite-20171214-K6Z5T3"
 ]
 
+Test[
+	GetSet = SafeMathLinkFunction["GetSet"];
+	GetSet[{"lorem", "ipsum", "dolor", "sit", "amet"}, "StringJoin"]
+	,
+	StringJoin @ AlphabeticSort[{"lorem", "ipsum", "dolor", "sit", "amet"}]
+	,
+	TestID->"MathLinkTestSuite-20171214-F6N1C7"
+]
+
+Test[
+	GetSet[{"lorem", "ipsum", "dolor", "sit", "amet"}]
+	,
+	AlphabeticSort[{"lorem", "ipsum", "dolor", "sit", "amet"}]
+	,
+	TestID->"MathLinkTestSuite-20171227-V7Z8S6"
+]
+
+
 (* Associations/Maps *)
 Test[
 	ReadNestedMap = SafeMathLinkFunction["ReadNestedMap"];
@@ -338,7 +354,7 @@ Test[
 		"Add" -> <|-5 -> r - 5|>
 	|>
 	,
-	TestID->"MathLinkTestSuite-20171214-F6N1C7"
+	TestID->"MathLinkTestSuite-20171227-V4J6Y2"
 ]
 
 (* Local Loopback Link *)

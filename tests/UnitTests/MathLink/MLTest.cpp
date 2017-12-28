@@ -8,6 +8,7 @@
 #include <algorithm>
 #include <iostream>
 #include <map>
+#include <set>
 #include <string>
 #include <vector>
 
@@ -636,6 +637,41 @@ EXTERN_C DLLEXPORT int TakeLibraryFunction(WolframLibraryData libData, MLINK mlp
 	return err;
 }
 
+EXTERN_C DLLEXPORT int GetSet(WolframLibraryData libData, MLINK mlp) {
+	auto err = LLErrorCode::NoError;
+	try {
+		MathLinkStream ml(mlp);
+		ML::List l;
+		ml >> l;
+
+		std::set<std::string> ss;
+		ML::List innerL;
+		ml >> innerL;
+		for (auto i = 0; i < innerL.getArgc(); ++i) {
+			std::string s;
+			ml >> s;
+			ss.insert(std::move(s));
+		}
+
+		if (l.getArgc() == 2) { // send with custom head
+			std::string head;
+			ml >> head;
+			ml.sendRange(ss.cbegin(), ss.cend(), head);
+		} else {
+			ml << ss;
+		}
+
+		ml << ML::EndPacket;
+	}
+	catch (LibraryLinkError& e) {
+		err = e.which();
+		std::cerr << e.debug() << std::endl;
+	}
+	catch (...) {
+		err = LLErrorCode::FunctionError;
+	}
+	return err;
+}
 
 //
 // Associations/Maps
