@@ -159,12 +159,22 @@ namespace LibraryLinkUtils {
 	
 		/**
 		 *   @brief			Sends a std::vector via MathLink, it is interpreted as a List in Mathematica
-		 *   @tparam		T - vector element type
+		 *   @tparam		T - vector element type, it has to be a simple type that is supported in MLPut*List
 		 *   @param[in] 	l - std::vector to be sent
 		 *
 		 *   @throws 		LLErrorCode::MLPutListError
 		 **/
-		template<typename T>
+		template<typename T, typename ML::ArithmeticTypeQ<T> = 0>
+		MathLinkStream& operator<<(const std::vector<T>& l);
+
+		/**
+		 *   @brief			Sends a std::vector via MathLink, it is interpreted as a List in Mathematica
+		 *   @tparam		T - vector element type, this overload will handle any type not supported in MLPut*List
+		 *   @param[in] 	l - std::vector to be sent
+		 *
+		 *   @throws 		LLErrorCode::MLPutListError
+		 **/
+		template<typename T, typename ML::NotArithmeticTypeQ<T> = 0>
 		MathLinkStream& operator<<(const std::vector<T>& l);
 
 		/**
@@ -180,7 +190,7 @@ namespace LibraryLinkUtils {
 
 		/**
 		 *   @brief			Sends std::basic_string
-		 *   @tparam		T - string character type
+		 *   @tparam		T - string character type supported in any of MLPut*String
 		 *   @param[in] 	s - std::basic_string<T> to be sent
 		 *
 		 *   @see			http://reference.wolfram.com/language/guide/WSTPCFunctionsForExchangingStrings.html
@@ -188,19 +198,19 @@ namespace LibraryLinkUtils {
 		 *
 		 *   @note			std::string is just std::basic_string<char>
 		 **/
-		template<typename T>
+		template<typename T, typename = ML::StringTypeQ<T>>
 		MathLinkStream& operator<<(const std::basic_string<T>& s);
 
 		/**
 		 *   @brief			Sends a character array (or a string literal)
-		 *   @tparam		T - character type
+		 *   @tparam		T - character type supported in any of MLPut*String
 		 *   @tparam		N - length of character array
 		 *   @param[in] 	s - character array to be sent as String
 		 *
 		 *   @see			http://reference.wolfram.com/language/guide/WSTPCFunctionsForExchangingStrings.html
 		 *   @throws 		LLErrorCode::MLPutStringError
 		 **/
-		template<typename T, std::size_t N>
+		template<typename T, std::size_t N, typename = ML::StringTypeQ<T>>
 		MathLinkStream& operator<<(const T (&s)[N]);
 
 		/**
@@ -221,7 +231,7 @@ namespace LibraryLinkUtils {
 		 *
 		 *   @throws 		LLErrorCode::MLPutScalarError
 		 **/
-		template<typename T, typename = typename std::enable_if_t<std::is_arithmetic<std::remove_reference_t<T>>::value>>
+		template<typename T, typename = ML::ArithmeticTypeQ<T>>
 		MathLinkStream& operator<<(T value);
 
 		/**
@@ -234,7 +244,7 @@ namespace LibraryLinkUtils {
 		 *   @note			Size() is not technically necessary, but needed for performance reason. Most STL containers have size() anyway.
 		 **/
 		template<typename Container>
-		auto operator<<(const Container& c) -> typename std::enable_if_t<sizeof(c.begin() == c.end()) && sizeof(c.size() > 0), MathLinkStream&> {
+		auto operator<<(const Container& c) -> typename std::enable_if_t<sizeof(c.begin()) == sizeof(c.end()) && (sizeof(c.size()) > 0), MathLinkStream&> {
 			this->sendRange(c.begin(), c.end());
 			return *this;
 		}
@@ -347,7 +357,7 @@ namespace LibraryLinkUtils {
 
 		/**
 		 *   @brief			Receives std::basic_string
-		 *   @tparam		T - string character type
+		 *   @tparam		T - string character type supported in any of MLGet*String
 		 *   @param[out] 	s - argument to which the std::basic_string<T> received from MathLink will be assigned
 		 *
 		 *   @see			http://reference.wolfram.com/language/guide/WSTPCFunctionsForExchangingStrings.html
@@ -355,7 +365,7 @@ namespace LibraryLinkUtils {
 		 *
 		 *   @note			std::string is just std::basic_string<char>
 		 **/
-		template<typename T>
+		template<typename T, typename = ML::StringTypeQ<T>>
 		MathLinkStream& operator>>(std::basic_string<T>& s);
 
 		/**
@@ -378,7 +388,7 @@ namespace LibraryLinkUtils {
 		 *
 		 *   @throws 		LLErrorCode::MLGetScalarError
 		 **/
-		template<typename T, typename = typename std::enable_if_t<std::is_arithmetic<std::remove_reference_t<T>>::value>>
+		template<typename T, typename = ML::ArithmeticTypeQ<T>>
 		MathLinkStream& operator>>(T& value);
 
 	private:
@@ -456,9 +466,18 @@ namespace LibraryLinkUtils {
 		return *this;
 	}
 
-	template<typename T>
+	template<typename T, typename ML::ArithmeticTypeQ<T>>
 	MathLinkStream& MathLinkStream::operator<<(const std::vector<T>& l) {
 		ML::PutList<T>::put(m, l.data(), l.size());
+		return *this;
+	}
+
+	template<typename T, typename ML::NotArithmeticTypeQ<T>>
+	MathLinkStream& MathLinkStream::operator<<(const std::vector<T>& l) {
+		*this << ML::List(l.size());
+		for (const auto& elem : l) {
+			*this << elem;
+		}
 		return *this;
 	}
 
@@ -468,13 +487,13 @@ namespace LibraryLinkUtils {
 		return *this;
 	}
 
-	template<typename T>
+	template<typename T, typename>
 	MathLinkStream& MathLinkStream::operator<<(const std::basic_string<T>& s) {
 		ML::PutString<T>::put(m, s.c_str(), s.size());
 		return *this;
 	}
 
-	template<typename T, std::size_t N>
+	template<typename T, std::size_t N, typename>
 	MathLinkStream& MathLinkStream::operator<<(const T (&s)[N]) {
 		return *this << std::basic_string<T>(s);
 	}
@@ -525,7 +544,7 @@ namespace LibraryLinkUtils {
 		return *this;
 	}
 
-	template<typename T>
+	template<typename T, typename>
 	MathLinkStream& MathLinkStream::operator>>(std::basic_string<T>& s) {
 		using StringType = std::basic_string<T>;
 

@@ -220,6 +220,8 @@ namespace LibraryLinkUtils {
 		template<>
 		const std::string PutList<double>::ListFName = "MLPutReal64List";
 
+		/* PutScalar */
+
 		template<>
 		PutScalar<double>::Func PutScalar<double>::ScalarF = MLPutReal64;
 

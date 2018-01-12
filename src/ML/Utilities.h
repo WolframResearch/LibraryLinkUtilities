@@ -8,8 +8,10 @@
 #define LLUTILS_ML_UTILITIES_H_
 
 #include <string>
+#include <type_traits>
 
 #include "mathlink.h"
+#include "../Utilities.hpp"
 
 namespace LibraryLinkUtils {
 
@@ -22,7 +24,7 @@ namespace LibraryLinkUtils {
 
 		struct Symbol {
 			Symbol() = default;
-			Symbol(std::string h) : head(std::move(h)) {};
+			explicit Symbol(std::string h) : head(std::move(h)) {};
 
 			const std::string& getHead() const;
 			void setHead(std::string h);
@@ -32,7 +34,7 @@ namespace LibraryLinkUtils {
 
 		struct Function : Symbol {
 			Function() : Function("", -1) {};
-			Function(const std::string& h) : Function(h, -1) {}
+			explicit Function(const std::string& h) : Function(h, -1) {}
 			Function(const std::string& h, int argCount) : Symbol(h), argc(argCount) {}
 
 			int getArgc() const;
@@ -56,6 +58,36 @@ namespace LibraryLinkUtils {
 			Get,
 			Put
 		};
+
+
+		template<typename T>
+		struct IsSupportedInMLArithmetic;
+
+		template<> struct IsSupportedInMLArithmetic<unsigned char> : std::true_type {};
+		template<> struct IsSupportedInMLArithmetic<short> : std::true_type {};
+		template<> struct IsSupportedInMLArithmetic<int> : std::true_type {};
+		template<> struct IsSupportedInMLArithmetic<mlint64> : std::true_type {};
+		template<> struct IsSupportedInMLArithmetic<float> : std::true_type {};
+		template<> struct IsSupportedInMLArithmetic<double> : std::true_type {};
+
+
+		template<typename T>
+		using ArithmeticTypeQ = std::enable_if_t<IsSupportedInMLArithmetic<remove_cv_ref<T>>::value, int>;
+
+		template<typename T>
+		using NotArithmeticTypeQ = std::enable_if_t<!IsSupportedInMLArithmetic<remove_cv_ref<T>>::value, int>;
+
+		template<typename T>
+		struct IsSupportedInMLString;
+
+		template<> struct IsSupportedInMLString<char> : std::true_type {};
+		template<> struct IsSupportedInMLString<unsigned char> : std::true_type {};
+		template<> struct IsSupportedInMLString<unsigned short> : std::true_type {};
+		template<> struct IsSupportedInMLString<unsigned int> : std::true_type {};
+
+
+		template<typename T>
+		using StringTypeQ = std::enable_if_t<IsSupportedInMLString<remove_cv_ref<T>>::value, int>;
 
 
 		MathLinkStream& NewPacket(MathLinkStream& ms);

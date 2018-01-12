@@ -20,12 +20,19 @@
 namespace LibraryLinkUtils {
 
 	/**
+	 * @brief 	Utility type that strips any given type from reference and cv qualifiers
+	 * @tparam	T - any type
+	 */
+	template<typename T>
+	using remove_cv_ref = std::remove_cv_t<std::remove_reference_t<T>>;
+
+	/**
 	 * @brief 	Utility type that is valid only if B is not A and not a subclass of A
 	 * @tparam	A - any type
 	 * @tparam	B - any type, will be stripped of reference and cv-qualifiers before comparing with A
 	 */
 	template<typename A, typename B>
-	using disable_if_same_or_derived = typename std::enable_if_t<!std::is_same<A, B>::value && !std::is_base_of<A, typename std::remove_cv_t<typename std::remove_reference_t<B>>>::value>;
+	using disable_if_same_or_derived = typename std::enable_if_t<!std::is_same<A, B>::value && !std::is_base_of<A, remove_cv_ref<B>>::value>;
 
 	/**
 	 * @brief 	Utility type that is valid only if B is A or a subclass of A
@@ -33,7 +40,7 @@ namespace LibraryLinkUtils {
 	 * @tparam	B - any type, will be stripped of reference and cv-qualifiers before comparing with A
 	 */
 	template<typename A, typename B>
-	using enable_if_same_or_derived = typename std::enable_if_t<std::is_same<A, B>::value || std::is_base_of<A, typename std::remove_cv_t<typename std::remove_reference_t<B>>>::value>;
+	using enable_if_same_or_derived = typename std::enable_if_t<std::is_same<A, B>::value || std::is_base_of<A, remove_cv_ref<B>>::value>;
 
 
 	/**
