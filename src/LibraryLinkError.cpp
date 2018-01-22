@@ -157,7 +157,6 @@ namespace LibraryLinkUtils {
 		return exception->second;
 	}
 
-	// Initial implementation, no error checking. Will be nicer when I wrap MLINK into stream class.
 	void ErrorManager::sendRegisteredErrorsViaMathlink(MLINK mlp) {
 		MathLinkStream ms(mlp, "List", 0);
 
