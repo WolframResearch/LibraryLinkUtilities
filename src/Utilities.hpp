@@ -42,6 +42,20 @@ namespace LibraryLinkUtils {
 	template<typename A, typename B>
 	using enable_if_same_or_derived = typename std::enable_if_t<std::is_same<A, B>::value || std::is_base_of<A, remove_cv_ref<B>>::value>;
 
+	/**
+	 * @brief 	Utility type that checks if given type can be treated as input iterator
+	 * @tparam	Iterator - iterator type
+	 */
+	template<typename Iterator>
+	using enable_if_input_iterator = enable_if_same_or_derived<std::input_iterator_tag, typename std::iterator_traits<Iterator>::iterator_category>;
+
+
+	/**
+	 * @brief 	Utility type that checks if given container type has elements that are integers (and therefore can be used as Tensor or RawArray dimensions)
+	 * @tparam	Container - container type
+	 */
+	template<typename Container>
+	using enable_if_integral_elements = typename std::enable_if_t<std::is_integral<typename std::remove_reference_t<Container>::value_type>::value>;
 
 	/**
 	 * @brief 	Dummy function called on otherwise unused parameters to eliminate compiler warnings.
