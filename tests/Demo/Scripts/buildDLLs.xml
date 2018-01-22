@@ -5,7 +5,7 @@
 
 	<property name="rootdir" value="${basedir}" />
 	<property name="dist" value="${basedir}/build" />
-	<property file="scripts/build-local.properties" />
+	<property file="Scripts/build-local.properties" />
     <property name="targetID" value="Automatic" />
 
 	<target name="clean">
@@ -38,9 +38,8 @@
 	  	</path>
 
 	  	<!-- Load JLink -->
-	  	<taskdef name="mathematica"
-	      	classname="com.wolfram.jlink.util.MathematicaTask" >
-	    	<classpath refid="jlink.lib" />
+	  	<taskdef name="mathematica" classname="com.wolfram.jlink.util.MathematicaTask" >
+	    	<classpath refid="jlink.lib"/>
 	  	</taskdef>
 
 	    <mathematica exe="${mathExe}" fresh="true" quit="true">

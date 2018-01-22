@@ -1,9 +1,6 @@
 /* Include required header */
 #include "WolframLibrary.h"
 
-// We don't use anything from windows.h, this is just for testing purposes:
-#include <windows.h>
-
 #include "MArgumentManager.h"
 #include "LibraryLinkError.h"
 #include "LibraryLinkFunctionMacro.h"
@@ -274,7 +271,7 @@ EXTERN_C DLLEXPORT int demo_TTT_T(WolframLibraryData libData, mint Argc, MArgume
 		auto R0 = T_R_arg[0];
 		R0 += T_arg[T_I_arg[0] - 1];
 
-		Tensor<mint> T_res(static_cast<mint>(0), { });
+		Tensor<mint> T_res(0, { });
 		T_res[0] = static_cast<mint>(R0);
 
 		mngr.setTensor(T_res);
@@ -387,7 +384,7 @@ EXTERN_C DLLEXPORT int demo1_I_T(WolframLibraryData libData, mint Argc, MArgumen
 		MArgumentManager mngr(Argc, Args, Res);
 		auto i = mngr.getInteger<mint>(0);
 
-		Tensor<mint> T0(static_cast<mint>(0), { i });
+		Tensor<mint> T0(0, { i });
 		mint k = 1;
 		for (auto& elem : T0)
 			elem = 2 * k++;

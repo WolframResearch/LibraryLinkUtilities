@@ -714,7 +714,7 @@ Test[
 Test[
 	Length @ getCErrorCodes[]
 	,
-	36
+	53
 	,
 	TestID->"LibraryTests-20170818-R7K6X2"
 ]
@@ -725,14 +725,6 @@ Test[
 	{ -304, "An error was caused by an MTensor type mismatch." }
 	,
 	TestID->"LibraryTests-20170818-H4B5A2"
-]
-$CharacterEncoding = "UTF8";
-Test[
-	getCErrorCodes[][FromCharacterCode[{261, 281, 69, 114, 114, 111, 114}, "UTF8"]] (* The key is "ąęError" *)
-	,
-	{ -2, "Let me try non-ASCII: łódź" }
-	,
-	TestID->"LibraryTests-20170818-G4W2V6"
 ]
 
 Test[

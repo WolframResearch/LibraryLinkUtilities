@@ -54,7 +54,7 @@ Test[
 ]
 
 Test[
-	fun0 = LibraryFunctionLoad["demo", "demo_I_I", {LibraryDataType[Integer]}, LibraryDataType[Integer]];
+	fun0 = LibraryFunctionLoad[dll, "demo_I_I", {LibraryDataType[Integer]}, LibraryDataType[Integer]];
     fun0[20]
 	,
 	21
@@ -117,8 +117,7 @@ Test[
 ]
 
 Test[
-	fun6 = LibraryFunctionLoad[dll, 
-  		 "demoComplex1", {LibraryDataType[Complex]}, LibraryDataType[Complex]];
+	fun6 = LibraryFunctionLoad[dll, "demoComplex1", {LibraryDataType[Complex]}, LibraryDataType[Complex]];
  	fun6[ 1. + 1. I]
 	,
 	1. - 1. I

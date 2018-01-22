@@ -24,10 +24,10 @@ If[ !StringQ[targetID] || targetID === "Automatic",
 Print[targetID];
 Switch[targetID,
 	"MacOSX-x86-64",
-	compoptions = "-std=c++14"  (*-install_name " <> outputName <> ".dylib"*),
+	compoptions = "-std=c++14 -fvisibility=hidden"  (*-install_name " <> outputName <> ".dylib"*),
 
 	"Linux-x86-64" | "Linux",
-	compoptions = "-O2 -fPIC -std=c++14 -Wall -Wextra -Wpedantic -Wno-unused-parameter",
+	compoptions = "-O2 -fPIC -std=c++14 -Wall -Wextra -Wpedantic -Wno-unused-parameter -fvisibility=hidden",
 
 	"Windows-x86-64" | "Windows",
 	compoptions = "/O2 /EHsc",
@@ -45,7 +45,7 @@ SetCCompilerOptionsFromAnt[
 	"Language" -> "C++"
 ];
 
-LLUsrc = FileNames["*.c*", AntProperty["LLUSourceFiles"]];
+LLUsrc = FileNames["*.c*", AntProperty["LLUSourceFiles"], 2];
 
 (* Build the demo libraries used in LibraryLink examples *)
 demoFiles = FileNames["*.cpp", AntProperty["sourceDir"]];

@@ -78,7 +78,7 @@ EXTERN_C DLLEXPORT int setNthIntegerT(WolframLibraryData libData, mint Argc, MAr
 
 		auto len = mngr.getInteger<mint>(0);
 
-		Tensor<mint> t(static_cast<mint>(0), { len });
+		Tensor<mint> t(0, { len });
 		mint val = 2;
 		std::for_each(t.begin(), t.end(), [&val](mint& elem) {
 			elem = val;
