@@ -6,6 +6,7 @@
  */
 #include "MathLinkStream.h"
 
+#include <cstring>
 #include <string>
 
 #include "../LibraryLinkError.h"
@@ -52,6 +53,12 @@ namespace LibraryLinkUtils {
 
 	MathLinkStream& MathLinkStream::operator<<(bool b) {
 		return *this << ML::Symbol(b? "True" : "False");
+	}
+
+
+	MathLinkStream& MathLinkStream::operator<<(const char* s) {
+		ML::PutString<char>::put(m, s, std::strlen(s));
+		return *this;
 	}
 
 	void MathLinkStream::check(int statusOk, int errorCode, const std::string& debugInfo) {

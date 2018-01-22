@@ -74,7 +74,7 @@ namespace LibraryLinkUtils {
 		 *	 @param[in] 	end - iterator past the last element of the range
 		 *
 		 **/
-		template<typename Iterator, typename = enable_if_same_or_derived<std::input_iterator_tag, typename std::iterator_traits<Iterator>::iterator_category>>
+		template<typename Iterator, typename = enable_if_input_iterator<Iterator>>
 		void sendRange(Iterator begin, Iterator end);
 
 		/**
@@ -85,7 +85,7 @@ namespace LibraryLinkUtils {
 		 *	 @param[in]		head - head of the top-level expression
 		 *
 		 **/
-		template<typename Iterator, typename = enable_if_same_or_derived<std::input_iterator_tag, typename std::iterator_traits<Iterator>::iterator_category>>
+		template<typename Iterator, typename = enable_if_input_iterator<Iterator>>
 		void sendRange(Iterator begin, Iterator end, const std::string& head);
 	public:
 		/// Type of elements that can be send via MathLink with no arguments, for example ML::Flush
@@ -212,6 +212,15 @@ namespace LibraryLinkUtils {
 		 **/
 		template<typename T, std::size_t N, typename = ML::StringTypeQ<T>>
 		MathLinkStream& operator<<(const T (&s)[N]);
+
+		/**
+		 *   @brief			Sends a C-string
+		 *   @param[in] 	s - C-string to be sent
+		 *
+		 *   @see			http://reference.wolfram.com/language/guide/WSTPCFunctionsForExchangingStrings.html
+		 *   @throws 		LLErrorCode::MLPutStringError
+		 **/
+		MathLinkStream& operator<<(const char* s);
 
 		/**
 		 *   @brief			Sends a std::map via MathLink, it is translated to an Association in Mathematica
@@ -495,7 +504,8 @@ namespace LibraryLinkUtils {
 
 	template<typename T, std::size_t N, typename>
 	MathLinkStream& MathLinkStream::operator<<(const T (&s)[N]) {
-		return *this << std::basic_string<T>(s);
+		ML::PutString<T>::put(m, s, N);
+		return *this;
 	}
 
 	template<typename T, typename>
