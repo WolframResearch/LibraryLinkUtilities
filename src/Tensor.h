@@ -67,7 +67,7 @@ namespace LibraryLinkUtils {
 		 *   @warning		It is user's responsibility to make sure that length of range fits into mint!
 		 *   @note			Be aware that efficiency of this constructor strongly depends on whether the InputIt is also a RandomAccessIterator
 		 **/
-		template<class InputIt>
+		template<class InputIt, typename = enable_if_input_iterator<InputIt>>
 		Tensor(InputIt first, InputIt last);
 
 		/**
@@ -77,7 +77,7 @@ namespace LibraryLinkUtils {
 		 *   @tparam		Container - any type of container that has member \b value_type and this type is integral
 		 *   @throws		see Tensor<T>::createInternal() and MArray<T>::MArray(Container&&)
 		 **/
-		template<class Container, typename = typename std::enable_if_t<std::is_integral<typename std::remove_reference_t<Container>::value_type>::value>>
+		template<class Container, typename = enable_if_integral_elements<Container>>
 		Tensor(T init, Container&& dims);
 
 		/**
@@ -97,7 +97,7 @@ namespace LibraryLinkUtils {
 		 *   @throws		LLErrorCode::TensorNewError - if number of elements in \c v does not match total Tensor size indicated by \c dims
 		 *   @throws		see Tensor<T>::createInternal() and MArray<T>::MArray(Container&&)
 		 **/
-		template<class InputIt, class Container, typename = typename std::enable_if_t<std::is_convertible<typename std::remove_reference_t<Container>::value_type, mint>::value>>
+		template<class InputIt, class Container, typename = enable_if_integral_elements<Container>, typename = enable_if_input_iterator<InputIt>>
 		Tensor(InputIt first, InputIt last, Container&& dims);
 
 		/**
@@ -108,7 +108,7 @@ namespace LibraryLinkUtils {
 		 *   @throws		LLErrorCode::TensorNewError - if number of elements in \c v does not match total Tensor size indicated by \c dims
 		 *   @throws		see Tensor<T>::createInternal() and MArray<T>::MArray(const std::vector<U>&)
 		 **/
-		template<class InputIt>
+		template<class InputIt, typename = enable_if_input_iterator<InputIt>>
 		Tensor(InputIt first, InputIt last, std::initializer_list<mint> dims);
 
 		/**
@@ -273,7 +273,7 @@ namespace LibraryLinkUtils {
 
 
 	template<typename T>
-	template<class InputIt>
+	template<class InputIt, typename>
 	Tensor<T>::Tensor(InputIt first, InputIt last)  :
 			Tensor<T>(first, last, { static_cast<mint>(std::distance(first, last)) }) {
 	}
@@ -295,7 +295,7 @@ namespace LibraryLinkUtils {
 
 
 	template<typename T>
-	template<class InputIt, class Container, typename>
+	template<class InputIt, class Container, typename, typename>
 	Tensor<T>::Tensor(InputIt first, InputIt last, Container&& dims) : MArray<T>(std::forward<Container>(dims)) {
 		createInternal();
 		if (std::distance(first, last) != this->flattenedLength)
@@ -305,7 +305,7 @@ namespace LibraryLinkUtils {
 	}
 
 	template<typename T>
-	template<class InputIt>
+	template<class InputIt, typename>
 	Tensor<T>::Tensor(InputIt first, InputIt last, std::initializer_list<mint> dims) : MArray<T>(dims) {
 		createInternal();
 		if (std::distance(first, last) != this->flattenedLength)
