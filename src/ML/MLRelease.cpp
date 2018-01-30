@@ -4,6 +4,8 @@
  * @author	Rafal Chojna <rafalc@wolfram.com>
  * @brief	Implementation file with classes responsible for releasing memory allocated by MathLink when receiving data.
  */
+#ifndef _WIN32
+
 #include "MLRelease.h"
 
 namespace LibraryLinkUtils {
@@ -63,3 +65,5 @@ namespace LibraryLinkUtils {
 	}
 
 } /* namespace LibraryLinkUtils */
+
+#endif

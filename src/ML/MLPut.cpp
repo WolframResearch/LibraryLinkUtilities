@@ -4,6 +4,9 @@
  * @author	Rafal Chojna <rafalc@wolfram.com>
  * @brief	Implementation file with classes related to sending data through MathLink.
  */
+
+#ifndef _WIN32
+
 #include "MLPut.h"
 
 #include "mathlink.h"
@@ -13,7 +16,6 @@
 namespace LibraryLinkUtils {
 
 	namespace ML {
-
 
 		/* ***************************************************************** */
 		/* ********** Template specializations for  char  ****************** */
@@ -231,3 +233,5 @@ namespace LibraryLinkUtils {
 	}
 
 } /* namespace LibraryLinkUtils */
+
+#endif

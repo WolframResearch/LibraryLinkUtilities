@@ -4,6 +4,8 @@
  * @author	Rafal Chojna <rafalc@wolfram.com>
  * @brief	Implementation file with classes related to reading data from MathLink.
  */
+#ifndef _WIN32
+
 #include "MLGet.h"
 
 #include "mathlink.h"
@@ -233,3 +235,5 @@ namespace LibraryLinkUtils {
 	}
 
 } /* namespace LibraryLinkUtils */
+
+#endif
