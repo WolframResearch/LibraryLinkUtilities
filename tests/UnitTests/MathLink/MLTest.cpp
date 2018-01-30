@@ -5,6 +5,8 @@
  * @brief	<brief description>
  */
 
+#include "NoMinMaxWindows.h"
+
 #include <algorithm>
 #include <iostream>
 #include <map>
@@ -16,6 +18,7 @@
 #include "WolframLibrary.h"
 
 #include "LLU.h"
+#include "LibraryLinkFunctionMacro.h"
 #include "ML/MathLinkStream.h"
 
 using LibraryLinkUtils::MathLinkStream;
@@ -677,7 +680,7 @@ EXTERN_C DLLEXPORT int GetSet(WolframLibraryData libData, MLINK mlp) {
 // Associations/Maps
 //
 
-EXTERN_C DLLEXPORT int ReadNestedMap(WolframLibraryData libData, MLINK mlp) {
+LIBRARY_MATHLINK_FUNCTION(ReadNestedMap) {
 	auto err = LLErrorCode::NoError;
 	try {
 		MathLinkStream ml(mlp, "List", 1);
