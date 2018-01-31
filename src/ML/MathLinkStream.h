@@ -164,8 +164,8 @@ namespace LibraryLinkUtils {
 		 *
 		 *   @throws 		LLErrorCode::MLPutListError
 		 **/
-		template<typename T, typename ML::ArithmeticTypeQ<T> = 0>
-		MathLinkStream& operator<<(const std::vector<T>& l);
+		template<typename T>
+		ML::ScalarSupportedTypeQ<T> operator<<(const std::vector<T>& l);
 
 		/**
 		 *   @brief			Sends a std::vector via MathLink, it is interpreted as a List in Mathematica
@@ -174,8 +174,8 @@ namespace LibraryLinkUtils {
 		 *
 		 *   @throws 		LLErrorCode::MLPutListError
 		 **/
-		template<typename T, typename ML::NotArithmeticTypeQ<T> = 0>
-		MathLinkStream& operator<<(const std::vector<T>& l);
+		template<typename T>
+		ML::NotScalarSupportedTypeQ<T> operator<<(const std::vector<T>& l);
 
 		/**
 		 *   @brief			Sends a MathLink string
@@ -198,8 +198,8 @@ namespace LibraryLinkUtils {
 		 *
 		 *   @note			std::string is just std::basic_string<char>
 		 **/
-		template<typename T, typename = ML::StringTypeQ<T>>
-		MathLinkStream& operator<<(const std::basic_string<T>& s);
+		template<typename T>
+		ML::StringTypeQ<T> operator<<(const std::basic_string<T>& s);
 
 		/**
 		 *   @brief			Sends a character array (or a string literal)
@@ -210,8 +210,8 @@ namespace LibraryLinkUtils {
 		 *   @see			http://reference.wolfram.com/language/guide/WSTPCFunctionsForExchangingStrings.html
 		 *   @throws 		LLErrorCode::MLPutStringError
 		 **/
-		template<typename T, std::size_t N, typename = ML::StringTypeQ<T>>
-		MathLinkStream& operator<<(const T (&s)[N]);
+		template<typename T, std::size_t N>
+		ML::StringTypeQ<T> operator<<(const T (&s)[N]);
 
 		/**
 		 *   @brief			Sends a C-string
@@ -240,8 +240,21 @@ namespace LibraryLinkUtils {
 		 *
 		 *   @throws 		LLErrorCode::MLPutScalarError
 		 **/
-		template<typename T, typename = ML::ArithmeticTypeQ<T>>
-		MathLinkStream& operator<<(T value);
+		template<typename T>
+		ML::ScalarSupportedTypeQ<T> operator<<(T value);
+
+		/**
+		 *   @brief			Overload for scalar values that cannot be sent via MathLink without conversion
+		 *   @tparam		T - scalar type
+		 *   @param[in] 	value - numeric value
+		 *
+		 *   @note			Trying to use this overload will always trigger compilation error.
+		 *   If you need to send value of type not supported by MathLink (like unsigned int) you must either explicitly cast
+		 *   or provide your own overload.
+		 *
+		 **/
+		template<typename T>
+		ML::ScalarNotSupportedTypeQ<T> operator<<(T value);
 
 		/**
 		 *   @brief			Sends any container (a class with begin(), end() and size()) as List
@@ -374,8 +387,8 @@ namespace LibraryLinkUtils {
 		 *
 		 *   @note			std::string is just std::basic_string<char>
 		 **/
-		template<typename T, typename = ML::StringTypeQ<T>>
-		MathLinkStream& operator>>(std::basic_string<T>& s);
+		template<typename T>
+		ML::StringTypeQ<T> operator>>(std::basic_string<T>& s);
 
 		/**
 		 *   @brief			Received a std::map via MathLink
@@ -397,8 +410,21 @@ namespace LibraryLinkUtils {
 		 *
 		 *   @throws 		LLErrorCode::MLGetScalarError
 		 **/
-		template<typename T, typename = ML::ArithmeticTypeQ<T>>
-		MathLinkStream& operator>>(T& value);
+		template<typename T>
+		ML::ScalarSupportedTypeQ<T> operator>>(T& value);
+
+		/**
+		 *   @brief			Overload for scalar values that cannot be received via MathLink without conversion
+		 *   @tparam		T - scalar type
+		 *   @param[in] 	value - numeric value
+		 *
+		 *   @note			Trying to use this overload will always trigger compilation error.
+		 *   If you need to receive value of type not supported by MathLink (like unsigned int) you must either explicitly cast
+		 *   or provide your own overload.
+		 *
+		 **/
+		template<typename T>
+		ML::ScalarNotSupportedTypeQ<T> operator>>(T& value);
 
 	private:
 
@@ -475,14 +501,14 @@ namespace LibraryLinkUtils {
 		return *this;
 	}
 
-	template<typename T, typename ML::ArithmeticTypeQ<T>>
-	MathLinkStream& MathLinkStream::operator<<(const std::vector<T>& l) {
+	template<typename T>
+	ML::ScalarSupportedTypeQ<T> MathLinkStream::operator<<(const std::vector<T>& l) {
 		ML::PutList<T>::put(m, l.data(), l.size());
 		return *this;
 	}
 
-	template<typename T, typename ML::NotArithmeticTypeQ<T>>
-	MathLinkStream& MathLinkStream::operator<<(const std::vector<T>& l) {
+	template<typename T>
+	ML::NotScalarSupportedTypeQ<T> MathLinkStream::operator<<(const std::vector<T>& l) {
 		*this << ML::List(l.size());
 		for (const auto& elem : l) {
 			*this << elem;
@@ -496,21 +522,27 @@ namespace LibraryLinkUtils {
 		return *this;
 	}
 
-	template<typename T, typename>
-	MathLinkStream& MathLinkStream::operator<<(const std::basic_string<T>& s) {
+	template<typename T>
+	ML::StringTypeQ<T> MathLinkStream::operator<<(const std::basic_string<T>& s) {
 		ML::PutString<T>::put(m, s.c_str(), s.size());
 		return *this;
 	}
 
-	template<typename T, std::size_t N, typename>
-	MathLinkStream& MathLinkStream::operator<<(const T (&s)[N]) {
+	template<typename T, std::size_t N>
+	ML::StringTypeQ<T> MathLinkStream::operator<<(const T (&s)[N]) {
 		ML::PutString<T>::put(m, s, N);
 		return *this;
 	}
 
-	template<typename T, typename>
-	MathLinkStream& MathLinkStream::operator<<(T value) {
+	template<typename T>
+	ML::ScalarSupportedTypeQ<T> MathLinkStream::operator<<(T value) {
 		ML::PutScalar<T>::put(m, value);
+		return *this;
+	}
+
+	template<typename T>
+	ML::ScalarNotSupportedTypeQ<T> MathLinkStream::operator<<(T value) {
+		static_assert(sizeof(T) < 0, "Calling operator<< with unsupported type.");
 		return *this;
 	}
 
@@ -554,8 +586,8 @@ namespace LibraryLinkUtils {
 		return *this;
 	}
 
-	template<typename T, typename>
-	MathLinkStream& MathLinkStream::operator>>(std::basic_string<T>& s) {
+	template<typename T>
+	ML::StringTypeQ<T> MathLinkStream::operator>>(std::basic_string<T>& s) {
 		using StringType = std::basic_string<T>;
 
 		auto rawString = ML::GetString<T>::get(m);
@@ -579,11 +611,18 @@ namespace LibraryLinkUtils {
 		return *this;
 	}
 
-	template<typename T, typename>
-	MathLinkStream& MathLinkStream::operator>>(T& value) {
+	template<typename T>
+	ML::ScalarSupportedTypeQ<T> MathLinkStream::operator>>(T& value) {
 		value = ML::GetScalar<T>::get(m);
 		return *this;
 	}
+
+	template<typename T>
+	ML::ScalarNotSupportedTypeQ<T> MathLinkStream::operator>>(T&) {
+		static_assert(sizeof(T) < 0, "Calling operator>> with unsupported type.");
+		return *this;
+	}
+
 
 } /* namespace LibraryLinkUtils */
 
