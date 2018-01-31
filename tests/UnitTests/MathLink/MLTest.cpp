@@ -2,7 +2,7 @@
  * @file	MLTest.cpp
  * @date	Nov 23, 2017
  * @author	rafalc
- * @brief	<brief description>
+ * @brief	Source code for MathLinkStream unit tests.
  */
 
 #include "NoMinMaxWindows.h"
@@ -716,27 +716,3 @@ LIBRARY_MATHLINK_FUNCTION(ReadNestedMap) {
 	return err;
 }
 
-// This function should trigger compiler errors
-LIBRARY_MATHLINK_FUNCTION(Wrong) {
-	auto err = LLErrorCode::NoError;
-	try {
-		MathLinkStream ml(mlp, "List", 1);
-		unsigned int i {};
-
-		//ml >> i; 		// ERROR: cannot find suitable overload of operator>>
-
-		ml << i;
-
-		//i = ML::GetScalar<unsigned int>::get(mlp);  		// ERROR: Trying to use ML::GetScalar<T> for unsupported type T
-
-		//ML::PutScalar<unsigned int>::put(mlp, i);			// ERROR: Trying to use ML::PutScalar<T> for unsupported type T
-	}
-	catch (LibraryLinkError& e) {
-		err = e.which();
-		std::cerr << e.debug() << std::endl;
-	}
-	catch (...) {
-		err = LLErrorCode::FunctionError;
-	}
-	return err;
-}

@@ -23,6 +23,20 @@ TestExecute[
 	i16Range = {-2^15, 2^15-1};
 	i32Range = {-2^31, 2^31-1};
 	i64Range = {-2^63, 2^63-1};
+	
+	Off[General::stop];
+]
+
+
+(* Compile-time errors *)
+Test[
+	CCompilerDriver`CreateLibrary[{FileNameJoin[{currentDirectory, "MLTestCompilationErrors.cpp"}]} ~Join~ $LLUSources, "MLTestErrors", options]
+	,
+	$Failed
+	,
+	{CreateLibrary::cmperr, CreateLibrary::cmperr, CreateLibrary::cmperr, CreateLibrary::cmperr}
+	,
+	TestID->"MathLinkTestSuite-20171129-U5Q3L8"
 ]
 
 
