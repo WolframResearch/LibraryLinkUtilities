@@ -1,6 +1,7 @@
 .project
 .cproject
 .settings/
+.vscode/
 **/build-local.properties
 docs/html
 docs/latex
