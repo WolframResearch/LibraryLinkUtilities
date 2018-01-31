@@ -524,7 +524,7 @@ namespace LibraryLinkUtils {
 
 	template<typename T>
 	ML::StringTypeQ<T> MathLinkStream::operator<<(const std::basic_string<T>& s) {
-		ML::PutString<T>::put(m, s.c_str(), s.size());
+		ML::PutString<T>::put(m, s.c_str(), static_cast<int>(s.size()));
 		return *this;
 	}
 

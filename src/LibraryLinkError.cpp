@@ -100,14 +100,14 @@ namespace LibraryLinkUtils {
 		return errMap;
 	}
 
-	void ErrorManager::registerPacletErrors(const std::vector<std::pair<std::string, std::string>>& errors) {
-		for (auto&& err : errors) {
+	void ErrorManager::registerPacletErrors(const std::vector<std::pair<std::string, std::string>>& errs) {
+		for (auto&& err : errs) {
 			set(err.first, err.second);
 		}
 	}
 
-	void ErrorManager::registerPacletErrors(std::vector<std::pair<std::string, std::string>>&& errors) {
-		for (auto&& err : errors) {
+	void ErrorManager::registerPacletErrors(std::vector<std::pair<std::string, std::string>>&& errs) {
+		for (auto&& err : errs) {
 			set(std::move(err.first), std::move(err.second));
 		}
 	}
@@ -160,7 +160,7 @@ namespace LibraryLinkUtils {
 	void ErrorManager::sendRegisteredErrorsViaMathlink(MLINK mlp) {
 		MathLinkStream ms(mlp, "List", 0);
 
-		ms << ML::NewPacket << ML::Association(errors.size());
+		ms << ML::NewPacket << ML::Association(static_cast<int>(errors.size()));
 
 		for (const auto& err : errors) {
 			ms << ML::Rule << err.first << ML::List(2) << err.second.id() << err.second.message();
@@ -178,7 +178,7 @@ namespace LibraryLinkUtils {
 		catch (LibraryLinkError& e) {
 			err = e.which();
 		}
-		catch (std::exception& e) {
+		catch (...) {
 			err = LLErrorCode::FunctionError;
 		}
 		return err;

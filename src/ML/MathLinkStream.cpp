@@ -57,7 +57,7 @@ namespace LibraryLinkUtils {
 
 
 	MathLinkStream& MathLinkStream::operator<<(const char* s) {
-		ML::PutString<char>::put(m, s, std::strlen(s));
+		ML::PutString<char>::put(m, s, static_cast<int>(std::strlen(s)));
 		return *this;
 	}
 

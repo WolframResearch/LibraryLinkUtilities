@@ -34,7 +34,7 @@ Test[
 	,
 	$Failed
 	,
-	{CreateLibrary::cmperr, CreateLibrary::cmperr, CreateLibrary::cmperr, CreateLibrary::cmperr}
+	{CreateLibrary::cmperr..} (* On Linux there should be 4 errors, but MSVC does not like generic lambdas so it spits out more errors *)
 	,
 	TestID->"MathLinkTestSuite-20171129-U5Q3L8"
 ]

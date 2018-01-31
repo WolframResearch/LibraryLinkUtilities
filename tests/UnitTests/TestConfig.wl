@@ -11,7 +11,7 @@ $LLUSources = FileNames["*.cpp", {$LLUPath},2];
 options = {
 	"CleanIntermediate" -> True,
 	"IncludeDirectories" -> {$LLUPath, FileNameJoin[{$LLUPath, "ML"}]},
-	"CompileOptions" -> If[MatchQ[$SystemID, "Windows-x86-64" | "Windows"], "/O2 /EHsc /W4" , "-O2 -std=c++14 -Wall --pedantic -fvisibility=hidden"],
+	"CompileOptions" -> If[MatchQ[$SystemID, "Windows-x86-64" | "Windows"], "/O2 /EHsc /W2" , "-O2 -std=c++14 -Wall --pedantic -fvisibility=hidden"],
 	"ShellOutputFunction" -> Print,
 	"ShellCommandFunction" -> Print,
 	"Language" -> "C++"
