@@ -541,6 +541,83 @@ EXTERN_C DLLEXPORT int RepeatUTF32(WolframLibraryData libData, MLINK mlp) {
 	return err;
 }
 
+template<typename T>
+void appendString(MathLinkStream& ml) {
+	std::basic_string<T> s;
+	ml >> s;
+	const std::basic_string<T> appendix {{'\a', '\b', '\f', '\r', '\n', '\t', '\v', '\\', '\'', '\"', '\?'}};
+	ml << s + appendix;
+}
+
+template<>
+void appendString<char>(MathLinkStream& ml) {
+	std::string s;
+	ml >> s;
+	/* MLPutString requires \ to be escaped so we must send \\ to have a single backslash in the resulting string */
+	const std::string appendix {{'\a', '\b', '\f', '\r', '\n', '\t', '\v', '\\', '\\', '\'', '\"', '\?'}};
+	ml << s + appendix;
+}
+
+EXTERN_C DLLEXPORT int AppendString(WolframLibraryData libData, MLINK mlp) {
+	auto err = LLErrorCode::NoError;
+	try {
+		MathLinkStream ml(mlp, "List", 1);
+		appendString<char>(ml);
+	}
+	catch (LibraryLinkError& e) {
+		err = e.which();
+	}
+	catch (...) {
+		err = LLErrorCode::FunctionError;
+	}
+	return err;
+}
+
+EXTERN_C DLLEXPORT int AppendUTF8(WolframLibraryData libData, MLINK mlp) {
+	auto err = LLErrorCode::NoError;
+	try {
+		MathLinkStream ml(mlp, "List", 1);
+		appendString<unsigned char>(ml);
+	}
+	catch (LibraryLinkError& e) {
+		err = e.which();
+	}
+	catch (...) {
+		err = LLErrorCode::FunctionError;
+	}
+	return err;
+}
+
+EXTERN_C DLLEXPORT int AppendUTF16(WolframLibraryData libData, MLINK mlp) {
+	auto err = LLErrorCode::NoError;
+	try {
+		MathLinkStream ml(mlp, "List", 1);
+		appendString<unsigned short>(ml);
+	}
+	catch (LibraryLinkError& e) {
+		err = e.which();
+	}
+	catch (...) {
+		err = LLErrorCode::FunctionError;
+	}
+	return err;
+}
+
+EXTERN_C DLLEXPORT int AppendUTF32(WolframLibraryData libData, MLINK mlp) {
+	auto err = LLErrorCode::NoError;
+	try {
+		MathLinkStream ml(mlp, "List", 1);
+		appendString<unsigned int>(ml);
+	}
+	catch (LibraryLinkError& e) {
+		err = e.which();
+	}
+	catch (...) {
+		err = LLErrorCode::FunctionError;
+	}
+	return err;
+}
+
 EXTERN_C DLLEXPORT int ReceiveAndFreeString(WolframLibraryData libData, MLINK mlp) {
 	auto err = LLErrorCode::NoError;
 	try {
@@ -653,6 +730,7 @@ EXTERN_C DLLEXPORT int GetSet(WolframLibraryData libData, MLINK mlp) {
 		for (auto i = 0; i < innerL.getArgc(); ++i) {
 			std::string s;
 			ml >> s;
+			std::cout << s << std::endl;
 			ss.insert(std::move(s));
 		}
 

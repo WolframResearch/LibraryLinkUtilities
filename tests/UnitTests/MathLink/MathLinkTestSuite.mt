@@ -248,7 +248,7 @@ Test[ (* Test if releasing memory works, if not the memory usage should drastica
 
 (* Strings *)
 Test[
-	testString = FromCharacterCode[{97, 322, 945, 63488, 63264}];
+	testString = FromCharacterCode[{97, 261, 322, 945, 63488, 63264}]; (* "a\:0105\[LSlash]\[Alpha]\[FormalA]\[Wolf]" *)
 	expected = StringRepeat[testString, 2];
 	RepeatString = SafeMathLinkFunction["RepeatString"];
 	RepeatString[testString]
@@ -283,6 +283,44 @@ Test[
 	expected
 	,
 	TestID->"MathLinkTestSuite-20171205-S9R5Q1"
+]
+
+Test[
+	testString = "\\+\\\\+\"+\n+\t+?";  (* ToCharacterCode = {92, 43, 92, 92, 43, 34, 43, 10, 43, 9, 43, 63} *)
+	expected = testString <> FromCharacterCode[{7, 8, 12, 13, 10, 9, 11, 92, 39, 34, 63}];
+	AppendString = SafeMathLinkFunction["AppendString"]; (* following string is appended in the C++ code: "\a\b\f\r\n\t\v\\\'\"\?" *)
+	ToCharacterCode @ AppendString[testString]
+	,
+	ToCharacterCode @ expected
+	,
+	TestID->"MathLinkTestSuite-20180202-Q8H8K0"
+]
+
+Test[
+	AppendUTF8 = SafeMathLinkFunction["AppendUTF8"];
+	ToCharacterCode @ AppendUTF8[testString]
+	,
+	ToCharacterCode @ expected
+	,
+	TestID->"MathLinkTestSuite-20180202-Y8D5D1"
+]
+
+Test[
+	AppendUTF16 = SafeMathLinkFunction["AppendUTF16"];
+	ToCharacterCode @ AppendUTF16[testString]
+	,
+	ToCharacterCode @ expected
+	,
+	TestID->"MathLinkTestSuite-20180202-Q6K1Y5"
+]
+
+Test[
+	AppendUTF32 = SafeMathLinkFunction["AppendUTF32"];
+	ToCharacterCode @ AppendUTF32[testString]
+	,
+	ToCharacterCode @ expected
+	,
+	TestID->"MathLinkTestSuite-20180202-S0Q4U6"
 ]
 
 Test[ (* Test if releasing strings works, if not the memory usage should drastically increase after this test *)
