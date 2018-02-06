@@ -65,11 +65,6 @@ namespace LibraryLinkUtils {
 		ML::checkError(m, statusOk, errorCode, debugInfo);
 	}
 
-	void MathLinkStream::check(int statusOk, const std::string& errorName, const std::string& debugInfo) {
-		// TODO this overload may be unnecessary
-		ML::checkError(m, statusOk, errorName, debugInfo);
-	}
-
 	int MathLinkStream::testHead(const std::string& head) {
 		int argcount;
 		check(

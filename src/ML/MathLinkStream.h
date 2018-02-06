@@ -439,16 +439,6 @@ namespace LibraryLinkUtils {
 		void check(int statusOk, int errorCode, const std::string& debugInfo = "");
 
 		/**
-		 *   @brief			Check if the call to MathLink API succeeded, throw an exception otherwise
-		 *   @param[in] 	statusOk - error code returned from MathLink API function, usually 0 means error
-		 *   @param[in]		errorName - name of the error to be included in the exception thrown by ErrorManager
-		 *   @param[in]		debugInfo - additional information to include in the exception, should it be thrown
-		 *
-		 *   @throws 		errorName
-		 **/
-		void check(int statusOk, const std::string& errorName, const std::string& debugInfo = "");
-
-		/**
 		 * 	 @brief			Test if the next expression to be read from MathLink has given head
 		 * 	 @param[in] 	head - expression head to test for
 		 * 	 @return		Number of arguments for the next expression on the Link (only if head is correct)
