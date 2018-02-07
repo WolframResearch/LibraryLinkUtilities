@@ -163,7 +163,7 @@ namespace LibraryLinkUtils {
 		ms << ML::NewPacket << ML::Association(static_cast<int>(errors.size()));
 
 		for (const auto& err : errors) {
-			ms << ML::Rule << err.first << ML::List(2) << err.second.id() << err.second.message();
+			ms << ML::Rule << ML::PutAsUTF8(err.first) << ML::List(2) << err.second.id() << ML::PutAsUTF8(err.second.message());
 		}
 
 		ms << ML::EndPacket << ML::Flush;
