@@ -635,6 +635,39 @@ EXTERN_C DLLEXPORT int ReceiveAndFreeString(WolframLibraryData libData, MLINK ml
 	return err;
 }
 
+EXTERN_C DLLEXPORT int GetAndPutUTF8(WolframLibraryData libData, MLINK mlp) {
+	auto err = LLErrorCode::NoError;
+	try {
+		MathLinkStream ml(mlp, "List", 2);
+
+		// we will read first string to const unsigned char* - as UTF8 string are supposed to be read from MathLink
+		ML::StringData<unsigned char> sUChar;
+		ml >> sUChar;
+
+		std::cout << "Unsigned char string bytes: ";
+		for (int i = 0; i < sUChar.get_deleter().getLength(); ++i) {
+			std::cout << std::to_string(+sUChar[i]) << " ";
+		}
+		std::cout << std::endl;
+
+		// now let's try reading UTF8 string to std::string - there is a reinterpret cast under the hood
+		std::string sChar;
+		ml >> ML::GetAsUTF8(sChar);
+
+		std::cout << sChar << std::endl;
+
+		ml << ML::PutAsUTF8(R"(This will be sent as UTF8 encoded string. No need to escape backslashes \o/. Some weird characters: ą©łóßµ)") << ML::EndPacket;
+
+	}
+	catch (LibraryLinkError& e) {
+		err = e.which();
+	}
+	catch (...) {
+		err = LLErrorCode::FunctionError;
+	}
+	return err;
+}
+
 
 //
 // Symbols and Arbitrary Functions

@@ -406,6 +406,15 @@ namespace LibraryLinkUtils {
 		ML::StringTypeQ<T> operator>>(std::basic_string<T>& s);
 
 		/**
+		 *	 @brief			Receives a UTF8 encoded string via MathLink
+		 *	 @param 		s - std::string reference wrapped in ML::GetAsUTF8 structure
+		 *
+		 * 	 @see			ML::GetAsUTF8
+		 * 	 @throws 		LLErrorCode::MLGetStringError
+		 */
+		MathLinkStream& operator>>(ML::GetAsUTF8 s);
+
+		/**
 		 *   @brief			Receives a std::map via MathLink
 		 *   @tparam		K - map key type, must be supported in MathLinkStream
 		 *   @tparam		V - map value type, must be supported in MathLinkStream

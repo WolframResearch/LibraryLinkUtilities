@@ -333,6 +333,16 @@ Test[ (* Test if releasing strings works, if not the memory usage should drastic
 	TestID->"MathLinkTestSuite-20171205-T6V1J3"
 ]
 
+Test[
+	GetAndPutUTF8 = SafeMathLinkFunction["GetAndPutUTF8"];
+	testStr = "\:0105\:0119\[AE]\[Copyright]\\/";
+	GetAndPutUTF8[testStr, testStr]
+	,
+	"This will be sent as UTF8 encoded string. No need to escape backslashes \\o/. Some weird characters: ą©łóßµ"
+	,
+	TestID->"MathLinkTestSuite-20180207-C6Z9T4"
+]
+
 (* Symbols and Arbitrary Functions *)
 Test[
 	GetList = SafeMathLinkFunction["GetList"];

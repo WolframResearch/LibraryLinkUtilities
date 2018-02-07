@@ -159,5 +159,10 @@ namespace LibraryLinkUtils {
 		return *this;
 	}
 
+	MathLinkStream& MathLinkStream::operator>>(ML::GetAsUTF8 s) {
+		auto stringData = ML::GetString<unsigned char>::get(m);
+		s.str = std::string { reinterpret_cast<const char*>(stringData.get()) };
+		return *this;
+	}
 
 } /* namespace LibraryLinkUtils */

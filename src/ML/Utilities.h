@@ -189,6 +189,24 @@ namespace LibraryLinkUtils {
 			/// Length of the input string
 			std::size_t len;
 		};
+
+
+		/**
+		 *	@struct GetAsUTF8
+		 *	@brief	Utility structure to facilitate reading UTF8 strings into std::string
+		 */
+		struct GetAsUTF8 {
+
+			/**
+			 * @brief	Read a string from MathLink with MLGetUTF8String and assign to std::string
+			 * @param 	s - reference to a string that will be read from MathLink
+			 */
+			explicit GetAsUTF8(std::string& s) : str(s) {};
+
+
+			/// Store a reference to which later a UTF8 string from MathLink will be assigned
+			std::string& str;
+		};
 	}
 }
 
