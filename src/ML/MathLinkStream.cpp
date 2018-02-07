@@ -55,6 +55,10 @@ namespace LibraryLinkUtils {
 		return *this << ML::Symbol(b? "True" : "False");
 	}
 
+	MathLinkStream& MathLinkStream::operator<<(const ML::PutAsUTF8& s) {
+		ML::PutString<unsigned char>::put(m, s.str, static_cast<int>(s.len));
+		return *this;
+	}
 
 	MathLinkStream& MathLinkStream::operator<<(const char* s) {
 		ML::PutString<char>::put(m, s, static_cast<int>(std::strlen(s)));

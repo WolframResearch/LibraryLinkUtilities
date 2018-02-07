@@ -7,11 +7,10 @@
 #ifndef LLUTILS_ML_UTILITIES_H_
 #define LLUTILS_ML_UTILITIES_H_
 
+#include <cstring>
 #include <string>
-#include <type_traits>
 
 #include "mathlink.h"
-#include "../Utilities.hpp"
 
 namespace LibraryLinkUtils {
 
@@ -138,39 +137,6 @@ namespace LibraryLinkUtils {
 		};
 
 
-		template<typename T>
-		struct IsSupportedInMLArithmetic : std::false_type {};
-
-		template<> struct IsSupportedInMLArithmetic<unsigned char> : std::true_type {};
-		template<> struct IsSupportedInMLArithmetic<short> : std::true_type {};
-		template<> struct IsSupportedInMLArithmetic<int> : std::true_type {};
-		template<> struct IsSupportedInMLArithmetic<mlint64> : std::true_type {};
-		template<> struct IsSupportedInMLArithmetic<float> : std::true_type {};
-		template<> struct IsSupportedInMLArithmetic<double> : std::true_type {};
-
-
-		template<typename T, typename U = MathLinkStream&>
-		using ScalarSupportedTypeQ = std::enable_if_t<IsSupportedInMLArithmetic<remove_cv_ref<T>>::value, U>;
-
-		template<typename T, typename U = MathLinkStream&>
-		using NotScalarSupportedTypeQ = std::enable_if_t<!IsSupportedInMLArithmetic<remove_cv_ref<T>>::value, U>;
-
-		template<typename T, typename U = MathLinkStream&>
-		using ScalarNotSupportedTypeQ = std::enable_if_t<std::is_arithmetic<T>::value && !IsSupportedInMLArithmetic<remove_cv_ref<T>>::value, U>;
-
-		template<typename T>
-		struct IsSupportedInMLString : std::false_type {};
-
-		template<> struct IsSupportedInMLString<char> : std::true_type {};
-		template<> struct IsSupportedInMLString<unsigned char> : std::true_type {};
-		template<> struct IsSupportedInMLString<unsigned short> : std::true_type {};
-		template<> struct IsSupportedInMLString<unsigned int> : std::true_type {};
-
-
-		template<typename T, typename U = MathLinkStream&>
-		using StringTypeQ = std::enable_if_t<IsSupportedInMLString<remove_cv_ref<T>>::value, U>;
-
-
 		MathLinkStream& NewPacket(MathLinkStream& ms);
 
 		MathLinkStream& EndPacket(MathLinkStream& ms);
@@ -178,6 +144,51 @@ namespace LibraryLinkUtils {
 		MathLinkStream& Flush(MathLinkStream& ms);
 
 		MathLinkStream& Rule(MathLinkStream& ms, Direction dir);
+
+		/**
+		 *	@struct PutAsUTF8
+		 *	@brief	Utility structure used to enforce sending given string as UTF8 string via MathLink
+		 */
+		struct PutAsUTF8 {
+
+			/**
+			 * @brief	Take a _const char*_ to be sent with MLPutUTF8String.
+			 * @param 	s - C-style string encoded in UTF8
+			 *
+			 * @warning	You are entirely responsible for making sure that the string is actually UTF8 encoded!
+			 */
+			explicit PutAsUTF8(const char* s) : str(reinterpret_cast<const unsigned char*>(s)), len(std::strlen(s)) {};
+
+			/**
+			 * @brief	Take a _const unsigned char*_ to be sent with MLPutUTF8String.
+			 * @param 	s - C-style string encoded in UTF8
+			 *
+			 * @warning	You are entirely responsible for making sure that the string is actually UTF8 encoded!
+			 */
+			explicit PutAsUTF8(const unsigned char* s) : str(s), len(std::strlen(reinterpret_cast<const char*>(s))) {};
+
+			/**
+			 * @brief	Take a _std::string_ to be sent with MLPutUTF8String.
+			 * @param 	s - const reference to a string encoded in UTF8
+			 *
+			 * @warning	You are entirely responsible for making sure that the string is actually UTF8 encoded!
+			 */
+			explicit PutAsUTF8(const std::string& s) : str(reinterpret_cast<const unsigned char*>(s.c_str())), len(s.length()) {};
+
+			/**
+			 * @brief	Take a _std::basic_string<unsigned char>_ to be sent with MLPutUTF8String.
+			 * @param 	s - const reference to a string encoded in UTF8
+			 *
+			 * @warning	You are entirely responsible for making sure that the string is actually UTF8 encoded!
+			 */
+			explicit PutAsUTF8(const std::basic_string<unsigned char>& s) : str(s.c_str()), len(s.length()) {};
+
+			/// String data after casting to a type that MLPutUTF8String accepts
+			const unsigned char* str;
+
+			/// Length of the input string
+			std::size_t len;
+		};
 	}
 }
 

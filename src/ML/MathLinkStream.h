@@ -16,6 +16,7 @@
 
 #include "../Utilities.hpp"
 #include "Utilities.h"
+#include "UtilityTypeTraits.hpp"
 #include "MLGet.h"
 #include "MLPut.h"
 
@@ -26,7 +27,7 @@ namespace LibraryLinkUtils {
 	 * @class MathLinkStream
 	 * @brief Wrapper class over MathLink with a stream-like interface. So far covers only the most important types.
 	 *
-	 * MathLinkSrtream resides in LibraryLinkUtils namespace, whereas other MathLink-related classes can be found in LibraryLinkUtils::ML namespace.
+	 * MathLinkStream resides in LibraryLinkUtils namespace, whereas other MathLink-related classes can be found in LibraryLinkUtils::ML namespace.
 	 */
 	class MathLinkStream {
 	public:
@@ -87,6 +88,7 @@ namespace LibraryLinkUtils {
 		 **/
 		template<typename Iterator, typename = enable_if_input_iterator<Iterator>>
 		void sendRange(Iterator begin, Iterator end, const std::string& head);
+
 	public:
 		/// Type of elements that can be send via MathLink with no arguments, for example ML::Flush
 		using StreamToken = MathLinkStream& (*)(MathLinkStream&);
@@ -187,6 +189,19 @@ namespace LibraryLinkUtils {
 		 **/
 		template<typename T>
 		MathLinkStream& operator<<(const ML::StringData<T>& s);
+
+		/**
+		 *   @brief			Sends a string (with character type _const char_ or _const unsigned char_) using `MLPutUTF8String`.
+		 *
+		 *   Normally, when you send a string MathLinkStream chooses the appropriate MathLink function for the string you passed, depending on the type
+		 *   of characters. Here you explicitly state that the string must be sent with `MLPutUTF8String`. It is your responsibility to make sure that
+		 *   the string you want to send is encoded in UTF8.
+		 *
+		 *   @param[in] 	s - string you want send with `MLPutUTF8String` wrapped in a helper structure `ML::PutAsUTF8`
+		 *
+		 *   @throws 		LLErrorCode::MLPutStringError
+		 **/
+		MathLinkStream& operator<<(const ML::PutAsUTF8& s);
 
 		/**
 		 *   @brief			Sends std::basic_string
@@ -343,7 +358,7 @@ namespace LibraryLinkUtils {
 		 *   @throws 		LLErrorCode::MLGetArrayError
 		 **/
 		template<typename T>
-		MathLinkStream& operator>>(ML::ArrayData<T>& s);
+		MathLinkStream& operator>>(ML::ArrayData<T>& a);
 
 		/**
 		 *   @brief			Receives a MathLink list
@@ -354,7 +369,7 @@ namespace LibraryLinkUtils {
 		 *   @throws 		LLErrorCode::MLGetListError
 		 **/
 		template<typename T>
-		MathLinkStream& operator>>(ML::ListData<T>& s);
+		MathLinkStream& operator>>(ML::ListData<T>& l);
 
 		/**
 		 *   @brief			Receives a List from MathLink and assigns it to std::vector
@@ -391,7 +406,7 @@ namespace LibraryLinkUtils {
 		ML::StringTypeQ<T> operator>>(std::basic_string<T>& s);
 
 		/**
-		 *   @brief			Received a std::map via MathLink
+		 *   @brief			Receives a std::map via MathLink
 		 *   @tparam		K - map key type, must be supported in MathLinkStream
 		 *   @tparam		V - map value type, must be supported in MathLinkStream
 		 *   @param[out] 	m - argument to which the std::map received from MathLink will be assigned
@@ -401,7 +416,7 @@ namespace LibraryLinkUtils {
 		 *   @note			The top-level Association must have all values of the same type because this is how std::map works
 		 **/
 		template<typename K, typename V>
-		MathLinkStream& operator>>(std::map<K, V>& s);
+		MathLinkStream& operator>>(std::map<K, V>& m);
 
 		/**
 		 *   @brief			Receives a scalar value (int, float, double, etc)
