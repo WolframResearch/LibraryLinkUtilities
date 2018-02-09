@@ -338,7 +338,7 @@ Test[
 	testStr = "\:0105\:0119\[AE]\[Copyright]\\/";
 	GetAndPutUTF8[testStr, testStr]
 	,
-	"This will be sent as UTF8 encoded string. No need to escape backslashes \\o/. Some weird characters: ą©łóßµ"
+	"This will be sent as UTF8 encoded string. No need to escape backslashes \\o/. Some weird characters: " <> FromCharacterCode[{196, 133, 194, 169, 197, 130, 195, 179, 195, 159, 194, 181}, "UTF8"]
 	,
 	TestID->"MathLinkTestSuite-20180207-C6Z9T4"
 ]
