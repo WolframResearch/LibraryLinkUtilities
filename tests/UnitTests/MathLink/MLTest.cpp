@@ -441,7 +441,7 @@ EXTERN_C DLLEXPORT int ReceiveAndFreeArray(WolframLibraryData libData, MLINK mlp
 		MathLinkStream ml(mlp, "List", 1);
 		ML::ArrayData<double> a;
 		ml >> a;
-		ml << ML::Symbol("Null") << ML::EndPacket;
+		ml << ML::Null << ML::EndPacket;
 	}
 	catch (LibraryLinkError& e) {
 		err = e.which();
@@ -624,7 +624,7 @@ EXTERN_C DLLEXPORT int ReceiveAndFreeString(WolframLibraryData libData, MLINK ml
 		MathLinkStream ml(mlp, "List", 1);
 		ML::StringData<char> s;
 		ml >> s;
-		ml << ML::Symbol("Null") << ML::EndPacket;
+		ml << ML::Null << ML::EndPacket;
 	}
 	catch (LibraryLinkError& e) {
 		err = e.which();
@@ -677,8 +677,8 @@ EXTERN_C DLLEXPORT int GetList(WolframLibraryData libData, MLINK mlp) {
 	auto err = LLErrorCode::NoError;
 	try {
 		MathLinkStream ml(mlp, "List", 0);
-		ml << ML::List(3);
-		ml << std::vector<int> { 1, 2, 3 } << std::vector<float> { 1.5, 2.5, 3.5 } << "Hello!";
+		ml << ML::List(5);
+		ml << std::vector<int> { 1, 2, 3 } << ML::Missing() << std::vector<float> { 1.5, 2.5, 3.5 } << "Hello!" << ML::Missing("Deal with it");
 		ml << ML::EndPacket;
 	}
 	catch (LibraryLinkError& e) {
@@ -697,12 +697,14 @@ EXTERN_C DLLEXPORT int ReverseSymbolsOrder(WolframLibraryData libData, MLINK mlp
 		ML::List l;
 		ml >> l;
 
-		std::vector<ML::Symbol> v;
+		//use unique_ptr only to test if MathLinkStream handles it correctly
+		std::vector<std::unique_ptr<ML::Symbol>> v;
+
 		// Read all symbols in a loop
 		for (auto i = 0; i < l.getArgc(); ++i) {
 			ML::Symbol s;
 			ml >> s;
-			v.push_back(std::move(s));
+			v.push_back(std::make_unique<ML::Symbol>(std::move(s)));
 		}
 
 		ml << ML::List(l.getArgc());

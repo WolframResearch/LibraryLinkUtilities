@@ -348,7 +348,7 @@ Test[
 	GetList = SafeMathLinkFunction["GetList"];
 	GetList[]
 	,
-	{{1, 2, 3}, {1.5, 2.5, 3.5}, "Hello!"}
+	{{1, 2, 3}, Missing[""], {1.5, 2.5, 3.5}, "Hello!", Missing["Deal with it"]}
 	,
 	TestID->"MathLinkTestSuite-20171205-A4D8U2"
 ]
