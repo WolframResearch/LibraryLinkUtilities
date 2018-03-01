@@ -130,6 +130,14 @@ namespace LibraryLinkUtils {
 		MathLinkStream& operator<<(const ML::Function& f);
 
 		/**
+		 *   @brief			Sends a top-level expression of the form Missing["reason"]
+		 *   @param[in] 	m - ML::Missing object with a reason
+		 *   @see 			ML::Missing
+		 *   @throws 		LLErrorCode::MLPutFunctionError
+		 **/
+		MathLinkStream& operator<<(const ML::Missing& m);
+
+		/**
 		 *   @brief			Sends a boolean value via MathLink, it is translated to True or False in Mathematica
 		 *   @param[in] 	b - a boolean value
 		 *
@@ -159,6 +167,15 @@ namespace LibraryLinkUtils {
 		template<typename T>
 		MathLinkStream& operator<<(const ML::ListData<T>& l);
 	
+		/**
+		 *   @brief			Sends an object owned by unique pointer
+		 *   @tparam		T - list element type
+		 *   @tparam		D - destructor type, not really relevant
+		 *   @param[in] 	p - pointer to the object to be sent
+		 **/
+		template<typename T, typename D>
+		MathLinkStream& operator<<(const std::unique_ptr<T, D>& p);
+
 		/**
 		 *   @brief			Sends a std::vector via MathLink, it is interpreted as a List in Mathematica
 		 *   @tparam		T - vector element type, it has to be a simple type that is supported in MLPut*List
@@ -512,6 +529,16 @@ namespace LibraryLinkUtils {
 	MathLinkStream& MathLinkStream::operator<<(const ML::ListData<T>& l) {
 		const auto& del = l.get_deleter();
 		ML::PutList<T>::put(m, l.get(), del.getLength());
+		return *this;
+	}
+
+	template<typename T, typename D>
+	MathLinkStream& MathLinkStream::operator<<(const std::unique_ptr<T, D>& p) {
+		if (p) {
+			*this << *p;
+		} else {
+			*this << ML::Null;
+		}
 		return *this;
 	}
 

@@ -51,6 +51,16 @@ namespace LibraryLinkUtils {
 		return *this;
 	}
 
+	MathLinkStream& MathLinkStream::operator<<(const ML::Missing& f) {
+		check(
+			MLPutFunction(m, f.getHead().c_str(), 1), //f.getArgc() could be 0 but we still want to send f.reason, even if it's an empty string
+			LLErrorCode::MLPutFunctionError,
+			"Cannot put function: \"" + f.getHead() + "\" with 1 argument"
+		);
+		*this << ML::PutAsUTF8(f.why());
+		return *this;
+	}
+
 	MathLinkStream& MathLinkStream::operator<<(bool b) {
 		return *this << ML::Symbol(b? "True" : "False");
 	}
