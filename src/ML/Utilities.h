@@ -130,6 +130,19 @@ namespace LibraryLinkUtils {
 			List(int argCount) : Function("List", argCount) {}
 		};
 
+		/**
+		 * @struct	Missing
+		 * Represents WL expression Missing["reason"].
+		 */
+		struct Missing : Function {
+			Missing() : Function("Missing") {}
+			Missing(std::string r) : Function("Missing", 1), reason(std::move(r)) {}
+
+			const std::string& why() const { return reason; }
+		private:
+			std::string reason;
+		};
+
 
 		enum class Direction : bool {
 			Get,
@@ -144,6 +157,8 @@ namespace LibraryLinkUtils {
 		MathLinkStream& Flush(MathLinkStream& ms);
 
 		MathLinkStream& Rule(MathLinkStream& ms, Direction dir);
+
+		MathLinkStream& Null(MathLinkStream& ms, Direction dir);
 
 		/**
 		 *	@struct PutAsUTF8

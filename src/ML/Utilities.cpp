@@ -70,6 +70,13 @@ namespace LibraryLinkUtils {
 				return ms >> Function("Rule", 2);
 		}
 
+		MathLinkStream& Null(MathLinkStream& ms, Direction dir) {
+			if (dir == Direction::Put)
+				return ms << Symbol("Null");
+			else
+				return ms >> Symbol("Null");
+		}
+
 		std::string getMLErrorText(MLINK mlp) {
 			std::string err = "Error code reported by MathLink: " + std::to_string(MLError(mlp)) + "\n";
 			auto mlErrorMsg = MLErrorMessage(mlp);
