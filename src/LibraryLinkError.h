@@ -45,7 +45,7 @@ namespace LibraryLinkUtils {
 		// ...
 		// -100
 
-		// MArgument errors: [-101 : -200]
+		// MArgument errors: [-101 : -150]
 		constexpr int MArgumentInitError = -101; 		///< MArgumentManager construction failed
 		constexpr int MArgumentIndexError = -102; 		///< wrong argument index
 		constexpr int MArgumentRawArrayError = -103; 	///< error involving RawArray argument
@@ -99,6 +99,10 @@ namespace LibraryLinkUtils {
 		constexpr int MLGetFunctionError = -515; 	///< MLGetFunction failed
 		constexpr int MLPacketHandleError = -516;	///< One of the packet handling functions failed
 		constexpr int MLFlowControlError = -517;	///< One of the flow control functions failed
+
+
+		// MDevices errors: [-1001 : -2000]
+		// see MDevices/Framework/Utilities/ErrorCodes.h
 	}
 
 	/**
@@ -151,6 +155,7 @@ namespace LibraryLinkUtils {
 		const std::string& debug() const noexcept {
 			return debugInfo;
 		}
+
 	private:
 		/**
 		 *   @brief         Constructs an exception with given error code and predefined error message
@@ -195,6 +200,15 @@ namespace LibraryLinkUtils {
 		static void registerPacletErrors(std::vector<std::pair<std::string, std::string>>&& errors);
 
 		/**
+		 * @brief 	Register errors with error codes starting from specific index.
+		 *
+		 *
+		 * @param 	startIdx - error code of the first error to be registered
+		 * @param 	errors - errors to be registered in the static error map
+		 */
+		static void registerErrorsAtIndex(int startIdx, const std::vector<std::pair<std::string, std::string>>& errors);
+
+		/**
 		 * @brief 	Use this function to add new entry to the map of registered errors.
 		 * @param 	errorName - string with error name
 		 * @param 	errorData - string with error description
@@ -230,6 +244,32 @@ namespace LibraryLinkUtils {
 		static void throwException(const std::string& errorName, const std::string& debugInfo);
 
 		/**
+		 * @brief 	Throw exception of given class that carries the error with given code.
+		 *
+		 * This is useful if you want to throw custom exception classes from your paclet and still see the nice Failure objects in top-level.
+		 *
+		 * @tparam	Error - custom exception class it must define a constructor that takes a LibraryLinkError as first parameter
+		 * but it doesn't have to derive from LibraryLinkError
+		 * @param 	errorId - id of error to be thrown
+		 * @param 	args - additional arguments that will be perfectly forwarded to the constructor of Error class
+		 */
+		template<class Error, typename... Args>
+		static void throwCustomException(int errorId, Args&&... args);
+
+		/**
+		 * @brief 	Throw exception of given class that carries the error with given name.
+		 *
+		 * This is useful if you want to throw custom exception classes from your paclet and still see the nice Failure objects in top-level.
+		 *
+		 * @tparam	Error - custom exception class it must define a constructor that takes a LibraryLinkError as first parameter
+		 * but it doesn't have to derive from LibraryLinkError
+		 * @param 	errorName - name of error to be thrown
+		 * @param 	args - additional arguments that will be perfectly forwarded to the constructor of Error class
+		 */
+		template<class Error, typename... Args>
+		static void throwCustomException(const std::string& errorName, Args&&... args);
+
+		/**
 		 * @brief Function used to send all registered errors to top-level Mathematica code.
 		 *
 		 * Sending registered errors allows for nice and meaningful Failure objects to be generated when paclet function fails in top level,
@@ -237,6 +277,11 @@ namespace LibraryLinkUtils {
 		 * @param mlp - active MathLink connection
 		 */
 		static void sendRegisteredErrorsViaMathlink(MLINK mlp);
+
+	private:
+
+		/// Errors are stored in a map with elements of the form { "ErrorName", immutable LibraryLinkError object }
+		using ErrorMap = std::unordered_map<std::string, const LibraryLinkError>;
 
 	private:
 		/**
@@ -253,26 +298,26 @@ namespace LibraryLinkUtils {
 		 */
 		static const LibraryLinkError& findError(const std::string& errorName);
 
-		/// Errors are stored in a map with elements of the form { "ErrorName", immutable LibraryLinkError object }
-		using ErrorMap = std::unordered_map<std::string, const LibraryLinkError>;
-
-		/// Static map of registered errors
-		static ErrorMap& errors;
-
 		/***
 		 * @brief Initialization of static error map
 		 * @param initList - list of errors used internally by LLU
 		 * @return reference to static error map
 		 */
-		static ErrorMap& initErrorMap(std::initializer_list<LibraryLinkError> initList);
+		static ErrorMap registerLLUErrors(std::initializer_list<LibraryLinkError> initList);
 
-		/// Helper data to speed up error registering
-		static const ErrorMap::const_iterator insertionHint;
-
-		/// Id that will be assigned to the next registered errors. Developers should not make any assumptions about this value
-		static int nextErrorId;
+		/// Static map of registered errors
+		static ErrorMap& errors();
 	};
 
+	template<class Error, typename... Args>
+	void ErrorManager::throwCustomException(int errorId, Args&&... args) {
+		throw Error(findError(errorId), std::forward<Args>(args)...);
+	}
+
+	template<class Error, typename... Args>
+	void ErrorManager::throwCustomException(const std::string& errorName, Args&&... args) {
+		throw Error(findError(errorName), std::forward<Args>(args)...);
+	}
 
 } /* namespace LibraryLinkUtils */
 
