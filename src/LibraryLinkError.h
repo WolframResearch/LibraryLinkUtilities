@@ -201,10 +201,10 @@ namespace LibraryLinkUtils {
 
 		/**
 		 * @brief 	Register errors with error codes starting from specific index.
-		 *
-		 *
 		 * @param 	startIdx - error code of the first error to be registered
 		 * @param 	errors - errors to be registered in the static error map
+		 *
+		 * @warning	Use registerPacletErrors instead of this function, unless you have a very good reason to do otherwise.
 		 */
 		static void registerErrorsAtIndex(int startIdx, const std::vector<std::pair<std::string, std::string>>& errors);
 
