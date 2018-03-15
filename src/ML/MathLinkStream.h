@@ -582,7 +582,7 @@ namespace LibraryLinkUtils {
 	}
 
 	template<typename T>
-	ML::ScalarNotSupportedTypeQ<T> MathLinkStream::operator<<(T value) {
+	ML::ScalarNotSupportedTypeQ<T> MathLinkStream::operator<<(T) {
 		static_assert(sizeof(T) < 0, "Calling operator<< with unsupported type.");
 		return *this;
 	}
