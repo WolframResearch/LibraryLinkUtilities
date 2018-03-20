@@ -100,9 +100,11 @@ Test[
 	Failure["MLWrongSymbolForBool", <|
 		"MessageTemplate" -> "Tried to read something else than \"True\" or \"False\" as boolean.", 
 		"MessageParameters" -> <||>, 
-		"ErrorCode" -> -505, 
+		"ErrorCode" -> n_, 
 		"Parameters" -> {}
-	|>]
+	|>]/; n < 0
+	,
+	SameTest -> MatchQ
 	,
 	TestID->"MathLinkTestSuite-20171201-L1W7O4"
 ]

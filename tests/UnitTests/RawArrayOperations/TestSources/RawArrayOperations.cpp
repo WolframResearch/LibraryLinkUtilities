@@ -140,7 +140,7 @@ EXTERN_C DLLEXPORT int getSharedRawArray(WolframLibraryData libData, mint Argc, 
 struct ZeroReal64 {
 	template<typename T>
 	void operator()(RawArray<T>, MArgumentManager&) {
-		ErrorManager::throwException(LLErrorCode::FunctionError);
+		ErrorManager::throwException(LLErrorName::FunctionError);
 	}
 
 	void operator()(RawArray<double>& ra, MArgumentManager& mngr) {

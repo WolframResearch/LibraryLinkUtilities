@@ -587,9 +587,11 @@ Test[
 Test[
 	ef1[{2,1}, 1]
 	,
-	LibraryFunctionError["LIBRARY_USER_ERROR", -304]
+	LibraryFunctionError["LIBRARY_USER_ERROR", n_] /; n < 0
 	,
 	{LibraryFunction::rterr}
+	,
+	SameTest -> MatchQ
 	,
 	TestID->"DLLTests-20090211-T9W0H6"
 ]
@@ -625,9 +627,11 @@ Test[
 Test[
 	ef3[{2,1}, 1]
 	,
-	LibraryFunctionError["LIBRARY_USER_ERROR", -304]
+	LibraryFunctionError["LIBRARY_USER_ERROR", n_] /; n < 0
 	,
 	{LibraryFunction::rterr}
+	,
+	SameTest -> MatchQ
 	,
 	TestID->"DLLTests-20090211-X0W7I6"
 ]
@@ -678,9 +682,11 @@ Test[
 Test[
 	customError[42]
 	,
-	LibraryFunctionError["LIBRARY_USER_ERROR", -1]
+	LibraryFunctionError["LIBRARY_USER_ERROR", n_] /; n < 0
 	,
 	{LibraryFunction::rterr}
+	,
+	SameTest -> MatchQ
 	,
 	TestID->"LibraryTests-20170818-O3S6S4"
 ]
@@ -688,9 +694,11 @@ Test[
 Test[
 	customError[-42]
 	,
-	LibraryFunctionError["LIBRARY_USER_ERROR", -152] (* ErrorManagerThrowNameError *)
+	LibraryFunctionError["LIBRARY_USER_ERROR", n_] /; n < 0
 	,
 	{LibraryFunction::rterr}
+	,
+	SameTest -> MatchQ
 	,
 	TestID->"LibraryTests-20170818-D4D3N0"
 ]
@@ -722,7 +730,9 @@ Test[
 Test[
 	getCErrorCodes[]["TensorTypeError"]
 	,
-	{ -304, "An error was caused by an MTensor type mismatch." }
+	{ n_, "An error was caused by an MTensor type mismatch." } /; n < 0
+	,
+	SameTest -> MatchQ
 	,
 	TestID->"LibraryTests-20170818-H4B5A2"
 ]
@@ -731,7 +741,9 @@ $CharacterEncoding = "UTF8";
 Test[
 	getCErrorCodes[][FromCharacterCode[{261, 281, 69, 114, 114, 111, 114}, "UTF8"]] (* The key is "ąęError" *)
 	,
-	{ -2, "Let me try non-ASCII: łódź" }
+	{ n_, "Let me try non-ASCII: łódź" } /; n < 0
+	,
+	SameTest -> MatchQ
 	,
 	TestID->"LibraryTests-20170818-G4W2V6"
 ]
@@ -779,9 +791,11 @@ Test[
 Test[
 	nonASCIIError[42]
 	,
-	LibraryFunctionError["LIBRARY_USER_ERROR", -2]
+	LibraryFunctionError["LIBRARY_USER_ERROR", n_] /; n < 0
 	,
 	{LibraryFunction::rterr}
+	,
+	SameTest -> MatchQ
 	,
 	TestID->"LibraryTests-20170818-E6A4U8"
 ]

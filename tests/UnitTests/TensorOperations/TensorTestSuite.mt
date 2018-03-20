@@ -59,9 +59,11 @@ Test[
 ExactTest[
 	getNthRealFromTR1[{1,2,3,4.7},100]
 	,
-	LibraryFunctionError["LIBRARY_USER_ERROR", -306] (* -306 is for trying to access non-existing element in Tensor *)
+	LibraryFunctionError["LIBRARY_USER_ERROR", n_] /; n < 0 (* even though we know what the error is, we cannot predict the error code *)
 	,
 	LibraryFunction::rterr
+	,
+	SameTest -> MatchQ
 	,
 	TestID->"TensorOperations-20150817-Z2M1Q2"
 ]
