@@ -15,132 +15,105 @@
 #include "ML/MathLinkStream.h"
 #include "ML/Utilities.h"
 
+
 namespace LibraryLinkUtils {
 
 	auto ErrorManager::errors() -> ErrorManager::ErrorMap& {
 		static ErrorMap errMap = registerLLUErrors({
 
 			// Original LibraryLink error codes:
-			{ LLErrorCode::VersionError, 	"VersionError", 	"An error was caused by an incompatible function call. "
-					"The library was compiled with a previous WolframLibrary version." },
-			{ LLErrorCode::FunctionError, 	"FunctionError", 	"An error occurred in the library function." },
-			{ LLErrorCode::MemoryError, 	"MemoryError", 		"An error was caused by failed memory allocation or insufficient memory." },
-			{ LLErrorCode::NumericalError, 	"NumericalError", 	"A numerical error was encountered." },
-			{ LLErrorCode::DimensionsError, "DimensionsError", 	"An error caused by inconsistent dimensions or by exceeding array bounds." },
-			{ LLErrorCode::RankError, 		"RankError", 		"An error was caused by a tensor with an inconsistent rank." },
-			{ LLErrorCode::TypeError, 		"TypeError", 		"An error caused by inconsistent types was encountered." },
-			{ LLErrorCode::NoError, 		"NoError", 			"No errors occurred." },
+			{ LLErrorName::VersionError,	"An error was caused by an incompatible function call. The library was compiled with a previous WolframLibrary version." },
+			{ LLErrorName::FunctionError,	"An error occurred in the library function." },
+			{ LLErrorName::MemoryError,		"An error was caused by failed memory allocation or insufficient memory." },
+			{ LLErrorName::NumericalError,	"A numerical error was encountered." },
+			{ LLErrorName::DimensionsError,	"An error caused by inconsistent dimensions or by exceeding array bounds." },
+			{ LLErrorName::RankError,		"An error was caused by a tensor with an inconsistent rank." },
+			{ LLErrorName::TypeError,		"An error caused by inconsistent types was encountered." },
+			{ LLErrorName::NoError,			"No errors occurred." },
 
-			// Reserved for use in paclets:
-			// -1
-			// ...
-			// -100
+			// MArgument errors:
+			{ LLErrorName::MArgumentInitError,		"MArgumentManager construction failed." },
+			{ LLErrorName::MArgumentIndexError,		"An error was caused by an incorrect argument index." },
+			{ LLErrorName::MArgumentRawArrayError,	"An error was caused by a RawArray argument." },
+			{ LLErrorName::MArgumentTensorError,	"An error was caused by a Tensor argument." },
+			{ LLErrorName::MArgumentImageError,		"An error was caused by an Image argument." },
 
-			// MArgument errors: [-101 : -150]
-			{ LLErrorCode::MArgumentInitError, 		"MArgumentInitError", 		"MArgumentManager construction failed." },
-			{ LLErrorCode::MArgumentIndexError, 	"MArgumentIndexError", 		"An error was caused by an incorrect argument index." },
-			{ LLErrorCode::MArgumentRawArrayError, 	"MArgumentRawArrayError", 	"An error was caused by a RawArray argument." },
-			{ LLErrorCode::MArgumentTensorError, 	"MArgumentTensorError", 	"An error was caused by a Tensor argument." },
-			{ LLErrorCode::MArgumentImageError, 	"MArgumentImageError", 		"An error was caused by an Image argument." },
+			// ErrorManager errors:
+			{ LLErrorName::ErrorManagerThrowIdError,	"An exception was thrown with a non-existent id." },
+			{ LLErrorName::ErrorManagerThrowNameError,	"An exception was thrown with a non-existent name." },
+			{ LLErrorName::ErrorManagerCreateNameError,	"An exception was registered with a name that already exists." },
 
-			// ErrorManager errors: [-151 : -200]
-			{ LLErrorCode::ErrorManagerThrowIdError, 	"ErrorManagerThrowIdError", 	"An exception was thrown with a non-existent id." },
-			{ LLErrorCode::ErrorManagerThrowNameError, 	"ErrorManagerThrowNameError", 	"An exception was thrown with a non-existent name." },
-			{ LLErrorCode::ErrorManagerCreateNameError, "ErrorManagerCreateNameError", 	"An exception was registered with a name that already exists." },
+			// RawArray errors:
+			{ LLErrorName::RawArrayInitError,	"Failed to construct RawArray." },
+			{ LLErrorName::RawArrayNewError,	"Failed to create a new MRawArray." },
+			{ LLErrorName::RawArrayCloneError,	"Failed to clone MRawArray." },
+			{ LLErrorName::RawArrayTypeError,	"An error was caused by an MRawArray type mismatch." },
+			{ LLErrorName::RawArraySizeError,	"An error was caused by an incorrect RawArray size." },
+			{ LLErrorName::RawArrayIndexError,	"An error was caused by attempting to access a nonexistent RawArray element." },
 
-			// RawArray errors: [-201 : -300]
-			{ LLErrorCode::RawArrayInitError, 	"RawArrayInitError", 	"Failed to construct RawArray." },
-			{ LLErrorCode::RawArrayNewError, 	"RawArrayNewError", 	"Failed to create a new MRawArray." },
-			{ LLErrorCode::RawArrayCloneError, 	"RawArrayCloneError", 	"Failed to clone MRawArray." },
-			{ LLErrorCode::RawArrayTypeError, 	"RawArrayTypeError", 	"An error was caused by an MRawArray type mismatch." },
-			{ LLErrorCode::RawArraySizeError, 	"RawArraySizeError", 	"An error was caused by an incorrect RawArray size." },
-			{ LLErrorCode::RawArrayIndexError,	"RawArrayIndexError", 	"An error was caused by attempting to access a nonexistent RawArray element." },
+			// MTensor errors:
+			{ LLErrorName::TensorInitError,		"Failed to construct Tensor." },
+			{ LLErrorName::TensorNewError,		"Failed to create a new MTensor." },
+			{ LLErrorName::TensorCloneError,	"Failed to clone MTensor." },
+			{ LLErrorName::TensorTypeError,		"An error was caused by an MTensor type mismatch." },
+			{ LLErrorName::TensorSizeError,		"An error was caused by an incorrect Tensor size." },
+			{ LLErrorName::TensorIndexError,	"An error was caused by attempting to access a nonexistent Tensor element." },
 
-			// MTensor errors: [-301 : -400]
-			{ LLErrorCode::TensorInitError, 	"TensorInitError", 	"Failed to construct Tensor." },
-			{ LLErrorCode::TensorNewError, 		"TensorNewError", 	"Failed to create a new MTensor." },
-			{ LLErrorCode::TensorCloneError, 	"TensorCloneError", "Failed to clone MTensor." },
-			{ LLErrorCode::TensorTypeError, 	"TensorTypeError", 	"An error was caused by an MTensor type mismatch." },
-			{ LLErrorCode::TensorSizeError, 	"TensorSizeError", 	"An error was caused by an incorrect Tensor size." },
-			{ LLErrorCode::TensorIndexError, 	"TensorIndexError", "An error was caused by attempting to access a nonexistent Tensor element." },
+			// MImage errors:
+			{ LLErrorName::ImageInitError,	"Failed to construct Image." },
+			{ LLErrorName::ImageNewError,	"Failed to create a new MImage." },
+			{ LLErrorName::ImageCloneError,	"Failed to clone MImage." },
+			{ LLErrorName::ImageTypeError,	"An error was caused by an MImage type mismatch." },
+			{ LLErrorName::ImageSizeError,	"An error was caused by an incorrect Image size." },
+			{ LLErrorName::ImageIndexError,	"An error was caused by attempting to access a nonexistent Image element." },
 
-			// MImage errors: [-401 : -500]
-			{ LLErrorCode::ImageInitError, 	"ImageInitError", 	"Failed to construct Image." },
-			{ LLErrorCode::ImageNewError, 	"ImageNewError", 	"Failed to create a new MImage." },
-			{ LLErrorCode::ImageCloneError, "ImageCloneError", 	"Failed to clone MImage." },
-			{ LLErrorCode::ImageTypeError, 	"ImageTypeError", 	"An error was caused by an MImage type mismatch." },
-			{ LLErrorCode::ImageSizeError, 	"ImageSizeError", 	"An error was caused by an incorrect Image size." },
-			{ LLErrorCode::ImageIndexError, "ImageIndexError", 	"An error was caused by attempting to access a nonexistent Image element." },
-
-			// MathLink errors: [-501 : -600]
-			{ LLErrorCode::MLTestHeadError, 		"MLTestHeadError", 		"MLTestHead failed (wrong head or number of arguments)." },
-			{ LLErrorCode::MLPutSymbolError, 		"MLPutSymbolError", 	"MLPutSymbol failed." },
-			{ LLErrorCode::MLPutFunctionError, 		"MLPutFunctionError", 	"MLPutFunction failed." },
-			{ LLErrorCode::MLTestSymbolError, 		"MLTestSymbolError", 	"MLTestSymbol failed (different symbol on the link than expected)." },
-			{ LLErrorCode::MLWrongSymbolForBool, 	"MLWrongSymbolForBool", "Tried to read something else than \"True\" or \"False\" as boolean." },
-			{ LLErrorCode::MLGetListError, 			"MLGetListError", 		"Could not get list from MathLink." },
-			{ LLErrorCode::MLGetScalarError, 		"MLGetScalarError", 	"Could not get scalar from MathLink." },
-			{ LLErrorCode::MLGetStringError, 		"MLGetStringError", 	"Could not get string from MathLink." },
-			{ LLErrorCode::MLGetArrayError, 		"MLGetArrayError", 		"Could not get array from MathLink." },
-			{ LLErrorCode::MLPutListError, 			"MLPutListError", 		"Could not send list via MathLink." },
-			{ LLErrorCode::MLPutScalarError, 		"MLPutScalarError", 	"Could not send scalar via MathLink." },
-			{ LLErrorCode::MLPutStringError, 		"MLPutStringError", 	"Could not send string via MathLink." },
-			{ LLErrorCode::MLPutArrayError, 		"MLPutArrayError", 		"Could not send array via MathLink." },
-			{ LLErrorCode::MLGetSymbolError, 		"MLGetSymbolError", 	"MLGetSymbol failed." },
-			{ LLErrorCode::MLGetFunctionError, 		"MLGetFunctionError", 	"MLGetFunction failed." },
-			{ LLErrorCode::MLPacketHandleError,		"MLPacketHandleError", 	"One of the packet handling functions failed." },
-			{ LLErrorCode::MLFlowControlError,		"MLFlowControlError",	"One of the flow control functions failed." }
+			// MathLink errors:
+			{ LLErrorName::MLTestHeadError,			"MLTestHead failed (wrong head or number of arguments)." },
+			{ LLErrorName::MLPutSymbolError,		"MLPutSymbol failed." },
+			{ LLErrorName::MLPutFunctionError,		"MLPutFunction failed." },
+			{ LLErrorName::MLTestSymbolError,		"MLTestSymbol failed (different symbol on the link than expected)." },
+			{ LLErrorName::MLWrongSymbolForBool,	"Tried to read something else than \"True\" or \"False\" as boolean." },
+			{ LLErrorName::MLGetListError,			"Could not get list from MathLink." },
+			{ LLErrorName::MLGetScalarError,		"Could not get scalar from MathLink." },
+			{ LLErrorName::MLGetStringError,		"Could not get string from MathLink." },
+			{ LLErrorName::MLGetArrayError,			"Could not get array from MathLink." },
+			{ LLErrorName::MLPutListError,			"Could not send list via MathLink." },
+			{ LLErrorName::MLPutScalarError,		"Could not send scalar via MathLink." },
+			{ LLErrorName::MLPutStringError,		"Could not send string via MathLink." },
+			{ LLErrorName::MLPutArrayError,			"Could not send array via MathLink." },
+			{ LLErrorName::MLGetSymbolError,		"MLGetSymbol failed." },
+			{ LLErrorName::MLGetFunctionError,		"MLGetFunction failed." },
+			{ LLErrorName::MLPacketHandleError,		"One of the packet handling functions failed." },
+			{ LLErrorName::MLFlowControlError,		"One of the flow control functions failed." }
 		});
 		return errMap;
 	}
 
-	auto ErrorManager::registerLLUErrors(std::initializer_list<LibraryLinkError> initList) -> ErrorMap {
+	int& ErrorManager::nextErrorId() {
+		static int id = LLErrorCode::VersionError;
+		return id;
+	}
+
+	auto ErrorManager::registerLLUErrors(std::initializer_list<ErrorStringData> initList) -> ErrorMap {
 		ErrorMap e;
 		for (auto&& err : initList) {
-			e.insert({ err.name(), std::move(err)});
+			e.emplace(err.first, LibraryLinkError { nextErrorId()--, err.first, err.second });
 		}
 		return e;
 	}
 
-	void ErrorManager::registerPacletErrors(const std::vector<std::pair<std::string, std::string>>& errs) {
+	void ErrorManager::registerPacletErrors(const std::vector<ErrorStringData>& errs) {
 		for (auto&& err : errs) {
-			set(err.first, err.second);
+			set(err);
 		}
 	}
 
-	void ErrorManager::registerPacletErrors(std::vector<std::pair<std::string, std::string>>&& errs) {
-		for (auto&& err : errs) {
-			set(std::move(err.first), std::move(err.second));
-		}
-	}
-
-	void ErrorManager::registerErrorsAtIndex(int startIdx, const std::vector<std::pair<std::string, std::string>>& errs) {
-		for (auto&& err : errs) {
-			errors().emplace(err.first, LibraryLinkError { startIdx--, err.first, err.second });
-		}
-	}
-
-	void ErrorManager::set(std::string errorName, std::string errorData) {
-		/// Helper data to speed up error registering
-		static const auto insertionHint = errors().find("MArgumentInitError");
-		/// Id that will be assigned to the next registered error.
-		static int nextErrorId = LLErrorCode::NoError - 1;
-
-		auto elem = errors().emplace_hint(insertionHint, std::make_pair(errorName, LibraryLinkError { nextErrorId, errorName, errorData }));
-		if (elem->second.id() != nextErrorId) {
+	void ErrorManager::set(const ErrorStringData& errorData) {
+		auto& errorMap = errors();
+		auto elem = errorMap.emplace(errorData.first, LibraryLinkError { nextErrorId()--, errorData.first, errorData.second });
+		if (!elem.second) {
 			throw errors().find("ErrorManagerCreateNameError")->second;
 		}
-		nextErrorId--;
-	}
-
-	void ErrorManager::throwException(int errorId) {
-		throw findError(errorId);
-	}
-
-	void ErrorManager::throwException(int errorId, const std::string& debugInfo) {
-		auto exception = findError(errorId);
-		exception.setDebugInfo(debugInfo);
-		throw exception;
 	}
 
 	void ErrorManager::throwException(const std::string& errorName) {
@@ -196,5 +169,69 @@ namespace LibraryLinkUtils {
 		}
 		return err;
 	}
+
+
+#define LLU_DEFINE_ERROR_NAME(errorIdentifier) const std::string errorIdentifier = #errorIdentifier
+
+	namespace LLErrorName {
+		LLU_DEFINE_ERROR_NAME(VersionError);
+		LLU_DEFINE_ERROR_NAME(FunctionError);
+		LLU_DEFINE_ERROR_NAME(MemoryError);
+		LLU_DEFINE_ERROR_NAME(NumericalError);
+		LLU_DEFINE_ERROR_NAME(DimensionsError);
+		LLU_DEFINE_ERROR_NAME(RankError);
+		LLU_DEFINE_ERROR_NAME(TypeError);
+		LLU_DEFINE_ERROR_NAME(NoError);
+
+		LLU_DEFINE_ERROR_NAME(MArgumentInitError);
+		LLU_DEFINE_ERROR_NAME(MArgumentIndexError);
+		LLU_DEFINE_ERROR_NAME(MArgumentRawArrayError);
+		LLU_DEFINE_ERROR_NAME(MArgumentTensorError);
+		LLU_DEFINE_ERROR_NAME(MArgumentImageError);
+
+		LLU_DEFINE_ERROR_NAME(ErrorManagerThrowIdError);
+		LLU_DEFINE_ERROR_NAME(ErrorManagerThrowNameError);
+		LLU_DEFINE_ERROR_NAME(ErrorManagerCreateNameError);
+
+		LLU_DEFINE_ERROR_NAME(RawArrayInitError);
+		LLU_DEFINE_ERROR_NAME(RawArrayNewError);
+		LLU_DEFINE_ERROR_NAME(RawArrayCloneError);
+		LLU_DEFINE_ERROR_NAME(RawArrayTypeError);
+		LLU_DEFINE_ERROR_NAME(RawArraySizeError);
+		LLU_DEFINE_ERROR_NAME(RawArrayIndexError);
+
+		LLU_DEFINE_ERROR_NAME(TensorInitError);
+		LLU_DEFINE_ERROR_NAME(TensorNewError);
+		LLU_DEFINE_ERROR_NAME(TensorCloneError);
+		LLU_DEFINE_ERROR_NAME(TensorTypeError);
+		LLU_DEFINE_ERROR_NAME(TensorSizeError);
+		LLU_DEFINE_ERROR_NAME(TensorIndexError);
+
+		LLU_DEFINE_ERROR_NAME(ImageInitError);
+		LLU_DEFINE_ERROR_NAME(ImageNewError);
+		LLU_DEFINE_ERROR_NAME(ImageCloneError);
+		LLU_DEFINE_ERROR_NAME(ImageTypeError);
+		LLU_DEFINE_ERROR_NAME(ImageSizeError);
+		LLU_DEFINE_ERROR_NAME(ImageIndexError);
+
+		LLU_DEFINE_ERROR_NAME(MLTestHeadError);
+		LLU_DEFINE_ERROR_NAME(MLPutSymbolError);
+		LLU_DEFINE_ERROR_NAME(MLPutFunctionError);
+		LLU_DEFINE_ERROR_NAME(MLTestSymbolError);
+		LLU_DEFINE_ERROR_NAME(MLWrongSymbolForBool);
+		LLU_DEFINE_ERROR_NAME(MLGetListError);
+		LLU_DEFINE_ERROR_NAME(MLGetScalarError);
+		LLU_DEFINE_ERROR_NAME(MLGetStringError);
+		LLU_DEFINE_ERROR_NAME(MLGetArrayError);
+		LLU_DEFINE_ERROR_NAME(MLPutListError);
+		LLU_DEFINE_ERROR_NAME(MLPutScalarError);
+		LLU_DEFINE_ERROR_NAME(MLPutStringError);
+		LLU_DEFINE_ERROR_NAME(MLPutArrayError);
+		LLU_DEFINE_ERROR_NAME(MLGetSymbolError);
+		LLU_DEFINE_ERROR_NAME(MLGetFunctionError);
+		LLU_DEFINE_ERROR_NAME(MLPacketHandleError);
+		LLU_DEFINE_ERROR_NAME(MLFlowControlError);
+	}
+
 } /* namespace LibraryLinkUtils */
 

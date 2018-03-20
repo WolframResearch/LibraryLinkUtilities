@@ -26,83 +26,90 @@ namespace LibraryLinkUtils {
 
 
 	/**
-	 * @brief Error codes predefined in LibraryLinkUtilities
+	 * @brief Error codes predefined in Library Link
 	 */
 	namespace LLErrorCode {
 
 		// Original LibraryLink error codes:
-		constexpr int VersionError = 7;	///< same as LIBRARY_VERSION_ERROR
+		constexpr int VersionError = 7;		///< same as LIBRARY_VERSION_ERROR
 		constexpr int FunctionError = 6; 	///< same as LIBRARY_FUNCTION_ERROR
-		constexpr int MemoryError = 5; 	///< same as LIBRARY_MEMORY_ERROR
+		constexpr int MemoryError = 5; 		///< same as LIBRARY_MEMORY_ERROR
 		constexpr int NumericalError = 4; 	///< same as LIBRARY_NUMERICAL_ERROR
-		constexpr int DimensionsError = 3; ///< same as LIBRARY_DIMENSIONS_ERROR
+		constexpr int DimensionsError = 3; 	///< same as LIBRARY_DIMENSIONS_ERROR
 		constexpr int RankError = 2; 		///< same as LIBRARY_RANK_ERROR
 		constexpr int TypeError = 1; 		///< same as LIBRARY_TYPE_ERROR
-		constexpr int NoError = 0; 		///< same as LIBRARY_NO_ERROR
+		constexpr int NoError = 0; 			///< same as LIBRARY_NO_ERROR
+	}
 
-		// Reserved for use in paclets:
-		// -1
-		// ...
-		// -100
+	/**
+	 * @brief Names of all errors used across LLU
+	 */
+	namespace LLErrorName {
 
-		// MArgument errors: [-101 : -150]
-		constexpr int MArgumentInitError = -101; 		///< MArgumentManager construction failed
-		constexpr int MArgumentIndexError = -102; 		///< wrong argument index
-		constexpr int MArgumentRawArrayError = -103; 	///< error involving RawArray argument
-		constexpr int MArgumentTensorError = -104; 		///< error involving Tensor argument
-		constexpr int MArgumentImageError = -105; 		///< error involving Image argument
+		// Original LibraryLink error codes:
+		extern const std::string VersionError;		///< same as LIBRARY_VERSION_ERROR
+		extern const std::string FunctionError; 	///< same as LIBRARY_FUNCTION_ERROR
+		extern const std::string MemoryError; 		///< same as LIBRARY_MEMORY_ERROR
+		extern const std::string NumericalError; 	///< same as LIBRARY_NUMERICAL_ERROR
+		extern const std::string DimensionsError;	///< same as LIBRARY_DIMENSIONS_ERROR
+		extern const std::string RankError; 		///< same as LIBRARY_RANK_ERROR
+		extern const std::string TypeError; 		///< same as LIBRARY_TYPE_ERROR
+		extern const std::string NoError; 			///< same as LIBRARY_NO_ERROR
 
-		// ErrorManager errors: [-151 : -200]
-		constexpr int ErrorManagerThrowIdError = -151; 		///< trying to throw exception with non-existent id
-		constexpr int ErrorManagerThrowNameError = -152; 	///< trying to throw exception with non-existent name
-		constexpr int ErrorManagerCreateNameError = -153; 	///< trying to register exception with already existing name
+		// MArgument errors:
+		extern const std::string MArgumentInitError; 		///< MArgumentManager construction failed
+		extern const std::string MArgumentIndexError; 		///< wrong argument index
+		extern const std::string MArgumentRawArrayError; 	///< error involving RawArray argument
+		extern const std::string MArgumentTensorError; 		///< error involving Tensor argument
+		extern const std::string MArgumentImageError; 		///< error involving Image argument
 
-		// RawArray errors: [-201 : -300]
-		constexpr int RawArrayInitError = -201; 	///< construction of RawArray failed
-		constexpr int RawArrayNewError = -202; 		///< creating new MRawArray failed
-		constexpr int RawArrayCloneError = -203; 	///< MRawArray cloning failed
-		constexpr int RawArrayTypeError = -204; 	///< MRawArray type mismatch
-		constexpr int RawArraySizeError = -205; 	///< wrong assumption about RawArray size
-		constexpr int RawArrayIndexError = -206; 	///< trying to access non-existing element
+		// ErrorManager errors:
+		extern const std::string ErrorManagerThrowIdError; 		///< trying to throw exception with non-existent id
+		extern const std::string ErrorManagerThrowNameError; 	///< trying to throw exception with non-existent name
+		extern const std::string ErrorManagerCreateNameError; 	///< trying to register exception with already existing name
 
-		// MTensor errors: [-301 : -400]
-		constexpr int TensorInitError = -301; 		///< Tensor construction failed
-		constexpr int TensorNewError = -302; 		///< creating new MTensor failed
-		constexpr int TensorCloneError = -303; 		///< MTensor cloning failed
-		constexpr int TensorTypeError = -304; 		///< Tensor type mismatch
-		constexpr int TensorSizeError = -305; 		///< wrong assumption about Tensor size
-		constexpr int TensorIndexError = -306; 		///< trying to access non-existing element
+		// RawArray errors:
+		extern const std::string RawArrayInitError; 	///< construction of RawArray failed
+		extern const std::string RawArrayNewError; 		///< creating new MRawArray failed
+		extern const std::string RawArrayCloneError; 	///< MRawArray cloning failed
+		extern const std::string RawArrayTypeError; 	///< MRawArray type mismatch
+		extern const std::string RawArraySizeError; 	///< wrong assumption about RawArray size
+		extern const std::string RawArrayIndexError; 	///< trying to access non-existing element
 
-		// MImage errors: [-401 : -500]
-		constexpr int ImageInitError = -401; 		///< Image construction failed
-		constexpr int ImageNewError = -402; 		///< creating new MImage failed
-		constexpr int ImageCloneError = -403; 		///< MImage cloning failed
-		constexpr int ImageTypeError = -404; 		///< Image type mismatch
-		constexpr int ImageSizeError = -405; 		///< wrong assumption about Image size
-		constexpr int ImageIndexError = -406; 		///< trying to access non-existing element
+		// MTensor errors:
+		extern const std::string TensorInitError; 		///< Tensor construction failed
+		extern const std::string TensorNewError; 		///< creating new MTensor failed
+		extern const std::string TensorCloneError; 		///< MTensor cloning failed
+		extern const std::string TensorTypeError; 		///< Tensor type mismatch
+		extern const std::string TensorSizeError; 		///< wrong assumption about Tensor size
+		extern const std::string TensorIndexError; 		///< trying to access non-existing element
 
-		// MathLink errors: [-501 : -600]
-		constexpr int MLTestHeadError = -501; 		///< MLTestHead failed (wrong head or number of arguments)
-		constexpr int MLPutSymbolError = -502; 		///< MLPutSymbol failed
-		constexpr int MLPutFunctionError = -503; 	///< MLPutFunction failed
-		constexpr int MLTestSymbolError = -504;		///< MLTestSymbol failed (different symbol on the link than expected)
-		constexpr int MLWrongSymbolForBool = -505;	///< Tried to read something else than "True" or "False" as boolean
-		constexpr int MLGetListError = -506;		///< Could not get list from MathLink
-		constexpr int MLGetScalarError = -507;		///< Could not get scalar from MathLink
-		constexpr int MLGetStringError = -508;		///< Could not get string from MathLink
-		constexpr int MLGetArrayError = -509;		///< Could not get array from MathLink
-		constexpr int MLPutListError = -510;		///< Could not send list via MathLink
-		constexpr int MLPutScalarError = -511;		///< Could not send scalar via MathLink
-		constexpr int MLPutStringError = -512;		///< Could not send string via MathLink
-		constexpr int MLPutArrayError = -513;		///< Could not send array via MathLink
-		constexpr int MLGetSymbolError = -514; 		///< MLGetSymbol failed
-		constexpr int MLGetFunctionError = -515; 	///< MLGetFunction failed
-		constexpr int MLPacketHandleError = -516;	///< One of the packet handling functions failed
-		constexpr int MLFlowControlError = -517;	///< One of the flow control functions failed
+		// MImage errors:
+		extern const std::string ImageInitError; 		///< Image construction failed
+		extern const std::string ImageNewError; 		///< creating new MImage failed
+		extern const std::string ImageCloneError; 		///< MImage cloning failed
+		extern const std::string ImageTypeError; 		///< Image type mismatch
+		extern const std::string ImageSizeError; 		///< wrong assumption about Image size
+		extern const std::string ImageIndexError; 		///< trying to access non-existing element
 
-
-		// MDevices errors: [-1001 : -2000]
-		// see MDevices/Framework/Utilities/ErrorCodes.h
+		// MathLink errors:
+		extern const std::string MLTestHeadError; 		///< MLTestHead failed (wrong head or number of arguments)
+		extern const std::string MLPutSymbolError; 		///< MLPutSymbol failed
+		extern const std::string MLPutFunctionError; 	///< MLPutFunction failed
+		extern const std::string MLTestSymbolError;		///< MLTestSymbol failed (different symbol on the link than expected)
+		extern const std::string MLWrongSymbolForBool;	///< Tried to read something else than "True" or "False" as boolean
+		extern const std::string MLGetListError;		///< Could not get list from MathLink
+		extern const std::string MLGetScalarError;		///< Could not get scalar from MathLink
+		extern const std::string MLGetStringError;		///< Could not get string from MathLink
+		extern const std::string MLGetArrayError;		///< Could not get array from MathLink
+		extern const std::string MLPutListError;		///< Could not send list via MathLink
+		extern const std::string MLPutScalarError;		///< Could not send scalar via MathLink
+		extern const std::string MLPutStringError;		///< Could not send string via MathLink
+		extern const std::string MLPutArrayError;		///< Could not send array via MathLink
+		extern const std::string MLGetSymbolError; 		///< MLGetSymbol failed
+		extern const std::string MLGetFunctionError; 	///< MLGetFunction failed
+		extern const std::string MLPacketHandleError;	///< One of the packet handling functions failed
+		extern const std::string MLFlowControlError;	///< One of the flow control functions failed
 	}
 
 	/**
@@ -117,6 +124,10 @@ namespace LibraryLinkUtils {
 	public:
 		using IdType = int;
 
+		/**
+		 * Set debug info
+		 * @param dbg - additional information helpful in debugging
+		 */
 		void setDebugInfo(std::string dbg) {
 			debugInfo = std::move(dbg);
 		}
@@ -180,11 +191,14 @@ namespace LibraryLinkUtils {
 	 * @class	ErrorManager
 	 * @brief	"Static" class responsible for error registration and throwing
 	 *
-	 * ErrorManager holds a map with all errors that may be thrown from paclet code. These are: LLU errors (with codes between 0 and 7 or smaller than -100)
-	 * plus paclet-specific errors which should be registered (for example in WolframLibrary_initialize) using registerPacletErrors function.
+	 * ErrorManager holds a map with all errors that may be thrown from paclet code. These are: LLU errors, framework errors (e.g. MDevices)
+	 * and paclet-specific errors which should be registered (for example in WolframLibrary_initialize) using registerPacletErrors function.
 	 * Developers must never throw LibraryLinkErrors directly, instead they should use one of ErrorManager::throwException overloads.
 	 **/
 	class ErrorManager {
+	public:
+		using ErrorStringData = std::pair<std::string, std::string>;
+
 	public:
 
 		/**
@@ -196,39 +210,7 @@ namespace LibraryLinkUtils {
 		 * @brief 	Function used to register paclet-specific errors.
 		 * @param 	errors - a list of pairs: {"ErrorName", "Short string with error description"}
 		 */
-		static void registerPacletErrors(const std::vector<std::pair<std::string, std::string>>& errors);
-		static void registerPacletErrors(std::vector<std::pair<std::string, std::string>>&& errors);
-
-		/**
-		 * @brief 	Register errors with error codes starting from specific index.
-		 * @param 	startIdx - error code of the first error to be registered
-		 * @param 	errors - errors to be registered in the static error map
-		 *
-		 * @warning	Use registerPacletErrors instead of this function, unless you have a very good reason to do otherwise.
-		 */
-		static void registerErrorsAtIndex(int startIdx, const std::vector<std::pair<std::string, std::string>>& errors);
-
-		/**
-		 * @brief 	Use this function to add new entry to the map of registered errors.
-		 * @param 	errorName - string with error name
-		 * @param 	errorData - string with error description
-		 */
-		static void set(std::string errorName, std::string errorData);
-
-		/**
-		 * @brief 	Throw exception with given id.
-		 * @param 	errorId - id of error to be thrown
-		 * @note	Developers are not allowed to make any assumptions about error ids of paclet-specific errors other than that they are in range -1 : -100.
-		 * So this overload of throwException should be only used to throw LLU-specific exceptions whose ids are known at compile time and documented.
-		 */
-		static void throwException(int errorId);
-
-		/**
-		 * @brief 	Throw exception with given id and some additional debug information.
-		 * @param 	errorId - id of error to be thrown
-		 * @param 	debugInfo - additional message with debug info, this message will not be passed to top-level Failure object
-		 */
-		static void throwException(int errorId, const std::string& debugInfo);
+		static void registerPacletErrors(const std::vector<ErrorStringData>& errors);
 
 		/**
 		 * @brief 	Throw exception with given name.
@@ -242,19 +224,6 @@ namespace LibraryLinkUtils {
 		 * @param	debugInfo - additional message with debug info, this message will not be passed to top-level Failure object
 		 */
 		static void throwException(const std::string& errorName, const std::string& debugInfo);
-
-		/**
-		 * @brief 	Throw exception of given class that carries the error with given code.
-		 *
-		 * This is useful if you want to throw custom exception classes from your paclet and still see the nice Failure objects in top-level.
-		 *
-		 * @tparam	Error - custom exception class it must define a constructor that takes a LibraryLinkError as first parameter
-		 * but it doesn't have to derive from LibraryLinkError
-		 * @param 	errorId - id of error to be thrown
-		 * @param 	args - additional arguments that will be perfectly forwarded to the constructor of Error class
-		 */
-		template<class Error, typename... Args>
-		static void throwCustomException(int errorId, Args&&... args);
 
 		/**
 		 * @brief 	Throw exception of given class that carries the error with given name.
@@ -285,6 +254,12 @@ namespace LibraryLinkUtils {
 
 	private:
 		/**
+		 * @brief 	Use this function to add new entry to the map of registered errors.
+		 * @param 	errorData - a pair of strings: error name + error description
+		 */
+		static void set(const ErrorStringData& errorData);
+
+		/**
 		 * @brief Find error by id.
 		 * @param errorId - error id
 		 * @return const& to the desired error
@@ -303,16 +278,14 @@ namespace LibraryLinkUtils {
 		 * @param initList - list of errors used internally by LLU
 		 * @return reference to static error map
 		 */
-		static ErrorMap registerLLUErrors(std::initializer_list<LibraryLinkError> initList);
+		static ErrorMap registerLLUErrors(std::initializer_list<ErrorStringData> initList);
 
 		/// Static map of registered errors
 		static ErrorMap& errors();
-	};
 
-	template<class Error, typename... Args>
-	void ErrorManager::throwCustomException(int errorId, Args&&... args) {
-		throw Error(findError(errorId), std::forward<Args>(args)...);
-	}
+		/// Id that will be assigned to the next registered error.
+		static int& nextErrorId();
+	};
 
 	template<class Error, typename... Args>
 	void ErrorManager::throwCustomException(const std::string& errorName, Args&&... args) {
