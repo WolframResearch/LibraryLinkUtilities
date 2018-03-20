@@ -22,15 +22,6 @@ namespace LibraryLinkUtils {
 		 * @brief 		Checks if MathLink operation was successful and throws appropriate exception otherwise
 		 * @param[in] 	m - low-level object of type MLINK received from LibraryLink
 		 * @param[in] 	statusOk - status code return from a MathLink function
-		 * @param[in] 	errorCode - which error code to put in the exception if MathLink function failed
-		 * @param[in] 	debugInfo - additional info to be attached to the exception
-		 */
-		void checkError(MLINK m, int statusOk, int errorCode, const std::string& debugInfo = "");
-
-		/**
-		 * @brief 		Checks if MathLink operation was successful and throws appropriate exception otherwise
-		 * @param[in] 	m - low-level object of type MLINK received from LibraryLink
-		 * @param[in] 	statusOk - status code return from a MathLink function
 		 * @param[in] 	errorName - what error name to put in the exception if MathLink function failed
 		 * @param[in] 	debugInfo - additional info to be attached to the exception
 		 */

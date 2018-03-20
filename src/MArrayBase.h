@@ -40,8 +40,8 @@ namespace LibraryLinkUtils {
 		/**
 		 * 	@brief		Constructs uninitialized container with given dimensions
 		 *	@param[in]	dims - list of MArray dimensions
-		 *	@throws		LLErrorCode::DimensionsError - if \c dims are invalid
-		 *	@throws		LLErrorCode::FunctionError - if any of Wolfram*Library structures was not initialized
+		 *	@throws		LLErrorName::DimensionsError - if \c dims are invalid
+		 *	@throws		LLErrorName::FunctionError - if any of Wolfram*Library structures was not initialized
 		 **/
 		MArrayBase(std::initializer_list<mint> dims);
 
@@ -49,8 +49,8 @@ namespace LibraryLinkUtils {
 		 * 	@brief		Constructs uninitialized container with given dimensions
 		 *	@param[in]	dims - container with MArray dimensions
 		 *	@tparam		Container - any type of container that has member \b value_type and this type is convertible to mint
-		 *	@throws		LLErrorCode::DimensionsError - if \c dims are invalid
-		 *	@throws		LLErrorCode::FunctionError - if any of Wolfram*Library structures was not initialized
+		 *	@throws		LLErrorName::DimensionsError - if \c dims are invalid
+		 *	@throws		LLErrorName::FunctionError - if any of Wolfram*Library structures was not initialized
 		 **/
 		template<
 			class Container,
@@ -169,25 +169,25 @@ namespace LibraryLinkUtils {
 
 		/**
 		 *   @brief 	Throw exception relating to container initialization
-		 *   @throws 	LibraryLinkError(LLErrorCode::FunctionError)
+		 *   @throws 	LibraryLinkError(LLErrorName::FunctionError)
 		 **/
 		virtual void initError() const {
-			ErrorManager::throwException(LLErrorCode::FunctionError);
+			ErrorManager::throwException(LLErrorName::FunctionError);
 		}
 
 		/**
 		 *   @brief 	Throw exception relating to container size
-		 *   @throws 	LibraryLinkError(LLErrorCode::DimensionsError)
+		 *   @throws 	LibraryLinkError(LLErrorName::DimensionsError)
 		 **/
 		virtual void sizeError() const {
-			ErrorManager::throwException(LLErrorCode::DimensionsError);
+			ErrorManager::throwException(LLErrorName::DimensionsError);
 		}
 
 	private:
 		/**
 		 *	@brief 		Check if container size will fit into \b mint
 		 *	@param[in]	v - a container
-		 *	@throws		LLErrorCode::DimensionsError - if \c v is too big
+		 *	@throws		LLErrorName::DimensionsError - if \c v is too big
 		 **/
 		template<typename Container>
 		mint checkContainerSize(Container&& v) const;
@@ -195,7 +195,7 @@ namespace LibraryLinkUtils {
 		/**
 		 *	@brief 		Check if initializer list size will fit into \b mint
 		 *	@param[in]	v - an initializer list
-		 *	@throws		LLErrorCode::DimensionsError - if \c v is too big
+		 *	@throws		LLErrorName::DimensionsError - if \c v is too big
 		 **/
 		mint checkContainerSize(std::initializer_list<mint> v) const;
 
@@ -228,7 +228,7 @@ namespace LibraryLinkUtils {
 			return (d > 0) && (d <= (std::numeric_limits<mint>::max)());
 		});
 		if (!dimsOk)
-			ErrorManager::throwException(LLErrorCode::DimensionsError, "Invalid input vector with array dimensions");
+			ErrorManager::throwException(LLErrorName::DimensionsError, "Invalid input vector with array dimensions");
 		dims.reserve(depth);
 		std::copy(std::begin(dimensions), std::end(dimensions), std::back_inserter(dims));
 		flattenedLength = totalLengthFromDims();

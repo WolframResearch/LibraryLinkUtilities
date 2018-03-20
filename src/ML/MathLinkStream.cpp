@@ -36,7 +36,7 @@ namespace LibraryLinkUtils {
 	MathLinkStream& MathLinkStream::operator<<(const ML::Symbol& s) {
 		check(
 			MLPutSymbol(m, s.getHead().c_str()),
-			LLErrorCode::MLPutSymbolError,
+			LLErrorName::MLPutSymbolError,
 			"Cannot put symbol: \"" + s.getHead() + "\""
 		);
 		return *this;
@@ -45,7 +45,7 @@ namespace LibraryLinkUtils {
 	MathLinkStream& MathLinkStream::operator<<(const ML::Function& f) {
 		check(
 			MLPutFunction(m, f.getHead().c_str(), f.getArgc()),
-			LLErrorCode::MLPutFunctionError,
+			LLErrorName::MLPutFunctionError,
 			"Cannot put function: \"" + f.getHead() + "\" with " + std::to_string(f.getArgc()) + " arguments"
 		);
 		return *this;
@@ -54,7 +54,7 @@ namespace LibraryLinkUtils {
 	MathLinkStream& MathLinkStream::operator<<(const ML::Missing& f) {
 		check(
 			MLPutFunction(m, f.getHead().c_str(), 1), //f.getArgc() could be 0 but we still want to send f.reason, even if it's an empty string
-			LLErrorCode::MLPutFunctionError,
+			LLErrorName::MLPutFunctionError,
 			"Cannot put function: \"" + f.getHead() + "\" with 1 argument"
 		);
 		*this << ML::PutAsUTF8(f.why());
@@ -75,15 +75,15 @@ namespace LibraryLinkUtils {
 		return *this;
 	}
 
-	void MathLinkStream::check(int statusOk, int errorCode, const std::string& debugInfo) {
-		ML::checkError(m, statusOk, errorCode, debugInfo);
+	void MathLinkStream::check(int statusOk, const std::string& errorName, const std::string& debugInfo) {
+		ML::checkError(m, statusOk, errorName, debugInfo);
 	}
 
 	int MathLinkStream::testHead(const std::string& head) {
 		int argcount;
 		check(
 			MLTestHead(m, head.c_str(), &argcount),
-			LLErrorCode::MLTestHeadError,
+			LLErrorName::MLTestHeadError,
 			"Expected \"" + head + "\""
 		);
 		return argcount;
@@ -92,7 +92,7 @@ namespace LibraryLinkUtils {
 	void MathLinkStream::testHead(const std::string& head, int argc) {
 		int argcount = testHead(head);
 		if (argc != argcount) {
-			ErrorManager::throwException(LLErrorCode::MLTestHeadError, "Expected " + std::to_string(argc) + " arguments but got " + std::to_string(argcount));
+			ErrorManager::throwException(LLErrorName::MLTestHeadError, "Expected " + std::to_string(argc) + " arguments but got " + std::to_string(argcount));
 		}
 	}
 
@@ -103,7 +103,7 @@ namespace LibraryLinkUtils {
 	MathLinkStream& MathLinkStream::operator>>(const ML::Symbol& s) {
 		check(
 			MLTestSymbol(m, s.getHead().c_str()),
-			LLErrorCode::MLTestSymbolError,
+			LLErrorName::MLTestSymbolError,
 			"Cannot get symbol: \"" + s.getHead() + "\""
 		);
 		return *this;
@@ -113,14 +113,14 @@ namespace LibraryLinkUtils {
 		if (!s.getHead().empty()) {
 			check(
 				MLTestSymbol(m, s.getHead().c_str()),
-				LLErrorCode::MLTestSymbolError,
+				LLErrorName::MLTestSymbolError,
 				"Cannot get symbol: \"" + s.getHead() + "\""
 			);
 		} else {
 			const char* head;
 			check(
 				MLGetSymbol(m, &head),
-				LLErrorCode::MLGetSymbolError,
+				LLErrorName::MLGetSymbolError,
 				"Cannot get symbol"
 			);
 			s.setHead(head);
@@ -146,7 +146,7 @@ namespace LibraryLinkUtils {
 			int argc;
 			check(
 				MLGetFunction(m, &head, &argc),
-				LLErrorCode::MLGetFunctionError,
+				LLErrorName::MLGetFunctionError,
 				"Cannot get function"
 			);
 			f.setHead(head);
@@ -164,7 +164,7 @@ namespace LibraryLinkUtils {
 		} else if (boolean.getHead() == "False") {
 			b = false;
 		} else {
-			ErrorManager::throwException(LLErrorCode::MLWrongSymbolForBool, "Expected \"True\" or \"False\", got " + boolean.getHead());
+			ErrorManager::throwException(LLErrorName::MLWrongSymbolForBool, "Expected \"True\" or \"False\", got " + boolean.getHead());
 		}
 		return *this;
 	}

@@ -94,7 +94,7 @@ namespace LibraryLinkUtils {
 		 *   @param[in]		last - iterator past the end of range
 		 *   @param[in]     dims - container with Tensor dimensions
 		 *   @tparam		Container - any type of container that has member \b value_type and this type is convertible to mint
-		 *   @throws		LLErrorCode::TensorNewError - if number of elements in \c v does not match total Tensor size indicated by \c dims
+		 *   @throws		LLErrorName::TensorNewError - if number of elements in \c v does not match total Tensor size indicated by \c dims
 		 *   @throws		see Tensor<T>::createInternal() and MArray<T>::MArray(Container&&)
 		 **/
 		template<class InputIt, class Container, typename = enable_if_integral_elements<Container>, typename = enable_if_input_iterator<InputIt>>
@@ -105,7 +105,7 @@ namespace LibraryLinkUtils {
 		 *   @param[in]     first - iterator to the beginning of range
 		 *   @param[in]		last - iterator past the end of range
 		 *   @param[in]     dims - initializer list with Tensor dimensions
-		 *   @throws		LLErrorCode::TensorNewError - if number of elements in \c v does not match total Tensor size indicated by \c dims
+		 *   @throws		LLErrorName::TensorNewError - if number of elements in \c v does not match total Tensor size indicated by \c dims
 		 *   @throws		see Tensor<T>::createInternal() and MArray<T>::MArray(const std::vector<U>&)
 		 **/
 		template<class InputIt, typename = enable_if_input_iterator<InputIt>>
@@ -114,8 +114,8 @@ namespace LibraryLinkUtils {
 		/**
 		 *   @brief         Constructs Tensor based on MTensor
 		 *   @param[in]     v - LibraryLink structure to be wrapped
-		 *   @throws        LLErrorCode::TensorInitError - if WolframLibraryData structure is not initialized
-		 *   @throws		LLErrorCode::TensorTypeError - if template parameter \b T does not match MTensor data type
+		 *   @throws        LLErrorName::TensorInitError - if WolframLibraryData structure is not initialized
+		 *   @throws		LLErrorName::TensorTypeError - if template parameter \b T does not match MTensor data type
 		 **/
 		Tensor(const MTensor v);
 
@@ -198,39 +198,39 @@ namespace LibraryLinkUtils {
 
 		/**
 		 *   @brief 	Sub-class implementation of virtual void MArray<T>::indexError()
-		 *   @throws 	LibraryLinkError(LLErrorCode::TensorIndexError)
+		 *   @throws 	LibraryLinkError(LLErrorName::TensorIndexError)
 		 **/
 		void indexError() const override {
-			ErrorManager::throwException(LLErrorCode::TensorIndexError);
+			ErrorManager::throwException(LLErrorName::TensorIndexError);
 		}
 
 		/**
 		 *   @brief 	Sub-class implementation of virtual void MArray<T>::initError()
-		 *   @throws 	LibraryLinkError(LLErrorCode::TensorInitError)
+		 *   @throws 	LibraryLinkError(LLErrorName::TensorInitError)
 		 **/
 		void initError() const override {
-			ErrorManager::throwException(LLErrorCode::TensorInitError);
+			ErrorManager::throwException(LLErrorName::TensorInitError);
 		}
 
 		/**
 		 *   @brief 	Sub-class implementation of virtual void MArray<T>::sizeError()
-		 *   @throws 	LibraryLinkError(LLErrorCode::TensorSizeError)
+		 *   @throws 	LibraryLinkError(LLErrorName::TensorSizeError)
 		 **/
 		void sizeError() const override {
-			ErrorManager::throwException(LLErrorCode::TensorSizeError);
+			ErrorManager::throwException(LLErrorName::TensorSizeError);
 		}
 
 
 		/**
 		 *   @brief 	Sub-class implementation of virtual void MArray<T>::createInternal(). It creates a new flat MTensor.
-		 *   @throws 	LibraryLinkError(LLErrorCode::TensorNewError)
+		 *   @throws 	LibraryLinkError(LLErrorName::TensorNewError)
 		 *
 		 *   @see 		<http://reference.wolfram.com/language/LibraryLink/ref/callback/MTensor_new.html>
 		 *
 		 **/
 		void createInternal() override {
 			if (this->libData->MTensor_new(type, this->depth, this->dimensionsData(), &internalMT))
-				ErrorManager::throwException(LLErrorCode::TensorNewError);
+				ErrorManager::throwException(LLErrorName::TensorNewError);
 		}
 
 		/**
@@ -299,7 +299,7 @@ namespace LibraryLinkUtils {
 	Tensor<T>::Tensor(InputIt first, InputIt last, Container&& dims) : MArray<T>(std::forward<Container>(dims)) {
 		createInternal();
 		if (std::distance(first, last) != this->flattenedLength)
-			ErrorManager::throwException(LLErrorCode::TensorNewError, "Length of data range does not match specified dimensions");
+			ErrorManager::throwException(LLErrorName::TensorNewError, "Length of data range does not match specified dimensions");
 		this->arrayOwnerQ = true;
 		std::copy(first, last, this->begin());
 	}
@@ -309,7 +309,7 @@ namespace LibraryLinkUtils {
 	Tensor<T>::Tensor(InputIt first, InputIt last, std::initializer_list<mint> dims) : MArray<T>(dims) {
 		createInternal();
 		if (std::distance(first, last) != this->flattenedLength)
-			ErrorManager::throwException(LLErrorCode::TensorNewError, "Length of data range does not match specified dimensions");
+			ErrorManager::throwException(LLErrorName::TensorNewError, "Length of data range does not match specified dimensions");
 		this->arrayOwnerQ = true;
 		std::copy(first, last, this->begin());
 	}
@@ -319,7 +319,7 @@ namespace LibraryLinkUtils {
 		if (!this->libData)
 			initError();
 		if (type != this->libData->MTensor_getType(t))
-			ErrorManager::throwException(LLErrorCode::TensorTypeError);
+			ErrorManager::throwException(LLErrorName::TensorTypeError);
 		this->arrayOwnerQ = false;
 		internalMT = t;
 		this->depth = this->libData->MTensor_getRank(internalMT);
@@ -333,7 +333,7 @@ namespace LibraryLinkUtils {
 	template<typename T>
 	Tensor<T>::Tensor(const Tensor<T>& t2) : MArray<T>(t2) {
 		if (this->libData->MTensor_clone(t2.internalMT, &this->internalMT)) {
-			ErrorManager::throwException(LLErrorCode::TensorCloneError);
+			ErrorManager::throwException(LLErrorName::TensorCloneError);
 		}
 		this->arrayOwnerQ = true;
 	}
@@ -351,7 +351,7 @@ namespace LibraryLinkUtils {
 		MArray<T>::operator=(t2);
 		this->freeInternal();
 		if (this->libData->MTensor_clone(t2.internalMT, &this->internalMT)) {
-			ErrorManager::throwException(LLErrorCode::TensorCloneError);
+			ErrorManager::throwException(LLErrorName::TensorCloneError);
 		}
 		this->arrayOwnerQ = true;
 	}

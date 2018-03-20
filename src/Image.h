@@ -52,17 +52,17 @@ namespace LibraryLinkUtils {
 		 *   @param[in]     channels - number of channels
 		 *   @param[in]     cs - color space
 		 *   @param[in]     interleavingQ - whether Image data should be interleaved
-		 *   @throws        LLErrorCode::ImageInitError - if structure with WolframImageLibrary functions is not initialized
-		 *   @throws		LLErrorCode::ImageNewError - if internal MImage creation failed
+		 *   @throws        LLErrorName::ImageInitError - if structure with WolframImageLibrary functions is not initialized
+		 *   @throws		LLErrorName::ImageNewError - if internal MImage creation failed
 		 **/
 		Image(mint nFrames, mint w, mint h, mint channels, colorspace_t cs, bool interleavingQ);
 
 		/**
 		 *   @brief         Constructs Image based on MImage
 		 *   @param[in]     mi - LibraryLink structure to be wrapped
-		 *   @throws        LLErrorCode::ImageInitError - if structure with WolframImageLibrary functions is not initialized
-		 *   @throws		LLErrorCode::ImageTypeError - if template parameter \b T does not match MImage data type
-		 *   @throws		LLErrorCode::ImageSizeError - if constructor failed to calculate image dimensions properly
+		 *   @throws        LLErrorName::ImageInitError - if structure with WolframImageLibrary functions is not initialized
+		 *   @throws		LLErrorName::ImageTypeError - if template parameter \b T does not match MImage data type
+		 *   @throws		LLErrorName::ImageSizeError - if constructor failed to calculate image dimensions properly
 		 **/
 		Image(const MImage mi);
 
@@ -182,7 +182,7 @@ namespace LibraryLinkUtils {
 		 *   @param[in]     row - pixel row (in Mathematica-style indexing - starting from 1)
 		 *   @param[in]     col - pixel column (in Mathematica-style indexing - starting from 1)
 		 *   @param[in]     channel - desired channel (in Mathematica-style indexing - starting from 1)
-		 *   @throws		LLErrorCode::ImageIndexError - if the specified coordinates are out-of-bound
+		 *   @throws		LLErrorName::ImageIndexError - if the specified coordinates are out-of-bound
 		 **/
 		T get(mint row, mint col, mint channel) const;
 
@@ -192,7 +192,7 @@ namespace LibraryLinkUtils {
 		 *   @param[in]     row - pixel row (in Mathematica-style indexing - starting from 1)
 		 *   @param[in]     col - pixel column (in Mathematica-style indexing - starting from 1)
 		 *   @param[in]     channel - desired channel (in Mathematica-style indexing - starting from 1)
-		 *   @throws		LLErrorCode::ImageIndexError - if the specified coordinates are out-of-bound
+		 *   @throws		LLErrorName::ImageIndexError - if the specified coordinates are out-of-bound
 		 **/
 		T get(mint slice, mint row, mint col, mint channel) const;
 
@@ -202,7 +202,7 @@ namespace LibraryLinkUtils {
 		 *   @param[in]     col - pixel column (in Mathematica-style indexing - starting from 1)
 		 *   @param[in]     channel - desired channel (in Mathematica-style indexing - starting from 1)
 		 *   @param[in]		newValue - new channel value
-		 *   @throws		LLErrorCode::ImageIndexError - if the specified coordinates are out-of-bound
+		 *   @throws		LLErrorName::ImageIndexError - if the specified coordinates are out-of-bound
 		 **/
 		void set(mint row, mint col, mint channel, T newValue);
 
@@ -213,7 +213,7 @@ namespace LibraryLinkUtils {
 		 *   @param[in]     col - pixel column (in Mathematica-style indexing - starting from 1)
 		 *   @param[in]     channel - desired channel (in Mathematica-style indexing - starting from 1)
 		 *   @param[in]		newValue - new channel value
-		 *   @throws		LLErrorCode::ImageIndexError - if the specified coordinates are out-of-bound
+		 *   @throws		LLErrorName::ImageIndexError - if the specified coordinates are out-of-bound
 		 **/
 		void set(mint slice, mint row, mint col, mint channel, T newValue);
 
@@ -262,37 +262,37 @@ namespace LibraryLinkUtils {
 
 		/**
 		 *   @brief 	Sub-class implementation of virtual void MArray<T>::indexError()
-		 *   @throws 	LibraryLinkError(LLErrorCode::ImageIndexError)
+		 *   @throws 	LibraryLinkError(LLErrorName::ImageIndexError)
 		 **/
 		void indexError() const override {
-			ErrorManager::throwException(LLErrorCode::ImageIndexError);
+			ErrorManager::throwException(LLErrorName::ImageIndexError);
 		}
 
 		/**
 		 *   @brief 	Sub-class implementation of virtual void MArray<T>::initError()
-		 *   @throws 	LibraryLinkError(LLErrorCode::ImageInitError)
+		 *   @throws 	LibraryLinkError(LLErrorName::ImageInitError)
 		 **/
 		void initError() const override {
-			ErrorManager::throwException(LLErrorCode::ImageInitError);
+			ErrorManager::throwException(LLErrorName::ImageInitError);
 		}
 
 		/**
 		 *   @brief 	Sub-class implementation of virtual void MArray<T>::sizeError()
-		 *   @throws 	LibraryLinkError(LLErrorCode::ImageSizeError)
+		 *   @throws 	LibraryLinkError(LLErrorName::ImageSizeError)
 		 **/
 		void sizeError() const override {
-			ErrorManager::throwException(LLErrorCode::ImageSizeError);
+			ErrorManager::throwException(LLErrorName::ImageSizeError);
 		}
 
 		/**
 		 *   @brief 	Sub-class implementation of virtual void MArray<T>::createInternal()
 		 *   @note		This is currently not supported so it always throws an exception
-		 *   @throws 	LibraryLinkError(LLErrorCode::ImageNewError)
+		 *   @throws 	LibraryLinkError(LLErrorName::ImageNewError)
 		 *
 		 *   @todo		Implement creating new MImage via Image<T>::createInternal()
 		 **/
 		void createInternal() override {
-			ErrorManager::throwException(LLErrorCode::ImageNewError);
+			ErrorManager::throwException(LLErrorName::ImageNewError);
 		}
 
 		/**
@@ -338,7 +338,7 @@ namespace LibraryLinkUtils {
 		int error = (nFrames > 0) ? imgFuns->MImage_new3D(nFrames, w, h, channels, type, cs, interleavingQ, &internalMI) :
 				imgFuns->MImage_new2D(w, h, channels, type, cs, interleavingQ, &internalMI);
 		if (error)
-			ErrorManager::throwException(LLErrorCode::ImageNewError);
+			ErrorManager::throwException(LLErrorName::ImageNewError);
 		this->arrayOwnerQ = true;
 		initDataMembers();
 	}
@@ -348,7 +348,7 @@ namespace LibraryLinkUtils {
 		if (!imgFuns)
 			this->initError();
 		if (type != imgFuns->MImage_getDataType(mi))
-			ErrorManager::throwException(LLErrorCode::ImageTypeError);
+			ErrorManager::throwException(LLErrorName::ImageTypeError);
 		this->arrayOwnerQ = false;
 		internalMI = mi;
 		initDataMembers();
@@ -376,7 +376,7 @@ namespace LibraryLinkUtils {
 	Image<T>::Image(const Image<T>& i2) : MArray<T>(i2) {
 		allowSlices = i2.allowSlices;
 		if (this->imgFuns->MImage_clone(i2.internalMI, &this->internalMI)) {
-			ErrorManager::throwException(LLErrorCode::ImageCloneError);
+			ErrorManager::throwException(LLErrorName::ImageCloneError);
 		}
 		this->arrayOwnerQ = true;
 	}
@@ -394,7 +394,7 @@ namespace LibraryLinkUtils {
 		MArray<T>::operator=(i2);
 		this->freeInternal();
 		if (this->imgFuns->MImage_clone(i2.internalMI, &this->internalMI)) {
-			ErrorManager::throwException(LLErrorCode::ImageCloneError);
+			ErrorManager::throwException(LLErrorName::ImageCloneError);
 		}
 		this->arrayOwnerQ = true;
 	}

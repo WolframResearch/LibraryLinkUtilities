@@ -45,7 +45,7 @@ namespace LibraryLinkUtils {
 		 *   @param[in]     Argc - number of MArguments provided
 		 *   @param[in]     Args - MArguments provided
 		 *   @param[in]		Res - reference to output MArgument
-		 *   @throws        LLErrorCode::MArgumentInitError - if static member libData is not initialized
+		 *   @throws        LLErrorName::MArgumentInitError - if static member libData is not initialized
 		 **/
 		MArgumentManager(mint Argc, MArgument* Args, MArgument& Res);
 
@@ -67,7 +67,7 @@ namespace LibraryLinkUtils {
 		 *   @brief         Get MArgument of type \b mbool at position \c index
 		 *   @param[in]     index - position of desired MArgument in \c Args
 		 *   @returns       MArgument of type \b bool at position \c index
-		 *   @throws        LLErrorCode::MArgumentIndexError - if \c index is out-of-bounds
+		 *   @throws        LLErrorName::MArgumentIndexError - if \c index is out-of-bounds
 		 **/
 		bool getBoolean(unsigned int index) const;
 
@@ -81,7 +81,7 @@ namespace LibraryLinkUtils {
 		 *   @brief         Get MArgument of type \b mreal at position \c index
 		 *   @param[in]     index - position of desired MArgument in \c Args
 		 *   @returns       MArgument of type \b double at position \c index
-		 *   @throws        LLErrorCode::MArgumentIndexError - if \c index is out-of-bounds
+		 *   @throws        LLErrorName::MArgumentIndexError - if \c index is out-of-bounds
 		 **/
 		double getReal(unsigned int index) const;
 
@@ -96,7 +96,7 @@ namespace LibraryLinkUtils {
 		 *   @tparam		T - integral type to convert \b mint to
 		 *   @param[in]     index - position of desired MArgument in \c Args
 		 *   @returns       MArgument value at position \c index converted to \b T
-		 *   @throws        LLErrorCode::MArgumentIndexError - if \c index is out-of-bounds
+		 *   @throws        LLErrorName::MArgumentIndexError - if \c index is out-of-bounds
 		 **/
 		template<typename T>
 		T getInteger(unsigned int index) const;
@@ -120,7 +120,7 @@ namespace LibraryLinkUtils {
 		 *   @brief         Get MArgument of type \b mcomplex at position \c index
 		 *   @param[in]     index - position of desired MArgument in \c Args
 		 *   @returns       MArgument value at position \c index converted to \b std::complex<double>
-		 *   @throws        LLErrorCode::MArgumentIndexError - if \c index is out-of-bounds
+		 *   @throws        LLErrorName::MArgumentIndexError - if \c index is out-of-bounds
 		 **/
 		std::complex<double> getComplex(unsigned int index) const;
 
@@ -134,7 +134,7 @@ namespace LibraryLinkUtils {
 		 *   @brief         Get reference to MArgument of type \b "UTF8String" at position \c index
 		 *   @param[in]     index - position of desired MArgument in \c Args
 		 *   @returns       Reference to \b std::string which is copied from MArgument at position \c index, string itself is stored in MArgumentManager
-		 *   @throws        LLErrorCode::MArgumentIndexError - if \c index is out-of-bounds
+		 *   @throws        LLErrorName::MArgumentIndexError - if \c index is out-of-bounds
 		 *
 		 *   @warning		MArgument is copied to \b std::string only once so if you use the reference to modify the string you will not be able to get the original value back
 		 **/
@@ -162,7 +162,7 @@ namespace LibraryLinkUtils {
 		 *   @tparam		T - type of data stored in RawArray
 		 *   @param[in]     index - position of desired MArgument in \c Args
 		 *   @returns       RawArray wrapper of MArgument at position \c index
-		 *   @throws        LLErrorCode::MArgumentIndexError - if \c index is out-of-bounds
+		 *   @throws        LLErrorName::MArgumentIndexError - if \c index is out-of-bounds
 		 *   @see			RawArray<T>::RawArray(const MRawArray);
 		 **/
 		template<typename T>
@@ -180,7 +180,7 @@ namespace LibraryLinkUtils {
 		 *   @brief         Get type of MRawArray at position \c index in \c Args
 		 *   @param[in]     index - position of desired MArgument in \c Args
 		 *   @returns       MRawArray type
-		 *   @throws        LLErrorCode::MArgumentIndexError - if \c index is out-of-bounds
+		 *   @throws        LLErrorName::MArgumentIndexError - if \c index is out-of-bounds
 		 **/
 		rawarray_t getRawArrayType(unsigned int index) const;
 
@@ -190,8 +190,8 @@ namespace LibraryLinkUtils {
 		 *   @tparam		OpArgs... - types of arguments of \c operator() in class \c Operator
 		 *   @param[in]     index - position of MRawArray in \c Args
 		 *   @param[in]     args - arguments of Operator::operator()
-		 *   @throws        LLErrorCode::MArgumentIndexError - if \c index is out-of-bounds
-		 *   @throws        LLErrorCode::MArgumentRawArrayError - if MRawArray argument has incorrect type
+		 *   @throws        LLErrorName::MArgumentIndexError - if \c index is out-of-bounds
+		 *   @throws        LLErrorName::MArgumentRawArrayError - if MRawArray argument has incorrect type
 		 *   @warning		Operator::operator() has to be a template that takes a const RawArray<T>& as first argument
 		 **/
 		template<class Operator, class ... OpArgs>
@@ -202,8 +202,8 @@ namespace LibraryLinkUtils {
 		 *   @tparam		Operator - any callable class
 		 *   @param[in]     index - position of MRawArray in \c Args
 		 *   @param[in]     op - callable object (possibly lambda) that takes only one argument - a RawArray
-		 *   @throws        LLErrorCode::MArgumentIndexError - if \c index is out-of-bounds
-		 *   @throws        LLErrorCode::MArgumentRawArrayError - if MRawArray argument has incorrect type
+		 *   @throws        LLErrorName::MArgumentIndexError - if \c index is out-of-bounds
+		 *   @throws        LLErrorName::MArgumentRawArrayError - if MRawArray argument has incorrect type
 		 **/
 		template<class Operator>
 		void operateOnRawArray(unsigned int index, Operator&& op);
@@ -213,7 +213,7 @@ namespace LibraryLinkUtils {
 		 *   @tparam		T - type of data stored in Tensor
 		 *   @param[in]     index - position of desired MArgument in \c Args
 		 *   @returns       Tensor wrapper of MArgument at position \c index
-		 *   @throws        LLErrorCode::MArgumentIndexError - if \c index is out-of-bounds
+		 *   @throws        LLErrorName::MArgumentIndexError - if \c index is out-of-bounds
 		 *   @see			Tensor<T>::Tensor(const MTensor);
 		 **/
 		template<typename T>
@@ -231,7 +231,7 @@ namespace LibraryLinkUtils {
 		 *   @brief         Get type of MTensor at position \c index in \c Args
 		 *   @param[in]     index - position of desired MArgument in \c Args
 		 *   @returns       MTensor type
-		 *   @throws        LLErrorCode::MArgumentIndexError - if \c index is out-of-bounds
+		 *   @throws        LLErrorName::MArgumentIndexError - if \c index is out-of-bounds
 		 **/
 		unsigned char getTensorType(unsigned int index) const;
 
@@ -241,8 +241,8 @@ namespace LibraryLinkUtils {
 		 *   @tparam		OpArgs... - types of arguments of \c operator() in class \c Operator
 		 *   @param[in]     index - position of MTensor in \c Args
 		 *   @param[in]     args - arguments of Operator::operator()
-		 *   @throws        LLErrorCode::MArgumentIndexError - if \c index is out-of-bounds
-		 *   @throws        LLErrorCode::MArgumentTensorError - if MTensor argument has incorrect type
+		 *   @throws        LLErrorName::MArgumentIndexError - if \c index is out-of-bounds
+		 *   @throws        LLErrorName::MArgumentTensorError - if MTensor argument has incorrect type
 		 *   @warning		Operator::operator() has to be a template that takes a const Tensor<T>& as first argument
 		 **/
 		template<class Operator, class ... Args>
@@ -253,8 +253,8 @@ namespace LibraryLinkUtils {
 		 *   @tparam		Operator - any callable class
 		 *   @param[in]     index - position of MTensor in \c Args
 		 *   @param[in]     op - callable object (possibly lambda) that takes only one argument - a Tensor
-		 *   @throws        LLErrorCode::MArgumentIndexError - if \c index is out-of-bounds
-		 *   @throws        LLErrorCode::MArgumentTensorError - if MTensor argument has incorrect type
+		 *   @throws        LLErrorName::MArgumentIndexError - if \c index is out-of-bounds
+		 *   @throws        LLErrorName::MArgumentTensorError - if MTensor argument has incorrect type
 		 **/
 		template<class Operator>
 		void operateOnTensor(unsigned int index, Operator&& op);
@@ -264,7 +264,7 @@ namespace LibraryLinkUtils {
 		 *   @tparam		T - type of data stored in Image
 		 *   @param[in]     index - position of desired MArgument in \c Args
 		 *   @returns       Image wrapper of MArgument at position \c index
-		 *   @throws        LLErrorCode::MArgumentIndexError - if \c index is out-of-bounds
+		 *   @throws        LLErrorName::MArgumentIndexError - if \c index is out-of-bounds
 		 *   @see			Image<T>::Image(const MImage ra);
 		 **/
 		template<typename T>
@@ -282,7 +282,7 @@ namespace LibraryLinkUtils {
 		 *   @brief         Get type of MImage at position \c index in \c Args
 		 *   @param[in]     index - position of desired MArgument in \c Args
 		 *   @returns       MImage type
-		 *   @throws        LLErrorCode::MArgumentIndexError - if \c index is out-of-bounds
+		 *   @throws        LLErrorName::MArgumentIndexError - if \c index is out-of-bounds
 		 **/
 		imagedata_t getImageType(unsigned int index) const;
 
@@ -292,8 +292,8 @@ namespace LibraryLinkUtils {
 		 *   @tparam		OpArgs... - types of arguments of \c operator() in class \c Operator
 		 *   @param[in]     index - position of MImage in \c Args
 		 *   @param[in]     args - arguments of Operator::operator()
-		 *   @throws        LLErrorCode::MArgumentIndexError - if \c index is out-of-bounds
-		 *   @throws        LLErrorCode::MArgumentImageError - if MImage argument has incorrect type
+		 *   @throws        LLErrorName::MArgumentIndexError - if \c index is out-of-bounds
+		 *   @throws        LLErrorName::MArgumentImageError - if MImage argument has incorrect type
 		 *   @warning		Operator::operator() has to be a template that takes a const Image<T>& as first argument
 		 **/
 		template<class Operator, class ... Args>
@@ -304,8 +304,8 @@ namespace LibraryLinkUtils {
 		 *   @tparam		Operator - any callable class
 		 *   @param[in]     index - position of MImage in \c Args
 		 *   @param[in]     op - callable object (possibly lambda) that takes only one argument - an Image
-		 *   @throws        LLErrorCode::MArgumentIndexError - if \c index is out-of-bounds
-		 *   @throws        LLErrorCode::MArgumentImageError - if MImage argument has incorrect type
+		 *   @throws        LLErrorName::MArgumentIndexError - if \c index is out-of-bounds
+		 *   @throws        LLErrorName::MArgumentImageError - if MImage argument has incorrect type
 		 **/
 		template<class Operator>
 		void operateOnImage(unsigned int index, Operator&& op);
@@ -323,7 +323,7 @@ namespace LibraryLinkUtils {
 		/**
 		 *   @brief			Get MArgument at position \c index
 		 *   @param[in]		index - position of desired MArgument in \c Args
-		 *   @throws		LLErrorCode::MArgumentIndexError - if \c index is out-of-bounds
+		 *   @throws		LLErrorName::MArgumentIndexError - if \c index is out-of-bounds
 		 **/
 		MArgument getArgs(unsigned int index) const;
 
@@ -430,7 +430,7 @@ namespace LibraryLinkUtils {
 				op(this->getRawArray<std::complex<double>>(index), std::forward<Args>(args)...);
 				break;
 			default:
-				ErrorManager::throwException(LLErrorCode::MArgumentRawArrayError, "Incorrect type of RawArray argument. Argument index: " + std::to_string(index));
+				ErrorManager::throwException(LLErrorName::MArgumentRawArrayError, "Incorrect type of RawArray argument. Argument index: " + std::to_string(index));
 		}
 	}
 
@@ -474,7 +474,7 @@ namespace LibraryLinkUtils {
 				op(this->getRawArray<std::complex<double>>(index));
 				break;
 			default:
-				ErrorManager::throwException(LLErrorCode::MArgumentRawArrayError, "Incorrect type of RawArray argument. Argument index: " + std::to_string(index));
+				ErrorManager::throwException(LLErrorName::MArgumentRawArrayError, "Incorrect type of RawArray argument. Argument index: " + std::to_string(index));
 		}
 	}
 
@@ -503,7 +503,7 @@ namespace LibraryLinkUtils {
 				op(this->getTensor<std::complex<double>>(index), std::forward<Args>(args)...);
 				break;
 			default:
-				ErrorManager::throwException(LLErrorCode::MArgumentTensorError, "Incorrect type of Tensor argument. Argument index: " + std::to_string(index));
+				ErrorManager::throwException(LLErrorName::MArgumentTensorError, "Incorrect type of Tensor argument. Argument index: " + std::to_string(index));
 		}
 	}
 
@@ -521,7 +521,7 @@ namespace LibraryLinkUtils {
 				op(this->getTensor<std::complex<double>>(index));
 				break;
 			default:
-				ErrorManager::throwException(LLErrorCode::MArgumentTensorError, "Incorrect type of Tensor argument. Argument index: " + std::to_string(index));
+				ErrorManager::throwException(LLErrorName::MArgumentTensorError, "Incorrect type of Tensor argument. Argument index: " + std::to_string(index));
 		}
 	}
 
@@ -556,7 +556,7 @@ namespace LibraryLinkUtils {
 				op(this->getImage<double>(index), std::forward<Args>(args)...);
 				break;
 			default:
-				ErrorManager::throwException(LLErrorCode::MArgumentImageError, "Incorrect type of Image argument. Argument index: " + std::to_string(index));
+				ErrorManager::throwException(LLErrorName::MArgumentImageError, "Incorrect type of Image argument. Argument index: " + std::to_string(index));
 		}
 	}
 
@@ -579,7 +579,7 @@ namespace LibraryLinkUtils {
 				op(this->getImage<double>(index));
 				break;
 			default:
-				ErrorManager::throwException(LLErrorCode::MArgumentImageError, "Incorrect type of Image argument. Argument index: " + std::to_string(index));
+				ErrorManager::throwException(LLErrorName::MArgumentImageError, "Incorrect type of Image argument. Argument index: " + std::to_string(index));
 		}
 	}
 

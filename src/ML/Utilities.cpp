@@ -37,7 +37,7 @@ namespace LibraryLinkUtils {
 			checkError(
 				ms.get(),
 				MLNewPacket(ms.get()),
-				LLErrorCode::MLPacketHandleError,
+				LLErrorName::MLPacketHandleError,
 				"Error in MLNewPacket"
 			);
 			return ms;
@@ -47,7 +47,7 @@ namespace LibraryLinkUtils {
 			checkError(
 				ms.get(),
 				MLEndPacket(ms.get()),
-				LLErrorCode::MLPacketHandleError,
+				LLErrorName::MLPacketHandleError,
 				"Error in MLEndPacket"
 			);
 			return ms;
@@ -57,7 +57,7 @@ namespace LibraryLinkUtils {
 			checkError(
 				ms.get(),
 				MLFlush(ms.get()),
-				LLErrorCode::MLFlowControlError,
+				LLErrorName::MLFlowControlError,
 				"Error in MLFlush"
 			);
 			return ms;
@@ -84,13 +84,6 @@ namespace LibraryLinkUtils {
 			MLReleaseErrorMessage(mlp, mlErrorMsg);
 			MLClearError(mlp);
 			return err;
-		}
-
-
-		void checkError(MLINK m, int statusOk, int errorCode, const std::string& debugInfo) {
-			if (!statusOk) {
-				ErrorManager::throwException(errorCode, getMLErrorText(m) + debugInfo);
-			}
 		}
 
 		void checkError(MLINK m, int statusOk, const std::string& errorName, const std::string& debugInfo) {

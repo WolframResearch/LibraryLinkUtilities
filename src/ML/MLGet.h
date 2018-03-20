@@ -37,7 +37,7 @@ namespace LibraryLinkUtils {
 				int* dims;
 				char** heads;
 				int rank;
-				checkError(m, ArrayF(m, &rawResult, &dims, &heads, &rank), LLErrorCode::MLGetArrayError, ArrayFName);
+				checkError(m, ArrayF(m, &rawResult, &dims, &heads, &rank), LLErrorName::MLGetArrayError, ArrayFName);
 				return { rawResult, ReleaseArray<T> { m, dims, heads, rank } };
 			}
 
@@ -53,7 +53,7 @@ namespace LibraryLinkUtils {
 			static ListData<T> get(MLINK m) {
 				T* rawResult;
 				int len;
-				checkError(m, ListF(m, &rawResult, &len), LLErrorCode::MLGetListError, ListFName);
+				checkError(m, ListF(m, &rawResult, &len), LLErrorName::MLGetListError, ListFName);
 				return { rawResult, ReleaseList<T> { m, len } };
 			}
 
@@ -68,7 +68,7 @@ namespace LibraryLinkUtils {
 
 			static T get(MLINK m) {
 				T rawResult;
-				checkError(m, ScalarF(m, &rawResult), LLErrorCode::MLGetScalarError, ScalarFName);
+				checkError(m, ScalarF(m, &rawResult), LLErrorName::MLGetScalarError, ScalarFName);
 				return rawResult;
 			}
 
@@ -84,7 +84,7 @@ namespace LibraryLinkUtils {
 			static StringData<T> get(MLINK m) {
 				const T* rawResult;
 				int bytes, characters;
-				checkError(m, StringF(m, &rawResult, &bytes, &characters), LLErrorCode::MLGetStringError, StringFName);
+				checkError(m, StringF(m, &rawResult, &bytes, &characters), LLErrorName::MLGetStringError, StringFName);
 				return { rawResult, ReleaseString<T> { m, bytes , characters} };
 			}
 
