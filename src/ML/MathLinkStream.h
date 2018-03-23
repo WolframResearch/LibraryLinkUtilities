@@ -32,6 +32,9 @@ namespace LibraryLinkUtils {
 	class MathLinkStream {
 	public:
 
+
+		MathLinkStream(MLINK mlp, ML::Encoding EncIn, ML::Encoding EncOut = EncIn);
+
 		/**
 		 *   @brief			Constructs new MathLinkStream
 		 *   @param[in] 	mlp - low-level object of type MLINK received from LibraryLink
@@ -100,6 +103,12 @@ namespace LibraryLinkUtils {
 		//
 		//	operator<<
 		//
+
+		/**
+		 *
+		 * @param e
+		 */
+		MathLinkStream& operator<<(ML::Encoding e);
 
 		/**
 		 *   @brief			Sends a stream token via MathLink
@@ -204,8 +213,8 @@ namespace LibraryLinkUtils {
 		 *   @see			http://reference.wolfram.com/language/guide/WSTPCFunctionsForExchangingStrings.html
 		 *   @throws 		LLErrorName::MLPutStringError
 		 **/
-		template<typename T>
-		MathLinkStream& operator<<(const ML::StringData<T>& s);
+		template<ML::Encoding E>
+		MathLinkStream& operator<<(const ML::StringData<E>& s);
 
 		/**
 		 *   @brief			Sends a string (with character type _const char_ or _const unsigned char_) using `MLPutUTF8String`.
@@ -308,6 +317,12 @@ namespace LibraryLinkUtils {
 		//
 
 		/**
+		 *
+		 * @param e
+		 */
+		MathLinkStream& operator>>(ML::Encoding e);
+
+		/**
 		 *   @brief			Receives a bidirectional stream token via MathLink
 		 *   @param[in] 	f - an element that can be either send or received via MathLink with no arguments, for example ML::Rule
 		 **/
@@ -406,8 +421,8 @@ namespace LibraryLinkUtils {
 		 *   @see			http://reference.wolfram.com/language/guide/WSTPCFunctionsForExchangingStrings.html
 		 *   @throws 		LLErrorName::MLGetStringError
 		 **/
-		template<typename T>
-		MathLinkStream& operator>>(ML::StringData<T>& s);
+		template<ML::Encoding E>
+		MathLinkStream& operator>>(ML::StringData<E>& s);
 
 		/**
 		 *   @brief			Receives std::basic_string
@@ -497,9 +512,22 @@ namespace LibraryLinkUtils {
 		 */
 		void testHead(const std::string& head, int argc);
 
+
+		template<typename T>
+		void PutStringDispatch(const T* strData, int strLen, ML::Encoding e = EncodingOut);
+
+		template<>
+		void PutStringDispatch(const unsigned short* strData, int strLen, ML::Encoding e);
+
+		template<typename T>
+		std::basic_string<T> GetStringDispatch(ML::Encoding e = EncodingIn);
+
 	private:
 		/// Internal low-level handle to MathLink, it is assumed that the handle is valid
 		MLINK m;
+
+		ML::Encoding EncodingIn = ML::Encoding::UTF8;
+		ML::Encoding EncodingOut = ML::Encoding::UTF8;
 	};
 
 
@@ -557,21 +585,21 @@ namespace LibraryLinkUtils {
 		return *this;
 	}
 
-	template<typename T>
-	MathLinkStream& MathLinkStream::operator<<(const ML::StringData<T>& s) {
-		ML::PutString<T>::put(m, s.get(), s.get_deleter().getLength());
+	template<ML::Encoding E>
+	MathLinkStream& MathLinkStream::operator<<(const ML::StringData<E>& s) {
+		ML::String<E>::put(m, s.get(), s.get_deleter().getLength());
 		return *this;
 	}
 
 	template<typename T>
 	ML::StringTypeQ<T> MathLinkStream::operator<<(const std::basic_string<T>& s) {
-		ML::PutString<T>::put(m, s.c_str(), static_cast<int>(s.size()));
+		PutStringDispatch(s.c_str(), static_cast<int>(s.size()));
 		return *this;
 	}
 
 	template<typename T, std::size_t N>
 	ML::StringTypeQ<T> MathLinkStream::operator<<(const T (&s)[N]) {
-		ML::PutString<T>::put(m, s, N);
+		PutStringDispatch(s, N);
 		return *this;
 	}
 
@@ -621,20 +649,15 @@ namespace LibraryLinkUtils {
 		return *this;
 	}
 
-	template<typename T>
-	MathLinkStream& MathLinkStream::operator>>(ML::StringData<T>& s) {
-		s = ML::GetString<T>::get(m);
+	template<ML::Encoding E>
+	MathLinkStream& MathLinkStream::operator>>(ML::StringData<E>& s) {
+		s = ML::String<E>::get(m);
 		return *this;
 	}
 
 	template<typename T>
 	ML::StringTypeQ<T> MathLinkStream::operator>>(std::basic_string<T>& s) {
-		using StringType = std::basic_string<T>;
-
-		auto rawString = ML::GetString<T>::get(m);
-		auto bytes = rawString.get_deleter().getLength();
-		s = (bytes < 0? StringType { rawString.get() } : StringType { rawString.get(), static_cast<typename StringType::size_type>(bytes) });
-
+		s = GetStringDispatch();
 		return *this;
 	}
 
@@ -664,7 +687,46 @@ namespace LibraryLinkUtils {
 		return *this;
 	}
 
+	template<typename T>
+	void MathLinkStream::PutStringDispatch(const T* strData, int strLen, ML::Encoding e) {
+		switch(e) {
+			case ML::Encoding::Byte:
+				return ML::String<ML::Encoding::Byte>::put(m, strData, strLen);
+			case ML::Encoding::MMA:
+				return ML::String<ML::Encoding::MMA>::put(m, strData, strLen);
+			case ML::Encoding::UTF8:
+				return ML::String<ML::Encoding::UTF8>::put(m, strData, strLen);
+			case ML::Encoding::UTF8Strict:
+				return ML::String<ML::Encoding::UTF8Strict>::put(m, strData, strLen);
+			default:
+				//TODO throw
+		}
+	}
 
+	template<>
+	void MathLinkStream::PutStringDispatch(const unsigned int* strData, int strLen, ML::Encoding);
+
+	template<typename T>
+	std::basic_string<T> MathLinkStream::GetStringDispatch(ML::Encoding e) {
+		switch(e) {
+			case ML::Encoding::Byte:
+				return ML::String<ML::Encoding::Byte>::getString<T>(m);
+			case ML::Encoding::MMA:
+				return ML::String<ML::Encoding::MMA>::getString<T>(m);
+			case ML::Encoding::UTF8:
+				return ML::String<ML::Encoding::UTF8>::getString<T>(m);
+			case ML::Encoding::UTF8Strict:
+				return ML::String<ML::Encoding::UTF8Strict>::getString<T>(m);
+			default:
+				//TODO throw
+		}
+	}
+
+	template<>
+	void MathLinkStream::PutStringDispatch(const unsigned short* strData, int strLen, ML::Encoding e);
+
+	template<>
+	void MathLinkStream::PutStringDispatch(const unsigned int* strData, int strLen, ML::Encoding);
 } /* namespace LibraryLinkUtils */
 
 

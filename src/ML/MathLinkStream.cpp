@@ -24,6 +24,10 @@ namespace LibraryLinkUtils {
 		testHead(head, argc);
 	}
 
+	MathLinkStream& MathLinkStream::operator<<(ML::Encoding e) {
+		EncodingOut = e;
+		return *this;
+	}
 
 	MathLinkStream& MathLinkStream::operator<<(StreamToken f) {
 		return f(*this);
@@ -66,12 +70,12 @@ namespace LibraryLinkUtils {
 	}
 
 	MathLinkStream& MathLinkStream::operator<<(const ML::PutAsUTF8& s) {
-		ML::PutString<unsigned char>::put(m, s.str, static_cast<int>(s.len));
+		ML::String<ML::Encoding::UTF8>::put(m, s.str, static_cast<int>(s.len));
 		return *this;
 	}
 
 	MathLinkStream& MathLinkStream::operator<<(const char* s) {
-		ML::PutString<char>::put(m, s, static_cast<int>(std::strlen(s)));
+		PutStringDispatch(s, static_cast<int>(std::strlen(s)));
 		return *this;
 	}
 
@@ -94,6 +98,11 @@ namespace LibraryLinkUtils {
 		if (argc != argcount) {
 			ErrorManager::throwException(LLErrorName::MLTestHeadError, "Expected " + std::to_string(argc) + " arguments but got " + std::to_string(argcount));
 		}
+	}
+
+	MathLinkStream& MathLinkStream::operator>>(ML::Encoding e) {
+		EncodingIn = e;
+		return *this;
 	}
 
 	MathLinkStream& MathLinkStream::operator>>(BidirStreamToken f) {
@@ -173,6 +182,40 @@ namespace LibraryLinkUtils {
 		auto stringData = ML::GetString<unsigned char>::get(m);
 		s.str = std::string { reinterpret_cast<const char*>(stringData.get()) };
 		return *this;
+	}
+
+	template<>
+	void MathLinkStream::PutStringDispatch(const unsigned short* strData, int strLen, ML::Encoding e) {
+		switch(e) {
+			case ML::Encoding::UCS2:
+				return ML::String<ML::Encoding::UCS2>::put(m, strData, strLen);
+			case ML::Encoding::UTF16:
+				//[[fallthrough]]; //uncomment when we start using C++17
+			default:
+				return ML::String<ML::Encoding::UTF16>::put(m, strData, strLen);
+		}
+	}
+
+	template<>
+	void MathLinkStream::PutStringDispatch(const unsigned int* strData, int strLen, ML::Encoding) {
+		ML::String<ML::Encoding::UTF32>::put(m, strData, strLen);
+	}
+
+	template<>
+	void MathLinkStream::PutStringDispatch(const unsigned short* strData, int strLen, ML::Encoding e) {
+		switch(e) {
+			case ML::Encoding::UCS2:
+				return ML::String<ML::Encoding::UCS2>::getString<unsigned short>(m);
+			case ML::Encoding::UTF16:
+				//[[fallthrough]]; //uncomment when we start using C++17
+			default:
+				return ML::String<ML::Encoding::UTF16>::getString<unsigned short>(m);
+		}
+	}
+
+	template<>
+	void MathLinkStream::PutStringDispatch(const unsigned int* strData, int strLen, ML::Encoding) {
+		ML::String<ML::Encoding::UTF32>::getString<unsigned int>(m);
 	}
 
 } /* namespace LibraryLinkUtils */

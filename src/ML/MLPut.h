@@ -60,19 +60,6 @@ namespace LibraryLinkUtils {
 			static Func ScalarF;
 		};
 
-		template<typename T>
-		struct PutString {
-			using Func = std::function<int(MLINK, const T*, int)>;
-
-			static void put(MLINK m, const T* string, int len) {
-				checkError(m, StringF(m, string, len), LLErrorName::MLPutStringError, StringFName);
-			}
-
-		private:
-			static const std::string StringFName;
-			static Func StringF;
-		};
-
 
 		template<typename T>
 		typename PutArray<T>::Func PutArray<T>::ArrayF = [] (auto&&...) {
@@ -86,11 +73,11 @@ namespace LibraryLinkUtils {
 			return 0;
 		};
 
-		template<typename T>
-		typename PutString<T>::Func PutString<T>::StringF = [] (auto&&...) {
-			static_assert(sizeof(T) < 0, "Trying to use ML::PutString<T> for unsupported type T");
-			return 0;
-		};
+//		template<typename T>
+//		typename PutString<T>::Func PutString<T>::StringF = [] (auto&&...) {
+//			static_assert(sizeof(T) < 0, "Trying to use ML::PutString<T> for unsupported type T");
+//			return 0;
+//		};
 
 		template<typename T>
 		typename PutScalar<T>::Func PutScalar<T>::ScalarF = [] (auto&&...) {
@@ -100,18 +87,11 @@ namespace LibraryLinkUtils {
 
 #ifndef _WIN32
 
-		template<> PutString<char>::Func PutString<char>::StringF;
-		template<> const std::string PutString<char>::StringFName;
-
-
 		template<> PutArray<unsigned char>::Func PutArray<unsigned char>::ArrayF;
 		template<> const std::string PutArray<unsigned char>::ArrayFName;
 
 		template<> PutList<unsigned char>::Func PutList<unsigned char>::ListF;
 		template<> const std::string PutList<unsigned char>::ListFName;
-
-		template<> PutString<unsigned char>::Func PutString<unsigned char>::StringF;
-		template<> const std::string PutString<unsigned char>::StringFName;
 
 		template<> PutScalar<unsigned char>::Func PutScalar<unsigned char>::ScalarF;
 		template<> const std::string PutScalar<unsigned char>::ScalarFName;
@@ -123,9 +103,6 @@ namespace LibraryLinkUtils {
 		template<> PutList<short>::Func PutList<short>::ListF;
 		template<> const std::string PutList<short>::ListFName;
 
-		template<> PutString<unsigned short>::Func PutString<unsigned short>::StringF;
-		template<> const std::string PutString<unsigned short>::StringFName;
-
 		template<> PutScalar<short>::Func PutScalar<short>::ScalarF;
 		template<> const std::string PutScalar<short>::ScalarFName;
 
@@ -135,9 +112,6 @@ namespace LibraryLinkUtils {
 
 		template<> PutList<int>::Func PutList<int>::ListF;
 		template<> const std::string PutList<int>::ListFName;
-
-		template<> PutString<unsigned int>::Func PutString<unsigned int>::StringF;
-		template<> const std::string PutString<unsigned int>::StringFName;
 
 		template<> PutScalar<int>::Func PutScalar<int>::ScalarF;
 		template<> const std::string PutScalar<int>::ScalarFName;

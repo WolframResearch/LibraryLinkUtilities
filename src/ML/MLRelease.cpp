@@ -13,18 +13,11 @@ namespace LibraryLinkUtils {
 	namespace ML {
 
 		template<>
-		ReleaseString<char>::Func ReleaseString<char>::Release = [](MLINK m, const char* d, int) {
-			MLReleaseString(m, d);
-		};
-
-		template<>
 		ReleaseArray<unsigned char>::Func ReleaseArray<unsigned char>::Release = MLReleaseInteger8Array;
 
 		template<>
 		ReleaseList<unsigned char>::Func ReleaseList<unsigned char>::Release = MLReleaseInteger8List;
 
-		template<>
-		ReleaseString<unsigned char>::Func ReleaseString<unsigned char>::Release = MLReleaseUTF8String;
 
 		template<>
 		ReleaseArray<short>::Func ReleaseArray<short>::Release = MLReleaseInteger16Array;
@@ -32,8 +25,6 @@ namespace LibraryLinkUtils {
 		template<>
 		ReleaseList<short>::Func ReleaseList<short>::Release = MLReleaseInteger16List;
 
-		template<>
-		ReleaseString<unsigned short>::Func ReleaseString<unsigned short>::Release = MLReleaseUTF16String;
 
 		template<>
 		ReleaseArray<int>::Func ReleaseArray<int>::Release = MLReleaseInteger32Array;
@@ -41,8 +32,6 @@ namespace LibraryLinkUtils {
 		template<>
 		ReleaseList<int>::Func ReleaseList<int>::Release = MLReleaseInteger32List;
 
-		template<>
-		ReleaseString<unsigned int>::Func ReleaseString<unsigned int>::Release = MLReleaseUTF32String;
 
 		template<>
 		ReleaseArray<mlint64>::Func ReleaseArray<mlint64>::Release = MLReleaseInteger64Array;

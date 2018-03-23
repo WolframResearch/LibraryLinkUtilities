@@ -15,13 +15,11 @@
 
 #include "../LibraryLinkError.h"
 #include "MLRelease.h"
+#include "Strings.h"
 
 namespace LibraryLinkUtils {
 
 	namespace ML {
-		template<typename T>
-		using StringData = std::unique_ptr<const T[], ReleaseString<T>>;
-
 		template<typename T>
 		using ListData = std::unique_ptr<T[], ReleaseList<T>>;
 
@@ -77,22 +75,6 @@ namespace LibraryLinkUtils {
 			static Func ScalarF;
 		};
 
-		template<typename T>
-		struct GetString {
-			using Func = std::function<int(MLINK, const T**, int*, int*)>;
-
-			static StringData<T> get(MLINK m) {
-				const T* rawResult;
-				int bytes, characters;
-				checkError(m, StringF(m, &rawResult, &bytes, &characters), LLErrorName::MLGetStringError, StringFName);
-				return { rawResult, ReleaseString<T> { m, bytes , characters} };
-			}
-
-		private:
-			static const std::string StringFName;
-			static Func StringF;
-		};
-
 
 
 		template<typename T>
@@ -104,12 +86,6 @@ namespace LibraryLinkUtils {
 		template<typename T>
 		typename GetList<T>::Func GetList<T>::ListF  = [] (auto&&...) {
 			static_assert(sizeof(T) < 0, "Trying to use ML::GetList<T> for unsupported type T");
-			return 0;
-		};
-
-		template<typename T>
-		typename GetString<T>::Func GetString<T>::StringF = [] (auto&&...) {
-			static_assert(sizeof(T) < 0, "Trying to use ML::GetString<T> for unsupported type T");
 			return 0;
 		};
 
