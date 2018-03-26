@@ -32,8 +32,9 @@ namespace LibraryLinkUtils {
 	class MathLinkStream {
 	public:
 
+		MathLinkStream(MLINK mlp, ML::Encoding Enc);
 
-		MathLinkStream(MLINK mlp, ML::Encoding EncIn, ML::Encoding EncOut = EncIn);
+		MathLinkStream(MLINK mlp, ML::Encoding EncIn, ML::Encoding EncOut);
 
 		/**
 		 *   @brief			Constructs new MathLinkStream
@@ -69,6 +70,24 @@ namespace LibraryLinkUtils {
 		 **/
 		MLINK& get() noexcept {
 			return m;
+		}
+
+		/**
+		 * TODO
+		 * @param e
+		 */
+		void setStringEncoding(ML::Encoding e) {
+			setStringEncoding(e, e);
+		}
+
+		/**
+		 * TODO
+		 * @param eIn
+		 * @param eOut
+		 */
+		void setStringEncoding(ML::Encoding eIn, ML::Encoding eOut) {
+			EncodingIn = eIn;
+			EncodingOut = eOut;
 		}
 
 		/**
@@ -512,15 +531,17 @@ namespace LibraryLinkUtils {
 		 */
 		void testHead(const std::string& head, int argc);
 
+		template<typename T>
+		void PutStringDispatch(const T* strData, int strLen);
 
 		template<typename T>
-		void PutStringDispatch(const T* strData, int strLen, ML::Encoding e = EncodingOut);
-
-		template<>
-		void PutStringDispatch(const unsigned short* strData, int strLen, ML::Encoding e);
+		void PutStringDispatch(const T* strData, int strLen, ML::Encoding e);
 
 		template<typename T>
-		std::basic_string<T> GetStringDispatch(ML::Encoding e = EncodingIn);
+		std::basic_string<T> GetStringDispatch();
+
+		template<typename T>
+		std::basic_string<T> GetStringDispatch(ML::Encoding e);
 
 	private:
 		/// Internal low-level handle to MathLink, it is assumed that the handle is valid
@@ -657,7 +678,7 @@ namespace LibraryLinkUtils {
 
 	template<typename T>
 	ML::StringTypeQ<T> MathLinkStream::operator>>(std::basic_string<T>& s) {
-		s = GetStringDispatch();
+		s = GetStringDispatch<T>();
 		return *this;
 	}
 
@@ -688,37 +709,24 @@ namespace LibraryLinkUtils {
 	}
 
 	template<typename T>
+	void MathLinkStream::PutStringDispatch(const T* strData, int strLen) {
+		PutStringDispatch(strData, strLen, EncodingOut);
+	}
+
+	template<typename T>
 	void MathLinkStream::PutStringDispatch(const T* strData, int strLen, ML::Encoding e) {
 		switch(e) {
 			case ML::Encoding::Byte:
 				return ML::String<ML::Encoding::Byte>::put(m, strData, strLen);
-			case ML::Encoding::MMA:
-				return ML::String<ML::Encoding::MMA>::put(m, strData, strLen);
+			case ML::Encoding::Native:
+				return ML::String<ML::Encoding::Native>::put(m, strData, strLen);
 			case ML::Encoding::UTF8:
 				return ML::String<ML::Encoding::UTF8>::put(m, strData, strLen);
 			case ML::Encoding::UTF8Strict:
 				return ML::String<ML::Encoding::UTF8Strict>::put(m, strData, strLen);
 			default:
-				//TODO throw
-		}
-	}
-
-	template<>
-	void MathLinkStream::PutStringDispatch(const unsigned int* strData, int strLen, ML::Encoding);
-
-	template<typename T>
-	std::basic_string<T> MathLinkStream::GetStringDispatch(ML::Encoding e) {
-		switch(e) {
-			case ML::Encoding::Byte:
-				return ML::String<ML::Encoding::Byte>::getString<T>(m);
-			case ML::Encoding::MMA:
-				return ML::String<ML::Encoding::MMA>::getString<T>(m);
-			case ML::Encoding::UTF8:
-				return ML::String<ML::Encoding::UTF8>::getString<T>(m);
-			case ML::Encoding::UTF8Strict:
-				return ML::String<ML::Encoding::UTF8Strict>::getString<T>(m);
-			default:
-				//TODO throw
+				ErrorManager::throwException(LLErrorName::MLInvalidInEncoding,
+						"Invalid encoding \"" + ML::getEncodingName(e) + "\" in PutStringDispatch");
 		}
 	}
 
@@ -727,6 +735,36 @@ namespace LibraryLinkUtils {
 
 	template<>
 	void MathLinkStream::PutStringDispatch(const unsigned int* strData, int strLen, ML::Encoding);
+
+	template<typename T>
+	std::basic_string<T> MathLinkStream::GetStringDispatch() {
+		return GetStringDispatch<T>(EncodingIn);
+	}
+
+	template<typename T>
+	std::basic_string<T> MathLinkStream::GetStringDispatch(ML::Encoding e) {
+		switch(e) {
+			case ML::Encoding::Byte:
+				return ML::String<ML::Encoding::Byte>::getString<T>(m);
+			case ML::Encoding::Native:
+				return ML::String<ML::Encoding::Native>::getString<T>(m);
+			case ML::Encoding::UTF8:
+				return ML::String<ML::Encoding::UTF8>::getString<T>(m);
+			case ML::Encoding::UTF8Strict:
+				return ML::String<ML::Encoding::UTF8Strict>::getString<T>(m);
+			default:
+				ErrorManager::throwException(LLErrorName::MLInvalidInEncoding,
+						"Invalid encoding \"" + ML::getEncodingName(e) + "\" in GetStringDispatch");
+		}
+		return {};
+	}
+
+	template<>
+	std::basic_string<unsigned short> MathLinkStream::GetStringDispatch(ML::Encoding e);
+
+	template<>
+	std::basic_string<unsigned int> MathLinkStream::GetStringDispatch(ML::Encoding);
+
 } /* namespace LibraryLinkUtils */
 
 

@@ -179,7 +179,7 @@ namespace LibraryLinkUtils {
 	}
 
 	MathLinkStream& MathLinkStream::operator>>(ML::GetAsUTF8 s) {
-		auto stringData = ML::GetString<unsigned char>::get(m);
+		auto stringData = ML::String<ML::Encoding::UTF8>::get(m);
 		s.str = std::string { reinterpret_cast<const char*>(stringData.get()) };
 		return *this;
 	}
@@ -201,8 +201,9 @@ namespace LibraryLinkUtils {
 		ML::String<ML::Encoding::UTF32>::put(m, strData, strLen);
 	}
 
+
 	template<>
-	void MathLinkStream::PutStringDispatch(const unsigned short* strData, int strLen, ML::Encoding e) {
+	std::basic_string<unsigned short> MathLinkStream::GetStringDispatch(ML::Encoding e) {
 		switch(e) {
 			case ML::Encoding::UCS2:
 				return ML::String<ML::Encoding::UCS2>::getString<unsigned short>(m);
@@ -214,8 +215,8 @@ namespace LibraryLinkUtils {
 	}
 
 	template<>
-	void MathLinkStream::PutStringDispatch(const unsigned int* strData, int strLen, ML::Encoding) {
-		ML::String<ML::Encoding::UTF32>::getString<unsigned int>(m);
+	std::basic_string<unsigned int> MathLinkStream::GetStringDispatch(ML::Encoding) {
+		return ML::String<ML::Encoding::UTF32>::getString<unsigned int>(m);
 	}
 
 } /* namespace LibraryLinkUtils */

@@ -8,6 +8,7 @@
 #define LLUTILS_ML_STRINGTYPETRAITS_HPP_
 
 #include <cstdint>
+#include <string>
 
 namespace LibraryLinkUtils {
 
@@ -15,7 +16,7 @@ namespace LibraryLinkUtils {
 
 		enum class Encoding : std::uint8_t {
 			Undefined,
-			MMA,
+			Native,
 			Byte,
 			UTF8,
 			UTF8Strict,
@@ -25,26 +26,34 @@ namespace LibraryLinkUtils {
 		};
 
 		template<Encoding E>
-		struct CharType;
+		struct CharTypeStruct;
 
 		template<>
-		struct CharType<Encoding::MMA> { using type = char; };
+		struct CharTypeStruct<Encoding::Native> { using type = char; };
 		template<>
-		struct CharType<Encoding::Byte> { using type = unsigned char; };
+		struct CharTypeStruct<Encoding::Byte> { using type = unsigned char; };
 		template<>
-		struct CharType<Encoding::UTF8> { using type = unsigned char; };
+		struct CharTypeStruct<Encoding::UTF8> { using type = unsigned char; };
 		template<>
-		struct CharType<Encoding::UTF8Strict> { using type = unsigned char; };
+		struct CharTypeStruct<Encoding::UTF8Strict> { using type = unsigned char; };
 		template<>
-		struct CharType<Encoding::UTF16> { using type = unsigned short; };
+		struct CharTypeStruct<Encoding::UTF16> { using type = unsigned short; };
 		template<>
-		struct CharType<Encoding::UCS2> { using type = unsigned short; };
+		struct CharTypeStruct<Encoding::UCS2> { using type = unsigned short; };
 		template<>
-		struct CharType<Encoding::UTF32> { using type = unsigned int; };
+		struct CharTypeStruct<Encoding::UTF32> { using type = unsigned int; };
+
+		template<Encoding E>
+		using CharType = typename CharTypeStruct<E>::type;
 
 
 		template<Encoding E>
-		using CharType_t = typename CharType<E>::type;
+		struct StringTypeStruct {
+			using type = std::basic_string<CharType<E>>;
+		};
+
+		template<Encoding E>
+		using StringType = typename StringTypeStruct<E>::type;
 
 	} /* namespace ML */
 

@@ -96,18 +96,12 @@ namespace LibraryLinkUtils {
 		};
 
 #ifndef _WIN32
-		template<> GetString<char>::Func GetString<char>::StringF;
-		template<> const std::string GetString<char>::StringFName;
-
 
 		template<> GetArray<unsigned char>::Func GetArray<unsigned char>::ArrayF;
 		template<> const std::string GetArray<unsigned char>::ArrayFName;
 
 		template<> GetList<unsigned char>::Func GetList<unsigned char>::ListF;
 		template<> const std::string GetList<unsigned char>::ListFName;
-
-		template<> GetString<unsigned char>::Func GetString<unsigned char>::StringF;
-		template<> const std::string GetString<unsigned char>::StringFName;
 
 		template<> GetScalar<unsigned char>::Func GetScalar<unsigned char>::ScalarF;
 		template<> const std::string GetScalar<unsigned char>::ScalarFName;
@@ -119,9 +113,6 @@ namespace LibraryLinkUtils {
 		template<> GetList<short>::Func GetList<short>::ListF;
 		template<> const std::string GetList<short>::ListFName;
 
-		template<> GetString<unsigned short>::Func GetString<unsigned short>::StringF;
-		template<> const std::string GetString<unsigned short>::StringFName;
-
 		template<> GetScalar<short>::Func GetScalar<short>::ScalarF;
 		template<> const std::string GetScalar<short>::ScalarFName;
 
@@ -131,9 +122,6 @@ namespace LibraryLinkUtils {
 
 		template<> GetList<int>::Func GetList<int>::ListF;
 		template<> const std::string GetList<int>::ListFName;
-
-		template<> GetString<unsigned int>::Func GetString<unsigned int>::StringF;
-		template<> const std::string GetString<unsigned int>::StringFName;
 
 		template<> GetScalar<int>::Func GetScalar<int>::ScalarF;
 		template<> const std::string GetScalar<int>::ScalarFName;
