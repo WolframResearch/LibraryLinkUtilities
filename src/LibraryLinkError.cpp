@@ -84,7 +84,9 @@ namespace LibraryLinkUtils {
 			{ LLErrorName::MLGetSymbolError,		"MLGetSymbol failed." },
 			{ LLErrorName::MLGetFunctionError,		"MLGetFunction failed." },
 			{ LLErrorName::MLPacketHandleError,		"One of the packet handling functions failed." },
-			{ LLErrorName::MLFlowControlError,		"One of the flow control functions failed." }
+			{ LLErrorName::MLFlowControlError,		"One of the flow control functions failed." },
+			{ LLErrorName::MLInvalidInEncoding,		"Encoding specified for reading strings from Mathematica is invalid." },
+			{ LLErrorName::MLInvalidOutEncoding,	"Encoding specified for writing strings to Mathematica is invalid." }
 		});
 		return errMap;
 	}
@@ -231,6 +233,8 @@ namespace LibraryLinkUtils {
 		LLU_DEFINE_ERROR_NAME(MLGetFunctionError);
 		LLU_DEFINE_ERROR_NAME(MLPacketHandleError);
 		LLU_DEFINE_ERROR_NAME(MLFlowControlError);
+		LLU_DEFINE_ERROR_NAME(MLInvalidInEncoding);
+		LLU_DEFINE_ERROR_NAME(MLInvalidOutEncoding);
 	}
 
 } /* namespace LibraryLinkUtils */
