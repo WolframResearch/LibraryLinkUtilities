@@ -10,6 +10,7 @@
 #include <algorithm>
 #include <iostream>
 #include <map>
+#include <regex>
 #include <set>
 #include <string>
 #include <vector>
@@ -541,20 +542,21 @@ EXTERN_C DLLEXPORT int RepeatUTF32(WolframLibraryData libData, MLINK mlp) {
 	return err;
 }
 
-template<typename T>
+template<ML::Encoding E>
 void appendString(MathLinkStream& ml) {
-	std::basic_string<T> s;
+	ML::StringType<E> s;
+	ml.setStringEncoding(E);
 	ml >> s;
-	const std::basic_string<T> appendix {{'\a', '\b', '\f', '\r', '\n', '\t', '\v', '\\', '\'', '\"', '\?'}};
+	ML::StringType<E> appendix {{'\a', '\b', '\f', '\r', '\n', '\t', '\v', '\\', '\'', '\"', '\?'}};
 	ml << s + appendix;
 }
 
 template<>
-void appendString<char>(MathLinkStream& ml) {
+void appendString<ML::Encoding::Native>(MathLinkStream& ml) {
 	std::string s;
+	ml.setStringEncoding(ML::Encoding::Native);
 	ml >> s;
-	/* MLPutString requires \ to be escaped so we must send \\ to have a single backslash in the resulting string */
-	const std::string appendix {{'\a', '\b', '\f', '\r', '\n', '\t', '\v', '\\', '\\', '\'', '\"', '\?'}};
+	std::string appendix {{'\a', '\b', '\f', '\r', '\n', '\t', '\v', '\\', '\\', '\'', '\"', '\?'}};
 	ml << s + appendix;
 }
 
@@ -562,12 +564,13 @@ EXTERN_C DLLEXPORT int AppendString(WolframLibraryData libData, MLINK mlp) {
 	auto err = LLErrorCode::NoError;
 	try {
 		MathLinkStream ml(mlp, "List", 1);
-		appendString<char>(ml);
+		appendString<ML::Encoding::Native>(ml);
 	}
 	catch (LibraryLinkError& e) {
 		err = e.which();
 	}
-	catch (...) {
+	catch (std::runtime_error& e) {
+		std::cout << e.what() << std::endl;
 		err = LLErrorCode::FunctionError;
 	}
 	return err;
@@ -577,7 +580,7 @@ EXTERN_C DLLEXPORT int AppendUTF8(WolframLibraryData libData, MLINK mlp) {
 	auto err = LLErrorCode::NoError;
 	try {
 		MathLinkStream ml(mlp, "List", 1);
-		appendString<unsigned char>(ml);
+		appendString<ML::Encoding::UTF8>(ml);
 	}
 	catch (LibraryLinkError& e) {
 		err = e.which();
@@ -592,7 +595,7 @@ EXTERN_C DLLEXPORT int AppendUTF16(WolframLibraryData libData, MLINK mlp) {
 	auto err = LLErrorCode::NoError;
 	try {
 		MathLinkStream ml(mlp, "List", 1);
-		appendString<unsigned short>(ml);
+		appendString<ML::Encoding::UTF16>(ml);
 	}
 	catch (LibraryLinkError& e) {
 		err = e.which();
@@ -607,7 +610,7 @@ EXTERN_C DLLEXPORT int AppendUTF32(WolframLibraryData libData, MLINK mlp) {
 	auto err = LLErrorCode::NoError;
 	try {
 		MathLinkStream ml(mlp, "List", 1);
-		appendString<unsigned int>(ml);
+		appendString<ML::Encoding::UTF32>(ml);
 	}
 	catch (LibraryLinkError& e) {
 		err = e.which();
@@ -622,7 +625,7 @@ EXTERN_C DLLEXPORT int ReceiveAndFreeString(WolframLibraryData libData, MLINK ml
 	auto err = LLErrorCode::NoError;
 	try {
 		MathLinkStream ml(mlp, "List", 1);
-		ML::StringData<char> s;
+		ML::StringData<ML::Encoding::Native> s;
 		ml >> s;
 		ml << ML::Null << ML::EndPacket;
 	}
@@ -641,7 +644,7 @@ EXTERN_C DLLEXPORT int GetAndPutUTF8(WolframLibraryData libData, MLINK mlp) {
 		MathLinkStream ml(mlp, "List", 2);
 
 		// we will read first string to const unsigned char* - as UTF8 string are supposed to be read from MathLink
-		ML::StringData<unsigned char> sUChar;
+		ML::StringData<ML::Encoding::UTF8> sUChar;
 		ml >> sUChar;
 
 		std::cout << "Unsigned char string bytes: ";
