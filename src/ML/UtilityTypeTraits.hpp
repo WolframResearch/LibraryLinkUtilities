@@ -15,8 +15,6 @@
 
 namespace LibraryLinkUtils {
 
-	class MathLinkStream;
-
 	namespace ML {
 
 		template<typename T>
@@ -30,13 +28,13 @@ namespace LibraryLinkUtils {
 		template<> struct IsSupportedInMLArithmetic<double> : std::true_type {};
 
 
-		template<typename T, typename U = MathLinkStream&>
+		template<typename T, typename U>
 		using ScalarSupportedTypeQ = std::enable_if_t<IsSupportedInMLArithmetic<remove_cv_ref<T>>::value, U>;
 
-		template<typename T, typename U = MathLinkStream&>
+		template<typename T, typename U>
 		using NotScalarSupportedTypeQ = std::enable_if_t<!IsSupportedInMLArithmetic<remove_cv_ref<T>>::value, U>;
 
-		template<typename T, typename U = MathLinkStream&>
+		template<typename T, typename U>
 		using ScalarNotSupportedTypeQ = std::enable_if_t<std::is_arithmetic<T>::value && !IsSupportedInMLArithmetic<remove_cv_ref<T>>::value, U>;
 
 		template<typename T>
@@ -48,7 +46,7 @@ namespace LibraryLinkUtils {
 		template<> struct IsSupportedInMLString<unsigned int> : std::true_type {};
 
 
-		template<typename T, typename U = MathLinkStream&>
+		template<typename T, typename U>
 		using StringTypeQ = std::enable_if_t<IsSupportedInMLString<remove_cv_ref<T>>::value, U>;
 
 	}
