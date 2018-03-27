@@ -13,7 +13,7 @@
 #include "mathlink.h"
 
 #include "LibraryLinkError.h"
-#include "StringTypeTraits.hpp"
+#include "EncodingTraits.hpp"
 
 namespace LibraryLinkUtils {
 
@@ -34,9 +34,6 @@ namespace LibraryLinkUtils {
 
 		template<typename T>
 		using ReleaseStringFuncT = std::function<void(MLINK, const T*, int)>;
-
-		template<Encoding E, typename T>
-		constexpr bool CharacterTypesCompatible = (sizeof(T) == sizeof(CharType<E>));
 
 		template<Encoding E>
 		struct String {
@@ -79,6 +76,26 @@ namespace LibraryLinkUtils {
 			}
 		};
 
+		template<>
+		struct String<Encoding::Undefined> {
+
+			template<typename T>
+			static void put(MLINK m, const T* string, int len) {
+				static_assert(sizeof(T) == 0, "Trying to use ML::String<Encoding::Undefined>::put");
+			}
+
+			template<typename T = char>
+			static T* get(MLINK m) {
+				static_assert(sizeof(T) == 0, "Trying to use ML::String<Encoding::Undefined>::get");
+				return nullptr;
+			}
+
+			template<typename T>
+			static std::basic_string<T> getString(MLINK m) {
+				static_assert(sizeof(T) == 0, "Trying to use ML::String<Encoding::Undefined>::getString");
+				return {};
+			}
+		};
 
 		template<Encoding E>
 		struct ReleaseString {
@@ -103,7 +120,7 @@ namespace LibraryLinkUtils {
 			int chars = 0;
 		};
 
-		std::string getEncodingName(Encoding e);
+		constexpr const char* getEncodingName(Encoding e);
 
 #ifndef _WIN32
 

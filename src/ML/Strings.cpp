@@ -13,9 +13,18 @@
 namespace LibraryLinkUtils {
 
 	namespace ML {
-		std::string getEncodingName(Encoding e) {
-			static std::string encodingNames[] = { "Undefined", "Native", "Byte", "UTF8", "UTF8Strict", "UTF16", "UCS2", "UTF32" };
-			return encodingNames[static_cast<std::underlying_type_t<Encoding>>(e)];
+		constexpr const char* getEncodingName(Encoding e) {
+			switch(e) {
+				case Encoding::Undefined: return "Undefined";
+				case Encoding::Native: return "Native";
+				case Encoding::Byte: return "Byte";
+				case Encoding::UTF8: return "UTF8";
+				case Encoding::UTF8Strict: return "UTF8Strict";
+				case Encoding::UTF16: return "UTF16";
+				case Encoding::UCS2: return "UCS2";
+				case Encoding::UTF32: return "UTF32";
+				default: return "NoSuchEncoding";
+			}
 		}
 
 
