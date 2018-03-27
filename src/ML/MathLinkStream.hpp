@@ -1,8 +1,8 @@
 /** 
- * @file	MathLinkStream.h
+ * @file	MLStream.h
  * @date	Nov 23, 2017
  * @author	Rafal Chojna <rafalc@wolfram.com>
- * @brief	Header file for MathLinkStream class.
+ * @brief	Header file for MLStream class.
  */
 #ifndef LLUTILS_MATHLINKSTREAM_H_
 #define LLUTILS_MATHLINKSTREAM_H_
@@ -19,75 +19,58 @@
 #include "UtilityTypeTraits.hpp"
 #include "MLGet.h"
 #include "MLPut.h"
+#include "Strings.h"
 
 namespace LibraryLinkUtils {
 
 
 	/**
-	 * @class MathLinkStream
-	 * @brief Wrapper class over MathLink with a stream-like interface. So far covers only the most important types.
+	 * @class 	MLStream
+	 * @brief 	Wrapper class over MathLink with a stream-like interface.
 	 *
-	 * MathLinkStream resides in LibraryLinkUtils namespace, whereas other MathLink-related classes can be found in LibraryLinkUtils::ML namespace.
+	 * MLStream resides in LibraryLinkUtils namespace, whereas other MathLink-related classes can be found in LibraryLinkUtils::ML namespace.
+	 *
+	 * @tparam	EncodingIn - default encoding to use when reading strings from MathLink
+	 * @tparam	EncodingOut - default encoding to use when writing strings to MathLink
 	 */
-	class MathLinkStream {
+	template<ML::Encoding EncodingIn, ML::Encoding EncodingOut = EncodingIn>
+	class MLStream {
 	public:
 
-		MathLinkStream(MLINK mlp, ML::Encoding Enc);
-
-		MathLinkStream(MLINK mlp, ML::Encoding EncIn, ML::Encoding EncOut);
-
 		/**
-		 *   @brief			Constructs new MathLinkStream
+		 *   @brief			Constructs new MLStream
 		 *   @param[in] 	mlp - low-level object of type MLINK received from LibraryLink
 		 **/
-		MathLinkStream(MLINK mlp);
+		MLStream(MLINK mlp);
 
 		/**
-		 *   @brief         Constructs new MathLinkStream and checks whether there is a list of \c argc arguments on the LinkObject waiting to be read
+		 *   @brief         Constructs new MLStream and checks whether there is a list of \c argc arguments on the LinkObject waiting to be read
 		 *   @param[in]     mlp - low-level object of type MLINK received from LibraryLink
 		 *   @param[in] 	argc - expected number of arguments
 		 **/
-		MathLinkStream(MLINK mlp, int argc);
+		MLStream(MLINK mlp, int argc);
 
 		/**
-		 *   @brief         Constructs new MathLinkStream and checks whether there is a function with head \c head and \c argc arguments on the LinkObject waiting to be read
+		 *   @brief         Constructs new MLStream and checks whether there is a function with head \c head and \c argc arguments on the LinkObject waiting to be read
 		 *   @param[in]     mlp - low-level object of type MLINK received from LibraryLink\
 		 *   @param[in]		head - expected head of expression on the Link
 		 *   @param[in] 	argc - expected number of arguments
-		 *   @throws 		see MathLinkStream::testHead(const std::string&, int);
+		 *   @throws 		see MLStream::testHead(const std::string&, int);
 		 *
 		 *   @note			arguments passed to the library function will almost always be wrapped in a List, so if not sure pass "List" as \c head
 		 **/
-		MathLinkStream(MLINK mlp, const std::string& head, int argc);
+		MLStream(MLINK mlp, const std::string& head, int argc);
 
 		/**
 		 *   @brief Default destructor
 		 **/
-		~MathLinkStream() = default;
+		~MLStream() = default;
 
 		/**
 		 *   @brief Returns a reference to underlying low-level MathLink handle
 		 **/
 		MLINK& get() noexcept {
 			return m;
-		}
-
-		/**
-		 * TODO
-		 * @param e
-		 */
-		void setStringEncoding(ML::Encoding e) {
-			setStringEncoding(e, e);
-		}
-
-		/**
-		 * TODO
-		 * @param eIn
-		 * @param eOut
-		 */
-		void setStringEncoding(ML::Encoding eIn, ML::Encoding eOut) {
-			EncodingIn = eIn;
-			EncodingOut = eOut;
 		}
 
 		/**
@@ -113,10 +96,10 @@ namespace LibraryLinkUtils {
 
 	public:
 		/// Type of elements that can be send via MathLink with no arguments, for example ML::Flush
-		using StreamToken = MathLinkStream& (*)(MathLinkStream&);
+		using StreamToken = MLStream& (*)(MLStream&);
 
 		/// Type of elements that can be either send or received via MathLink with no arguments, for example ML::Rule
-		using BidirStreamToken = MathLinkStream& (*)(MathLinkStream&, ML::Direction);
+		using BidirStreamToken = MLStream& (*)(MLStream&, ML::Direction);
 
 
 		//
@@ -124,22 +107,16 @@ namespace LibraryLinkUtils {
 		//
 
 		/**
-		 *
-		 * @param e
-		 */
-		MathLinkStream& operator<<(ML::Encoding e);
-
-		/**
 		 *   @brief			Sends a stream token via MathLink
 		 *   @param[in] 	f - a stream token, i.e. an element that can be send via MathLink with no arguments, for example ML::Flush
 		 **/
-		MathLinkStream& operator<<(StreamToken f);
+		MLStream& operator<<(StreamToken f);
 
 		/**
 		 *   @brief			Sends a bidirectional stream token via MathLink
 		 *   @param[in] 	f - an element that can be either send or received via MathLink with no arguments, for example ML::Rule
 		 **/
-		MathLinkStream& operator<<(BidirStreamToken f);
+		MLStream& operator<<(BidirStreamToken f);
 
 		/**
 		 *   @brief			Sends a top-level symbol via MathLink
@@ -147,7 +124,7 @@ namespace LibraryLinkUtils {
 		 *   @see 			ML::Symbol
 		 *   @throws 		LLErrorName::MLPutSymbolError
 		 **/
-		MathLinkStream& operator<<(const ML::Symbol& s);
+		MLStream& operator<<(const ML::Symbol& s);
 
 		/**
 		 *   @brief			Sends a top-level function via MathLink, function arguments should be send immediately after
@@ -155,7 +132,7 @@ namespace LibraryLinkUtils {
 		 *   @see 			ML::Function
 		 *   @throws 		LLErrorName::MLPutFunctionError
 		 **/
-		MathLinkStream& operator<<(const ML::Function& f);
+		MLStream& operator<<(const ML::Function& f);
 
 		/**
 		 *   @brief			Sends a top-level expression of the form Missing["reason"]
@@ -163,7 +140,7 @@ namespace LibraryLinkUtils {
 		 *   @see 			ML::Missing
 		 *   @throws 		LLErrorName::MLPutFunctionError
 		 **/
-		MathLinkStream& operator<<(const ML::Missing& m);
+		MLStream& operator<<(const ML::Missing& m);
 
 		/**
 		 *   @brief			Sends a boolean value via MathLink, it is translated to True or False in Mathematica
@@ -171,7 +148,7 @@ namespace LibraryLinkUtils {
 		 *
 		 *   @throws 		LLErrorName::MLPutSymbolError
 		 **/
-		MathLinkStream& operator<<(bool b);
+		MLStream& operator<<(bool b);
 
 		/**
 		 *   @brief			Sends a MathLink array
@@ -182,7 +159,7 @@ namespace LibraryLinkUtils {
 		 *   @throws 		LLErrorName::MLPutArrayError
 		 **/
 		template<typename T>
-		MathLinkStream& operator<<(const ML::ArrayData<T>& a);
+		MLStream& operator<<(const ML::ArrayData<T>& a);
 
 		/**
 		 *   @brief			Sends a MathLink list
@@ -193,7 +170,7 @@ namespace LibraryLinkUtils {
 		 *   @throws 		LLErrorName::MLPutListError
 		 **/
 		template<typename T>
-		MathLinkStream& operator<<(const ML::ListData<T>& l);
+		MLStream& operator<<(const ML::ListData<T>& l);
 	
 		/**
 		 *   @brief			Sends an object owned by unique pointer
@@ -202,7 +179,7 @@ namespace LibraryLinkUtils {
 		 *   @param[in] 	p - pointer to the object to be sent
 		 **/
 		template<typename T, typename D>
-		MathLinkStream& operator<<(const std::unique_ptr<T, D>& p);
+		MLStream& operator<<(const std::unique_ptr<T, D>& p);
 
 		/**
 		 *   @brief			Sends a std::vector via MathLink, it is interpreted as a List in Mathematica
@@ -212,7 +189,7 @@ namespace LibraryLinkUtils {
 		 *   @throws 		LLErrorName::MLPutListError
 		 **/
 		template<typename T>
-		ML::ScalarSupportedTypeQ<T> operator<<(const std::vector<T>& l);
+		ML::ScalarSupportedTypeQ<T, MLStream&> operator<<(const std::vector<T>& l);
 
 		/**
 		 *   @brief			Sends a std::vector via MathLink, it is interpreted as a List in Mathematica
@@ -222,31 +199,37 @@ namespace LibraryLinkUtils {
 		 *   @throws 		LLErrorName::MLPutListError
 		 **/
 		template<typename T>
-		ML::NotScalarSupportedTypeQ<T> operator<<(const std::vector<T>& l);
+		ML::NotScalarSupportedTypeQ<T, MLStream&> operator<<(const std::vector<T>& l);
 
 		/**
 		 *   @brief			Sends a MathLink string
-		 *   @tparam		T - string character type
+		 *   @tparam		E - encoding of the string (it determines which function from MLPut*String family to use)
 		 *   @param[in] 	s - ML::StringData to be sent
-		 *   @see 			ML::StringData<T>
+		 *   @see 			ML::StringData<E>
 		 *   @see			http://reference.wolfram.com/language/guide/WSTPCFunctionsForExchangingStrings.html
 		 *   @throws 		LLErrorName::MLPutStringError
 		 **/
 		template<ML::Encoding E>
-		MathLinkStream& operator<<(const ML::StringData<E>& s);
+		MLStream& operator<<(const ML::StringData<E>& s);
 
 		/**
-		 *   @brief			Sends a string (with character type _const char_ or _const unsigned char_) using `MLPutUTF8String`.
+		 *   @brief			Sends all strings within a given object using specified character encoding.
 		 *
-		 *   Normally, when you send a string MathLinkStream chooses the appropriate MathLink function for the string you passed, depending on the type
-		 *   of characters. Here you explicitly state that the string must be sent with `MLPutUTF8String`. It is your responsibility to make sure that
-		 *   the string you want to send is encoded in UTF8.
+		 *   Normally, when you send a string MLStream chooses the appropriate MathLink function based on the EncodingOut template parameter.
+		 *   Sometimes you may want to locally override the output encoding and you can do this by wrapping the object with ML::PutAs<desired encoding, wrapped type>
+		 *   (you can use ML::putAs function to construct ML::PutAs object without having to explicitly specify the second template parameter).
 		 *
-		 *   @param[in] 	s - string you want send with `MLPutUTF8String` wrapped in a helper structure `ML::PutAsUTF8`
+		 *   @code
+		 *   	MLStream<ML::Encoding::UTF8> mls { mlink }; 		// By default use UTF8
+		 *		std::vector<std::string> vecOfExpr = ....;  		// This is a vector of serialized Mathematica expressions,
+		 *		ml << ML::putAs<ML::Encoding::Native>(vecOfExpr); 	// it should be sent with Native encoding
+		 *   @endcode
 		 *
-		 *   @throws 		LLErrorName::MLPutStringError
+		 *   @param[in] 	s - object to be sent
+		 *
 		 **/
-		MathLinkStream& operator<<(const ML::PutAsUTF8& s);
+		template<ML::Encoding E, typename T>
+		MLStream& operator<<(const ML::PutAs<E, T>& s);
 
 		/**
 		 *   @brief			Sends std::basic_string
@@ -256,10 +239,9 @@ namespace LibraryLinkUtils {
 		 *   @see			http://reference.wolfram.com/language/guide/WSTPCFunctionsForExchangingStrings.html
 		 *   @throws 		LLErrorName::MLPutStringError
 		 *
-		 *   @note			std::string is just std::basic_string<char>
 		 **/
 		template<typename T>
-		ML::StringTypeQ<T> operator<<(const std::basic_string<T>& s);
+		ML::StringTypeQ<T, MLStream&> operator<<(const std::basic_string<T>& s);
 
 		/**
 		 *   @brief			Sends a character array (or a string literal)
@@ -271,7 +253,7 @@ namespace LibraryLinkUtils {
 		 *   @throws 		LLErrorName::MLPutStringError
 		 **/
 		template<typename T, std::size_t N>
-		ML::StringTypeQ<T> operator<<(const T (&s)[N]);
+		ML::StringTypeQ<T, MLStream&> operator<<(const T (&s)[N]);
 
 		/**
 		 *   @brief			Sends a C-string
@@ -280,18 +262,18 @@ namespace LibraryLinkUtils {
 		 *   @see			http://reference.wolfram.com/language/guide/WSTPCFunctionsForExchangingStrings.html
 		 *   @throws 		LLErrorName::MLPutStringError
 		 **/
-		MathLinkStream& operator<<(const char* s);
+		MLStream& operator<<(const char* s);
 
 		/**
 		 *   @brief			Sends a std::map via MathLink, it is translated to an Association in Mathematica
-		 *   @tparam		K - map key type, must be supported in MathLinkStream
-		 *   @tparam		V - map value type, must be supported in MathLinkStream
+		 *   @tparam		K - map key type, must be supported in MLStream
+		 *   @tparam		V - map value type, must be supported in MLStream
 		 *   @param[in] 	m - map to be sent as Association
 		 *
 		 *   @throws 		LLErrorName::MLPutFunctionError plus whatever can be thrown sending keys and values
 		 **/
 		template<typename K, typename V>
-		MathLinkStream& operator<<(const std::map<K, V>& m);
+		MLStream& operator<<(const std::map<K, V>& m);
 
 		/**
 		 *   @brief			Sends a scalar value (int, float, double, etc)
@@ -301,7 +283,7 @@ namespace LibraryLinkUtils {
 		 *   @throws 		LLErrorName::MLPutScalarError
 		 **/
 		template<typename T>
-		ML::ScalarSupportedTypeQ<T> operator<<(T value);
+		ML::ScalarSupportedTypeQ<T, MLStream&> operator<<(T value);
 
 		/**
 		 *   @brief			Overload for scalar values that cannot be sent via MathLink without conversion
@@ -314,7 +296,7 @@ namespace LibraryLinkUtils {
 		 *
 		 **/
 		template<typename T>
-		ML::ScalarNotSupportedTypeQ<T> operator<<(T value);
+		ML::ScalarNotSupportedTypeQ<T, MLStream&> operator<<(T value);
 
 		/**
 		 *   @brief			Sends any container (a class with begin(), end() and size()) as List
@@ -326,7 +308,7 @@ namespace LibraryLinkUtils {
 		 *   @note			Size() is not technically necessary, but needed for performance reason. Most STL containers have size() anyway.
 		 **/
 		template<typename Container>
-		auto operator<<(const Container& c) -> typename std::enable_if_t<sizeof(c.begin()) == sizeof(c.end()) && (sizeof(c.size()) > 0), MathLinkStream&> {
+		auto operator<<(const Container& c) -> typename std::enable_if_t<sizeof(c.begin()) == sizeof(c.end()) && (sizeof(c.size()) > 0), MLStream&> {
 			this->sendRange(c.begin(), c.end());
 			return *this;
 		}
@@ -336,16 +318,10 @@ namespace LibraryLinkUtils {
 		//
 
 		/**
-		 *
-		 * @param e
-		 */
-		MathLinkStream& operator>>(ML::Encoding e);
-
-		/**
 		 *   @brief			Receives a bidirectional stream token via MathLink
 		 *   @param[in] 	f - an element that can be either send or received via MathLink with no arguments, for example ML::Rule
 		 **/
-		MathLinkStream& operator>>(BidirStreamToken f);
+		MLStream& operator>>(BidirStreamToken f);
 
 		/**
 		 *   @brief			Receives a symbol from MathLink.
@@ -356,7 +332,7 @@ namespace LibraryLinkUtils {
 		 *   @see 			ML::Symbol
 		 *   @throws 		LLErrorName::MLGetSymbolError, LLErrorName::MLTestHeadError
 		 **/
-		MathLinkStream& operator>>(const ML::Symbol& s);
+		MLStream& operator>>(const ML::Symbol& s);
 
 		/**
 		 *   @brief				Receives a symbol from MathLink.
@@ -368,7 +344,7 @@ namespace LibraryLinkUtils {
 		 *   @see 				ML::Symbol
 		 *   @throws 			LLErrorName::MLGetSymbolError, LLErrorName::MLTestHeadError
 		 **/
-		MathLinkStream& operator>>(ML::Symbol& s);
+		MLStream& operator>>(ML::Symbol& s);
 
 		/**
 		 *   @brief			Receives a function from MathLink.
@@ -379,7 +355,7 @@ namespace LibraryLinkUtils {
 		 *   @see 			ML::Function
 		 *   @throws 		LLErrorName::MLGetFunctionError, LLErrorName::MLTestHeadError
 		 **/
-		MathLinkStream& operator>>(const ML::Function& f);
+		MLStream& operator>>(const ML::Function& f);
 
 		/**
 		 *   @brief				Receives a function from MathLink.
@@ -390,7 +366,7 @@ namespace LibraryLinkUtils {
 		 *   @see 				ML::Function
 		 *   @throws 			LLErrorName::MLGetFunctionError, LLErrorName::MLTestHeadError
 		 **/
-		MathLinkStream& operator>>(ML::Function& f);
+		MLStream& operator>>(ML::Function& f);
 
 		/**
 		 *   @brief			Receives a True or False symbol from Mathematica and converts it to bool
@@ -398,7 +374,7 @@ namespace LibraryLinkUtils {
 		 *
 		 *   @throws 		LLErrorName::MLGetSymbolError, LLErrorName::MLWrongSymbolForBool
 		 **/
-		MathLinkStream& operator>>(bool& b);
+		MLStream& operator>>(bool& b);
 
 		/**
 		 *   @brief			Receives a MathLink array
@@ -409,7 +385,7 @@ namespace LibraryLinkUtils {
 		 *   @throws 		LLErrorName::MLGetArrayError
 		 **/
 		template<typename T>
-		MathLinkStream& operator>>(ML::ArrayData<T>& a);
+		MLStream& operator>>(ML::ArrayData<T>& a);
 
 		/**
 		 *   @brief			Receives a MathLink list
@@ -420,7 +396,7 @@ namespace LibraryLinkUtils {
 		 *   @throws 		LLErrorName::MLGetListError
 		 **/
 		template<typename T>
-		MathLinkStream& operator>>(ML::ListData<T>& l);
+		MLStream& operator>>(ML::ListData<T>& l);
 
 		/**
 		 *   @brief			Receives a List from MathLink and assigns it to std::vector
@@ -430,7 +406,7 @@ namespace LibraryLinkUtils {
 		 *   @throws 		LLErrorName::MLGetListError
 		 **/
 		template<typename T>
-		MathLinkStream& operator>>(std::vector<T>& l);
+		MLStream& operator>>(std::vector<T>& l);
 
 		/**
 		 *   @brief			Receives a MathLink string
@@ -440,8 +416,8 @@ namespace LibraryLinkUtils {
 		 *   @see			http://reference.wolfram.com/language/guide/WSTPCFunctionsForExchangingStrings.html
 		 *   @throws 		LLErrorName::MLGetStringError
 		 **/
-		template<ML::Encoding E>
-		MathLinkStream& operator>>(ML::StringData<E>& s);
+		template<ML::Encoding E = EncodingIn>
+		MLStream& operator>>(ML::StringData<E>& s);
 
 		/**
 		 *   @brief			Receives std::basic_string
@@ -454,21 +430,22 @@ namespace LibraryLinkUtils {
 		 *   @note			std::string is just std::basic_string<char>
 		 **/
 		template<typename T>
-		ML::StringTypeQ<T> operator>>(std::basic_string<T>& s);
+		ML::StringTypeQ<T, MLStream&> operator>>(std::basic_string<T>& s);
 
 		/**
 		 *	 @brief			Receives a UTF8 encoded string via MathLink
 		 *	 @param 		s - std::string reference wrapped in ML::GetAsUTF8 structure
 		 *
-		 * 	 @see			ML::GetAsUTF8
-		 * 	 @throws 		LLErrorName::MLGetStringError
+		 * 	 @see			ML::GetAs
+		 * 	 @note			There is a utility function ML::getAs for easier creation of ML::GetAs objects
 		 */
-		MathLinkStream& operator>>(ML::GetAsUTF8 s);
+		template<ML::Encoding E, typename T>
+		MLStream& operator>>(ML::GetAs<E, T> x);
 
 		/**
 		 *   @brief			Receives a std::map via MathLink
-		 *   @tparam		K - map key type, must be supported in MathLinkStream
-		 *   @tparam		V - map value type, must be supported in MathLinkStream
+		 *   @tparam		K - map key type, must be supported in MLStream
+		 *   @tparam		V - map value type, must be supported in MLStream
 		 *   @param[out] 	m - argument to which the std::map received from MathLink will be assigned
 		 *
 		 *   @throws 		LLErrorName::MLGetFunctionError plus whatever can be thrown receiving keys and values
@@ -476,7 +453,7 @@ namespace LibraryLinkUtils {
 		 *   @note			The top-level Association must have all values of the same type because this is how std::map works
 		 **/
 		template<typename K, typename V>
-		MathLinkStream& operator>>(std::map<K, V>& m);
+		MLStream& operator>>(std::map<K, V>& m);
 
 		/**
 		 *   @brief			Receives a scalar value (int, float, double, etc)
@@ -486,7 +463,7 @@ namespace LibraryLinkUtils {
 		 *   @throws 		LLErrorName::MLGetScalarError
 		 **/
 		template<typename T>
-		ML::ScalarSupportedTypeQ<T> operator>>(T& value);
+		ML::ScalarSupportedTypeQ<T, MLStream&> operator>>(T& value);
 
 		/**
 		 *   @brief			Overload for scalar values that cannot be received via MathLink without conversion
@@ -499,7 +476,7 @@ namespace LibraryLinkUtils {
 		 *
 		 **/
 		template<typename T>
-		ML::ScalarNotSupportedTypeQ<T> operator>>(T& value);
+		ML::ScalarNotSupportedTypeQ<T, MLStream&> operator>>(T& value);
 
 	private:
 
@@ -531,58 +508,132 @@ namespace LibraryLinkUtils {
 		 */
 		void testHead(const std::string& head, int argc);
 
-		template<typename T>
-		void PutStringDispatch(const T* strData, int strLen);
-
-		template<typename T>
-		void PutStringDispatch(const T* strData, int strLen, ML::Encoding e);
-
-		template<typename T>
-		std::basic_string<T> GetStringDispatch();
-
-		template<typename T>
-		std::basic_string<T> GetStringDispatch(ML::Encoding e);
-
 	private:
 		/// Internal low-level handle to MathLink, it is assumed that the handle is valid
 		MLINK m;
-
-		ML::Encoding EncodingIn = ML::Encoding::UTF8;
-		ML::Encoding EncodingOut = ML::Encoding::UTF8;
 	};
 
 
+	template<ML::Encoding EIn, ML::Encoding EOut>
+	MLStream<EIn, EOut>::MLStream(MLINK mlp) : m(mlp) {
+	}
+
+	template<ML::Encoding EIn, ML::Encoding EOut>
+	MLStream<EIn, EOut>::MLStream(MLINK mlp, int argc) : MLStream(mlp, "List", argc) {
+	}
+
+	template<ML::Encoding EIn, ML::Encoding EOut>
+	MLStream<EIn, EOut>::MLStream(MLINK mlp, const std::string& head, int argc) : m(mlp) {
+		testHead(head, argc);
+	}
+
+	template<ML::Encoding EIn, ML::Encoding EOut>
 	template<typename Iterator, typename>
-	void MathLinkStream::sendRange(Iterator begin, Iterator end) {
+	void MLStream<EIn, EOut>::sendRange(Iterator begin, Iterator end) {
 		sendRange(begin, end, "List");
 	}
 
+	template<ML::Encoding EIn, ML::Encoding EOut>
 	template<typename Iterator, typename>
-	void MathLinkStream::sendRange(Iterator begin, Iterator end, const std::string& head) {
+	void MLStream<EIn, EOut>::sendRange(Iterator begin, Iterator end, const std::string& head) {
 		*this << ML::Function(head, std::distance(begin, end));
 		std::for_each(begin, end, [this](const auto& elem) { *this << elem; });
 	}
 
+
+	template<ML::Encoding EIn, ML::Encoding EOut>
+	void MLStream<EIn, EOut>::check(int statusOk, const std::string& errorName, const std::string& debugInfo) {
+		ML::checkError(m, statusOk, errorName, debugInfo);
+	}
+
+	template<ML::Encoding EIn, ML::Encoding EOut>
+	int MLStream<EIn, EOut>::testHead(const std::string& head) {
+		int argcount;
+		check(
+			MLTestHead(m, head.c_str(), &argcount),
+			LLErrorName::MLTestHeadError,
+			"Expected \"" + head + "\""
+		);
+		return argcount;
+	}
+
+	template<ML::Encoding EIn, ML::Encoding EOut>
+	void MLStream<EIn, EOut>::testHead(const std::string& head, int argc) {
+		int argcount = testHead(head);
+		if (argc != argcount) {
+			ErrorManager::throwException(LLErrorName::MLTestHeadError, "Expected " + std::to_string(argc) + " arguments but got " + std::to_string(argcount));
+		}
+	}
+
 	//
-	//	Definitions of MathLinkStream::operator<<
+	//	Definitions of MLStream<EIn, EOut>::operator<<
 	//
 
+	template<ML::Encoding EIn, ML::Encoding EOut>
+	auto MLStream<EIn, EOut>::operator<<(StreamToken f) -> MLStream& {
+		return f(*this);
+	}
+
+	template<ML::Encoding EIn, ML::Encoding EOut>
+	auto MLStream<EIn, EOut>::operator<<(BidirStreamToken f) -> MLStream& {
+		return f(*this, ML::Direction::Put);
+	}
+
+	template<ML::Encoding EIn, ML::Encoding EOut>
+	auto MLStream<EIn, EOut>::operator<<(const ML::Symbol& s) -> MLStream& {
+		check(
+			MLPutSymbol(m, s.getHead().c_str()),
+			LLErrorName::MLPutSymbolError,
+			"Cannot put symbol: \"" + s.getHead() + "\""
+		);
+		return *this;
+	}
+
+	template<ML::Encoding EIn, ML::Encoding EOut>
+	auto MLStream<EIn, EOut>::operator<<(const ML::Function& f) -> MLStream& {
+		check(
+			MLPutFunction(m, f.getHead().c_str(), f.getArgc()),
+			LLErrorName::MLPutFunctionError,
+			"Cannot put function: \"" + f.getHead() + "\" with " + std::to_string(f.getArgc()) + " arguments"
+		);
+		return *this;
+	}
+
+	template<ML::Encoding EIn, ML::Encoding EOut>
+	auto MLStream<EIn, EOut>::operator<<(const ML::Missing& f) -> MLStream& {
+		check(
+			MLPutFunction(m, f.getHead().c_str(), 1), //f.getArgc() could be 0 but we still want to send f.reason, even if it's an empty string
+			LLErrorName::MLPutFunctionError,
+			"Cannot put function: \"" + f.getHead() + "\" with 1 argument"
+		);
+		*this << f.why();
+		return *this;
+	}
+
+	template<ML::Encoding EIn, ML::Encoding EOut>
+	auto MLStream<EIn, EOut>::operator<<(bool b) -> MLStream& {
+		return *this << ML::Symbol(b? "True" : "False");
+	}
+
+	template<ML::Encoding EIn, ML::Encoding EOut>
 	template<typename T>
-	MathLinkStream& MathLinkStream::operator<<(const ML::ArrayData<T>& a) {
+	auto MLStream<EIn, EOut>::operator<<(const ML::ArrayData<T>& a) -> MLStream& {
 		const auto& del = a.get_deleter();
 		ML::PutArray<T>::put(m, a.get(), del.getDims(), del.getHeads(), del.getRank());
 		return *this;
 	}
 
+	template<ML::Encoding EIn, ML::Encoding EOut>
 	template<typename T>
-	MathLinkStream& MathLinkStream::operator<<(const ML::ListData<T>& l) {
+	auto MLStream<EIn, EOut>::operator<<(const ML::ListData<T>& l) -> MLStream& {
 		const auto& del = l.get_deleter();
 		ML::PutList<T>::put(m, l.get(), del.getLength());
 		return *this;
 	}
 
+	template<ML::Encoding EIn, ML::Encoding EOut>
 	template<typename T, typename D>
-	MathLinkStream& MathLinkStream::operator<<(const std::unique_ptr<T, D>& p) {
+	auto MLStream<EIn, EOut>::operator<<(const std::unique_ptr<T, D>& p) -> MLStream& {
 		if (p) {
 			*this << *p;
 		} else {
@@ -591,14 +642,16 @@ namespace LibraryLinkUtils {
 		return *this;
 	}
 
+	template<ML::Encoding EIn, ML::Encoding EOut>
 	template<typename T>
-	ML::ScalarSupportedTypeQ<T> MathLinkStream::operator<<(const std::vector<T>& l) {
+	auto MLStream<EIn, EOut>::operator<<(const std::vector<T>& l) -> ML::ScalarSupportedTypeQ<T, MLStream&> {
 		ML::PutList<T>::put(m, l.data(), l.size());
 		return *this;
 	}
 
+	template<ML::Encoding EIn, ML::Encoding EOut>
 	template<typename T>
-	ML::NotScalarSupportedTypeQ<T> MathLinkStream::operator<<(const std::vector<T>& l) {
+	auto MLStream<EIn, EOut>::operator<<(const std::vector<T>& l) -> ML::NotScalarSupportedTypeQ<T, MLStream&> {
 		*this << ML::List(l.size());
 		for (const auto& elem : l) {
 			*this << elem;
@@ -606,38 +659,58 @@ namespace LibraryLinkUtils {
 		return *this;
 	}
 
+	template<ML::Encoding EIn, ML::Encoding EOut>
 	template<ML::Encoding E>
-	MathLinkStream& MathLinkStream::operator<<(const ML::StringData<E>& s) {
+	auto MLStream<EIn, EOut>::operator<<(const ML::StringData<E>& s) -> MLStream& {
 		ML::String<E>::put(m, s.get(), s.get_deleter().getLength());
 		return *this;
 	}
 
+	template<ML::Encoding EIn, ML::Encoding EOut>
 	template<typename T>
-	ML::StringTypeQ<T> MathLinkStream::operator<<(const std::basic_string<T>& s) {
-		PutStringDispatch(s.c_str(), static_cast<int>(s.size()));
+	auto MLStream<EIn, EOut>::operator<<(const std::basic_string<T>& s) -> ML::StringTypeQ<T, MLStream&> {
+		ML::String<EOut>::put(m, s.c_str(), static_cast<int>(s.size()));
 		return *this;
 	}
 
+	template<ML::Encoding EIn, ML::Encoding EOut>
 	template<typename T, std::size_t N>
-	ML::StringTypeQ<T> MathLinkStream::operator<<(const T (&s)[N]) {
-		PutStringDispatch(s, N);
+	auto MLStream<EIn, EOut>::operator<<(const T (&s)[N]) -> ML::StringTypeQ<T, MLStream&> {
+		ML::String<EOut>::put(m, s, N);
 		return *this;
 	}
 
+	template<ML::Encoding EIn, ML::Encoding EOut>
+	template<ML::Encoding E, typename T>
+	auto MLStream<EIn, EOut>::operator<<(const ML::PutAs<E, T>& wrp) -> MLStream& {
+		MLStream<EIn, E> tmpMLS { m };
+		tmpMLS << wrp.obj;
+		return *this;
+	}
+
+	template<ML::Encoding EIn, ML::Encoding EOut>
+	auto MLStream<EIn, EOut>::operator<<(const char* s) -> MLStream& {
+		ML::String<EOut>::put(m, s, static_cast<int>(std::strlen(s)));
+		return *this;
+	}
+
+	template<ML::Encoding EIn, ML::Encoding EOut>
 	template<typename T>
-	ML::ScalarSupportedTypeQ<T> MathLinkStream::operator<<(T value) {
+	auto MLStream<EIn, EOut>::operator<<(T value) -> ML::ScalarSupportedTypeQ<T, MLStream&> {
 		ML::PutScalar<T>::put(m, value);
 		return *this;
 	}
 
+	template<ML::Encoding EIn, ML::Encoding EOut>
 	template<typename T>
-	ML::ScalarNotSupportedTypeQ<T> MathLinkStream::operator<<(T) {
+	auto MLStream<EIn, EOut>::operator<<(T) -> ML::ScalarNotSupportedTypeQ<T, MLStream&> {
 		static_assert(sizeof(T) < 0, "Calling operator<< with unsupported type.");
 		return *this;
 	}
 
+	template<ML::Encoding EIn, ML::Encoding EOut>
 	template<typename K, typename V>
-	MathLinkStream& MathLinkStream::operator<<(const std::map<K, V>& s) {
+	auto MLStream<EIn, EOut>::operator<<(const std::map<K, V>& s) -> MLStream& {
 		*this << ML::Association(s.size());
 		for (const auto& elem : s) {
 			*this << ML::Rule << elem.first << elem.second;
@@ -645,24 +718,105 @@ namespace LibraryLinkUtils {
 		return *this;
 	}
 
+
+
 	//
-	//	Definitions of MathLinkStream::operator>>
+	//	Definitions of MLStream<EIn, EOut>::operator>>
 	//
 
+	template<ML::Encoding EIn, ML::Encoding EOut>
+	auto MLStream<EIn, EOut>::operator>>(BidirStreamToken f) -> MLStream& {
+		return f(*this, ML::Direction::Get);
+	}
+
+	template<ML::Encoding EIn, ML::Encoding EOut>
+	auto MLStream<EIn, EOut>::operator>>(const ML::Symbol& s) -> MLStream& {
+		check(MLTestSymbol(m, s.getHead().c_str()), LLErrorName::MLTestSymbolError, "Cannot get symbol: \"" + s.getHead() + "\"");
+		return *this;
+	}
+
+	template<ML::Encoding EIn, ML::Encoding EOut>
+	auto MLStream<EIn, EOut>::operator>>(ML::Symbol& s) -> MLStream& {
+		if (!s.getHead().empty()) {
+			check(MLTestSymbol(m, s.getHead().c_str()), LLErrorName::MLTestSymbolError, "Cannot get symbol: \"" + s.getHead() + "\"");
+		}
+		else {
+			const char* head;
+			check(MLGetSymbol(m, &head), LLErrorName::MLGetSymbolError, "Cannot get symbol");
+			s.setHead(head);
+			MLReleaseSymbol(m, head);
+		}
+		return *this;
+	}
+
+	template<ML::Encoding EIn, ML::Encoding EOut>
+	auto MLStream<EIn, EOut>::operator>>(const ML::Function& f) -> MLStream& {
+		testHead(f.getHead().c_str(), f.getArgc());
+		return *this;
+	}
+
+	template<ML::Encoding EIn, ML::Encoding EOut>
+	auto MLStream<EIn, EOut>::operator>>(ML::Function& f) -> MLStream& {
+		if (!f.getHead().empty()) {
+			if (f.getArgc() < 0) {
+				f.setArgc(testHead(f.getHead().c_str()));
+			}
+			else {
+				testHead(f.getHead().c_str(), f.getArgc());
+			}
+		}
+		else {
+			const char* head;
+			int argc;
+			check(MLGetFunction(m, &head, &argc), LLErrorName::MLGetFunctionError, "Cannot get function");
+			f.setHead(head);
+			MLReleaseSymbol(m, head);
+			f.setArgc(argc);
+		}
+		return *this;
+	}
+
+	template<ML::Encoding EIn, ML::Encoding EOut>
+	auto MLStream<EIn, EOut>::operator>>(bool& b) -> MLStream& {
+		ML::Symbol boolean;
+		*this >> boolean;
+		if (boolean.getHead() == "True") {
+			b = true;
+		}
+		else if (boolean.getHead() == "False") {
+			b = false;
+		}
+		else {
+			ErrorManager::throwException(LLErrorName::MLWrongSymbolForBool, "Expected \"True\" or \"False\", got " + boolean.getHead());
+		}
+		return *this;
+	}
+
+	template<ML::Encoding EIn, ML::Encoding EOut>
+	template<ML::Encoding E, typename T>
+	auto MLStream<EIn, EOut>::operator>>(ML::GetAs<E, T> wrp) -> MLStream& {
+		MLStream<E, EOut> tmpMLS { m };
+		tmpMLS >> wrp.obj;
+		return *this;
+	}
+
+	template<ML::Encoding EIn, ML::Encoding EOut>
 	template<typename T>
-	MathLinkStream& MathLinkStream::operator>>(ML::ArrayData<T>& a) {
+	auto MLStream<EIn, EOut>::operator>>(ML::ArrayData<T>& a) -> MLStream& {
 		a = ML::GetArray<T>::get(m);
 		return *this;
 	}
 
+	template<ML::Encoding EIn, ML::Encoding EOut>
 	template<typename T>
-	MathLinkStream& MathLinkStream::operator>>(ML::ListData<T>& l) {
+	auto MLStream<EIn, EOut>::operator>>(ML::ListData<T>& l) -> MLStream& {
 		l = ML::GetList<T>::get(m);
 		return *this;
 	}
 
+	template<ML::Encoding EIn, ML::Encoding EOut>
 	template<typename T>
-	MathLinkStream& MathLinkStream::operator>>(std::vector<T>& l) {
+	auto MLStream<EIn, EOut>::operator>>(std::vector<T>& l) -> MLStream& {
 		auto list = ML::GetList<T>::get(m);
 		T* start = list.get();
 		auto listLen = list.get_deleter().getLength();
@@ -670,20 +824,23 @@ namespace LibraryLinkUtils {
 		return *this;
 	}
 
+	template<ML::Encoding EIn, ML::Encoding EOut>
 	template<ML::Encoding E>
-	MathLinkStream& MathLinkStream::operator>>(ML::StringData<E>& s) {
+	auto MLStream<EIn, EOut>::operator>>(ML::StringData<E>& s) -> MLStream& {
 		s = ML::String<E>::get(m);
 		return *this;
 	}
 
+	template<ML::Encoding EIn, ML::Encoding EOut>
 	template<typename T>
-	ML::StringTypeQ<T> MathLinkStream::operator>>(std::basic_string<T>& s) {
-		s = GetStringDispatch<T>();
+	auto MLStream<EIn, EOut>::operator>>(std::basic_string<T>& s) -> ML::StringTypeQ<T, MLStream&> {
+		s = ML::String<EIn>::template getString<T>(m);
 		return *this;
 	}
 
+	template<ML::Encoding EIn, ML::Encoding EOut>
 	template<typename K, typename V>
-	MathLinkStream& MathLinkStream::operator>>(std::map<K, V>& m) {
+	auto MLStream<EIn, EOut>::operator>>(std::map<K, V>& m) -> MLStream& {
 		auto elemCount = testHead("Association");
 		for (auto i = 0; i < elemCount; ++i) {
 			*this >> ML::Rule;
@@ -696,74 +853,19 @@ namespace LibraryLinkUtils {
 		return *this;
 	}
 
+	template<ML::Encoding EIn, ML::Encoding EOut>
 	template<typename T>
-	ML::ScalarSupportedTypeQ<T> MathLinkStream::operator>>(T& value) {
+	auto MLStream<EIn, EOut>::operator>>(T& value) -> ML::ScalarSupportedTypeQ<T, MLStream&> {
 		value = ML::GetScalar<T>::get(m);
 		return *this;
 	}
 
+	template<ML::Encoding EIn, ML::Encoding EOut>
 	template<typename T>
-	ML::ScalarNotSupportedTypeQ<T> MathLinkStream::operator>>(T&) {
+	auto MLStream<EIn, EOut>::operator>>(T&) -> ML::ScalarNotSupportedTypeQ<T, MLStream&> {
 		static_assert(sizeof(T) < 0, "Calling operator>> with unsupported type.");
 		return *this;
 	}
-
-	template<typename T>
-	void MathLinkStream::PutStringDispatch(const T* strData, int strLen) {
-		PutStringDispatch(strData, strLen, EncodingOut);
-	}
-
-	template<typename T>
-	void MathLinkStream::PutStringDispatch(const T* strData, int strLen, ML::Encoding e) {
-		switch(e) {
-			case ML::Encoding::Byte:
-				return ML::String<ML::Encoding::Byte>::put(m, strData, strLen);
-			case ML::Encoding::Native:
-				return ML::String<ML::Encoding::Native>::put(m, strData, strLen);
-			case ML::Encoding::UTF8:
-				return ML::String<ML::Encoding::UTF8>::put(m, strData, strLen);
-			case ML::Encoding::UTF8Strict:
-				return ML::String<ML::Encoding::UTF8Strict>::put(m, strData, strLen);
-			default:
-				ErrorManager::throwException(LLErrorName::MLInvalidInEncoding,
-						"Invalid encoding \"" + ML::getEncodingName(e) + "\" in PutStringDispatch");
-		}
-	}
-
-	template<>
-	void MathLinkStream::PutStringDispatch(const unsigned short* strData, int strLen, ML::Encoding e);
-
-	template<>
-	void MathLinkStream::PutStringDispatch(const unsigned int* strData, int strLen, ML::Encoding);
-
-	template<typename T>
-	std::basic_string<T> MathLinkStream::GetStringDispatch() {
-		return GetStringDispatch<T>(EncodingIn);
-	}
-
-	template<typename T>
-	std::basic_string<T> MathLinkStream::GetStringDispatch(ML::Encoding e) {
-		switch(e) {
-			case ML::Encoding::Byte:
-				return ML::String<ML::Encoding::Byte>::getString<T>(m);
-			case ML::Encoding::Native:
-				return ML::String<ML::Encoding::Native>::getString<T>(m);
-			case ML::Encoding::UTF8:
-				return ML::String<ML::Encoding::UTF8>::getString<T>(m);
-			case ML::Encoding::UTF8Strict:
-				return ML::String<ML::Encoding::UTF8Strict>::getString<T>(m);
-			default:
-				ErrorManager::throwException(LLErrorName::MLInvalidInEncoding,
-						"Invalid encoding \"" + ML::getEncodingName(e) + "\" in GetStringDispatch");
-		}
-		return {};
-	}
-
-	template<>
-	std::basic_string<unsigned short> MathLinkStream::GetStringDispatch(ML::Encoding e);
-
-	template<>
-	std::basic_string<unsigned int> MathLinkStream::GetStringDispatch(ML::Encoding);
 
 } /* namespace LibraryLinkUtils */
 
