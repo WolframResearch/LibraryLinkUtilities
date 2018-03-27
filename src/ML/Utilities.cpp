@@ -10,8 +10,6 @@
 #include <string>
 
 #include "mathlink.h"
-#include "MathLinkStream.h"
-#include "../LibraryLinkError.h"
 
 namespace LibraryLinkUtils {
 
@@ -31,50 +29,6 @@ namespace LibraryLinkUtils {
 
 		void Function::setArgc(int newArgc) {
 			argc = newArgc;
-		}
-
-		MathLinkStream& NewPacket(MathLinkStream& ms) {
-			checkError(
-				ms.get(),
-				MLNewPacket(ms.get()),
-				LLErrorName::MLPacketHandleError,
-				"Error in MLNewPacket"
-			);
-			return ms;
-		}
-
-		MathLinkStream& EndPacket(MathLinkStream& ms) {
-			checkError(
-				ms.get(),
-				MLEndPacket(ms.get()),
-				LLErrorName::MLPacketHandleError,
-				"Error in MLEndPacket"
-			);
-			return ms;
-		}
-
-		MathLinkStream& Flush(MathLinkStream& ms) {
-			checkError(
-				ms.get(),
-				MLFlush(ms.get()),
-				LLErrorName::MLFlowControlError,
-				"Error in MLFlush"
-			);
-			return ms;
-		}
-
-		MathLinkStream& Rule(MathLinkStream& ms, Direction dir) {
-			if (dir == Direction::Put)
-				return ms << Function("Rule", 2);
-			else
-				return ms >> Function("Rule", 2);
-		}
-
-		MathLinkStream& Null(MathLinkStream& ms, Direction dir) {
-			if (dir == Direction::Put)
-				return ms << Symbol("Null");
-			else
-				return ms >> Symbol("Null");
 		}
 
 		std::string getMLErrorText(MLINK mlp) {

@@ -12,9 +12,13 @@
 
 #include "mathlink.h"
 
+#include "../LibraryLinkError.h"
+#include "EncodingTraits.hpp"
+
 namespace LibraryLinkUtils {
 
-	class MathLinkStream;
+	template<ML::Encoding, ML::Encoding>
+	class MLStream;
 
 	namespace ML {
 
@@ -85,7 +89,7 @@ namespace LibraryLinkUtils {
 			 * @param 	h - function head
 			 * @param 	argCount - number of arguments this function takes
 			 */
-			Function(const std::string& h, int argCount) : Symbol(h), argc(argCount) {}
+			Function(const std::string& h, std::size_t argCount) : Symbol(h), argc(static_cast<int>(argCount)) {}
 
 			/**
 			 * @brief	Get argument count.
@@ -109,7 +113,7 @@ namespace LibraryLinkUtils {
 		 */
 		struct Association : Function {
 			Association() : Function("Association") {}
-			Association(int argCount) : Function("Association", argCount) {}
+			Association(std::size_t argCount) : Function("Association", argCount) {}
 		};
 
 		/**
@@ -118,7 +122,7 @@ namespace LibraryLinkUtils {
 		 */
 		struct List : Function {
 			List() : Function("List") {}
-			List(int argCount) : Function("List", argCount) {}
+			List(std::size_t argCount) : Function("List", argCount) {}
 		};
 
 		/**
@@ -140,79 +144,55 @@ namespace LibraryLinkUtils {
 			Put
 		};
 
+		template<ML::Encoding EIn, ML::Encoding EOut>
+		MLStream<EIn, EOut>& NewPacket(MLStream<EIn, EOut>& ms) {
+			checkError(
+				ms.get(),
+				MLNewPacket(ms.get()),
+				LLErrorName::MLPacketHandleError,
+				"Error in MLNewPacket"
+			);
+			return ms;
+		}
 
-		MathLinkStream& NewPacket(MathLinkStream& ms);
+		template<ML::Encoding EIn, ML::Encoding EOut>
+		MLStream<EIn, EOut>& EndPacket(MLStream<EIn, EOut>& ms) {
+			checkError(
+				ms.get(),
+				MLEndPacket(ms.get()),
+				LLErrorName::MLPacketHandleError,
+				"Error in MLEndPacket"
+			);
+			return ms;
+		}
 
-		MathLinkStream& EndPacket(MathLinkStream& ms);
+		template<ML::Encoding EIn, ML::Encoding EOut>
+		MLStream<EIn, EOut>& Flush(MLStream<EIn, EOut>& ms) {
+			checkError(
+				ms.get(),
+				MLFlush(ms.get()),
+				LLErrorName::MLFlowControlError,
+				"Error in MLFlush"
+			);
+			return ms;
+		}
 
-		MathLinkStream& Flush(MathLinkStream& ms);
+		template<ML::Encoding EIn, ML::Encoding EOut>
+		MLStream<EIn, EOut>& Rule(MLStream<EIn, EOut>& ms, Direction dir) {
+			if (dir == Direction::Put)
+				return ms << Function("Rule", 2);
+			else
+				return ms >> Function("Rule", 2);
+		}
 
-		MathLinkStream& Rule(MathLinkStream& ms, Direction dir);
+		template<ML::Encoding EIn, ML::Encoding EOut>
+		MLStream<EIn, EOut>& Null(MLStream<EIn, EOut>& ms, Direction dir) {
+			if (dir == Direction::Put)
+				return ms << Symbol("Null");
+			else
+				return ms >> Symbol("Null");
+		}
 
-		MathLinkStream& Null(MathLinkStream& ms, Direction dir);
-
-		/**
-		 *	@struct PutAsUTF8
-		 *	@brief	Utility structure used to enforce sending given string as UTF8 string via MathLink
-		 */
-		struct PutAsUTF8 {
-
-			/**
-			 * @brief	Take a _const char*_ to be sent with MLPutUTF8String.
-			 * @param 	s - C-style string encoded in UTF8
-			 *
-			 * @warning	You are entirely responsible for making sure that the string is actually UTF8 encoded!
-			 */
-			explicit PutAsUTF8(const char* s) : str(reinterpret_cast<const unsigned char*>(s)), len(std::strlen(s)) {};
-
-			/**
-			 * @brief	Take a _const unsigned char*_ to be sent with MLPutUTF8String.
-			 * @param 	s - C-style string encoded in UTF8
-			 *
-			 * @warning	You are entirely responsible for making sure that the string is actually UTF8 encoded!
-			 */
-			explicit PutAsUTF8(const unsigned char* s) : str(s), len(std::strlen(reinterpret_cast<const char*>(s))) {};
-
-			/**
-			 * @brief	Take a _std::string_ to be sent with MLPutUTF8String.
-			 * @param 	s - const reference to a string encoded in UTF8
-			 *
-			 * @warning	You are entirely responsible for making sure that the string is actually UTF8 encoded!
-			 */
-			explicit PutAsUTF8(const std::string& s) : str(reinterpret_cast<const unsigned char*>(s.c_str())), len(s.length()) {};
-
-			/**
-			 * @brief	Take a _std::basic_string<unsigned char>_ to be sent with MLPutUTF8String.
-			 * @param 	s - const reference to a string encoded in UTF8
-			 *
-			 * @warning	You are entirely responsible for making sure that the string is actually UTF8 encoded!
-			 */
-			explicit PutAsUTF8(const std::basic_string<unsigned char>& s) : str(s.c_str()), len(s.length()) {};
-
-			/// String data after casting to a type that MLPutUTF8String accepts
-			const unsigned char* str;
-
-			/// Length of the input string
-			std::size_t len;
-		};
-
-
-		/**
-		 *	@struct GetAsUTF8
-		 *	@brief	Utility structure to facilitate reading UTF8 strings into std::string
-		 */
-		struct GetAsUTF8 {
-
-			/**
-			 * @brief	Read a string from MathLink with MLGetUTF8String and assign to std::string
-			 * @param 	s - reference to a string that will be read from MathLink
-			 */
-			explicit GetAsUTF8(std::string& s) : str(s) {};
-
-
-			/// Store a reference to which later a UTF8 string from MathLink will be assigned
-			std::string& str;
-		};
 	}
 }
 
