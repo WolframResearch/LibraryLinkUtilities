@@ -18,12 +18,11 @@
 #include "mathlink.h"
 #include "WolframLibrary.h"
 
-#include "LLU.h"
 #include "LibraryLinkFunctionMacro.h"
-#include "ML/MathLinkStream.h"
+#include "ML/MathLinkStream.hpp"
 
-using LibraryLinkUtils::MathLinkStream;
-namespace ML = LibraryLinkUtils::ML;
+using namespace LibraryLinkUtils;
+using MathLinkStream = MLStream<ML::Encoding::UTF8>;
 
 template<typename T>
 void readAndWriteScalar(MathLinkStream& m) {
@@ -458,16 +457,16 @@ EXTERN_C DLLEXPORT int ReceiveAndFreeArray(WolframLibraryData libData, MLINK mlp
 // Strings
 //
 
-template<typename T>
-void repeatString(MathLinkStream& ml) {
-	std::basic_string<T> s;
+template<ML::Encoding EIn, ML::Encoding EOut>
+void repeatString(MLStream<EIn, EOut>& ml) {
+	std::string s;
 	ml >> s;
 	ml << s + s;
 }
 
 // Specialize for UTF16 and UTF32 because WSTP prepends BOM to the string
 template<>
-void repeatString<unsigned short>(MathLinkStream& ml) {
+void repeatString(MLStream<ML::Encoding::UTF16>& ml) {
 	std::basic_string<unsigned short> s;
 	ml >> s;
 	auto t = s;
@@ -475,7 +474,7 @@ void repeatString<unsigned short>(MathLinkStream& ml) {
 }
 
 template<>
-void repeatString<unsigned int>(MathLinkStream& ml) {
+void repeatString(MLStream<ML::Encoding::UTF32>& ml) {
 	std::basic_string<unsigned int> s;
 	ml >> s;
 	auto t = s;
@@ -485,8 +484,8 @@ void repeatString<unsigned int>(MathLinkStream& ml) {
 EXTERN_C DLLEXPORT int RepeatString(WolframLibraryData libData, MLINK mlp) {
 	auto err = LLErrorCode::NoError;
 	try {
-		MathLinkStream ml(mlp, "List", 1);
-		repeatString<char>(ml);
+		MLStream<ML::Encoding::Native> ml(mlp, "List", 1);
+		repeatString(ml);
 	}
 	catch (LibraryLinkError& e) {
 		err = e.which();
@@ -500,8 +499,8 @@ EXTERN_C DLLEXPORT int RepeatString(WolframLibraryData libData, MLINK mlp) {
 EXTERN_C DLLEXPORT int RepeatUTF8(WolframLibraryData libData, MLINK mlp) {
 	auto err = LLErrorCode::NoError;
 	try {
-		MathLinkStream ml(mlp, "List", 1);
-		repeatString<unsigned char>(ml);
+		MLStream<ML::Encoding::UTF8> ml(mlp, "List", 1);
+		repeatString(ml);
 	}
 	catch (LibraryLinkError& e) {
 		err = e.which();
@@ -515,8 +514,8 @@ EXTERN_C DLLEXPORT int RepeatUTF8(WolframLibraryData libData, MLINK mlp) {
 EXTERN_C DLLEXPORT int RepeatUTF16(WolframLibraryData libData, MLINK mlp) {
 	auto err = LLErrorCode::NoError;
 	try {
-		MathLinkStream ml(mlp, "List", 1);
-		repeatString<unsigned short>(ml);
+		MLStream<ML::Encoding::UTF16> ml(mlp, "List", 1);
+		repeatString(ml);
 	}
 	catch (LibraryLinkError& e) {
 		err = e.which();
@@ -530,8 +529,8 @@ EXTERN_C DLLEXPORT int RepeatUTF16(WolframLibraryData libData, MLINK mlp) {
 EXTERN_C DLLEXPORT int RepeatUTF32(WolframLibraryData libData, MLINK mlp) {
 	auto err = LLErrorCode::NoError;
 	try {
-		MathLinkStream ml(mlp, "List", 1);
-		repeatString<unsigned int>(ml);
+		MLStream<ML::Encoding::UTF32> ml(mlp, "List", 1);
+		repeatString(ml);
 	}
 	catch (LibraryLinkError& e) {
 		err = e.which();
@@ -543,18 +542,16 @@ EXTERN_C DLLEXPORT int RepeatUTF32(WolframLibraryData libData, MLINK mlp) {
 }
 
 template<ML::Encoding E>
-void appendString(MathLinkStream& ml) {
+void appendString(MLStream<E>& ml) {
 	ML::StringType<E> s;
-	ml.setStringEncoding(E);
 	ml >> s;
 	ML::StringType<E> appendix {{'\a', '\b', '\f', '\r', '\n', '\t', '\v', '\\', '\'', '\"', '\?'}};
 	ml << s + appendix;
 }
 
 template<>
-void appendString<ML::Encoding::Native>(MathLinkStream& ml) {
+void appendString(MLStream<ML::Encoding::Native>& ml) {
 	std::string s;
-	ml.setStringEncoding(ML::Encoding::Native);
 	ml >> s;
 	std::string appendix {{'\a', '\b', '\f', '\r', '\n', '\t', '\v', '\\', '\\', '\'', '\"', '\?'}};
 	ml << s + appendix;
@@ -563,8 +560,8 @@ void appendString<ML::Encoding::Native>(MathLinkStream& ml) {
 EXTERN_C DLLEXPORT int AppendString(WolframLibraryData libData, MLINK mlp) {
 	auto err = LLErrorCode::NoError;
 	try {
-		MathLinkStream ml(mlp, "List", 1);
-		appendString<ML::Encoding::Native>(ml);
+		MLStream<ML::Encoding::Native> ml(mlp, "List", 1);
+		appendString(ml);
 	}
 	catch (LibraryLinkError& e) {
 		err = e.which();
@@ -579,8 +576,8 @@ EXTERN_C DLLEXPORT int AppendString(WolframLibraryData libData, MLINK mlp) {
 EXTERN_C DLLEXPORT int AppendUTF8(WolframLibraryData libData, MLINK mlp) {
 	auto err = LLErrorCode::NoError;
 	try {
-		MathLinkStream ml(mlp, "List", 1);
-		appendString<ML::Encoding::UTF8>(ml);
+		MLStream<ML::Encoding::UTF8> ml(mlp, "List", 1);
+		appendString(ml);
 	}
 	catch (LibraryLinkError& e) {
 		err = e.which();
@@ -594,8 +591,8 @@ EXTERN_C DLLEXPORT int AppendUTF8(WolframLibraryData libData, MLINK mlp) {
 EXTERN_C DLLEXPORT int AppendUTF16(WolframLibraryData libData, MLINK mlp) {
 	auto err = LLErrorCode::NoError;
 	try {
-		MathLinkStream ml(mlp, "List", 1);
-		appendString<ML::Encoding::UTF16>(ml);
+		MLStream<ML::Encoding::UTF16> ml(mlp, "List", 1);
+		appendString(ml);
 	}
 	catch (LibraryLinkError& e) {
 		err = e.which();
@@ -609,8 +606,8 @@ EXTERN_C DLLEXPORT int AppendUTF16(WolframLibraryData libData, MLINK mlp) {
 EXTERN_C DLLEXPORT int AppendUTF32(WolframLibraryData libData, MLINK mlp) {
 	auto err = LLErrorCode::NoError;
 	try {
-		MathLinkStream ml(mlp, "List", 1);
-		appendString<ML::Encoding::UTF32>(ml);
+		MLStream<ML::Encoding::UTF32> ml(mlp, "List", 1);
+		appendString(ml);
 	}
 	catch (LibraryLinkError& e) {
 		err = e.which();
@@ -641,7 +638,7 @@ EXTERN_C DLLEXPORT int ReceiveAndFreeString(WolframLibraryData libData, MLINK ml
 EXTERN_C DLLEXPORT int GetAndPutUTF8(WolframLibraryData libData, MLINK mlp) {
 	auto err = LLErrorCode::NoError;
 	try {
-		MathLinkStream ml(mlp, "List", 2);
+		MLStream<ML::Encoding::UTF8> ml(mlp, "List", 2);
 
 		// we will read first string to const unsigned char* - as UTF8 string are supposed to be read from MathLink
 		ML::StringData<ML::Encoding::UTF8> sUChar;
@@ -655,11 +652,11 @@ EXTERN_C DLLEXPORT int GetAndPutUTF8(WolframLibraryData libData, MLINK mlp) {
 
 		// now let's try reading UTF8 string to std::string - there is a reinterpret cast under the hood
 		std::string sChar;
-		ml >> ML::GetAsUTF8(sChar);
+		ml >> sChar;
 
 		std::cout << sChar << std::endl;
 
-		ml << ML::PutAsUTF8(R"(This will be sent as UTF8 encoded string. No need to escape backslashes \o/. Some weird characters: ą©łóßµ)") << ML::EndPacket;
+		ml << R"(This will be sent as UTF8 encoded string. No need to escape backslashes \o/. Some weird characters: ą©łóßµ)" << ML::EndPacket;
 
 	}
 	catch (LibraryLinkError& e) {
@@ -679,9 +676,13 @@ EXTERN_C DLLEXPORT int GetAndPutUTF8(WolframLibraryData libData, MLINK mlp) {
 EXTERN_C DLLEXPORT int GetList(WolframLibraryData libData, MLINK mlp) {
 	auto err = LLErrorCode::NoError;
 	try {
-		MathLinkStream ml(mlp, "List", 0);
+		MLStream<ML::Encoding::Byte> ml(mlp, "List", 0);
 		ml << ML::List(5);
-		ml << std::vector<int> { 1, 2, 3 } << ML::Missing() << std::vector<float> { 1.5, 2.5, 3.5 } << "Hello!" << ML::Missing("Deal with it");
+		ml << std::vector<int> { 1, 2, 3 }
+			<< ML::Missing()
+			<< std::vector<float> { 1.5, 2.5, 3.5 }
+			<< "Hello!"
+			<< ML::Missing("Deal with it");
 		ml << ML::EndPacket;
 	}
 	catch (LibraryLinkError& e) {
@@ -730,7 +731,7 @@ EXTERN_C DLLEXPORT int ReverseSymbolsOrder(WolframLibraryData libData, MLINK mlp
 EXTERN_C DLLEXPORT int TakeLibraryFunction(WolframLibraryData libData, MLINK mlp) {
 	auto err = LLErrorCode::NoError;
 	try {
-		MathLinkStream ml(mlp, "List", 1);
+		MLStream<ML::Encoding::UTF8> ml(mlp, "List", 1);
 		ML::Function llf { "LibraryFunction", 3 };
 		ml >> llf;
 
@@ -758,7 +759,7 @@ EXTERN_C DLLEXPORT int TakeLibraryFunction(WolframLibraryData libData, MLINK mlp
 EXTERN_C DLLEXPORT int GetSet(WolframLibraryData libData, MLINK mlp) {
 	auto err = LLErrorCode::NoError;
 	try {
-		MathLinkStream ml(mlp);
+		MLStream<ML::Encoding::UTF8> ml(mlp);
 		ML::List l;
 		ml >> l;
 
@@ -803,7 +804,7 @@ LIBRARY_MATHLINK_FUNCTION(ReadNestedMap) {
 
 		std::map<std::string, std::map<int, std::vector<double>>> myNestedMap;
 
-		ml >> myNestedMap;
+		ml >> ML::getAs<ML::Encoding::UTF8Strict>(myNestedMap);
 
 		for (auto& outerRule : myNestedMap) {
 			const auto& outerKey = outerRule.first;
@@ -820,7 +821,7 @@ LIBRARY_MATHLINK_FUNCTION(ReadNestedMap) {
 			}
 		}
 
-		ml << myNestedMap;
+		ml << ML::putAs<ML::Encoding::UTF8Strict>(myNestedMap);
 	}
 	catch (LibraryLinkError& e) {
 		err = e.which();
