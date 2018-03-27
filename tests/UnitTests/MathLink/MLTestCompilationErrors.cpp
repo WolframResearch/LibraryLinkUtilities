@@ -10,7 +10,7 @@
 
 #include "LLU.h"
 #include "LibraryLinkFunctionMacro.h"
-#include "ML/MathLinkStream.h"
+#include "ML/MathLinkStream.hpp"
 
 using LibraryLinkUtils::MathLinkStream;
 namespace ML = LibraryLinkUtils::ML;

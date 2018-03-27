@@ -15,7 +15,6 @@
 
 #include "../LibraryLinkError.h"
 #include "MLRelease.h"
-#include "Strings.h"
 
 namespace LibraryLinkUtils {
 

@@ -12,7 +12,7 @@
 #include "LibraryLinkError.h"
 
 #include "Utilities.hpp"
-#include "ML/MathLinkStream.h"
+#include "ML/MathLinkStream.hpp"
 #include "ML/Utilities.h"
 
 
@@ -146,12 +146,12 @@ namespace LibraryLinkUtils {
 	}
 
 	void ErrorManager::sendRegisteredErrorsViaMathlink(MLINK mlp) {
-		MathLinkStream ms(mlp, "List", 0);
+		MLStream<ML::Encoding::UTF8> ms(mlp, "List", 0);
 
-		ms << ML::NewPacket << ML::Association(static_cast<int>(errors().size()));
+		ms << ML::NewPacket << ML::Association(errors().size());
 
 		for (const auto& err : errors()) {
-			ms << ML::Rule << ML::PutAsUTF8(err.first) << ML::List(2) << err.second.id() << ML::PutAsUTF8(err.second.message());
+			ms << ML::Rule << err.first << ML::List(2) << err.second.id() << err.second.message();
 		}
 
 		ms << ML::EndPacket << ML::Flush;
