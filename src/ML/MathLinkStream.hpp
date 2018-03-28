@@ -17,8 +17,8 @@
 #include "../Utilities.hpp"
 #include "Utilities.h"
 #include "UtilityTypeTraits.hpp"
-#include "MLGet.h"
-#include "MLPut.h"
+#include "Get.h"
+#include "Put.h"
 #include "Strings.h"
 
 namespace LibraryLinkUtils {

@@ -7,7 +7,7 @@
 
 #ifndef _WIN32
 
-#include "MLPut.h"
+#include "Put.h"
 
 #include "mathlink.h"
 

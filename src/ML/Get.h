@@ -14,7 +14,7 @@
 #include "mathlink.h"
 
 #include "../LibraryLinkError.h"
-#include "MLRelease.h"
+#include "Release.h"
 
 namespace LibraryLinkUtils {
 

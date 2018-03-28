@@ -6,7 +6,7 @@
  */
 #ifndef _WIN32
 
-#include "MLGet.h"
+#include "Get.h"
 
 #include "mathlink.h"
 
