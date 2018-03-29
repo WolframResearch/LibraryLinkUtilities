@@ -1,5 +1,5 @@
 /** 
- * @file	MLPut.h
+ * @file	Put.h
  * @date	Nov 28, 2017
  * @author	Rafal Chojna <rafalc@wolfram.com>
  * @brief	Header file with classes related to sending data through MathLink.

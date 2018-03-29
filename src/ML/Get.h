@@ -1,5 +1,5 @@
 /** 
- * @file	MLGet.h
+ * @file	Get.h
  * @date	Nov 28, 2017
  * @author	Rafal Chojna <rafalc@wolfram.com>
  * @brief	Header file with classes related to reading data from MathLink.

@@ -1,5 +1,5 @@
 /** 
- * @file	MLRelease.h
+ * @file	Release.h
  * @date	Nov 28, 2017
  * @author	Rafal Chojna <rafalc@wolfram.com>
  * @brief	Header file with classes responsible for releasing memory allocated by MathLink when receiving data.

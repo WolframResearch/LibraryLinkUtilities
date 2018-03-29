@@ -1,5 +1,5 @@
 /** 
- * @file	MLStream.h
+ * @file	MathLinkStream.hpp
  * @date	Nov 23, 2017
  * @author	Rafal Chojna <rafalc@wolfram.com>
  * @brief	Header file for MLStream class.
@@ -433,10 +433,11 @@ namespace LibraryLinkUtils {
 		ML::StringTypeQ<T, MLStream&> operator>>(std::basic_string<T>& s);
 
 		/**
-		 *	 @brief			Receives a UTF8 encoded string via MathLink
-		 *	 @param 		s - std::string reference wrapped in ML::GetAsUTF8 structure
+		 *	 @brief			Receives a value of type T
+		 *	 @tparam		E - encoding to be used when reading value from MathLink
+		 *	 @tparam		T - value type
+		 *	 @param 		x - reference to object of type T wrapped in ML::GetAs structure
 		 *
-		 * 	 @see			ML::GetAs
 		 * 	 @note			There is a utility function ML::getAs for easier creation of ML::GetAs objects
 		 */
 		template<ML::Encoding E, typename T>

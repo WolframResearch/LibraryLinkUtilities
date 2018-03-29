@@ -20,6 +20,9 @@ namespace LibraryLinkUtils {
 	template<ML::Encoding, ML::Encoding>
 	class MLStream;
 
+	/**
+	 * @brief Contains definitions related to MathLink functionality in LLU
+	 */
 	namespace ML {
 
 		/**
