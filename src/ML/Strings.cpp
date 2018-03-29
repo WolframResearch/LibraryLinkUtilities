@@ -33,8 +33,7 @@ namespace LibraryLinkUtils {
 			}
 		}
 
-
-
+#ifndef _WIN32
 		template<>
 		GetStringFuncT<CharType<Encoding::Native>> String<Encoding::Native>::Get = [](MLINK m, const char** d, int* l, int* c) {
 			*l = *c = -1;
@@ -126,6 +125,8 @@ namespace LibraryLinkUtils {
 		const std::string String<Encoding::UTF32>::GetFName = "MLGetUTF32String";
 		template<>
 		const std::string String<Encoding::UTF32>::PutFName = "MLPutUTF32String";
+#endif
+
 	}
 
 } /* namespace LibraryLinkUtils */

@@ -77,19 +77,19 @@ namespace LibraryLinkUtils {
 
 
 		template<typename T>
-		typename GetArray<T>::Func GetArray<T>::ArrayF  = [] (auto&&...) {
+		typename GetArray<T>::Func GetArray<T>::ArrayF  = [] (MLINK, T**, int**, char***, int*) {
 			static_assert(sizeof(T) < 0, "Trying to use ML::GetArray<T> for unsupported type T");
 			return 0;
 		};
 
 		template<typename T>
-		typename GetList<T>::Func GetList<T>::ListF  = [] (auto&&...) {
+		typename GetList<T>::Func GetList<T>::ListF  = [] (MLINK) {
 			static_assert(sizeof(T) < 0, "Trying to use ML::GetList<T> for unsupported type T");
 			return 0;
 		};
 
 		template<typename T>
-		typename GetScalar<T>::Func GetScalar<T>::ScalarF = [] (auto&&...) {
+		typename GetScalar<T>::Func GetScalar<T>::ScalarF = [] (MLINK, T*) {
 			static_assert(sizeof(T) < 0, "Trying to use ML::GetScalar<T> for unsupported type T");
 			return 0;
 		};
@@ -115,22 +115,6 @@ namespace LibraryLinkUtils {
 #else
 
 		/* ***************************************************************** */
-		/* ********** Template specializations for  char  ****************** */
-		/* ***************************************************************** */
-
-		/* GetString */
-
-		template<>
-		GetString<char>::Func GetString<char>::StringF = [](MLINK m, const char** d, int* l, int* c) {
-			*l = *c = -1;
-			return MLGetString(m, d);
-		};
-
-		template<>
-		const std::string GetString<char>::StringFName = "MLGetString";
-
-
-		/* ***************************************************************** */
 		/* ********* Template specializations for  unsigned char  ********** */
 		/* ***************************************************************** */
 
@@ -149,14 +133,6 @@ namespace LibraryLinkUtils {
 
 		template<>
 		const std::string GetList<unsigned char>::ListFName = "MLGetInteger8List";
-
-		/* GetString */
-
-		template<>
-		GetString<unsigned char>::Func GetString<unsigned char>::StringF = MLGetUTF8String;
-
-		template<>
-		const std::string GetString<unsigned char>::StringFName = "MLGetUTF8String";
 
 		/* GetScalar */
 
@@ -187,14 +163,6 @@ namespace LibraryLinkUtils {
 		template<>
 		const std::string GetList<short>::ListFName = "MLGetInteger16List";
 
-		/* GetString */
-
-		template<>
-		GetString<unsigned short>::Func GetString<unsigned short>::StringF = MLGetUTF16String;
-
-		template<>
-		const std::string GetString<unsigned short>::StringFName = "MLGetUTF16String";
-
 		/* GetScalar */
 
 		template<>
@@ -223,18 +191,6 @@ namespace LibraryLinkUtils {
 
 		template<>
 		const std::string GetList<int>::ListFName = "MLGetInteger32List";
-
-
-		/* GetString */
-
-		template<>
-		GetString<unsigned int>::Func GetString<unsigned int>::StringF = [](MLINK m, const unsigned int** d, int* l, int* c) {
-			*c = -1;
-			return MLGetUTF32String(m, d, l);
-		};
-
-		template<>
-		const std::string GetString<unsigned int>::StringFName = "MLGetUTF32String";
 
 		/* GetScalar */
 

@@ -62,25 +62,19 @@ namespace LibraryLinkUtils {
 
 
 		template<typename T>
-		typename PutArray<T>::Func PutArray<T>::ArrayF = [] (auto&&...) {
+		typename PutArray<T>::Func PutArray<T>::ArrayF = [] (MLINK, const T*, const int*, const char**, int) {
 			static_assert(sizeof(T) < 0, "Trying to use ML::PutArray<T> for unsupported type T");
 			return 0;
 		};
 
 		template<typename T>
-		typename PutList<T>::Func PutList<T>::ListF = [] (auto&&...) {
+		typename PutList<T>::Func PutList<T>::ListF = [] (MLINK, const T*, int) {
 			static_assert(sizeof(T) < 0, "Trying to use ML::PutList<T> for unsupported type T");
 			return 0;
 		};
 
-//		template<typename T>
-//		typename PutString<T>::Func PutString<T>::StringF = [] (auto&&...) {
-//			static_assert(sizeof(T) < 0, "Trying to use ML::PutString<T> for unsupported type T");
-//			return 0;
-//		};
-
 		template<typename T>
-		typename PutScalar<T>::Func PutScalar<T>::ScalarF = [] (auto&&...) {
+		typename PutScalar<T>::Func PutScalar<T>::ScalarF = [] (MLINK, T) {
 			static_assert(sizeof(T) < 0, "Trying to use ML::PutScalar<T> for unsupported type T");
 			return 0;
 		};
@@ -107,22 +101,6 @@ namespace LibraryLinkUtils {
 #else
 
 		/* ***************************************************************** */
-		/* ********** Template specializations for  char  ****************** */
-		/* ***************************************************************** */
-
-		/* PutString */
-
-		template<>
-		PutString<char>::Func PutString<char>::StringF = [](MLINK m, const char* d, int l) {
-			Unused(l);
-			return MLPutString(m, d);
-		};
-
-		template<>
-		const std::string PutString<char>::StringFName = "MLPutString";
-
-
-		/* ***************************************************************** */
 		/* ********* Template specializations for  unsigned char  ********** */
 		/* ***************************************************************** */
 
@@ -141,14 +119,6 @@ namespace LibraryLinkUtils {
 
 		template<>
 		const std::string PutList<unsigned char>::ListFName = "MLPutInteger8List";
-
-		/* PutString */
-
-		template<>
-		PutString<unsigned char>::Func PutString<unsigned char>::StringF = MLPutUTF8String;
-
-		template<>
-		const std::string PutString<unsigned char>::StringFName = "MLPutUTF8String";
 
 		/* PutScalar */
 
@@ -179,14 +149,6 @@ namespace LibraryLinkUtils {
 		template<>
 		const std::string PutList<short>::ListFName = "MLPutInteger16List";
 
-		/* PutString */
-
-		template<>
-		PutString<unsigned short>::Func PutString<unsigned short>::StringF = MLPutUTF16String;
-
-		template<>
-		const std::string PutString<unsigned short>::StringFName = "MLPutUTF16String";
-
 		/* PutScalar */
 
 		template<>
@@ -215,14 +177,6 @@ namespace LibraryLinkUtils {
 
 		template<>
 		const std::string PutList<int>::ListFName = "MLPutInteger32List";
-
-		/* PutString */
-
-		template<>
-		PutString<unsigned int>::Func PutString<unsigned int>::StringF = MLPutUTF32String;
-
-		template<>
-		const std::string PutString<unsigned int>::StringFName = "MLPutUTF32String";
 
 		/* PutScalar */
 
