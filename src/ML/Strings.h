@@ -90,6 +90,11 @@ namespace LibraryLinkUtils {
 			}
 		};
 
+		/**
+		 * @cond
+		 * Explicit specialization of String class for undefined encoding.
+		 * Its sole purpose is to trigger nice compilation errors.
+		 */
 		template<>
 		struct String<Encoding::Undefined> {
 
@@ -110,6 +115,8 @@ namespace LibraryLinkUtils {
 				return {};
 			}
 		};
+		/// @endcond
+
 
 		template<Encoding E>
 		struct ReleaseString {

@@ -17,16 +17,22 @@ namespace LibraryLinkUtils {
 
 	namespace ML {
 
+		/**
+		 * @struct 	IsSupportedInMLArithmetic
+		 * @tparam	T - any type
+		 * @brief	Utility trait class that determines whether type T is a suitable data type for functions like MLPut*Array, MLGet*List, MLPutScalar, etc.
+		 */
 		template<typename T>
 		struct IsSupportedInMLArithmetic : std::false_type {};
 
+		/// @cond
 		template<> struct IsSupportedInMLArithmetic<unsigned char> : std::true_type {};
 		template<> struct IsSupportedInMLArithmetic<short> : std::true_type {};
 		template<> struct IsSupportedInMLArithmetic<int> : std::true_type {};
 		template<> struct IsSupportedInMLArithmetic<mlint64> : std::true_type {};
 		template<> struct IsSupportedInMLArithmetic<float> : std::true_type {};
 		template<> struct IsSupportedInMLArithmetic<double> : std::true_type {};
-
+		/// @endcond
 
 		template<typename T, typename U>
 		using ScalarSupportedTypeQ = std::enable_if_t<IsSupportedInMLArithmetic<remove_cv_ref<T>>::value, U>;
@@ -37,18 +43,23 @@ namespace LibraryLinkUtils {
 		template<typename T, typename U>
 		using ScalarNotSupportedTypeQ = std::enable_if_t<std::is_arithmetic<T>::value && !IsSupportedInMLArithmetic<remove_cv_ref<T>>::value, U>;
 
+		/**
+		 * @struct 	IsSupportedInMLString
+		 * @tparam	T - any type
+		 * @brief	Utility trait class that determines whether type T is a suitable character type for MLPut*String and MLGet*String
+		 */
 		template<typename T>
 		struct IsSupportedInMLString : std::false_type {};
 
+		/// @cond
 		template<> struct IsSupportedInMLString<char> : std::true_type {};
 		template<> struct IsSupportedInMLString<unsigned char> : std::true_type {};
 		template<> struct IsSupportedInMLString<unsigned short> : std::true_type {};
 		template<> struct IsSupportedInMLString<unsigned int> : std::true_type {};
-
+		/// @endcond
 
 		template<typename T, typename U>
 		using StringTypeQ = std::enable_if_t<IsSupportedInMLString<remove_cv_ref<T>>::value, U>;
-
 	}
 }
 

@@ -43,12 +43,18 @@ namespace LibraryLinkUtils {
 			using type = char;
 		};
 
+		/**
+		 * Specializations of CharTypeStruct, encoding E has assigned type T iff MLPutEString takes const T* as second parameter
+		 * @cond
+		 */
 		template<> struct CharTypeStruct<Encoding::Native> 		{ using type = char; };
 		template<> struct CharTypeStruct<Encoding::Byte> 		{ using type = unsigned char; };
 		template<> struct CharTypeStruct<Encoding::UTF8> 		{ using type = unsigned char; };
 		template<> struct CharTypeStruct<Encoding::UTF16> 		{ using type = unsigned short; };
 		template<> struct CharTypeStruct<Encoding::UCS2> 		{ using type = unsigned short; };
 		template<> struct CharTypeStruct<Encoding::UTF32> 		{ using type = unsigned int; };
+		/// @endcond
+
 
 		/**
 		 * @typedef CharType
@@ -101,6 +107,7 @@ namespace LibraryLinkUtils {
 		 *	This structure is only supposed to be used as a wrapper for arguments to MLStream::operator<<
 		 *
 		 *	@note	It's recommended not to use ML::PutAs constructor directly, but rather utilize a helper function ML::putAs.
+		 *
 		 *	@code
 		 *		MLStream<ML::Encoding::Byte> mls { mlink }; // mls will send all strings as if they were ascii-encoded by default
 		 *		std::string stringWithNonAsciiChars = ...;  // oops, now we have to use different encoding
@@ -111,6 +118,7 @@ namespace LibraryLinkUtils {
 		struct PutAs;
 
 		/**
+		 * @cond
 		 * Explicit specialization of ML::PutAs for lvalues
 		 */
 		template<Encoding E, typename T>
@@ -141,6 +149,8 @@ namespace LibraryLinkUtils {
 			/// An object which will be later passed to appropriate MLStream::operator<<
 			T obj;
 		};
+		/// @endcond
+
 
 		/**
 		 * This is a helper function to facilitate constructing ML::PutAs wrapper.
@@ -162,6 +172,7 @@ namespace LibraryLinkUtils {
 		 *	This structure is only supposed to be used as a wrapper for arguments to MLStream::operator>>
 		 *
 		 *	@note	It's recommended not to use ML::GetAs constructor directly, but rather utilize a helper function ML::getAs.
+		 *
 		 *	@code
 		 *		MLStream<ML::Encoding::Byte> mls { mlink }; // mls will receive all strings as if they were ascii-encoded by default
 		 *		std::string stringWithNonAsciiChars;  		// we expect a string with non-ascii characters to come from MathLink
