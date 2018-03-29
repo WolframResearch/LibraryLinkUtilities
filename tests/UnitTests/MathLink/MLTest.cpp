@@ -680,8 +680,8 @@ EXTERN_C DLLEXPORT int GetList(WolframLibraryData libData, MLINK mlp) {
 		ml << ML::List(5);
 		ml << std::vector<int> { 1, 2, 3 }
 			<< ML::Missing()
-			<< std::vector<float> { 1.5, 2.5, 3.5 }
-			<< "Hello!"
+			<< ML::putAs<ML::Encoding::UTF8>(std::vector<float> { 1.5, 2.5, 3.5 })
+			<< ML::putAs<ML::Encoding::UTF8>("Hello!")
 			<< ML::Missing("Deal with it");
 		ml << ML::EndPacket;
 	}
@@ -800,11 +800,11 @@ EXTERN_C DLLEXPORT int GetSet(WolframLibraryData libData, MLINK mlp) {
 LIBRARY_MATHLINK_FUNCTION(ReadNestedMap) {
 	auto err = LLErrorCode::NoError;
 	try {
-		MathLinkStream ml(mlp, "List", 1);
+		MLStream<ML::Encoding::Byte> ml(mlp, "List", 1);
 
 		std::map<std::string, std::map<int, std::vector<double>>> myNestedMap;
 
-		ml >> ML::getAs<ML::Encoding::UTF8Strict>(myNestedMap);
+		ml >> ML::getAs<ML::Encoding::UTF8>(myNestedMap);
 
 		for (auto& outerRule : myNestedMap) {
 			const auto& outerKey = outerRule.first;
@@ -821,7 +821,7 @@ LIBRARY_MATHLINK_FUNCTION(ReadNestedMap) {
 			}
 		}
 
-		ml << ML::putAs<ML::Encoding::UTF8Strict>(myNestedMap);
+		ml << ML::putAs<ML::Encoding::UTF8>(myNestedMap);
 	}
 	catch (LibraryLinkError& e) {
 		err = e.which();

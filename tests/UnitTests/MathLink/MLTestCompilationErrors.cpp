@@ -12,14 +12,19 @@
 #include "LibraryLinkFunctionMacro.h"
 #include "ML/MathLinkStream.hpp"
 
-using LibraryLinkUtils::MathLinkStream;
+using LibraryLinkUtils::MLStream;
 namespace ML = LibraryLinkUtils::ML;
 
 // This function should trigger compiler errors
 LIBRARY_MATHLINK_FUNCTION(Wrong) {
 	auto err = LLErrorCode::NoError;
 	try {
-		MathLinkStream ml(mlp, "List", 0);
+		MLStream<ML::Encoding::UCS2, ML::Encoding::UTF16> ml(mlp, "List", 0);
+
+		ml << "Hello";		// ERROR (static_assert): "Character type does not match the encoding in ML::String<E>::put"
+
+		std::basic_string<unsigned char> s;
+		ml >> s;			// ERROR (static_assert): "Character type does not match the encoding in ML::String<E>::getString"
 
 		unsigned int i { 129 };
 
