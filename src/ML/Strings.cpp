@@ -2,7 +2,7 @@
  * @file	Strings.cpp
  * @date	Mar 23, 2018
  * @author	Rafal Chojna <rafalc@wolfram.com>
- * @brief	<brief description>
+ * @brief	Implementation file for all the functionality related to Strings in MathLink
  */
 
 #include <algorithm>
@@ -13,13 +13,19 @@
 namespace LibraryLinkUtils {
 
 	namespace ML {
+
+		/// Definitions of configuration parameters, see header file for detailed description
+		namespace EncodingConfig {
+			long substituteCodeForByteEncoding = 26;
+			bool useFastUTF8 = true;
+		}
+
 		constexpr const char* getEncodingName(Encoding e) {
 			switch(e) {
 				case Encoding::Undefined: return "Undefined";
 				case Encoding::Native: return "Native";
 				case Encoding::Byte: return "Byte";
 				case Encoding::UTF8: return "UTF8";
-				case Encoding::UTF8Strict: return "UTF8Strict";
 				case Encoding::UTF16: return "UTF16";
 				case Encoding::UCS2: return "UCS2";
 				case Encoding::UTF32: return "UTF32";
@@ -51,7 +57,7 @@ namespace LibraryLinkUtils {
 		template<>
 		GetStringFuncT<CharType<Encoding::Byte>> String<Encoding::Byte>::Get = [](MLINK m, const unsigned char** d, int* l, int* c) {
 			*c = -1;
-			return MLGetByteString(m, d, l, 26);//TODO make 26 a named constant
+			return MLGetByteString(m, d, l, EncodingConfig::substituteCodeForByteEncoding);
 		};
 		template<>
 		PutStringFuncT<CharType<Encoding::Byte>> String<Encoding::Byte>::Put = MLPutByteString;
@@ -63,10 +69,10 @@ namespace LibraryLinkUtils {
 		const std::string String<Encoding::Byte>::PutFName = "MLPutByteString";
 
 		template<>
-		GetStringFuncT<CharType<Encoding::UTF8Strict>> String<Encoding::UTF8>::Get = MLGetUTF8String;
+		GetStringFuncT<CharType<Encoding::UTF8>> String<Encoding::UTF8>::Get = MLGetUTF8String;
 		template<>
-		PutStringFuncT<CharType<Encoding::UTF8Strict>> String<Encoding::UTF8>::Put = [](MLINK m, const unsigned char* d, int len) {
-			if (std::all_of(d, d + len, [](unsigned char c) { return c <= 127; })) {
+		PutStringFuncT<CharType<Encoding::UTF8>> String<Encoding::UTF8>::Put = [](MLINK m, const unsigned char* d, int len) {
+			if (EncodingConfig::useFastUTF8 && std::all_of(d, d + len, [](unsigned char c) { return c <= 127; })) {
 				return MLPutByteString(m, d, len);
 			} else {
 				return MLPutUTF8String(m, d, len);
@@ -78,18 +84,6 @@ namespace LibraryLinkUtils {
 		const std::string String<Encoding::UTF8>::GetFName = "MLGetUTF8String";
 		template<>
 		const std::string String<Encoding::UTF8>::PutFName = "MLPut(UTF8/Byte)String";
-
-
-		template<>
-		GetStringFuncT<CharType<Encoding::UTF8Strict>> String<Encoding::UTF8Strict>::Get = MLGetUTF8String;
-		template<>
-		PutStringFuncT<CharType<Encoding::UTF8Strict>> String<Encoding::UTF8Strict>::Put = MLPutUTF8String;
-		template<>
-		ReleaseStringFuncT<CharType<Encoding::UTF8Strict>> String<Encoding::UTF8Strict>::Release = MLReleaseUTF8String;
-		template<>
-		const std::string String<Encoding::UTF8Strict>::GetFName = "MLGetUTF8String";
-		template<>
-		const std::string String<Encoding::UTF8Strict>::PutFName = "MLPutUTF8String";
 
 
 		template<>

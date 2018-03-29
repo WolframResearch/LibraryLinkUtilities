@@ -1,11 +1,11 @@
 /** 
- * @file	Encodings.h
+ * @file	Strings.h
  * @date	Mar 22, 2018
  * @author	Rafal Chojna <rafalc@wolfram.com>
- * @brief	<brief description>
+ * @brief	Definitions of multiple structures and type aliases related to string handling in MathLink
  */
-#ifndef LLUTILS_ML_ENCODINGS_H_
-#define LLUTILS_ML_ENCODINGS_H_
+#ifndef LLUTILS_ML_STRINGS_H_
+#define LLUTILS_ML_STRINGS_H_
 
 #include <functional>
 #include <memory>
@@ -18,6 +18,20 @@
 namespace LibraryLinkUtils {
 
 	namespace ML {
+
+		/**
+		 * @brief Contains configuration parameters that paclet developers may modify
+		 */
+		namespace EncodingConfig {
+			/// Global configuration parameter defining a substitute character required in MLGetByteString.
+			/// The default value is \b 26
+			extern long substituteCodeForByteEncoding;
+
+			/// Global configuration parameter specifying whether to use a faster version of sending UTF8 strings.
+			/// It means that if a string only have ASCII characters then much faster MLPutByteString is used. The time of checking if the string
+			/// only has ASCII characters is negligible compared to the time taken by MLPut*String, so this parameter is by default set to \b true.
+			extern bool useFastUTF8;
+		}
 
 		template<Encoding E>
 		struct ReleaseString;
@@ -138,10 +152,6 @@ namespace LibraryLinkUtils {
 		template<> PutStringFuncT<CharType<Encoding::UTF8>> String<Encoding::UTF8>::Put;
 		template<> ReleaseStringFuncT<CharType<Encoding::UTF8>> String<Encoding::UTF8>::Release;
 
-		template<> GetStringFuncT<CharType<Encoding::UTF8Strict>> String<Encoding::UTF8Strict>::Get;
-		template<> PutStringFuncT<CharType<Encoding::UTF8Strict>> String<Encoding::UTF8Strict>::Put;
-		template<> ReleaseStringFuncT<CharType<Encoding::UTF8Strict>> String<Encoding::UTF8Strict>::Release;
-
 		template<> GetStringFuncT<CharType<Encoding::UTF16>> String<Encoding::UTF16>::Get;
 		template<> PutStringFuncT<CharType<Encoding::UTF16>> String<Encoding::UTF16>::Put;
 		template<> ReleaseStringFuncT<CharType<Encoding::UTF16>> String<Encoding::UTF16>::Release;
@@ -165,4 +175,4 @@ namespace LibraryLinkUtils {
 
 } /* namespace LibraryLinkUtils */
 
-#endif /* LLUTILS_ML_ENCODINGS_H_ */
+#endif /* LLUTILS_ML_STRINGS_H_ */
