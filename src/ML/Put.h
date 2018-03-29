@@ -87,64 +87,22 @@ namespace LibraryLinkUtils {
 
 #ifndef _WIN32
 
-		template<> PutArray<unsigned char>::Func PutArray<unsigned char>::ArrayF;
-		template<> const std::string PutArray<unsigned char>::ArrayFName;
-
-		template<> PutList<unsigned char>::Func PutList<unsigned char>::ListF;
-		template<> const std::string PutList<unsigned char>::ListFName;
-
-		template<> PutScalar<unsigned char>::Func PutScalar<unsigned char>::ScalarF;
-		template<> const std::string PutScalar<unsigned char>::ScalarFName;
-
-
-		template<> PutArray<short>::Func PutArray<short>::ArrayF;
-		template<> const std::string PutArray<short>::ArrayFName;
-
-		template<> PutList<short>::Func PutList<short>::ListF;
-		template<> const std::string PutList<short>::ListFName;
-
-		template<> PutScalar<short>::Func PutScalar<short>::ScalarF;
-		template<> const std::string PutScalar<short>::ScalarFName;
+#define ML_PUT_DECLARE_SPECIALIZATIONS_OF_STATIC_MEMBERS(T) \
+	template<> PutArray<T>::Func PutArray<T>::ArrayF;\
+	template<> const std::string PutArray<T>::ArrayFName;\
+	template<> PutList<T>::Func PutList<T>::ListF;\
+	template<> const std::string PutList<T>::ListFName;\
+	template<> PutScalar<T>::Func PutScalar<T>::ScalarF;\
+	template<> const std::string PutScalar<T>::ScalarFName;
 
 
-		template<> PutArray<int>::Func PutArray<int>::ArrayF;
-		template<> const std::string PutArray<int>::ArrayFName;
+		ML_PUT_DECLARE_SPECIALIZATIONS_OF_STATIC_MEMBERS(unsigned char)
+		ML_PUT_DECLARE_SPECIALIZATIONS_OF_STATIC_MEMBERS(short)
+		ML_PUT_DECLARE_SPECIALIZATIONS_OF_STATIC_MEMBERS(int)
+		ML_PUT_DECLARE_SPECIALIZATIONS_OF_STATIC_MEMBERS(mlint64)
+		ML_PUT_DECLARE_SPECIALIZATIONS_OF_STATIC_MEMBERS(float)
+		ML_PUT_DECLARE_SPECIALIZATIONS_OF_STATIC_MEMBERS(double)
 
-		template<> PutList<int>::Func PutList<int>::ListF;
-		template<> const std::string PutList<int>::ListFName;
-
-		template<> PutScalar<int>::Func PutScalar<int>::ScalarF;
-		template<> const std::string PutScalar<int>::ScalarFName;
-
-
-		template<> PutArray<mlint64>::Func PutArray<mlint64>::ArrayF;
-		template<> const std::string PutArray<mlint64>::ArrayFName;
-
-		template<> PutList<mlint64>::Func PutList<mlint64>::ListF;
-		template<> const std::string PutList<mlint64>::ListFName;
-
-		template<> PutScalar<mlint64>::Func PutScalar<mlint64>::ScalarF;
-		template<> const std::string PutScalar<mlint64>::ScalarFName;
-
-
-		template<> PutArray<float>::Func PutArray<float>::ArrayF;
-		template<> const std::string PutArray<float>::ArrayFName;
-
-		template<> PutList<float>::Func PutList<float>::ListF;
-		template<> const std::string PutList<float>::ListFName;
-
-		template<> PutScalar<float>::Func PutScalar<float>::ScalarF;
-		template<> const std::string PutScalar<float>::ScalarFName;
-
-
-		template<> PutArray<double>::Func PutArray<double>::ArrayF;
-		template<> const std::string PutArray<double>::ArrayFName;
-
-		template<> PutList<double>::Func PutList<double>::ListF;
-		template<> const std::string PutList<double>::ListFName;
-
-		template<> PutScalar<double>::Func PutScalar<double>::ScalarF;
-		template<> const std::string PutScalar<double>::ScalarFName;
 
 #else
 

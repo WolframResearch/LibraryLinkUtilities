@@ -80,23 +80,16 @@ namespace LibraryLinkUtils {
 
 #ifndef _WIN32
 
-		template<> ReleaseArray<unsigned char>::Func ReleaseArray<unsigned char>::Release;
-		template<> ReleaseList<unsigned char>::Func ReleaseList<unsigned char>::Release;
+#define ML_RELEASE_DECLARE_SPECIALIZATIONS_OF_STATIC_MEMBERS(T) \
+	template<> ReleaseArray<T>::Func ReleaseArray<T>::Release;\
+	template<> ReleaseList<T>::Func ReleaseList<T>::Release;
 
-		template<> ReleaseArray<short>::Func ReleaseArray<short>::Release;
-		template<> ReleaseList<short>::Func ReleaseList<short>::Release;
-
-		template<> ReleaseArray<int>::Func ReleaseArray<int>::Release;
-		template<> ReleaseList<int>::Func ReleaseList<int>::Release;
-
-		template<> ReleaseArray<mlint64>::Func ReleaseArray<mlint64>::Release;
-		template<> ReleaseList<mlint64>::Func ReleaseList<mlint64>::Release;
-
-		template<> ReleaseArray<float>::Func ReleaseArray<float>::Release;
-		template<> ReleaseList<float>::Func ReleaseList<float>::Release;
-
-		template<> ReleaseArray<double>::Func ReleaseArray<double>::Release;
-		template<> ReleaseList<double>::Func ReleaseList<double>::Release;
+		ML_RELEASE_DECLARE_SPECIALIZATIONS_OF_STATIC_MEMBERS(unsigned char)
+		ML_RELEASE_DECLARE_SPECIALIZATIONS_OF_STATIC_MEMBERS(short)
+		ML_RELEASE_DECLARE_SPECIALIZATIONS_OF_STATIC_MEMBERS(int)
+		ML_RELEASE_DECLARE_SPECIALIZATIONS_OF_STATIC_MEMBERS(mlint64)
+		ML_RELEASE_DECLARE_SPECIALIZATIONS_OF_STATIC_MEMBERS(float)
+		ML_RELEASE_DECLARE_SPECIALIZATIONS_OF_STATIC_MEMBERS(double)
 #else
 
 		template<>

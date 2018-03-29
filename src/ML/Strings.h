@@ -145,33 +145,21 @@ namespace LibraryLinkUtils {
 
 #ifndef _WIN32
 
-		template<> GetStringFuncT<CharType<Encoding::Native>> String<Encoding::Native>::Get;
-		template<> PutStringFuncT<CharType<Encoding::Native>> String<Encoding::Native>::Put;
-		template<> ReleaseStringFuncT<CharType<Encoding::Native>> String<Encoding::Native>::Release;
-		template<> const std::string String<Encoding::Native>::GetFName;
-		template<> const std::string String<Encoding::Native>::PutFName;
+/// Macro for declaring specializations of static members for ML::String<Encoding::E>
+/// For internal use only.
+#define ML_STRING_DECLARE_SPECIALIZATIONS_OF_STATIC_MEMBERS(E) \
+	template<> GetStringFuncT<CharType<Encoding::E>> String<Encoding::E>::Get;\
+	template<> PutStringFuncT<CharType<Encoding::E>> String<Encoding::E>::Put;\
+	template<> ReleaseStringFuncT<CharType<Encoding::E>> String<Encoding::E>::Release;\
+	template<> const std::string String<Encoding::E>::GetFName;\
+	template<> const std::string String<Encoding::E>::PutFName;
 
-		template<> GetStringFuncT<CharType<Encoding::Byte>> String<Encoding::Byte>::Get;
-		template<> PutStringFuncT<CharType<Encoding::Byte>> String<Encoding::Byte>::Put;
-		template<> ReleaseStringFuncT<CharType<Encoding::Byte>> String<Encoding::Byte>::Release;
-
-		template<> GetStringFuncT<CharType<Encoding::UTF8>> String<Encoding::UTF8>::Get;
-		template<> PutStringFuncT<CharType<Encoding::UTF8>> String<Encoding::UTF8>::Put;
-		template<> ReleaseStringFuncT<CharType<Encoding::UTF8>> String<Encoding::UTF8>::Release;
-
-		template<> GetStringFuncT<CharType<Encoding::UTF16>> String<Encoding::UTF16>::Get;
-		template<> PutStringFuncT<CharType<Encoding::UTF16>> String<Encoding::UTF16>::Put;
-		template<> ReleaseStringFuncT<CharType<Encoding::UTF16>> String<Encoding::UTF16>::Release;
-
-		template<> GetStringFuncT<CharType<Encoding::UCS2>> String<Encoding::UCS2>::Get;
-		template<> PutStringFuncT<CharType<Encoding::UCS2>> String<Encoding::UCS2>::Put;
-		template<> ReleaseStringFuncT<CharType<Encoding::UCS2>> String<Encoding::UCS2>::Release;
-
-		template<> GetStringFuncT<CharType<Encoding::UTF32>> String<Encoding::UTF32>::Get;
-		template<> PutStringFuncT<CharType<Encoding::UTF32>> String<Encoding::UTF32>::Put;
-		template<> ReleaseStringFuncT<CharType<Encoding::UTF32>> String<Encoding::UTF32>::Release;
-		template<> const std::string String<Encoding::UTF32>::GetFName;
-		template<> const std::string String<Encoding::UTF32>::PutFName;
+		ML_STRING_DECLARE_SPECIALIZATIONS_OF_STATIC_MEMBERS(Native)
+		ML_STRING_DECLARE_SPECIALIZATIONS_OF_STATIC_MEMBERS(Byte)
+		ML_STRING_DECLARE_SPECIALIZATIONS_OF_STATIC_MEMBERS(UTF8)
+		ML_STRING_DECLARE_SPECIALIZATIONS_OF_STATIC_MEMBERS(UTF16)
+		ML_STRING_DECLARE_SPECIALIZATIONS_OF_STATIC_MEMBERS(UCS2)
+		ML_STRING_DECLARE_SPECIALIZATIONS_OF_STATIC_MEMBERS(UTF32)
 
 #else
 

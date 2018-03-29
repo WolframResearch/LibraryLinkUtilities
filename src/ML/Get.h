@@ -96,65 +96,22 @@ namespace LibraryLinkUtils {
 
 #ifndef _WIN32
 
-		template<> GetArray<unsigned char>::Func GetArray<unsigned char>::ArrayF;
-		template<> const std::string GetArray<unsigned char>::ArrayFName;
-
-		template<> GetList<unsigned char>::Func GetList<unsigned char>::ListF;
-		template<> const std::string GetList<unsigned char>::ListFName;
-
-		template<> GetScalar<unsigned char>::Func GetScalar<unsigned char>::ScalarF;
-		template<> const std::string GetScalar<unsigned char>::ScalarFName;
-
-
-		template<> GetArray<short>::Func GetArray<short>::ArrayF;
-		template<> const std::string GetArray<short>::ArrayFName;
-
-		template<> GetList<short>::Func GetList<short>::ListF;
-		template<> const std::string GetList<short>::ListFName;
-
-		template<> GetScalar<short>::Func GetScalar<short>::ScalarF;
-		template<> const std::string GetScalar<short>::ScalarFName;
+#define ML_GET_DECLARE_SPECIALIZATIONS_OF_STATIC_MEMBERS(T) \
+	template<> GetArray<T>::Func GetArray<T>::ArrayF;\
+	template<> const std::string GetArray<T>::ArrayFName;\
+	template<> GetList<T>::Func GetList<T>::ListF;\
+	template<> const std::string GetList<T>::ListFName;\
+	template<> GetScalar<T>::Func GetScalar<T>::ScalarF;\
+	template<> const std::string GetScalar<T>::ScalarFName;
 
 
-		template<> GetArray<int>::Func GetArray<int>::ArrayF;
-		template<> const std::string GetArray<int>::ArrayFName;
+		ML_GET_DECLARE_SPECIALIZATIONS_OF_STATIC_MEMBERS(unsigned char)
+		ML_GET_DECLARE_SPECIALIZATIONS_OF_STATIC_MEMBERS(short)
+		ML_GET_DECLARE_SPECIALIZATIONS_OF_STATIC_MEMBERS(int)
+		ML_GET_DECLARE_SPECIALIZATIONS_OF_STATIC_MEMBERS(mlint64)
+		ML_GET_DECLARE_SPECIALIZATIONS_OF_STATIC_MEMBERS(float)
+		ML_GET_DECLARE_SPECIALIZATIONS_OF_STATIC_MEMBERS(double)
 
-		template<> GetList<int>::Func GetList<int>::ListF;
-		template<> const std::string GetList<int>::ListFName;
-
-		template<> GetScalar<int>::Func GetScalar<int>::ScalarF;
-		template<> const std::string GetScalar<int>::ScalarFName;
-
-
-		template<> GetArray<mlint64>::Func GetArray<mlint64>::ArrayF;
-		template<> const std::string GetArray<mlint64>::ArrayFName;
-
-		template<> GetList<mlint64>::Func GetList<mlint64>::ListF;
-		template<> const std::string GetList<mlint64>::ListFName;
-
-		template<> GetScalar<mlint64>::Func GetScalar<mlint64>::ScalarF;
-		template<> const std::string GetScalar<mlint64>::ScalarFName;
-
-
-
-		template<> GetArray<float>::Func GetArray<float>::ArrayF;
-		template<> const std::string GetArray<float>::ArrayFName;
-
-		template<> GetList<float>::Func GetList<float>::ListF;
-		template<> const std::string GetList<float>::ListFName;
-
-		template<> GetScalar<float>::Func GetScalar<float>::ScalarF;
-		template<> const std::string GetScalar<float>::ScalarFName;
-
-
-		template<> GetArray<double>::Func GetArray<double>::ArrayF;
-		template<> const std::string GetArray<double>::ArrayFName;
-
-		template<> GetList<double>::Func GetList<double>::ListF;
-		template<> const std::string GetList<double>::ListFName;
-
-		template<> GetScalar<double>::Func GetScalar<double>::ScalarF;
-		template<> const std::string GetScalar<double>::ScalarFName;
 #else
 
 		/* ***************************************************************** */
