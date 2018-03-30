@@ -1,11 +1,11 @@
 /** 
- * @file	MathLinkStream.hpp
+ * @file	MLStream.hpp
  * @date	Nov 23, 2017
  * @author	Rafal Chojna <rafalc@wolfram.com>
  * @brief	Header file for MLStream class.
  */
-#ifndef LLUTILS_MATHLINKSTREAM_H_
-#define LLUTILS_MATHLINKSTREAM_H_
+#ifndef LLUTILS_MLSTREAM_HPP_
+#define LLUTILS_MLSTREAM_HPP_
 
 #include <iterator>
 #include <map>
@@ -871,4 +871,4 @@ namespace LibraryLinkUtils {
 } /* namespace LibraryLinkUtils */
 
 
-#endif /* LLUTILS_MATHLINKSTREAM_H_ */
+#endif /* LLUTILS_MLSTREAM_HPP_ */

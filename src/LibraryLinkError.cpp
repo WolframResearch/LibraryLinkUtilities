@@ -12,7 +12,7 @@
 #include "LibraryLinkError.h"
 
 #include "Utilities.hpp"
-#include "ML/MathLinkStream.hpp"
+#include "ML/MLStream.hpp"
 #include "ML/Utilities.h"
 
 

@@ -10,7 +10,7 @@
 
 #include "LLU.h"
 #include "LibraryLinkFunctionMacro.h"
-#include "ML/MathLinkStream.hpp"
+#include "ML/MLStream.hpp"
 
 using LibraryLinkUtils::MLStream;
 namespace ML = LibraryLinkUtils::ML;
@@ -21,10 +21,15 @@ LIBRARY_MATHLINK_FUNCTION(Wrong) {
 	try {
 		MLStream<ML::Encoding::UCS2, ML::Encoding::UTF16> ml(mlp, "List", 0);
 
-		ml << "Hello";		// ERROR (static_assert): "Character type does not match the encoding in ML::String<E>::put"
+		ml << "Hello";	// ERROR (static_assert): "Character type does not match the encoding in ML::String<E>::put"
+
+		ml << ML::putAs<ML::Encoding::Native>("Hello");		// This should be fine
 
 		std::basic_string<unsigned char> s;
-		ml >> s;			// ERROR (static_assert): "Character type does not match the encoding in ML::String<E>::getString"
+
+		ml >> s;		// ERROR (static_assert): "Character type does not match the encoding in ML::String<E>::getString"
+
+		ml >> ML::getAs<ML::Encoding::UTF8>(s);				// This should be fine
 
 		unsigned int i { 129 };
 

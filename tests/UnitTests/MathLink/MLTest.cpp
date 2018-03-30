@@ -19,7 +19,7 @@
 #include "WolframLibrary.h"
 
 #include "LibraryLinkFunctionMacro.h"
-#include "ML/MathLinkStream.hpp"
+#include "ML/MLStream.hpp"
 
 using namespace LibraryLinkUtils;
 using MathLinkStream = MLStream<ML::Encoding::UTF8>;
@@ -44,6 +44,7 @@ void readAndWriteScalarMax(MathLinkStream& m) {
 EXTERN_C DLLEXPORT int SameInts(WolframLibraryData libData, MLINK mlp) {
 	auto err = LLErrorCode::NoError;
 	try {
+		std::cout << ML::String<ML::Encoding::UTF8>::GetFName << std::endl;
 		MathLinkStream m(mlp, "List", 4);
 		m << ML::List(4);
 		readAndWriteScalar<unsigned char>(m);
