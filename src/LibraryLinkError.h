@@ -110,8 +110,6 @@ namespace LibraryLinkUtils {
 		extern const std::string MLGetFunctionError; 	///< MLGetFunction failed
 		extern const std::string MLPacketHandleError;	///< One of the packet handling functions failed
 		extern const std::string MLFlowControlError;	///< One of the flow control functions failed
-		extern const std::string MLInvalidInEncoding;	///< Encoding specified for reading strings from Mathematica is invalid
-		extern const std::string MLInvalidOutEncoding;	///< Encoding specified for writing strings to Mathematica is invalid
 	}
 
 	/**
