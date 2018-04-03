@@ -641,7 +641,6 @@ EXTERN_C DLLEXPORT int GetAndPutUTF8(WolframLibraryData libData, MLINK mlp) {
 	try {
 		MLStream<ML::Encoding::UTF8> ml(mlp, "List", 2);
 
-		// we will read first string to const unsigned char* - as UTF8 string are supposed to be read from MathLink
 		ML::StringData<ML::Encoding::UTF8> sUChar;
 		ml >> sUChar;
 
@@ -651,7 +650,6 @@ EXTERN_C DLLEXPORT int GetAndPutUTF8(WolframLibraryData libData, MLINK mlp) {
 		}
 		std::cout << std::endl;
 
-		// now let's try reading UTF8 string to std::string - there is a reinterpret cast under the hood
 		std::string sChar;
 		ml >> sChar;
 

@@ -13,7 +13,7 @@ TestExecute[
 	Get[FileNameJoin[{ParentDirectory[currentDirectory], "TestConfig.wl"}]];
 
 	(* Compile the test library *)
-	lib = CCompilerDriver`CreateLibrary[{FileNameJoin[{currentDirectory, "MLTest.cpp"}]} ~Join~ $LLUSources, "MLTest", options];
+	lib = CCompilerDriver`CreateLibrary[(FileNameJoin[{currentDirectory, #}]& /@ {"MLTest.cpp", "MLEncodings.cpp"}) ~Join~ $LLUSources, "MLTest", options];
 	
 	Get[FileNameJoin[{ParentDirectory[currentDirectory, 3], "LibraryLinkUtilities.wl"}]];
 	
@@ -34,7 +34,7 @@ Test[
 	,
 	$Failed
 	,
-	{CreateLibrary::cmperr..} (* On Linux there should be 4 errors, but MSVC does not like generic lambdas so it spits out more errors *)
+	{CreateLibrary::cmperr..} (* On Linux there should be 6 errors, but MSVC does not like generic lambdas so it spits out more errors *)
 	,
 	TestID->"MathLinkTestSuite-20171129-U5Q3L8"
 ]
@@ -343,6 +343,48 @@ Test[
 	"This will be sent as UTF8 encoded string. No need to escape backslashes \\o/. Some weird characters: " <> FromCharacterCode[{196, 133, 194, 169, 197, 130, 195, 179, 195, 159, 194, 181}, "UTF8"]
 	,
 	TestID->"MathLinkTestSuite-20180207-C6Z9T4"
+]
+
+Test[
+	NestedPutAs = SafeMathLinkFunction["NestedPutAs"];
+	testStr = "\:0105\:0119\[AE]\[Copyright]\\/";
+	NestedPutAs[testStr]
+	,
+	testStr
+	,
+	TestID->"MathLinkTestSuite-20180403-P4U4Q4"
+]
+
+Test[
+	CharacterCodes = SafeMathLinkFunction["CharacterCodes"];
+	testStr = "\:0105\:0119\[AE]\[Copyright]\\/";
+	CharacterCodes[testStr]
+	,
+	<|
+		"Native" -> {92, 58, 48, 49, 48, 53, 92, 58, 48, 49, 49, 57, 92, 51, 52, 54, 92, 50, 53, 49, 92, 92, 47}, (* "\:0105\:0119\346\251\\/" *)
+		"Byte" -> {26, 26, 230, 169, 92, 47}, 
+		"UTF8" -> {196, 133, 196, 153, 195, 166, 194, 169, 92, 47}, 
+		"UTF16" -> {65279, 261, 281, 230, 169, 92, 47}, (* 65279 is BOM *)
+		"UCS2" -> {261, 281, 230, 169, 92, 47}, 
+		"UTF32" -> {65279, 261, 281, 230, 169, 92, 47}
+	|>
+	,
+	TestID->"MathLinkTestSuite-20180403-H9X4X4"
+]
+
+Test[
+	AllEncodingsRoundtrip = SafeMathLinkFunction["AllEncodingsRoundtrip"];
+	testStrs = {"abcde", "\[Integral]\[Wolf]\[DifferentialD]\[Xi]", "ab\[CAcute]\[Eth]\:0119", "\\+\\\\+\"+\n+\t+?"};
+	MapThread[Map[Function[assocElem, #2 == assocElem], #1] &, {AllEncodingsRoundtrip /@ testStrs, testStrs}]
+	,
+	{
+		<|"Native" -> True, "Byte" -> True, "UTF8" -> True, "UTF16" -> True, "UCS2" -> True, "UTF32" -> True|>, 
+		<|"Native" -> True, "Byte" -> False, "UTF8" -> True, "UTF16" -> True, "UCS2" -> True, "UTF32" -> True|>, 
+		<|"Native" -> True, "Byte" -> False, "UTF8" -> True, "UTF16" -> True, "UCS2" -> True, "UTF32" -> True|>, 
+		<|"Native" -> True, "Byte" -> True, "UTF8" -> True, "UTF16" -> True, "UCS2" -> True, "UTF32" -> True|>
+	}
+	,
+	TestID->"MathLinkTestSuite-20180403-P1E4U8"
 ]
 
 (* Symbols and Arbitrary Functions *)
