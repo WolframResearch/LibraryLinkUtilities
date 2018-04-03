@@ -141,7 +141,6 @@ namespace LibraryLinkUtils {
 			int chars = 0;
 		};
 
-		constexpr const char* getEncodingName(Encoding e);
 
 #ifndef _WIN32
 

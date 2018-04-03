@@ -20,19 +20,6 @@ namespace LibraryLinkUtils {
 			bool useFastUTF8 = true;
 		}
 
-		constexpr const char* getEncodingName(Encoding e) {
-			switch(e) {
-				case Encoding::Undefined: return "Undefined";
-				case Encoding::Native: return "Native";
-				case Encoding::Byte: return "Byte";
-				case Encoding::UTF8: return "UTF8";
-				case Encoding::UTF16: return "UTF16";
-				case Encoding::UCS2: return "UCS2";
-				case Encoding::UTF32: return "UTF32";
-				default: return "NoSuchEncoding";
-			}
-		}
-
 #ifndef _WIN32
 		template<>
 		GetStringFuncT<CharType<Encoding::Native>> String<Encoding::Native>::Get = [](MLINK m, const char** strData, int* len, int* charCnt) {

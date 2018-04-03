@@ -98,6 +98,26 @@ namespace LibraryLinkUtils {
 
 
 		/**
+		 * Get the name of encoding
+		 * @param e - value of ML::Encoding enum
+		 * @return C-string containing the name of encoding e
+		 */
+		constexpr const char* getEncodingName(Encoding e) {
+			switch(e) {
+				case Encoding::Undefined: return "Undefined";
+				case Encoding::Native: return "Native";
+				case Encoding::Byte: return "Byte";
+				case Encoding::UTF8: return "UTF8";
+				case Encoding::UTF16: return "UTF16";
+				case Encoding::UCS2: return "UCS2";
+				case Encoding::UTF32: return "UTF32";
+				default: return "NoSuchEncoding";
+			}
+		}
+
+
+
+		/**
 		 *	@struct PutAs
 		 *	@tparam E - desired encoding
 		 *	@tparam T - actual type of the expression
