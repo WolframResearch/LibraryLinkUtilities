@@ -163,17 +163,17 @@ namespace LibraryLinkUtils {
 #else
 
 		template<>
-		GetStringFuncT<CharType<Encoding::Native>> String<Encoding::Native>::Get = [](MLINK m, const char** d, int* l, int* c) {
-			*l = *c = -1;
-			return MLGetString(m, d);
+		GetStringFuncT<CharType<Encoding::Native>> String<Encoding::Native>::Get = [](MLINK m, const char** strData, int* len, int* charCnt) {
+			*len = *charCnt = -1;
+			return MLGetString(m, strData);
 		};
 		template<>
-		PutStringFuncT<CharType<Encoding::Native>> String<Encoding::Native>::Put = [](MLINK m, const char* d, int) {
-			return MLPutString(m, d);
+		PutStringFuncT<CharType<Encoding::Native>> String<Encoding::Native>::Put = [](MLINK m, const char* strData, int) {
+			return MLPutString(m, strData);
 		};
 		template<>
-		ReleaseStringFuncT<CharType<Encoding::Native>> String<Encoding::Native>::Release = [](MLINK m, const char* d, int) {
-			MLReleaseString(m, d);
+		ReleaseStringFuncT<CharType<Encoding::Native>> String<Encoding::Native>::Release = [](MLINK m, const char* strData, int) {
+			MLReleaseString(m, strData);
 		};
 		template<>
 		const std::string String<Encoding::Native>::GetFName = "MLGetString";
@@ -182,9 +182,9 @@ namespace LibraryLinkUtils {
 
 
 		template<>
-		GetStringFuncT<CharType<Encoding::Byte>> String<Encoding::Byte>::Get = [](MLINK m, const unsigned char** d, int* l, int* c) {
-			*c = -1;
-			return MLGetByteString(m, d, l, EncodingConfig::substituteCodeForByteEncoding);
+		GetStringFuncT<CharType<Encoding::Byte>> String<Encoding::Byte>::Get = [](MLINK m, const unsigned char** strData, int* len, int* charCnt) {
+			*charCnt = -1;
+			return MLGetByteString(m, strData, len, EncodingConfig::substituteCodeForByteEncoding);
 		};
 		template<>
 		PutStringFuncT<CharType<Encoding::Byte>> String<Encoding::Byte>::Put = MLPutByteString;
@@ -197,19 +197,19 @@ namespace LibraryLinkUtils {
 
 		namespace {
 			// Nested lambdas are too much for MSVC, so we define this helper function separately
-			bool allASCIIQ(const unsigned char* d, int len) {
-				return std::all_of(d, d + len, [](unsigned char c) -> bool { return c <= 127; });
+			bool allASCIIQ(const unsigned char* strData, int len) {
+				return std::all_of(strData, strData + len, [](unsigned char c) -> bool { return c <= 127; });
 			}
 		}
 
 		template<>
 		GetStringFuncT<CharType<Encoding::UTF8>> String<Encoding::UTF8>::Get = MLGetUTF8String;
 		template<>
-		PutStringFuncT<CharType<Encoding::UTF8>> String<Encoding::UTF8>::Put = [](MLINK m, const unsigned char* d, int len) -> int {
-			if (EncodingConfig::useFastUTF8 && allASCIIQ(d, len)) {
-				return MLPutByteString(m, d, len);
+		PutStringFuncT<CharType<Encoding::UTF8>> String<Encoding::UTF8>::Put = [](MLINK m, const unsigned char* strData, int len) -> int {
+			if (EncodingConfig::useFastUTF8 && allASCIIQ(strData, len)) {
+				return MLPutByteString(m, strData, len);
 			} else {
-				return MLPutUTF8String(m, d, len);
+				return MLPutUTF8String(m, strData, len);
 			}
 		};
 		template<>
@@ -233,9 +233,9 @@ namespace LibraryLinkUtils {
 
 
 		template<>
-		GetStringFuncT<CharType<Encoding::UCS2>> String<Encoding::UCS2>::Get = [](MLINK m, const unsigned short** d, int* l, int* c) {
-			*c = -1;
-			return MLGetUCS2String(m, d, l);
+		GetStringFuncT<CharType<Encoding::UCS2>> String<Encoding::UCS2>::Get = [](MLINK m, const unsigned short** strData, int* len, int* charCnt) {
+			*charCnt = -1;
+			return MLGetUCS2String(m, strData, len);
 		};
 		template<>
 		PutStringFuncT<CharType<Encoding::UCS2>> String<Encoding::UCS2>::Put = MLPutUCS2String;
@@ -248,9 +248,9 @@ namespace LibraryLinkUtils {
 
 
 		template<>
-		GetStringFuncT<CharType<Encoding::UTF32>> String<Encoding::UTF32>::Get = [](MLINK m, const unsigned int** d, int* l, int* c) {
-			*c = -1;
-			return MLGetUTF32String(m, d, l);
+		GetStringFuncT<CharType<Encoding::UTF32>> String<Encoding::UTF32>::Get = [](MLINK m, const unsigned int** strData, int* len, int* charCnt) {
+			*charCnt = -1;
+			return MLGetUTF32String(m, strData, len);
 		};
 		template<>
 		PutStringFuncT<CharType<Encoding::UTF32>> String<Encoding::UTF32>::Put = MLPutUTF32String;
