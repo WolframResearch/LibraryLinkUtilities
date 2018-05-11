@@ -1,15 +1,20 @@
 # Table of contents
+
 1. [Introduction](#introduction)
 2. [Motivation](#motivation)
 3. [Code Example](#example)
 4. [MathLink support](#mathlink)
+	I. [Main features](#mathlink-features)
+	II. [Example](#mathlink-example)
 5. [Limitations](#limitations)
 6. [How to Use](#howToUse)
+	I. [Quick Guide for I/E developers](#howToUse-quickguide)
+	II. [Compilation](#howToUse-compilation)
 7. [API reference](#APIreference)
 8. [Contributors](#contributors)
 
 <a name="introduction"></a>
-## Introduction
+# Introduction
 
 _LibraryLink Utilities_ (abbr. LLU) is a set of modern C++ wrappers for most elements of standard LibraryLink C interface. Containers like MImage and MTensor are wrapped in templated classes. Managing MArguments (both input and output) is also delegated to a separate class:
 
@@ -26,7 +31,7 @@ For more details about each class see [the documentation](http://malgorithmswin.
 __The project is new and not really field-tested. Please send all suggestions, feature requests and bug reports to <rafalc@wolfram.com>__
 
 <a name="motivation"></a>
-## Motivation
+# Motivation
 
 _LibraryLink_ is a great tool for connecting Wolfram Language with external libraries and programs written in C and it is widely used internally for developing paclets.
 But as more and more paclets are now being developed in modern C++ the integration with _LibraryLink_, although still possible, becomes cumbersome and inelegant. Most significant features missing in _LibraryLink_ are:
@@ -40,7 +45,7 @@ But as more and more paclets are now being developed in modern C++ the integrati
 The motivation behind _LibraryLink Utilities_ is to provide the aforementioned features without touching _LibraryLink_ sources.
 
 <a name="example"></a>
-## Code Example
+# Code Example
 
 Probably the best way to see how to use LLU and what advantages it has over classic _LibraryLink_ is by comparing the same function written in two different styles. Below we will implement a simple function `repeatCharacters` that takes a string `s` and a tensor `t` and returns a new string `s2` that consists of each character `s[i]` from original string but repeated `t[i]` times, so for example
 
@@ -170,19 +175,20 @@ and C++ version with _LibraryLink Utilities_:
 	}
 ```
 <a name="mathlink"></a>
-## MathLink support
+# MathLink support
 
 _LibraryLink_ allows you to pass LinkObject as argument, which may then be utilized to exchange data between your library and the Kernel using MathLink. 
 The original MathLink API is in old C style with error codes, macros, manual memory management, etc. Therefore, __LLU__ provides a wrapper for the LinkObject called `MLStream`.
 
 `MLStream` is actually a class template parameterized by the default encoding to be used for strings, but for the sake of clarity, the template parameter is skipped in the remainder of this README.
 
-### Main features
-#### Convenient syntax
+<a name="mathlink-features"></a>
+## Main features
+### Convenient syntax
 
 In this extension to __LLU__ MathLink is interpreted as an i/o stream, so operators << and >> are utilized to make the syntax cleaner and more concise. This means that the framework frees the developer from the responsibility to choose proper MathLink function for the data they intend to read or write.
 
-#### Error checking
+### Error checking
 
 Each call to MathLink has its return status checked. In case of failure an exception is thrown. Such exceptions carry some debug info to help locate the problem. Sample debug info looks like this:
 
@@ -192,11 +198,11 @@ Error code reported by MathLink: 48
 Additional debug info: MLPutUTF8String
 ```
 
-#### Memory cleanup
+### Memory cleanup
 
 You're no longer required to call `MLRelease*` on the data received from MathLink. The framework does it for you.
 
-#### Automated handling of common data types
+### Automated handling of common data types
 
 Some sophisticated types can be sent to Mathematica directly via `MLStream` class. For example nested maps:
 
@@ -208,7 +214,7 @@ Just write `ms << myNestedMap` and you will get a nested Association on the othe
 
 If you have any particular type that you think should be directly supported by `MLStream`, please let me know.
 
-#### Easily extendable to custom classes
+### Easily extendable to custom classes
 
 Suppose you have a structure
 
@@ -230,7 +236,8 @@ MLStream& operator<<(MLStream& ms, const Color& c) {
 
 And now you're able to send objects of class `Color` directly via `MLStream`.
 
-### Example
+<a name="mathlink-example"></a>
+## Example
 Again, let's compare the same piece of code written in plain _LibraryLink_ with one written with _LLU_ and `MLStream`. Take a look at the code snippet taken from one of the Import/Export paclets:
 
 ```cpp
@@ -336,7 +343,7 @@ for (auto& f : extractedFrames) {
 ms << ML::EndPacket << ML::Flush;
 ```
 <a name="limitations"></a>
-## Limitations with respect to LibraryLink
+# Limitations with respect to LibraryLink
 
 There are some LibraryLink features currently not covered by _LLU_, most notably:
 
@@ -352,7 +359,7 @@ Structures received as MArguments will not be automatically freed, therefore you
 Please consult [LibraryLink tutorial](https://reference.wolfram.com/language/LibraryLink/tutorial/InteractionWithMathematica.html#97446640) for more details.
 
 <a name="howToUse"></a>
-## How should you incorporate _LibraryLink Utilities_ into your project?
+# How should you incorporate _LibraryLink Utilities_ into your project?
 
 Currently the best way to include LLU into your project is by using git submodule. Submodules are simply git repos inside other repos but working with them may sometimes be tricky. See this excellent [tutorial on submodules](https://git-scm.com/book/en/v2/Git-Tools-Submodules).
 
@@ -362,7 +369,8 @@ In most cases you will access _LibraryLink Utilities_ in "read-only" manner, i.e
 
 When you work on your paclet you may occasionally find a bug in LLU or a missing feature. You should either report it or try to make changes yourself following the usual workflow: create new branch - implement changes - open PR - merge. It is possible to do it with LLU as submodule in your project but you should really read the tutorial before you try.
 
-### Quick guide for Import/Export developers
+<a name="howToUse-quickguide"></a>
+## Quick guide for Import/Export developers
 Here is a list of commands that will be useful to developers working on Import/Export paclets (names ending with "Tools"). Usually these paclets have _CPPSource/_ directory containing the source code. It is easy to modify these commands so that they work for arbitrary project.
 
 #### Adding _LibraryLink Utilities_ to your paclet
@@ -374,14 +382,14 @@ Here is a list of commands that will be useful to developers working on Import/E
 #### Updating _LibraryLink Utilities_ in your project
 `git submodule update --remote CPPSource/LibraryLinkUtilities/`
 
-
-### Compilation
+<a name="howToUse-compilation"></a>
+## Compilation
 After checking out the submodule remember to modify your build script accordingly so that _LLU_ sources also get compiled. Since the source code uses C++14 features, you have to make sure you enabled C++14 support in your compiler. *Visual Studio 2015* or later provides the support by default and in *gcc* or *clang* you may have to add **-std=c++14** flag. 
 
 Minimum required version of *gcc* is 5 and for *clang* it is 3.4.
 
 
-### Paclets that currently use _LibraryLink Utilities_
+## Paclets that currently use _LibraryLink Utilities_
 
 - [PacletTemplate](https://stash.wolfram.com/projects/IMEX/repos/paclettemplate) - this is a model paclet for Import/Export developers
 - [GIFTools](https://stash.wolfram.com/projects/IMEX/repos/giftools)
@@ -389,14 +397,14 @@ Minimum required version of *gcc* is 5 and for *clang* it is 3.4.
 - [RAWTools](https://stash.wolfram.com/projects/IMEX/repos/rawtools)
 
 <a name="APIreference"></a>
-## API Reference
+# API Reference
 
 Doxygen is used to generate documentation for _LibraryLink Utilities_ API. You can browse generated docs online here: 
 
 <http://malgorithmswin.wri.wolfram.com:8080/importexport/LLU>
 
 <a name="contributors"></a>
-## Contributors
+# Contributors
 
 * Rafał Chojna (<rafalc@wolfram.com>) - main developer
 * Sean Cheren  (<scheren@wolfram.com>) - top-level code for error handling
