@@ -242,7 +242,7 @@ namespace LibraryLinkUtils {
 				return;
 			if (shareCount() > 0)
 				disown();
-			if (this->arrayOwnerQ)
+			if (this->isOwner())
 				this->libData->MTensor_free(internalMT);
 		}
 
@@ -282,14 +282,14 @@ namespace LibraryLinkUtils {
 	template<class Container, typename>
 	Tensor<T>::Tensor(T init, Container&& dims) : MArray<T>(std::forward<Container>(dims)) {
 		createInternal();
-		this->arrayOwnerQ = true;
+		this->setOwner(true);
 		std::fill(this->begin(), this->end(), init);
 	}
 
 	template<typename T>
 	Tensor<T>::Tensor(T init, std::initializer_list<mint> dims) : MArray<T>(dims) {
 		createInternal();
-		this->arrayOwnerQ = true;
+		this->setOwner(true);
 		std::fill(this->begin(), this->end(), init);
 	}
 
@@ -300,7 +300,7 @@ namespace LibraryLinkUtils {
 		createInternal();
 		if (std::distance(first, last) != this->flattenedLength)
 			ErrorManager::throwException(LLErrorName::TensorNewError, "Length of data range does not match specified dimensions");
-		this->arrayOwnerQ = true;
+		this->setOwner(true);
 		std::copy(first, last, this->begin());
 	}
 
@@ -310,7 +310,7 @@ namespace LibraryLinkUtils {
 		createInternal();
 		if (std::distance(first, last) != this->flattenedLength)
 			ErrorManager::throwException(LLErrorName::TensorNewError, "Length of data range does not match specified dimensions");
-		this->arrayOwnerQ = true;
+		this->setOwner(true);
 		std::copy(first, last, this->begin());
 	}
 
@@ -320,7 +320,7 @@ namespace LibraryLinkUtils {
 			initError();
 		if (type != this->libData->MTensor_getType(t))
 			ErrorManager::throwException(LLErrorName::TensorTypeError);
-		this->arrayOwnerQ = false;
+		this->setOwner(false);
 		internalMT = t;
 		this->depth = this->libData->MTensor_getRank(internalMT);
 		this->flattenedLength = this->libData->MTensor_getFlattenedLength(internalMT);
@@ -335,14 +335,14 @@ namespace LibraryLinkUtils {
 		if (this->libData->MTensor_clone(t2.internalMT, &this->internalMT)) {
 			ErrorManager::throwException(LLErrorName::TensorCloneError);
 		}
-		this->arrayOwnerQ = true;
+		this->setOwner(true);
 	}
 
 	template<typename T>
 	Tensor<T>::Tensor(Tensor<T>&& t2) : MArray<T>(std::move(t2)) {
 		this->internalMT = t2.internalMT;
 		t2.internalMT = nullptr;
-		t2.arrayOwnerQ = false;
+		t2.setOwner(false);
 	}
 
 
@@ -353,7 +353,7 @@ namespace LibraryLinkUtils {
 		if (this->libData->MTensor_clone(t2.internalMT, &this->internalMT)) {
 			ErrorManager::throwException(LLErrorName::TensorCloneError);
 		}
-		this->arrayOwnerQ = true;
+		this->setOwner(true);
 	}
 
 	template<typename T>
@@ -361,9 +361,9 @@ namespace LibraryLinkUtils {
 		MArray<T>::operator=(std::move(t2));
 		this->freeInternal();
 		this->internalMT = t2.internalMT;
-		this->arrayOwnerQ = t2.arrayOwnerQ;
+		this->setOwner(t2.isOwner());
 		t2.internalMT = nullptr;
-		t2.arrayOwnerQ = false;
+		t2.setOwner(false);
 	}
 
 	template<typename T>

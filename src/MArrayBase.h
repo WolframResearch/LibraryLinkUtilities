@@ -117,7 +117,7 @@ namespace LibraryLinkUtils {
 		 **/
 		void passAsResult(MArgument& res) noexcept {
 			passInternal(res);
-			arrayOwnerQ = false;
+			setOwner(false);
 		}
 
 		/**
@@ -131,6 +131,17 @@ namespace LibraryLinkUtils {
 			imgFuns = ld->imageLibraryFunctions;
 		}
 
+		/**
+		 * 	@brief		Check whether this object owns the underlying data structure from WolframLibrary. If it does, it is responsible for freeing the resources.
+		 * 	@return		true if and only if the object owns the underlying data structure from WolframLibrary
+		 */
+		bool isOwner() const;
+
+		/**
+		 * 	@brief		Set the ownership of the underlying data structure from WolframLibrary.
+		 * 	@param 		arrayOwnerQ - whether the object is now the owner of the underlying data structure from WolframLibrary
+		 */
+		void setOwner(bool arrayOwnerQ);
 
 	protected:
 		/// Total number of elements in the container
@@ -144,9 +155,6 @@ namespace LibraryLinkUtils {
 
 		/// This helps to convert coordinates \f$ (x_1, \ldots, x_n) \f$ in multidimensional MArray to the corresponding index in a flat list of elements
 		std::vector<mint> offsets;
-
-		/// Determines if MArray should free the underlying container
-		bool arrayOwnerQ = false;
 
 		static WolframLibraryData libData;
 		static WolframRawArrayLibrary_Functions raFuns;
@@ -184,6 +192,9 @@ namespace LibraryLinkUtils {
 		}
 
 	private:
+		/// Determines if MArray should free the underlying container
+		bool arrayOwnerQ = false;
+
 		/**
 		 *	@brief 		Check if container size will fit into \b mint
 		 *	@param[in]	v - a container

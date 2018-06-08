@@ -303,7 +303,7 @@ namespace LibraryLinkUtils {
 				return;
 			if (shareCount() > 0)
 				disown();
-			if (this->arrayOwnerQ)
+			if (this->isOwner())
 				this->imgFuns->MImage_free(internalMI);
 		}
 
@@ -339,7 +339,7 @@ namespace LibraryLinkUtils {
 				imgFuns->MImage_new2D(w, h, channels, type, cs, interleavingQ, &internalMI);
 		if (error)
 			ErrorManager::throwException(LLErrorName::ImageNewError);
-		this->arrayOwnerQ = true;
+		this->setOwner(true);
 		initDataMembers();
 	}
 
@@ -349,7 +349,7 @@ namespace LibraryLinkUtils {
 			this->initError();
 		if (type != imgFuns->MImage_getDataType(mi))
 			ErrorManager::throwException(LLErrorName::ImageTypeError);
-		this->arrayOwnerQ = false;
+		this->setOwner(false);
 		internalMI = mi;
 		initDataMembers();
 	}
@@ -368,7 +368,7 @@ namespace LibraryLinkUtils {
 
 	template<typename T>
 	Image<T>::~Image() {
-		if (this->arrayOwnerQ)
+		if (this->isOwner())
 			this->freeInternal();
 	}
 
@@ -378,7 +378,7 @@ namespace LibraryLinkUtils {
 		if (this->imgFuns->MImage_clone(i2.internalMI, &this->internalMI)) {
 			ErrorManager::throwException(LLErrorName::ImageCloneError);
 		}
-		this->arrayOwnerQ = true;
+		this->setOwner(true);
 	}
 
 	template<typename T>
@@ -386,7 +386,7 @@ namespace LibraryLinkUtils {
 		allowSlices = i2.allowSlices;
 		this->internalMI = i2.internalMI;
 		i2.internalMI = nullptr;
-		i2.arrayOwnerQ = false;
+		i2.setOwner(false);
 	}
 
 	template<typename T>
@@ -396,7 +396,7 @@ namespace LibraryLinkUtils {
 		if (this->imgFuns->MImage_clone(i2.internalMI, &this->internalMI)) {
 			ErrorManager::throwException(LLErrorName::ImageCloneError);
 		}
-		this->arrayOwnerQ = true;
+		this->setOwner(true);
 	}
 
 	template<typename T>
@@ -404,9 +404,9 @@ namespace LibraryLinkUtils {
 		MArray<T>::operator=(std::move(i2));
 		this->freeInternal();
 		this->internalMI = i2.internalMI;
-		this->arrayOwnerQ = i2.arrayOwnerQ;
+		this->setOwner(i2.isOwner());
 		i2.internalMI = nullptr;
-		i2.arrayOwnerQ = false;
+		i2.setOwner(false);
 	}
 
 

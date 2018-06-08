@@ -247,7 +247,7 @@ namespace LibraryLinkUtils {
 				return;
 			if (shareCount() > 0)
 				disown();
-			if (this->arrayOwnerQ)
+			if (this->isOwner())
 				this->raFuns->MRawArray_free(internalRA);
 		}
 
@@ -286,14 +286,14 @@ namespace LibraryLinkUtils {
 	template<class Container, typename>
 	RawArray<T>::RawArray(T init, Container&& dims) : MArray<T>(std::forward<Container>(dims)) {
 		createInternal();
-		this->arrayOwnerQ = true;
+		this->setOwner(true);
 		std::fill(this->begin(), this->end(), init);
 	}
 
 	template<typename T>
 	RawArray<T>::RawArray(T init, std::initializer_list<mint> dims) : MArray<T>(dims) {
 		createInternal();
-		this->arrayOwnerQ = true;
+		this->setOwner(true);
 		std::fill(this->begin(), this->end(), init);
 	}
 
@@ -303,7 +303,7 @@ namespace LibraryLinkUtils {
 		createInternal();
 		if (std::distance(first, last) != this->flattenedLength)
 			ErrorManager::throwException(LLErrorName::RawArrayNewError, "Length of data range does not match specified dimensions");
-		this->arrayOwnerQ = true;
+		this->setOwner(true);
 		std::copy(first, last, this->begin());
 	}
 
@@ -313,7 +313,7 @@ namespace LibraryLinkUtils {
 		createInternal();
 		if (std::distance(first, last) != this->flattenedLength)
 			ErrorManager::throwException(LLErrorName::RawArrayNewError, "Length of data range does not match specified dimensions");
-		this->arrayOwnerQ = true;
+		this->setOwner(true);
 		std::copy(first, last, this->begin());
 	}
 
@@ -323,7 +323,7 @@ namespace LibraryLinkUtils {
 			initError();
 		if (type != this->raFuns->MRawArray_getType(ra))
 			ErrorManager::throwException(LLErrorName::RawArrayTypeError);
-		this->arrayOwnerQ = false;
+		this->setOwner(false);
 		internalRA = ra;
 		this->depth = this->raFuns->MRawArray_getRank(internalRA);
 		this->flattenedLength = this->raFuns->MRawArray_getFlattenedLength(internalRA);
@@ -337,7 +337,7 @@ namespace LibraryLinkUtils {
 		if (this->raFuns->MRawArray_clone(ra2.internalRA, &this->internalRA)) {
 			ErrorManager::throwException(LLErrorName::RawArrayCloneError);
 		}
-		this->arrayOwnerQ = true;
+		this->setOwner(true);
 	}
 
 	template<typename T>
@@ -345,7 +345,7 @@ namespace LibraryLinkUtils {
 			MArray<T>(std::move(ra2)) {
 		this->internalRA = ra2.internalRA;
 		ra2.internalRA = nullptr;
-		ra2.arrayOwnerQ = false;
+		ra2.setOwner(false);
 	}
 
 
@@ -356,7 +356,7 @@ namespace LibraryLinkUtils {
 		if (this->raFuns->MRawArray_clone(ra2.internalRA, &this->internalRA)) {
 			ErrorManager::throwException(LLErrorName::RawArrayCloneError);
 		}
-		this->arrayOwnerQ = true;
+		this->setOwner(true);
 	}
 
 	template<typename T>
@@ -364,9 +364,9 @@ namespace LibraryLinkUtils {
 		MArray<T>::operator=(std::move(ra2));
 		this->freeInternal();
 		this->internalRA = ra2.internalRA;
-		this->arrayOwnerQ = ra2.arrayOwnerQ;
+		this->setOwner(ra2.isOwner());
 		ra2.internalRA = nullptr;
-		ra2.arrayOwnerQ = false;
+		ra2.setOwner(false);
 	}
 
 	template<typename T>
