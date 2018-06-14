@@ -18,7 +18,6 @@ namespace LibraryLinkUtils {
 	/* Static data members */
 
 	std::string MArgumentManager::stringResultBuffer;
-	WolframLibraryData MArgumentManager::libData = nullptr;
 
 	/* Constructors */
 
@@ -109,11 +108,6 @@ namespace LibraryLinkUtils {
 		if (index >= argc)
 			ErrorManager::throwException(LLErrorName::MArgumentIndexError, "Index " + std::to_string(index) + " out-of-bound when accessing LibraryLink argument");
 		return args[index];
-	}
-
-	void MArgumentManager::setLibraryData(WolframLibraryData ld) noexcept {
-		libData = ld;
-		MArrayBase::setLibraryData(libData);
 	}
 
 } /* namespace LibraryLinkUtils */

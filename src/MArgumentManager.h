@@ -11,8 +11,6 @@
 #define LLUTILS_MARGUMENTMANAGER_H_
 
 #include "WolframLibrary.h"
-#include "WolframImageLibrary.h"
-#include "WolframRawArrayLibrary.h"
 
 #include <complex>
 #include <cstdint>
@@ -22,6 +20,7 @@
 #include <vector>
 
 #include "Image.h"
+#include "LibDataHolder.h"
 #include "LibraryLinkError.h"
 #include "RawArray.h"
 #include "Tensor.h"
@@ -37,7 +36,7 @@ namespace LibraryLinkUtils {
 	 *
 	 * @todo	Make sure all MArgument passing modes ("Constant", "Shared", etc.) are correctly handled
 	 **/
-	class MArgumentManager {
+	class MArgumentManager : public LibDataHolder {
 	public:
 
 		/**
@@ -310,15 +309,6 @@ namespace LibraryLinkUtils {
 		template<class Operator>
 		void operateOnImage(unsigned int index, Operator&& op);
 
-		/**
-		 *   @brief         Set WolframLibraryData structure as static member for MArgumentManager class and for all supported
-		 *   				specializations of MArray<>
-		 *   @param[in]     ld - WolframLibraryData
-		 *   @warning		This function should be called before constructing MArgumentManager
-		 *   				unless you use a constructor that takes WolframLibraryData as argument
-		 **/
-		static void setLibraryData(WolframLibraryData ld) noexcept;
-
 	private:
 		/**
 		 *   @brief			Get MArgument at position \c index
@@ -326,10 +316,6 @@ namespace LibraryLinkUtils {
 		 *   @throws		LLErrorName::MArgumentIndexError - if \c index is out-of-bounds
 		 **/
 		MArgument getArgs(unsigned int index) const;
-
-
-		/// WolframLibraryData, see <http://oh-wait-WolframLibraryData-has-no-publicly-available-documentation.wolfram.com> for details
-		static WolframLibraryData libData;
 
 		/// Here we store a string that was most recently returned to LibraryLink
 		/// [LLDocs]: https://reference.wolfram.com/language/LibraryLink/tutorial/InteractionWithMathematica.html#262826223 "LibraryLink docs"

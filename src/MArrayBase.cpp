@@ -17,10 +17,6 @@
 
 namespace LibraryLinkUtils {
 
-	WolframLibraryData MArrayBase::libData = nullptr;
-	WolframRawArrayLibrary_Functions MArrayBase::raFuns = nullptr;
-	WolframImageLibrary_Functions MArrayBase::imgFuns = nullptr;
-
 	MArrayBase::MArrayBase(std::initializer_list<mint> dimensions) {
 		if (!libData || !raFuns || !imgFuns)
 			initError();

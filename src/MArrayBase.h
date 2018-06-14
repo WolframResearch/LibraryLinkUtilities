@@ -11,13 +11,12 @@
 #define LLUTILS_MARRAYBASE_H_
 
 #include "WolframLibrary.h"
-#include "WolframImageLibrary.h"
-#include "WolframRawArrayLibrary.h"
 
 #include <initializer_list>
 #include <type_traits>
 #include <vector>
 
+#include "LibDataHolder.h"
 #include "LibraryLinkError.h"
 #include "Utilities.hpp"
 
@@ -30,8 +29,9 @@ namespace LibraryLinkUtils {
 	 * It mostly carries meta-information about container's size and dimensions, as these are independent of the data type.
 	 *
 	 */
-	class MArrayBase {
+	class MArrayBase : public LibDataHolder {
 	public:
+
 		/**
 		 *	@brief Default constructor
 		 **/
@@ -121,17 +121,6 @@ namespace LibraryLinkUtils {
 		}
 
 		/**
-		 *   @brief         Set Wolfram*Library structures as static members of MArray
-		 *   @param[in]     ld - WolframLibraryData
-		 *   @note			If you use MArgumentManeger you probably will never have to call this function directly
-		 **/
-		static void setLibraryData(WolframLibraryData ld) noexcept {
-			libData = ld;
-			raFuns = ld->rawarrayLibraryFunctions;
-			imgFuns = ld->imageLibraryFunctions;
-		}
-
-		/**
 		 * 	@brief		Check whether this object owns the underlying data structure from WolframLibrary. If it does, it is responsible for freeing the resources.
 		 * 	@return		true if and only if the object owns the underlying data structure from WolframLibrary
 		 */
@@ -144,6 +133,7 @@ namespace LibraryLinkUtils {
 		void setOwner(bool arrayOwnerQ);
 
 	protected:
+
 		/// Total number of elements in the container
 		mint flattenedLength = 0;
 
@@ -155,10 +145,6 @@ namespace LibraryLinkUtils {
 
 		/// This helps to convert coordinates \f$ (x_1, \ldots, x_n) \f$ in multidimensional MArray to the corresponding index in a flat list of elements
 		std::vector<mint> offsets;
-
-		static WolframLibraryData libData;
-		static WolframRawArrayLibrary_Functions raFuns;
-		static WolframImageLibrary_Functions imgFuns;
 
 		/// Populate \c offsets member
 		void fillOffsets();
