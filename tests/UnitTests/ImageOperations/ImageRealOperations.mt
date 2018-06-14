@@ -12,7 +12,7 @@ TestExecute[
 
 Test[
 	res = EchoImage1[Image[{{real32Num}}, "Real"]];
-	And[ImageType[res]==="Real",ImageData[res,"Real"]==={{real32Num}}]
+	And[ImageType[res]==="Real64",ImageData[res,"Real"]==={{real32Num}}]
 	,
 	True
 	,
