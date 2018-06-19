@@ -84,7 +84,10 @@ namespace LibraryLinkUtils {
 			{ LLErrorName::MLGetSymbolError,		"MLGetSymbol failed." },
 			{ LLErrorName::MLGetFunctionError,		"MLGetFunction failed." },
 			{ LLErrorName::MLPacketHandleError,		"One of the packet handling functions failed." },
-			{ LLErrorName::MLFlowControlError,		"One of the flow control functions failed." },
+			{ LLErrorName::MLFlowControlError,			"One of the flow control functions failed." },
+			{ LLErrorName::MLTransferToLoopbackError,	"Something went wrong when transferring expressions from loopback link." },
+			{ LLErrorName::MLCreateLoopbackError,		"Could not create a new loopback link." },
+			{ LLErrorName::MLLoopbackStackSizeError,	"Loopback stack size too small to perform desired action." },
 		});
 		return errMap;
 	}
@@ -231,6 +234,9 @@ namespace LibraryLinkUtils {
 		LLU_DEFINE_ERROR_NAME(MLGetFunctionError);
 		LLU_DEFINE_ERROR_NAME(MLPacketHandleError);
 		LLU_DEFINE_ERROR_NAME(MLFlowControlError);
+		LLU_DEFINE_ERROR_NAME(MLTransferToLoopbackError);
+		LLU_DEFINE_ERROR_NAME(MLCreateLoopbackError);
+		LLU_DEFINE_ERROR_NAME(MLLoopbackStackSizeError);
 	}
 
 } /* namespace LibraryLinkUtils */

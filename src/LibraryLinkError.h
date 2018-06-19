@@ -109,7 +109,10 @@ namespace LibraryLinkUtils {
 		extern const std::string MLGetSymbolError; 		///< MLGetSymbol failed
 		extern const std::string MLGetFunctionError; 	///< MLGetFunction failed
 		extern const std::string MLPacketHandleError;	///< One of the packet handling functions failed
-		extern const std::string MLFlowControlError;	///< One of the flow control functions failed
+		extern const std::string MLFlowControlError;		///< One of the flow control functions failed
+		extern const std::string MLTransferToLoopbackError;	///< Something went wrong when transferring expressions from loopback link
+		extern const std::string MLCreateLoopbackError;		///< Could not create a new loopback link
+		extern const std::string MLLoopbackStackSizeError;	///< Loopback stack size too small to perform desired action
 	}
 
 	/**
