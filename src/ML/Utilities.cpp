@@ -46,6 +46,24 @@ namespace LibraryLinkUtils {
 			}
 		}
 
+		MLINK getNewLoopback(MLINK m) {
+			int err = 0;
+			auto loopback = MLLoopbackOpen(MLLinkEnvironment(m), &err);
+			if (loopback == static_cast<MLINK>(0) || err != MLEOK) {
+				ErrorManager::throwException(LLErrorName::MLCreateLoopbackError, "Error code: " + std::to_string(err));
+			}
+			return loopback;
+		}
+
+		int countExpressionsInLoopbackLink(MLINK& lpbckLink) {
+			auto helperLink = getNewLoopback(lpbckLink);
+			int exprCnt = 0;
+			while (MLTransferExpression(helperLink, lpbckLink)) exprCnt++;
+			MLClose(lpbckLink);
+			lpbckLink = helperLink;
+			return exprCnt;
+		}
+
 	}
 }
 

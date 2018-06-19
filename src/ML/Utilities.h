@@ -196,6 +196,44 @@ namespace LibraryLinkUtils {
 				return ms >> Symbol("Null");
 		}
 
+
+		/**
+		 * @struct BeginExpr
+		 *
+		 * Simple structure to indicate that we will be sending an expression which length is not known beforehand
+		 */
+		struct BeginExpr : Symbol {
+			explicit BeginExpr(const std::string& head) : Symbol(head) {}
+		};
+
+		/**
+		 * @struct DropExpr
+		 *
+		 * An empty structure to indicate that current expression started with BeginExpr should be immediately discarded
+		 */
+		struct DropExpr {};
+
+		/**
+		 * @struct EndExpr
+		 *
+		 * An empty structure to indicate that current expression started with BeginExpr has ended and we can forward it to the "parent" link
+		 */
+		struct EndExpr {};
+
+
+		/**
+		 * @brief	Returns a new loopback link using MLLinkEnvironment(m) as MENV
+		 * @param 	m - valid MLINK
+		 * @return 	a brand new Loopback Link
+		 */
+		MLINK getNewLoopback(MLINK m);
+
+		/**
+		 * @brief	Get the number of expressions stored in the loopback link
+		 * @param	lpbckLink - a reference to the loopback link, after expressions are counted this argument will be assigned a different MLINK
+		 * @return	a number of expression stored in the loopback link
+		 */
+		int countExpressionsInLoopbackLink(MLINK& lpbckLink);
 	}
 }
 

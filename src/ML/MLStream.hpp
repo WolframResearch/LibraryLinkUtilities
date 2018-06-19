@@ -9,7 +9,9 @@
 
 #include <iterator>
 #include <map>
+#include <stack>
 #include <type_traits>
+#include <utility>
 #include <vector>
 
 #include "mathlink.h"
@@ -101,6 +103,8 @@ namespace LibraryLinkUtils {
 		/// Type of elements that can be either send or received via MathLink with no arguments, for example ML::Rule
 		using BidirStreamToken = MLStream& (*)(MLStream&, ML::Direction);
 
+		/// Type of data stored on the stack to facilitate sending expressions of a priori unknown length
+		using LoopbackData = std::pair<std::string, MLINK>;
 
 		//
 		//	operator<<
@@ -141,6 +145,24 @@ namespace LibraryLinkUtils {
 		 *   @throws 		LLErrorName::MLPutFunctionError
 		 **/
 		MLStream& operator<<(const ML::Missing& m);
+
+		/**
+		 * @brief		Starts sending a new expression where the number of arguments is not known a priori
+		 * @param[in]	expr - object of class BeginExpr that stores expression head as string
+		 */
+		MLStream& operator<<(const ML::BeginExpr& expr);
+
+		/**
+		 * @brief		Drops current expression that was initiated with BeginExpr
+		 * @param[in]	expr - object of class DropExpr
+		 **/
+		MLStream& operator<<(const ML::DropExpr& expr);
+
+		/**
+		 * @brief		Ends current expression that was initiated with BeginExpr, prepends the head from BeginExpr and sends everything to the "parent" link
+		 * @param[in]	expr - object of class EndExpr
+		 **/
+		MLStream& operator<<(const ML::EndExpr& expr);
 
 		/**
 		 *   @brief			Sends a boolean value via MathLink, it is translated to True or False in Mathematica
@@ -509,14 +531,27 @@ namespace LibraryLinkUtils {
 		 */
 		void testHead(const std::string& head, int argc);
 
+		/**
+		 *	@brief	Update the value of m to point to the top of loopbackStack.
+		 */
+		void refreshCurrentMLINK();
+
 	private:
-		/// Internal low-level handle to MathLink, it is assumed that the handle is valid
+		/// Internal low-level handle to the currently active MathLink, it is assumed that the handle is valid.
 		MLINK m;
+
+		/// MathLink does not natively support sending expression of unknown length, so to simulate this behavior we can use a helper loopback link to store arguments
+		/// until we know how many of them there are. But to be able to send nested expressions of unknown length we need more than one helper link. The data structure
+		/// called stack seems to be the most reasonable choice.
+		std::stack<LoopbackData> loopbackStack;
+
+		/// Boolean flag to indicate if the current expression initiated with BeginExpr has been dropped. It is needed for EndExpr to behave correctly.
+		bool currentExprDropped = false;
 	};
 
 
 	template<ML::Encoding EIn, ML::Encoding EOut>
-	MLStream<EIn, EOut>::MLStream(MLINK mlp) : m(mlp) {
+	MLStream<EIn, EOut>::MLStream(MLINK mlp) : m(mlp), loopbackStack(std::deque<LoopbackData> {{"", mlp}}) {
 	}
 
 	template<ML::Encoding EIn, ML::Encoding EOut>
@@ -524,7 +559,7 @@ namespace LibraryLinkUtils {
 	}
 
 	template<ML::Encoding EIn, ML::Encoding EOut>
-	MLStream<EIn, EOut>::MLStream(MLINK mlp, const std::string& head, int argc) : m(mlp) {
+	MLStream<EIn, EOut>::MLStream(MLINK mlp, const std::string& head, int argc) : MLStream(mlp) {
 		testHead(head, argc);
 	}
 
@@ -564,6 +599,14 @@ namespace LibraryLinkUtils {
 		if (argc != argcount) {
 			ErrorManager::throwException(LLErrorName::MLTestHeadError, "Expected " + std::to_string(argc) + " arguments but got " + std::to_string(argcount));
 		}
+	}
+
+	template<ML::Encoding EIn, ML::Encoding EOut>
+	void MLStream<EIn, EOut>::refreshCurrentMLINK() {
+		if (loopbackStack.empty()) {
+			ErrorManager::throwException(LLErrorName::MLLoopbackStackSizeError, "Stack is empty in refreshCurrentMLINK()");
+		}
+		m = std::get<MLINK>(loopbackStack.top());
 	}
 
 	//
@@ -608,6 +651,77 @@ namespace LibraryLinkUtils {
 			"Cannot put function: \"" + f.getHead() + "\" with 1 argument"
 		);
 		*this << f.why();
+		return *this;
+	}
+
+	template<ML::Encoding EIn, ML::Encoding EOut>
+	auto MLStream<EIn, EOut>::operator<<(const ML::BeginExpr& f) -> MLStream& {
+
+		// reset dropped expression flag
+		currentExprDropped = false;
+
+		// create a new LoopbackLink for the expression
+		auto loopback = ML::getNewLoopback(m);
+
+		// store expression head together with the link on the stack
+		loopbackStack.emplace(f.getHead(), loopback);
+
+		// active MLINK changes
+		refreshCurrentMLINK();
+
+		return *this;
+	}
+
+	template<ML::Encoding EIn, ML::Encoding EOut>
+	auto MLStream<EIn, EOut>::operator<<(const ML::DropExpr& f) -> MLStream& {
+		// check if the stack has reasonable size
+		if (loopbackStack.size() < 2) {
+			ErrorManager::throwException(LLErrorName::MLLoopbackStackSizeError, "Trying to Drop expression with loopback stack size " + std::to_string(loopbackStack.size()));
+		}
+		// we are dropping the expression so just close the link and hope that MathLink will do the cleanup
+		MLClose(std::get<MLINK>(loopbackStack.top()));
+		loopbackStack.pop();
+		refreshCurrentMLINK();
+
+		// set the dropped expression flag
+		currentExprDropped = true;
+
+		return *this;
+	}
+
+	template<ML::Encoding EIn, ML::Encoding EOut>
+	auto MLStream<EIn, EOut>::operator<<(const class ML::EndExpr&) -> MLStream& {
+
+		// if the expression has been dropped at some point, then just reset the flag and do nothing as the loopback link no longer exists
+		if (currentExprDropped) {
+			currentExprDropped = false;
+			return *this;
+		}
+
+		// check if the stack has reasonable size
+		if (loopbackStack.size() < 2) {
+			ErrorManager::throwException(LLErrorName::MLLoopbackStackSizeError, "Trying to End expression with loopback stack size " + std::to_string(loopbackStack.size()));
+		}
+
+		// extract active loopback link and expression head
+		auto currentPartialExpr = loopbackStack.top();
+		loopbackStack.pop();
+
+		// active MLINK changes
+		refreshCurrentMLINK();
+
+		// now count the expressions accumulated in the loopback link and send them to the parent link after the head
+		MLINK& exprArgs = std::get<MLINK>(currentPartialExpr);
+		auto argCnt = ML::countExpressionsInLoopbackLink(exprArgs);
+		*this << ML::Function(std::get<std::string>(currentPartialExpr), argCnt);
+		check(
+			MLTransferToEndOfLoopbackLink(m, exprArgs),
+			LLErrorName::MLTransferToLoopbackError,
+			"Could not transfer " + std::to_string(argCnt) + " expressions from Loopback Link"
+		);
+		// finally, close the loopback link
+		MLClose(exprArgs);
+
 		return *this;
 	}
 
