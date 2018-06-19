@@ -10,6 +10,7 @@
 #include <algorithm>
 #include <iostream>
 #include <map>
+#include <random>
 #include <regex>
 #include <set>
 #include <string>
@@ -832,3 +833,105 @@ LIBRARY_MATHLINK_FUNCTION(ReadNestedMap) {
 	return err;
 }
 
+
+//
+// Begin - End syntax
+//
+
+LIBRARY_MATHLINK_FUNCTION(UnknownLengthList) {
+	auto err = LLErrorCode::NoError;
+	try {
+		MathLinkStream ml(mlp, 1);
+
+		int modulus;
+		ml >> modulus;
+
+		std::random_device rd;
+		std::mt19937 gen { rd() };
+		std::uniform_int_distribution<> distr(0, std::max(1'000'000, modulus + 1));
+
+		ml << ML::BeginExpr("List");
+
+		int r;
+		while ((r = distr(gen)) % modulus != 0) {
+			ml << r;
+		}
+		ml << ML::EndExpr();
+
+	}
+	catch (LibraryLinkError& e) {
+		err = e.which();
+		std::cout << e.what() << std::endl;
+	}
+	catch (std::exception& e) {
+		err = LLErrorCode::FunctionError;
+	}
+	return err;
+}
+
+LIBRARY_MATHLINK_FUNCTION(RaggedArray) {
+	auto err = LLErrorCode::NoError;
+	try {
+		MathLinkStream ml(mlp, 1);
+
+		int len;
+		ml >> len;
+
+		ml << ML::BeginExpr("List");
+		for (int i = 0; i < len; ++i) {
+			ml << ML::BeginExpr("List");
+			for (int j = 0; j < i; ++j) {
+				ml << j;
+			}
+			ml << ML::EndExpr();
+		}
+		ml << ML::EndExpr();
+
+	}
+	catch (LibraryLinkError& e) {
+		err = e.which();
+	}
+	catch (std::exception& e) {
+		err = LLErrorCode::FunctionError;
+	}
+	return err;
+}
+
+LIBRARY_MATHLINK_FUNCTION(FactorsOrFailed) {
+	auto err = LLErrorCode::NoError;
+	try {
+		MathLinkStream ml(mlp, 1);
+
+		std::vector<int> numbers;
+		ml >> numbers;
+
+		ml << ML::BeginExpr("Association");
+		for (auto&& n : numbers) {
+			ml << ML::Rule << n;
+			ml << ML::BeginExpr("List");
+			int divisors = 0;
+			for (int j = 1; j <= n; ++j) {
+				if (n % j == 0) {
+					if (divisors < 15) {
+						ml << j;
+						divisors++;
+					} else {
+						ml << ML::DropExpr();
+						ml << ML::Symbol("$Failed"); // $Failed is now sent to the "parent" loopback link
+						break;
+					}
+				}
+			}
+			ml << ML::EndExpr();
+		}
+		ml << ML::EndExpr();
+
+	}
+	catch (LibraryLinkError& e) {
+		err = e.which();
+	}
+	catch (std::exception& e) {
+		err = LLErrorCode::FunctionError;
+	}
+	return err;
+}

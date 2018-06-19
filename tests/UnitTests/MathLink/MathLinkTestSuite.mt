@@ -463,5 +463,41 @@ Test[
 	TestID->"MathLinkTestSuite-20171227-V4J6Y2"
 ]
 
+
 (* Local Loopback Link *)
-(* not implemented yet *)
+Test[
+	IntList = SafeMathLinkFunction["UnknownLengthList"];
+	modulus = 123;
+	l = IntList[modulus];
+	Print[l];
+	VectorQ[l, (IntegerQ[#] && 0 <= # <= 1000000 && !Divisible[#, modulus])&]
+	,
+	True
+	,
+	TestID->"MathLinkTestSuite-20180619-G8D1H1"
+]
+
+Test[
+	Ragged = SafeMathLinkFunction["RaggedArray"];
+	length = 15;
+	Ragged[length]
+	,
+	Table[Drop[Range[0, i], -1], {i, 0, length - 1}]
+	,
+	TestID->"MathLinkTestSuite-20180619-W3E7I4"
+]
+
+Test[
+	Factors = SafeMathLinkFunction["FactorsOrFailed"];
+	l = RandomInteger[{1, 123456}, 20];
+	Print[Factors[l]];
+	Factors[l]
+	,
+	AssociationMap[
+ 		With[{d = Divisors[#]}, 
+ 			If[Length[d] > 15, $Failed, d]
+ 		]&
+ 	, l]
+	,
+	TestID->"MathLinkTestSuite-20180619-L6X0P3"
+]
