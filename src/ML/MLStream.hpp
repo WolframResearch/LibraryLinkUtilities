@@ -422,13 +422,23 @@ namespace LibraryLinkUtils {
 
 		/**
 		 *   @brief			Receives a List from MathLink and assigns it to std::vector
-		 *   @tparam		T - vector element type
+		 *   @tparam		T - vector element type, it has to be a simple type that is supported in MLGet*List
 		 *   @param[out] 	l - argument to which the List received from MathLink will be assigned
 		 *
 		 *   @throws 		LLErrorName::MLGetListError
 		 **/
 		template<typename T>
-		MLStream& operator>>(std::vector<T>& l);
+		ML::ScalarSupportedTypeQ<T, MLStream&> operator>>(std::vector<T>& l);
+
+		/**
+		 *   @brief			Receives a List from MathLink and assigns it to std::vector
+		 *   @tparam		T - vector element type, it any type supported by MathLink
+		 *   @param[out] 	l - argument to which the List received from MathLink will be assigned
+		 *
+		 *   @throws 		LLErrorName::MLGetListError
+		 **/
+		template<typename T>
+		ML::NotScalarSupportedTypeQ<T, MLStream&> operator>>(std::vector<T>& l);
 
 		/**
 		 *   @brief			Receives a MathLink string
@@ -931,11 +941,24 @@ namespace LibraryLinkUtils {
 
 	template<ML::Encoding EIn, ML::Encoding EOut>
 	template<typename T>
-	auto MLStream<EIn, EOut>::operator>>(std::vector<T>& l) -> MLStream& {
+	auto MLStream<EIn, EOut>::operator>>(std::vector<T>& l) -> ML::ScalarSupportedTypeQ<T, MLStream&> {
 		auto list = ML::GetList<T>::get(m);
 		T* start = list.get();
 		auto listLen = list.get_deleter().getLength();
 		l = std::vector<T> { start, start + listLen };
+		return *this;
+	}
+
+	template<ML::Encoding EIn, ML::Encoding EOut>
+	template<typename T>
+	auto MLStream<EIn, EOut>::operator>>(std::vector<T>& l) -> ML::NotScalarSupportedTypeQ<T, MLStream&> {
+		ML::List inList;
+		*this >> inList;
+		std::vector<T> res(inList.getArgc());
+		for(auto& elem : res) {
+			*this >> elem;
+		}
+		l = std::move(res);
 		return *this;
 	}
 
