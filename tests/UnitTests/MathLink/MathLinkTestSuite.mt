@@ -469,7 +469,6 @@ Test[
 	IntList = SafeMathLinkFunction["UnknownLengthList"];
 	modulus = 123;
 	l = IntList[modulus];
-	Print[l];
 	VectorQ[l, (IntegerQ[#] && 0 <= # <= 1000000 && !Divisible[#, modulus])&]
 	,
 	True
@@ -490,7 +489,6 @@ Test[
 Test[
 	Factors = SafeMathLinkFunction["FactorsOrFailed"];
 	l = RandomInteger[{1, 123456}, 20];
-	Print[Factors[l]];
 	Factors[l]
 	,
 	AssociationMap[
@@ -500,4 +498,43 @@ Test[
  	, l]
 	,
 	TestID->"MathLinkTestSuite-20180619-L6X0P3"
+]
+
+Test[
+	GetEmpty = SafeMathLinkFunction["Empty"];
+	GetEmpty["Association"]
+	,
+	<||>
+	,
+	TestID->"MathLinkTestSuite-20180622-Z8V8N3"
+]
+
+Test[
+	GetEmpty["List"]
+	,
+	{}
+	,
+	TestID->"MathLinkTestSuite-20180622-S5A9U6"
+]
+
+Test[
+	GetEmpty["NoSuchHead"]
+	,
+	NoSuchHead[]
+	,
+	TestID->"MathLinkTestSuite-20180622-S7D2R7"
+]
+
+Test[
+	ListOfStrings = SafeMathLinkFunction["ListOfStringsTiming"];
+	los = RandomWord["CommonWords", 1000];
+	{timeNormal, r1} = RepeatedTiming[ListOfStrings[los, False]];
+	{timeBeginEnd, r2} = RepeatedTiming[ListOfStrings[los, True]];
+	Print["Time when sending list as usual: " <> ToString[timeNormal] <> "s."];
+	Print["Time when sending list with BeginExpr: " <> ToString[timeBeginEnd] <> "s."];
+	r1 == r2 == Join @@ Table[los, 100]
+	,
+	True
+	,
+	TestID->"MathLinkTestSuite-20180622-S6K4T4"
 ]

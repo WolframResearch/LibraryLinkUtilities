@@ -835,7 +835,7 @@ LIBRARY_MATHLINK_FUNCTION(ReadNestedMap) {
 
 
 //
-// Begin - End syntax
+// BeginExpr - DropExpr - EndExpr
 //
 
 LIBRARY_MATHLINK_FUNCTION(UnknownLengthList) {
@@ -926,6 +926,63 @@ LIBRARY_MATHLINK_FUNCTION(FactorsOrFailed) {
 		}
 		ml << ML::EndExpr();
 
+	}
+	catch (LibraryLinkError& e) {
+		err = e.which();
+	}
+	catch (std::exception& e) {
+		err = LLErrorCode::FunctionError;
+	}
+	return err;
+}
+
+
+LIBRARY_MATHLINK_FUNCTION(Empty) {
+	auto err = LLErrorCode::NoError;
+	try {
+		MathLinkStream ml(mlp, 1);
+
+		std::string head;
+		ml >> head;
+
+		ml << ML::BeginExpr(head);
+		ml << ML::EndExpr();
+
+	}
+	catch (LibraryLinkError& e) {
+		err = e.which();
+	}
+	catch (std::exception& e) {
+		err = LLErrorCode::FunctionError;
+	}
+	return err;
+}
+
+
+LIBRARY_MATHLINK_FUNCTION(ListOfStringsTiming) {
+	auto err = LLErrorCode::NoError;
+	constexpr int repetitions = 100;
+	try {
+		MathLinkStream ml(mlp, 2);
+
+		std::vector<std::string> listOfStrings;
+		ml >> listOfStrings;
+
+		bool useBeginExpr;
+		ml >> useBeginExpr;
+
+		useBeginExpr? (ml << ML::BeginExpr("List")) : (ml << ML::List(repetitions * listOfStrings.size()));
+
+		for (int i = 0; i < repetitions; ++i) {
+			for (auto&& s : listOfStrings)
+				ml << s;
+		}
+
+		if (useBeginExpr) {
+			ml << ML::EndExpr();
+		}
+
+		ml << ML::EndPacket;
 	}
 	catch (LibraryLinkError& e) {
 		err = e.which();
