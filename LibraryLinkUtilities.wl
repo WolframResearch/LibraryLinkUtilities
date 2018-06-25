@@ -87,7 +87,7 @@ SafeLibraryFunctionLoad[args___] :=
 		Check[
 			LibraryFunctionLoad[$PacletLibrary, args]
 			,
-			Throw @ CreatePacletFailure["FunctionLoadFailure", "MessageParameters" -> <|"FunctionName" -> First[args], "LibraryName" -> $PacletLibrary|>];
+			Throw @ CreatePacletFailure["FunctionLoadFailure", "MessageParameters" -> <|"FunctionName" -> First[{args}], "LibraryName" -> $PacletLibrary|>];
 		]
 	]
 
