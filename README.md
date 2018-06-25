@@ -236,6 +236,30 @@ MLStream& operator<<(MLStream& ms, const Color& c) {
 
 And now you're able to send objects of class `Color` directly via `MLStream`.
 
+### Supports expressions of unknown length
+
+Whenever you send an expression via MathLink you have to first specify the head and the number of arguments. It proved multiple times that this design is not very flexible, 
+for example when you are reading from a file and cannot easily tell how much data is left.
+
+As a workaround, one can create a temporary loopback link, accumulate all the arguments there (without the head), 
+count the arguments and then send everything to the "main" link as usual.
+
+The same strategy has been incorporated into `MLStream` so that developers do not have to implement it manually any longer. Now you can send a `List` like this:
+```cpp
+MLStream ms(mlp);
+
+ms << ML::BeginExpr("List");
+while (dataFromFile != EOF) {
+	// process data from file and send to MLStream
+}
+ms << ML::EndExpr();
+```
+
+##### Word of caution
+
+This feature should only be used if necessary since it requires a temporary link and makes extra copies
+of data. Simple benchmarks showed a ~2x slowdown compared to the usual `MLPutFunction`.
+
 <a name="mathlink-example"></a>
 ## Example
 Again, let's compare the same piece of code written in plain _LibraryLink_ with one written with _LLU_ and `MLStream`. Take a look at the code snippet taken from one of the Import/Export paclets:
