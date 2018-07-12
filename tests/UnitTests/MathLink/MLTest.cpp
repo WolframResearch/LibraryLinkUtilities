@@ -859,11 +859,11 @@ LIBRARY_MATHLINK_FUNCTION(UnknownLengthList) {
 		ml << ML::EndExpr();
 
 	}
-	catch (LibraryLinkError& e) {
+	catch (const LibraryLinkError& e) {
 		err = e.which();
 		std::cout << e.what() << std::endl;
 	}
-	catch (std::exception& e) {
+	catch (...) {
 		err = LLErrorCode::FunctionError;
 	}
 	return err;
@@ -888,10 +888,10 @@ LIBRARY_MATHLINK_FUNCTION(RaggedArray) {
 		ml << ML::EndExpr();
 
 	}
-	catch (LibraryLinkError& e) {
+	catch (const LibraryLinkError& e) {
 		err = e.which();
 	}
-	catch (std::exception& e) {
+	catch (...) {
 		err = LLErrorCode::FunctionError;
 	}
 	return err;
@@ -927,10 +927,10 @@ LIBRARY_MATHLINK_FUNCTION(FactorsOrFailed) {
 		ml << ML::EndExpr();
 
 	}
-	catch (LibraryLinkError& e) {
+	catch (const LibraryLinkError& e) {
 		err = e.which();
 	}
-	catch (std::exception& e) {
+	catch (...) {
 		err = LLErrorCode::FunctionError;
 	}
 	return err;
@@ -949,10 +949,10 @@ LIBRARY_MATHLINK_FUNCTION(Empty) {
 		ml << ML::EndExpr();
 
 	}
-	catch (LibraryLinkError& e) {
+	catch (const LibraryLinkError& e) {
 		err = e.which();
 	}
-	catch (std::exception& e) {
+	catch (...) {
 		err = LLErrorCode::FunctionError;
 	}
 	return err;
@@ -984,10 +984,10 @@ LIBRARY_MATHLINK_FUNCTION(ListOfStringsTiming) {
 
 		ml << ML::EndPacket;
 	}
-	catch (LibraryLinkError& e) {
+	catch (const LibraryLinkError& e) {
 		err = e.which();
 	}
-	catch (std::exception& e) {
+	catch (...) {
 		err = LLErrorCode::FunctionError;
 	}
 	return err;
