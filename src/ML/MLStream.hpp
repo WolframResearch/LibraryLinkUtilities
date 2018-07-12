@@ -432,7 +432,7 @@ namespace LibraryLinkUtils {
 
 		/**
 		 *   @brief			Receives a List from MathLink and assigns it to std::vector
-		 *   @tparam		T - vector element type, it any type supported by MathLink
+		 *   @tparam		T - vector element type, it can be any type supported by MathLink
 		 *   @param[out] 	l - argument to which the List received from MathLink will be assigned
 		 *
 		 *   @throws 		LLErrorName::MLGetListError
@@ -700,7 +700,7 @@ namespace LibraryLinkUtils {
 	}
 
 	template<ML::Encoding EIn, ML::Encoding EOut>
-	auto MLStream<EIn, EOut>::operator<<(const class ML::EndExpr&) -> MLStream& {
+	auto MLStream<EIn, EOut>::operator<<(const ML::EndExpr&) -> MLStream& {
 
 		// if the expression has been dropped at some point, then just reset the flag and do nothing as the loopback link no longer exists
 		if (currentExprDropped) {
