@@ -22,14 +22,14 @@ namespace LibraryLinkUtils {
 	/* Constructors */
 
 	MArgumentManager::MArgumentManager(mint Argc, MArgument* Args, MArgument& Res) :
-			argc(Argc), args(Args), res(Res), stringArgs(Argc) {
+			argc(Argc), args(Args), res(Res), stringArgs(static_cast<decltype(stringArgs)::size_type>(Argc)) {
 		if (!libData)
 			ErrorManager::throwException(LLErrorName::MArgumentInitError);
 
 	}
 
 	MArgumentManager::MArgumentManager(WolframLibraryData ld, mint Argc, MArgument* Args, MArgument& Res) :
-			argc(Argc), args(Args), res(Res), stringArgs(Argc) {
+			argc(Argc), args(Args), res(Res), stringArgs(static_cast<decltype(stringArgs)::size_type>(Argc)) {
 		setLibraryData(ld);
 	}
 
@@ -96,7 +96,7 @@ namespace LibraryLinkUtils {
 
 	unsigned char MArgumentManager::getTensorType(unsigned int index) const {
 		MTensor tmp = MArgument_getMTensor(getArgs(index));
-		return libData->MTensor_getType(tmp);
+		return static_cast<unsigned char>(libData->MTensor_getType(tmp));
 	}
 
 	imagedata_t MArgumentManager::getImageType(unsigned int index) const {

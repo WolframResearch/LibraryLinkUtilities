@@ -29,7 +29,7 @@ namespace LibraryLinkUtils {
 
 
 	void MArrayBase::fillOffsets() {
-		offsets.assign(rank(), 1);
+		offsets.assign(static_cast<decltype(offsets)::size_type>(rank()), 1);
 		if (rank() >= 2) {
 			std::transform(std::rbegin(offsets), std::rend(offsets) - 1, std::crbegin(dims), std::rbegin(offsets) + 1, [](auto off, auto dim) {
 				return off * dim;
@@ -54,7 +54,7 @@ namespace LibraryLinkUtils {
 
 
 	mint MArrayBase::checkContainerSize(std::initializer_list<mint> v) const {
-		if (v.size() > std::numeric_limits<mint>::max())
+		if (v.size() > static_cast<decltype(v)::size_type>(std::numeric_limits<mint>::max()))
 			sizeError();
 		return static_cast<mint>(v.size());
 	}

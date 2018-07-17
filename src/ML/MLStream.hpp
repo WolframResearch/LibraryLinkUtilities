@@ -582,7 +582,7 @@ namespace LibraryLinkUtils {
 	template<ML::Encoding EIn, ML::Encoding EOut>
 	template<typename Iterator, typename>
 	void MLStream<EIn, EOut>::sendRange(Iterator begin, Iterator end, const std::string& head) {
-		*this << ML::Function(head, std::distance(begin, end));
+		*this << ML::Function(head, static_cast<int>(std::distance(begin, end)));
 		std::for_each(begin, end, [this](const auto& elem) { *this << elem; });
 	}
 
@@ -770,7 +770,7 @@ namespace LibraryLinkUtils {
 	template<ML::Encoding EIn, ML::Encoding EOut>
 	template<typename T>
 	auto MLStream<EIn, EOut>::operator<<(const std::vector<T>& l) -> ML::ScalarSupportedTypeQ<T, MLStream&> {
-		ML::PutList<T>::put(m, l.data(), l.size());
+		ML::PutList<T>::put(m, l.data(), static_cast<int>(l.size()));
 		return *this;
 	}
 
@@ -836,7 +836,7 @@ namespace LibraryLinkUtils {
 	template<ML::Encoding EIn, ML::Encoding EOut>
 	template<typename K, typename V>
 	auto MLStream<EIn, EOut>::operator<<(const std::map<K, V>& s) -> MLStream& {
-		*this << ML::Association(s.size());
+		*this << ML::Association(static_cast<int>(s.size()));
 		for (const auto& elem : s) {
 			*this << ML::Rule << elem.first << elem.second;
 		}

@@ -149,7 +149,7 @@ namespace LibraryLinkUtils {
 	void ErrorManager::sendRegisteredErrorsViaMathlink(MLINK mlp) {
 		MLStream<ML::Encoding::UTF8> ms(mlp, "List", 0);
 
-		ms << ML::NewPacket << ML::Association(errors().size());
+		ms << ML::NewPacket << ML::Association(static_cast<int>(errors().size()));
 
 		for (const auto& err : errors()) {
 			ms << ML::Rule << err.first << ML::List(2) << err.second.id() << err.second.message();

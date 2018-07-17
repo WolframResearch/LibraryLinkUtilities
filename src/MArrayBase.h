@@ -88,7 +88,7 @@ namespace LibraryLinkUtils {
 		mint dimension(mint dim) const {
 			if (dim >= rank() || dim < 0)
 				indexError();
-			return dims[dim];
+			return dims[static_cast<decltype(dims)::size_type>(dim)];
 		}
 
 		/**

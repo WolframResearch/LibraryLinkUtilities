@@ -92,7 +92,7 @@ namespace LibraryLinkUtils {
 			 * @param 	h - function head
 			 * @param 	argCount - number of arguments this function takes
 			 */
-			Function(const std::string& h, std::size_t argCount) : Symbol(h), argc(static_cast<int>(argCount)) {}
+			Function(const std::string& h, int argCount) : Symbol(h), argc(argCount) {}
 
 			/**
 			 * @brief	Get argument count.
@@ -116,7 +116,7 @@ namespace LibraryLinkUtils {
 		 */
 		struct Association : Function {
 			Association() : Function("Association") {}
-			Association(std::size_t argCount) : Function("Association", argCount) {}
+			Association(int argCount) : Function("Association", argCount) {}
 		};
 
 		/**
@@ -125,7 +125,7 @@ namespace LibraryLinkUtils {
 		 */
 		struct List : Function {
 			List() : Function("List") {}
-			List(std::size_t argCount) : Function("List", argCount) {}
+			List(int argCount) : Function("List", argCount) {}
 		};
 
 		/**
