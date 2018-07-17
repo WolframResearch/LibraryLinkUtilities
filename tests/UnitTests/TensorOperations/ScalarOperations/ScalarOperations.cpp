@@ -15,10 +15,10 @@ EXTERN_C DLLEXPORT int getNthRealFromTR1(WolframLibraryData libData, mint Argc, 
 
 		mngr.setReal(t[i]);
 	}
-	catch (LibraryLinkError& e) {
+	catch (const LibraryLinkError& e) {
 		err = e.which();
 	}
-	catch (std::exception& e) {
+	catch (...) {
 		err = LLErrorCode::FunctionError;
 	}
 	return err;
@@ -37,10 +37,10 @@ EXTERN_C DLLEXPORT int getNthRealFromTR2(WolframLibraryData libData, mint Argc, 
 		mngr.setReal(t[ { i, j }]);
 
 	}
-	catch (LibraryLinkError& e) {
+	catch (const LibraryLinkError& e) {
 		err = e.which();
 	}
-	catch (std::exception& e) {
+	catch (...) {
 		err = LLErrorCode::FunctionError;
 	}
 	return err;
@@ -58,10 +58,10 @@ EXTERN_C DLLEXPORT int getNthIntegerFromTR2(WolframLibraryData libData, mint Arg
 
 		mngr.setInteger(t[{ i, j }]);
 	}
-	catch (LibraryLinkError& e) {
+	catch (const LibraryLinkError& e) {
 		err = e.which();
 	}
-	catch (std::exception& e) {
+	catch (...) {
 		err = LLErrorCode::FunctionError;
 	}
 	return err;
@@ -86,10 +86,10 @@ EXTERN_C DLLEXPORT int setNthIntegerT(WolframLibraryData libData, mint Argc, MAr
 		});
 		mngr.setTensor(t);
 	}
-	catch (LibraryLinkError& e) {
+	catch (const LibraryLinkError& e) {
 		err = e.which();
 	}
-	catch (std::exception& e) {
+	catch (...) {
 		err = LLErrorCode::FunctionError;
 	}
 	return err;

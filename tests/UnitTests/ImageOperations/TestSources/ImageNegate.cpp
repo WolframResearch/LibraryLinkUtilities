@@ -47,10 +47,10 @@ LIBRARY_LINK_FUNCTION(ImageNegate) {
 		MArgumentManager mngr(libData, Argc, Args, Res);
 		mngr.operateOnImage<ImageNegator>(0, mngr);
 	}
-	catch (LibraryLinkError& e) {
+	catch (const LibraryLinkError& e) {
 		err = e.which();
 	}
-	catch (std::exception& e) {
+	catch (...) {
 		err = LLErrorCode::FunctionError;
 	}
 	return err;

@@ -14,10 +14,10 @@ LIBRARY_LINK_FUNCTION(ImageColumnCount) {
 			mngr.setInteger(image.columns());
 		});
 	}
-	catch (LibraryLinkError& e) {
+	catch (const LibraryLinkError& e) {
 		err = e.which();
 	}
-	catch (std::exception& e) {
+	catch (...) {
 		err = LLErrorCode::FunctionError;
 	}
 	return err;
@@ -32,10 +32,10 @@ LIBRARY_LINK_FUNCTION(ImageRank) {
 			mngr.setInteger(image.rank());
 		});
 	}
-	catch (LibraryLinkError& e) {
+	catch (const LibraryLinkError& e) {
 		err = e.which();
 	}
-	catch (std::exception& e) {
+	catch (...) {
 		err = LLErrorCode::FunctionError;
 	}
 	return err;
@@ -50,10 +50,10 @@ LIBRARY_LINK_FUNCTION(ImageRowCount) {
 			mngr.setInteger(image.rows());
 		});
 	}
-	catch (LibraryLinkError& e) {
+	catch (const LibraryLinkError& e) {
 		err = e.which();
 	}
-	catch (std::exception& e) {
+	catch (...) {
 		err = LLErrorCode::FunctionError;
 	}
 	return err;

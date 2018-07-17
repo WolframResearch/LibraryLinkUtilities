@@ -28,11 +28,11 @@ LIBRARY_LINK_FUNCTION(echoRawArray) {
 			mngr.setRawArray(rarray2);
 		});
 	}
-	catch (LibraryLinkError& e) {
+	catch (const LibraryLinkError& e) {
 		err = e.which();
 		std::cout << e.what() << std::endl;
 	}
-	catch (std::exception& e) {
+	catch (...) {
 		err = LLErrorCode::FunctionError;
 	}
 	return err;
@@ -49,10 +49,10 @@ LIBRARY_LINK_FUNCTION(getRawArrayLength) {
 			mngr.setInteger(rarray.size());
 		});
 	}
-	catch (LibraryLinkError& e) {
+	catch (const LibraryLinkError& e) {
 		err = e.which();
 	}
-	catch (std::exception& e) {
+	catch (...) {
 		err = LLErrorCode::FunctionError;
 	}
 	return err;
@@ -66,10 +66,10 @@ LIBRARY_LINK_FUNCTION(getRawArrayRank) {
 			mngr.setInteger(rarray.rank());
 		});
 	}
-	catch (LibraryLinkError& e) {
+	catch (const LibraryLinkError& e) {
 		err = e.which();
 	}
-	catch (std::exception& e) {
+	catch (...) {
 		err = LLErrorCode::FunctionError;
 	}
 	return err;
@@ -83,10 +83,10 @@ LIBRARY_LINK_FUNCTION(newRawArray) {
 		RawArray<float> ra(0., { 3, 3 });
 		mngr.setRawArray(ra);
 	}
-	catch (LibraryLinkError& e) {
+	catch (const LibraryLinkError& e) {
 		err = e.which();
 	}
-	catch (std::exception& e) {
+	catch (...) {
 		err = LLErrorCode::FunctionError;
 	}
 	return err;
@@ -102,10 +102,10 @@ LIBRARY_LINK_FUNCTION(cloneRawArray) {
 			mngr.setRawArray(rarray2);
 		});
 	}
-	catch (LibraryLinkError& e) {
+	catch (const LibraryLinkError& e) {
 		err = e.which();
 	}
-	catch (std::exception& e) {
+	catch (...) {
 		err = LLErrorCode::FunctionError;
 	}
 	return err;
@@ -156,10 +156,10 @@ EXTERN_C DLLEXPORT int rawZeroData(WolframLibraryData libData, mint Argc, MArgum
 		MArgumentManager mngr(Argc, Args, Res);
 		mngr.operateOnRawArray<ZeroReal64>(0, mngr);
 	}
-	catch (LibraryLinkError& e) {
+	catch (const LibraryLinkError& e) {
 		err = e.which();
 	}
-	catch (std::exception& e) {
+	catch (...) {
 		err = LLErrorCode::FunctionError;
 	}
 	return err;

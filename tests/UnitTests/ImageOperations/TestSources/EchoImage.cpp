@@ -18,10 +18,10 @@ LIBRARY_LINK_FUNCTION(EchoImage1) {
 			mngr.setImage(out);
 		});
 	}
-	catch (LibraryLinkError& e) {
+	catch (const LibraryLinkError& e) {
 		err = e.which();
 	}
-	catch (std::exception& e) {
+	catch (...) {
 		err = LLErrorCode::FunctionError;
 	}
 	return err;
@@ -57,10 +57,10 @@ LIBRARY_LINK_FUNCTION(EchoImage2) {
 			mngr.setImage(out);
 		});
 	}
-	catch (LibraryLinkError& e) {
+	catch (const LibraryLinkError& e) {
 		err = e.which();
 	}
-	catch (std::exception& e) {
+	catch (...) {
 		err = LLErrorCode::FunctionError;
 	}
 	return err;
@@ -75,10 +75,10 @@ LIBRARY_LINK_FUNCTION(ConvertImageToByte) {
 			mngr.setImage(out);
 		});
 	}
-	catch (LibraryLinkError& e) {
+	catch (const LibraryLinkError& e) {
 		err = e.which();
 	}
-	catch (std::exception& e) {
+	catch (...) {
 		err = LLErrorCode::FunctionError;
 	}
 	return err;
@@ -98,10 +98,10 @@ LIBRARY_LINK_FUNCTION(UnifyImageTypes) {
 
 		});
 	}
-	catch (LibraryLinkError& e) {
+	catch (const LibraryLinkError& e) {
 		err = e.which();
 	}
-	catch (std::exception& e) {
+	catch (...) {
 		err = LLErrorCode::FunctionError;
 	}
 	return err;

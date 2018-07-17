@@ -47,7 +47,7 @@ LIBRARY_MATHLINK_FUNCTION(NestedPutAs) {
 }
 
 template<typename T>
-std::vector<mlint64> toIntegerCodes(const T* p, int n) {
+std::vector<mlint64> toIntegerCodes(const T* p, std::size_t n) {
 	std::vector<mlint64> ret {p, p + n};
 	return ret;
 }

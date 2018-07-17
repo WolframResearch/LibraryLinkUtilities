@@ -23,10 +23,10 @@ EXTERN_C DLLEXPORT int loadRealArray(WolframLibraryData libData, mint Argc, MArg
 		MArgumentManager mngr(Argc, Args, Res);
 		tensor = mngr.getTensor<double>(0);
 	}
-	catch (LibraryLinkError& e) {
+	catch (const LibraryLinkError& e) {
 		err = e.which();
 	}
-	catch (std::exception& e) {
+	catch (...) {
 		err = LLErrorCode::FunctionError;
 	}
 	return err;
@@ -42,10 +42,10 @@ EXTERN_C DLLEXPORT int getRealArray(WolframLibraryData libData, mint Argc, MArgu
 		else
 			return LIBRARY_FUNCTION_ERROR;
 	}
-	catch (LibraryLinkError& e) {
+	catch (const LibraryLinkError& e) {
 		err = e.which();
 	}
-	catch (std::exception& e) {
+	catch (...) {
 		err = LLErrorCode::FunctionError;
 	}
 	return err;
@@ -62,10 +62,10 @@ EXTERN_C DLLEXPORT int doubleRealArray(WolframLibraryData libData, mint Argc, MA
 		}
 		mngr.setTensor(out);
 	}
-	catch (LibraryLinkError& e) {
+	catch (const LibraryLinkError& e) {
 		err = e.which();
 	}
-	catch (std::exception& e) {
+	catch (...) {
 		err = LLErrorCode::FunctionError;
 	}
 	return err;
@@ -78,10 +78,10 @@ EXTERN_C DLLEXPORT int unloadRealArray(WolframLibraryData libData, mint Argc, MA
 		tensor.disown();
 		mngr.setInteger(0);
 	}
-	catch (LibraryLinkError& e) {
+	catch (const LibraryLinkError& e) {
 		err = e.which();
 	}
-	catch (std::exception& e) {
+	catch (...) {
 		err = LLErrorCode::FunctionError;
 	}
 	return err;
@@ -98,10 +98,10 @@ EXTERN_C DLLEXPORT int add1(WolframLibraryData libData, mint Argc, MArgument *Ar
 			elem++;
 		}
 	}
-	catch (LibraryLinkError& e) {
+	catch (const LibraryLinkError& e) {
 		err = e.which();
 	}
-	catch (std::exception& e) {
+	catch (...) {
 		err = LLErrorCode::FunctionError;
 	}
 	return err;
