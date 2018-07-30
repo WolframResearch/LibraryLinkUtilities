@@ -1,6 +1,6 @@
 #include "WolframLibrary.h"
-#include "MArgumentManager.h"
-#include "LibraryLinkFunctionMacro.h"
+#include "LLU/MArgumentManager.h"
+#include "LLU/LibraryLinkFunctionMacro.h"
 
 using namespace LibraryLinkUtils;
 

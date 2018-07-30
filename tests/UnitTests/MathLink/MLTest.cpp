@@ -5,7 +5,7 @@
  * @brief	Source code for MathLinkStream unit tests.
  */
 
-#include "NoMinMaxWindows.h"
+#include "LLU/NoMinMaxWindows.h"
 
 #include <algorithm>
 #include <iostream>
@@ -19,8 +19,8 @@
 #include "mathlink.h"
 #include "WolframLibrary.h"
 
-#include "LibraryLinkFunctionMacro.h"
-#include "ML/MLStream.hpp"
+#include "LLU/LibraryLinkFunctionMacro.h"
+#include "LLU/ML/MLStream.hpp"
 
 using namespace LibraryLinkUtils;
 using MathLinkStream = MLStream<ML::Encoding::UTF8>;

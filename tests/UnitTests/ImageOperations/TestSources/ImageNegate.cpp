@@ -1,9 +1,9 @@
 #include "WolframLibrary.h"
 
-#include "MArgumentManager.h"
-#include "Image.h"
-#include "LibraryLinkError.h"
-#include "LibraryLinkFunctionMacro.h"
+#include "LLU/MArgumentManager.h"
+#include "LLU/Containers/Image.h"
+#include "LLU/LibraryLinkError.h"
+#include "LLU/LibraryLinkFunctionMacro.h"
 #include <cstdint>
 
 using namespace LibraryLinkUtils;

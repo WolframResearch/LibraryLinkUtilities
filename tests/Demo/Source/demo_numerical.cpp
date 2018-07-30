@@ -1,8 +1,8 @@
 /* Include required header */
 #include "WolframLibrary.h"
 
-#include "MArgumentManager.h"
-#include "LibraryLinkError.h"
+#include "LLU/MArgumentManager.h"
+#include "LLU/LibraryLinkError.h"
 
 using namespace LibraryLinkUtils;
 

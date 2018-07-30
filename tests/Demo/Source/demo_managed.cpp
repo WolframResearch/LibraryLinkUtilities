@@ -4,8 +4,8 @@
 #include <memory>
 
 #include "WolframLibrary.h"
-#include "MArgumentManager.h"
-#include "Tensor.h"
+#include "LLU/MArgumentManager.h"
+#include "LLU/Containers/Tensor.h"
 
 using namespace LibraryLinkUtils;
 

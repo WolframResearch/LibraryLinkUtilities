@@ -1,8 +1,8 @@
 #include "WolframLibrary.h"
 
-#include "MArgumentManager.h"
-#include "LibraryLinkError.h"
-#include "Tensor.h"
+#include "LLU/MArgumentManager.h"
+#include "LLU/LibraryLinkError.h"
+#include "LLU/Containers/Tensor.h"
 
 using namespace LibraryLinkUtils;
 

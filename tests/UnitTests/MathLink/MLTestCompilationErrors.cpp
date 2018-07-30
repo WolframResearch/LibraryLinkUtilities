@@ -8,9 +8,9 @@
 
 #include "mathlink.h"
 
-#include "LLU.h"
-#include "LibraryLinkFunctionMacro.h"
-#include "ML/MLStream.hpp"
+#include "LLU/LLU.h"
+#include "LLU/LibraryLinkFunctionMacro.h"
+#include "LLU/ML/MLStream.hpp"
 
 using LibraryLinkUtils::MLStream;
 namespace ML = LibraryLinkUtils::ML;

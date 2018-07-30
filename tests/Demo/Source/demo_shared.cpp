@@ -8,8 +8,8 @@
 
 #include "WolframLibrary.h"
 
-#include "LLU.h"
-#include "LibraryLinkFunctionMacro.h"
+#include "LLU/LLU.h"
+#include "LLU/LibraryLinkFunctionMacro.h"
 
 template<typename T>
 static Tensor<T> tensor;

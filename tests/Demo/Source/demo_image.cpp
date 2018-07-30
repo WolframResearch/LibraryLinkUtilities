@@ -8,7 +8,7 @@
 //
 // but rather using LLU wrapper:
 //
-#include "NoMinMaxWindows.h"
+#include "LLU/NoMinMaxWindows.h"
 
 #include <algorithm>
 #include <cmath>
@@ -17,10 +17,10 @@
 #include <iterator>
 #include <vector>
 
-#include "MArgumentManager.h"
-#include "Image.h"
-#include "LibraryLinkError.h"
-#include "LibraryLinkFunctionMacro.h"
+#include "LLU/MArgumentManager.h"
+#include "LLU/Containers/Image.h"
+#include "LLU/LibraryLinkError.h"
+#include "LLU/LibraryLinkFunctionMacro.h"
 
 using namespace LibraryLinkUtils;
 using std::log2;

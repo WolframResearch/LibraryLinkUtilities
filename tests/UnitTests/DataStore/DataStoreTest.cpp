@@ -15,7 +15,7 @@
 #include "WolframLibrary.h"
 #include "WolframIOLibraryFunctions.h"
 
-#include "LLU.h"
+#include "LLU/LLU.h"
 
 
 void pushSimulatedData(mint asyncObjID, void* taskData) {

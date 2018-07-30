@@ -4,15 +4,15 @@
  */
 
 #include "WolframLibrary.h"
-#include "MArgumentManager.h"
+#include "LLU/MArgumentManager.h"
 
 #include <cstring>
 #include <iostream>
 #include <ostream>
 
-#include "LibraryLinkError.h"
-#include "Tensor.h"
-#include "LibraryLinkFunctionMacro.h"
+#include "LLU/LibraryLinkError.h"
+#include "LLU/Containers/Tensor.h"
+#include "LLU/LibraryLinkFunctionMacro.h"
 
 using namespace LibraryLinkUtils;
 
