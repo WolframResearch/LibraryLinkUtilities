@@ -2,9 +2,12 @@
 .cproject
 .settings/
 .vscode/
+.idea/
 **/build-local.properties
 docs/html
 docs/latex
 tests/Demo/bin
 Debug/
 lib/
+build*/
+install/
