@@ -9,11 +9,11 @@
 
 #include "mathlink.h"
 
-#include "LibraryLinkError.h"
+#include "LLU/LibraryLinkError.h"
 
-#include "Utilities.hpp"
-#include "ML/MLStream.hpp"
-#include "ML/Utilities.h"
+#include "LLU/Utilities.hpp"
+#include "LLU/ML/MLStream.hpp"
+#include "LLU/ML/Utilities.h"
 
 
 namespace LibraryLinkUtils {

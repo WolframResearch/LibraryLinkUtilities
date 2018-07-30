@@ -9,16 +9,16 @@
 #ifndef LLUTILS_MARRAY_HPP_
 #define LLUTILS_MARRAY_HPP_
 
-#include "WolframLibrary.h"
-
 #include <initializer_list>
 #include <ostream>
 #include <type_traits>
 #include <utility>
 #include <vector>
 
+#include "WolframLibrary.h"
+
 #include "MArrayBase.h"
-#include "Utilities.hpp"
+#include "LLU/Utilities.hpp"
 
 namespace LibraryLinkUtils {
 

@@ -6,7 +6,7 @@
  */
 #ifndef _WIN32
 
-#include "Release.h"
+#include "../../include/LLU/ML/Release.h"
 
 namespace LibraryLinkUtils {
 

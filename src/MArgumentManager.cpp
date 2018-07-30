@@ -7,11 +7,11 @@
  *
  */
 
-#include "MArgumentManager.h"
+#include "LLU/MArgumentManager.h"
 
 #include <algorithm>
 
-#include "MArray.hpp"
+#include "LLU/Containers/MArray.hpp"
 
 namespace LibraryLinkUtils {
 

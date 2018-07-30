@@ -15,9 +15,9 @@
 #include "WolframLibrary.h"
 #include "WolframRawArrayLibrary.h"
 
-#include "LibraryLinkError.h"
+#include "LLU/LibraryLinkError.h"
 #include "MArray.hpp"
-#include "Utilities.hpp"
+#include "LLU/Utilities.hpp"
 
 namespace LibraryLinkUtils {
 

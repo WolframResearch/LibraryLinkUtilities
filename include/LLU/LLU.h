@@ -11,9 +11,9 @@
 #include "LibraryLinkError.h"
 #include "MArgumentManager.h"
 
-#include "RawArray.h"
-#include "Tensor.h"
-#include "Image.h"
+#include "LLU/Containers/RawArray.h"
+#include "LLU/Containers/Tensor.h"
+#include "LLU/Containers/Image.h"
 
 
 // Import some of the LibraryLinkUtils symbols into the global namespace.

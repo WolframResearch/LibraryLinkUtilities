@@ -12,7 +12,7 @@
 #include "WolframLibrary.h"
 #include "WolframImageLibrary.h"
 
-#include "LibraryLinkError.h"
+#include "LLU/LibraryLinkError.h"
 #include "MArray.hpp"
 
 namespace LibraryLinkUtils {

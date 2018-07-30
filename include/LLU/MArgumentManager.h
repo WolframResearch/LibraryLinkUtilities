@@ -19,11 +19,11 @@
 #include <string>
 #include <vector>
 
-#include "Image.h"
-#include "LibDataHolder.h"
+#include "LLU/Containers/Image.h"
+#include "LLU/Containers/LibDataHolder.h"
 #include "LibraryLinkError.h"
-#include "RawArray.h"
-#include "Tensor.h"
+#include "LLU/Containers/RawArray.h"
+#include "LLU/Containers/Tensor.h"
 
 namespace LibraryLinkUtils {
 

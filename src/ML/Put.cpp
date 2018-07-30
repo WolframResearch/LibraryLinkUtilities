@@ -7,11 +7,11 @@
 
 #ifndef _WIN32
 
-#include "Put.h"
+#include "../../include/LLU/ML/Put.h"
 
 #include "mathlink.h"
 
-#include "../Utilities.hpp"
+#include "../../include/LLU/Utilities.hpp"
 
 namespace LibraryLinkUtils {
 

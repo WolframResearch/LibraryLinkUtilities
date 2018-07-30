@@ -5,7 +5,7 @@
  * @brief	Implementation file with miscellaneous definitions used throughout the MathLink-related part of LibraryLinkUtilities
  */
 
-#include "Utilities.h"
+#include "../../include/LLU/ML/Utilities.h"
 
 #include <string>
 

@@ -7,7 +7,7 @@
  *
  */
 
-#include "Tensor.h"
+#include "LLU/Containers/Tensor.h"
 
 #include <complex>
 
