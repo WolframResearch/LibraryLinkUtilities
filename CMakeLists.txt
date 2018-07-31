@@ -10,7 +10,7 @@ cmake_minimum_required(VERSION 3.8.0)
 
 project(LLU VERSION 0.0.1 LANGUAGES CXX)
 
-list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
+list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 
 include(WolframUtilities)
 
@@ -18,12 +18,13 @@ include(WolframUtilities)
 set(MATHEMATICA_VERSION 12.0 CACHE STRING "Mathematica version")
 
 #Mathematica location
-if(APPLE)
-	set(MATHEMATICA_INSTALL_DIR "/Applications/Mathematica.app/Contents" CACHE PATH "Mathematica installation")
-elseif(WIN32)
-  set(MATHEMATICA_INSTALL_DIR "C:/Program\ Files/Wolfram\ Research/Mathematica/${MATHEMATICA_VERSION}" CACHE PATH "Mathematica installation")
-else()
-	set(MATHEMATICA_INSTALL_DIR "/usr/local/Wolfram/Mathematica/${MATHEMATICA_VERSION}" CACHE PATH "Mathematica installation")
+get_default_mathematica_dir(MATHEMATICA_VERSION MATHEMATICA_INSTALL_DIR)
+if(NOT IS_DIRECTORY "${MATHEMATICA_INSTALL_DIR}")
+	if(IS_DIRECTORY "$ENV{MATHEMATICA_HOME}")
+		set(MATHEMATICA_INSTALL_DIR "$ENV{MATHEMATICA_HOME}")
+	else()
+		unset(MATHEMATICA_INSTALL_DIR)
+	endif()
 endif()
 
 option(BUILD_SHARED_LIBS "Whether to build LLU as a shared library (default is static).")
@@ -32,8 +33,6 @@ option(BUILD_SHARED_LIBS "Whether to build LLU as a shared library (default is s
 if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE Release CACHE STRING "Choose the type of build, options are: None Debug Release RelWithDebInfo MinSizeRel." FORCE)
 endif()
-
-#set(INSTALL_PACLET_TO_LAYOUT OFF CACHE BOOL "Copy paclet into Mathematica installation")
 
 # verbose output - useful for debugging, but turned off by default
 set(CMAKE_VERBOSE_MAKEFILE ON CACHE BOOL "Verbose")
@@ -144,16 +143,13 @@ if(NOT TARGET LLU)
 	# Installation instructions
 
 	include(GNUInstallDirs)
-	set(INSTALL_CONFIGDIR ${CMAKE_INSTALL_LIBDIR}/cmake/LLU)
+	set(INSTALL_CONFIGDIR cmake/LLU)
 
 	install(TARGETS LLU
 		EXPORT LLU-targets
 		LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
 		ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
 	)
-
-	#This is required so that the exported target has the name LLU and not jsonutils
-	#set_target_properties(jsonutils PROPERTIES EXPORT_NAME LLU)
 
 	install(DIRECTORY include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
@@ -184,9 +180,26 @@ if(NOT TARGET LLU)
 	install(FILES
 		${CMAKE_CURRENT_LIST_DIR}/cmake/FindWolframLibrary.cmake
 		${CMAKE_CURRENT_LIST_DIR}/cmake/FindMathLink.cmake
+		${CMAKE_CURRENT_LIST_DIR}/cmake/WolframUtilities.cmake
 		${CMAKE_CURRENT_BINARY_DIR}/LLUConfig.cmake
 		${CMAKE_CURRENT_BINARY_DIR}/LLUConfigVersion.cmake
 		DESTINATION ${INSTALL_CONFIGDIR}
 	)
+
+	##############################################
+	## Exporting from the build tree
+
+	configure_file(${CMAKE_CURRENT_LIST_DIR}/cmake/WolframUtilities.cmake ${CMAKE_CURRENT_BINARY_DIR}/WolframUtilities.cmake COPYONLY)
+	configure_file(${CMAKE_CURRENT_LIST_DIR}/cmake/FindWolframLibrary.cmake ${CMAKE_CURRENT_BINARY_DIR}/FindWolframLibrary.cmake COPYONLY)
+	configure_file(${CMAKE_CURRENT_LIST_DIR}/cmake/FindMathLink.cmake ${CMAKE_CURRENT_BINARY_DIR}/FindMathLink.cmake COPYONLY)
+
+	export(EXPORT LLU-targets
+		FILE ${CMAKE_CURRENT_BINARY_DIR}/LLUTargets.cmake
+		NAMESPACE LLU::
+	)
+
+	#Register package in user's package registry
+	export(PACKAGE LLU)
+
 endif() #end IF NOT TARGET LLU
 

@@ -4,6 +4,18 @@
 #
 # Author: Rafal Chojna - rafalc@wolfram.com
 
+function(get_default_mathematica_dir MATHEMATICA_VERSION DEFAULT_MATHEMATICA_INSTALL_DIR)
+	set(_M_INSTALL_DIR NOTFOUND)
+	if(APPLE)
+		set(_M_INSTALL_DIR "/Applications/Mathematica.app/Contents" CACHE PATH "Mathematica installation")
+	elseif(WIN32)
+		set(_M_INSTALL_DIR "C:/Program\ Files/Wolfram\ Research/Mathematica/${MATHEMATICA_VERSION}" CACHE PATH "Mathematica installation")
+	else()
+		set(_M_INSTALL_DIR "/usr/local/Wolfram/Mathematica/${MATHEMATICA_VERSION}" CACHE PATH "Mathematica installation")
+	endif()
+	set(${DEFAULT_MATHEMATICA_INSTALL_DIR} "${_M_INSTALL_DIR}" PARENT_SCOPE)
+endfunction()
+
 function(detect_system_id DETECTED_SYSTEM_ID)
 	#set system id and build platform
 	set(BITNESS 32)
@@ -64,7 +76,7 @@ function(detect_build_platform DETECTED_BUILD_PLATFORM)
 		elseif(CMAKE_C_COMPILER AND NOT CMAKE_C_COMPILER_ID STREQUAL "GNU")
 			set(BUILD_PLATFORM_ERROR "Linux build with non-gnu compiler")
 		else()
-			set(BUILD_PLATFORM scientific6-gcc5.2.1)
+			set(BUILD_PLATFORM scientific6-gcc4.8)
 		endif()
 	elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows")
 		if((NOT CMAKE_C_COMPILER) OR (NOT MSVC_VERSION LESS 1900))

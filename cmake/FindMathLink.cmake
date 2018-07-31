@@ -18,6 +18,8 @@
 #
 # Author: Rafal Chojna - rafalc@wolfram.com
 
+include(WolframUtilities)
+
 detect_system_id(_WOLFMLINK_SYSTEMID)
 
 if(WOLFRAM_MATHLINK_PATH)
@@ -74,11 +76,12 @@ find_package_handle_standard_args(MathLink
 if (MathLink_FOUND)
 	set(MathLink_INCLUDE_DIRS ${MathLink_INCLUDE_DIR})
 	set(MathLink_LIBRARIES ${MathLink_LIBRARY})
-endif ()
+endif()
 
 if(MathLink_FOUND AND NOT TARGET MathLink::MathLink)
 	add_library(MathLink::MathLink SHARED IMPORTED)
 	set_target_properties(MathLink::MathLink PROPERTIES
 		INTERFACE_INCLUDE_DIRECTORIES "${MathLink_INCLUDE_DIR}"
+		IMPORTED_LOCATION "${MathLink_LIBRARIES}"
 	)
 endif()
