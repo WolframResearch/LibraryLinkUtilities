@@ -43,10 +43,13 @@ find_path(WolframLibrary_INCLUDE_DIR
 
 #TODO maybe add checks for other Wolfram*Library.h?
 
-file(STRINGS "${WolframLibrary_INCLUDE_DIR}/WolframLibrary.h" _WOLFLIB_HEADER_CONTENTS REGEX "#define WolframLibraryVersion ")
-string(REGEX REPLACE ".*#define WolframLibraryVersion ([0-9]+).*" "\\1" WolframLibrary_VERSION "${_WOLFLIB_HEADER_CONTENTS}")
+if(WolframLibrary_FOUND)
+	file(STRINGS "${WolframLibrary_INCLUDE_DIR}/WolframLibrary.h" _WOLFLIB_HEADER_CONTENTS REGEX "#define WolframLibraryVersion ")
+	string(REGEX REPLACE ".*#define WolframLibraryVersion ([0-9]+).*" "\\1" WolframLibrary_VERSION "${_WOLFLIB_HEADER_CONTENTS}")
 
-mark_as_advanced(WolframLibrary_FOUND WolframLibrary_INCLUDE_DIR WolframLibrary_VERSION)
+	mark_as_advanced(WolframLibrary_FOUND WolframLibrary_INCLUDE_DIR WolframLibrary_VERSION)
+	set(WolframLibrary_INCLUDE_DIRS ${WolframLibrary_INCLUDE_DIR})
+endif()
 
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(WolframLibrary
@@ -54,13 +57,9 @@ find_package_handle_standard_args(WolframLibrary
 	VERSION_VAR WolframLibrary_VERSION
 )
 
-if(WolframLibrary_FOUND)
-	set(WolframLibrary_INCLUDE_DIRS ${WolframLibrary_INCLUDE_DIR})
-endif()
-
 if(WolframLibrary_FOUND AND NOT TARGET WolframLibrary::WolframLibrary)
 	add_library(WolframLibrary::WolframLibrary INTERFACE IMPORTED)
 	set_target_properties(WolframLibrary::WolframLibrary PROPERTIES
-		INTERFACE_INCLUDE_DIRECTORIES "${WolframLibrary_INCLUDE_DIR}"
-	)
+	INTERFACE_INCLUDE_DIRECTORIES "${WolframLibrary_INCLUDE_DIR}"
+)
 endif()

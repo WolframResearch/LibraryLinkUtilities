@@ -186,6 +186,11 @@ if(NOT TARGET LLU)
 		DESTINATION ${INSTALL_CONFIGDIR}
 	)
 
+	install(FILES
+		"${CMAKE_CURRENT_LIST_DIR}/LibraryLinkUtilities.wl"
+		DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}
+	)
+
 	##############################################
 	## Exporting from the build tree
 
