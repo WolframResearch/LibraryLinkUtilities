@@ -161,3 +161,20 @@ function(set_machine_flags TARGET_NAME)
 		endif()
 	endif()
 endfunction()
+
+# Sets rpath for a target. If second argument is false then "Wolfram-default" rpath is set:
+# - $ORIGIN on Linux
+# - @loader_path on Mac
+# On Windows rpath does not make sense.
+function(set_rpath TARGET_NAME NEW_RPATH)
+	if(NOT NEW_RPATH)
+		if(APPLE)
+			#set the linker options to set rpath as @loader_path
+			set(NEW_RPATH "@loader_path/")
+		elseif(UNIX)
+			#set the install_rpath to be $ORIGIN so that it automatically finds the dependencies in the current folder
+			set(NEW_RPATH $ORIGIN)
+		endif()
+	endif ()
+	set_target_properties(${TARGET_NAME} PROPERTIES INSTALL_RPATH ${NEW_RPATH})
+endfunction()
