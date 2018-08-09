@@ -91,11 +91,12 @@ if(NOT TARGET LLU)
 		#$<$<PLATFORM_ID:WIN32>>
 		#PREFIX "" #in paclets we skip the usual "lib" prefix
 	)
-	
+
 	if(MSVC)
-		target_compile_options(LLU 
+		target_compile_options(LLU
 			PRIVATE "/W4"
 			PRIVATE "/EHsc"
+			PRIVATE "/MT" #on windows we need to specifically compile with /MT not /MD
 			PRIVATE "$<$<CONFIG:Debug>:/Zi>"
 			PRIVATE "$<$<NOT:$<CONFIG:Debug>>:/O2>"
 		)
@@ -125,19 +126,7 @@ if(NOT TARGET LLU)
 			WolframLibrary::WolframLibrary
 	)
 
-#	if(APPLE)
-#		#set the linker options to set rpath as @loader_path
-#		set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,-rpath,@loader_path/")
-#	elseif(UNIX)
-#		#set the install_rpath to be $ORIGIN so that it automatically finds the dependencies in the current folder
-#		set(CMAKE_INSTALL_RPATH $ORIGIN CACHE STRING "rpath install location")
-#		#mark as advanced to discourage modification
-#		mark_as_advanced(CMAKE_SHARED_LINKER_FLAGS CMAKE_INSTALL_RPATH)
-#	elseif(WIN32)
-#		#on windows we need to specifically compile with /MT not /MD
-#		set_target_properties(LLU PROPERTIES COMPILE_FLAGS "/MT")
-#	endif()
-
+	set_rpath(LLU "")
 
 	##############################################
 	# Installation instructions
