@@ -18,10 +18,10 @@ Test[
 ]
 
 Test[
-	raw = RawArray["Real64", N@Range[0, 47]/47];
-	res = echoRawArray[raw]//Head
+	raw = RawArray["Real64", N @ Range[0, 47]/47];
+	res = Developer`RawArrayQ @ echoRawArray[raw]
 	,
-	RawArray
+	True
 	,
 	TestID->"RawArrayOperations-20150825-P4U4W5"
 ]
@@ -43,9 +43,9 @@ ExactTest[
 ]
 
 Test[
-	newRA[]//Head
+	Developer`RawArrayQ @ newRA[]
 	,
-	RawArray
+	True
 	,
 	TestID->"RawArrayOperations-20150827-B3Y1C2"
 ]

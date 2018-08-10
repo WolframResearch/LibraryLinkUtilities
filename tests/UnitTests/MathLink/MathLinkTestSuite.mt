@@ -13,9 +13,9 @@ TestExecute[
 	Get[FileNameJoin[{ParentDirectory[currentDirectory], "TestConfig.wl"}]];
 
 	(* Compile the test library *)
-	lib = CCompilerDriver`CreateLibrary[(FileNameJoin[{currentDirectory, #}]& /@ {"MLTest.cpp", "MLEncodings.cpp"}) ~Join~ $LLUSources, "MLTest", options];
+	lib = CCompilerDriver`CreateLibrary[FileNameJoin[{currentDirectory, #}]& /@ {"MLTest.cpp", "MLEncodings.cpp"}, "MLTest", options];
 	
-	Get[FileNameJoin[{ParentDirectory[currentDirectory, 3], "LibraryLinkUtilities.wl"}]];
+	Get[FileNameJoin[{$LLUSharedDir, "LibraryLinkUtilities.wl"}]];
 	
 	RegisterPacletErrors[lib, <||>];
 	
@@ -24,13 +24,13 @@ TestExecute[
 	i32Range = {-2^31, 2^31-1};
 	i64Range = {-2^63, 2^63-1};
 	
-	Off[General::stop];
+	Off[General::stop]; (* because we want to see all error messages from CreateLibrary *)
 ]
 
 
 (* Compile-time errors *)
 Test[
-	CCompilerDriver`CreateLibrary[{FileNameJoin[{currentDirectory, "MLTestCompilationErrors.cpp"}]} ~Join~ $LLUSources, "MLTestErrors", options]
+	CCompilerDriver`CreateLibrary[{FileNameJoin[{currentDirectory, "MLTestCompilationErrors.cpp"}]}, "MLTestErrors", options]
 	,
 	$Failed
 	,

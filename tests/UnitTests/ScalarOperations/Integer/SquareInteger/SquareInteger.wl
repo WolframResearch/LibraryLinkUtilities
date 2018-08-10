@@ -1,3 +1,3 @@
 Needs["CCompilerDriver`"];
-lib = CreateLibrary[{"SquareInteger.cpp"} ~Join~ $LLUSources, "SquareInteger", options];
+lib = CreateLibrary[{"SquareInteger.cpp"}, "SquareInteger", options];
 SquareInteger = LibraryFunctionLoad[lib,"SquareInteger",{Integer},Integer];

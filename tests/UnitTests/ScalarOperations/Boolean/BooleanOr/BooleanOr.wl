@@ -1,3 +1,3 @@
 Needs["CCompilerDriver`"];
-lib = CreateLibrary[{"BooleanOr.cpp"} ~Join~ $LLUSources, "BooleanOr", options];
+lib = CreateLibrary[{"BooleanOr.cpp"}, "BooleanOr", options];
 BooleanOr = LibraryFunctionLoad[lib,"BooleanOr",{"Boolean", "Boolean"},"Boolean"];
