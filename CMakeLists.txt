@@ -131,6 +131,11 @@ if(NOT TARGET LLU)
 	##############################################
 	# Installation instructions
 
+	# By default install to "install" directory
+	if (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+		set(CMAKE_INSTALL_PREFIX "${CMAKE_CURRENT_SOURCE_DIR}/install" CACHE PATH "Library install prefix" FORCE)
+	endif ()
+
 	include(GNUInstallDirs)
 	set(INSTALL_CONFIGDIR cmake/LLU)
 
