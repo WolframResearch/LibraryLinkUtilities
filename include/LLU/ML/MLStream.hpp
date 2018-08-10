@@ -43,7 +43,7 @@ namespace LibraryLinkUtils {
 		 *   @brief			Constructs new MLStream
 		 *   @param[in] 	mlp - low-level object of type MLINK received from LibraryLink
 		 **/
-		MLStream(MLINK mlp);
+		explicit MLStream(MLINK mlp);
 
 		/**
 		 *   @brief         Constructs new MLStream and checks whether there is a list of \c argc arguments on the LinkObject waiting to be read
@@ -140,11 +140,11 @@ namespace LibraryLinkUtils {
 
 		/**
 		 *   @brief			Sends a top-level expression of the form Missing["reason"]
-		 *   @param[in] 	m - ML::Missing object with a reason
+		 *   @param[in] 	f - ML::Missing object with a reason
 		 *   @see 			ML::Missing
 		 *   @throws 		LLErrorName::MLPutFunctionError
 		 **/
-		MLStream& operator<<(const ML::Missing& m);
+		MLStream& operator<<(const ML::Missing& f);
 
 		/**
 		 * @brief		Starts sending a new expression where the number of arguments is not known a priori
@@ -247,11 +247,11 @@ namespace LibraryLinkUtils {
 		 *		ml << ML::putAs<ML::Encoding::Native>(vecOfExpr); 	// it should be sent with Native encoding
 		 *   @endcode
 		 *
-		 *   @param[in] 	s - object to be sent
+		 *   @param[in] 	wrp - object to be sent
 		 *
 		 **/
 		template<ML::Encoding E, typename T>
-		MLStream& operator<<(const ML::PutAs<E, T>& s);
+		MLStream& operator<<(const ML::PutAs<E, T>& wrp);
 
 		/**
 		 *   @brief			Sends std::basic_string
@@ -468,12 +468,12 @@ namespace LibraryLinkUtils {
 		 *	 @brief			Receives a value of type T
 		 *	 @tparam		E - encoding to be used when reading value from MathLink
 		 *	 @tparam		T - value type
-		 *	 @param 		x - reference to object of type T wrapped in ML::GetAs structure
+		 *	 @param 		wrp - reference to object of type T wrapped in ML::GetAs structure
 		 *
 		 * 	 @note			There is a utility function ML::getAs for easier creation of ML::GetAs objects
 		 */
 		template<ML::Encoding E, typename T>
-		MLStream& operator>>(ML::GetAs<E, T> x);
+		MLStream& operator>>(ML::GetAs<E, T> wrp);
 
 		/**
 		 *   @brief			Receives a std::map via MathLink
@@ -665,7 +665,7 @@ namespace LibraryLinkUtils {
 	}
 
 	template<ML::Encoding EIn, ML::Encoding EOut>
-	auto MLStream<EIn, EOut>::operator<<(const ML::BeginExpr& f) -> MLStream& {
+	auto MLStream<EIn, EOut>::operator<<(const ML::BeginExpr& expr) -> MLStream& {
 
 		// reset dropped expression flag
 		currentExprDropped = false;
@@ -674,7 +674,7 @@ namespace LibraryLinkUtils {
 		auto loopback = ML::getNewLoopback(m);
 
 		// store expression head together with the link on the stack
-		loopbackStack.emplace(f.getHead(), loopback);
+		loopbackStack.emplace(expr.getHead(), loopback);
 
 		// active MLINK changes
 		refreshCurrentMLINK();
@@ -683,7 +683,7 @@ namespace LibraryLinkUtils {
 	}
 
 	template<ML::Encoding EIn, ML::Encoding EOut>
-	auto MLStream<EIn, EOut>::operator<<(const ML::DropExpr& f) -> MLStream& {
+	auto MLStream<EIn, EOut>::operator<<(const ML::DropExpr&) -> MLStream& {
 		// check if the stack has reasonable size
 		if (loopbackStack.size() < 2) {
 			ErrorManager::throwException(LLErrorName::MLLoopbackStackSizeError, "Trying to Drop expression with loopback stack size " + std::to_string(loopbackStack.size()));
@@ -835,9 +835,9 @@ namespace LibraryLinkUtils {
 
 	template<ML::Encoding EIn, ML::Encoding EOut>
 	template<typename K, typename V>
-	auto MLStream<EIn, EOut>::operator<<(const std::map<K, V>& s) -> MLStream& {
-		*this << ML::Association(static_cast<int>(s.size()));
-		for (const auto& elem : s) {
+	auto MLStream<EIn, EOut>::operator<<(const std::map<K, V>& m) -> MLStream& {
+		*this << ML::Association(static_cast<int>(m.size()));
+		for (const auto& elem : m) {
 			*this << ML::Rule << elem.first << elem.second;
 		}
 		return *this;
@@ -912,7 +912,7 @@ namespace LibraryLinkUtils {
 			b = false;
 		}
 		else {
-			ErrorManager::throwException(LLErrorName::MLWrongSymbolForBool, "Expected \"True\" or \"False\", got " + boolean.getHead());
+			ErrorManager::throwException(LLErrorName::MLWrongSymbolForBool, R"(Expected "True" or "False", got )" + boolean.getHead());
 		}
 		return *this;
 	}

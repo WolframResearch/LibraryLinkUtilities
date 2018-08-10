@@ -240,7 +240,7 @@ Test[
 Test[ (* Test if releasing memory works, if not the memory usage should drastically increase after this test *)
 	ReceiveAndFreeArray = SafeMathLinkFunction["ReceiveAndFreeArray"];
 	r = RandomReal[1., {1000, 1000, 100}];
-	Do[ReceiveAndFreeArray[r], 100];
+	Do[ReceiveAndFreeArray[r], 50];
 	Clear[r];
 	,
 	Null

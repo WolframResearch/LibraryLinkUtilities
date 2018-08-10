@@ -99,18 +99,18 @@ namespace LibraryLinkUtils {
 		struct String<Encoding::Undefined> {
 
 			template<typename T>
-			static void put(MLINK m, const T* string, int len) {
+			static void put(MLINK, const T*, int) {
 				static_assert(sizeof(T) == 0, "Trying to use ML::String<Encoding::Undefined>::put");
 			}
 
 			template<typename T = char>
-			static T* get(MLINK m) {
+			static T* get(MLINK) {
 				static_assert(sizeof(T) == 0, "Trying to use ML::String<Encoding::Undefined>::get");
 				return nullptr;
 			}
 
 			template<typename T>
-			static std::basic_string<T> getString(MLINK m) {
+			static std::basic_string<T> getString(MLINK) {
 				static_assert(sizeof(T) == 0, "Trying to use ML::String<Encoding::Undefined>::getString");
 				return {};
 			}
