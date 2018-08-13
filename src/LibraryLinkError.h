@@ -219,14 +219,14 @@ namespace LibraryLinkUtils {
 		 * @brief 	Throw exception with given name.
 		 * @param 	errorName - name of the error that will be thrown
 		 */
-		static void throwException(const std::string& errorName);
+		[[noreturn]] static void throwException(const std::string& errorName);
 
 		/**
 		 * @brief 	Throw exception with given name and some additional debug information.
 		 * @param 	errorName - name of the error that will be thrown
 		 * @param	debugInfo - additional message with debug info, this message will not be passed to top-level Failure object
 		 */
-		static void throwException(const std::string& errorName, const std::string& debugInfo);
+		[[noreturn]] static void throwException(const std::string& errorName, const std::string& debugInfo);
 
 		/**
 		 * @brief 	Throw exception of given class that carries the error with given name.
@@ -239,7 +239,7 @@ namespace LibraryLinkUtils {
 		 * @param 	args - additional arguments that will be perfectly forwarded to the constructor of Error class
 		 */
 		template<class Error, typename... Args>
-		static void throwCustomException(const std::string& errorName, Args&&... args);
+		[[noreturn]] static void throwCustomException(const std::string& errorName, Args&&... args);
 
 		/**
 		 * @brief Function used to send all registered errors to top-level Mathematica code.
