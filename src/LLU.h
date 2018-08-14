@@ -26,6 +26,7 @@ using MArgumentManager = LibraryLinkUtils::MArgumentManager;
 using LibraryLinkError = LibraryLinkUtils::LibraryLinkError;
 using ErrorManager = LibraryLinkUtils::ErrorManager;
 namespace LLErrorCode = LibraryLinkUtils::LLErrorCode;
+namespace LLErrorName = LibraryLinkUtils::LLErrorName;
 
 // Containers
 template<typename T>
