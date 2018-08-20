@@ -13,6 +13,9 @@ function(get_default_mathematica_dir MATHEMATICA_VERSION DEFAULT_MATHEMATICA_INS
 	else()
 		set(_M_INSTALL_DIR "/usr/local/Wolfram/Mathematica/${MATHEMATICA_VERSION}")
 	endif()
+	if(NOT IS_DIRECTORY "${_M_INSTALL_DIR}" AND IS_DIRECTORY "$ENV{MATHEMATICA_HOME}")
+		set(_M_INSTALL_DIR "$ENV{MATHEMATICA_HOME}")
+	endif()
 	set(${DEFAULT_MATHEMATICA_INSTALL_DIR} "${_M_INSTALL_DIR}" PARENT_SCOPE)
 endfunction()
 
