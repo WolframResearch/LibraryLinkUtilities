@@ -14,20 +14,12 @@ list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 
 include(WolframUtilities)
 
-#project settings, overridable from the command line
-set(MATHEMATICA_VERSION 12.0 CACHE STRING "Mathematica version")
+option(BUILD_SHARED_LIBS "Whether to build LLU as a shared library (default is static).")
 
 #Mathematica location
-get_default_mathematica_dir(MATHEMATICA_VERSION MATHEMATICA_INSTALL_DIR)
-if(NOT IS_DIRECTORY "${MATHEMATICA_INSTALL_DIR}")
-	if(IS_DIRECTORY "$ENV{MATHEMATICA_HOME}")
-		set(MATHEMATICA_INSTALL_DIR "$ENV{MATHEMATICA_HOME}")
-	else()
-		unset(MATHEMATICA_INSTALL_DIR)
-	endif()
-endif()
+set(MATHEMATICA_VERSION 12.0 CACHE STRING "Mathematica version")
 
-option(BUILD_SHARED_LIBS "Whether to build LLU as a shared library (default is static).")
+get_default_mathematica_dir(MATHEMATICA_VERSION MATHEMATICA_INSTALL_DIR)
 
 # set default build type to Release
 if(NOT CMAKE_BUILD_TYPE)
@@ -88,15 +80,13 @@ if(NOT TARGET LLU)
 	    CXX_STANDARD_REQUIRED YES
 	    CXX_EXTENSIONS NO
 	    POSITION_INDEPENDENT_CODE YES
-		#$<$<PLATFORM_ID:WIN32>>
-		#PREFIX "" #in paclets we skip the usual "lib" prefix
 	)
 
 	if(MSVC)
 		target_compile_options(LLU
 			PRIVATE "/W4"
 			PRIVATE "/EHsc"
-			PRIVATE "/MT" #on windows we need to specifically compile with /MT not /MD
+			PRIVATE "/MT" #on windows we need to specifically compile with /MT not /MD #TODO: check if it works
 			PRIVATE "$<$<CONFIG:Debug>:/Zi>"
 			PRIVATE "$<$<NOT:$<CONFIG:Debug>>:/O2>"
 		)
@@ -199,6 +189,13 @@ if(NOT TARGET LLU)
 
 	#Register package in user's package registry
 	export(PACKAGE LLU)
+
+	##############################################
+	## Create target for unit tests
+
+	enable_testing()
+
+	add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/tests/UnitTests")
 
 endif() #end IF NOT TARGET LLU
 
