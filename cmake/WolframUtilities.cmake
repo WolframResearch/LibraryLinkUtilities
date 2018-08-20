@@ -181,3 +181,28 @@ function(set_rpath TARGET_NAME NEW_RPATH)
 	endif ()
 	set_target_properties(${TARGET_NAME} PROPERTIES INSTALL_RPATH ${NEW_RPATH})
 endfunction()
+
+# Download a library from Wolfram's CVS repository.
+function(get_library_from_cvs PACKAGE_NAME PACKAGE_VERSION PACKAGE_LOCATION)
+
+	message(STATUS "Looking for CVS library: ${PACKAGE_NAME} version ${PACKAGE_VERSION}")
+
+	include(FetchContent)
+	FetchContent_declare(
+		${PACKAGE_NAME}
+		SOURCE_DIR ${PACKAGE_LOCATION}
+		CVS_REPOSITORY $ENV{CVSROOT}
+		CVS_MODULE "Components/${PACKAGE_NAME}/${PACKAGE_VERSION}"
+	)
+
+	FetchContent_getproperties(${PACKAGE_NAME})
+	if (NOT ${PACKAGE_NAME}_POPULATED)
+		message(STATUS "Downloading CVS library: ${PACKAGE_NAME}")
+		FetchContent_populate(${PACKAGE_NAME})
+	endif ()
+
+	set(${PACKAGE_LOCATION} ${${PACKAGE_NAME}_SOURCE_DIR} PARENT_SCOPE)
+
+	message(STATUS "${PACKAGE_NAME} downloaded to ${PACKAGE_LOCATION}")
+
+endfunction()
