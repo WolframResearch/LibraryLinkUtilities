@@ -722,7 +722,7 @@ Test[
 Test[
 	Length @ getCErrorCodes[]
 	,
-	53
+	56
 	,
 	TestID->"LibraryTests-20170818-R7K6X2"
 ]
