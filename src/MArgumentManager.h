@@ -169,7 +169,7 @@ namespace LibraryLinkUtils {
 		
 		/**
 		 *   @brief         Get MArgument of type MRawArray at position \c index
-		 *   @details       Use of this function is discouraged. Use getRawArray instead, if possible.
+		 *   @warning       Use of this function is discouraged. Use getRawArray instead, if possible.
 		 *   @param[in]     index - position of desired MArgument in \c Args
 		 *   @returns       MRawArray of MArgument at position \c index
 		 *   @throws        LLErrorName::MArgumentIndexError - if \c index is out-of-bounds
@@ -178,7 +178,7 @@ namespace LibraryLinkUtils {
 
 		/**
 		 *   @brief         Get MArgument of type MTensor at position \c index.
-		 *   @details       Use of this function is discouraged. Use getTensor instead, if possible.
+		 *   @warning       Use of this function is discouraged. Use getTensor instead, if possible.
 		 *   @param[in]     index - position of desired MArgument in \c Args
 		 *   @returns       MTensor of MArgument at position \c index
 		 *   @throws        LLErrorName::MArgumentIndexError - if \c index is out-of-bounds
