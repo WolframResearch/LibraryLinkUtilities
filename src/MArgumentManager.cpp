@@ -22,15 +22,16 @@ namespace LibraryLinkUtils {
 	/* Constructors */
 
 	MArgumentManager::MArgumentManager(mint Argc, MArgument* Args, MArgument& Res) :
-			argc(Argc), args(Args), res(Res), stringArgs(static_cast<decltype(stringArgs)::size_type>(Argc)) {
+			argc(Argc), args(Args), res(Res) {
 		if (!libData)
 			ErrorManager::throwException(LLErrorName::MArgumentInitError);
-
+		initStringArgs();
 	}
 
 	MArgumentManager::MArgumentManager(WolframLibraryData ld, mint Argc, MArgument* Args, MArgument& Res) :
-			argc(Argc), args(Args), res(Res), stringArgs(static_cast<decltype(stringArgs)::size_type>(Argc)) {
+			argc(Argc), args(Args), res(Res) {
 		setLibraryData(ld);
+		initStringArgs();
 	}
 
 	/* Other member functions */
@@ -43,13 +44,21 @@ namespace LibraryLinkUtils {
 		return static_cast<double>(MArgument_getReal(getArgs(index)));
 	}
 
-	std::string& MArgumentManager::getString(unsigned int index) {
-		char* strArg = MArgument_getUTF8String(getArgs(index));
+	void MArgumentManager::acquireUTF8String(unsigned int index) {
 		if (!stringArgs.at(index)) {
-			stringArgs[index] = std::make_unique<std::string>(strArg);
-			libData->UTF8String_disown(strArg);
+			char* strArg = MArgument_getUTF8String(getArgs(index));
+			stringArgs[index].reset(strArg);
 		}
-		return *stringArgs.at(index);
+	}
+
+	char* MArgumentManager::getCString(unsigned int index) {
+		acquireUTF8String(index);
+		return stringArgs[index].get();
+	}
+
+	std::string MArgumentManager::getString(unsigned int index) {
+		acquireUTF8String(index);
+		return stringArgs[index].get();
 	}
 
 	void MArgumentManager::setString(const std::string& str) {
@@ -116,6 +125,13 @@ namespace LibraryLinkUtils {
 		if (index >= argc)
 			ErrorManager::throwException(LLErrorName::MArgumentIndexError, "Index " + std::to_string(index) + " out-of-bound when accessing LibraryLink argument");
 		return args[index];
+	}
+
+	void MArgumentManager::initStringArgs() {
+		stringArgs.reserve(argc);
+		for (int i = 0; i < argc; ++i) {
+			stringArgs.emplace_back(nullptr, libData->UTF8String_disown);
+		}
 	}
 
 } /* namespace LibraryLinkUtils */
