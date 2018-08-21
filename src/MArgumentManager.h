@@ -347,8 +347,19 @@ namespace LibraryLinkUtils {
 		 **/
 		MArgument getArgs(unsigned int index) const;
 
+		/**
+		 * @brief Helper function to initialize string arguments vector
+		 */
 		void initStringArgs();
 
+		/**
+		 * @brief Take ownership of UTF8String argument passed via LibraryLink.
+		 *
+		 * This wraps the raw char* into unique_ptr and all further accesses to the argument happen via the unique_ptr.
+		 * The string argument is automatically deallocated when MArgumentManager instance is destroyed.
+		 *
+		 * @param index - position of desired MArgument in \c Args
+		 */
 		void acquireUTF8String(unsigned int index);
 
 		/// Here we store a string that was most recently returned to LibraryLink
