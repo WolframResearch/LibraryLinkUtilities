@@ -130,14 +130,22 @@ namespace LibraryLinkUtils {
 		void setComplex(std::complex<double> c) const noexcept;
 
 		/**
-		 *   @brief         Get reference to MArgument of type \b "UTF8String" at position \c index
+		 *   @brief         Get value of MArgument of type \b "UTF8String" at position \c index
 		 *   @param[in]     index - position of desired MArgument in \c Args
-		 *   @returns       Reference to \b std::string which is copied from MArgument at position \c index, string itself is stored in MArgumentManager
-		 *   @throws        LLErrorName::MArgumentIndexError - if \c index is out-of-bounds
+		 *   @returns       C-string which was received from LibraryLink
+		 *   @throws        LLErrorCode::MArgumentIndexError - if \c index is out-of-bounds
 		 *
-		 *   @warning		MArgument is copied to \b std::string only once so if you use the reference to modify the string you will not be able to get the original value back
+		 *   @note			MArgumentManager is responsible for disowning string arguments. Do not call free() or delete() on resulting pointer.
 		 **/
-		std::string& getString(unsigned int index);
+		char* getCString(unsigned int index);
+
+		/**
+		 *   @brief         Get value of MArgument of type \b "UTF8String" at position \c index
+		 *   @param[in]     index - position of desired MArgument in \c Args
+		 *   @returns       \b std::string which is created from MArgument at position \c index
+		 *   @throws        LLErrorCode::MArgumentIndexError - if \c index is out-of-bounds
+		 **/
+		std::string getString(unsigned int index);
 
 		/**
 		 *   @brief         Set \c str as output MArgument
@@ -166,6 +174,24 @@ namespace LibraryLinkUtils {
 		 **/
 		template<typename T>
 		RawArray<T> getRawArray(unsigned int index) const;
+		
+		/**
+		 *   @brief         Get MArgument of type MRawArray at position \c index
+		 *   @warning       Use of this function is discouraged. Use getRawArray instead, if possible.
+		 *   @param[in]     index - position of desired MArgument in \c Args
+		 *   @returns       MRawArray of MArgument at position \c index
+		 *   @throws        LLErrorName::MArgumentIndexError - if \c index is out-of-bounds
+		 **/
+		MRawArray getMRawArray(unsigned int index) const;
+
+		/**
+		 *   @brief         Get MArgument of type MTensor at position \c index.
+		 *   @warning       Use of this function is discouraged. Use getTensor instead, if possible.
+		 *   @param[in]     index - position of desired MArgument in \c Args
+		 *   @returns       MTensor of MArgument at position \c index
+		 *   @throws        LLErrorName::MArgumentIndexError - if \c index is out-of-bounds
+		 **/
+		MTensor getMTensor(unsigned int index) const;
 
 		/**
 		 *   @brief         Set MRawArray wrapped by \c ra as output MArgument
@@ -310,12 +336,31 @@ namespace LibraryLinkUtils {
 		void operateOnImage(unsigned int index, Operator&& op);
 
 	private:
+		// Efficient and memory-safe type for storing string arguments from LibraryLink
+		using LLStringPtr = std::unique_ptr<char[], decltype(st_WolframLibraryData::UTF8String_disown)>;
+
+	private:
 		/**
 		 *   @brief			Get MArgument at position \c index
 		 *   @param[in]		index - position of desired MArgument in \c Args
 		 *   @throws		LLErrorName::MArgumentIndexError - if \c index is out-of-bounds
 		 **/
 		MArgument getArgs(unsigned int index) const;
+
+		/**
+		 * @brief Helper function to initialize string arguments vector
+		 */
+		void initStringArgs();
+
+		/**
+		 * @brief Take ownership of UTF8String argument passed via LibraryLink.
+		 *
+		 * This wraps the raw char* into unique_ptr and all further accesses to the argument happen via the unique_ptr.
+		 * The string argument is automatically deallocated when MArgumentManager instance is destroyed.
+		 *
+		 * @param index - position of desired MArgument in \c Args
+		 */
+		void acquireUTF8String(unsigned int index);
 
 		/// Here we store a string that was most recently returned to LibraryLink
 		/// [LLDocs]: https://reference.wolfram.com/language/LibraryLink/tutorial/InteractionWithMathematica.html#262826223 "LibraryLink docs"
@@ -337,10 +382,10 @@ namespace LibraryLinkUtils {
 		/// Output argument for LibraryLink
 		MArgument& res;
 
-		/// Structure to manage string arguments received from LibraryLink
+		/// Structure to manage string arguments after taking their ownership from LibraryLink
 		/// [LLDocs]: https://reference.wolfram.com/language/LibraryLink/tutorial/InteractionWithMathematica.html#262826223 "LibraryLink docs"
 		/// @see [LibraryLink docs][LLDocs]
-		std::vector<std::unique_ptr<std::string>> stringArgs;
+		std::vector<LLStringPtr> stringArgs;
 	};
 
 	template<typename T>

@@ -36,6 +36,40 @@ ExactTest[
 	TestID->"StringOperations-20150807-K4Y4G8"
 ]
 
+ExactTest[
+	CapitalizeFirst["hello World"]
+	,
+	"Hello World"
+	,
+	TestID->"StringTestSuite-20180821-Y4A0E2"
+]
+
+Test[
+	CapitalizeAll["Hello World"]
+	,
+	ToUpperCase["Hello World"]
+	,
+	TestID->"StringTestSuite-20180821-X0K5Z1"
+]
+
+Test[
+	largeString = StringJoin @ RandomChoice[Alphabet[], 100000000];
+
+	timeCString = First @ RepeatedTiming[Do[RoundTripCString[largeString], 5];];
+	Print["C-string time: " <> ToString[timeCString]];
+
+	timeString = First @ RepeatedTiming[Do[RoundTripString[largeString], 5];];
+	Print["std::string time: " <> ToString[timeString]];
+	
+	Clear[largeString];
+	
+	timeString >= timeCString (* Not a very reliable unit test, don't worry too much if it fails *)
+	,
+	True
+	,
+	TestID->"StringTestSuite-20180821-Y0C3Q1"
+]
+
 Test[
 	Get[FileNameJoin[{currentDirectory, "StringLength", "StringLength.wl"}]];
 	StrLength["this is my null terminated string"]
