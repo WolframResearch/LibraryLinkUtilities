@@ -27,8 +27,9 @@
 		<property name="sourceDir" value="${basedir}/Source" />
 		<property name="outputDir" value="${dist}" />
 		<property name="outputName" value="DemoTests" />
-		<property name="LLUSourceFiles" value="${basedir}/../../src/" />
-		<property name="LLUIncludeFiles" value="${LLUSourceFiles}" />
+		<property name="LLUInstallation" value="${basedir}/../../install/" />
+		<property name="LLUIncludeDir" value="${LLUInstallation}/include" />
+		<property name="LLULibDir" value="${LLUInstallation}/lib" />
 
 	  	<path id="jlink.lib">
 	    	<fileset dir="${jlinkpath}">

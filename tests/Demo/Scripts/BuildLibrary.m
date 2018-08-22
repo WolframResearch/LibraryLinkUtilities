@@ -37,7 +37,9 @@ Switch[targetID,
 
 SetCCompilerOptionsFromAnt[
 	"CleanIntermediate" -> True,
-	"IncludeDirectories" -> AntProperty["LLUIncludeFiles"],
+	"IncludeDirectories" -> AntProperty["LLUIncludeDir"],
+	"Libraries" -> {"LLU"},
+	"LibraryDirectories" -> AntProperty["LLULibDir"],
 	"CompileOptions" -> compoptions,
 	"LinkerOptions" -> If[targetID === "Windows-x86-64", {"/MACHINE:x64"}, {}],
 	"ShellOutputFunction" -> AntLog,
@@ -45,7 +47,6 @@ SetCCompilerOptionsFromAnt[
 	"Language" -> "C++"
 ];
 
-LLUsrc = FileNames["*.c*", AntProperty["LLUSourceFiles"], 2];
 
 (* Build the demo libraries used in LibraryLink examples *)
 demoFiles = FileNames["*.cpp", AntProperty["sourceDir"]];
@@ -55,7 +56,7 @@ result = Apply[
 	Function[{srcFile, outputName},
     	{resFiles, mkResourceCmds} = CreateResourceFileCommands[outputName];
 
-    	outputName -> CreateLibrary[{srcFile} ~Join~ LLUsrc, outputName,
+    	outputName -> CreateLibrary[{srcFile}, outputName,
     		"ExtraObjectFiles" -> resFiles, 
 			"PreCompileCommands" -> mkResourceCmds
 		]

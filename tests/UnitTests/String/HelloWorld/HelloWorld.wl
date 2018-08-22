@@ -1,6 +1,6 @@
 Needs["CCompilerDriver`"];
 
-lib = CreateLibrary[{"HelloWorld.cpp"} ~ Join ~ $LLUSources, "HelloWorld", options];
+lib = CreateLibrary[{"HelloWorld.cpp"}, "HelloWorld", options];
 
 HelloWorld = LibraryFunctionLoad[lib, "HelloWorld", {}, "UTF8String"];
 CapitalizeFirst = LibraryFunctionLoad[lib, "CapitalizeFirst", {"UTF8String"}, "UTF8String"];
