@@ -19,7 +19,7 @@ option(BUILD_SHARED_LIBS "Whether to build LLU as a shared library (default is s
 #Mathematica location
 set(MATHEMATICA_VERSION 12.0 CACHE STRING "Mathematica version")
 
-get_default_mathematica_dir(MATHEMATICA_VERSION MATHEMATICA_INSTALL_DIR)
+get_default_mathematica_dir(${MATHEMATICA_VERSION} MATHEMATICA_INSTALL_DIR)
 
 # set default build type to Release
 if(NOT CMAKE_BUILD_TYPE)
@@ -83,10 +83,19 @@ if(NOT TARGET LLU)
 	)
 
 	if(MSVC)
+		# Remove default warning level. It will be set later.
+		string(REGEX REPLACE "/W[0-4]" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+
+		# Force static runtime on Windows. See https://gitlab.kitware.com/cmake/community/wikis/FAQ#dynamic-replace
+		foreach(flag_var CMAKE_CXX_FLAGS CMAKE_CXX_FLAGS_DEBUG CMAKE_CXX_FLAGS_RELEASE CMAKE_CXX_FLAGS_MINSIZEREL CMAKE_CXX_FLAGS_RELWITHDEBINFO)
+			if(${flag_var} MATCHES "/MD")
+				string(REGEX REPLACE "/MD" "/MT" ${flag_var} "${${flag_var}}")
+			endif()
+		endforeach()
+
 		target_compile_options(LLU
 			PRIVATE "/W4"
 			PRIVATE "/EHsc"
-			PRIVATE "/MT" #on windows we need to specifically compile with /MT not /MD #TODO: check if it works
 			PRIVATE "$<$<CONFIG:Debug>:/Zi>"
 			PRIVATE "$<$<NOT:$<CONFIG:Debug>>:/O2>"
 		)
@@ -116,7 +125,9 @@ if(NOT TARGET LLU)
 			WolframLibrary::WolframLibrary
 	)
 
-	set_rpath(LLU "")
+	if (NOT WIN32)
+		set_rpath(LLU "")
+	endif ()
 
 	##############################################
 	# Installation instructions
