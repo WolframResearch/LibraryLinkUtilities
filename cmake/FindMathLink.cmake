@@ -83,5 +83,6 @@ if(MathLink_FOUND AND NOT TARGET MathLink::MathLink)
 	set_target_properties(MathLink::MathLink PROPERTIES
 		INTERFACE_INCLUDE_DIRECTORIES "${MathLink_INCLUDE_DIR}"
 		IMPORTED_LOCATION "${MathLink_LIBRARIES}"
+		IMPORTED_IMPLIB "${MathLink_LIBRARIES}"
 	)
 endif()
