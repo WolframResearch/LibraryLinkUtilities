@@ -1,6 +1,6 @@
 Needs["CCompilerDriver`"];
 Needs["LibraryLink`"]
-lib = CreateLibrary[{"RawArrayOperations.cpp"}, "RawArrayOperations", options,"Debug"->True];
+lib = CreateLibrary[{"RawArrayOperations.cpp"}, "RawArrayOperations", options];
 echoRawArray = LibraryFunctionLoad[lib,"echoRawArray",{"RawArray"},"RawArray"];
 getRALength = LibraryFunctionLoad[lib, "getRawArrayLength", {"RawArray"}, Integer];
 getRARank = LibraryFunctionLoad[lib, "getRawArrayRank", {"RawArray"}, Integer];
