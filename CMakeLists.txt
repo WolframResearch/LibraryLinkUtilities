@@ -16,10 +16,12 @@ include(WolframUtilities)
 
 option(BUILD_SHARED_LIBS "Whether to build LLU as a shared library (default is static).")
 
-#Mathematica location
+#Mathematica version
 set(MATHEMATICA_VERSION 12.0 CACHE STRING "Mathematica version")
 
-get_default_mathematica_dir(${MATHEMATICA_VERSION} MATHEMATICA_INSTALL_DIR)
+#Mathematica location
+get_default_mathematica_dir(${MATHEMATICA_VERSION} _MATHEMATICA_INSTALL_DIR)
+set(MATHEMATICA_INSTALL_DIR ${_MATHEMATICA_INSTALL_DIR} CACHE PATH "Mathematica installation")
 
 # set default build type to Release
 if(NOT CMAKE_BUILD_TYPE)
