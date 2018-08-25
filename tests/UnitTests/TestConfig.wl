@@ -24,3 +24,6 @@ options = {
 	"ShellCommandFunction" -> Print,
 	"Language" -> "C++"
 };
+
+(* If dynamic version of LLU was built, we want to load it to Mathematica before test libs are loaded *)
+LibraryLoad /@ FileNames[{"*.so", "*.dll", "*.dylib"}, $LLULibDir];
