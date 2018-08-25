@@ -210,5 +210,9 @@ if(NOT TARGET LLU)
 
 	add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/tests/UnitTests")
 
+	add_custom_target(TestWithOutputOnFailure
+		COMMAND
+			"${CMAKE_COMMAND}" -E env CTEST_OUTPUT_ON_FAILURE=1 ${CMAKE_CTEST_COMMAND} -C ${CMAKE_BUILD_TYPE}
+	)
 endif() #end IF NOT TARGET LLU
 
