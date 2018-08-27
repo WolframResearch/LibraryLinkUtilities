@@ -58,7 +58,7 @@ if(MathLink_INCLUDE_DIR)
 	message(STATUS "Looking for ${_WOLFMLINK_LIB_NAME} in ${_WOLFMLINK_LIBRARY_PATH}")
 
 	find_library(MathLink_LIBRARY
-		NAMES ${_WOLFMLINK_LIB_NAME}
+		NAMES "mathlink" ${_WOLFMLINK_LIB_NAME}
 		PATHS "${_WOLFMLINK_LIBRARY_PATH}"
 		${_WOLFMLINK_SEARCH_OPTS}
 		DOC "Path to the MathLink library"
@@ -85,4 +85,11 @@ if(MathLink_FOUND AND NOT TARGET MathLink::MathLink)
 		IMPORTED_LOCATION "${MathLink_LIBRARIES}"
 		IMPORTED_IMPLIB "${MathLink_LIBRARIES}"
 	)
+	if(APPLE)
+		find_library(FOUNDATION_FRAMEWORK Foundation)
+		set_target_properties(MathLink::MathLink PROPERTIES
+			INTERFACE_LINK_LIBRARIES ${FOUNDATION_FRAMEWORK}
+			IMPORTED_LOCATION "${MathLink_LIBRARIES}/mathlink"
+		)
+	endif()
 endif()
