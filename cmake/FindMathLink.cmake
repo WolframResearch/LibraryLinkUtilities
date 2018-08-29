@@ -88,7 +88,7 @@ if(MathLink_FOUND AND NOT TARGET MathLink::MathLink)
 	if(APPLE)
 		find_library(FOUNDATION_FRAMEWORK Foundation)
 		set_target_properties(MathLink::MathLink PROPERTIES
-			INTERFACE_LINK_LIBRARIES ${FOUNDATION_FRAMEWORK}
+			INTERFACE_LINK_LIBRARIES "${FOUNDATION_FRAMEWORK};c++"
 			IMPORTED_LOCATION "${MathLink_LIBRARIES}/mathlink"
 		)
 	endif()
