@@ -8,13 +8,18 @@
 
 cmake_minimum_required(VERSION 3.8.0)
 
+#set minimum MacOS target version
+set(CMAKE_OSX_DEPLOYMENT_TARGET "10.10" CACHE STRING "Minimum OS X deployment version")
+
 project(LLU VERSION 0.0.1 LANGUAGES CXX)
 
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 
 include(WolframUtilities)
 
+#LLU is designed to be used as a static library but if you really want to try shared, swith to ON
 option(BUILD_SHARED_LIBS "Whether to build LLU as a shared library (default is static).")
+mark_as_advanced(BUILD_SHARED_LIBS)
 
 #Mathematica version
 set(MATHEMATICA_VERSION 12.0 CACHE STRING "Mathematica version")
@@ -25,7 +30,8 @@ set(MATHEMATICA_INSTALL_DIR ${_MATHEMATICA_INSTALL_DIR} CACHE PATH "Mathematica 
 
 # set default build type to Release
 if(NOT CMAKE_BUILD_TYPE)
-  set(CMAKE_BUILD_TYPE Release CACHE STRING "Choose the type of build, options are: None Debug Release RelWithDebInfo MinSizeRel." FORCE)
+  set(CMAKE_BUILD_TYPE Release CACHE STRINGS "Choose the type of build, options are: None Debug Release RelWithDebInfo MinSizeRel." FORCE)
+	set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS ${CMAKE_CONFIGURATION_TYPES})
 endif()
 
 # verbose output - useful for debugging, but turned off by default
