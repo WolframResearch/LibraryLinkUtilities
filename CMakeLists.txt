@@ -25,7 +25,11 @@ mark_as_advanced(BUILD_SHARED_LIBS)
 set(MATHEMATICA_VERSION 12.0 CACHE STRING "Mathematica version")
 
 #Mathematica location
-get_default_mathematica_dir(${MATHEMATICA_VERSION} _MATHEMATICA_INSTALL_DIR)
+if(NOT MATHEMATICA_INSTALL_DIR)
+	get_default_mathematica_dir(${MATHEMATICA_VERSION} _MATHEMATICA_INSTALL_DIR)
+else()
+	set(_MATHEMATICA_INSTALL_DIR ${MATHEMATICA_INSTALL_DIR})
+endif()
 set(MATHEMATICA_INSTALL_DIR ${_MATHEMATICA_INSTALL_DIR} CACHE PATH "Mathematica installation")
 
 # set default build type to Release
