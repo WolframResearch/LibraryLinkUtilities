@@ -39,7 +39,7 @@ if(NOT CMAKE_BUILD_TYPE)
 endif()
 
 # verbose output - useful for debugging, but turned off by default
-set(CMAKE_VERBOSE_MAKEFILE ON CACHE BOOL "Verbose")
+set(CMAKE_VERBOSE_MAKEFILE OFF CACHE BOOL "Verbose")
 
 #guard to prevent this file from running twice
 if(NOT TARGET LLU)
