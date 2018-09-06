@@ -18,6 +18,7 @@
 	# One helpful option for ctest is --verbose. It shows more output from wolframscript.
 
 	set(TEST_MODULES
+		"DataList"
 		"Image"
 		"MathLink"
 		"RawArray"
