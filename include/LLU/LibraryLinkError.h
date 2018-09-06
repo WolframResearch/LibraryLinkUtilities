@@ -113,6 +113,17 @@ namespace LibraryLinkUtils {
 		extern const std::string MLTransferToLoopbackError;	///< Something went wrong when transferring expressions from loopback link
 		extern const std::string MLCreateLoopbackError;		///< Could not create a new loopback link
 		extern const std::string MLLoopbackStackSizeError;	///< Loopback stack size too small to perform desired action
+
+		// DataList errors:
+		extern const std::string DLNullRawNode;			///< DataStoreNode passed to Node wrapper was null
+		extern const std::string DLInvalidNodeType;		///< DataStoreNode passed to Node wrapper carries data of invalid type
+		extern const std::string DLGetNodeDataError;	///< DataStoreNode_getData failed
+		extern const std::string DLNullRawDataStore;    ///< DataStore passed to DataList was null
+		extern const std::string DLPushBackTypeError;   ///< Element to be added to the DataList has incorrect type
+
+		// MArgument errors:
+		extern const std::string ArgumentCreateNull;    	///< Trying to create Argument object from nullptr
+		extern const std::string ArgumentAddNodeMArgument;  ///< Trying to add DataStore Node of type MArgument (aka MType_Undef)
 	}
 
 	/**

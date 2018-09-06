@@ -72,7 +72,7 @@ namespace LibraryLinkUtils {
 			{ LLErrorName::MLPutSymbolError,		"MLPutSymbol failed." },
 			{ LLErrorName::MLPutFunctionError,		"MLPutFunction failed." },
 			{ LLErrorName::MLTestSymbolError,		"MLTestSymbol failed (different symbol on the link than expected)." },
-			{ LLErrorName::MLWrongSymbolForBool,	"Tried to read something else than \"True\" or \"False\" as boolean." },
+			{ LLErrorName::MLWrongSymbolForBool,    R"(Tried to read something else than "True" or "False" as boolean.)" },
 			{ LLErrorName::MLGetListError,			"Could not get list from MathLink." },
 			{ LLErrorName::MLGetScalarError,		"Could not get scalar from MathLink." },
 			{ LLErrorName::MLGetStringError,		"Could not get string from MathLink." },
@@ -88,6 +88,17 @@ namespace LibraryLinkUtils {
 			{ LLErrorName::MLTransferToLoopbackError,	"Something went wrong when transferring expressions from loopback link." },
 			{ LLErrorName::MLCreateLoopbackError,		"Could not create a new loopback link." },
 			{ LLErrorName::MLLoopbackStackSizeError,	"Loopback stack size too small to perform desired action." },
+
+           // DataList errors:
+           { LLErrorName::DLNullRawNode,			"DataStoreNode passed to Node wrapper was null" },
+           { LLErrorName::DLInvalidNodeType,		"DataStoreNode passed to Node wrapper carries data of invalid type" },
+           { LLErrorName::DLGetNodeDataError,	    "DataStoreNode_getData failed" },
+           { LLErrorName::DLNullRawDataStore,       "DataStore passed to DataList was null" },
+           { LLErrorName::DLPushBackTypeError,      "Element to be added to the DataList has incorrect type" },
+
+           // MArgument errors:
+           { LLErrorName::ArgumentCreateNull,       "Trying to create Argument object from nullptr" },
+           { LLErrorName::ArgumentAddNodeMArgument, "Trying to add DataStore Node of type MArgument (aka MType_Undef)" },
 		});
 		return errMap;
 	}
@@ -237,6 +248,15 @@ namespace LibraryLinkUtils {
 		LLU_DEFINE_ERROR_NAME(MLTransferToLoopbackError);
 		LLU_DEFINE_ERROR_NAME(MLCreateLoopbackError);
 		LLU_DEFINE_ERROR_NAME(MLLoopbackStackSizeError);
+
+		LLU_DEFINE_ERROR_NAME(DLNullRawNode);
+		LLU_DEFINE_ERROR_NAME(DLInvalidNodeType);
+		LLU_DEFINE_ERROR_NAME(DLGetNodeDataError);
+		LLU_DEFINE_ERROR_NAME(DLNullRawDataStore);
+		LLU_DEFINE_ERROR_NAME(DLPushBackTypeError);
+
+		LLU_DEFINE_ERROR_NAME(ArgumentCreateNull);
+		LLU_DEFINE_ERROR_NAME(ArgumentAddNodeMArgument);
 	}
 
 } /* namespace LibraryLinkUtils */
