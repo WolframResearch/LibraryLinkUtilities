@@ -83,6 +83,8 @@ if(NOT TARGET LLU)
 		${LLU_SOURCE_DIR}/ML/Release.cpp
 		${LLU_SOURCE_DIR}/ML/Strings.cpp
 		${LLU_SOURCE_DIR}/ML/Utilities.cpp
+		${LLU_SOURCE_DIR}/Containers/DataList.cpp
+		${LLU_SOURCE_DIR}/MArgument.cpp
 	)
 
 	#add the main library
@@ -90,7 +92,7 @@ if(NOT TARGET LLU)
 
 	#compilation options
 	set_target_properties(LLU PROPERTIES
-	    CXX_STANDARD 14
+	    CXX_STANDARD 17
 	    CXX_STANDARD_REQUIRED YES
 	    CXX_EXTENSIONS NO
 	    POSITION_INDEPENDENT_CODE YES
