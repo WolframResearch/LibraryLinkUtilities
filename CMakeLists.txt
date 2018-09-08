@@ -83,7 +83,6 @@ if(NOT TARGET LLU)
 		${LLU_SOURCE_DIR}/ML/Release.cpp
 		${LLU_SOURCE_DIR}/ML/Strings.cpp
 		${LLU_SOURCE_DIR}/ML/Utilities.cpp
-		${LLU_SOURCE_DIR}/Containers/DataList.cpp
 		${LLU_SOURCE_DIR}/MArgument.cpp
 	)
 
