@@ -19,11 +19,14 @@
 #include <string>
 #include <vector>
 
+#include "LibraryLinkError.h"
+#include "LLU/Containers/DataList.h"
 #include "LLU/Containers/Image.h"
 #include "LLU/Containers/LibDataHolder.h"
-#include "LibraryLinkError.h"
 #include "LLU/Containers/RawArray.h"
 #include "LLU/Containers/Tensor.h"
+#include "LLU/Containers/Passing/Automatic.hpp"
+#include "LLU/MArgument.h"
 
 namespace LibraryLinkUtils {
 
@@ -335,6 +338,25 @@ namespace LibraryLinkUtils {
 		template<class Operator>
 		void operateOnImage(unsigned int index, Operator&& op);
 
+		/**
+		 *   @brief         Get DataStore with all nodes of the same type from MArgument at position \c index
+		 *   @tparam		T - type of data stored in each node of DataStore, it T is MArgumentType::MArgument it will accept any node
+		 *   @param[in]     index - position of desired MArgument in \c Args
+		 *   @returns       DataList wrapper of MArgument at position \c index
+		 *   @throws        LLErrorName::MArgumentIndexError - if \c index is out-of-bounds
+		 *   @see			DataList<T>::DataList(DataStore ds);
+		 **/
+		template<MArgumentType T, template<typename> class PassingMode = Passing::Automatic>
+		DataList<T, PassingMode> getDataList(unsigned int index) const;
+
+		/**
+		 *   @brief         Set DataStore wrapped in DataList \c ds as output MArgument
+		 *   @tparam		T - type of data stored in each node of DataStore
+		 *   @param[in]     ten - const reference to DataList which should pass its internal DataStore to LibraryLink
+		 **/
+		template<MArgumentType T, template<typename> class PassingMode = Passing::Automatic>
+		void setDataList(const DataList<T, PassingMode>& ds);
+
 	private:
 		// Efficient and memory-safe type for storing string arguments from LibraryLink
 		using LLStringPtr = std::unique_ptr<char[], decltype(st_WolframLibraryData::UTF8String_disown)>;
@@ -612,6 +634,17 @@ namespace LibraryLinkUtils {
 			default:
 				ErrorManager::throwException(LLErrorName::MArgumentImageError, "Incorrect type of Image argument. Argument index: " + std::to_string(index));
 		}
+	}
+
+
+	template<MArgumentType T, template<typename> class PassingMode>
+	DataList<T, PassingMode> MArgumentManager::getDataList(unsigned int index) const {
+		return DataList<T, PassingMode>(MArgument_getDataStore(getArgs(index)));
+	}
+
+	template<MArgumentType T, template<typename> class PassingMode>
+	void MArgumentManager::setDataList(const DataList<T, PassingMode>& ds) {
+		ds.passAsResult(res);
 	}
 
 } /* namespace LibraryLinkUtils */
