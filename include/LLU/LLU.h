@@ -21,6 +21,7 @@
 
 // MArgumentManager
 using MArgumentManager = LibraryLinkUtils::MArgumentManager;
+using LibraryLinkUtils::MArgumentType;
 
 // Error-related
 using LibraryLinkError = LibraryLinkUtils::LibraryLinkError;
@@ -29,6 +30,8 @@ namespace LLErrorCode = LibraryLinkUtils::LLErrorCode;
 namespace LLErrorName = LibraryLinkUtils::LLErrorName;
 
 // Containers
+namespace Passing = LibraryLinkUtils::Passing;
+
 template<typename T>
 using RawArray = LibraryLinkUtils::RawArray<T>;
 
@@ -37,6 +40,9 @@ using Tensor = LibraryLinkUtils::Tensor<T>;
 
 template<typename T>
 using Image = LibraryLinkUtils::Image<T>;
+
+template<LibraryLinkUtils::MArgumentType T, template<typename> class PassingMode = Passing::Manual>
+using DataList = LibraryLinkUtils::DataList<T, PassingMode>;
 
 
 #endif /* LLUTILS_LLU_H_ */
