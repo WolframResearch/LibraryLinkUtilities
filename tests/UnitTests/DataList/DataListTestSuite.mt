@@ -29,7 +29,9 @@ TestExecute[
 	GetKeys = SafeLibraryFunction["GetKeys", {"DataStore"}, "DataStore"];
 	GetValuesReversed = SafeLibraryFunction["GetValuesReversed", {"DataStore"}, "DataStore"];
 	FrameDims = SafeLibraryFunction["FrameDims", {"DataStore"}, NumericArray];
-	
+	StringsThroughVectorReversed = SafeLibraryFunction["StringsThroughVectorReversed", {"DataStore"}, "DataStore"];
+	IntsToNumericArray = SafeLibraryFunction["IntsToNumericArray", {"DataStore"}, NumericArray];
+
 	(* Test data used across multiple tests *)
 	bool = True;
 	int = 23456;
@@ -353,6 +355,40 @@ Test[
 	NumericArray[{{100, 100}, {300, 300}, {200, 200}}, "UnsignedInteger64"]
 	,
 	TestID->"DataListTestSuite-20180907-J9A6U6"
+];
+
+Test[
+	StringsThroughVectorReversed[Developer`DataStore[]]
+	,
+	Developer`DataStore[]
+	,
+	TestID->"DataListTestSuite-20180910-I1U7A9"
+];
+
+Test[
+	los = Developer`DataStore @@ RandomWord[30];
+	StringsThroughVectorReversed[los]
+	,
+	Reverse[los]
+	,
+	TestID->"DataListTestSuite-20180910-Q5U3A6"
+];
+
+Test[
+	IntsToNumericArray[Developer`DataStore[]]
+	,
+	{}
+	,
+	TestID->"DataListTestSuite-20180910-J1W7Z6"
+];
+
+Test[
+	ints = RandomInteger[2^22, 100];
+	IntsToNumericArray[Developer`DataStore @@ ints]
+	,
+	NumericArray[ints, If[Developer`$MaxMachineInteger > 2^32, "Integer64", "Integer32"]]
+	,
+	TestID->"DataListTestSuite-20180910-P0I5K7"
 ];
 
 (* Timing tests *)

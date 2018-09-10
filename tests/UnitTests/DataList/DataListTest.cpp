@@ -312,3 +312,46 @@ LIBRARY_LINK_FUNCTION(FrameDims) {
 	}
 	return err;
 }
+
+LIBRARY_LINK_FUNCTION(StringsThroughVectorReversed) {
+	auto err = LLErrorCode::NoError;
+	try {
+		MArgumentManager mngr { Argc, Args, Res };
+		auto dsIn = mngr.getDataList<MArgumentType::UTF8String>(0);
+
+
+		using ValueIterator = LibraryLinkUtils::NodeValueIterator<MArgumentType::UTF8String>;
+		std::vector<std::string> vecStr { ValueIterator { dsIn.begin() }, ValueIterator { dsIn.end() } };
+
+		DataList<MArgumentType::UTF8String> dsOut;
+
+		std::transform(vecStr.rbegin(), vecStr.rend(), std::back_inserter(dsOut), [](const std::string& s){
+			return const_cast<char*>(s.c_str());
+		});
+
+		mngr.setDataList(dsOut);
+	} catch (const LibraryLinkError& e) {
+		err = e.which();
+	} catch (...) {
+		err = LLErrorCode::FunctionError;
+	}
+	return err;
+}
+
+LIBRARY_LINK_FUNCTION(IntsToNumericArray) {
+	auto err = LLErrorCode::NoError;
+	try {
+		MArgumentManager mngr { Argc, Args, Res };
+		auto dsIn = mngr.getDataList<MArgumentType::Integer>(0);
+
+		using ValueIterator = LibraryLinkUtils::NodeValueIterator<MArgumentType::Integer>;
+		RawArray<mint> ra { ValueIterator { dsIn.begin() }, ValueIterator { dsIn.end() } };
+
+		mngr.setRawArray(ra);
+	} catch (const LibraryLinkError& e) {
+		err = e.which();
+	} catch (...) {
+		err = LLErrorCode::FunctionError;
+	}
+	return err;
+}

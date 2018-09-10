@@ -32,22 +32,7 @@ namespace LibraryLinkUtils {
 		using T = MType_t<MArgType>;
 	public:
 
-		explicit DataNode(DataStoreNode dsn) : rawNode(dsn) {
-			if (!rawNode) {
-				ErrorManager::throwException(LLErrorName::DLNullRawNode);
-			}
-			if (MArgType != MArgumentType::MArgument && MArgType != getRawType()) {
-				ErrorManager::throwException(LLErrorName::DLInvalidNodeType);
-			}
-			char* rawName = nullptr;
-			ioFuns->DataStoreNode_getName(rawNode, &rawName);
-			if (rawName != nullptr) {
-				name = rawName;
-			}
-			if (ioFuns->DataStoreNode_getData(rawNode, &nodeArg) != 0) {
-				ErrorManager::throwException(LLErrorName::DLGetNodeDataError);
-			}
-		}
+		explicit DataNode(DataStoreNode dsn);
 
 		const std::string& getName() const {
 			return name;
@@ -87,7 +72,7 @@ namespace LibraryLinkUtils {
 		using const_iterator = typename decltype(proxyList)::const_iterator;
 		using reverse_iterator = typename decltype(proxyList)::reverse_iterator;
 		using const_reverse_iterator = typename decltype(proxyList)::const_reverse_iterator;
-		using node_data_type = MType_t<T>;
+		using value_type = MType_t<T>;
 		using PassingM = PassingMode<DataStore>;
 
 		template<MArgumentType MArgT>
@@ -110,13 +95,13 @@ namespace LibraryLinkUtils {
 			makeProxy();
 		}
 
-		DataList(std::initializer_list<node_data_type> initList) : DataList() {
+		DataList(std::initializer_list<value_type> initList) : DataList() {
 			for(auto&& elem : initList) {
 				push_back(elem);
 			}
 		}
 
-		DataList(std::initializer_list<std::pair<std::string, node_data_type>> initList) : DataList() {
+		DataList(std::initializer_list<std::pair<std::string, value_type>> initList) : DataList() {
 			for(auto&& elem : initList) {
 				push_back(elem.first, elem.second);
 			}
@@ -238,9 +223,9 @@ namespace LibraryLinkUtils {
 			static_assert(alwaysFalse<MArgT>, "Trying to add DataList node of incorrect type.");
 		}
 
-		void push_back(const node_data_type& nodeData);
+		void push_back(const value_type& nodeData);
 
-		void push_back(const std::string& name, const node_data_type& nodeData);
+		void push_back(const std::string& name, const value_type& nodeData);
 
 	private:
 		/**
@@ -258,7 +243,11 @@ namespace LibraryLinkUtils {
 			MArgument_setDataStore(res, this->getInternal());
 		}
 
-		DataStore cloneInternal() const {
+		/**
+		 * @brief	Make a deep copy of the internally stored DataStore
+		 * @return	Cloned DataStore
+		 */
+		DataStore cloneInternal() const override {
 			return ioFuns->copyDataStore(this->getInternal());
 		}
 
@@ -266,6 +255,23 @@ namespace LibraryLinkUtils {
 		void makeProxy();
 	};
 
+	template<MArgumentType MArgType>
+	DataNode<MArgType>::DataNode(DataStoreNode dsn) : rawNode(dsn) {
+		if (!rawNode) {
+			ErrorManager::throwException(LLErrorName::DLNullRawNode);
+		}
+		if (MArgType != MArgumentType::MArgument && MArgType != getRawType()) {
+			ErrorManager::throwException(LLErrorName::DLInvalidNodeType);
+		}
+		char* rawName = nullptr;
+		ioFuns->DataStoreNode_getName(rawNode, &rawName);
+		if (rawName != nullptr) {
+			name = rawName;
+		}
+		if (ioFuns->DataStoreNode_getData(rawNode, &nodeArg) != 0) {
+			ErrorManager::throwException(LLErrorName::DLGetNodeDataError);
+		}
+	}
 
 	template<MArgumentType T, template<typename> class PassingMode>
 	void DataList<T, PassingMode>::makeProxy() {
@@ -302,12 +308,12 @@ namespace LibraryLinkUtils {
 	}
 
 	template<MArgumentType T, template<typename> class PassingMode>
-	void DataList<T, PassingMode>::push_back(const DataList::node_data_type& nodeData) {
+	void DataList<T, PassingMode>::push_back(const DataList::value_type& nodeData) {
 		push_back("", nodeData);
 	}
 
 	template<MArgumentType T, template<typename> class PassingMode>
-	void DataList<T, PassingMode>::push_back(const std::string& name, const DataList::node_data_type& nodeData) {
+	void DataList<T, PassingMode>::push_back(const std::string& name, const DataList::value_type& nodeData) {
 		Argument<T>::addDataStoreNode(this->getInternal(), name, nodeData);
 		proxyList.emplace_back(ioFuns->DataStore_getLastNode(this->getInternal()));
 	}
