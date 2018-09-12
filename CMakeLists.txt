@@ -142,6 +142,7 @@ if(NOT TARGET LLU)
 	if (NOT WIN32)
 		set_rpath(LLU "")
 	endif ()
+	set_machine_flags(LLU)
 
 	##############################################
 	# Installation instructions
