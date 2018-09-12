@@ -65,16 +65,17 @@ namespace LibraryLinkUtils {
 		const value_type& get() const;
 		value_type* getAddress() const;
 		void set(value_type newValue);
-		void addToDataStore(DataStore ds, const std::string& name, MArgumentType = T) const {
-			addDataStoreNode(ds, name, get());
-		}
+		void addToDataStore(DataStore ds, const std::string& name, MArgumentType = T) const;
 
 		static void addDataStoreNode(DataStore ds, const std::string& name, const value_type& val);
 	private:
 		MArgument& arg;
 	};
 
-#ifndef _WIN32
+	template<MArgumentType T>
+	void Argument<T>::addToDataStore(DataStore ds, const std::string& name, MArgumentType) const {
+		addDataStoreNode(ds, name, get());
+	}
 
 #define ARGUMENT_DEFINE_SPECIALIZATIONS_OF_MEMBER_FUNCTIONS(ArgType) \
 	template<> auto Argument<MArgumentType::ArgType>::get() -> typename Argument::value_type&;\
@@ -102,12 +103,6 @@ namespace LibraryLinkUtils {
 	template<> void Argument<MArgumentType::MArgument>::addToDataStore(DataStore ds, const std::string& name, MArgumentType) const;
 
 #undef ARGUMENT_DEFINE_SPECIALIZATIONS_OF_MEMBER_FUNCTIONS
-
-#else // we are on Windows
-
-
-
-#endif
 
 } // namespace LibraryLinkUtils
 
