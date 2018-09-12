@@ -17,51 +17,44 @@
 namespace LibraryLinkUtils {
 
 	/**
-	 * @class	NodeNameIterator
-	 * @brief 	Iterator that traverses a DataList as if it was a container with keys only.
+	 * @class	SpecialIterator
+	 * @brief 	Iterator that traverses a DataList as if it was a container with values only (without keys).
 	 * @tparam 	T - type of nodes in the DataList.
-	 * @tparam 	BaseIter - iterator to inherit from, it must return DataNode<T>& when dereferenced.
+	 * @tparam 	BaseIter - iterator to inherit from, it must be a bidirectional iterator that returns DataNode<T>& when dereferenced.
 	 */
-	template<MArgumentType T, typename BaseIter = typename std::list<DataNode<T>>::iterator>
-	class NodeNameIterator : public std::list<DataNode<T>>::iterator {
+	template<MArgumentType T, typename ValType, typename BaseIter>
+	class SpecialIterator {
 	public:
-		using base_iter = BaseIter;
-		using difference_type = typename base_iter::difference_type;
-		using pointer = const std::string*;
-		using value_type = const std::string;
-		using reference = const std::string&;
-		using iterator_category = typename base_iter::iterator_category;
+		using difference_type = typename BaseIter::difference_type;
+		using value_type = ValType;
+		using pointer = value_type*;
+		using reference = value_type&;
+		using iterator_category = std::bidirectional_iterator_tag;
 
 	public:
 		///	Default constructor
-		NodeNameIterator() = default;
+		SpecialIterator() = default;
 
 		/**
-		 * @brief Construct the NodeNameIterator pointing to given DataNode
+		 * @brief Construct SpecialIterator pointing to given DataNode
 		 * @param dataNode - pointer to the node which the iterator should point to
 		 */
-		explicit NodeNameIterator(DataNode<T>* dataNode) : base_iter(dataNode) {};
+		explicit SpecialIterator(DataNode<T>* dataNode) : baseIter(dataNode) {};
 
 		/**
-		 * @brief Construct the NodeNameIterator from an iterator of base type
+		 * @brief Construct the SpecialIterator from an iterator of base type
 		 * @param listIterator - iterator of base type
 		 */
-		NodeNameIterator(base_iter listIterator) : base_iter(listIterator) {};
+		SpecialIterator(BaseIter listIterator) : baseIter(listIterator) {};
 
-		/**
-		 * @brief 	Get name of the currently pointed to node
-		 * @return	Reference to the name of the currently pointed to node
-		 */
-		reference operator*() {
-			return base_iter::operator->()->getName();
+		// test for iterator equality
+		bool operator==(const SpecialIterator& other) const {
+			return (baseIter == other.baseIter);
 		}
 
-		/**
-		 * @brief 	Get pointer to the name of the currently pointed to node
-		 * @return	Pointer to the name of the currently pointed to node
-		 */
-		pointer operator->() {
-			return base_iter::operator->()->getNameAddress();
+		// test for iterator inequality
+		bool operator!=(const SpecialIterator& other) const {
+			return !(*this == other);
 		}
 
 		/**
@@ -70,48 +63,36 @@ namespace LibraryLinkUtils {
 		 * @return 	Reference to the node currently pointed to by the base iterator.
 		 */
 		DataNode<T>& getNode() {
-			return base_iter::operator*();
+			return *baseIter;
 		}
+
+	protected:
+		BaseIter baseIter;
 	};
 
-	/**
-	 * @class	NodeValueIterator
-	 * @brief 	Iterator that traverses a DataList as if it was a container with values only (without keys).
-	 * @tparam 	T - type of nodes in the DataList.
-	 * @tparam 	BaseIter - iterator to inherit from, it must return DataNode<T>& when dereferenced.
-	 */
 	template<MArgumentType T, typename BaseIter = typename std::list<DataNode<T>>::iterator>
-	class NodeValueIterator : public BaseIter {
+	class NodeValueIterator : public SpecialIterator<T, MType_t<T>, BaseIter> {
 	public:
-		using base_iter = BaseIter;
-		using difference_type = typename base_iter::difference_type;
-		using value_type = MType_t<T>;
-		using pointer = value_type*;
-		using reference = value_type&;
-		using iterator_category = typename base_iter::iterator_category;
-
+		using Super = SpecialIterator<T, MType_t<T>, BaseIter>;
+		using pointer = typename Super::pointer;
+		using reference = typename Super::reference;
 	public:
-		///	Default constructor
-		NodeValueIterator() = default;
-
-		/**
-		 * @brief Construct NodeValueIterator pointing to given DataNode
-		 * @param dataNode - pointer to the node which the iterator should point to
-		 */
-		explicit NodeValueIterator(DataNode<T>* dataNode) : base_iter(dataNode) {};
-
-		/**
-		 * @brief Construct the NodeValueIterator from an iterator of base type
-		 * @param listIterator - iterator of base type
-		 */
-		NodeValueIterator(base_iter listIterator) : base_iter(listIterator) {};
+		using Super::Super;
 
 		/**
 		 * @brief 	Get value of the currently pointed to node
 		 * @return	Reference to the value of the currently pointed to node
 		 */
 		reference operator*() {
-			return base_iter::operator->()->getValue();
+			return baseIter->getValue();
+		}
+
+		/**
+		 * @brief 	Get value of the currently pointed to node
+		 * @return	Reference to the value of the currently pointed to node
+		 */
+		const reference operator*() const {
+			return baseIter->getValue();
 		}
 
 		/**
@@ -119,18 +100,92 @@ namespace LibraryLinkUtils {
 		 * @return	Pointer to the value of the currently pointed to node
 		 */
 		pointer operator->() {
-			return base_iter::operator->()->getValueAddress();
+			return baseIter->getValueAddress();
 		}
 
 		/**
-		 * @brief 	Get reference to the node currently pointed to by the base iterator.
-		 * 			You should rarely need this function.
-		 * @return 	Reference to the node currently pointed to by the base iterator.
+		 * @brief 	Get pointer to the value of the currently pointed to node
+		 * @return	Pointer to the value of the currently pointed to node
 		 */
-		DataNode<T>& getNode() {
-			return base_iter::operator*();
+		const pointer operator->() const {
+			return baseIter->getValueAddress();
 		}
 
+		NodeValueIterator& operator++() {
+			baseIter++;
+			return (*this);
+		}
+
+		NodeValueIterator operator++(int) {
+			NodeValueIterator tmp = *this;
+			++*this;
+			return tmp;
+		}
+
+		NodeValueIterator& operator--() {
+			--baseIter;
+			return (*this);
+		}
+
+		NodeValueIterator operator--(int) {
+			NodeValueIterator tmp = *this;
+			--*this;
+			return tmp;
+		}
+	};
+
+	/**
+	 * @class	NodeNameIterator
+	 * @brief 	Iterator that traverses a DataList as if it was a container with keys only.
+	 * @tparam 	T - type of nodes in the DataList.
+	 * @tparam 	BaseIter - iterator to inherit from, it must return DataNode<T>& when dereferenced.
+	 */
+	template<MArgumentType T, typename BaseIter = typename std::list<DataNode<T>>::iterator>
+	class NodeNameIterator : public SpecialIterator<T, const std::string, BaseIter> {
+	public:
+		using Super = SpecialIterator<T, const std::string, BaseIter>;
+		using pointer = typename Super::pointer;
+		using reference = typename Super::reference;
+	public:
+		using Super::Super;
+
+		/**
+		 * @brief 	Get name of the currently pointed to node
+		 * @return	Reference to the name of the currently pointed to node
+		 */
+		reference operator*() const {
+			return baseIter->getName();
+		}
+
+		/**
+		 * @brief 	Get pointer to the name of the currently pointed to node
+		 * @return	Pointer to the name of the currently pointed to node
+		 */
+		pointer operator->() const {
+			return baseIter->getNameAddress();
+		}
+
+		NodeNameIterator& operator++() {
+			baseIter++;
+			return (*this);
+		}
+
+		NodeNameIterator operator++(int) {
+			NodeNameIterator tmp = *this;
+			++*this;
+			return tmp;
+		}
+
+		NodeNameIterator& operator--() {
+			--baseIter;
+			return (*this);
+		}
+
+		NodeNameIterator operator--(int) {
+			NodeNameIterator tmp = *this;
+			--*this;
+			return tmp;
+		}
 	};
 
 	/**
