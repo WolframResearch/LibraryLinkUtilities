@@ -2,6 +2,8 @@
 .cproject
 .settings/
 .vscode/
+.vs/
+CMakeSettings.json
 .idea/
 **/build-local.properties
 docs/html
