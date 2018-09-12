@@ -75,11 +75,14 @@ namespace LibraryLinkUtils {
 		using value_type = MType_t<T>;
 		using PassingM = PassingMode<DataStore>;
 
-		template<MArgumentType MArgT>
-		using ValidNodeType = std::enable_if_t<T == MArgumentType::MArgument && MArgT != T>;
+		template<MArgumentType U>
+		static constexpr bool ValidNodeTypeQ = (T == MArgumentType::MArgument && U != T);
 
 		template<MArgumentType MArgT>
-		using InvalidNodeType = std::enable_if_t<T != MArgumentType::MArgument || MArgT == T>;
+		using ValidNodeType = std::enable_if_t<ValidNodeTypeQ<MArgT>>;
+
+		template<MArgumentType MArgT>
+		using InvalidNodeType = std::enable_if_t <!ValidNodeTypeQ<MArgT>>;
 
 		template<MArgumentType MArgT>
 		using IsMArgument = std::enable_if_t<MArgT == MArgumentType::MArgument>;
@@ -211,7 +214,7 @@ namespace LibraryLinkUtils {
 		ValidNodeType<MArgT> push_back(const MType_t<MArgT>& nodeData);
 
 		template<MArgumentType MArgT>
-		InvalidNodeType<MArgT> push_back(const MType_t<MArgT>& nodeData) {
+		InvalidNodeType<MArgT> push_back(const MType_t<MArgT>&) {
 			static_assert(alwaysFalse<MArgT>, "Trying to add DataList node of incorrect type.");
 		}
 
@@ -219,7 +222,7 @@ namespace LibraryLinkUtils {
 		ValidNodeType<MArgT> push_back(const std::string& name, const MType_t<MArgT>& nodeData);
 
 		template<MArgumentType MArgT>
-		InvalidNodeType<MArgT> push_back(const std::string& name, const MType_t<MArgT>& nodeData) {
+		InvalidNodeType<MArgT> push_back(const std::string&, const MType_t<MArgT>&) {
 			static_assert(alwaysFalse<MArgT>, "Trying to add DataList node of incorrect type.");
 		}
 
