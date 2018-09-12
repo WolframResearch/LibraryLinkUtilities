@@ -210,7 +210,7 @@ LIBRARY_MATHLINK_FUNCTION(ReverseListOfStringsMathLink) {
 		std::vector<std::string> listOfStrings;
 		ml >> listOfStrings;
 
-		ml << ML::List(listOfStrings.size());
+		ml << ML::List(static_cast<int>(listOfStrings.size()));
 		for (const auto& s : listOfStrings) {
 			std::string outStr(s.rbegin(), s.rend());	// create reversed copy
 			ml << outStr;

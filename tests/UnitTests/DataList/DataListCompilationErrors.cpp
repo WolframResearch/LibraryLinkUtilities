@@ -7,8 +7,9 @@
 
 #include "LLU/LLU.h"
 #include "LLU/LibraryLinkFunctionMacro.h"
+#include "LLU/MArgument.h"
 
-/* Returns a copy of the input plus its own reference */
+
 LIBRARY_LINK_FUNCTION(WrongNodeType) {
 	auto err = LLErrorCode::NoError;
 	try {
@@ -19,6 +20,25 @@ LIBRARY_LINK_FUNCTION(WrongNodeType) {
 	} catch (const LibraryLinkError& e) {
 		err = e.which();
 	} catch (...) {
+		err = LLErrorCode::FunctionError;
+	}
+	return err;
+}
+
+LIBRARY_LINK_FUNCTION(TryToAddMArgument) {
+	auto err = LLErrorCode::NoError;
+	try {
+		MArgumentManager mngr{ Argc, Args, Res };
+		auto dsIn = mngr.getDataList<MArgumentType::Real>(0);
+
+		//LibraryLinkUtils::Argument<MArgumentType::MArgument>::addDataStoreNode(dsIn.getInternal(), "NoName", Args[0]); // compile time error - attempting to use deleted function
+
+		mngr.setDataList(dsIn);
+	}
+	catch (const LibraryLinkError& e) {
+		err = e.which();
+	}
+	catch (...) {
 		err = LLErrorCode::FunctionError;
 	}
 	return err;
