@@ -84,7 +84,7 @@ namespace LibraryLinkUtils {
 		 * @return	Reference to the value of the currently pointed to node
 		 */
 		reference operator*() {
-			return baseIter->getValue();
+			return this->baseIter->getValue();
 		}
 
 		/**
@@ -92,7 +92,7 @@ namespace LibraryLinkUtils {
 		 * @return	Reference to the value of the currently pointed to node
 		 */
 		const reference operator*() const {
-			return baseIter->getValue();
+			return this->baseIter->getValue();
 		}
 
 		/**
@@ -100,7 +100,7 @@ namespace LibraryLinkUtils {
 		 * @return	Pointer to the value of the currently pointed to node
 		 */
 		pointer operator->() {
-			return baseIter->getValueAddress();
+			return this->baseIter->getValueAddress();
 		}
 
 		/**
@@ -108,11 +108,11 @@ namespace LibraryLinkUtils {
 		 * @return	Pointer to the value of the currently pointed to node
 		 */
 		const pointer operator->() const {
-			return baseIter->getValueAddress();
+			return this->baseIter->getValueAddress();
 		}
 
 		NodeValueIterator& operator++() {
-			baseIter++;
+			this->baseIter++;
 			return (*this);
 		}
 
@@ -123,7 +123,7 @@ namespace LibraryLinkUtils {
 		}
 
 		NodeValueIterator& operator--() {
-			--baseIter;
+			--this->baseIter;
 			return (*this);
 		}
 
@@ -154,7 +154,7 @@ namespace LibraryLinkUtils {
 		 * @return	Reference to the name of the currently pointed to node
 		 */
 		reference operator*() const {
-			return baseIter->getName();
+			return this->baseIter->getName();
 		}
 
 		/**
@@ -162,11 +162,11 @@ namespace LibraryLinkUtils {
 		 * @return	Pointer to the name of the currently pointed to node
 		 */
 		pointer operator->() const {
-			return baseIter->getNameAddress();
+			return this->baseIter->getNameAddress();
 		}
 
 		NodeNameIterator& operator++() {
-			baseIter++;
+			this->baseIter++;
 			return (*this);
 		}
 
@@ -177,7 +177,7 @@ namespace LibraryLinkUtils {
 		}
 
 		NodeNameIterator& operator--() {
-			--baseIter;
+			--this->baseIter;
 			return (*this);
 		}
 
