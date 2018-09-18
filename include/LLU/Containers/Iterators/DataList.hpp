@@ -18,7 +18,7 @@ namespace LibraryLinkUtils {
 
 	/**
 	 * @class	SpecialIterator
-	 * @brief 	Iterator that traverses a DataList as if it was a container with values only (without keys).
+	 * @brief 	Iterator that traverses a DataList having custom value_type and an arbitrary iterator as a base.
 	 * @tparam 	T - type of nodes in the DataList.
 	 * @tparam 	BaseIter - iterator to inherit from, it must be a bidirectional iterator that returns DataNode<T>& when dereferenced.
 	 */
@@ -37,7 +37,7 @@ namespace LibraryLinkUtils {
 
 		/**
 		 * @brief Construct SpecialIterator pointing to given DataNode
-		 * @param dataNode - pointer to the node which the iterator should point to
+		 * @param dataNode - raw pointer to the node which the iterator should point to
 		 */
 		explicit SpecialIterator(DataNode<T>* dataNode) : baseIter(dataNode) {};
 
@@ -47,12 +47,16 @@ namespace LibraryLinkUtils {
 		 */
 		SpecialIterator(BaseIter listIterator) : baseIter(listIterator) {};
 
-		// test for iterator equality
+		/**
+		 * @brief test for iterator equality
+		 */
 		bool operator==(const SpecialIterator& other) const {
 			return (baseIter == other.baseIter);
 		}
 
-		// test for iterator inequality
+		/**
+		 * @brief test for iterator inequality
+		 */
 		bool operator!=(const SpecialIterator& other) const {
 			return !(*this == other);
 		}
@@ -67,16 +71,25 @@ namespace LibraryLinkUtils {
 		}
 
 	protected:
+		/// an instance of the base iterator
 		BaseIter baseIter;
 	};
 
+	/**
+	 * @class 	NodeValueIterator
+	 * @brief 	Special iterator class that traverses a DataList as if it only contained node values. Inherits from SpecialIterator.
+	 * @tparam 	T - type of nodes in the DataList.
+	 * @tparam 	BaseIter - iterator class to pass as template argument to SpecialIterator
+	 */
 	template<MArgumentType T, typename BaseIter = typename std::list<DataNode<T>>::iterator>
 	class NodeValueIterator : public SpecialIterator<T, MType_t<T>, BaseIter> {
 	public:
 		using Super = SpecialIterator<T, MType_t<T>, BaseIter>;
 		using pointer = typename Super::pointer;
 		using reference = typename Super::reference;
+
 	public:
+		/// Inherited constructors
 		using Super::Super;
 
 		/**
@@ -111,22 +124,34 @@ namespace LibraryLinkUtils {
 			return this->baseIter->getValueAddress();
 		}
 
+		/**
+		 * @brief Preincrement operator: move the iterator one value forward
+		 */
 		NodeValueIterator& operator++() {
 			this->baseIter++;
 			return (*this);
 		}
 
+		/**
+		 * @brief Postincrement operator: move the iterator one value forward
+		 */
 		NodeValueIterator operator++(int) {
 			NodeValueIterator tmp = *this;
 			++*this;
 			return tmp;
 		}
 
+		/**
+		 * @brief Predecrement operator: move the iterator one value back
+		 */
 		NodeValueIterator& operator--() {
 			--this->baseIter;
 			return (*this);
 		}
 
+		/**
+		 * @brief Postdecrement operator: move the iterator one value back
+		 */
 		NodeValueIterator operator--(int) {
 			NodeValueIterator tmp = *this;
 			--*this;
@@ -136,9 +161,9 @@ namespace LibraryLinkUtils {
 
 	/**
 	 * @class	NodeNameIterator
-	 * @brief 	Iterator that traverses a DataList as if it was a container with keys only.
+	 * @brief 	Special iterator class that traverses a DataList as if it only contained node names (keys). Inherits from SpecialIterator.
 	 * @tparam 	T - type of nodes in the DataList.
-	 * @tparam 	BaseIter - iterator to inherit from, it must return DataNode<T>& when dereferenced.
+	 * @tparam 	BaseIter - iterator class to pass as template argument to SpecialIterator
 	 */
 	template<MArgumentType T, typename BaseIter = typename std::list<DataNode<T>>::iterator>
 	class NodeNameIterator : public SpecialIterator<T, const std::string, BaseIter> {
@@ -146,7 +171,9 @@ namespace LibraryLinkUtils {
 		using Super = SpecialIterator<T, const std::string, BaseIter>;
 		using pointer = typename Super::pointer;
 		using reference = typename Super::reference;
+
 	public:
+		/// Inherited constructors
 		using Super::Super;
 
 		/**
@@ -165,22 +192,34 @@ namespace LibraryLinkUtils {
 			return this->baseIter->getNameAddress();
 		}
 
+		/**
+		 * @brief Preincrement operator: move the iterator one value forward
+		 */
 		NodeNameIterator& operator++() {
 			this->baseIter++;
 			return (*this);
 		}
 
+		/**
+		 * @brief Postincrement operator: move the iterator one value forward
+		 */
 		NodeNameIterator operator++(int) {
 			NodeNameIterator tmp = *this;
 			++*this;
 			return tmp;
 		}
 
+		/**
+		 * @brief Predecrement operator: move the iterator one value back
+		 */
 		NodeNameIterator& operator--() {
 			--this->baseIter;
 			return (*this);
 		}
 
+		/**
+		 * @brief Postdecrement operator: move the iterator one value back
+		 */
 		NodeNameIterator operator--(int) {
 			NodeNameIterator tmp = *this;
 			--*this;
