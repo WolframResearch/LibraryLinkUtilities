@@ -18,6 +18,9 @@
 
 namespace LibraryLinkUtils {
 
+	/**
+	 * @brief Strongly type enum with possible types of data stored in MArgument.
+	 */
 	enum class MArgumentType {
 		MArgument = MType_Undef,
 		Boolean = MType_Boolean,
@@ -32,9 +35,16 @@ namespace LibraryLinkUtils {
 		DataStore = MType_DataStore
 	};
 
+	/**
+	 * @brief Helper template variables that is always false. Useful in metaprogramming.
+	 */
 	template<MArgumentType T>
 	constexpr bool alwaysFalse = false;
 
+	/**
+	 * @brief 	Structure that binds given MArgumentType to the actual C++ type it represents.
+	 * @tparam 	T - any value of type MArgumentType
+	 */
 	template<MArgumentType T>
 	struct MType;
 
@@ -50,24 +60,69 @@ namespace LibraryLinkUtils {
 	template<> struct MType<MArgumentType::Image>       { using type = MImage; const std::string name = "Image"; };
 	template<> struct MType<MArgumentType::UTF8String>  { using type = char*; const std::string name = "UTF8String"; };
 
+	/// Type alias for convenience
 	template<MArgumentType T>
 	using MType_t = typename MType<T>::type;
 
+	/**
+	 * @class	Argument
+	 * @brief	Small class that wraps a reference to MArgument and provides proper API to work with this MArgument.
+	 * @tparam 	T - any value of type MArgumentType
+	 */
 	template<MArgumentType T>
 	class Argument : public LibDataHolder {
 	public:
+		/// This is the actual type of data stored in \c arg
 		using value_type = MType_t<T>;
 
 	public:
+		/**
+		 * @brief 	Construct Argument from a reference to MArgument
+		 * @param 	a - reference to MArgument
+		 */
 		explicit Argument(MArgument& a) : arg(a) {}
 
+		/**
+		 * @brief 	Get the value stored in MArgument
+		 * @return	Reference to the value stored in MArgument
+		 */
 		value_type& get();
+
+		/**
+		 * @brief 	Get the read-only value stored in MArgument
+		 * @return 	Const reference to the value stored in MArgument
+		 */
 		const value_type& get() const;
+
+		/**
+		 * @brief 	Get address of the value stored in MArgument. Every MArgument actually stores a pointer.
+		 * @return	Pointer to the value stored in MArgument
+		 */
 		value_type* getAddress() const;
+
+		/**
+		 * @brief 	Set new value of type T in MArgument. Memory management is entirely user's responsibility.
+		 * @param 	newValue - new value to be written to MArgument \c arg
+		 */
 		void set(value_type newValue);
+
+		/**
+		 * @brief 	Add \c arg to the DataStore ds inside a node named \c name
+		 * The optional parameter should only be used by explicit specialization of this function for T equal to MArgumentType::MArgument
+		 * @param 	ds - DataStore with values of type T
+		 * @param 	name - name for the new node in the DataStore
+		 */
 		void addToDataStore(DataStore ds, const std::string& name, MArgumentType = T) const;
 
+		/**
+		 * @brief 	Add \c val to the DataStore \c ds inside a node named \c name
+		 * This is a static method because there is no MArgument involved.
+		 * @param 	ds - DataStore with values of type T
+		 * @param 	name - name for the new node in the DataStore
+		 * @param 	val - value of the new node in the DataStore
+		 */
 		static void addDataStoreNode(DataStore ds, const std::string& name, const value_type& val);
+
 	private:
 		MArgument& arg;
 	};
@@ -76,6 +131,8 @@ namespace LibraryLinkUtils {
 	void Argument<T>::addToDataStore(DataStore ds, const std::string& name, MArgumentType) const {
 		addDataStoreNode(ds, name, get());
 	}
+
+/* Explicit specialization for member functions of Argument class */
 
 #define ARGUMENT_DEFINE_SPECIALIZATIONS_OF_MEMBER_FUNCTIONS(ArgType) \
 	template<> auto Argument<MArgumentType::ArgType>::get() -> typename Argument::value_type&;\
