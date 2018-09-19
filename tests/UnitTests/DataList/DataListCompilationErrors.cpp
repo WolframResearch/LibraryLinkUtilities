@@ -31,7 +31,7 @@ LIBRARY_LINK_FUNCTION(TryToAddMArgument) {
 		MArgumentManager mngr{ Argc, Args, Res };
 		auto dsIn = mngr.getDataList<MArgumentType::Real>(0);
 
-		//LibraryLinkUtils::Argument<MArgumentType::MArgument>::addDataStoreNode(dsIn.getInternal(), "NoName", Args[0]); // compile time error - attempting to use deleted function
+		LibraryLinkUtils::Argument<MArgumentType::MArgument>::addDataStoreNode(dsIn.getInternal(), "NoName", Args[0]); // compile time error - attempting to use deleted function
 
 		mngr.setDataList(dsIn);
 	}
