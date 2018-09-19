@@ -26,35 +26,60 @@
 
 namespace LibraryLinkUtils {
 
+	/**
+	 * @class	DataNode
+	 * @brief	Wrapper over DataStoreNode structure from LibraryLink.
+	 * 			It stores node name in std::string and node value as MArgument, getters for both are provided.
+	 * @tparam 	MArgType - type of the argument stored in the node, see enum MArgumentType
+	 */
 	template<MArgumentType MArgType>
 	class DataNode : public LibDataHolder {
 	public:
 		using T = MType_t<MArgType>;
-	public:
 
+	public:
+		/**
+		 * @brief 	Create DataNode from raw DataStoreNode structure
+		 * @param 	dsn - raw node
+		 */
 		explicit DataNode(DataStoreNode dsn);
 
+		/**
+		 * @brief 	Get node name
+		 * @return 	const reference to std::string holding node name
+		 */
 		const std::string& getName() const {
 			return name;
 		}
 
-		const std::string* getNameAddress() const {
-			return &name;
-		}
-
+		/**
+		 * @brief 	Get node value
+		 * @return 	Returns a reference to node value
+		 */
 		T& getValue() {
 			return *getValueAddress();
 		}
 
+		/**
+		 * @brief 	Get the address of node value
+		 * @return	Address of the node value
+		 */
 		T* getValueAddress() {
 			return Argument<MArgType>(nodeArg).getAddress();
 		}
 
+		/**
+		 * @brief 	Get the actual type of node value stored in MArgument.
+		 * 			This is useful when working on a "generic" DataList of type MArgumentType::MArgument, otherwise it should always return MArgType
+		 * @return	Actual type of node value
+		 */
 		MArgumentType getRawType() {
 			return static_cast<MArgumentType>(ioFuns->DataStoreNode_getDataType(rawNode));
 		}
 
+		/// static data member holding the template parameter
 		static constexpr MArgumentType type = MArgType;
+
 	private:
 		std::string name;
 		MArgument nodeArg;
@@ -62,6 +87,14 @@ namespace LibraryLinkUtils {
 	};
 
 
+	/**
+	 * @class	DataList
+	 * @brief 	Top-level wrapper over LibraryLink's DataStore.
+	 * 			Designed to be strongly typed i.e. to wrap only homogeneous DataStores but by passing MArgumentType::MArgument as template parameter it will work with
+	 * 			arbitrary DataStores.
+	 * @tparam 	T - type of data stored in each node, see the enum type \c MArgumentType
+	 * @tparam 	PassingMode - policy for memory management of the internal container
+	 */
 	template<MArgumentType T, template<typename> class PassingMode = Passing::Manual>
 	class DataList : public LibDataHolder, public PassingMode<DataStore> {
 
@@ -123,6 +156,7 @@ namespace LibraryLinkUtils {
 		DataList& operator=(DataList&& other) noexcept {
 			PassingM::operator=(std::move(other));
 			proxyList = std::move(other.proxyList);
+			return *this;
 		};
 
 		DataList<T, Passing::Manual> clone() const {
