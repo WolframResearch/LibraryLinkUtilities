@@ -125,6 +125,12 @@ if(NOT TARGET LLU)
 		)
 	endif()
 
+	# tell all targets importing LLU that public part of LLU uses C++17 features
+	target_compile_features(LLU
+		PUBLIC
+			cxx_std_17
+	)
+
 	#add the include directory for the project
 	target_include_directories(LLU
 		PUBLIC
