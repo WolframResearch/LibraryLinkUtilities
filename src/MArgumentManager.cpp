@@ -102,8 +102,16 @@ namespace LibraryLinkUtils {
 		return MArgument_getMRawArray(getArgs(index));
 	}
 
+	void MArgumentManager::setMRawArray(MRawArray ra) {
+		MArgument_setMRawArray(res, ra);
+	}	
+
 	MTensor MArgumentManager::getMTensor(unsigned int index) const {
 		return MArgument_getMTensor(getArgs(index));
+	}
+
+	void MArgumentManager::setMTensor(MTensor t) {
+		MArgument_setMTensor(res, t);
 	}
 
 	rawarray_t MArgumentManager::getRawArrayType(unsigned int index) const {

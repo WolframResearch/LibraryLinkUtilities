@@ -205,6 +205,12 @@ namespace LibraryLinkUtils {
 		void setRawArray(RawArray<T>& ra);
 
 		/**
+		 *   @brief         Set MRawArray as output MArgument
+		 *   @param[in]     ra - MRawArray to be passed to LibraryLink
+		 **/
+		void setMRawArray(MRawArray ra);
+
+		/**
 		 *   @brief         Get type of MRawArray at position \c index in \c Args
 		 *   @param[in]     index - position of desired MArgument in \c Args
 		 *   @returns       MRawArray type
@@ -254,6 +260,12 @@ namespace LibraryLinkUtils {
 		 **/
 		template<typename T>
 		void setTensor(Tensor<T>& ten);
+
+		/**
+		 *   @brief         Set MTensor as output MArgument
+		 *   @param[in]     t - MTensor to be passed to LibraryLink
+		 **/
+		void setMTensor(MTensor t);
 
 		/**
 		 *   @brief         Get type of MTensor at position \c index in \c Args
