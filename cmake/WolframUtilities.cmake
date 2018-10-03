@@ -7,7 +7,11 @@
 function(get_default_mathematica_dir MATHEMATICA_VERSION DEFAULT_MATHEMATICA_INSTALL_DIR)
 	set(_M_INSTALL_DIR NOTFOUND)
 	if(APPLE)
-		set(_M_INSTALL_DIR "/Applications/Mathematica.app/Contents")
+	 	find_path(_M_INSTALL_DIR "Contents" PATHS 
+			"/Applications/Mathematica ${MATHEMATICA_VERSION}.app"
+			"/Applications/Mathematica.app"
+		)
+		set(_M_INSTALL_DIR "${_M_INSTALL_DIR}/Contents")
 	elseif(WIN32)
 		set(_M_INSTALL_DIR "C:/Program\ Files/Wolfram\ Research/Mathematica/${MATHEMATICA_VERSION}")
 	else()
