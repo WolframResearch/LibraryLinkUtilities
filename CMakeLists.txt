@@ -60,7 +60,7 @@ if(NOT TARGET LLU)
 	#=============== LIBRARYLINK =================
 	#=============================================
 
-	find_package(WolframLibrary 4 REQUIRED MODULE)
+	find_package(WolframLibrary 5 REQUIRED MODULE)
 
 	#=============================================
 	#=========== MAIN PACLET LIBRARY =============
