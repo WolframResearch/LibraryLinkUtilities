@@ -126,7 +126,13 @@ namespace LibraryLinkUtils {
 		auto& errorMap = errors();
 		auto elem = errorMap.emplace(errorData.first, LibraryLinkError { nextErrorId()--, errorData.first, errorData.second });
 		if (!elem.second) {
-			throw errors().find("ErrorManagerCreateNameError")->second;
+			// Revert nextErrorId because nothing was inserted
+			nextErrorId()++;
+
+			// Throw only if someone attempted to insert an error with existing key but different message
+			if (elem.first->second.message() != errorData.second) {
+				throw errors().find("ErrorManagerCreateNameError")->second;
+			}
 		}
 	}
 
