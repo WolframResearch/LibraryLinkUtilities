@@ -12,13 +12,13 @@
 namespace LibraryLinkUtils {
 
 	std::unique_ptr<st_WolframLibraryData> LibDataHolder::libData;
-	WolframRawArrayLibrary_Functions LibDataHolder::raFuns = nullptr;
+	WolframNumericArrayLibrary_Functions LibDataHolder::naFuns = nullptr;
 	WolframImageLibrary_Functions LibDataHolder::imgFuns = nullptr;
 	WolframIOLibrary_Functions LibDataHolder::ioFuns = nullptr;
 
 	void LibDataHolder::setLibraryData(WolframLibraryData ld) {
 		libData = ld? std::make_unique<st_WolframLibraryData>(*ld) : nullptr;
-		raFuns = ld? libData->rawarrayLibraryFunctions : nullptr;
+		naFuns = ld? libData->numericarrayLibraryFunctions : nullptr;
 		imgFuns = ld? libData->imageLibraryFunctions : nullptr;
 		ioFuns = ld? libData->ioLibraryFunctions : nullptr;
 	}

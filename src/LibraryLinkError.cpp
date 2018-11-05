@@ -34,7 +34,7 @@ namespace LibraryLinkUtils {
 			// MArgument errors:
 			{ LLErrorName::MArgumentInitError,		"MArgumentManager construction failed." },
 			{ LLErrorName::MArgumentIndexError,		"An error was caused by an incorrect argument index." },
-			{ LLErrorName::MArgumentRawArrayError,	"An error was caused by a RawArray argument." },
+			{ LLErrorName::MArgumentNumericArrayError,	"An error was caused by a NumericArray argument." },
 			{ LLErrorName::MArgumentTensorError,	"An error was caused by a Tensor argument." },
 			{ LLErrorName::MArgumentImageError,		"An error was caused by an Image argument." },
 
@@ -43,13 +43,13 @@ namespace LibraryLinkUtils {
 			{ LLErrorName::ErrorManagerThrowNameError,	"An exception was thrown with a non-existent name." },
 			{ LLErrorName::ErrorManagerCreateNameError,	"An exception was registered with a name that already exists." },
 
-			// RawArray errors:
-			{ LLErrorName::RawArrayInitError,	"Failed to construct RawArray." },
-			{ LLErrorName::RawArrayNewError,	"Failed to create a new MRawArray." },
-			{ LLErrorName::RawArrayCloneError,	"Failed to clone MRawArray." },
-			{ LLErrorName::RawArrayTypeError,	"An error was caused by an MRawArray type mismatch." },
-			{ LLErrorName::RawArraySizeError,	"An error was caused by an incorrect RawArray size." },
-			{ LLErrorName::RawArrayIndexError,	"An error was caused by attempting to access a nonexistent RawArray element." },
+			// NumericArray errors:
+			{ LLErrorName::NumericArrayInitError,	"Failed to construct NumericArray." },
+			{ LLErrorName::NumericArrayNewError,	"Failed to create a new MNumericArray." },
+			{ LLErrorName::NumericArrayCloneError,	"Failed to clone MNumericArray." },
+			{ LLErrorName::NumericArrayTypeError,	"An error was caused by an MNumericArray type mismatch." },
+			{ LLErrorName::NumericArraySizeError,	"An error was caused by an incorrect NumericArray size." },
+			{ LLErrorName::NumericArrayIndexError,	"An error was caused by attempting to access a nonexistent NumericArray element." },
 
 			// MTensor errors:
 			{ LLErrorName::TensorInitError,		"Failed to construct Tensor." },
@@ -205,7 +205,7 @@ namespace LibraryLinkUtils {
 
 		LLU_DEFINE_ERROR_NAME(MArgumentInitError);
 		LLU_DEFINE_ERROR_NAME(MArgumentIndexError);
-		LLU_DEFINE_ERROR_NAME(MArgumentRawArrayError);
+		LLU_DEFINE_ERROR_NAME(MArgumentNumericArrayError);
 		LLU_DEFINE_ERROR_NAME(MArgumentTensorError);
 		LLU_DEFINE_ERROR_NAME(MArgumentImageError);
 
@@ -213,12 +213,12 @@ namespace LibraryLinkUtils {
 		LLU_DEFINE_ERROR_NAME(ErrorManagerThrowNameError);
 		LLU_DEFINE_ERROR_NAME(ErrorManagerCreateNameError);
 
-		LLU_DEFINE_ERROR_NAME(RawArrayInitError);
-		LLU_DEFINE_ERROR_NAME(RawArrayNewError);
-		LLU_DEFINE_ERROR_NAME(RawArrayCloneError);
-		LLU_DEFINE_ERROR_NAME(RawArrayTypeError);
-		LLU_DEFINE_ERROR_NAME(RawArraySizeError);
-		LLU_DEFINE_ERROR_NAME(RawArrayIndexError);
+		LLU_DEFINE_ERROR_NAME(NumericArrayInitError);
+		LLU_DEFINE_ERROR_NAME(NumericArrayNewError);
+		LLU_DEFINE_ERROR_NAME(NumericArrayCloneError);
+		LLU_DEFINE_ERROR_NAME(NumericArrayTypeError);
+		LLU_DEFINE_ERROR_NAME(NumericArraySizeError);
+		LLU_DEFINE_ERROR_NAME(NumericArrayIndexError);
 
 		LLU_DEFINE_ERROR_NAME(TensorInitError);
 		LLU_DEFINE_ERROR_NAME(TensorNewError);

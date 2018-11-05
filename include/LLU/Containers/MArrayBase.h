@@ -218,7 +218,7 @@ namespace LibraryLinkUtils {
 
 	template<class Container, typename, typename>
 	MArrayBase::MArrayBase(Container&& dimensions) {
-		if (!libData || !raFuns || !imgFuns)
+		if (!libData || !naFuns || !imgFuns)
 			initError();
 		depth = checkContainerSize(std::forward<Container>(dimensions));
 		auto dimsOk = std::all_of(std::begin(dimensions), std::end(dimensions), [](typename std::remove_reference_t<Container>::value_type d) {

@@ -21,7 +21,7 @@
 		"DataList"
 		"Image"
 		"MathLink"
-		"RawArray"
+		"NumericArray"
 		"Scalar"
 		"String"
 		"Tensor"

@@ -18,7 +18,7 @@
 namespace LibraryLinkUtils {
 
 	MArrayBase::MArrayBase(std::initializer_list<mint> dimensions) {
-		if (!libData || !raFuns || !imgFuns)
+		if (!libData || !naFuns || !imgFuns)
 			initError();
 		depth = checkContainerSize(dimensions);
 		dims = dimensions;

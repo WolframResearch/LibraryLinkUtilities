@@ -23,7 +23,7 @@
 #include "LLU/Containers/DataList.h"
 #include "LLU/Containers/Image.h"
 #include "LLU/Containers/LibDataHolder.h"
-#include "LLU/Containers/RawArray.h"
+#include "LLU/Containers/NumericArray.h"
 #include "LLU/Containers/Tensor.h"
 #include "LLU/Containers/Passing/Automatic.hpp"
 #include "LLU/MArgument.h"
@@ -35,7 +35,7 @@ namespace LibraryLinkUtils {
 	 * @brief	Manages arguments exchanged between the paclet C++ code and LibraryLink interface.
 	 *
 	 * MArgumentManager provides a safe way to access MArguments received from LibraryLink and takes care of memory management both for in- and out- arguments.
-	 * Using MArgumentManager one can perform generic operations on RawArrays, Tensors and Images independent of their data type.
+	 * Using MArgumentManager one can perform generic operations on NumericArrays, Tensors and Images independent of their data type.
 	 *
 	 * @todo	Make sure all MArgument passing modes ("Constant", "Shared", etc.) are correctly handled
 	 **/
@@ -168,24 +168,24 @@ namespace LibraryLinkUtils {
 		void setString(std::string&& str);
 
 		/**
-		 *   @brief         Get MArgument of type MRawArray at position \c index
-		 *   @tparam		T - type of data stored in RawArray
+		 *   @brief         Get MArgument of type MNumericArray at position \c index
+		 *   @tparam		T - type of data stored in NumericArray
 		 *   @param[in]     index - position of desired MArgument in \c Args
-		 *   @returns       RawArray wrapper of MArgument at position \c index
+		 *   @returns       NumericArray wrapper of MArgument at position \c index
 		 *   @throws        LLErrorName::MArgumentIndexError - if \c index is out-of-bounds
-		 *   @see			RawArray<T>::RawArray(const MRawArray);
+		 *   @see			NumericArray<T>::NumericArray(const MNumericArray);
 		 **/
 		template<typename T>
-		RawArray<T> getRawArray(unsigned int index) const;
+		NumericArray<T> getNumericArray(unsigned int index) const;
 		
 		/**
-		 *   @brief         Get MArgument of type MRawArray at position \c index
-		 *   @warning       Use of this function is discouraged. Use getRawArray instead, if possible.
+		 *   @brief         Get MArgument of type MNumericArray at position \c index
+		 *   @warning       Use of this function is discouraged. Use getNumericArray instead, if possible.
 		 *   @param[in]     index - position of desired MArgument in \c Args
-		 *   @returns       MRawArray of MArgument at position \c index
+		 *   @returns       MNumericArray of MArgument at position \c index
 		 *   @throws        LLErrorName::MArgumentIndexError - if \c index is out-of-bounds
 		 **/
-		MRawArray getMRawArray(unsigned int index) const;
+		MNumericArray getMNumericArray(unsigned int index) const;
 
 		/**
 		 *   @brief         Get MArgument of type MTensor at position \c index.
@@ -197,50 +197,50 @@ namespace LibraryLinkUtils {
 		MTensor getMTensor(unsigned int index) const;
 
 		/**
-		 *   @brief         Set MRawArray wrapped by \c ra as output MArgument
-		 *   @tparam		T - RawArray data type
-		 *   @param[in]     ra - reference to RawArray which should pass its internal MRawArray to LibraryLink
+		 *   @brief         Set MNumericArray wrapped by \c ra as output MArgument
+		 *   @tparam		T - NumericArray data type
+		 *   @param[in]     ra - reference to NumericArray which should pass its internal MNumericArray to LibraryLink
 		 **/
 		template<typename T>
-		void setRawArray(RawArray<T>& ra);
+		void setNumericArray(NumericArray<T>& ra);
 
 		/**
-		 *   @brief         Set MRawArray as output MArgument
-		 *   @param[in]     ra - MRawArray to be passed to LibraryLink
+		 *   @brief         Set MNumericArray as output MArgument
+		 *   @param[in]     ra - MNumericArray to be passed to LibraryLink
 		 **/
-		void setMRawArray(MRawArray ra);
+		void setMNumericArray(MNumericArray ra);
 
 		/**
-		 *   @brief         Get type of MRawArray at position \c index in \c Args
+		 *   @brief         Get type of MNumericArray at position \c index in \c Args
 		 *   @param[in]     index - position of desired MArgument in \c Args
-		 *   @returns       MRawArray type
+		 *   @returns       MNumericArray type
 		 *   @throws        LLErrorName::MArgumentIndexError - if \c index is out-of-bounds
 		 **/
-		rawarray_t getRawArrayType(unsigned int index) const;
+		numericarray_data_t getNumericArrayType(unsigned int index) const;
 
 		/**
-		 *   @brief         Perform operation on RawArray argument at position \c index in \c Args
+		 *   @brief         Perform operation on NumericArray argument at position \c index in \c Args
 		 *   @tparam		Operator - any callable class
 		 *   @tparam		OpArgs... - types of arguments of \c operator() in class \c Operator
-		 *   @param[in]     index - position of MRawArray in \c Args
+		 *   @param[in]     index - position of MNumericArray in \c Args
 		 *   @param[in]     args - arguments of Operator::operator()
 		 *   @throws        LLErrorName::MArgumentIndexError - if \c index is out-of-bounds
-		 *   @throws        LLErrorName::MArgumentRawArrayError - if MRawArray argument has incorrect type
-		 *   @warning		Operator::operator() has to be a template that takes a const RawArray<T>& as first argument
+		 *   @throws        LLErrorName::MArgumentNumericArrayError - if MNumericArray argument has incorrect type
+		 *   @warning		Operator::operator() has to be a template that takes a const NumericArray<T>& as first argument
 		 **/
 		template<class Operator, class ... OpArgs>
-		void operateOnRawArray(unsigned int index, OpArgs&&... args);
+		void operateOnNumericArray(unsigned int index, OpArgs&&... args);
 
 		/**
-		 *   @brief         Perform operation on RawArray argument at position \c index in \c Args
+		 *   @brief         Perform operation on NumericArray argument at position \c index in \c Args
 		 *   @tparam		Operator - any callable class
-		 *   @param[in]     index - position of MRawArray in \c Args
-		 *   @param[in]     op - callable object (possibly lambda) that takes only one argument - a RawArray
+		 *   @param[in]     index - position of MNumericArray in \c Args
+		 *   @param[in]     op - callable object (possibly lambda) that takes only one argument - a NumericArray
 		 *   @throws        LLErrorName::MArgumentIndexError - if \c index is out-of-bounds
-		 *   @throws        LLErrorName::MArgumentRawArrayError - if MRawArray argument has incorrect type
+		 *   @throws        LLErrorName::MArgumentNumericArrayError - if MNumericArray argument has incorrect type
 		 **/
 		template<class Operator>
-		void operateOnRawArray(unsigned int index, Operator&& op);
+		void operateOnNumericArray(unsigned int index, Operator&& op);
 
 		/**
 		 *   @brief         Get MArgument of type MTensor at position \c index
@@ -445,101 +445,101 @@ namespace LibraryLinkUtils {
 	}
 
 	template<typename T>
-	RawArray<T> MArgumentManager::getRawArray(unsigned int index) const {
-		return RawArray<T>(MArgument_getMRawArray(getArgs(index)));
+	NumericArray<T> MArgumentManager::getNumericArray(unsigned int index) const {
+		return NumericArray<T>(MArgument_getMNumericArray(getArgs(index)));
 	}
 
 	template<typename T>
-	void MArgumentManager::setRawArray(RawArray<T>& ra) {
+	void MArgumentManager::setNumericArray(NumericArray<T>& ra) {
 		ra.passAsResult(res);
 	}
 
 	template<class Operator, class ... Args>
-	void MArgumentManager::operateOnRawArray(unsigned int index,  Args&&... args) {
+	void MArgumentManager::operateOnNumericArray(unsigned int index,  Args&&... args) {
 		Operator op;
-		switch (getRawArrayType(index)) {
-			case MRawArray_Type_Bit8:
-				op(this->getRawArray<int8_t>(index), std::forward<Args>(args)...);
+		switch (getNumericArrayType(index)) {
+			case MNumericArray_Type_Bit8:
+				op(this->getNumericArray<int8_t>(index), std::forward<Args>(args)...);
 				break;
-			case MRawArray_Type_Ubit8:
-				op(this->getRawArray<uint8_t>(index), std::forward<Args>(args)...);
+			case MNumericArray_Type_UBit8:
+				op(this->getNumericArray<uint8_t>(index), std::forward<Args>(args)...);
 				break;
-			case MRawArray_Type_Bit16:
-				op(this->getRawArray<int16_t>(index), std::forward<Args>(args)...);
+			case MNumericArray_Type_Bit16:
+				op(this->getNumericArray<int16_t>(index), std::forward<Args>(args)...);
 				break;
-			case MRawArray_Type_Ubit16:
-				op(this->getRawArray<uint16_t>(index), std::forward<Args>(args)...);
+			case MNumericArray_Type_UBit16:
+				op(this->getNumericArray<uint16_t>(index), std::forward<Args>(args)...);
 				break;
-			case MRawArray_Type_Bit32:
-				op(this->getRawArray<int32_t>(index), std::forward<Args>(args)...);
+			case MNumericArray_Type_Bit32:
+				op(this->getNumericArray<int32_t>(index), std::forward<Args>(args)...);
 				break;
-			case MRawArray_Type_Ubit32:
-				op(this->getRawArray<uint32_t>(index), std::forward<Args>(args)...);
+			case MNumericArray_Type_UBit32:
+				op(this->getNumericArray<uint32_t>(index), std::forward<Args>(args)...);
 				break;
-			case MRawArray_Type_Bit64:
-				op(this->getRawArray<int64_t>(index), std::forward<Args>(args)...);
+			case MNumericArray_Type_Bit64:
+				op(this->getNumericArray<int64_t>(index), std::forward<Args>(args)...);
 				break;
-			case MRawArray_Type_Ubit64:
-				op(this->getRawArray<uint64_t>(index), std::forward<Args>(args)...);
+			case MNumericArray_Type_UBit64:
+				op(this->getNumericArray<uint64_t>(index), std::forward<Args>(args)...);
 				break;
-			case MRawArray_Type_Real32:
-				op(this->getRawArray<float>(index), std::forward<Args>(args)...);
+			case MNumericArray_Type_Real32:
+				op(this->getNumericArray<float>(index), std::forward<Args>(args)...);
 				break;
-			case MRawArray_Type_Real64:
-				op(this->getRawArray<double>(index), std::forward<Args>(args)...);
+			case MNumericArray_Type_Real64:
+				op(this->getNumericArray<double>(index), std::forward<Args>(args)...);
 				break;
-			case MRawArray_Type_Float_Complex:
-				op(this->getRawArray<std::complex<float>>(index), std::forward<Args>(args)...);
+			case MNumericArray_Type_Complex_Real32:
+				op(this->getNumericArray<std::complex<float>>(index), std::forward<Args>(args)...);
 				break;
-			case MRawArray_Type_Double_Complex:
-				op(this->getRawArray<std::complex<double>>(index), std::forward<Args>(args)...);
+			case MNumericArray_Type_Complex_Real64:
+				op(this->getNumericArray<std::complex<double>>(index), std::forward<Args>(args)...);
 				break;
 			default:
-				ErrorManager::throwException(LLErrorName::MArgumentRawArrayError, "Incorrect type of RawArray argument. Argument index: " + std::to_string(index));
+				ErrorManager::throwException(LLErrorName::MArgumentNumericArrayError, "Incorrect type of NumericArray argument. Argument index: " + std::to_string(index));
 		}
 	}
 
 	template<class Operator>
-	void MArgumentManager::operateOnRawArray(unsigned int index, Operator&& op) {
-		switch (getRawArrayType(index)) {
-			case MRawArray_Type_Bit8:
-				op(this->getRawArray<int8_t>(index));
+	void MArgumentManager::operateOnNumericArray(unsigned int index, Operator&& op) {
+		switch (getNumericArrayType(index)) {
+			case MNumericArray_Type_Bit8:
+				op(this->getNumericArray<int8_t>(index));
 				break;
-			case MRawArray_Type_Ubit8:
-				op(this->getRawArray<uint8_t>(index));
+			case MNumericArray_Type_UBit8:
+				op(this->getNumericArray<uint8_t>(index));
 				break;
-			case MRawArray_Type_Bit16:
-				op(this->getRawArray<int16_t>(index));
+			case MNumericArray_Type_Bit16:
+				op(this->getNumericArray<int16_t>(index));
 				break;
-			case MRawArray_Type_Ubit16:
-				op(this->getRawArray<uint16_t>(index));
+			case MNumericArray_Type_UBit16:
+				op(this->getNumericArray<uint16_t>(index));
 				break;
-			case MRawArray_Type_Bit32:
-				op(this->getRawArray<int32_t>(index));
+			case MNumericArray_Type_Bit32:
+				op(this->getNumericArray<int32_t>(index));
 				break;
-			case MRawArray_Type_Ubit32:
-				op(this->getRawArray<uint32_t>(index));
+			case MNumericArray_Type_UBit32:
+				op(this->getNumericArray<uint32_t>(index));
 				break;
-			case MRawArray_Type_Bit64:
-				op(this->getRawArray<int64_t>(index));
+			case MNumericArray_Type_Bit64:
+				op(this->getNumericArray<int64_t>(index));
 				break;
-			case MRawArray_Type_Ubit64:
-				op(this->getRawArray<uint64_t>(index));
+			case MNumericArray_Type_UBit64:
+				op(this->getNumericArray<uint64_t>(index));
 				break;
-			case MRawArray_Type_Real32:
-				op(this->getRawArray<float>(index));
+			case MNumericArray_Type_Real32:
+				op(this->getNumericArray<float>(index));
 				break;
-			case MRawArray_Type_Real64:
-				op(this->getRawArray<double>(index));
+			case MNumericArray_Type_Real64:
+				op(this->getNumericArray<double>(index));
 				break;
-			case MRawArray_Type_Float_Complex:
-				op(this->getRawArray<std::complex<float>>(index));
+			case MNumericArray_Type_Complex_Real32:
+				op(this->getNumericArray<std::complex<float>>(index));
 				break;
-			case MRawArray_Type_Double_Complex:
-				op(this->getRawArray<std::complex<double>>(index));
+			case MNumericArray_Type_Complex_Real64:
+				op(this->getNumericArray<std::complex<double>>(index));
 				break;
 			default:
-				ErrorManager::throwException(LLErrorName::MArgumentRawArrayError, "Incorrect type of RawArray argument. Argument index: " + std::to_string(index));
+				ErrorManager::throwException(LLErrorName::MArgumentNumericArrayError, "Incorrect type of NumericArray argument. Argument index: " + std::to_string(index));
 		}
 	}
 

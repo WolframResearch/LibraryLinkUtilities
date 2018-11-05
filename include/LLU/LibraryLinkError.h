@@ -59,7 +59,7 @@ namespace LibraryLinkUtils {
 		// MArgument errors:
 		extern const std::string MArgumentInitError; 		///< MArgumentManager construction failed
 		extern const std::string MArgumentIndexError; 		///< wrong argument index
-		extern const std::string MArgumentRawArrayError; 	///< error involving RawArray argument
+		extern const std::string MArgumentNumericArrayError; 	///< error involving NumericArray argument
 		extern const std::string MArgumentTensorError; 		///< error involving Tensor argument
 		extern const std::string MArgumentImageError; 		///< error involving Image argument
 
@@ -68,13 +68,13 @@ namespace LibraryLinkUtils {
 		extern const std::string ErrorManagerThrowNameError; 	///< trying to throw exception with non-existent name
 		extern const std::string ErrorManagerCreateNameError; 	///< trying to register exception with already existing name
 
-		// RawArray errors:
-		extern const std::string RawArrayInitError; 	///< construction of RawArray failed
-		extern const std::string RawArrayNewError; 		///< creating new MRawArray failed
-		extern const std::string RawArrayCloneError; 	///< MRawArray cloning failed
-		extern const std::string RawArrayTypeError; 	///< MRawArray type mismatch
-		extern const std::string RawArraySizeError; 	///< wrong assumption about RawArray size
-		extern const std::string RawArrayIndexError; 	///< trying to access non-existing element
+		// NumericArray errors:
+		extern const std::string NumericArrayInitError; 	///< construction of NumericArray failed
+		extern const std::string NumericArrayNewError; 		///< creating new MNumericArray failed
+		extern const std::string NumericArrayCloneError; 	///< MNumericArray cloning failed
+		extern const std::string NumericArrayTypeError; 	///< MNumericArray type mismatch
+		extern const std::string NumericArraySizeError; 	///< wrong assumption about NumericArray size
+		extern const std::string NumericArrayIndexError; 	///< trying to access non-existing element
 
 		// MTensor errors:
 		extern const std::string TensorInitError; 		///< Tensor construction failed

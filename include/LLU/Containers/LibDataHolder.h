@@ -13,7 +13,7 @@
 
 #include "WolframLibrary.h"
 #include "WolframImageLibrary.h"
-#include "WolframRawArrayLibrary.h"
+#include "WolframNumericArrayLibrary.h"
 #include "WolframIOLibraryFunctions.h"
 
 namespace LibraryLinkUtils {
@@ -38,7 +38,7 @@ namespace LibraryLinkUtils {
 
 	protected:
 		static std::unique_ptr<st_WolframLibraryData> libData;
-		static WolframRawArrayLibrary_Functions raFuns;
+		static WolframNumericArrayLibrary_Functions naFuns;
 		static WolframImageLibrary_Functions imgFuns;
 		static WolframIOLibrary_Functions ioFuns;
 	};

@@ -4,26 +4,26 @@ TestExecute[
 	currentDirectory = DirectoryName[$CurrentFile];
 	Get[FileNameJoin[{ParentDirectory[currentDirectory], "TestConfig.wl"}]];
 	sourceDirectory = FileNameJoin[{currentDirectory, "TestSources"}];
-	Get[FileNameJoin[{sourceDirectory, "RawArrayOperations.wl"}]];
+	Get[FileNameJoin[{sourceDirectory, "NumericArrayOperations.wl"}]];
 ]
 
 (****************************NumericArray Operations****************************************)
 Test[
-	ra = RawArray["UnsignedInteger8", {1, 2, 3, 4}];
-	echoRawArray[ra]
+	ra = NumericArray["UnsignedInteger8", {1, 2, 3, 4}];
+	echoNumericArray[ra]
 	,
-	RawArray["UnsignedInteger8", {1, 2, 3, 4}]
+	NumericArray["UnsignedInteger8", {1, 2, 3, 4}]
 	,
-	TestID->"RawArrayOperations-20150825-M7G1B2"
+	TestID->"NumericArrayOperations-20150825-M7G1B2"
 ]
 
 Test[
-	raw = RawArray["Real64", N @ Range[0, 47]/47];
-	res = Developer`RawArrayQ @ echoRawArray[raw]
+	raw = NumericArray["Real64", N @ Range[0, 47]/47];
+	res = Developer`NumericArrayQ @ echoNumericArray[raw]
 	,
 	True
 	,
-	TestID->"RawArrayOperations-20150825-P4U4W5"
+	TestID->"NumericArrayOperations-20150825-P4U4W5"
 ]
 
 ExactTest[
@@ -31,7 +31,7 @@ ExactTest[
 	,
 	4
 	,
-	TestID->"RawArrayOperations-20150827-V6M5C7"
+	TestID->"NumericArrayOperations-20150827-V6M5C7"
 ]
 
 ExactTest[
@@ -39,15 +39,15 @@ ExactTest[
 	,
 	1
 	,
-	TestID->"RawArrayOperations-20150827-A7Q6J1"
+	TestID->"NumericArrayOperations-20150827-A7Q6J1"
 ]
 
 Test[
-	Developer`RawArrayQ @ newRA[]
+	Developer`NumericArrayQ @ newRA[]
 	,
 	True
 	,
-	TestID->"RawArrayOperations-20150827-B3Y1C2"
+	TestID->"NumericArrayOperations-20150827-B3Y1C2"
 ]
 
 Test[
@@ -56,7 +56,7 @@ Test[
 	,
 	True
 	,
-	TestID->"RawArrayOperations-20150827-I0C3X0"
+	TestID->"NumericArrayOperations-20150827-I0C3X0"
 ]
 
 Test[(*check NumericArray shared APi's*)
@@ -66,7 +66,23 @@ Test[(*check NumericArray shared APi's*)
 	,
 	True
 	,
-	TestID->"RawArrayOperations-20150827-O5S8C2"
+	TestID->"NumericArrayOperations-20150827-O5S8C2"
+]
+
+Test[
+	accumulateIntegers[NumericArray[Range[10]]]
+	,
+	Total @ Range[10];
+	,
+	TestID->"NumericArrayTestSuite-20181030-U5E5U6"
+]
+
+Test[
+	accumulateIntegers[NumericArray[3.5]]
+	,
+	LibraryFunctionError["LIBRARY_FUNCTION_ERROR", 6]
+	,
+	TestID->"NumericArrayTestSuite-20181030-P4G8W4"
 ]
 
 EndRequirement[]

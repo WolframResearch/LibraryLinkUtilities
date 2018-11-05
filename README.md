@@ -23,7 +23,7 @@ Containers like MImage and MTensor are wrapped in templated classes. Managing MA
 | LibraryLink element 	|    LLU wrapper   	|
 |:-------------------:	|:----------------:	|
 | MTensor             	| Tensor<T>        	|
-| MRawArray           	| RawArray<T>      	|
+| MNumericArray         | NumericArray<T>   |
 | MImage              	| Image<T>         	|
 | MArgument           	| MArgumentManager 	|
 | LinkObject			| MLStream			|
@@ -41,7 +41,7 @@ Most significant features missing in _LibraryLink_ are:
 
 * Automatic resource management
 * Exception handling
-* Iterators for MTensor and MRawArray
+* Iterators for MTensor and MNumericArray
 * Class-like interface for LibraryLink data structures, for example `rank()` as member function of Tensor class instead of separate function 
 `mint (*MTensor_getRank)(MTensor)`, or a copy constructor instead of `int (*MTensor_clone)(MTensor, MTensor*)`
 * Type safety
@@ -68,7 +68,7 @@ C - style implementation:
 	
 	EXTERN_C DLLEXPORT int repeatCharacters(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
 		char* string = NULL;
-		MRawArray counts;
+		MNumericArray counts;
 		uint8_t* countsData = NULL;
 		size_t outStringIndex = 0;
 		size_t len, j;
@@ -76,29 +76,29 @@ C - style implementation:
 		mint c;
 		
 		string = MArgument_getUTF8String(Args[0]);
-		counts = MArgument_getMRawArray(Args[1]);
+		counts = MArgument_getMNumericArray(Args[1]);
 	
-		// check RawArray type
-		if (libData->rawarrayLibraryFunctions->MRawArray_getType(counts) != MRawArray_Type_Ubit8) {
+		// check NumericArray type
+		if (libData->numericarrayLibraryFunctions->MNumericArray_getType(counts) != MNumericArray_Type_UBit8) {
 			libData->UTF8String_disown(string);
 			return LIBRARY_TYPE_ERROR;
 		}
 	
-		// check RawArray rank
-		if (libData->rawarrayLibraryFunctions->MRawArray_getRank(counts) != 1) {
+		// check NumericArray rank
+		if (libData->numericarrayLibraryFunctions->MNumericArray_getRank(counts) != 1) {
 			libData->UTF8String_disown(string);
 			return LIBRARY_RANK_ERROR;
 		}
 	
-		// check if RawArray length is equal to input string length
+		// check if NumericArray length is equal to input string length
 		len = strlen(string);
-		if (libData->rawarrayLibraryFunctions->MRawArray_getFlattenedLength(counts) != len) {
+		if (libData->numericarrayLibraryFunctions->MNumericArray_getFlattenedLength(counts) != len) {
 			libData->UTF8String_disown(string);
 			return LIBRARY_DIMENSION_ERROR;
 		}
 	
-		// before we allocate memory for the output string, we have to sum all RawArray elements to see how many bytes are needed
-		countsData = (uint8_t*) libData->rawarrayLibraryFunctions->MRawArray_getData(counts);
+		// before we allocate memory for the output string, we have to sum all NumericArray elements to see how many bytes are needed
+		countsData = (uint8_t*) libData->numericarrayLibraryFunctions->MNumericArray_getData(counts);
 		for (j = 0; j < len; j++) {
 			sum += countsData[j];
 		}
@@ -142,21 +142,21 @@ and C++ version with _LibraryLink Utilities_:
 			// Create manager object
 			MArgumentManager mngr(libData, Argc, Args, Res);
 	
-			// Read string and RawArray arguments
+			// Read string and NumericArray arguments
 			auto& string = mngr.getString(0);
-			auto counts = mngr.getRawArray<std::uint8_t>(1);
+			auto counts = mngr.getNumericArray<std::uint8_t>(1);
 	
-			// check RawArray rank
+			// check NumericArray rank
 			if (counts.rank() != 1) {
 				ErrorManager::throwException(LLErrorName::RankError);
 			}
 	
-			// check if RawArray length is equal to input string length
+			// check if NumericArray length is equal to input string length
 			if (counts.size() != string.size()) {
 				ErrorManager::throwException(LLErrorName::DimensionsError);
 			}
 	
-			// before we allocate memory for the output string, we have to sum all RawArray elements to see how many bytes are needed
+			// before we allocate memory for the output string, we have to sum all NumericArray elements to see how many bytes are needed
 			auto sum = std::accumulate(counts.begin(), counts.end(), static_cast<size_t>(0));
 	
 			// allocate memory for output string
@@ -381,12 +381,11 @@ There are some LibraryLink features currently not covered by _LLU_, most notably
 
 - Sparse Arrays
 - Tensor subsetting: `MTensor_getTensor`
-- Raw Array type conversion: `MRawArray_convertType`
 - Managed Library Expressions
 - Callbacks
 - Wolfram IO Library (asynchronous tasks and Data Store)
 
-For now LibraryLink does not allow to write generic code that would clean up memory after Tensors, RawArrays, etc. independently of passing mode used ("Automatic", "Shared", ...). 
+For now LibraryLink does not allow to write generic code that would clean up memory after Tensors, NumericArrays, etc. independently of passing mode used ("Automatic", "Shared", ...).
 See [this suggestion](http://bugs.wolfram.com/show?number=337331) for more details. In consequence, _LLU_ guarantees to correctly handle only those data structures 
 that were created with _LLU_. Structures received as MArguments will not be automatically freed, therefore you may want to use passing modes that do not require clean-up 
 (like "Constant" or Automatic). In case of "Shared" passing, the only guarantee is that `disown()` will be called on destruction of each object that has positive `shareCount()`. 
@@ -462,7 +461,7 @@ After successful configuration you are just one `make && make install` away from
 When you have the library installed you may want to run unit test to confirm that everything went well. Currently there are 6 test modules defined:
 - Image
 - MathLink
-- RawArray
+- NumericArray
 - Scalar
 - String
 - Tensor

@@ -1,14 +1,16 @@
 #include "WolframLibrary.h"
-#include "WolframRawArrayLibrary.h"
+#include "WolframNumericArrayLibrary.h"
 
 #include <iostream>
+#include <numeric>
+#include <type_traits>
 
 #include "LLU/MArgumentManager.h"
 #include "LLU/LibraryLinkFunctionMacro.h"
 
 using namespace LibraryLinkUtils;
 
-static MRawArray shared_raw = 0;
+static MNumericArray shared_raw = 0;
 
 EXTERN_C DLLEXPORT mint WolframLibrary_getVersion() {
 	return WolframLibraryVersion;
@@ -19,13 +21,13 @@ EXTERN_C DLLEXPORT int WolframLibrary_initialize(WolframLibraryData libData) {
 	return 0;
 }
 
-LIBRARY_LINK_FUNCTION(echoRawArray) {
+LIBRARY_LINK_FUNCTION(echoNumericArray) {
 	auto err = LLErrorCode::NoError;
 	try {
 		MArgumentManager mngr(Argc, Args, Res);
-		mngr.operateOnRawArray(0, [&mngr](auto&& rarray1) {
+		mngr.operateOnNumericArray(0, [&mngr](auto&& rarray1) {
 			auto rarray2(std::move(rarray1));
-			mngr.setRawArray(rarray2);
+			mngr.setNumericArray(rarray2);
 		});
 	}
 	catch (const LibraryLinkError& e) {
@@ -41,11 +43,11 @@ LIBRARY_LINK_FUNCTION(echoRawArray) {
 /*
  * Raw array library functions
  */
-LIBRARY_LINK_FUNCTION(getRawArrayLength) {
+LIBRARY_LINK_FUNCTION(getNumericArrayLength) {
 	auto err = LLErrorCode::NoError;
 	try {
 		MArgumentManager mngr(Argc, Args, Res);
-		mngr.operateOnRawArray(0, [&mngr](auto&& rarray) {
+		mngr.operateOnNumericArray(0, [&mngr](auto&& rarray) {
 			mngr.setInteger(rarray.size());
 		});
 	}
@@ -58,11 +60,11 @@ LIBRARY_LINK_FUNCTION(getRawArrayLength) {
 	return err;
 }
 
-LIBRARY_LINK_FUNCTION(getRawArrayRank) {
+LIBRARY_LINK_FUNCTION(getNumericArrayRank) {
 	auto err = LLErrorCode::NoError;
 	try {
 		MArgumentManager mngr(Argc, Args, Res);
-		mngr.operateOnRawArray(0, [&mngr](auto&& rarray) {
+		mngr.operateOnNumericArray(0, [&mngr](auto&& rarray) {
 			mngr.setInteger(rarray.rank());
 		});
 	}
@@ -76,12 +78,12 @@ LIBRARY_LINK_FUNCTION(getRawArrayRank) {
 }
 
 //create new raw array
-LIBRARY_LINK_FUNCTION(newRawArray) {
+LIBRARY_LINK_FUNCTION(newNumericArray) {
 	auto err = LLErrorCode::NoError;
 	try {
 		MArgumentManager mngr(Argc, Args, Res);
-		RawArray<float> ra(0., { 3, 3 });
-		mngr.setRawArray(ra);
+		NumericArray<float> ra(0., { 3, 3 });
+		mngr.setNumericArray(ra);
 	}
 	catch (const LibraryLinkError& e) {
 		err = e.which();
@@ -93,13 +95,13 @@ LIBRARY_LINK_FUNCTION(newRawArray) {
 }
 
 //clone NumericArray
-LIBRARY_LINK_FUNCTION(cloneRawArray) {
+LIBRARY_LINK_FUNCTION(cloneNumericArray) {
 	auto err = LLErrorCode::NoError;
 	try {
 		MArgumentManager mngr(Argc, Args, Res);
-		mngr.operateOnRawArray(0, [&mngr](auto&& rarray1) {
+		mngr.operateOnNumericArray(0, [&mngr](auto&& rarray1) {
 			auto rarray2 = rarray1;
-			mngr.setRawArray(rarray2);
+			mngr.setNumericArray(rarray2);
 		});
 	}
 	catch (const LibraryLinkError& e) {
@@ -111,25 +113,25 @@ LIBRARY_LINK_FUNCTION(cloneRawArray) {
 	return err;
 }
 
-LIBRARY_LINK_FUNCTION(changeSharedRawArray) {
-	WolframRawArrayLibrary_Functions rawArrayFunctions = libData->rawarrayLibraryFunctions;
+LIBRARY_LINK_FUNCTION(changeSharedNumericArray) {
+	WolframNumericArrayLibrary_Functions rawArrayFunctions = libData->numericarrayLibraryFunctions;
 	int err = LIBRARY_NO_ERROR;
 
 	if (shared_raw) {
-		rawArrayFunctions->MRawArray_disown(shared_raw);
+		rawArrayFunctions->MNumericArray_disown(shared_raw);
 		shared_raw = 0;
 	}
 
-	shared_raw = MArgument_getMRawArray(Args[0]);
+	shared_raw = MArgument_getMNumericArray(Args[0]);
 
 	return err;
 }
 
-EXTERN_C DLLEXPORT int getSharedRawArray(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
+EXTERN_C DLLEXPORT int getSharedNumericArray(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
 	int err = LIBRARY_NO_ERROR;
 
 	if (shared_raw) {
-		MArgument_setMRawArray(Res, shared_raw);
+		MArgument_setMNumericArray(Res, shared_raw);
 	}
 	else
 		err = LIBRARY_FUNCTION_ERROR;
@@ -139,22 +141,51 @@ EXTERN_C DLLEXPORT int getSharedRawArray(WolframLibraryData libData, mint Argc, 
 
 struct ZeroReal64 {
 	template<typename T>
-	void operator()(RawArray<T>, MArgumentManager&) {
+	void operator()(NumericArray<T>, MArgumentManager&) {
 		ErrorManager::throwException(LLErrorName::FunctionError);
 	}
 
-	void operator()(RawArray<double>& ra, MArgumentManager& mngr) {
+	void operator()(NumericArray<double>& ra, MArgumentManager& mngr) {
 		std::fill(ra.begin(), ra.end(), 0.0);
-		mngr.setRawArray(ra);
+		mngr.setNumericArray(ra);
 	}
 };
 
-//reset rawArray
+//reset NumericArray
 EXTERN_C DLLEXPORT int rawZeroData(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
 	auto err = LLErrorCode::NoError;
 	try {
 		MArgumentManager mngr(Argc, Args, Res);
-		mngr.operateOnRawArray<ZeroReal64>(0, mngr);
+		mngr.operateOnNumericArray<ZeroReal64>(0, mngr);
+	}
+	catch (const LibraryLinkError& e) {
+		err = e.which();
+	}
+	catch (...) {
+		err = LLErrorCode::FunctionError;
+	}
+	return err;
+}
+
+struct AccumulateIntegers {
+	template<typename T>
+	std::enable_if_t<!std::is_integral<T>::value> operator()(NumericArray<T>, MArgumentManager&) {
+		ErrorManager::throwException(LLErrorName::FunctionError);
+	}
+
+	template<typename T>
+	std::enable_if_t<std::is_integral<T>::value> operator()(NumericArray<T> ra, MArgumentManager& mngr) {
+		auto result = std::accumulate(ra.begin(), ra.end(), 0L);
+		mngr.setInteger(result);
+	}
+};
+
+//sum elements of a NumericArray but only if it is of integer type
+EXTERN_C DLLEXPORT int accumulateIntegers(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
+	auto err = LLErrorCode::NoError;
+	try {
+		MArgumentManager mngr(Argc, Args, Res);
+		mngr.operateOnNumericArray<AccumulateIntegers>(0, mngr);
 	}
 	catch (const LibraryLinkError& e) {
 		err = e.which();

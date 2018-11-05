@@ -14,7 +14,7 @@
 #include <type_traits>
 
 #include "WolframLibrary.h"
-#include "WolframRawArrayLibrary.h"
+#include "WolframNumericArrayLibrary.h"
 
 
 namespace LibraryLinkUtils {
@@ -51,7 +51,7 @@ namespace LibraryLinkUtils {
 
 
 	/**
-	 * @brief 	Utility type that checks if given container type has elements that are integers (and therefore can be used as Tensor or RawArray dimensions)
+	 * @brief 	Utility type that checks if given container type has elements that are integers (and therefore can be used as Tensor or NumericArray dimensions)
 	 * @tparam	Container - container type
 	 */
 	template<typename Container>
@@ -65,95 +65,95 @@ namespace LibraryLinkUtils {
 	void Unused(Ts&&...) {}
 
 
-	/// Utility structure that matches an MRawArray data type with corresponding C++ type
-	template<rawarray_t>
-	struct RawArrayFromEnum;
+	/// Utility structure that matches an MNumericArray data type with corresponding C++ type
+	template<numericarray_data_t>
+	struct NumericArrayFromEnum;
 
-	template<> struct RawArrayFromEnum<MRawArray_Type_Bit8> {
+	template<> struct NumericArrayFromEnum<MNumericArray_Type_Bit8> {
 		using type = std::int8_t;
 	};
-	template<> struct RawArrayFromEnum<MRawArray_Type_Ubit8> {
+	template<> struct NumericArrayFromEnum<MNumericArray_Type_UBit8> {
 		using type = std::uint8_t;
 	};
-	template<> struct RawArrayFromEnum<MRawArray_Type_Bit16> {
+	template<> struct NumericArrayFromEnum<MNumericArray_Type_Bit16> {
 		using type = std::int16_t;
 	};
-	template<> struct RawArrayFromEnum<MRawArray_Type_Ubit16> {
+	template<> struct NumericArrayFromEnum<MNumericArray_Type_UBit16> {
 		using type = std::uint16_t;
 	};
-	template<> struct RawArrayFromEnum<MRawArray_Type_Bit32> {
+	template<> struct NumericArrayFromEnum<MNumericArray_Type_Bit32> {
 		using type = std::int32_t;
 	};
-	template<> struct RawArrayFromEnum<MRawArray_Type_Ubit32> {
+	template<> struct NumericArrayFromEnum<MNumericArray_Type_UBit32> {
 		using type = std::uint32_t;
 	};
-	template<> struct RawArrayFromEnum<MRawArray_Type_Bit64> {
+	template<> struct NumericArrayFromEnum<MNumericArray_Type_Bit64> {
 		using type = std::int64_t;
 	};
-	template<> struct RawArrayFromEnum<MRawArray_Type_Ubit64> {
+	template<> struct NumericArrayFromEnum<MNumericArray_Type_UBit64> {
 		using type = std::uint64_t;
 	};
-	template<> struct RawArrayFromEnum<MRawArray_Type_Real32> {
+	template<> struct NumericArrayFromEnum<MNumericArray_Type_Real32> {
 		using type = float;
 	};
-	template<> struct RawArrayFromEnum<MRawArray_Type_Real64> {
+	template<> struct NumericArrayFromEnum<MNumericArray_Type_Real64> {
 		using type = double;
 	};
-	template<> struct RawArrayFromEnum<MRawArray_Type_Float_Complex> {
+	template<> struct NumericArrayFromEnum<MNumericArray_Type_Complex_Real32> {
 		using type = std::complex<float>;
 	};
-	template<> struct RawArrayFromEnum<MRawArray_Type_Double_Complex> {
+	template<> struct NumericArrayFromEnum<MNumericArray_Type_Complex_Real64> {
 		using type = std::complex<double>;
 	};
 
-	template<rawarray_t rat>
-	using RawArrayTypeFromEnum = typename RawArrayFromEnum<rat>::type;
+	template<numericarray_data_t rat>
+	using NumericArrayTypeFromEnum = typename NumericArrayFromEnum<rat>::type;
 
 	/**
-	 * @brief Calls an overload of \c f() with template type matching an MRawArray type \c rat
-	 * @param raType - MRawArray type
+	 * @brief Calls an overload of \c f() with template type matching an MNumericArray type \c rat
+	 * @param raType - MNumericArray type
 	 * @param f - any callable structure
 	 * @param args - additional arguments for f::operator()
 	 * @warning This function is a prototype, has not been tested yet and is likely to change in the future.
 	 */
 	template<typename Callable, typename ... Args>
-	void applyToRawArray(rawarray_t raType, Callable&& f, Args&&... args) {
+	void applyToNumericArray(numericarray_data_t raType, Callable&& f, Args&&... args) {
 		switch (raType) {
-			case MRawArray_Type_Bit8:
-				std::forward<Callable>(f).template operator()<RawArrayTypeFromEnum<MRawArray_Type_Bit8>>(std::forward<Args>(args)...);
+			case MNumericArray_Type_Bit8:
+				std::forward<Callable>(f).template operator()<NumericArrayTypeFromEnum<MNumericArray_Type_Bit8>>(std::forward<Args>(args)...);
 				break;
-			case MRawArray_Type_Ubit8:
-				std::forward<Callable>(f).template operator()<RawArrayTypeFromEnum<MRawArray_Type_Ubit8>>(std::forward<Args>(args)...);
+			case MNumericArray_Type_UBit8:
+				std::forward<Callable>(f).template operator()<NumericArrayTypeFromEnum<MNumericArray_Type_UBit8>>(std::forward<Args>(args)...);
 				break;
-			case MRawArray_Type_Bit16:
-				std::forward<Callable>(f).template operator()<RawArrayTypeFromEnum<MRawArray_Type_Bit16>>(std::forward<Args>(args)...);
+			case MNumericArray_Type_Bit16:
+				std::forward<Callable>(f).template operator()<NumericArrayTypeFromEnum<MNumericArray_Type_Bit16>>(std::forward<Args>(args)...);
 				break;
-			case MRawArray_Type_Ubit16:
-				std::forward<Callable>(f).template operator()<RawArrayTypeFromEnum<MRawArray_Type_Ubit16>>(std::forward<Args>(args)...);
+			case MNumericArray_Type_UBit16:
+				std::forward<Callable>(f).template operator()<NumericArrayTypeFromEnum<MNumericArray_Type_UBit16>>(std::forward<Args>(args)...);
 				break;
-			case MRawArray_Type_Bit32:
-				std::forward<Callable>(f).template operator()<RawArrayTypeFromEnum<MRawArray_Type_Bit32>>(std::forward<Args>(args)...);
+			case MNumericArray_Type_Bit32:
+				std::forward<Callable>(f).template operator()<NumericArrayTypeFromEnum<MNumericArray_Type_Bit32>>(std::forward<Args>(args)...);
 				break;
-			case MRawArray_Type_Ubit32:
-				std::forward<Callable>(f).template operator()<RawArrayTypeFromEnum<MRawArray_Type_Ubit32>>(std::forward<Args>(args)...);
+			case MNumericArray_Type_UBit32:
+				std::forward<Callable>(f).template operator()<NumericArrayTypeFromEnum<MNumericArray_Type_UBit32>>(std::forward<Args>(args)...);
 				break;
-			case MRawArray_Type_Bit64:
-				std::forward<Callable>(f).template operator()<RawArrayTypeFromEnum<MRawArray_Type_Bit64>>(std::forward<Args>(args)...);
+			case MNumericArray_Type_Bit64:
+				std::forward<Callable>(f).template operator()<NumericArrayTypeFromEnum<MNumericArray_Type_Bit64>>(std::forward<Args>(args)...);
 				break;
-			case MRawArray_Type_Ubit64:
-				std::forward<Callable>(f).template operator()<RawArrayTypeFromEnum<MRawArray_Type_Ubit64>>(std::forward<Args>(args)...);
+			case MNumericArray_Type_UBit64:
+				std::forward<Callable>(f).template operator()<NumericArrayTypeFromEnum<MNumericArray_Type_UBit64>>(std::forward<Args>(args)...);
 				break;
-			case MRawArray_Type_Real32:
-				std::forward<Callable>(f).template operator()<RawArrayTypeFromEnum<MRawArray_Type_Real32>>(std::forward<Args>(args)...);
+			case MNumericArray_Type_Real32:
+				std::forward<Callable>(f).template operator()<NumericArrayTypeFromEnum<MNumericArray_Type_Real32>>(std::forward<Args>(args)...);
 				break;
-			case MRawArray_Type_Real64:
-				std::forward<Callable>(f).template operator()<RawArrayTypeFromEnum<MRawArray_Type_Real64>>(std::forward<Args>(args)...);
+			case MNumericArray_Type_Real64:
+				std::forward<Callable>(f).template operator()<NumericArrayTypeFromEnum<MNumericArray_Type_Real64>>(std::forward<Args>(args)...);
 				break;
-			case MRawArray_Type_Float_Complex:
-				std::forward<Callable>(f).template operator()<RawArrayTypeFromEnum<MRawArray_Type_Float_Complex>>(std::forward<Args>(args)...);
+			case MNumericArray_Type_Complex_Real32:
+				std::forward<Callable>(f).template operator()<NumericArrayTypeFromEnum<MNumericArray_Type_Complex_Real32>>(std::forward<Args>(args)...);
 				break;
-			case MRawArray_Type_Double_Complex:
-				std::forward<Callable>(f).template operator()<RawArrayTypeFromEnum<MRawArray_Type_Double_Complex>>(std::forward<Args>(args)...);
+			case MNumericArray_Type_Complex_Real64:
+				std::forward<Callable>(f).template operator()<NumericArrayTypeFromEnum<MNumericArray_Type_Complex_Real64>>(std::forward<Args>(args)...);
 				break;
 			default:
 				return;

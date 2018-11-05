@@ -11,7 +11,7 @@
 #include "LibraryLinkError.h"
 #include "MArgumentManager.h"
 
-#include "LLU/Containers/RawArray.h"
+#include "LLU/Containers/NumericArray.h"
 #include "LLU/Containers/Tensor.h"
 #include "LLU/Containers/Image.h"
 
@@ -33,7 +33,7 @@ namespace LLErrorName = LibraryLinkUtils::LLErrorName;
 namespace Passing = LibraryLinkUtils::Passing;
 
 template<typename T>
-using RawArray = LibraryLinkUtils::RawArray<T>;
+using NumericArray = LibraryLinkUtils::NumericArray<T>;
 
 template<typename T>
 using Tensor = LibraryLinkUtils::Tensor<T>;

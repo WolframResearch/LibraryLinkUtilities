@@ -1,10 +1,11 @@
-Needs["CCompilerDriver`"];
-Needs["LibraryLink`"]
-lib = CreateLibrary[{"RawArrayOperations.cpp"}, "RawArrayOperations", options];
-echoRawArray = LibraryFunctionLoad[lib,"echoRawArray",{"NumericArray"},"NumericArray"];
-getRALength = LibraryFunctionLoad[lib, "getRawArrayLength", {"NumericArray"}, Integer];
-getRARank = LibraryFunctionLoad[lib, "getRawArrayRank", {"NumericArray"}, Integer];
-newRA = LibraryFunctionLoad[lib, "newRawArray", {}, "NumericArray"];
-cloneRA = LibraryFunctionLoad[lib, "cloneRawArray", {"NumericArray"}, "NumericArray"];
-changeSharedRA  = LibraryFunctionLoad[lib, "changeSharedRawArray", {{"NumericArray","Shared"}}, "Void"];
-getSharedRA = LibraryFunctionLoad[lib, "getSharedRawArray", {}, "NumericArray"];
+Needs["CCompilerDriver`"]
+lib = CreateLibrary[{"NumericArrayOperations.cpp"}, "NumericArrayOperations", options];
+Print[lib];
+echoNumericArray = LibraryFunctionLoad[lib,"echoNumericArray",{"NumericArray"},"NumericArray"];
+getRALength = LibraryFunctionLoad[lib, "getNumericArrayLength", {"NumericArray"}, Integer];
+getRARank = LibraryFunctionLoad[lib, "getNumericArrayRank", {"NumericArray"}, Integer];
+newRA = LibraryFunctionLoad[lib, "newNumericArray", {}, "NumericArray"];
+cloneRA = LibraryFunctionLoad[lib, "cloneNumericArray", {"NumericArray"}, "NumericArray"];
+changeSharedRA  = LibraryFunctionLoad[lib, "changeSharedNumericArray", {{"NumericArray","Shared"}}, "Void"];
+getSharedRA = LibraryFunctionLoad[lib, "getSharedNumericArray", {}, "NumericArray"];
+accumulateIntegers = LibraryFunctionLoad[lib, "accumulateIntegers", {{"NumericArray", "Constant"}}, Integer];

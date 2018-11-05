@@ -295,7 +295,7 @@ LIBRARY_LINK_FUNCTION(FrameDims) {
 		MArgumentManager mngr { Argc, Args, Res };
 		auto dsIn = mngr.getDataList<MArgumentType::Image>(0);
 
-		RawArray<std::uint64_t> dims { 0, { static_cast<mint>(dsIn.size()), 2} };
+		NumericArray<std::uint64_t> dims { 0, { static_cast<mint>(dsIn.size()), 2} };
 		mint dimsIndex = 0;
 
 		using ValueIterator = LibraryLinkUtils::NodeValueIterator<MArgumentType::Image>;
@@ -304,7 +304,7 @@ LIBRARY_LINK_FUNCTION(FrameDims) {
 			dims[dimsIndex++] = static_cast<std::uint64_t>(im.dimension(0));
 			dims[dimsIndex++] = static_cast<std::uint64_t>(im.dimension(1));
 		}
-		mngr.setRawArray(dims);
+		mngr.setNumericArray(dims);
 	} catch (const LibraryLinkError& e) {
 		err = e.which();
 	} catch (...) {
@@ -345,9 +345,9 @@ LIBRARY_LINK_FUNCTION(IntsToNumericArray) {
 		auto dsIn = mngr.getDataList<MArgumentType::Integer>(0);
 
 		using ValueIterator = LibraryLinkUtils::NodeValueIterator<MArgumentType::Integer>;
-		RawArray<mint> ra { ValueIterator { dsIn.begin() }, ValueIterator { dsIn.end() } };
+		NumericArray<mint> ra { ValueIterator { dsIn.begin() }, ValueIterator { dsIn.end() } };
 
-		mngr.setRawArray(ra);
+		mngr.setNumericArray(ra);
 	} catch (const LibraryLinkError& e) {
 		err = e.which();
 	} catch (...) {

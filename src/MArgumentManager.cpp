@@ -98,12 +98,12 @@ namespace LibraryLinkUtils {
 		MArgument_setComplex(res, mc);
 	}
 
-	MRawArray MArgumentManager::getMRawArray(unsigned int index) const {
-		return MArgument_getMRawArray(getArgs(index));
+	MNumericArray MArgumentManager::getMNumericArray(unsigned int index) const {
+		return MArgument_getMNumericArray(getArgs(index));
 	}
 
-	void MArgumentManager::setMRawArray(MRawArray ra) {
-		MArgument_setMRawArray(res, ra);
+	void MArgumentManager::setMNumericArray(MNumericArray ra) {
+		MArgument_setMNumericArray(res, ra);
 	}	
 
 	MTensor MArgumentManager::getMTensor(unsigned int index) const {
@@ -114,9 +114,9 @@ namespace LibraryLinkUtils {
 		MArgument_setMTensor(res, t);
 	}
 
-	rawarray_t MArgumentManager::getRawArrayType(unsigned int index) const {
-		MRawArray tmp = MArgument_getMRawArray(getArgs(index));
-		return libData->rawarrayLibraryFunctions->MRawArray_getType(tmp);
+	numericarray_data_t MArgumentManager::getNumericArrayType(unsigned int index) const {
+		MNumericArray tmp = MArgument_getMNumericArray(getArgs(index));
+		return libData->numericarrayLibraryFunctions->MNumericArray_getType(tmp);
 	}
 
 	unsigned char MArgumentManager::getTensorType(unsigned int index) const {

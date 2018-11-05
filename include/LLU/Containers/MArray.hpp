@@ -24,9 +24,9 @@ namespace LibraryLinkUtils {
 
 	/**
 	 * @class MArray
-	 * @brief This is a class template, where template parameter T is the type of data elements. MArray is the base class for RawArray, Tensor and Image.
+	 * @brief This is a class template, where template parameter T is the type of data elements. MArray is the base class for NumericArray, Tensor and Image.
 	 *
-	 * Each MArray<T> is an abstract class, it provides common interface to RawArrays, Tensors and Images. One of the biggest benefits is that this interface
+	 * Each MArray<T> is an abstract class, it provides common interface to NumericArrays, Tensors and Images. One of the biggest benefits is that this interface
 	 * contains iterators over underlying data together with begin() and end() member functions which makes it possible to use containers derived
 	 * from MArray directly in many functions from standard library \<algorithms\>.
 	 *
