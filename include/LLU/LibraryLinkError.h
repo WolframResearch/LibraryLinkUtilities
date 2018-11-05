@@ -69,12 +69,13 @@ namespace LibraryLinkUtils {
 		extern const std::string ErrorManagerCreateNameError; 	///< trying to register exception with already existing name
 
 		// NumericArray errors:
-		extern const std::string NumericArrayInitError; 	///< construction of NumericArray failed
-		extern const std::string NumericArrayNewError; 		///< creating new MNumericArray failed
-		extern const std::string NumericArrayCloneError; 	///< MNumericArray cloning failed
-		extern const std::string NumericArrayTypeError; 	///< MNumericArray type mismatch
-		extern const std::string NumericArraySizeError; 	///< wrong assumption about NumericArray size
-		extern const std::string NumericArrayIndexError; 	///< trying to access non-existing element
+		extern const std::string NumericArrayInitError; 		///< construction of NumericArray failed
+		extern const std::string NumericArrayNewError; 			///< creating new MNumericArray failed
+		extern const std::string NumericArrayCloneError; 		///< MNumericArray cloning failed
+		extern const std::string NumericArrayTypeError; 		///< MNumericArray type mismatch
+		extern const std::string NumericArraySizeError; 		///< wrong assumption about NumericArray size
+		extern const std::string NumericArrayIndexError; 		///< trying to access non-existing element
+		extern const std::string NumericArrayConversionError;   ///< conversion from NumericArray of different type failed
 
 		// MTensor errors:
 		extern const std::string TensorInitError; 		///< Tensor construction failed

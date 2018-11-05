@@ -21,6 +21,21 @@
 
 namespace LibraryLinkUtils {
 
+	namespace NA {
+		/**
+		 * @brief Possible methods of handling out-of-range data when converting a NumericArray to different type.
+		 */
+		enum class ConversionMethod {
+			Check = MNumericArray_Convert_Check,
+			Clip = MNumericArray_Convert_Clip,
+			Round = MNumericArray_Convert_Round,
+			ClipRound = MNumericArray_Convert_Clip_Round,
+			ClipScale = MNumericArray_Convert_Clip_Scale,
+			Cast = MNumericArray_Convert_Cast,
+			Reinterpret = MNumericArray_Convert_Reinterpret
+		};
+	}
+
 	/**
 	 * @class NumericArray
 	 * @brief This is a class template, where template parameter T is the type of data elements. NumericArray is derived from MArray.
@@ -124,6 +139,15 @@ namespace LibraryLinkUtils {
 		 *   @throws		LLErrorName::NumericArrayTypeError - if template parameter \b T does not match MNumericArray data type
 		 **/
 		NumericArray(const MNumericArray na);
+
+		/**
+		 *   @brief         Create NumericArray from NumericArray of different type
+		 *   @tparam		U - data type of the NumericArray to be converted
+		 *   @param[in]     other - const reference to a NumericArray any type
+		 *   @param[in]		method - conversion method to be used
+		 **/
+		template<typename U>
+		NumericArray(const NumericArray<U>& other, NA::ConversionMethod method = NA::ConversionMethod::ClipRound);
 
 		/**
 		 *   @brief         Copy constructor
@@ -258,12 +282,20 @@ namespace LibraryLinkUtils {
 			MArgument_setMNumericArray(res, internalNA);
 		}
 
+		/**
+		 * @brief 	Set \p na as internal container and extract properties like dimensions, depth and total length.
+		 * @param 	na - MNumericArray of matching type
+		 */
+		void extractPropertiesFromInternal(const MNumericArray na);
+
 		/// MNumericArray type matching template parameter T
 		static const numericarray_data_t type;
 
 		/// Internal container
 		MNumericArray internalNA = nullptr;
 	};
+
+
 
 	template<typename T>
 	template<typename Container, typename>
@@ -318,18 +350,38 @@ namespace LibraryLinkUtils {
 	}
 
 	template<typename T>
-	NumericArray<T>::NumericArray(const MNumericArray na) {
-		if (!this->naFuns)
-			initError();
-		if (type != this->naFuns->MNumericArray_getType(na))
-			ErrorManager::throwException(LLErrorName::NumericArrayTypeError);
-		this->setOwner(false);
+	void NumericArray<T>::extractPropertiesFromInternal(const MNumericArray na) {
 		internalNA = na;
 		this->depth = this->naFuns->MNumericArray_getRank(internalNA);
 		this->flattenedLength = this->naFuns->MNumericArray_getFlattenedLength(internalNA);
 		const mint* rawDims = this->naFuns->MNumericArray_getDimensions(internalNA);
 		this->dims.assign(rawDims, rawDims + this->rank());
 		this->fillOffsets();
+	}
+
+	template<typename T>
+	NumericArray<T>::NumericArray(const MNumericArray na) {
+		if (!this->naFuns)
+			initError();
+		if (type != this->naFuns->MNumericArray_getType(na))
+			ErrorManager::throwException(LLErrorName::NumericArrayTypeError);
+		this->setOwner(false);
+		extractPropertiesFromInternal(na);
+	}
+
+	template<typename T>
+	template<typename U>
+	NumericArray<T>::NumericArray(const NumericArray<U>& other, NA::ConversionMethod method) : MArray<T>(other)  {
+		if (!this->naFuns) {
+			initError();
+		}
+		MNumericArray newInternal = this->naFuns->MNumericArray_convertType(other.getInternal(), type, static_cast<numericarray_convert_method_t>(method));
+		if (!newInternal) {
+			ErrorManager::throwException(LLErrorName::NumericArrayConversionError,
+					"Conversion from type " + std::to_string(static_cast<int>(other.getType())) + " to " + std::to_string(static_cast<int>(this->type)) + " failed.");
+		}
+		this->setOwner(true);
+		extractPropertiesFromInternal(newInternal);
 	}
 
 	template<typename T>

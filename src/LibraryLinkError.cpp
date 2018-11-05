@@ -50,6 +50,7 @@ namespace LibraryLinkUtils {
 			{ LLErrorName::NumericArrayTypeError,	"An error was caused by an MNumericArray type mismatch." },
 			{ LLErrorName::NumericArraySizeError,	"An error was caused by an incorrect NumericArray size." },
 			{ LLErrorName::NumericArrayIndexError,	"An error was caused by attempting to access a nonexistent NumericArray element." },
+			{ LLErrorName::NumericArrayConversionError, "Failed to convert NumericArray from different type."},
 
 			// MTensor errors:
 			{ LLErrorName::TensorInitError,		"Failed to construct Tensor." },
@@ -219,6 +220,7 @@ namespace LibraryLinkUtils {
 		LLU_DEFINE_ERROR_NAME(NumericArrayTypeError);
 		LLU_DEFINE_ERROR_NAME(NumericArraySizeError);
 		LLU_DEFINE_ERROR_NAME(NumericArrayIndexError);
+		LLU_DEFINE_ERROR_NAME(NumericArrayConversionError);
 
 		LLU_DEFINE_ERROR_NAME(TensorInitError);
 		LLU_DEFINE_ERROR_NAME(TensorNewError);
