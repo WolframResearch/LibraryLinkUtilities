@@ -300,7 +300,7 @@ LIBRARY_LINK_FUNCTION(FrameDims) {
 
 		using ValueIterator = LibraryLinkUtils::NodeValueIterator<MArgumentType::Image>;
 		for(ValueIterator it = dsIn.begin(); it != dsIn.end(); ++it) {
-			Image<double> im { *it };
+			Image<float> im { *it };
 			dims[dimsIndex++] = static_cast<std::uint64_t>(im.dimension(0));
 			dims[dimsIndex++] = static_cast<std::uint64_t>(im.dimension(1));
 		}
