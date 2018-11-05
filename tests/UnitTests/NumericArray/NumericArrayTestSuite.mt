@@ -9,17 +9,17 @@ TestExecute[
 
 (****************************NumericArray Operations****************************************)
 Test[
-	ra = NumericArray["UnsignedInteger8", {1, 2, 3, 4}];
+	ra = NumericArray[{1, 2, 3, 4}];
 	echoNumericArray[ra]
 	,
-	NumericArray["UnsignedInteger8", {1, 2, 3, 4}]
+	NumericArray[{1, 2, 3, 4}, "UnsignedInteger8"]
 	,
 	TestID->"NumericArrayOperations-20150825-M7G1B2"
 ]
 
 Test[
-	raw = NumericArray["Real64", N @ Range[0, 47]/47];
-	res = Developer`NumericArrayQ @ echoNumericArray[raw]
+	raw = NumericArray[N @ Range[0, 47]/47, "Real64"];
+	res = NumericArrayQ @ echoNumericArray[raw]
 	,
 	True
 	,
@@ -43,7 +43,7 @@ ExactTest[
 ]
 
 Test[
-	Developer`NumericArrayQ @ newRA[]
+	NumericArrayQ @ newRA[]
 	,
 	True
 	,
@@ -72,17 +72,44 @@ Test[(*check NumericArray shared APi's*)
 Test[
 	accumulateIntegers[NumericArray[Range[10]]]
 	,
-	Total @ Range[10];
+	Total @ Range[10]
 	,
 	TestID->"NumericArrayTestSuite-20181030-U5E5U6"
 ]
 
 Test[
-	accumulateIntegers[NumericArray[3.5]]
+	accumulateIntegers[NumericArray[{3.5}]]
 	,
 	LibraryFunctionError["LIBRARY_FUNCTION_ERROR", 6]
 	,
 	TestID->"NumericArrayTestSuite-20181030-P4G8W4"
 ]
+
+Test[
+	convert[NumericArray[{3.5}], 4 (* Clip and Round *)]
+	,
+	NumericArray[NumericArray[{3.5}], "UnsignedInteger16"]
+	,
+	TestID->"NumericArrayTestSuite-20181105-I0C6A3"
+]
+
+Test[
+	convert[NumericArray[{3.5}], 1 (* Check *)] // Head
+	,
+	LibraryFunctionError
+	,
+	{Message[LibraryFunction::rterr, "convert", _]}
+	,
+	TestID->"NumericArrayTestSuite-20181105-P7M0S7"
+]
+
+Test[
+	convert[NumericArray[Range[10]], 5 (* ClipAndScale *)]
+	,
+	NumericArray[NumericArray[Range[10]], "UnsignedInteger16", "ClipAndScale"]
+	,
+	TestID->"NumericArrayTestSuite-20181105-W8Z5G6"
+]
+
 
 EndRequirement[]

@@ -277,9 +277,11 @@ Test[
 	Failure["DLInvalidNodeType", <|
 		"MessageTemplate" -> "DataStoreNode passed to Node wrapper carries data of invalid type", 
 		"MessageParameters" -> <||>, 
-		"ErrorCode" -> -48, 
+		"ErrorCode" -> n_?IntegerQ, 
 		"Parameters" -> {}
 	|>]
+	,
+	SameTest -> MatchQ
 	,
 	TestID->"DataListTestSuite-20180906-Z7K0I0"
 ];

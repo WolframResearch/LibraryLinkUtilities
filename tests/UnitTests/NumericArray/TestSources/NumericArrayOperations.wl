@@ -9,3 +9,4 @@ cloneRA = LibraryFunctionLoad[lib, "cloneNumericArray", {"NumericArray"}, "Numer
 changeSharedRA  = LibraryFunctionLoad[lib, "changeSharedNumericArray", {{"NumericArray","Shared"}}, "Void"];
 getSharedRA = LibraryFunctionLoad[lib, "getSharedNumericArray", {}, "NumericArray"];
 accumulateIntegers = LibraryFunctionLoad[lib, "accumulateIntegers", {{"NumericArray", "Constant"}}, Integer];
+convert = LibraryFunctionLoad[lib, "convert", {{"NumericArray", "Constant"}, Integer}, "NumericArray"];

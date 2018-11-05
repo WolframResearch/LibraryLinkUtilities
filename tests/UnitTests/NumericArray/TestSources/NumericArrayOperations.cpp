@@ -7,6 +7,7 @@
 
 #include "LLU/MArgumentManager.h"
 #include "LLU/LibraryLinkFunctionMacro.h"
+#include "../../../../include/LLU/Containers/NumericArray.h"
 
 using namespace LibraryLinkUtils;
 
@@ -186,6 +187,25 @@ EXTERN_C DLLEXPORT int accumulateIntegers(WolframLibraryData libData, mint Argc,
 	try {
 		MArgumentManager mngr(Argc, Args, Res);
 		mngr.operateOnNumericArray<AccumulateIntegers>(0, mngr);
+	}
+	catch (const LibraryLinkError& e) {
+		err = e.which();
+	}
+	catch (...) {
+		err = LLErrorCode::FunctionError;
+	}
+	return err;
+}
+
+// convert NumericArray
+LIBRARY_LINK_FUNCTION(convert) {
+	auto err = LLErrorCode::NoError;
+	try {
+		MArgumentManager mngr(Argc, Args, Res);
+		mngr.operateOnNumericArray(0, [&mngr](const auto& numArr) {
+			NumericArray<std::uint16_t> converted { numArr, static_cast<NA::ConversionMethod>(mngr.getInteger<int>(1))};
+			mngr.setNumericArray(converted);
+		});
 	}
 	catch (const LibraryLinkError& e) {
 		err = e.which();
