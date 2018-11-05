@@ -7,7 +7,7 @@ TestExecute[
 	Get[FileNameJoin[{sourceDirectory, "RawArrayOperations.wl"}]];
 ]
 
-(****************************RawArray Operations****************************************)
+(****************************NumericArray Operations****************************************)
 Test[
 	ra = RawArray["UnsignedInteger8", {1, 2, 3, 4}];
 	echoRawArray[ra]
@@ -59,7 +59,7 @@ Test[
 	TestID->"RawArrayOperations-20150827-I0C3X0"
 ]
 
-Test[(*check RawArray shared APi's*)
+Test[(*check NumericArray shared APi's*)
 	changeSharedRA[ra];
 	sra = getSharedRA[];
 	SameQ[sra,ra]

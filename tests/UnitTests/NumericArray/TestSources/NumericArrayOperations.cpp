@@ -92,7 +92,7 @@ LIBRARY_LINK_FUNCTION(newRawArray) {
 	return err;
 }
 
-//clone RawArray
+//clone NumericArray
 LIBRARY_LINK_FUNCTION(cloneRawArray) {
 	auto err = LLErrorCode::NoError;
 	try {
