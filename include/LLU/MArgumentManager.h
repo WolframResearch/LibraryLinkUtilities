@@ -167,7 +167,7 @@ namespace LibraryLinkUtils {
 		void setString(std::string&& str);
 
 		/**
-		 *   @brief         Get MArgument of type NumericArray at position \c index
+		 *   @brief         Get MArgument of type MNumericArray at position \p index and wrap it into NumericArray
 		 *   @tparam		T - type of data stored in NumericArray
 		 *   @param[in]     index - position of desired MArgument in \c Args
 		 *   @returns       NumericArray wrapper of MArgument at position \c index
@@ -178,10 +178,10 @@ namespace LibraryLinkUtils {
 		NumericArray<T> getNumericArray(unsigned int index) const;
 		
 		/**
-		 *   @brief         Get MArgument of type NumericArray at position \c index
+		 *   @brief         Get MArgument of type MNumericArray at position \c index
 		 *   @warning       Use of this function is discouraged. Use getNumericArray instead, if possible.
 		 *   @param[in]     index - position of desired MArgument in \c Args
-		 *   @returns       MNumericArray of MArgument at position \c index
+		 *   @returns       MArgument at position \c index interpreted as MNumericArray
 		 *   @throws        LLErrorName::MArgumentIndexError - if \c index is out-of-bounds
 		 **/
 		MNumericArray getMNumericArray(unsigned int index) const;
@@ -218,31 +218,29 @@ namespace LibraryLinkUtils {
 		numericarray_data_t getNumericArrayType(unsigned int index) const;
 
 		/**
-		 *   @brief         Perform operation on NumericArray argument at position \c index in \c Args
+		 *   @brief         Perform operation on NumericArray created from MNumericArray argument at position \p index in \c Args
 		 *   @tparam		Operator - any callable class
 		 *   @tparam		OpArgs... - types of arguments of \c operator() in class \c Operator
 		 *   @param[in]     index - position of MNumericArray in \c Args
 		 *   @param[in]     args - arguments of Operator::operator()
 		 *   @throws        LLErrorName::MArgumentIndexError - if \c index is out-of-bounds
-		 *   @throws        LLErrorName::MArgumentNumericArrayError - if MNumericArray argument has incorrect type
 		 *   @warning		Operator::operator() has to be a template that takes a const NumericArray<T>& as first argument
 		 **/
 		template<class Operator, class ... OpArgs>
 		void operateOnNumericArray(unsigned int index, OpArgs&&... args);
 
 		/**
-		 *   @brief         Perform operation on NumericArray argument at position \c index in \c Args
+		 *   @brief         Perform operation on NumericArray created from MNumericArray argument at position \p index in \c Args
 		 *   @tparam		Operator - any callable class
 		 *   @param[in]     index - position of MNumericArray in \c Args
 		 *   @param[in]     op - callable object (possibly lambda) that takes only one argument - a NumericArray
 		 *   @throws        LLErrorName::MArgumentIndexError - if \c index is out-of-bounds
-		 *   @throws        LLErrorName::MArgumentNumericArrayError - if MNumericArray argument has incorrect type
 		 **/
 		template<class Operator>
 		void operateOnNumericArray(unsigned int index, Operator&& op);
 
 		/**
-		 *   @brief         Get MArgument of type MTensor at position \c index
+		 *   @brief         Get MArgument of type MTensor at position \p index and wrap it into Tensor object
 		 *   @tparam		T - type of data stored in Tensor
 		 *   @param[in]     index - position of desired MArgument in \c Args
 		 *   @returns       Tensor wrapper of MArgument at position \c index
@@ -275,7 +273,7 @@ namespace LibraryLinkUtils {
 		unsigned char getTensorType(unsigned int index) const;
 
 		/**
-		 *   @brief         Perform operation on Tensor argument at position \c index in \c Args
+		 *   @brief         Perform operation on Tensor created from MTensor argument at position \p index in \c Args
 		 *   @tparam		Operator - any callable class
 		 *   @tparam		OpArgs... - types of arguments of \c operator() in class \c Operator
 		 *   @param[in]     index - position of MTensor in \c Args
@@ -288,7 +286,7 @@ namespace LibraryLinkUtils {
 		void operateOnTensor(unsigned int index, Args&&... args);
 
 		/**
-		 *   @brief         Perform operation on Tensor argument at position \c index in \c Args
+		 *   @brief         Perform operation on Tensor created from MTensor argument at position \p index in \c Args
 		 *   @tparam		Operator - any callable class
 		 *   @param[in]     index - position of MTensor in \c Args
 		 *   @param[in]     op - callable object (possibly lambda) that takes only one argument - a Tensor
@@ -299,7 +297,7 @@ namespace LibraryLinkUtils {
 		void operateOnTensor(unsigned int index, Operator&& op);
 
 		/**
-		 *   @brief         Get MArgument of type MImage at position \c index
+		 *   @brief         Get MArgument of type MImage at position \p index and wrap it into Image object
 		 *   @tparam		T - type of data stored in Image
 		 *   @param[in]     index - position of desired MArgument in \c Args
 		 *   @returns       Image wrapper of MArgument at position \c index
@@ -326,7 +324,7 @@ namespace LibraryLinkUtils {
 		imagedata_t getImageType(unsigned int index) const;
 
 		/**
-		 *   @brief         Perform operation on Image argument at position \c index in \c Args
+		 *   @brief         Perform operation on Image created from MImage argument at position \p index in \c Args
 		 *   @tparam		Operator - any callable class
 		 *   @tparam		OpArgs... - types of arguments of \c operator() in class \c Operator
 		 *   @param[in]     index - position of MImage in \c Args
@@ -339,7 +337,7 @@ namespace LibraryLinkUtils {
 		void operateOnImage(unsigned int index, Args&&... args);
 
 		/**
-		 *   @brief         Perform operation on Image argument at position \c index in \c Args
+		 *   @brief         Perform operation on Image created from MImage argument at position \p index in \c Args
 		 *   @tparam		Operator - any callable class
 		 *   @param[in]     index - position of MImage in \c Args
 		 *   @param[in]     op - callable object (possibly lambda) that takes only one argument - an Image
