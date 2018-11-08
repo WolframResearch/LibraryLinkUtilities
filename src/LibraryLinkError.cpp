@@ -1,7 +1,6 @@
 /** 
  * @file	LibraryLinkError.cpp
  * @author	Rafal Chojna <rafalc@wolfram.com>
- * @date	20/04/2017
  *
  * @brief	Contains definitions of ErrorManager members and implementation of interface function sendRegisteredErrors used by PacletFailure framework in LLU
  *
@@ -45,9 +44,9 @@ namespace LibraryLinkUtils {
 
 			// NumericArray errors:
 			{ LLErrorName::NumericArrayInitError,	"Failed to construct NumericArray." },
-			{ LLErrorName::NumericArrayNewError,	"Failed to create a new MNumericArray." },
-			{ LLErrorName::NumericArrayCloneError,	"Failed to clone MNumericArray." },
-			{ LLErrorName::NumericArrayTypeError,	"An error was caused by an MNumericArray type mismatch." },
+			{ LLErrorName::NumericArrayNewError,	"Failed to create a new NumericArray." },
+			{ LLErrorName::NumericArrayCloneError,	"Failed to clone NumericArray." },
+			{ LLErrorName::NumericArrayTypeError,	"An error was caused by an NumericArray type mismatch." },
 			{ LLErrorName::NumericArraySizeError,	"An error was caused by an incorrect NumericArray size." },
 			{ LLErrorName::NumericArrayIndexError,	"An error was caused by attempting to access a nonexistent NumericArray element." },
 			{ LLErrorName::NumericArrayConversionError, "Failed to convert NumericArray from different type."},

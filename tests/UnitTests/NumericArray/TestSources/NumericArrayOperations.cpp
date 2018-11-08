@@ -42,7 +42,7 @@ LIBRARY_LINK_FUNCTION(echoNumericArray) {
 }
 
 /*
- * Raw array library functions
+ * Numeric array library functions
  */
 LIBRARY_LINK_FUNCTION(getNumericArrayLength) {
 	auto err = LLErrorCode::NoError;
@@ -78,7 +78,7 @@ LIBRARY_LINK_FUNCTION(getNumericArrayRank) {
 	return err;
 }
 
-//create new raw array
+//create new numeric array
 LIBRARY_LINK_FUNCTION(newNumericArray) {
 	auto err = LLErrorCode::NoError;
 	try {

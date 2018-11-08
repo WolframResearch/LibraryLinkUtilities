@@ -1,7 +1,6 @@
 /**
  * @file	LibraryLinkError.h
  * @author	Rafal Chojna <rafalc@wolfram.com>
- * @date	20/04/2017
  *
  * @brief	Error class and error codes used by LibraryLink Utilities classes
  *
@@ -70,9 +69,9 @@ namespace LibraryLinkUtils {
 
 		// NumericArray errors:
 		extern const std::string NumericArrayInitError; 		///< construction of NumericArray failed
-		extern const std::string NumericArrayNewError; 			///< creating new MNumericArray failed
-		extern const std::string NumericArrayCloneError; 		///< MNumericArray cloning failed
-		extern const std::string NumericArrayTypeError; 		///< MNumericArray type mismatch
+		extern const std::string NumericArrayNewError; 			///< creating new NumericArray failed
+		extern const std::string NumericArrayCloneError; 		///< NumericArray cloning failed
+		extern const std::string NumericArrayTypeError; 		///< NumericArray type mismatch
 		extern const std::string NumericArraySizeError; 		///< wrong assumption about NumericArray size
 		extern const std::string NumericArrayIndexError; 		///< trying to access non-existing element
 		extern const std::string NumericArrayConversionError;   ///< conversion from NumericArray of different type failed

@@ -1,7 +1,6 @@
 /**
  * @file	MArgumentManager.h
  * @author	Rafal Chojna <rafalc@wolfram.com>
- * @date	6/07/2017
  *
  * @brief	Declaration of MArgumentManager class
  *
@@ -168,7 +167,7 @@ namespace LibraryLinkUtils {
 		void setString(std::string&& str);
 
 		/**
-		 *   @brief         Get MArgument of type MNumericArray at position \c index
+		 *   @brief         Get MArgument of type NumericArray at position \c index
 		 *   @tparam		T - type of data stored in NumericArray
 		 *   @param[in]     index - position of desired MArgument in \c Args
 		 *   @returns       NumericArray wrapper of MArgument at position \c index
@@ -179,7 +178,7 @@ namespace LibraryLinkUtils {
 		NumericArray<T> getNumericArray(unsigned int index) const;
 		
 		/**
-		 *   @brief         Get MArgument of type MNumericArray at position \c index
+		 *   @brief         Get MArgument of type NumericArray at position \c index
 		 *   @warning       Use of this function is discouraged. Use getNumericArray instead, if possible.
 		 *   @param[in]     index - position of desired MArgument in \c Args
 		 *   @returns       MNumericArray of MArgument at position \c index

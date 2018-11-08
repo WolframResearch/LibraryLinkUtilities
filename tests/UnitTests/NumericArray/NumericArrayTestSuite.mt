@@ -9,8 +9,8 @@ TestExecute[
 
 (****************************NumericArray Operations****************************************)
 Test[
-	ra = NumericArray[{1, 2, 3, 4}];
-	echoNumericArray[ra]
+	na = NumericArray[{1, 2, 3, 4}];
+	echoNumericArray[na]
 	,
 	NumericArray[{1, 2, 3, 4}, "UnsignedInteger8"]
 	,
@@ -18,8 +18,8 @@ Test[
 ]
 
 Test[
-	raw = NumericArray[N @ Range[0, 47]/47, "Real64"];
-	res = NumericArrayQ @ echoNumericArray[raw]
+	num = NumericArray[N @ Range[0, 47]/47, "Real64"];
+	res = NumericArrayQ @ echoNumericArray[num]
 	,
 	True
 	,
@@ -27,7 +27,7 @@ Test[
 ]
 
 ExactTest[
-	getRALength[ra]
+	getNALength[na]
 	,
 	4
 	,
@@ -35,7 +35,7 @@ ExactTest[
 ]
 
 ExactTest[
-	getRARank[ra]
+	getNARank[na]
 	,
 	1
 	,
@@ -43,7 +43,7 @@ ExactTest[
 ]
 
 Test[
-	NumericArrayQ @ newRA[]
+	NumericArrayQ @ newNA[]
 	,
 	True
 	,
@@ -51,8 +51,8 @@ Test[
 ]
 
 Test[
-	cl = cloneRA[ra];
-	SameQ[cl,ra]
+	cl = cloneNA[na];
+	SameQ[cl, na]
 	,
 	True
 	,
@@ -60,9 +60,9 @@ Test[
 ]
 
 Test[(*check NumericArray shared APi's*)
-	changeSharedRA[ra];
-	sra = getSharedRA[];
-	SameQ[sra,ra]
+	changeSharedNA[na];
+	sna = getSharedNA[];
+	SameQ[sna, na]
 	,
 	True
 	,
