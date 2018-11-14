@@ -7,11 +7,11 @@
 
 #include "LLU/MArgumentManager.h"
 #include "LLU/LibraryLinkFunctionMacro.h"
-#include "../../../../include/LLU/Containers/NumericArray.h"
+#include "LLU/Containers/NumericArray.h"
 
 using namespace LibraryLinkUtils;
 
-static MNumericArray shared_raw = 0;
+static MNumericArray shared_numeric = 0;
 
 EXTERN_C DLLEXPORT mint WolframLibrary_getVersion() {
 	return WolframLibraryVersion;
@@ -115,15 +115,15 @@ LIBRARY_LINK_FUNCTION(cloneNumericArray) {
 }
 
 LIBRARY_LINK_FUNCTION(changeSharedNumericArray) {
-	WolframNumericArrayLibrary_Functions rawArrayFunctions = libData->numericarrayLibraryFunctions;
+	WolframNumericArrayLibrary_Functions numericArrayFunctions = libData->numericarrayLibraryFunctions;
 	int err = LIBRARY_NO_ERROR;
 
-	if (shared_raw) {
-		rawArrayFunctions->MNumericArray_disown(shared_raw);
-		shared_raw = 0;
+	if (shared_numeric) {
+		numericArrayFunctions->MNumericArray_disown(shared_numeric);
+		shared_numeric = 0;
 	}
 
-	shared_raw = MArgument_getMNumericArray(Args[0]);
+	shared_numeric = MArgument_getMNumericArray(Args[0]);
 
 	return err;
 }
@@ -131,8 +131,8 @@ LIBRARY_LINK_FUNCTION(changeSharedNumericArray) {
 EXTERN_C DLLEXPORT int getSharedNumericArray(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
 	int err = LIBRARY_NO_ERROR;
 
-	if (shared_raw) {
-		MArgument_setMNumericArray(Res, shared_raw);
+	if (shared_numeric) {
+		MArgument_setMNumericArray(Res, shared_numeric);
 	}
 	else
 		err = LIBRARY_FUNCTION_ERROR;
@@ -153,7 +153,7 @@ struct ZeroReal64 {
 };
 
 //reset NumericArray
-EXTERN_C DLLEXPORT int rawZeroData(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
+EXTERN_C DLLEXPORT int numericZeroData(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
 	auto err = LLErrorCode::NoError;
 	try {
 		MArgumentManager mngr(Argc, Args, Res);
