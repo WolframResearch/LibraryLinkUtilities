@@ -1,7 +1,6 @@
 /** 
  * @file	NumericArray.cpp
  * @author	Rafal Chojna <rafalc@wolfram.com>
- * @date	18/04/2017
  *
  * @brief	Template specializations of certain NumericArray methods for all underlying data types that we want to support
  *
