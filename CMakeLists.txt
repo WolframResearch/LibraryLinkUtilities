@@ -84,6 +84,7 @@ if(NOT TARGET LLU)
 		${LLU_SOURCE_DIR}/ML/Strings.cpp
 		${LLU_SOURCE_DIR}/ML/Utilities.cpp
 		${LLU_SOURCE_DIR}/MArgument.cpp
+		${LLU_SOURCE_DIR}/ProgressMonitor.cpp
 	)
 
 	#add the main library
