@@ -41,7 +41,9 @@ $CorePacletFailureLUT = <|
 	"LibraryLoadFailure" -> {20, "Failed to load library `LibraryName`."},
 	"FunctionLoadFailure" -> {21, "Failed to load the function `FunctionName` from `LibraryName`."},
 	"RegisterFailure" -> {22, "Incorrect arguments to RegisterPacletErrors."},
-	"UnknownFailure" -> {23, "The error `ErrorName` has not been registered."}
+	"UnknownFailure" -> {23, "The error `ErrorName` has not been registered."},
+	"ProgressMonInvalidValue" -> {24, "Value for option \"ProgressMonitor\" must be None or an Association."},
+	"InvalidProgMonTitle" -> {25, "Value for option \"Title\" must be None, Automatic or a String instead of `Title`."}
 |>;
 
 
@@ -65,6 +67,50 @@ Block[{name = Select[$CorePacletFailureLUT, MatchQ[#, {errorCode, _}] &]},
 (* ------------------------------------------------------------------------- *)
 (* ------------------------------------------------------------------------- *)
 
+(* ::SubSection:: *)
+(* ProgressMonitor *)
+(* ------------------------------------------------------------------------- *)
+(* ------------------------------------------------------------------------- *)
+
+$ProgressMonitorOptions = <|
+	"Title" -> None,
+	"ShowPercentage" -> True,
+	"CaptionFunction" -> None
+|>;
+
+Attributes[getPercentage] = { HoldFirst };
+getPercentage[x_] := ToString[Round[100 * First[x]]] <> "%";
+
+validateTitle[rawTitle_, fname_?StringQ] :=
+Switch[rawTitle,
+	None,
+	Nothing
+	,
+	Automatic,
+	fname
+	,
+	_?StringQ,
+	rawTitle
+	,
+	_,
+	Throw @ CreatePacletFailure["InvalidProgMonTitle", "MessageParameters" -> <|"Title" -> rawTitle|>]
+];
+
+Attributes[preparePanel] = { HoldFirst };
+preparePanel[progIndicator_, fname_?StringQ, opts_?AssociationQ] :=
+Block[{topRow, title, percentage},
+	title = validateTitle[opts["Title"], fname];
+	percentage = If[opts["ShowPercentage"] === True,
+		Dynamic[getPercentage[progIndicator]]
+		,
+		SpanFromLeft
+	];
+	topRow = { title, ProgressIndicator[Dynamic[First @ progIndicator]], percentage };
+	If[opts["CaptionFunction"] === None,
+		Return[Panel @ Row[topRow, Spacer[10]]];
+	];
+	Return[Panel @ Grid[{ topRow, { Dynamic[opts["CaptionFunction"][First @ progIndicator]], SpanFromLeft, SpanFromLeft } }]];
+]
 
 (* ::SubSection:: *)
 (* SafeLibrary* *)
@@ -91,14 +137,46 @@ SafeLibraryFunctionLoad[args___] :=
 		]
 	]
 
-Options[SafeLibraryFunction] = { "Throws" -> False };
+Options[SafeLibraryFunction] = {
+	"ProgressMonitor" -> None,
+	"Throws" -> False
+};
 
-SafeLibraryFunction[args___, opts : OptionsPattern[SafeLibraryFunction]] := 
-	If[TrueQ[OptionValue["Throws"]], CatchAndThrowLibraryFunctionError, CatchLibraryFunctionError] @* SafeLibraryFunctionLoad[args]
-	
+SafeLibraryFunction[fname_?StringQ, fParams_, retType_, opts : OptionsPattern[SafeLibraryFunction]] :=
+Module[{errorHandler, pmOptValue, pmOpts, newParams, f},
+    errorHandler = If[TrueQ[OptionValue["Throws"]],
+	    CatchAndThrowLibraryFunctionError
+	,
+	    CatchLibraryFunctionError
+    ];
+    pmOptValue = Replace[OptionValue["ProgressMonitor"], Automatic -> <||>];
+    If[fParams === LinkObject || pmOptValue === None,
+	    errorHandler @* SafeLibraryFunctionLoad[fname, fParams, retType]
+	    ,
+	    If[!AssociationQ[pmOptValue],
+		    Throw @ CreatePacletFailure["ProgressMonInvalidValue"];
+	    ];
+	    pmOpts = Merge[{pmOptValue, $ProgressMonitorOptions}, First];
+	    newParams = Append[fParams, {Real, 1, "Shared"}];
+	    f = errorHandler @* SafeLibraryFunctionLoad[fname, newParams, retType];
+	    Module[{l, pnl, localPMOpts, localParams},
+		    l = Developer`ToPackedArray[{0.0}];
+		    {localParams, localPMOpts} = parseLibraryFunctionArgs[##];
+		    localPMOpts = Merge[{localPMOpts, pmOpts}, First];
+		    pnl = preparePanel[Refresh[l, UpdateInterval -> 0.02], fname,  localPMOpts];
+		    Monitor[f @@ Append[localParams, l], pnl]
+	    ]&
+    ]
+]
 
 SafeMathLinkFunction[fname_String, opts : OptionsPattern[SafeLibraryFunction]] := 
 	SafeLibraryFunction[fname, LinkObject, LinkObject, opts]
+
+
+Options[parseLibraryFunctionArgs] = {
+	"ProgressMonitor" -> <||>
+};
+parseLibraryFunctionArgs[args___, opts : OptionsPattern[parseLibraryFunctionArgs]] := {{args}, OptionValue["ProgressMonitor"]};
 
 (* ::SubSection:: *)
 (* RegisterPacletErrors *)
