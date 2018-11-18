@@ -1,0 +1,828 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 12.0' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       158,          7]
+NotebookDataLength[     33763,        820]
+NotebookOptionsPosition[     27936,        709]
+NotebookOutlinePosition[     28278,        724]
+CellTagsIndexPosition[     28235,        721]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+
+Cell[CellGroupData[{
+Cell["Abortability and Progress Monitor in LLU", "Title",
+ CellChangeTimes->{{3.7513695675824013`*^9, 3.7513695946382513`*^9}, {
+  3.751547856720682*^9, 
+  3.751547859792735*^9}},ExpressionUUID->"40bbd71e-31a4-4bfe-9593-\
+efe64dd6a92b"],
+
+Cell["Rafa\[LSlash] Chojna, WRI", "Text",
+ CellChangeTimes->{{3.7515423627640457`*^9, 
+  3.75154236650791*^9}},ExpressionUUID->"fd6e321a-5063-405e-9625-\
+e8e982207266"],
+
+Cell["Motivation", "Chapter",
+ CellChangeTimes->{{3.751369617326638*^9, 
+  3.751369620094336*^9}},ExpressionUUID->"90816697-4a4e-4137-a536-\
+514e555d77cd"],
+
+Cell["Design", "Chapter",
+ CellChangeTimes->{{3.751369623134303*^9, 
+  3.751369625134177*^9}},ExpressionUUID->"61ae3398-66b4-4b88-9805-\
+72c0c19cce64"],
+
+Cell[CellGroupData[{
+
+Cell["Examples", "Chapter",
+ CellChangeTimes->{{3.7513696544307957`*^9, 
+  3.7513696579662733`*^9}},ExpressionUUID->"a090b3fb-33e4-4ff7-8992-\
+8b95f80231fd"],
+
+Cell[CellGroupData[{
+
+Cell["Different styles of progress monitor", "Subsection",
+ CellChangeTimes->{{3.751395534855486*^9, 
+  3.7513955451115923`*^9}},ExpressionUUID->"9dbefded-fe14-44ed-a0d9-\
+9128e5ab328f"],
+
+Cell[TextData[{
+ "The default value for \[OpenCurlyDoubleQuote]ProgressMonitor\
+\[CloseCurlyDoubleQuote] option is None, but you can\[CloseCurlyQuote]t use \
+this value if your function actually used progress monitor in C++ code. So at \
+least you must pass \[OpenCurlyDoubleQuote]ProgressMonitor\
+\[CloseCurlyDoubleQuote] -> Automatic when ",
+ StyleBox["loading",
+  FontWeight->"Bold"],
+ " the function:"
+}], "Text",
+ CellChangeTimes->{{3.751395549911708*^9, 3.751395665320472*^9}, {
+  3.751395734627383*^9, 
+  3.751395765368651*^9}},ExpressionUUID->"f1713439-beca-443c-89cf-\
+e4bdce992488"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"UniformProgress", "=", 
+   RowBox[{"SafeLibraryFunction", "[", 
+    RowBox[{"\"\<UniformProgress\>\"", ",", 
+     RowBox[{"{", "Real", "}"}], ",", "Integer", ",", " ", 
+     RowBox[{"\"\<ProgressMonitor\>\"", "\[Rule]", "Automatic"}]}], "]"}]}], 
+  ";"}]], "Input",
+ CellChangeTimes->{{3.7513703687415667`*^9, 3.7513703816201077`*^9}, {
+  3.751370449204803*^9, 3.751370472629136*^9}, {3.7513715047860737`*^9, 
+  3.751371517515976*^9}, {3.751371630782241*^9, 3.751371633372617*^9}, {
+  3.751372562991775*^9, 3.7513725654603252`*^9}, {3.75138765586685*^9, 
+  3.751387658153194*^9}, {3.7513879050209217`*^9, 3.751387914954103*^9}, {
+  3.751389450240505*^9, 3.7513894686550093`*^9}, {3.751389523265399*^9, 
+  3.7513895611205807`*^9}, {3.7513896057967663`*^9, 3.7513896111029387`*^9}, {
+  3.751389737137278*^9, 3.751389741711521*^9}, {3.7513898413340807`*^9, 
+  3.751389937184472*^9}, {3.751390035380846*^9, 3.7513900723368473`*^9}, {
+  3.751395789338909*^9, 3.7513958624460278`*^9}, {3.7513959018698387`*^9, 
+  3.751395910923217*^9}},
+ CellLabel->"In[79]:=",ExpressionUUID->"e6b8c376-3ae5-45b0-bdeb-fa64e6bba3c2"],
+
+Cell["\<\
+The default style only shows the progress bar and percentage:\
+\>", "Text",
+ CellChangeTimes->{{3.751395964889531*^9, 
+  3.751395987161888*^9}},ExpressionUUID->"450a742e-3a93-4a91-ac8a-\
+788247d59d6f"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"UniformProgress", "[", "5", "]"}]], "Input",
+ CellChangeTimes->{{3.751370701768999*^9, 3.751370706838972*^9}, {
+  3.751395751707059*^9, 3.751395755160788*^9}},
+ CellLabel->"In[80]:=",ExpressionUUID->"ee42ec9c-b25e-418c-a3c0-940ab1722665"],
+
+Cell[BoxData["42"], "Output",
+ CellChangeTimes->{
+  3.751370707262023*^9, 3.75137115784212*^9, 3.751395794487185*^9, {
+   3.751395897658956*^9, 3.7513959173065367`*^9}, 3.75139595158965*^9, 
+   3.751396698056677*^9, 3.751541716806485*^9},
+ CellLabel->"Out[80]=",ExpressionUUID->"23bcdf68-2391-41bd-ae49-b28a98ef71e2"]
+}, Open  ]],
+
+Cell["\<\
+\[OpenCurlyDoubleQuote]ProgressMonitor\[CloseCurlyDoubleQuote] layout can \
+later be changed \[OpenCurlyDoubleQuote]at runtime\[CloseCurlyDoubleQuote] \
+meaning that you can override the default layout in each call to your library \
+function. You don\[CloseCurlyQuote]t have to reload it.\
+\>", "Text",
+ CellChangeTimes->{{3.751541632977455*^9, 
+  3.7515416774244213`*^9}},ExpressionUUID->"4737378a-f6d3-48bd-a2ce-\
+1714db024014"],
+
+Cell[CellGroupData[{
+
+Cell["\[OpenCurlyDoubleQuote]Title\[CloseCurlyDoubleQuote]", "Subsubsection",
+ CellChangeTimes->{{3.751396022105652*^9, 
+  3.751396023114072*^9}},ExpressionUUID->"1e02dc36-acdb-4dd2-9628-\
+57d6293c6185"],
+
+Cell["\<\
+\[OpenCurlyDoubleQuote]Title\[CloseCurlyDoubleQuote] is a short text \
+displayed to the left of the progress bar. The default value is None. \
+Automatic displays the function name:\
+\>", "Text",
+ CellChangeTimes->{{3.751396037321639*^9, 3.75139610208987*^9}, {
+  3.751396440139914*^9, 
+  3.751396470365987*^9}},ExpressionUUID->"5658f195-4cfb-402d-a8d6-\
+282c0d618145"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"UniformProgress", "[", 
+  RowBox[{"3", ",", " ", 
+   RowBox[{"\"\<ProgressMonitor\>\"", "\[Rule]", 
+    RowBox[{"<|", 
+     RowBox[{"\"\<Title\>\"", "\[Rule]", "Automatic"}], "|>"}]}]}], 
+  "]"}]], "Input",
+ CellChangeTimes->{{3.751370701768999*^9, 3.751370706838972*^9}, {
+   3.751395751707059*^9, 3.751395755160788*^9}, {3.751396422333084*^9, 
+   3.751396422523139*^9}, 3.7515416901982927`*^9},
+ CellLabel->"In[81]:=",ExpressionUUID->"d7745514-8ff3-4b6a-b555-0b9b8fbe7bb6"],
+
+Cell[BoxData["42"], "Output",
+ CellChangeTimes->{
+  3.751396126678499*^9, 3.751396222172269*^9, {3.751396420144902*^9, 
+   3.7513964260588703`*^9}, 3.7513967039281673`*^9, 3.75154172165587*^9},
+ CellLabel->"Out[81]=",ExpressionUUID->"bd8da6bb-1311-437e-9d71-fe25efe72156"]
+}, Open  ]],
+
+Cell["You can pass any string as \[OpenCurlyDoubleQuote]Title\
+\[CloseCurlyDoubleQuote]:", "Text",
+ CellChangeTimes->{{3.751396476704296*^9, 
+  3.7513964828436737`*^9}},ExpressionUUID->"f3862c0a-5834-48c2-abc1-\
+24578c515369"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"UniformProgress", "[", 
+  RowBox[{"3", ",", " ", 
+   RowBox[{"\"\<ProgressMonitor\>\"", "\[Rule]", 
+    RowBox[{"<|", 
+     RowBox[{"\"\<Title\>\"", "\[Rule]", "\"\<My Favorite Title\>\""}], 
+     "|>"}]}]}], "]"}]], "Input",
+ CellChangeTimes->{{3.751370701768999*^9, 3.751370706838972*^9}, {
+   3.751395751707059*^9, 3.751395755160788*^9}, {3.751396422333084*^9, 
+   3.751396422523139*^9}, 3.75154169744864*^9},
+ CellLabel->"In[82]:=",ExpressionUUID->"98cf2366-64d7-47d7-a659-5d30ee1f715e"],
+
+Cell[BoxData["42"], "Output",
+ CellChangeTimes->{{3.751396711720866*^9, 3.7513967198177843`*^9}, 
+   3.751541727499481*^9},
+ CellLabel->"Out[82]=",ExpressionUUID->"1bc7ad3b-5333-4f19-b8d4-6d11cc0878ea"]
+}, Open  ]],
+
+Cell["\<\
+If you try to pass anything else as \[OpenCurlyDoubleQuote]Title\
+\[CloseCurlyDoubleQuote], you will get a Failure:\
+\>", "Text",
+ CellChangeTimes->{{3.751396476704296*^9, 3.7513964828436737`*^9}, {
+  3.751396737548519*^9, 
+  3.751396754908662*^9}},ExpressionUUID->"3058cab8-9847-4339-988a-\
+fa5c80973d25"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Catch", "@", 
+  RowBox[{"UniformProgress", "[", 
+   RowBox[{"3", ",", " ", 
+    RowBox[{"\"\<ProgressMonitor\>\"", "\[Rule]", 
+     RowBox[{"<|", 
+      RowBox[{"\"\<Title\>\"", "\[Rule]", 
+       RowBox[{"E", "+", "Pi"}]}], "|>"}]}]}], "]"}]}]], "Input",
+ CellChangeTimes->{{3.75139684842892*^9, 3.751396852572771*^9}, 
+   3.751541705037649*^9},
+ CellLabel->"In[83]:=",ExpressionUUID->"fd167e02-58be-4d80-9cdc-b2504ef89ba9"],
+
+Cell[BoxData[
+ InterpretationBox[
+  RowBox[{
+   TagBox["Failure",
+    "SummaryHead"], "[", 
+   DynamicModuleBox[{Typeset`open$$ = False, Typeset`embedState$$ = "Ready"}, 
+    
+    TemplateBox[{PaneSelectorBox[{False -> GridBox[{{
+            PaneBox[
+             ButtonBox[
+              DynamicBox[
+               FEPrivate`FrontEndResource[
+               "FEBitmaps", "SquarePlusIconMedium"]], 
+              ButtonFunction :> (Typeset`open$$ = True), Appearance -> None, 
+              Evaluator -> Automatic, Method -> "Preemptive"], 
+             Alignment -> {Center, Center}, ImageSize -> 
+             Dynamic[{
+               Automatic, 3.5 CurrentValue["FontCapHeight"]/
+                AbsoluteCurrentValue[Magnification]}]], 
+            FrameBox[
+             StyleBox["\"\[WarningSign]\"", 
+              Directive["Message", 35], StripOnInput -> False], 
+             ContentPadding -> False, FrameStyle -> None, 
+             FrameMargins -> {{0, 0}, {0, 0}}, StripOnInput -> False], 
+            GridBox[{{
+               TagBox[
+                GridBox[{{
+                   TagBox["\"Message: \"", "SummaryItemAnnotation"], 
+                   "\[InvisibleSpace]", 
+                   TagBox[
+                   "\"Value for option \\\"Title\\\" must be None, Automatic \
+or a String instead of 5.85987.\"", "SummaryItem"]}}, 
+                 GridBoxItemSize -> {"Columns" -> {6.5, All}}, 
+                 GridBoxAlignment -> {"Columns" -> {{Left}}}, 
+                 GridBoxSpacings -> {"Columns" -> {{0}}}], "SummaryItem"]}, {
+               TagBox[
+                GridBox[{{
+                   TagBox["\"Tag: \"", "SummaryItemAnnotation"], 
+                   "\[InvisibleSpace]", 
+                   TagBox["\"InvalidProgMonTitle\"", "SummaryItem"]}}, 
+                 GridBoxItemSize -> {"Columns" -> {6.5, All}}, 
+                 GridBoxAlignment -> {"Columns" -> {{Left}}}, 
+                 GridBoxSpacings -> {"Columns" -> {{0}}}], "SummaryItem"]}}, 
+             GridBoxAlignment -> {
+              "Columns" -> {{Left}}, "Rows" -> {{Automatic}}}, AutoDelete -> 
+             False, GridBoxItemSize -> {
+              "Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}, 
+             GridBoxSpacings -> {"Columns" -> {{2}}, "Rows" -> {{Automatic}}},
+              BaseStyle -> {
+              ShowStringCharacters -> False, NumberMarks -> False, 
+               PrintPrecision -> 3, ShowSyntaxStyles -> False}]}}, 
+          GridBoxAlignment -> {"Rows" -> {{Top}}}, AutoDelete -> False, 
+          GridBoxItemSize -> {
+           "Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}, 
+          BaselinePosition -> {1, 1}], True -> GridBox[{{
+            PaneBox[
+             ButtonBox[
+              DynamicBox[
+               FEPrivate`FrontEndResource[
+               "FEBitmaps", "SquareMinusIconMedium"]], 
+              ButtonFunction :> (Typeset`open$$ = False), Appearance -> None, 
+              Evaluator -> Automatic, Method -> "Preemptive"], 
+             Alignment -> {Center, Center}, ImageSize -> 
+             Dynamic[{
+               Automatic, 3.5 CurrentValue["FontCapHeight"]/
+                AbsoluteCurrentValue[Magnification]}]], 
+            FrameBox[
+             StyleBox["\"\[WarningSign]\"", 
+              Directive["Message", 35], StripOnInput -> False], 
+             ContentPadding -> False, FrameStyle -> None, 
+             FrameMargins -> {{0, 0}, {0, 0}}, StripOnInput -> False], 
+            GridBox[{{
+               TagBox[
+                GridBox[{{
+                   TagBox["\"Message: \"", "SummaryItemAnnotation"], 
+                   "\[InvisibleSpace]", 
+                   TagBox[
+                   "\"Value for option \\\"Title\\\" must be None, Automatic \
+or a String instead of 5.85987.\"", "SummaryItem"]}}, 
+                 GridBoxItemSize -> {"Columns" -> {6.5, All}}, 
+                 GridBoxAlignment -> {"Columns" -> {{Left}}}, 
+                 GridBoxSpacings -> {"Columns" -> {{0}}}], "SummaryItem"]}, {
+               TagBox[
+                GridBox[{{
+                   TagBox["\"Tag: \"", "SummaryItemAnnotation"], 
+                   "\[InvisibleSpace]", 
+                   TagBox["\"InvalidProgMonTitle\"", "SummaryItem"]}}, 
+                 GridBoxItemSize -> {"Columns" -> {6.5, All}}, 
+                 GridBoxAlignment -> {"Columns" -> {{Left}}}, 
+                 GridBoxSpacings -> {"Columns" -> {{0}}}], "SummaryItem"]}, {
+               RowBox[{
+                 TagBox[
+                  TemplateBox[{"\"ErrorCode\"", "\": \""}, "RowDefault"], 
+                  "SummaryItemAnnotation"], "\[InvisibleSpace]", 
+                 TagBox["25", "SummaryItem"]}]}, {
+               RowBox[{
+                 TagBox[
+                  TemplateBox[{"\"Parameters\"", "\": \""}, "RowDefault"], 
+                  "SummaryItemAnnotation"], "\[InvisibleSpace]", 
+                 TagBox[
+                  RowBox[{"{", "}"}], "SummaryItem"]}]}}, 
+             GridBoxAlignment -> {
+              "Columns" -> {{Left}}, "Rows" -> {{Automatic}}}, AutoDelete -> 
+             False, GridBoxItemSize -> {
+              "Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}, 
+             GridBoxSpacings -> {"Columns" -> {{2}}, "Rows" -> {{Automatic}}},
+              BaseStyle -> {
+              ShowStringCharacters -> False, NumberMarks -> False, 
+               PrintPrecision -> 3, ShowSyntaxStyles -> False}]}}, 
+          GridBoxAlignment -> {"Rows" -> {{Top}}}, AutoDelete -> False, 
+          GridBoxItemSize -> {
+           "Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}, 
+          BaselinePosition -> {1, 1}]}, 
+       Dynamic[Typeset`open$$], ImageSize -> Automatic]},
+     "SummaryPanel"],
+    DynamicModuleValues:>{}], "]"}],
+  Failure["InvalidProgMonTitle", 
+   Association[
+   "MessageTemplate" -> 
+    "Value for option \"Title\" must be None, Automatic or a String instead \
+of `Title`.", "MessageParameters" -> Association["Title" -> E + Pi], 
+    "ErrorCode" -> 25, "Parameters" -> {}]],
+  Editable->False,
+  SelectWithContents->True,
+  Selectable->False]], "Output",
+ CellChangeTimes->{{3.751396853081738*^9, 3.751396863239029*^9}, 
+   3.751541728992413*^9},
+ CellLabel->"Out[83]=",ExpressionUUID->"25fcfb8d-82be-41c0-9274-c686259635f9"]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["\[OpenCurlyDoubleQuote]ShowPercentage\[CloseCurlyDoubleQuote]", \
+"Subsubsection",
+ CellChangeTimes->{{3.75139689713284*^9, 
+  3.7513969076927547`*^9}},ExpressionUUID->"9cd78cdf-37fe-4e66-a733-\
+03ee027615ac"],
+
+Cell["\<\
+\[OpenCurlyDoubleQuote]ShowPercentage\[CloseCurlyDoubleQuote] is a boolean \
+option to control whether to percent of completion is shown or not. The \
+default is True.\
+\>", "Text",
+ CellChangeTimes->{{3.751396909301407*^9, 3.751396960157255*^9}, {
+  3.751541743306571*^9, 
+  3.751541743370615*^9}},ExpressionUUID->"8aa21973-8439-4195-b9cb-\
+8384faaf7b36"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"UniformProgress", "[", 
+  RowBox[{"3", ",", " ", 
+   RowBox[{"\"\<ProgressMonitor\>\"", "\[Rule]", 
+    RowBox[{"<|", 
+     RowBox[{"\"\<ShowPercentage\>\"", "\[Rule]", "False"}], "|>"}]}]}], 
+  "]"}]], "Input",
+ CellChangeTimes->{{3.751396984934628*^9, 3.7513969893567457`*^9}, 
+   3.751541736468194*^9},
+ CellLabel->"In[84]:=",ExpressionUUID->"9b8f5e98-deb6-45ee-a24e-f5523a55cdd3"],
+
+Cell[BoxData["42"], "Output",
+ CellChangeTimes->{3.751396992936747*^9, 3.751541749014679*^9},
+ CellLabel->"Out[84]=",ExpressionUUID->"308df8f5-71f5-45d2-a507-8a4b070ccc51"]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["\[OpenCurlyDoubleQuote]CaptionFunction\[CloseCurlyDoubleQuote]", \
+"Subsubsection",
+ CellChangeTimes->{{3.75139689713284*^9, 3.7513969076927547`*^9}, {
+  3.751541756412418*^9, 
+  3.751541759213497*^9}},ExpressionUUID->"a7fbf32c-909f-44e3-95fd-\
+fd9a6bb3aef7"],
+
+Cell["\<\
+Apart from numerical indication of the progress, you may want to tell users \
+what your function is currently doing. Let\[CloseCurlyQuote]s say, your \
+library function spends first 30% of it\[CloseCurlyQuote]s run time gathering \
+data, then 50% processing data and last 20% for formatting the final result. \
+In other words, current status is a function of progress:\
+\>", "Text",
+ CellChangeTimes->{{3.751541766834999*^9, 3.751541912435848*^9}, {
+  3.751541958265489*^9, 
+  3.7515419719152403`*^9}},ExpressionUUID->"2a724e62-61c5-4aa0-af30-\
+1b224ffbd176"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{"capFun", "[", "progress_", "]"}], ":=", 
+   RowBox[{"Which", "[", 
+    RowBox[{
+     RowBox[{"progress", "<", " ", "0.1"}], ",", "\"\<Gathering data...\>\"", 
+     ",", 
+     RowBox[{"progress", ">", "0.8"}], ",", "\"\<Formatting result...\>\"", 
+     ",", "True", ",", "\"\<Processing data...\>\""}], "]"}]}], 
+  ";"}]], "Input",
+ CellChangeTimes->{{3.751541915478752*^9, 3.751542001934825*^9}},
+ CellLabel->"In[85]:=",ExpressionUUID->"809424c3-907a-4dba-a960-65f099a2c755"],
+
+Cell["\<\
+Let\[CloseCurlyQuote]s use this function to generate captions for the \
+progress bar:\
+\>", "Text",
+ CellChangeTimes->{{3.751542029073412*^9, 
+  3.751542041059503*^9}},ExpressionUUID->"8208645d-aeb6-4630-b80f-\
+6c0555b0e35b"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"UniformProgress", "[", 
+  RowBox[{"5", ",", " ", 
+   RowBox[{"\"\<ProgressMonitor\>\"", "->", 
+    RowBox[{"<|", 
+     RowBox[{"\"\<CaptionFunction\>\"", "\[Rule]", "capFun"}], "|>"}]}]}], 
+  "]"}]], "Input",
+ CellChangeTimes->{{3.7515386329298477`*^9, 3.7515386502702513`*^9}, {
+   3.751540959297353*^9, 3.7515409694547863`*^9}, {3.751541559916821*^9, 
+   3.7515415767255096`*^9}, 3.751541929191799*^9, {3.751542053508209*^9, 
+   3.75154206120485*^9}},
+ CellLabel->"In[86]:=",ExpressionUUID->"c13ae2fc-a69f-4b5e-8f6e-d3031d2884f6"],
+
+Cell[BoxData["42"], "Output",
+ CellChangeTimes->{{3.751541587699926*^9, 3.7515415931271*^9}, 
+   3.751542068058936*^9},
+ CellLabel->"Out[86]=",ExpressionUUID->"7389e535-1d91-4f77-8af0-78e3d344bf22"]
+}, Open  ]],
+
+Cell["\<\
+Caption function can be anything as long as it takes one argument and returns \
+a String.\
+\>", "Text",
+ CellChangeTimes->{{3.7515420889676313`*^9, 
+  3.7515421108099003`*^9}},ExpressionUUID->"1c4f685a-bcd1-42ef-adea-\
+761d6efb5373"]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Other examples", "Subsection",
+ CellChangeTimes->{{3.7515421581092787`*^9, 3.7515421616777983`*^9}, {
+  3.7515422018088703`*^9, 
+  3.751542210177351*^9}},ExpressionUUID->"e330938e-49b7-4db7-8fdb-\
+adf2c320305d"],
+
+Cell["\<\
+\[OpenCurlyDoubleQuote]ProgressMonitor\[CloseCurlyDoubleQuote] with title, \
+percentage and captions (uses capFun from previous example, make sure to \
+evaluate):\
+\>", "Text",
+ CellChangeTimes->{{3.751542227476057*^9, 
+  3.751542285847443*^9}},ExpressionUUID->"74e95cc3-9135-43be-a8e1-\
+f7ace18ccc79"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"UniformProgress", "[", 
+  RowBox[{"6", ",", " ", 
+   RowBox[{"\"\<ProgressMonitor\>\"", "->", 
+    RowBox[{"<|", 
+     RowBox[{
+      RowBox[{"\"\<Title\>\"", "\[Rule]", "Automatic"}], ",", 
+      RowBox[{"\"\<ShowPercentage\>\"", "\[Rule]", "True"}], ",", 
+      RowBox[{"\"\<CaptionFunction\>\"", "\[Rule]", "capFun"}]}], "|>"}]}]}], 
+  "]"}]], "Input",
+ CellChangeTimes->{{3.7515422952717333`*^9, 3.75154233020205*^9}},
+ CellLabel->"In[33]:=",ExpressionUUID->"1c801ab0-0f52-42b7-9f0f-b2406d3eaa62"],
+
+Cell[BoxData["42"], "Output",
+ CellChangeTimes->{
+  3.7515423392781878`*^9, 3.7515555550990267`*^9, {3.7515557760550756`*^9, 
+   3.75155580547901*^9}, 3.751555844302751*^9},
+ CellLabel->"Out[33]=",ExpressionUUID->"d34970cb-e475-4963-9e3e-ecbaed786bf4"]
+}, Open  ]],
+
+Cell["Abort a function:", "Text",
+ CellChangeTimes->{{3.751547808112585*^9, 
+  3.7515478128001757`*^9}},ExpressionUUID->"c263ee57-c9af-41f3-b7f8-\
+c15fe4856782"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"UniformProgress", "[", "100", "]"}]], "Input",
+ CellChangeTimes->{{3.751547821419031*^9, 3.751547823088807*^9}},
+ CellLabel->"In[96]:=",ExpressionUUID->"9bd2837e-64c7-40c2-8f81-38d52661c536"],
+
+Cell[BoxData["$Aborted"], "Output",
+ CellChangeTimes->{3.7515515609192247`*^9},
+ CellLabel->"Out[96]=",ExpressionUUID->"90ab2360-379f-4bdf-8a7c-c8520f20dda0"]
+}, Open  ]],
+
+Cell["\<\
+It\[CloseCurlyQuote]s possible for a progress bar to go back, for example if \
+some part of the function must be rerun due to internal error:\
+\>", "Text",
+ CellChangeTimes->{{3.751555018123804*^9, 
+  3.751555060108354*^9}},ExpressionUUID->"65a53786-1bb2-4b27-b62f-\
+991dad3942c3"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"DecreaseProgress", "[", "10", "]"}]], "Input",
+ CellChangeTimes->{{3.751555152065692*^9, 3.751555154094716*^9}, {
+  3.751555187087208*^9, 3.751555190078964*^9}},
+ CellLabel->"In[47]:=",ExpressionUUID->"45a46b44-26b8-4f25-b9dd-d0897dea5b59"],
+
+Cell[BoxData["42"], "Output",
+ CellChangeTimes->{
+  3.751555205979875*^9, 3.751555294923625*^9, 3.751555447816152*^9, 
+   3.751555599168679*^9, {3.751555982548204*^9, 3.7515560109183693`*^9}, 
+   3.75155663335156*^9},
+ CellLabel->"Out[47]=",ExpressionUUID->"727a82a7-47be-4170-ac8a-fdb8dba21f76"]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Initialization code", "Subsection",
+ InitializationCell->True,
+ CellChangeTimes->{{3.751369700126666*^9, 
+  3.7513697172625017`*^9}},ExpressionUUID->"6a610cff-6e3f-4b13-a801-\
+1bc5619f8069"],
+
+Cell[CellGroupData[{
+
+Cell["Compile the source code", "Subsubsection",
+ InitializationCell->True,
+ CellChangeTimes->{{3.75139150845397*^9, 
+  3.751391512776342*^9}},ExpressionUUID->"759be7e2-4a81-453b-b8cb-\
+53eefb74aa28"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"Needs", "[", "\"\<CCompilerDriver`\>\"", "]"}], ";"}], "\n", 
+ RowBox[{
+  RowBox[{"currentDirectory", "=", 
+   RowBox[{"NotebookDirectory", "[", "]"}]}], ";"}], "\n", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"$CurrentFile", "=", "currentDirectory"}], ";"}], 
+  "\[IndentingNewLine]", 
+  RowBox[{"(*", 
+   RowBox[{"Get", " ", "configuration", " ", 
+    RowBox[{"(", 
+     RowBox[{
+      RowBox[{"path", " ", "to", " ", "LLU", " ", "sources"}], ",", 
+      RowBox[{"compilation", " ", "options"}], ",", 
+      RowBox[{"etc", "."}]}], ")"}]}], "*)"}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"Get", "[", 
+    RowBox[{"FileNameJoin", "[", 
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"ParentDirectory", "[", "currentDirectory", "]"}], ",", 
+       "\"\<TestConfig.wl\>\""}], "}"}], "]"}], "]"}], ";"}], 
+  "\[IndentingNewLine]", "\n", 
+  RowBox[{"(*", 
+   RowBox[{"Compile", " ", "the", " ", "test", " ", "library"}], 
+   "*)"}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"lib", "=", 
+   RowBox[{"CCompilerDriver`CreateLibrary", "[", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{"FileNameJoin", "[", 
+       RowBox[{"{", 
+        RowBox[{"currentDirectory", ",", "\"\<ProgressTest.cpp\>\""}], "}"}], 
+       "]"}], "}"}], ",", "\"\<ProgressTest\>\"", ",", "options"}], "]"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"Get", "[", 
+   RowBox[{"FileNameJoin", "[", 
+    RowBox[{"{", 
+     RowBox[{"$LLUSharedDir", ",", "\"\<LibraryLinkUtilities.wl\>\""}], "}"}],
+     "]"}], "]"}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{"RegisterPacletErrors", "[", 
+  RowBox[{"lib", ",", 
+   RowBox[{"<|", "|>"}]}], "]"}]}], "Input",
+ InitializationCell->True,
+ CellChangeTimes->{{3.75136973141927*^9, 3.7513697441112137`*^9}, {
+   3.7513697816158247`*^9, 3.751369841488006*^9}, {3.751370020756031*^9, 
+   3.751370036832384*^9}, 3.751370150685916*^9, {3.7513701842758837`*^9, 
+   3.7513701858106623`*^9}, 3.751372601022505*^9},
+ CellLabel->"In[37]:=",ExpressionUUID->"8d8ffc89-fa90-48f9-b2fe-5e1f44fede66"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData["\<\"/usr/bin/gcc -shared -o \
+\\\"/home/rafal/.Mathematica/SystemFiles/LibraryResources/Linux-x86-64/\
+Working-rafal-asus-27527-1947737152-3/ProgressTest.so\\\" -m64 -x c++ -fPIC \
+-O2 -O2 -std=c++14 -Wall --pedantic -fvisibility=hidden  \
+-I\\\"/home/rafal/Wolfram/XKernel/SystemFiles/IncludeFiles/C\\\" \
+-I\\\"/home/rafal/Wolfram/XKernel/SystemFiles/Links/MathLink/DeveloperKit/\
+Linux-x86-64/CompilerAdditions\\\" \
+-I\\\"/home/rafal/Wolfram/workspace/IMEX/LibraryLinkUtilities/install/include\
+\\\" \\\"/home/rafal/Wolfram/workspace/IMEX/LibraryLinkUtilities/tests/\
+UnitTests/ProgressMonitor/ProgressTest.cpp\\\"  \
+-L\\\"/home/rafal/Wolfram/XKernel/SystemFiles/Links/MathLink/DeveloperKit/\
+Linux-x86-64/CompilerAdditions\\\" \
+-L\\\"/home/rafal/Wolfram/XKernel/SystemFiles/Libraries/Linux-x86-64\\\" -L\\\
+\"/home/rafal/Wolfram/workspace/IMEX/LibraryLinkUtilities/install/lib\\\"  -l\
+\\\"LLU\\\"  2>&1\"\>"], "Print",
+ InitializationCell->True,
+ CellChangeTimes->{
+  3.7515402636286373`*^9, 3.75154093408591*^9, 3.751541549119823*^9, 
+   3.7515424140067863`*^9, {3.751555064173966*^9, 3.7515550899275723`*^9}, 
+   3.751555142427294*^9, 3.75155543045022*^9, 3.75155661591103*^9},
+ CellLabel->
+  "During evaluation of \
+In[37]:=",ExpressionUUID->"4ef75012-f23c-405d-882c-8f9014b1e63d"],
+
+Cell[BoxData["\<\"\"\>"], "Print",
+ InitializationCell->True,
+ CellChangeTimes->{
+  3.7515402636286373`*^9, 3.75154093408591*^9, 3.751541549119823*^9, 
+   3.7515424140067863`*^9, {3.751555064173966*^9, 3.7515550899275723`*^9}, 
+   3.751555142427294*^9, 3.75155543045022*^9, 3.751556616534214*^9},
+ CellLabel->
+  "During evaluation of \
+In[37]:=",ExpressionUUID->"31bd1573-2984-479c-894d-733476b9f865"]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Load functions", "Subsubsection",
+ InitializationCell->True,
+ CellChangeTimes->{{3.7515424275674143`*^9, 
+  3.751542438960186*^9}},ExpressionUUID->"675ccbd0-ec72-4a1a-9661-\
+d16552d1df26"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"UniformProgress", "=", 
+   RowBox[{"SafeLibraryFunction", "[", 
+    RowBox[{"\"\<UniformProgress\>\"", ",", 
+     RowBox[{"{", "Real", "}"}], ",", "Integer", ",", " ", 
+     RowBox[{"\"\<ProgressMonitor\>\"", "\[Rule]", "Automatic"}]}], "]"}]}], 
+  ";"}], "\n", 
+ RowBox[{
+  RowBox[{"PrepareProcessAndFormat", "=", 
+   RowBox[{"SafeLibraryFunction", "[", 
+    RowBox[{"\"\<PrepareProcessAndFormat\>\"", ",", 
+     RowBox[{"{", "Real", "}"}], ",", "Integer", ",", " ", 
+     RowBox[{"\"\<ProgressMonitor\>\"", "\[Rule]", "Automatic"}]}], "]"}]}], 
+  ";"}], "\n", 
+ RowBox[{
+  RowBox[{"DecreaseProgress", "=", 
+   RowBox[{"SafeLibraryFunction", "[", 
+    RowBox[{"\"\<DecreaseProgress\>\"", ",", 
+     RowBox[{"{", "Real", "}"}], ",", "Integer", ",", " ", 
+     RowBox[{"\"\<ProgressMonitor\>\"", "\[Rule]", 
+      RowBox[{"<|", 
+       RowBox[{
+        RowBox[{"\"\<ShowPercentage\>\"", "\[Rule]", "True"}], ",", 
+        RowBox[{"\"\<CaptionFunction\>\"", "\[Rule]", 
+         RowBox[{"(", 
+          RowBox[{
+           RowBox[{"Which", "[", 
+            RowBox[{
+             RowBox[{"#", "<", " ", "0.3"}], ",", "\"\<Gathering data...\>\"",
+              ",", 
+             RowBox[{"#", ">", "0.8"}], ",", "\"\<Formatting result...\>\"", 
+             ",", "True", ",", "\"\<Processing data...\>\""}], "]"}], "&"}], 
+          ")"}]}]}], "|>"}]}]}], "]"}]}], ";"}]}], "Input",
+ InitializationCell->True,
+ CellChangeTimes->{{3.7513703687415667`*^9, 3.7513703816201077`*^9}, {
+   3.751370449204803*^9, 3.751370472629136*^9}, {3.7513715047860737`*^9, 
+   3.751371517515976*^9}, {3.751371630782241*^9, 3.751371633372617*^9}, {
+   3.751372562991775*^9, 3.7513725654603252`*^9}, {3.75138765586685*^9, 
+   3.751387658153194*^9}, {3.7513879050209217`*^9, 3.751387914954103*^9}, {
+   3.751389450240505*^9, 3.7513894686550093`*^9}, {3.751389523265399*^9, 
+   3.7513895611205807`*^9}, {3.7513896057967663`*^9, 
+   3.7513896111029387`*^9}, {3.751389737137278*^9, 3.751389741711521*^9}, {
+   3.7513898413340807`*^9, 3.751389937184472*^9}, {3.751390035380846*^9, 
+   3.7513900723368473`*^9}, {3.7515386174295273`*^9, 
+   3.7515386196802273`*^9}, {3.751542382527347*^9, 3.7515424093914967`*^9}, 
+   3.751555069951002*^9, {3.751555218993367*^9, 3.751555276785935*^9}},
+ CellLabel->"In[44]:=",ExpressionUUID->"e1493ba5-3c94-40be-bc75-39e1024663c6"]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]]
+},
+WindowSize->{1305, 1004},
+WindowMargins->{{Automatic, 224}, {-16, Automatic}},
+FrontEndVersion->"12.0 for Linux x86 (64-bit) (November 15, 2018)",
+StyleDefinitions->"Default.nb"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[CellGroupData[{
+Cell[580, 22, 236, 4, 99, "Title",ExpressionUUID->"40bbd71e-31a4-4bfe-9593-efe64dd6a92b"],
+Cell[819, 28, 168, 3, 36, "Text",ExpressionUUID->"fd6e321a-5063-405e-9625-e8e982207266"],
+Cell[990, 33, 155, 3, 70, "Chapter",ExpressionUUID->"90816697-4a4e-4137-a536-514e555d77cd"],
+Cell[1148, 38, 151, 3, 59, "Chapter",ExpressionUUID->"61ae3398-66b4-4b88-9805-72c0c19cce64"],
+Cell[CellGroupData[{
+Cell[1324, 45, 157, 3, 59, "Chapter",ExpressionUUID->"a090b3fb-33e4-4ff7-8992-8b95f80231fd"],
+Cell[CellGroupData[{
+Cell[1506, 52, 186, 3, 55, "Subsection",ExpressionUUID->"9dbefded-fe14-44ed-a0d9-9128e5ab328f"],
+Cell[1695, 57, 592, 13, 60, "Text",ExpressionUUID->"f1713439-beca-443c-89cf-e4bdce992488"],
+Cell[2290, 72, 1144, 19, 31, "Input",ExpressionUUID->"e6b8c376-3ae5-45b0-bdeb-fa64e6bba3c2"],
+Cell[3437, 93, 211, 5, 36, "Text",ExpressionUUID->"450a742e-3a93-4a91-ac8a-788247d59d6f"],
+Cell[CellGroupData[{
+Cell[3673, 102, 262, 4, 31, "Input",ExpressionUUID->"ee42ec9c-b25e-418c-a3c0-940ab1722665"],
+Cell[3938, 108, 317, 5, 35, "Output",ExpressionUUID->"23bcdf68-2391-41bd-ae49-b28a98ef71e2"]
+}, Open  ]],
+Cell[4270, 116, 440, 8, 36, "Text",ExpressionUUID->"4737378a-f6d3-48bd-a2ce-1714db024014"],
+Cell[CellGroupData[{
+Cell[4735, 128, 203, 3, 46, "Subsubsection",ExpressionUUID->"1e02dc36-acdb-4dd2-9628-57d6293c6185"],
+Cell[4941, 133, 378, 8, 36, "Text",ExpressionUUID->"5658f195-4cfb-402d-a8d6-282c0d618145"],
+Cell[CellGroupData[{
+Cell[5344, 145, 499, 10, 31, "Input",ExpressionUUID->"d7745514-8ff3-4b6a-b555-0b9b8fbe7bb6"],
+Cell[5846, 157, 272, 4, 35, "Output",ExpressionUUID->"bd8da6bb-1311-437e-9d71-fe25efe72156"]
+}, Open  ]],
+Cell[6133, 164, 226, 4, 36, "Text",ExpressionUUID->"f3862c0a-5834-48c2-abc1-24578c515369"],
+Cell[CellGroupData[{
+Cell[6384, 172, 515, 10, 31, "Input",ExpressionUUID->"98cf2366-64d7-47d7-a659-5d30ee1f715e"],
+Cell[6902, 184, 202, 3, 35, "Output",ExpressionUUID->"1bc7ad3b-5333-4f19-b8d4-6d11cc0878ea"]
+}, Open  ]],
+Cell[7119, 190, 316, 7, 36, "Text",ExpressionUUID->"3058cab8-9847-4339-988a-fa5c80973d25"],
+Cell[CellGroupData[{
+Cell[7460, 201, 449, 10, 31, "Input",ExpressionUUID->"fd167e02-58be-4d80-9cdc-b2504ef89ba9"],
+Cell[7912, 213, 6270, 127, 67, "Output",ExpressionUUID->"25fcfb8d-82be-41c0-9274-c686259635f9"]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[14231, 346, 215, 4, 46, "Subsubsection",ExpressionUUID->"9cd78cdf-37fe-4e66-a733-03ee027615ac"],
+Cell[14449, 352, 366, 8, 36, "Text",ExpressionUUID->"8aa21973-8439-4195-b9cb-8384faaf7b36"],
+Cell[CellGroupData[{
+Cell[14840, 364, 408, 9, 31, "Input",ExpressionUUID->"9b8f5e98-deb6-45ee-a24e-f5523a55cdd3"],
+Cell[15251, 375, 172, 2, 35, "Output",ExpressionUUID->"308df8f5-71f5-45d2-a507-8a4b070ccc51"]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[15472, 383, 265, 5, 46, "Subsubsection",ExpressionUUID->"a7fbf32c-909f-44e3-95fd-fd9a6bb3aef7"],
+Cell[15740, 390, 569, 10, 60, "Text",ExpressionUUID->"2a724e62-61c5-4aa0-af30-1b224ffbd176"],
+Cell[16312, 402, 522, 12, 31, "Input",ExpressionUUID->"809424c3-907a-4dba-a960-65f099a2c755"],
+Cell[16837, 416, 235, 6, 36, "Text",ExpressionUUID->"8208645d-aeb6-4630-b80f-6c0555b0e35b"],
+Cell[CellGroupData[{
+Cell[17097, 426, 556, 11, 31, "Input",ExpressionUUID->"c13ae2fc-a69f-4b5e-8f6e-d3031d2884f6"],
+Cell[17656, 439, 198, 3, 35, "Output",ExpressionUUID->"7389e535-1d91-4f77-8af0-78e3d344bf22"]
+}, Open  ]],
+Cell[17869, 445, 243, 6, 36, "Text",ExpressionUUID->"1c4f685a-bcd1-42ef-adea-761d6efb5373"]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[18161, 457, 217, 4, 55, "Subsection",ExpressionUUID->"e330938e-49b7-4db7-8fdb-adf2c320305d"],
+Cell[18381, 463, 312, 7, 36, "Text",ExpressionUUID->"74e95cc3-9135-43be-a8e1-f7ace18ccc79"],
+Cell[CellGroupData[{
+Cell[18718, 474, 525, 11, 31, "Input",ExpressionUUID->"1c801ab0-0f52-42b7-9f0f-b2406d3eaa62"],
+Cell[19246, 487, 252, 4, 35, "Output",ExpressionUUID->"d34970cb-e475-4963-9e3e-ecbaed786bf4"]
+}, Open  ]],
+Cell[19513, 494, 161, 3, 36, "Text",ExpressionUUID->"c263ee57-c9af-41f3-b7f8-c15fe4856782"],
+Cell[CellGroupData[{
+Cell[19699, 501, 215, 3, 31, "Input",ExpressionUUID->"9bd2837e-64c7-40c2-8f81-38d52661c536"],
+Cell[19917, 506, 158, 2, 35, "Output",ExpressionUUID->"90ab2360-379f-4bdf-8a7c-c8520f20dda0"]
+}, Open  ]],
+Cell[20090, 511, 291, 6, 36, "Text",ExpressionUUID->"65a53786-1bb2-4b27-b62f-991dad3942c3"],
+Cell[CellGroupData[{
+Cell[20406, 521, 264, 4, 31, "Input",ExpressionUUID->"45a46b44-26b8-4f25-b9dd-d0897dea5b59"],
+Cell[20673, 527, 296, 5, 35, "Output",ExpressionUUID->"727a82a7-47be-4170-ac8a-fdb8dba21f76"]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[21018, 538, 196, 4, 55, "Subsection",ExpressionUUID->"6a610cff-6e3f-4b13-a801-1bc5619f8069",
+ InitializationCell->True],
+Cell[CellGroupData[{
+Cell[21239, 546, 200, 4, 46, "Subsubsection",ExpressionUUID->"759be7e2-4a81-453b-b8cb-53eefb74aa28",
+ InitializationCell->True],
+Cell[CellGroupData[{
+Cell[21464, 554, 2057, 53, 255, "Input",ExpressionUUID->"8d8ffc89-fa90-48f9-b2fe-5e1f44fede66",
+ InitializationCell->True],
+Cell[CellGroupData[{
+Cell[23546, 611, 1306, 22, 180, "Print",ExpressionUUID->"4ef75012-f23c-405d-882c-8f9014b1e63d",
+ InitializationCell->True],
+Cell[24855, 635, 401, 8, 25, "Print",ExpressionUUID->"31bd1573-2984-479c-894d-733476b9f865",
+ InitializationCell->True]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[25317, 650, 194, 4, 46, "Subsubsection",ExpressionUUID->"675ccbd0-ec72-4a1a-9661-d16552d1df26",
+ InitializationCell->True],
+Cell[25514, 656, 2370, 47, 140, "Input",ExpressionUUID->"e1493ba5-3c94-40be-bc75-39e1024663c6",
+ InitializationCell->True]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]]
+}
+]
+*)
+
