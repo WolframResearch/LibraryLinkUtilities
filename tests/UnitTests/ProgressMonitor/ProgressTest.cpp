@@ -99,29 +99,29 @@ LIBRARY_LINK_FUNCTION(DecreaseProgress) {
 	try {
 		MArgumentManager mngr(Argc, Args, Res);
 		auto totalTime = mngr.getReal(0);
-		auto pm = mngr.getProgressMonitor(0.1);
+		auto pm = mngr.getProgressMonitor(0.01);
 
 		auto prepTime = std::chrono::milliseconds(static_cast<int>(1000 * 0.3 * totalTime));
 		std::this_thread::sleep_for(prepTime); // Prepare data
 		pm.set(0.3);
 
 		// How much time to sleep for one iteration of data processing
-		auto procTime = std::chrono::milliseconds(static_cast<int>(1000 * 0.1 * totalTime));
+		auto procTime = std::chrono::milliseconds(static_cast<int>(1000 * 0.01 * totalTime));
 		bool shouldRepeat = true;
 		bool processingDone = false;
 		while (!processingDone) {
-			for (int i = 0; i < 5; ++i) {
+			for (int i = 0; i < 50; ++i) {
 				// Process data
 				++pm;
 				std::this_thread::sleep_for(procTime);
 
-				// Simulate a failure in 4th step of data processing. We have to start over, so progress monitor value is decreased.
-				if (i == 3 && shouldRepeat) {
+				// Simulate a failure in the middle of data processing. We have to start over, so progress monitor value is decreased.
+				if (i == 35 && shouldRepeat) {
 					shouldRepeat = false;
 					pm.set(0.3);
 					break;
 				}
-				if (i == 4) {
+				if (i == 49) {
 					processingDone = true;
 				}
 			}
