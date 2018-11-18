@@ -163,7 +163,7 @@ Module[{errorHandler, pmOptValue, pmOpts, newParams, f},
 		    l = Developer`ToPackedArray[{0.0}];
 		    {localParams, localPMOpts} = parseLibraryFunctionArgs[##];
 		    localPMOpts = Merge[{localPMOpts, pmOpts}, First];
-		    pnl = preparePanel[Refresh[l, UpdateInterval -> 0.02], fname,  localPMOpts];
+		    pnl = preparePanel[Refresh[l, UpdateInterval -> .1], fname,  localPMOpts];
 		    Monitor[f @@ Append[localParams, l], pnl]
 	    ]&
     ]
