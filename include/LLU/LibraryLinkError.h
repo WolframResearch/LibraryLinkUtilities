@@ -56,7 +56,7 @@ namespace LibraryLinkUtils {
 		extern const std::string NoError; 			///< same as LIBRARY_NO_ERROR
 
 		// MArgument errors:
-		extern const std::string MArgumentInitError; 		///< MArgumentManager construction failed
+		extern const std::string MArgumentLibDataError; 		///< WolframLibraryData is not set
 		extern const std::string MArgumentIndexError; 		///< wrong argument index
 		extern const std::string MArgumentNumericArrayError; 	///< error involving NumericArray argument
 		extern const std::string MArgumentTensorError; 		///< error involving Tensor argument
@@ -124,6 +124,9 @@ namespace LibraryLinkUtils {
 		// MArgument errors:
 		extern const std::string ArgumentCreateNull;    	///< Trying to create Argument object from nullptr
 		extern const std::string ArgumentAddNodeMArgument;  ///< Trying to add DataStore Node of type MArgument (aka MType_Undef)
+
+		// ProgressMonitor errors:
+		extern const std::string Aborted;    	///< Computation aborted by the user
 	}
 
 	/**

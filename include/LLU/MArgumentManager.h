@@ -26,6 +26,7 @@
 #include "LLU/Containers/Tensor.h"
 #include "LLU/Containers/Passing/Automatic.hpp"
 #include "LLU/MArgument.h"
+#include "LLU/ProgressMonitor.h"
 
 namespace LibraryLinkUtils {
 
@@ -365,6 +366,13 @@ namespace LibraryLinkUtils {
 		 **/
 		template<MArgumentType T, template<typename> class PassingMode = Passing::Automatic>
 		void setDataList(const DataList<T, PassingMode>& ds);
+
+		/**
+		 * @brief
+		 * @param step
+		 * @return
+		 */
+		ProgressMonitor getProgressMonitor(double step = .1) const;
 
 	private:
 		// Efficient and memory-safe type for storing string arguments from LibraryLink

@@ -24,7 +24,7 @@ namespace LibraryLinkUtils {
 	MArgumentManager::MArgumentManager(mint Argc, MArgument* Args, MArgument& Res) :
 			argc(Argc), args(Args), res(Res) {
 		if (!libData)
-			ErrorManager::throwException(LLErrorName::MArgumentInitError);
+			ErrorManager::throwException(LLErrorName::MArgumentLibDataError);
 		initStringArgs();
 	}
 
@@ -140,6 +140,12 @@ namespace LibraryLinkUtils {
 		for (int i = 0; i < argc; ++i) {
 			stringArgs.emplace_back(nullptr, libData->UTF8String_disown);
 		}
+	}
+
+	ProgressMonitor MArgumentManager::getProgressMonitor(double step) const {
+		auto pmIndex = argc - 1;
+		Tensor<double> sharedIndicator = getTensor<double>(pmIndex);
+		return ProgressMonitor { std::move(sharedIndicator), step };
 	}
 
 } /* namespace LibraryLinkUtils */

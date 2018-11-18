@@ -31,7 +31,7 @@ namespace LibraryLinkUtils {
 			{ LLErrorName::NoError,			"No errors occurred." },
 
 			// MArgument errors:
-			{ LLErrorName::MArgumentInitError,		"MArgumentManager construction failed." },
+			{ LLErrorName::MArgumentLibDataError,		"WolframLibraryData is not set." },
 			{ LLErrorName::MArgumentIndexError,		"An error was caused by an incorrect argument index." },
 			{ LLErrorName::MArgumentNumericArrayError,	"An error was caused by a NumericArray argument." },
 			{ LLErrorName::MArgumentTensorError,	"An error was caused by a Tensor argument." },
@@ -99,6 +99,9 @@ namespace LibraryLinkUtils {
            // MArgument errors:
            { LLErrorName::ArgumentCreateNull,       "Trying to create Argument object from nullptr" },
            { LLErrorName::ArgumentAddNodeMArgument, "Trying to add DataStore Node of type MArgument (aka MType_Undef)" },
+
+           // ProgressMonitor errors:
+           { LLErrorName::Aborted, "Computation aborted by the user." },
 		});
 		return errMap;
 	}
@@ -203,7 +206,7 @@ namespace LibraryLinkUtils {
 		LLU_DEFINE_ERROR_NAME(TypeError);
 		LLU_DEFINE_ERROR_NAME(NoError);
 
-		LLU_DEFINE_ERROR_NAME(MArgumentInitError);
+		LLU_DEFINE_ERROR_NAME(MArgumentLibDataError);
 		LLU_DEFINE_ERROR_NAME(MArgumentIndexError);
 		LLU_DEFINE_ERROR_NAME(MArgumentNumericArrayError);
 		LLU_DEFINE_ERROR_NAME(MArgumentTensorError);
@@ -264,6 +267,8 @@ namespace LibraryLinkUtils {
 
 		LLU_DEFINE_ERROR_NAME(ArgumentCreateNull);
 		LLU_DEFINE_ERROR_NAME(ArgumentAddNodeMArgument);
+
+		LLU_DEFINE_ERROR_NAME(Aborted);
 	}
 
 } /* namespace LibraryLinkUtils */
