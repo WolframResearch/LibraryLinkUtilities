@@ -8,8 +8,11 @@
 
 #include "LLU/LibraryLinkFunctionMacro.h"
 #include "LLU/LLU.h"
+#include "LLU/ProgressMonitor.h"
 
 using namespace std::chrono_literals;
+
+using LibraryLinkUtils::ProgressMonitor;
 
 EXTERN_C DLLEXPORT int WolframLibrary_initialize(WolframLibraryData libData) {
 	MArgumentManager::setLibraryData(libData);
@@ -46,6 +49,32 @@ LIBRARY_LINK_FUNCTION(UniformProgress) {
 	return err;
 }
 
+/**
+ * @brief A function similar to "UniformProgress" but it does not report progress. It only checks for Abort.
+ *
+ * This function takes one argument:
+ * 1. (Real) Total time (in seconds) for the function to complete
+ */
+LIBRARY_LINK_FUNCTION(NoProgressButAbortable) {
+	auto err = LLErrorCode::NoError;
+	try {
+		MArgumentManager mngr(Argc, Args, Res);
+		auto totalTime = mngr.getReal(0);
+		auto numOfSteps = static_cast<int>(std::ceil(totalTime * 10));
+		for (int i = 0; i < numOfSteps; ++i) {
+			std::this_thread::sleep_for(100ms);
+			ProgressMonitor::checkAbort();
+		}
+		mngr.setInteger(42);
+	}
+	catch (const LibraryLinkError& e) {
+		err = e.which();
+	}
+	catch (...) {
+		err = LLErrorCode::FunctionError;
+	}
+	return err;
+}
 
 /**
  * @brief Simple function that is divided into 3 phases: data preparation (20% of time), data processing (50%) and formatting the result.

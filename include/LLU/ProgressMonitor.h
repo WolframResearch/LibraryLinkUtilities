@@ -29,7 +29,7 @@ namespace LibraryLinkUtils {
 
 		void setStep(double stepValue);
 
-		void checkAbort() const;
+		static void checkAbort();
 
 		ProgressMonitor& operator++();
 

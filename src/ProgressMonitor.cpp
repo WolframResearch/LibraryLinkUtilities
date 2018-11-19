@@ -34,7 +34,7 @@ namespace LibraryLinkUtils {
 		checkAbort();
 	}
 
-	void ProgressMonitor::checkAbort() const {
+	void ProgressMonitor::checkAbort() {
 		auto libData = LibDataHolder::getLibraryData();
 		if (!libData) {
 			ErrorManager::throwException(LLErrorName::MArgumentLibDataError);
