@@ -13,7 +13,7 @@ EXTERN_C DLLEXPORT int getNthRealFromTR1(WolframLibraryData libData, mint Argc, 
 		auto t = mngr.getTensor<double>(0);
 		auto i = mngr.getInteger<mint>(1) - 1;
 
-		mngr.setReal(t[i]);
+		mngr.setReal(t.at(i));
 	}
 	catch (const LibraryLinkError& e) {
 		err = e.which();
@@ -34,7 +34,7 @@ EXTERN_C DLLEXPORT int getNthRealFromTR2(WolframLibraryData libData, mint Argc, 
 		auto i = mngr.getInteger<mint>(1) - 1;
 		auto j = mngr.getInteger<mint>(2) - 1;
 
-		mngr.setReal(t[ { i, j }]);
+		mngr.setReal(t[{ i, j }]);
 
 	}
 	catch (const LibraryLinkError& e) {

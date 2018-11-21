@@ -20,6 +20,22 @@ Test[
 ]
 
 Test[
+	EchoFirst[{1, 2, 3}]
+	,
+	1
+	,
+	TestID->"TensorTestSuite-20181121-O5M3H2"
+]
+
+Test[
+	EchoLast[{1, 2, 3}]
+	,
+	3
+	,
+	TestID->"TensorTestSuite-20181121-W3H7Z7"
+]
+
+Test[
 	Get[FileNameJoin[{currentDirectory, "CreateMatrix", "CreateMatrix.wl"}]];
 	CreateMatrix[3,4]
 	,
