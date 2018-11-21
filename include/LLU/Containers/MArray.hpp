@@ -35,14 +35,20 @@ namespace LibraryLinkUtils {
 	template<typename T>
 	class MArray : public MArrayBase {
 	public:
-		/// Iterator type
-		using iterator = T*;
-
-		/// Constant iterator type
-		using const_iterator = const T*;
-
 		/// Type of elements stored
 		using value_type = T;
+
+		/// Iterator type
+		using iterator = value_type*;
+
+		/// Constant iterator type
+		using const_iterator = const value_type*;
+
+		/// Reference type
+		using reference = value_type&;
+
+		/// Constant reference type
+		using const_reference = const value_type&;
 
 		MArray() = default;
 
@@ -136,46 +142,82 @@ namespace LibraryLinkUtils {
 		/**
 		 *	@brief 		Get a reference to the data element at given position
 		 *	@param[in]	index - position of desired data element
-		 *	@throws		indexError() - if \c index is out-of-bounds
 		 **/
 		T& operator[](mint index) {
-			return at(index);
+			return *(begin() + index);
 		}
 
 		/**
 		 *	@brief 		Get a constant reference to the data element at given position
 		 *	@param[in]	index - position of desired data element
-		 *	@throws		indexError() - if \c index is out-of-bounds
 		 **/
 		const T& operator[](mint index) const {
-			return at(index);
+			return *(cbegin() + index);
 		}
 
 		/**
 		 *	@brief 		Get a reference to the data element at given position in a multidimensional container
 		 *	@param[in]	indices - vector with coordinates of desired data element
-		 *	@throws		indexError() - if \c indices are out-of-bounds
 		 **/
 		T& operator[](const std::vector<mint>& indices) {
-			return at(getIndex(indices));
+			return  (*this)[getIndex(indices)];
 		}
 
 		/**
 		 *	@brief 		Get a constant reference to the data element at given position in a multidimensional container
 		 *	@param[in]	indices - vector with coordinates of desired data element
-		 *	@throws		indexError() - if \c indices are out-of-bounds
 		 **/
 		const T& operator[](const std::vector<mint>& indices) const {
-			return at(getIndex(indices));
+			return  (*this)[getIndex(indices)];
+		}
+
+		/**
+		 *	@brief 		Get a reference to the data element at given position with bound checking
+		 *	@param[in]	index - position of desired data element
+		 *	@throws		indexError() - if \c index is out-of-bounds
+		 **/
+		T& at(mint index);
+
+		/**
+		 *	@brief 		Get a constant reference to the data element at given position with bound checking
+		 *	@param[in]	index - position of desired data element
+		 *	@throws		indexError() - if \c index is out-of-bounds
+		 **/
+		const T& at(mint index) const;
+
+		/**
+		 * @brief 	Get reference to the first element.
+		 * @note 	For empty container the behavior is undefined.
+		 */
+		reference front() {
+			return *begin();
+		}
+
+		/**
+		 * @brief 	Get constant reference to the first element.
+		 * @note 	For empty container the behavior is undefined.
+		 */
+		const_reference front() const {
+			return *cbegin();
+		}
+
+		/**
+		 * @brief 	Get reference to the last element.
+		 * @note 	For empty container the behavior is undefined.
+		 */
+		reference back() {
+			return *(end() - 1);
+		}
+
+		/**
+		 * @brief 	Get constant reference to the last element.
+		 * @note 	For empty container the behavior is undefined.
+		 */
+		const_reference back() const {
+			return *(cend() - 1);
 		}
 
 	private:
-		///  @copydoc MArray::operator[](mint)
-		T& at(mint index);
-
-		///  @copydoc MArray::operator[](mint)const
-		const T& at(mint index) const;
-
 		/**
 		 *	@brief	Get raw pointer to underlying data
 		 **/
@@ -186,14 +228,14 @@ namespace LibraryLinkUtils {
 	T& MArray<T>::at(mint index) {
 		if (index >= flattenedLength)
 			indexError();
-		return *(begin() + index);
+		return (*this)[index];
 	}
 
 	template<typename T>
 	const T& MArray<T>::at(mint index) const {
 		if (index >= flattenedLength)
 			indexError();
-		return *(cbegin() + index);
+		return (*this)[index];
 	}
 
 	/**
