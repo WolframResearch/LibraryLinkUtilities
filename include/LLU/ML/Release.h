@@ -10,6 +10,8 @@
 #include <functional>
 
 #include "mathlink.h"
+#include "LLU/Utilities.hpp"
+
 
 namespace LibraryLinkUtils {
 
@@ -70,12 +72,12 @@ namespace LibraryLinkUtils {
 
 		template<typename T>
 		typename ReleaseArray<T>::Func ReleaseArray<T>::Release  = [] (MLINK, T*, int*, char**, int) {
-			static_assert(sizeof(T) < 0, "Trying to use ML::ReleaseArray<T>::Release for unsupported type T");
+			static_assert(dependent_false_v<T>, "Trying to use ML::ReleaseArray<T>::Release for unsupported type T");
 		};
 
 		template<typename T>
 		typename ReleaseList<T>::Func ReleaseList<T>::Release  = [] (MLINK, T*, int) {
-			static_assert(sizeof(T) < 0, "Trying to use ML::ReleaseList<T>::Release for unsupported type T");
+			static_assert(dependent_false_v<T>, "Trying to use ML::ReleaseList<T>::Release for unsupported type T");
 		};
 
 #ifndef _WIN32

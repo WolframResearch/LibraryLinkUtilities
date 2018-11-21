@@ -11,7 +11,8 @@
 
 #include "mathlink.h"
 
-#include "../LibraryLinkError.h"
+#include "LLU/LibraryLinkError.h"
+#include "LLU/Utilities.hpp"
 
 namespace LibraryLinkUtils {
 
@@ -63,19 +64,19 @@ namespace LibraryLinkUtils {
 
 		template<typename T>
 		typename PutArray<T>::Func PutArray<T>::ArrayF = [] (MLINK, const T*, const int*, const char**, int) {
-			static_assert(sizeof(T) < 0, "Trying to use ML::PutArray<T> for unsupported type T");
+			static_assert(dependent_false_v<T>, "Trying to use ML::PutArray<T> for unsupported type T");
 			return 0;
 		};
 
 		template<typename T>
 		typename PutList<T>::Func PutList<T>::ListF = [] (MLINK, const T*, int) {
-			static_assert(sizeof(T) < 0, "Trying to use ML::PutList<T> for unsupported type T");
+			static_assert(dependent_false_v<T>, "Trying to use ML::PutList<T> for unsupported type T");
 			return 0;
 		};
 
 		template<typename T>
 		typename PutScalar<T>::Func PutScalar<T>::ScalarF = [] (MLINK, T) {
-			static_assert(sizeof(T) < 0, "Trying to use ML::PutScalar<T> for unsupported type T");
+			static_assert(dependent_false_v<T>, "Trying to use ML::PutScalar<T> for unsupported type T");
 			return 0;
 		};
 

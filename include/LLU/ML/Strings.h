@@ -12,8 +12,9 @@
 
 #include "mathlink.h"
 
-#include "../LibraryLinkError.h"
-#include "EncodingTraits.hpp"
+#include "LLU/LibraryLinkError.h"
+#include "LLU/ML/EncodingTraits.hpp"
+#include "LLU/Utilities.hpp"
 
 namespace LibraryLinkUtils {
 
@@ -100,18 +101,18 @@ namespace LibraryLinkUtils {
 
 			template<typename T>
 			static void put(MLINK, const T*, int) {
-				static_assert(sizeof(T) == 0, "Trying to use ML::String<Encoding::Undefined>::put");
+				static_assert(dependent_false_v<T>, "Trying to use ML::String<Encoding::Undefined>::put");
 			}
 
 			template<typename T = char>
 			static T* get(MLINK) {
-				static_assert(sizeof(T) == 0, "Trying to use ML::String<Encoding::Undefined>::get");
+				static_assert(dependent_false_v<T>, "Trying to use ML::String<Encoding::Undefined>::get");
 				return nullptr;
 			}
 
 			template<typename T>
 			static std::basic_string<T> getString(MLINK) {
-				static_assert(sizeof(T) == 0, "Trying to use ML::String<Encoding::Undefined>::getString");
+				static_assert(dependent_false_v<T>, "Trying to use ML::String<Encoding::Undefined>::getString");
 				return {};
 			}
 		};

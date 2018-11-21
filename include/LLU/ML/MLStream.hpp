@@ -829,7 +829,7 @@ namespace LibraryLinkUtils {
 	template<ML::Encoding EIn, ML::Encoding EOut>
 	template<typename T>
 	auto MLStream<EIn, EOut>::operator<<(T) -> ML::ScalarNotSupportedTypeQ<T, MLStream&> {
-		static_assert(sizeof(T) < 0, "Calling operator<< with unsupported type.");
+		static_assert(dependent_false_v<T>, "Calling operator<< with unsupported type.");
 		return *this;
 	}
 
@@ -1001,7 +1001,7 @@ namespace LibraryLinkUtils {
 	template<ML::Encoding EIn, ML::Encoding EOut>
 	template<typename T>
 	auto MLStream<EIn, EOut>::operator>>(T&) -> ML::ScalarNotSupportedTypeQ<T, MLStream&> {
-		static_assert(sizeof(T) < 0, "Calling operator>> with unsupported type.");
+		static_assert(dependent_false_v<T>, "Calling operator>> with unsupported type.");
 		return *this;
 	}
 

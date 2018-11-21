@@ -64,6 +64,19 @@ namespace LibraryLinkUtils {
 	template<typename... Ts>
 	void Unused(Ts&&...) {}
 
+	/**
+	 * @brief	Get a type that inherits from false_type and ignores the template parameter completely
+	 * @tparam 	T - any type
+	 */
+	template<typename T>
+	struct dependent_false : std::false_type {};
+
+	/**
+	 * @brief	Compile-time boolean constant false that "depends" on a template parameter.
+	 * Useful utility for static_assert.
+	 */
+	template<typename T>
+	constexpr bool dependent_false_v = dependent_false<T>::value;
 
 	/// Utility structure that matches an MNumericArray data type with corresponding C++ type
 	template<numericarray_data_t>

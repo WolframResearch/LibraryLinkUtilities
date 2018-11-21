@@ -13,8 +13,9 @@
 
 #include "mathlink.h"
 
-#include "../LibraryLinkError.h"
-#include "Release.h"
+#include "LLU/LibraryLinkError.h"
+#include "LLU/ML/Release.h"
+#include "LLU/Utilities.hpp"
 
 namespace LibraryLinkUtils {
 
@@ -78,19 +79,19 @@ namespace LibraryLinkUtils {
 
 		template<typename T>
 		typename GetArray<T>::Func GetArray<T>::ArrayF  = [] (MLINK, T**, int**, char***, int*) {
-			static_assert(sizeof(T) < 0, "Trying to use ML::GetArray<T> for unsupported type T");
+			static_assert(dependent_false_v<T>, "Trying to use ML::GetArray<T> for unsupported type T");
 			return 0;
 		};
 
 		template<typename T>
 		typename GetList<T>::Func GetList<T>::ListF  = [] (MLINK) {
-			static_assert(sizeof(T) < 0, "Trying to use ML::GetList<T> for unsupported type T");
+			static_assert(dependent_false_v<T>, "Trying to use ML::GetList<T> for unsupported type T");
 			return 0;
 		};
 
 		template<typename T>
 		typename GetScalar<T>::Func GetScalar<T>::ScalarF = [] (MLINK, T*) {
-			static_assert(sizeof(T) < 0, "Trying to use ML::GetScalar<T> for unsupported type T");
+			static_assert(dependent_false_v<T>, "Trying to use ML::GetScalar<T> for unsupported type T");
 			return 0;
 		};
 
