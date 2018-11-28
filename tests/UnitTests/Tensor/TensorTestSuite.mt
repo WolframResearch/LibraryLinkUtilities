@@ -36,6 +36,26 @@ Test[
 ]
 
 Test[
+	r = RandomInteger[1000, {10, 5, 20}];
+	EchoElement[NumericArray[r, "Integer64"], {3, 0, 12}]
+	,
+	r[[4, 1, 13]]
+	,
+	TestID->"TensorTestSuite-20181121-W3gsdfgs"
+]
+
+Test[
+	r = RandomInteger[1000, {10, 5, 20}];
+	Quiet @ EchoElement[NumericArray[r, "Integer64"], {3, 5, 12}]
+	,
+	LibraryFunctionError["LIBRARY_USER_ERROR", n_?IntegerQ]
+	,
+	SameTest -> MatchQ
+	,
+	TestID->"TensorTestSuite-20181121-asdgsdf"
+]
+
+Test[
 	Get[FileNameJoin[{currentDirectory, "CreateMatrix", "CreateMatrix.wl"}]];
 	CreateMatrix[3,4]
 	,
