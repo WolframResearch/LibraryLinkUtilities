@@ -37,16 +37,20 @@ namespace LibraryLinkUtils {
 		}
 	}
 
-
-	mint MArrayBase::getIndex(const std::vector<mint>& indices) const {
+	void MArrayBase::checkIndices(const std::vector<mint>& indices) const {
 		if (indices.size() != static_cast<std::make_unsigned_t<mint>>(rank()))
 			indexError();
-		mint flatIndex = 0;
 		auto dimsIt = dims.cbegin();
-		auto offset = offsets.cbegin();
 		for (auto idx : indices) {
 			if (idx < 0 || idx >= *dimsIt++)
 				indexError();
+		}
+	}
+
+	mint MArrayBase::getIndex(const std::vector<mint>& indices) const {
+		mint flatIndex = 0;
+		auto offset = offsets.cbegin();
+		for (auto idx : indices) {
 			flatIndex += idx * (*offset++);
 		}
 		return flatIndex;

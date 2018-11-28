@@ -152,9 +152,15 @@ namespace LibraryLinkUtils {
 		/**
 		 *	@brief 		Convert coordinates of an element in a multidimensional MArray to the corresponding index in a flat list of elements
 		 *	@param[in]	indices - vector with coordinates of desired data element
-		 *	@throws		indexError() - if \c indices are out-of-bounds
 		 **/
 		mint getIndex(const std::vector<mint>& indices) const;
+
+		/**
+		 *	@brief 		Check if given coordinates are valid for this container
+		 *	@param[in]	indices - vector with coordinates of desired data element
+		 *	@throws		indexError() - if \c indices are out-of-bounds
+		 **/
+		void checkIndices(const std::vector<mint>& indices) const;
 
 		/**
 		 *   @brief 	Purely virtual method for throwing exception concerning index validity within the container

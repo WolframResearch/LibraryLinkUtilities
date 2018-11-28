@@ -186,6 +186,20 @@ namespace LibraryLinkUtils {
 		const T& at(mint index) const;
 
 		/**
+		 *	@brief 		Get a reference to the data element at given position in a multidimensional container
+		 *	@param[in]	indices - vector with coordinates of desired data element
+		 *	@throws		indexError() - if \p indices are out-of-bounds
+		 **/
+		T& at(const std::vector<mint>& indices);
+
+		/**
+		 *	@brief 		Get a constant reference to the data element at given position in a multidimensional container
+		 *	@param[in]	indices - vector with coordinates of desired data element
+		 *	@throws		indexError() - if \p indices are out-of-bounds
+		 **/
+		const T& at(const std::vector<mint>& indices) const;
+
+		/**
 		 * @brief 	Get reference to the first element.
 		 * @note 	For empty container the behavior is undefined.
 		 */
@@ -236,6 +250,18 @@ namespace LibraryLinkUtils {
 		if (index >= flattenedLength)
 			indexError();
 		return (*this)[index];
+	}
+
+	template<typename T>
+	T& MArray<T>::at(const std::vector<mint>& indices) {
+		checkIndices(indices);
+		return  (*this)[getIndex(indices)];
+	}
+
+	template<typename T>
+	const T& MArray<T>::at(const std::vector<mint>& indices) const {
+		checkIndices(indices);
+		return  (*this)[getIndex(indices)];
 	}
 
 	/**
