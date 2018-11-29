@@ -73,7 +73,7 @@ Block[{name = Select[$CorePacletFailureLUT, MatchQ[#, {errorCode, _}] &]},
 (* ------------------------------------------------------------------------- *)
 
 $ProgressMonitorOptions = <|
-	"Title" -> None,
+	"Title" -> Automatic,
 	"ShowPercentage" -> True,
 	"CaptionFunction" -> None
 |>;
@@ -83,9 +83,6 @@ getPercentage[x_] := ToString[Round[100 * First[x]]] <> "%";
 
 validateTitle[rawTitle_, fname_?StringQ] :=
 Switch[rawTitle,
-	None,
-	Nothing
-	,
 	Automatic,
 	fname
 	,
@@ -96,21 +93,6 @@ Switch[rawTitle,
 	Throw @ CreatePacletFailure["InvalidProgMonTitle", "MessageParameters" -> <|"Title" -> rawTitle|>]
 ];
 
-Attributes[preparePanel] = { HoldFirst };
-preparePanel[progIndicator_, fname_?StringQ, opts_?AssociationQ] :=
-Block[{topRow, title, percentage},
-	title = validateTitle[opts["Title"], fname];
-	percentage = If[opts["ShowPercentage"] === True,
-		Dynamic[getPercentage[progIndicator]]
-		,
-		SpanFromLeft
-	];
-	topRow = { title, ProgressIndicator[Dynamic[First @ progIndicator]], percentage };
-	If[opts["CaptionFunction"] === None,
-		Return[Panel @ Row[topRow, Spacer[10]]];
-	];
-	Return[Panel @ Grid[{ topRow, { Dynamic[opts["CaptionFunction"][First @ progIndicator]], SpanFromLeft, SpanFromLeft } }]];
-]
 
 (* ::SubSection:: *)
 (* SafeLibrary* *)
@@ -159,12 +141,16 @@ Module[{errorHandler, pmOptValue, pmOpts, newParams, f},
 	    pmOpts = Merge[{pmOptValue, $ProgressMonitorOptions}, First];
 	    newParams = Append[fParams, {Real, 1, "Shared"}];
 	    f = errorHandler @* SafeLibraryFunctionLoad[fname, newParams, retType];
-	    Module[{l, pnl, localPMOpts, localParams},
+	    Module[{l, localPMOpts, localParams, title},
 		    l = Developer`ToPackedArray[{0.0}];
 		    {localParams, localPMOpts} = parseLibraryFunctionArgs[##];
 		    localPMOpts = Merge[{localPMOpts, pmOpts}, First];
-		    pnl = preparePanel[Refresh[l, UpdateInterval -> .1], fname,  localPMOpts];
-		    Monitor[f @@ Append[localParams, l], pnl]
+		    title = validateTitle[localPMOpts["Title"], fname];
+		    GeneralUtilities`ComputeWithProgress[
+			    (f @@ Append[localParams, l])&,
+			    title,
+			    "PreemptiveFunction" -> (First[l]&)
+		    ]
 	    ]&
     ]
 ]
