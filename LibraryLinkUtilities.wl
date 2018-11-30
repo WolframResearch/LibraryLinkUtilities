@@ -42,8 +42,7 @@ $CorePacletFailureLUT = <|
 	"FunctionLoadFailure" -> {21, "Failed to load the function `FunctionName` from `LibraryName`."},
 	"RegisterFailure" -> {22, "Incorrect arguments to RegisterPacletErrors."},
 	"UnknownFailure" -> {23, "The error `ErrorName` has not been registered."},
-	"ProgressMonInvalidValue" -> {24, "Value for option \"ProgressMonitor\" must be None or an Association."},
-	"InvalidProgMonTitle" -> {25, "Value for option \"Title\" must be None, Automatic or a String instead of `Title`."}
+	"ProgressMonInvalidValue" -> {24, "Value for option \"ProgressMonitor\" must be None or a Symbol."}
 |>;
 
 
@@ -66,32 +65,6 @@ Block[{name = Select[$CorePacletFailureLUT, MatchQ[#, {errorCode, _}] &]},
 (* Developer API *)
 (* ------------------------------------------------------------------------- *)
 (* ------------------------------------------------------------------------- *)
-
-(* ::SubSection:: *)
-(* ProgressMonitor *)
-(* ------------------------------------------------------------------------- *)
-(* ------------------------------------------------------------------------- *)
-
-$ProgressMonitorOptions = <|
-	"Title" -> Automatic,
-	"ShowPercentage" -> True,
-	"CaptionFunction" -> None
-|>;
-
-Attributes[getPercentage] = { HoldFirst };
-getPercentage[x_] := ToString[Round[100 * First[x]]] <> "%";
-
-validateTitle[rawTitle_, fname_?StringQ] :=
-Switch[rawTitle,
-	Automatic,
-	fname
-	,
-	_?StringQ,
-	rawTitle
-	,
-	_,
-	Throw @ CreatePacletFailure["InvalidProgMonTitle", "MessageParameters" -> <|"Title" -> rawTitle|>]
-];
 
 
 (* ::SubSection:: *)
@@ -124,45 +97,33 @@ Options[SafeLibraryFunction] = {
 	"Throws" -> False
 };
 
+holdSet[Hold[sym_], rhs_] := sym = rhs;
+
 SafeLibraryFunction[fname_?StringQ, fParams_, retType_, opts : OptionsPattern[SafeLibraryFunction]] :=
-Module[{errorHandler, pmOptValue, pmOpts, newParams, f},
+Module[{errorHandler, pmSymbol, newParams, f},
     errorHandler = If[TrueQ[OptionValue["Throws"]],
 	    CatchAndThrowLibraryFunctionError
 	,
 	    CatchLibraryFunctionError
     ];
-    pmOptValue = Replace[OptionValue["ProgressMonitor"], Automatic -> <||>];
-    If[fParams === LinkObject || pmOptValue === None,
+    pmSymbol = OptionValue[Automatic, Automatic, "ProgressMonitor", Hold];
+    If[fParams === LinkObject || pmSymbol === Hold[None],
 	    errorHandler @* SafeLibraryFunctionLoad[fname, fParams, retType]
 	    ,
-	    If[!AssociationQ[pmOptValue],
+	    If[Not @ Developer`SymbolQ @ ReleaseHold @ pmSymbol,
 		    Throw @ CreatePacletFailure["ProgressMonInvalidValue"];
 	    ];
-	    pmOpts = Merge[{pmOptValue, $ProgressMonitorOptions}, First];
 	    newParams = Append[fParams, {Real, 1, "Shared"}];
 	    f = errorHandler @* SafeLibraryFunctionLoad[fname, newParams, retType];
-	    Module[{l, localPMOpts, localParams, title},
-		    l = Developer`ToPackedArray[{0.0}];
-		    {localParams, localPMOpts} = parseLibraryFunctionArgs[##];
-		    localPMOpts = Merge[{localPMOpts, pmOpts}, First];
-		    title = validateTitle[localPMOpts["Title"], fname];
-		    GeneralUtilities`ComputeWithProgress[
-			    (f @@ Append[localParams, l])&,
-			    title,
-			    "PreemptiveFunction" -> (First[l]&)
-		    ]
-	    ]&
+	    (
+		    holdSet[pmSymbol, Developer`ToPackedArray[{0.0}]];
+		    f[##, ReleaseHold[pmSymbol]]
+	    )&
     ]
 ]
 
 SafeMathLinkFunction[fname_String, opts : OptionsPattern[SafeLibraryFunction]] := 
 	SafeLibraryFunction[fname, LinkObject, LinkObject, opts]
-
-
-Options[parseLibraryFunctionArgs] = {
-	"ProgressMonitor" -> <||>
-};
-parseLibraryFunctionArgs[args___, opts : OptionsPattern[parseLibraryFunctionArgs]] := {{args}, OptionValue["ProgressMonitor"]};
 
 (* ::SubSection:: *)
 (* RegisterPacletErrors *)
