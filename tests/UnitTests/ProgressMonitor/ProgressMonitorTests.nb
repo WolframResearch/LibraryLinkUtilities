@@ -10,10 +10,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       158,          7]
-NotebookDataLength[     39456,        940]
-NotebookOptionsPosition[     32870,        816]
-NotebookOutlinePosition[     33210,        831]
-CellTagsIndexPosition[     33167,        828]
+NotebookDataLength[     30139,        723]
+NotebookOptionsPosition[     23955,        632]
+NotebookOutlinePosition[     24295,        647]
+CellTagsIndexPosition[     24252,        644]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -31,16 +31,6 @@ Cell["Rafa\[LSlash] Chojna, WRI", "Text",
   3.75154236650791*^9}},ExpressionUUID->"fd6e321a-5063-405e-9625-\
 e8e982207266"],
 
-Cell["Motivation", "Chapter",
- CellChangeTimes->{{3.751369617326638*^9, 
-  3.751369620094336*^9}},ExpressionUUID->"90816697-4a4e-4137-a536-\
-514e555d77cd"],
-
-Cell["Design", "Chapter",
- CellChangeTimes->{{3.751369623134303*^9, 
-  3.751369625134177*^9}},ExpressionUUID->"61ae3398-66b4-4b88-9805-\
-72c0c19cce64"],
-
 Cell[CellGroupData[{
 
 Cell["Examples", "Chapter",
@@ -50,25 +40,43 @@ Cell["Examples", "Chapter",
 
 Cell[CellGroupData[{
 
-Cell["Different styles of progress monitor", "Subsection",
- CellChangeTimes->{{3.751395534855486*^9, 
-  3.7513955451115923`*^9}},ExpressionUUID->"9dbefded-fe14-44ed-a0d9-\
-9128e5ab328f"],
+Cell["Loading a Library Function", "Subsubsection",
+ CellChangeTimes->{{3.7525752964980383`*^9, 3.752575301378368*^9}, {
+  3.752575590147101*^9, 
+  3.752575593603318*^9}},ExpressionUUID->"7b883ded-7426-45db-a40b-\
+dd43cf972d60"],
 
-Cell[TextData[{
- "The default value for \[OpenCurlyDoubleQuote]ProgressMonitor\
-\[CloseCurlyDoubleQuote] option is None, but you can\[CloseCurlyQuote]t use \
-this value if your function actually used progress monitor in C++ code. So at \
-least you must pass \[OpenCurlyDoubleQuote]ProgressMonitor\
-\[CloseCurlyDoubleQuote] -> Automatic when ",
- StyleBox["loading",
-  FontWeight->"Bold"],
- " the function:"
-}], "Text",
- CellChangeTimes->{{3.751395549911708*^9, 3.751395665320472*^9}, {
-  3.751395734627383*^9, 
-  3.751395765368651*^9}},ExpressionUUID->"f1713439-beca-443c-89cf-\
-e4bdce992488"],
+Cell["\<\
+Load function as usual, the only difference if you want to use the progress \
+monitoring functionality is that you must pass an option \
+\[OpenCurlyDoubleQuote]ProgressMonitor\[CloseCurlyDoubleQuote] -> x, where x \
+is a symbol, i.e.\
+\>", "Text",
+ CellChangeTimes->{{3.752575313700164*^9, 3.7525753754746857`*^9}, {
+  3.7528252079594307`*^9, 
+  3.752825219704403*^9}},ExpressionUUID->"518c2a01-6cfb-4d32-813f-\
+1e822672a9ab"],
+
+Cell[BoxData[
+ RowBox[{"Developer`SymbolQ", "[", "x", "]"}]], "Input",
+ CellChangeTimes->{{3.7525753798114758`*^9, 3.752575396450934*^9}},
+ CellLabel->"In[12]:=",ExpressionUUID->"1cd556f4-51a5-4134-83b2-4fd76cc200a4"],
+
+Cell["is true.", "Text",
+ CellChangeTimes->{{3.752575398882922*^9, 
+  3.75257540037055*^9}},ExpressionUUID->"94ab3b33-992c-4115-9ea2-\
+231996b70699"],
+
+Cell["\<\
+By default, \[OpenCurlyDoubleQuote]ProgressMonitor\[CloseCurlyDoubleQuote] -> \
+None. It\[CloseCurlyQuote]s good to make sure the name for the monitoring \
+symbol will be unique, my suggestion is to use PacletName`PM context and the \
+name of the symbol to be the same as the function name:\
+\>", "Text",
+ CellChangeTimes->{{3.752575415170972*^9, 3.752575490947268*^9}, {
+  3.752817750508347*^9, 3.752817765676489*^9}, {3.752825234423716*^9, 
+  3.752825235591761*^9}},ExpressionUUID->"8e530686-0a75-46e3-8f06-\
+f0a4c1128487"],
 
 Cell[BoxData[
  RowBox[{
@@ -76,487 +84,288 @@ Cell[BoxData[
    RowBox[{"SafeLibraryFunction", "[", 
     RowBox[{"\"\<UniformProgress\>\"", ",", 
      RowBox[{"{", "Real", "}"}], ",", "Integer", ",", " ", 
-     RowBox[{"\"\<ProgressMonitor\>\"", "\[Rule]", "Automatic"}]}], "]"}]}], 
-  ";"}]], "Input",
- CellChangeTimes->{{3.7513703687415667`*^9, 3.7513703816201077`*^9}, {
-  3.751370449204803*^9, 3.751370472629136*^9}, {3.7513715047860737`*^9, 
-  3.751371517515976*^9}, {3.751371630782241*^9, 3.751371633372617*^9}, {
-  3.751372562991775*^9, 3.7513725654603252`*^9}, {3.75138765586685*^9, 
-  3.751387658153194*^9}, {3.7513879050209217`*^9, 3.751387914954103*^9}, {
-  3.751389450240505*^9, 3.7513894686550093`*^9}, {3.751389523265399*^9, 
-  3.7513895611205807`*^9}, {3.7513896057967663`*^9, 3.7513896111029387`*^9}, {
-  3.751389737137278*^9, 3.751389741711521*^9}, {3.7513898413340807`*^9, 
-  3.751389937184472*^9}, {3.751390035380846*^9, 3.7513900723368473`*^9}, {
-  3.751395789338909*^9, 3.7513958624460278`*^9}, {3.7513959018698387`*^9, 
-  3.751395910923217*^9}},
- CellLabel->"In[18]:=",ExpressionUUID->"e6b8c376-3ae5-45b0-bdeb-fa64e6bba3c2"],
+     RowBox[{
+     "\"\<ProgressMonitor\>\"", "\[Rule]", "MyPaclet`PM`UniformProgress"}]}], 
+    "]"}]}], ";"}]], "Input",
+ CellChangeTimes->{{3.7528177688615093`*^9, 3.752817773484644*^9}},
+ CellLabel->"In[8]:=",ExpressionUUID->"83a24cf0-19db-4172-8862-842c2d029df0"],
 
 Cell["\<\
-The default style only shows the progress bar and percentage:\
+If you try to pass something else than a symbol, you will get a Failure:\
 \>", "Text",
- CellChangeTimes->{{3.751395964889531*^9, 
-  3.751395987161888*^9}},ExpressionUUID->"450a742e-3a93-4a91-ac8a-\
-788247d59d6f"],
-
-Cell[CellGroupData[{
-
-Cell[BoxData[
- RowBox[{"UniformProgress", "[", "5", "]"}]], "Input",
- CellChangeTimes->{{3.751370701768999*^9, 3.751370706838972*^9}, {
-  3.751395751707059*^9, 3.751395755160788*^9}},
- CellLabel->"In[19]:=",ExpressionUUID->"ee42ec9c-b25e-418c-a3c0-940ab1722665"],
-
-Cell[BoxData["42"], "Output",
- CellChangeTimes->{
-  3.751370707262023*^9, 3.75137115784212*^9, 3.751395794487185*^9, {
-   3.751395897658956*^9, 3.7513959173065367`*^9}, 3.75139595158965*^9, 
-   3.751396698056677*^9, 3.751541716806485*^9, 3.751562120823146*^9},
- CellLabel->"Out[19]=",ExpressionUUID->"6d263ac1-deaa-4df8-b3d0-266301f08c0a"]
-}, Open  ]],
-
-Cell["\<\
-\[OpenCurlyDoubleQuote]ProgressMonitor\[CloseCurlyDoubleQuote] layout can \
-later be changed \[OpenCurlyDoubleQuote]at runtime\[CloseCurlyDoubleQuote] \
-meaning that you can override the default layout in each call to your library \
-function. You don\[CloseCurlyQuote]t have to reload it.\
-\>", "Text",
- CellChangeTimes->{{3.751541632977455*^9, 
-  3.7515416774244213`*^9}},ExpressionUUID->"4737378a-f6d3-48bd-a2ce-\
-1714db024014"],
-
-Cell[CellGroupData[{
-
-Cell["\[OpenCurlyDoubleQuote]Title\[CloseCurlyDoubleQuote]", "Subsubsection",
- CellChangeTimes->{{3.751396022105652*^9, 
-  3.751396023114072*^9}},ExpressionUUID->"1e02dc36-acdb-4dd2-9628-\
-57d6293c6185"],
-
-Cell["\<\
-\[OpenCurlyDoubleQuote]Title\[CloseCurlyDoubleQuote] is a short text \
-displayed to the left of the progress bar. The default value is None. \
-Automatic displays the function name:\
-\>", "Text",
- CellChangeTimes->{{3.751396037321639*^9, 3.75139610208987*^9}, {
-  3.751396440139914*^9, 
-  3.751396470365987*^9}},ExpressionUUID->"5658f195-4cfb-402d-a8d6-\
-282c0d618145"],
-
-Cell[CellGroupData[{
-
-Cell[BoxData[
- RowBox[{"UniformProgress", "[", 
-  RowBox[{"3", ",", " ", 
-   RowBox[{"\"\<ProgressMonitor\>\"", "\[Rule]", 
-    RowBox[{"<|", 
-     RowBox[{"\"\<Title\>\"", "\[Rule]", "Automatic"}], "|>"}]}]}], 
-  "]"}]], "Input",
- CellChangeTimes->{{3.751370701768999*^9, 3.751370706838972*^9}, {
-   3.751395751707059*^9, 3.751395755160788*^9}, {3.751396422333084*^9, 
-   3.751396422523139*^9}, 3.7515416901982927`*^9},
- CellLabel->"In[81]:=",ExpressionUUID->"d7745514-8ff3-4b6a-b555-0b9b8fbe7bb6"],
-
-Cell[BoxData["42"], "Output",
- CellChangeTimes->{
-  3.751396126678499*^9, 3.751396222172269*^9, {3.751396420144902*^9, 
-   3.7513964260588703`*^9}, 3.7513967039281673`*^9, 3.75154172165587*^9},
- CellLabel->"Out[81]=",ExpressionUUID->"bd8da6bb-1311-437e-9d71-fe25efe72156"]
-}, Open  ]],
-
-Cell["You can pass any string as \[OpenCurlyDoubleQuote]Title\
-\[CloseCurlyDoubleQuote]:", "Text",
- CellChangeTimes->{{3.751396476704296*^9, 
-  3.7513964828436737`*^9}},ExpressionUUID->"f3862c0a-5834-48c2-abc1-\
-24578c515369"],
-
-Cell[CellGroupData[{
-
-Cell[BoxData[
- RowBox[{"UniformProgress", "[", 
-  RowBox[{"3", ",", " ", 
-   RowBox[{"\"\<ProgressMonitor\>\"", "\[Rule]", 
-    RowBox[{"<|", 
-     RowBox[{"\"\<Title\>\"", "\[Rule]", "\"\<My Favorite Title\>\""}], 
-     "|>"}]}]}], "]"}]], "Input",
- CellChangeTimes->{{3.751370701768999*^9, 3.751370706838972*^9}, {
-   3.751395751707059*^9, 3.751395755160788*^9}, {3.751396422333084*^9, 
-   3.751396422523139*^9}, 3.75154169744864*^9},
- CellLabel->"In[82]:=",ExpressionUUID->"98cf2366-64d7-47d7-a659-5d30ee1f715e"],
-
-Cell[BoxData["42"], "Output",
- CellChangeTimes->{{3.751396711720866*^9, 3.7513967198177843`*^9}, 
-   3.751541727499481*^9},
- CellLabel->"Out[82]=",ExpressionUUID->"1bc7ad3b-5333-4f19-b8d4-6d11cc0878ea"]
-}, Open  ]],
-
-Cell["\<\
-If you try to pass anything else as \[OpenCurlyDoubleQuote]Title\
-\[CloseCurlyDoubleQuote], you will get a Failure:\
-\>", "Text",
- CellChangeTimes->{{3.751396476704296*^9, 3.7513964828436737`*^9}, {
-  3.751396737548519*^9, 
-  3.751396754908662*^9}},ExpressionUUID->"3058cab8-9847-4339-988a-\
-fa5c80973d25"],
-
-Cell[CellGroupData[{
-
-Cell[BoxData[
- RowBox[{"Catch", "@", 
-  RowBox[{"UniformProgress", "[", 
-   RowBox[{"3", ",", " ", 
-    RowBox[{"\"\<ProgressMonitor\>\"", "\[Rule]", 
-     RowBox[{"<|", 
-      RowBox[{"\"\<Title\>\"", "\[Rule]", 
-       RowBox[{"E", "+", "Pi"}]}], "|>"}]}]}], "]"}]}]], "Input",
- CellChangeTimes->{{3.75139684842892*^9, 3.751396852572771*^9}, 
-   3.751541705037649*^9},
- CellLabel->"In[83]:=",ExpressionUUID->"fd167e02-58be-4d80-9cdc-b2504ef89ba9"],
-
-Cell[BoxData[
- InterpretationBox[
-  RowBox[{
-   TagBox["Failure",
-    "SummaryHead"], "[", 
-   DynamicModuleBox[{Typeset`open$$ = False, Typeset`embedState$$ = "Ready"}, 
-    
-    TemplateBox[{PaneSelectorBox[{False -> GridBox[{{
-            PaneBox[
-             ButtonBox[
-              DynamicBox[
-               FEPrivate`FrontEndResource[
-               "FEBitmaps", "SquarePlusIconMedium"]], 
-              ButtonFunction :> (Typeset`open$$ = True), Appearance -> None, 
-              Evaluator -> Automatic, Method -> "Preemptive"], 
-             Alignment -> {Center, Center}, ImageSize -> 
-             Dynamic[{
-               Automatic, 
-                3.5 (CurrentValue["FontCapHeight"]/AbsoluteCurrentValue[
-                 Magnification])}]], 
-            FrameBox[
-             StyleBox["\"\[WarningSign]\"", 
-              Directive["Message", 35], StripOnInput -> False], 
-             ContentPadding -> False, FrameStyle -> None, 
-             FrameMargins -> {{0, 0}, {0, 0}}, StripOnInput -> False], 
-            GridBox[{{
-               TagBox[
-                GridBox[{{
-                   TagBox["\"Message: \"", "SummaryItemAnnotation"], 
-                   "\[InvisibleSpace]", 
-                   TagBox[
-                   "\"Value for option \\\"Title\\\" must be None, Automatic \
-or a String instead of 5.85987.\"", "SummaryItem"]}}, 
-                 GridBoxItemSize -> {"Columns" -> {6.5, All}}, 
-                 GridBoxAlignment -> {"Columns" -> {{Left}}}, 
-                 GridBoxSpacings -> {"Columns" -> {{0}}}], "SummaryItem"]}, {
-               TagBox[
-                GridBox[{{
-                   TagBox["\"Tag: \"", "SummaryItemAnnotation"], 
-                   "\[InvisibleSpace]", 
-                   TagBox["\"InvalidProgMonTitle\"", "SummaryItem"]}}, 
-                 GridBoxItemSize -> {"Columns" -> {6.5, All}}, 
-                 GridBoxAlignment -> {"Columns" -> {{Left}}}, 
-                 GridBoxSpacings -> {"Columns" -> {{0}}}], "SummaryItem"]}}, 
-             GridBoxAlignment -> {
-              "Columns" -> {{Left}}, "Rows" -> {{Automatic}}}, AutoDelete -> 
-             False, GridBoxItemSize -> {
-              "Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}, 
-             GridBoxSpacings -> {"Columns" -> {{2}}, "Rows" -> {{Automatic}}},
-              BaseStyle -> {
-              ShowStringCharacters -> False, NumberMarks -> False, 
-               PrintPrecision -> 3, ShowSyntaxStyles -> False}]}}, 
-          GridBoxAlignment -> {"Rows" -> {{Top}}}, AutoDelete -> False, 
-          GridBoxItemSize -> {
-           "Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}, 
-          BaselinePosition -> {1, 1}], True -> GridBox[{{
-            PaneBox[
-             ButtonBox[
-              DynamicBox[
-               FEPrivate`FrontEndResource[
-               "FEBitmaps", "SquareMinusIconMedium"]], 
-              ButtonFunction :> (Typeset`open$$ = False), Appearance -> None, 
-              Evaluator -> Automatic, Method -> "Preemptive"], 
-             Alignment -> {Center, Center}, ImageSize -> 
-             Dynamic[{
-               Automatic, 
-                3.5 (CurrentValue["FontCapHeight"]/AbsoluteCurrentValue[
-                 Magnification])}]], 
-            FrameBox[
-             StyleBox["\"\[WarningSign]\"", 
-              Directive["Message", 35], StripOnInput -> False], 
-             ContentPadding -> False, FrameStyle -> None, 
-             FrameMargins -> {{0, 0}, {0, 0}}, StripOnInput -> False], 
-            GridBox[{{
-               TagBox[
-                GridBox[{{
-                   TagBox["\"Message: \"", "SummaryItemAnnotation"], 
-                   "\[InvisibleSpace]", 
-                   TagBox[
-                   "\"Value for option \\\"Title\\\" must be None, Automatic \
-or a String instead of 5.85987.\"", "SummaryItem"]}}, 
-                 GridBoxItemSize -> {"Columns" -> {6.5, All}}, 
-                 GridBoxAlignment -> {"Columns" -> {{Left}}}, 
-                 GridBoxSpacings -> {"Columns" -> {{0}}}], "SummaryItem"]}, {
-               TagBox[
-                GridBox[{{
-                   TagBox["\"Tag: \"", "SummaryItemAnnotation"], 
-                   "\[InvisibleSpace]", 
-                   TagBox["\"InvalidProgMonTitle\"", "SummaryItem"]}}, 
-                 GridBoxItemSize -> {"Columns" -> {6.5, All}}, 
-                 GridBoxAlignment -> {"Columns" -> {{Left}}}, 
-                 GridBoxSpacings -> {"Columns" -> {{0}}}], "SummaryItem"]}, {
-               RowBox[{
-                 TagBox[
-                  TemplateBox[{"\"ErrorCode\"", "\": \""}, "RowDefault"], 
-                  "SummaryItemAnnotation"], "\[InvisibleSpace]", 
-                 TagBox["25", "SummaryItem"]}]}, {
-               RowBox[{
-                 TagBox[
-                  TemplateBox[{"\"Parameters\"", "\": \""}, "RowDefault"], 
-                  "SummaryItemAnnotation"], "\[InvisibleSpace]", 
-                 TagBox[
-                  RowBox[{"{", "}"}], "SummaryItem"]}]}}, 
-             GridBoxAlignment -> {
-              "Columns" -> {{Left}}, "Rows" -> {{Automatic}}}, AutoDelete -> 
-             False, GridBoxItemSize -> {
-              "Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}, 
-             GridBoxSpacings -> {"Columns" -> {{2}}, "Rows" -> {{Automatic}}},
-              BaseStyle -> {
-              ShowStringCharacters -> False, NumberMarks -> False, 
-               PrintPrecision -> 3, ShowSyntaxStyles -> False}]}}, 
-          GridBoxAlignment -> {"Rows" -> {{Top}}}, AutoDelete -> False, 
-          GridBoxItemSize -> {
-           "Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}, 
-          BaselinePosition -> {1, 1}]}, 
-       Dynamic[Typeset`open$$], ImageSize -> Automatic]},
-     "SummaryPanel"],
-    DynamicModuleValues:>{}], "]"}],
-  Failure["InvalidProgMonTitle", 
-   Association[
-   "MessageTemplate" -> 
-    "Value for option \"Title\" must be None, Automatic or a String instead \
-of `Title`.", "MessageParameters" -> Association["Title" -> E + Pi], 
-    "ErrorCode" -> 25, "Parameters" -> {}]],
-  Editable->False,
-  SelectWithContents->True,
-  Selectable->False]], "Output",
- CellChangeTimes->{{3.751396853081738*^9, 3.751396863239029*^9}, 
-   3.751541728992413*^9},
- CellLabel->"Out[83]=",ExpressionUUID->"25fcfb8d-82be-41c0-9274-c686259635f9"]
-}, Open  ]]
-}, Open  ]],
-
-Cell[CellGroupData[{
-
-Cell["\[OpenCurlyDoubleQuote]ShowPercentage\[CloseCurlyDoubleQuote]", \
-"Subsubsection",
- CellChangeTimes->{{3.75139689713284*^9, 
-  3.7513969076927547`*^9}},ExpressionUUID->"9cd78cdf-37fe-4e66-a733-\
-03ee027615ac"],
-
-Cell["\<\
-\[OpenCurlyDoubleQuote]ShowPercentage\[CloseCurlyDoubleQuote] is a boolean \
-option to control whether to percent of completion is shown or not. The \
-default is True.\
-\>", "Text",
- CellChangeTimes->{{3.751396909301407*^9, 3.751396960157255*^9}, {
-  3.751541743306571*^9, 
-  3.751541743370615*^9}},ExpressionUUID->"8aa21973-8439-4195-b9cb-\
-8384faaf7b36"],
-
-Cell[CellGroupData[{
-
-Cell[BoxData[
- RowBox[{"UniformProgress", "[", 
-  RowBox[{"3", ",", " ", 
-   RowBox[{"\"\<ProgressMonitor\>\"", "\[Rule]", 
-    RowBox[{"<|", 
-     RowBox[{"\"\<ShowPercentage\>\"", "\[Rule]", "False"}], "|>"}]}]}], 
-  "]"}]], "Input",
- CellChangeTimes->{{3.751396984934628*^9, 3.7513969893567457`*^9}, 
-   3.751541736468194*^9},
- CellLabel->"In[84]:=",ExpressionUUID->"9b8f5e98-deb6-45ee-a24e-f5523a55cdd3"],
-
-Cell[BoxData["42"], "Output",
- CellChangeTimes->{3.751396992936747*^9, 3.751541749014679*^9},
- CellLabel->"Out[84]=",ExpressionUUID->"308df8f5-71f5-45d2-a507-8a4b070ccc51"]
-}, Open  ]]
-}, Open  ]],
-
-Cell[CellGroupData[{
-
-Cell["\[OpenCurlyDoubleQuote]CaptionFunction\[CloseCurlyDoubleQuote]", \
-"Subsubsection",
- CellChangeTimes->{{3.75139689713284*^9, 3.7513969076927547`*^9}, {
-  3.751541756412418*^9, 
-  3.751541759213497*^9}},ExpressionUUID->"a7fbf32c-909f-44e3-95fd-\
-fd9a6bb3aef7"],
-
-Cell["\<\
-Apart from numerical indication of the progress, you may want to tell users \
-what your function is currently doing. Let\[CloseCurlyQuote]s say, your \
-library function spends first 30% of it\[CloseCurlyQuote]s run time gathering \
-data, then 50% processing data and last 20% for formatting the final result. \
-In other words, current status is a function of progress:\
-\>", "Text",
- CellChangeTimes->{{3.751541766834999*^9, 3.751541912435848*^9}, {
-  3.751541958265489*^9, 
-  3.7515419719152403`*^9}},ExpressionUUID->"2a724e62-61c5-4aa0-af30-\
-1b224ffbd176"],
+ CellChangeTimes->{{3.7525755011724873`*^9, 
+  3.7525755370268087`*^9}},ExpressionUUID->"9299360c-c713-4874-aa4a-\
+912b215553f3"],
 
 Cell[BoxData[
  RowBox[{
-  RowBox[{
-   RowBox[{"capFun", "[", "progress_", "]"}], ":=", 
-   RowBox[{"Which", "[", 
-    RowBox[{
-     RowBox[{"progress", "<", " ", "0.1"}], ",", "\"\<Gathering data...\>\"", 
-     ",", 
-     RowBox[{"progress", ">", "0.8"}], ",", "\"\<Formatting result...\>\"", 
-     ",", "True", ",", "\"\<Processing data...\>\""}], "]"}]}], 
-  ";"}]], "Input",
- CellChangeTimes->{{3.751541915478752*^9, 3.751542001934825*^9}},
- CellLabel->"In[85]:=",ExpressionUUID->"809424c3-907a-4dba-a960-65f099a2c755"],
-
-Cell["\<\
-Let\[CloseCurlyQuote]s use this function to generate captions for the \
-progress bar:\
-\>", "Text",
- CellChangeTimes->{{3.751542029073412*^9, 
-  3.751542041059503*^9}},ExpressionUUID->"8208645d-aeb6-4630-b80f-\
-6c0555b0e35b"],
-
-Cell[CellGroupData[{
+  RowBox[{"a", "=", "5"}], ";"}]], "Input",
+ CellChangeTimes->{{3.7525755399083977`*^9, 3.7525755428350554`*^9}},
+ CellLabel->"In[9]:=",ExpressionUUID->"0db7ee16-1936-4928-b4d7-1c91657600a8"],
 
 Cell[BoxData[
- RowBox[{"UniformProgress", "[", 
-  RowBox[{"5", ",", " ", 
-   RowBox[{"\"\<ProgressMonitor\>\"", "->", 
-    RowBox[{"<|", 
-     RowBox[{"\"\<CaptionFunction\>\"", "\[Rule]", "capFun"}], "|>"}]}]}], 
+ RowBox[{"Catch", "[", 
+  RowBox[{
+   RowBox[{"UniformProgress", "=", 
+    RowBox[{"SafeLibraryFunction", "[", 
+     RowBox[{"\"\<UniformProgress\>\"", ",", 
+      RowBox[{"{", "Real", "}"}], ",", "Integer", ",", " ", 
+      RowBox[{"\"\<ProgressMonitor\>\"", "\[Rule]", "a"}]}], "]"}]}], ";"}], 
   "]"}]], "Input",
- CellChangeTimes->{{3.7515386329298477`*^9, 3.7515386502702513`*^9}, {
-   3.751540959297353*^9, 3.7515409694547863`*^9}, {3.751541559916821*^9, 
-   3.7515415767255096`*^9}, 3.751541929191799*^9, {3.751542053508209*^9, 
-   3.75154206120485*^9}},
- CellLabel->"In[86]:=",ExpressionUUID->"c13ae2fc-a69f-4b5e-8f6e-d3031d2884f6"],
-
-Cell[BoxData["42"], "Output",
- CellChangeTimes->{{3.751541587699926*^9, 3.7515415931271*^9}, 
-   3.751542068058936*^9},
- CellLabel->"Out[86]=",ExpressionUUID->"7389e535-1d91-4f77-8af0-78e3d344bf22"]
-}, Open  ]],
-
-Cell["\<\
-Caption function can be anything as long as it takes one argument and returns \
-a String.\
-\>", "Text",
- CellChangeTimes->{{3.7515420889676313`*^9, 
-  3.7515421108099003`*^9}},ExpressionUUID->"1c4f685a-bcd1-42ef-adea-\
-761d6efb5373"]
-}, Open  ]]
+ CellChangeTimes->{{3.752574138190556*^9, 3.752574147840054*^9}, {
+   3.752574527489355*^9, 3.7525745589122868`*^9}, 3.7525755466610928`*^9},
+ CellLabel->"In[10]:=",ExpressionUUID->"5a68a8c4-fa39-4cdc-8668-0a573ce16d2b"]
 }, Open  ]],
 
 Cell[CellGroupData[{
 
-Cell["Other examples", "Subsection",
+Cell["Running a function with progress monitor", "Subsubsection",
+ CellChangeTimes->{{3.7525755753155413`*^9, 3.7525755825472517`*^9}, 
+   3.7528260523465967`*^9},ExpressionUUID->"4cea20bb-748d-41dc-8947-\
+864815118e8b"],
+
+Cell["\<\
+Let\[CloseCurlyQuote]s say we have correctly loaded a function with progress \
+monitor. See how it is manifested at runtime:\
+\>", "Text",
+ CellChangeTimes->{{3.7525755994593363`*^9, 3.7525756211074533`*^9}, {
+  3.75257566174797*^9, 
+  3.7525756645475683`*^9}},ExpressionUUID->"eade9eae-45df-4eac-8a72-\
+fe232f1ef258"],
+
+Cell[BoxData[
+ RowBox[{"UniformProgress", "[", "5", "]"}]], "Input",
+ CellChangeTimes->{{3.752574340096876*^9, 3.752574343328249*^9}, {
+  3.7525756253490057`*^9, 3.7525756276674433`*^9}},
+ CellLabel->"In[11]:=",ExpressionUUID->"b07c9626-c01c-4a8e-91be-1101b94fefe2"],
+
+Cell["\<\
+Not at all, nothing is displayed. The only thing that LLU does is to update \
+the symbol that you have registered with the current value of progress. You \
+are entirely responsible for processing and displaying the actual \
+ProgressIndicator or whatever suits your needs. In the simplest case:\
+\>", "Text",
+ CellChangeTimes->{{3.752575630979597*^9, 3.7525756419234037`*^9}, {
+  3.7525756739077387`*^9, 
+  3.7525757756359873`*^9}},ExpressionUUID->"b85e0ae8-74aa-4f13-99bf-\
+93683b1489b4"],
+
+Cell[BoxData[
+ RowBox[{"Dynamic", "[", "MyPaclet`PM`UniformProgress", "]"}]], "Input",
+ CellChangeTimes->{{3.752575777207493*^9, 3.752575790468274*^9}, {
+   3.752575870870542*^9, 3.752575902932519*^9}, 3.752817800738419*^9},
+ CellLabel->"In[12]:=",ExpressionUUID->"89921e41-f7c1-4c0c-bc68-55bd6af8c19f"],
+
+Cell[BoxData[
+ RowBox[{"UniformProgress", "[", "5", "]"}]], "Input",
+ CellLabel->"In[13]:=",ExpressionUUID->"145dc527-6672-4e83-b744-326c063b4839"],
+
+Cell["\<\
+Oops, still something is wrong. That\[CloseCurlyQuote]s because Dynamic is \
+not aware of changes made to a variable from the C++ library. You can solve \
+it like this:\
+\>", "Text",
+ CellChangeTimes->{{3.752575819876171*^9, 3.752575856500136*^9}, {
+  3.752575911892321*^9, 
+  3.752575915956326*^9}},ExpressionUUID->"c80c5ffd-c877-44a0-8c52-\
+2e4b6752f709"],
+
+Cell[BoxData[
+ RowBox[{"Dynamic", "[", 
+  RowBox[{"MyPaclet`PM`UniformProgress", ",", 
+   RowBox[{"UpdateInterval", "\[Rule]", "0.2"}]}], "]"}]], "Input",
+ CellChangeTimes->{{3.752575921556902*^9, 3.752575926068358*^9}, 
+   3.752817801681778*^9},
+ CellLabel->"In[14]:=",ExpressionUUID->"b6919e1c-6cb7-4c51-a172-321dbd5ebe9d"],
+
+Cell[BoxData[
+ RowBox[{"UniformProgress", "[", "5", "]"}]], "Input",
+ CellLabel->"In[15]:=",ExpressionUUID->"126e110c-3dae-4dd7-9970-7a3f41f506d1"],
+
+Cell["There are other ways, too:", "Text",
+ CellChangeTimes->{{3.752575988596485*^9, 
+  3.75257599278874*^9}},ExpressionUUID->"29bd87a6-9530-4db4-957c-\
+fda646225274"],
+
+Cell[BoxData[
+ RowBox[{"Monitor", "[", 
+  RowBox[{
+   RowBox[{"UniformProgress", "[", "5", "]"}], ",", 
+   RowBox[{"Dynamic", "[", 
+    RowBox[{"First", "@", 
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"First", "@", "MyPaclet`PM`UniformProgress"}], ",", 
+       RowBox[{"Clock", "[", 
+        RowBox[{
+         RowBox[{"{", 
+          RowBox[{"0", ",", "1"}], "}"}], ",", "1"}], "]"}]}], "}"}]}], 
+    "]"}]}], "]"}]], "Input",
+ CellChangeTimes->{{3.752575993753416*^9, 3.752576047548149*^9}, {
+  3.752817880493828*^9, 3.752817896195359*^9}, {3.7528190399691477`*^9, 
+  3.752819054863804*^9}, {3.752819118337472*^9, 3.752819134319807*^9}, {
+  3.7528192275678043`*^9, 3.752819239503765*^9}, {3.752819344209547*^9, 
+  3.752819398593067*^9}},
+ CellLabel->"In[16]:=",ExpressionUUID->"bbb3fa45-f0d8-4658-b308-adfceaa12a9d"],
+
+Cell["\<\
+After the library function is registered the symbol used for progress \
+monitoring can be normally used, including assigning values to it:\
+\>", "Text",
+ CellChangeTimes->{{3.7528219346983213`*^9, 3.752821966400465*^9}, {
+  3.752822083435198*^9, 
+  3.752822092315399*^9}},ExpressionUUID->"1541ad0c-5698-4850-8110-\
+b0545d16c1e9"],
+
+Cell[BoxData[
+ RowBox[{"MyPaclet`PM`UniformProgress", "=", 
+  RowBox[{"<|", "|>"}]}]], "Input",
+ CellChangeTimes->{{3.7528219899945717`*^9, 3.75282201434689*^9}},
+ CellLabel->"In[17]:=",ExpressionUUID->"68e74c69-74a5-4b25-b4e8-72ff7c576e93"],
+
+Cell[BoxData[
+ RowBox[{"Dynamic", "[", 
+  RowBox[{"MyPaclet`PM`UniformProgress", ",", 
+   RowBox[{"UpdateInterval", "\[Rule]", "0.2"}]}], "]"}]], "Input",
+ CellChangeTimes->{{3.752575777207493*^9, 3.752575790468274*^9}, {
+   3.752575870870542*^9, 3.752575902932519*^9}, 3.752817800738419*^9, 
+   3.752822002690405*^9},
+ CellLabel->"In[18]:=",ExpressionUUID->"bba2ce36-db7e-43d4-9d93-8fa2587d3d97"],
+
+Cell[BoxData[
+ RowBox[{"UniformProgress", "[", "5", "]"}]], "Input",
+ CellLabel->"In[19]:=",ExpressionUUID->"96d0ce73-c0f5-477a-a84f-2d4e0264dd19"],
+
+Cell[BoxData[
+ RowBox[{"Clear", "[", "MyPaclet`PM`UniformProgress", "]"}]], "Input",
+ CellChangeTimes->{{3.752822116467264*^9, 3.752822125435523*^9}},
+ CellLabel->"In[20]:=",ExpressionUUID->"b983bdc4-82cd-4bbc-b90a-7f446cb785cb"],
+
+Cell[BoxData[
+ RowBox[{"UniformProgress", "[", "5", "]"}]], "Input",
+ CellLabel->"In[21]:=",ExpressionUUID->"66c979a5-8865-4413-9694-d5560aef894c"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Different styles of progress monitor", "Subsubsection",
+ CellChangeTimes->{{3.751395534855486*^9, 
+  3.7513955451115923`*^9}},ExpressionUUID->"9dbefded-fe14-44ed-a0d9-\
+9128e5ab328f"],
+
+Cell["You can easily create a simple progress bar:", "Text",
+ CellChangeTimes->{{3.752818040380979*^9, 
+  3.752818057181102*^9}},ExpressionUUID->"1741807a-9dd1-4518-b026-\
+34e6889cb1b3"],
+
+Cell[BoxData[
+ RowBox[{"Monitor", "[", 
+  RowBox[{
+   RowBox[{"UniformProgress", "[", "5", "]"}], ",", 
+   RowBox[{"ProgressIndicator", "[", 
+    RowBox[{"Dynamic", "@", 
+     RowBox[{"First", "@", 
+      RowBox[{"Refresh", "[", 
+       RowBox[{"MyPaclet`PM`UniformProgress", ",", 
+        RowBox[{"UpdateInterval", "\[Rule]", "0.2"}]}], "]"}]}]}], "]"}]}], 
+  "]"}]], "Input",
+ CellChangeTimes->{{3.7528180675172358`*^9, 3.752818084669568*^9}, {
+  3.752818143327097*^9, 3.7528181452458553`*^9}, {3.752818176031067*^9, 
+  3.752818176285881*^9}, {3.752818256303238*^9, 3.752818257693911*^9}, {
+  3.7528182877595243`*^9, 3.752818313982188*^9}, {3.7528194343085203`*^9, 
+  3.7528194482937307`*^9}},
+ CellLabel->"In[22]:=",ExpressionUUID->"aab8375a-77ca-4959-a1eb-739d3980e812"],
+
+Cell["Create progress bar with some additional information:", "Text",
+ CellChangeTimes->{{3.752819475456002*^9, 
+  3.7528194881761312`*^9}},ExpressionUUID->"1be35906-1369-4530-ac0d-\
+aa4e7ab43d57"],
+
+Cell[BoxData[
+ RowBox[{"Monitor", "[", 
+  RowBox[{
+   RowBox[{"UniformProgress", "[", "5", "]"}], ",", "\[IndentingNewLine]", 
+   RowBox[{"With", "[", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{"p", "=", 
+       RowBox[{"First", "@", 
+        RowBox[{"Refresh", "[", 
+         RowBox[{"MyPaclet`PM`UniformProgress", ",", 
+          RowBox[{"UpdateInterval", "\[Rule]", "0.2"}]}], "]"}]}]}], "}"}], 
+     ",", "\[IndentingNewLine]", 
+     RowBox[{"Panel", "@", 
+      RowBox[{"Row", "[", 
+       RowBox[{
+        RowBox[{"{", 
+         RowBox[{"\"\<My function\>\"", ",", 
+          RowBox[{"ProgressIndicator", "[", 
+           RowBox[{"Dynamic", "@", "p"}], "]"}], ",", 
+          RowBox[{"Dynamic", "[", 
+           RowBox[{
+            RowBox[{"ToString", "[", 
+             RowBox[{"Round", "[", 
+              RowBox[{"100", "*", "p"}], "]"}], "]"}], "<>", "\"\<%\>\""}], 
+           "]"}]}], "}"}], ",", 
+        RowBox[{"Spacer", "[", "10", "]"}]}], "]"}]}]}], 
+    "\[IndentingNewLine]", "]"}]}], "\[IndentingNewLine]", "]"}]], "Input",
+ CellChangeTimes->{{3.752819513220566*^9, 3.752819597840929*^9}, {
+  3.752821474088619*^9, 3.75282148128874*^9}, {3.7528215273209543`*^9, 
+  3.752821697816914*^9}, {3.752821882509112*^9, 3.752821887290292*^9}},
+ CellLabel->"In[23]:=",ExpressionUUID->"b5d78bd9-af2b-4fa5-be94-ea9a5ad2f0c6"],
+
+Cell["\<\
+Possibly the best way to get a progress bar for your library function is to \
+use ComputeWithProgress from GeneralUtilities. The key thing to remember is \
+to use \[OpenCurlyDoubleQuote]PreemptiveFunction\[CloseCurlyDoubleQuote] \
+option:\
+\>", "Text",
+ CellChangeTimes->{{3.752822504158124*^9, 
+  3.752822573789447*^9}},ExpressionUUID->"dd1812ba-2bff-4dcc-958d-\
+aa799a4d64aa"],
+
+Cell[BoxData[
+ RowBox[{"GeneralUtilities`ComputeWithProgress", "[", 
+  RowBox[{
+   RowBox[{
+    RowBox[{"UniformProgress", "[", "5", "]"}], "&"}], ",", 
+   "\"\<My function\>\"", ",", 
+   RowBox[{"\"\<PreemptiveFunction\>\"", "\[Rule]", 
+    RowBox[{"(", 
+     RowBox[{
+      RowBox[{"First", "[", "MyPaclet`PM`UniformProgress", "]"}], "&"}], 
+     ")"}]}]}], "]"}]], "Input",
+ CellChangeTimes->{{3.752822275460259*^9, 3.752822311597473*^9}, {
+  3.752822369315473*^9, 3.752822422109529*^9}, {3.752822458446419*^9, 
+  3.752822476654154*^9}},
+ CellLabel->"In[24]:=",ExpressionUUID->"413d4a64-9ed4-430e-a7e0-8e228c9c134d"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Other examples", "Subsubsection",
  CellChangeTimes->{{3.7515421581092787`*^9, 3.7515421616777983`*^9}, {
   3.7515422018088703`*^9, 
   3.751542210177351*^9}},ExpressionUUID->"e330938e-49b7-4db7-8fdb-\
 adf2c320305d"],
-
-Cell["\<\
-\[OpenCurlyDoubleQuote]ProgressMonitor\[CloseCurlyDoubleQuote] with title, \
-percentage and captions (uses capFun from previous example, make sure to \
-evaluate):\
-\>", "Text",
- CellChangeTimes->{{3.751542227476057*^9, 
-  3.751542285847443*^9}},ExpressionUUID->"74e95cc3-9135-43be-a8e1-\
-f7ace18ccc79"],
-
-Cell[CellGroupData[{
-
-Cell[BoxData[
- RowBox[{"UniformProgress", "[", 
-  RowBox[{"6", ",", " ", 
-   RowBox[{"\"\<ProgressMonitor\>\"", "->", 
-    RowBox[{"<|", 
-     RowBox[{
-      RowBox[{"\"\<Title\>\"", "\[Rule]", "Automatic"}], ",", 
-      RowBox[{"\"\<ShowPercentage\>\"", "\[Rule]", "True"}], ",", 
-      RowBox[{"\"\<CaptionFunction\>\"", "\[Rule]", "capFun"}]}], "|>"}]}]}], 
-  "]"}]], "Input",
- CellChangeTimes->{{3.7515422952717333`*^9, 3.75154233020205*^9}},
- CellLabel->"In[33]:=",ExpressionUUID->"1c801ab0-0f52-42b7-9f0f-b2406d3eaa62"],
-
-Cell[BoxData["42"], "Output",
- CellChangeTimes->{
-  3.7515423392781878`*^9, 3.7515555550990267`*^9, {3.7515557760550756`*^9, 
-   3.75155580547901*^9}, 3.751555844302751*^9},
- CellLabel->"Out[33]=",ExpressionUUID->"d34970cb-e475-4963-9e3e-ecbaed786bf4"]
-}, Open  ]],
 
 Cell["Abort a function:", "Text",
  CellChangeTimes->{{3.751547808112585*^9, 
   3.7515478128001757`*^9}},ExpressionUUID->"c263ee57-c9af-41f3-b7f8-\
 c15fe4856782"],
 
-Cell[CellGroupData[{
-
 Cell[BoxData[
- RowBox[{"UniformProgress", "[", "100", "]"}]], "Input",
- CellChangeTimes->{{3.751547821419031*^9, 3.751547823088807*^9}},
- CellLabel->"In[19]:=",ExpressionUUID->"9bd2837e-64c7-40c2-8f81-38d52661c536"],
-
-Cell[BoxData["$Aborted"], "Output",
- CellChangeTimes->{3.7515515609192247`*^9, 3.7515589887783327`*^9, 
-  3.751564526702186*^9},
- CellLabel->"Out[19]=",ExpressionUUID->"c94d9f6c-a911-4987-996e-4912db0583f4"]
-}, Open  ]],
-
-Cell["\<\
-Compare timings of a function with progress monitor and the same function \
-that does not report progress (but checks for Abort):\
-\>", "Text",
- CellChangeTimes->{{3.7516258882522163`*^9, 
-  3.7516259329723873`*^9}},ExpressionUUID->"bc0f548a-6a4d-448f-bab4-\
-c09b9aac00a0"],
-
-Cell[CellGroupData[{
-
-Cell[BoxData[
- RowBox[{
-  RowBox[{"UniformProgress", "[", "5", "]"}], "//", 
-  "AbsoluteTiming"}]], "Input",
- CellChangeTimes->{{3.751370701768999*^9, 3.751370706838972*^9}, {
-  3.751395751707059*^9, 3.751395755160788*^9}, {3.751625811164565*^9, 
-  3.751625815196001*^9}},
- CellLabel->"In[25]:=",ExpressionUUID->"814a03e1-eac0-4600-8865-74916219e2ee"],
-
-Cell[BoxData[
- RowBox[{"{", 
-  RowBox[{"5.050171`", ",", "42"}], "}"}]], "Output",
- CellChangeTimes->{{3.751562481012301*^9, 3.751562532789152*^9}, 
-   3.751562742930005*^9, {3.7515627940372753`*^9, 3.7515628364430027`*^9}, 
-   3.7515628780100927`*^9, {3.7515633218778677`*^9, 3.751563342791231*^9}, 
-   3.7515634047678547`*^9, 3.7515634520010138`*^9, 3.7515637142205963`*^9, 
-   3.751564520393477*^9, 3.751625777764604*^9, 3.751625820979619*^9},
- CellLabel->"Out[25]=",ExpressionUUID->"96e5d43c-7818-4e41-b219-d59a51d19724"]
-}, Open  ]],
-
-Cell[CellGroupData[{
-
-Cell[BoxData[
- RowBox[{
-  RowBox[{"NoProgressButAbortable", "[", "5", "]"}], "//", 
-  "AbsoluteTiming"}]], "Input",
- CellChangeTimes->{{3.751625794875709*^9, 3.751625824226663*^9}},
- CellLabel->"In[26]:=",ExpressionUUID->"51fd854e-b50d-4e09-94b2-0c054bc79a0f"],
-
-Cell[BoxData[
- RowBox[{"{", 
-  RowBox[{"5.00399`", ",", "42"}], "}"}]], "Output",
- CellChangeTimes->{{3.751625800685408*^9, 3.751625830016296*^9}},
- CellLabel->"Out[26]=",ExpressionUUID->"cfa8e2c4-885c-4b84-b109-ae7495881ca0"]
-}, Open  ]],
+ RowBox[{"Monitor", "[", 
+  RowBox[{
+   RowBox[{"UniformProgress", "[", "100", "]"}], ",", 
+   RowBox[{"Dynamic", "[", 
+    RowBox[{"First", "@", 
+     RowBox[{"Refresh", "[", 
+      RowBox[{"MyPaclet`PM`UniformProgress", ",", 
+       RowBox[{"UpdateInterval", "\[Rule]", "0.2"}]}], "]"}]}], "]"}]}], 
+  "]"}]], "Input",
+ CellChangeTimes->{{3.7528230459733047`*^9, 3.7528230875510073`*^9}},
+ CellLabel->"In[25]:=",ExpressionUUID->"49434241-ff07-42f3-b2cb-71da71a3d730"],
 
 Cell["\<\
 It\[CloseCurlyQuote]s possible for a progress bar to go back, for example if \
@@ -566,38 +375,183 @@ some part of the function must be rerun due to internal error:\
   3.751555060108354*^9}},ExpressionUUID->"65a53786-1bb2-4b27-b62f-\
 991dad3942c3"],
 
-Cell[CellGroupData[{
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"DecreaseProgress", "=", 
+   RowBox[{"SafeLibraryFunction", "[", 
+    RowBox[{"\"\<DecreaseProgress\>\"", ",", 
+     RowBox[{"{", "Real", "}"}], ",", "Integer", ",", " ", 
+     RowBox[{
+     "\"\<ProgressMonitor\>\"", "\[Rule]", "MyPaclet`PM`DecreaseProgress"}]}],
+     "]"}]}], ";"}]], "Input",
+ CellChangeTimes->{3.752823232152046*^9},
+ CellLabel->"In[26]:=",ExpressionUUID->"95de4cae-7e1e-4d97-8ff5-8fb70b70057a"],
 
 Cell[BoxData[
- RowBox[{"DecreaseProgress", "[", "10", "]"}]], "Input",
+ RowBox[{"GeneralUtilities`ComputeWithProgress", "[", "\[IndentingNewLine]", 
+  RowBox[{
+   RowBox[{
+    RowBox[{"DecreaseProgress", "[", "5", "]"}], "&"}], ",", 
+   "\[IndentingNewLine]", "\"\<My function\>\"", ",", "\[IndentingNewLine]", 
+   RowBox[{"\"\<PreemptiveFunction\>\"", "\[Rule]", 
+    RowBox[{"(", 
+     RowBox[{
+      RowBox[{"First", "[", "MyPaclet`PM`DecreaseProgress", "]"}], "&"}], 
+     ")"}]}]}], "\[IndentingNewLine]", "]"}]], "Input",
  CellChangeTimes->{{3.751555152065692*^9, 3.751555154094716*^9}, {
-  3.751555187087208*^9, 3.751555190078964*^9}},
- CellLabel->"In[20]:=",ExpressionUUID->"45a46b44-26b8-4f25-b9dd-d0897dea5b59"],
+  3.751555187087208*^9, 3.751555190078964*^9}, {3.7528232863597927`*^9, 
+  3.752823304246529*^9}},
+ CellLabel->"In[27]:=",ExpressionUUID->"45a46b44-26b8-4f25-b9dd-d0897dea5b59"],
 
-Cell[BoxData["42"], "Output",
- CellChangeTimes->{
-  3.751555205979875*^9, 3.751555294923625*^9, 3.751555447816152*^9, 
-   3.751555599168679*^9, {3.751555982548204*^9, 3.7515560109183693`*^9}, 
-   3.75155663335156*^9, 3.751563473797761*^9, 3.751563730577736*^9, 
-   3.751564541686194*^9},
- CellLabel->"Out[20]=",ExpressionUUID->"7811794a-576d-4e53-a120-5457f63316c8"]
-}, Open  ]],
-
-Cell[CellGroupData[{
+Cell["\<\
+Sometimes it\[CloseCurlyQuote]s difficult to report progress at constant \
+rate. Here is a function that takes 30% of time to prepare data, 50% to \
+process it and 20% to format the result:\
+\>", "Text",
+ CellChangeTimes->{{3.7528233449276247`*^9, 
+  3.752823397728189*^9}},ExpressionUUID->"6c17bdab-bae7-477e-92c8-\
+b7efd753e937"],
 
 Cell[BoxData[
- RowBox[{"PrepareProcessAndFormat", "[", "5", "]"}]], "Input",
- CellChangeTimes->{{3.751560123674821*^9, 3.751560124329706*^9}, {
-  3.7515601666847897`*^9, 3.751560169529941*^9}},
- CellLabel->"In[21]:=",ExpressionUUID->"df2d8a44-67ad-446e-8324-da5542e7a6b9"],
+ RowBox[{
+  RowBox[{"PrepareProcessAndFormat", "=", 
+   RowBox[{"SafeLibraryFunction", "[", 
+    RowBox[{"\"\<PrepareProcessAndFormat\>\"", ",", 
+     RowBox[{"{", "Real", "}"}], ",", "Integer", ",", 
+     RowBox[{
+     "\"\<ProgressMonitor\>\"", "\[Rule]", 
+      "MyPaclet`PM`PrepareProcessAndFormat"}]}], "]"}]}], ";"}]], "Input",
+ CellChangeTimes->{3.752823205462459*^9},
+ CellLabel->"In[28]:=",ExpressionUUID->"f814cf25-b0ea-41db-845c-59afaf55bf6e"],
 
-Cell[BoxData["42"], "Output",
- CellChangeTimes->{
-  3.75156016079014*^9, {3.751563350533874*^9, 3.75156335877339*^9}, {
-   3.751563411993855*^9, 3.75156341848943*^9}, {3.751563458720435*^9, 
-   3.7515634866029778`*^9}, 3.7515637371551313`*^9, 3.751564556675674*^9},
- CellLabel->"Out[21]=",ExpressionUUID->"ab255090-de4c-4b69-a68a-2d1a8d41d26f"]
-}, Open  ]]
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"MyPaclet`PM`PrepareProcessAndFormat", "=", 
+   RowBox[{"{", "0", "}"}]}], ";"}], "\n", 
+ RowBox[{"Monitor", "[", 
+  RowBox[{
+   RowBox[{"PrepareProcessAndFormat", "[", "10", "]"}], ",", 
+   RowBox[{"Dynamic", "[", 
+    RowBox[{"Refresh", "[", 
+     RowBox[{
+      RowBox[{"First", "@", "MyPaclet`PM`PrepareProcessAndFormat"}], ",", 
+      RowBox[{"UpdateInterval", "\[Rule]", "0.2"}]}], "]"}], "]"}]}], 
+  "]"}]}], "Input",
+ CellChangeTimes->{{3.751560123674821*^9, 3.751560124329706*^9}, {
+   3.7515601666847897`*^9, 3.751560169529941*^9}, {3.752823407433529*^9, 
+   3.752823417335381*^9}, {3.752823461057757*^9, 3.7528235212646217`*^9}, 
+   3.752823554202591*^9, 3.752823592643199*^9},
+ CellLabel->"In[29]:=",ExpressionUUID->"df2d8a44-67ad-446e-8324-da5542e7a6b9"],
+
+Cell["\<\
+How often you update the value of progress monitor in top-level affects the \
+total time of computation:\
+\>", "Text",
+ CellChangeTimes->{{3.752824786694133*^9, 
+  3.752824807846223*^9}},ExpressionUUID->"225bfb0d-ecc8-4a61-90a8-\
+24da4da6d9ad"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"Monitor", "[", 
+   RowBox[{
+    RowBox[{"UniformProgress", "[", "5", "]"}], ",", 
+    RowBox[{"Dynamic", "[", 
+     RowBox[{"First", "@", 
+      RowBox[{"Refresh", "[", 
+       RowBox[{"MyPaclet`PM`UniformProgress", ",", 
+        RowBox[{"UpdateInterval", "\[Rule]", "1"}]}], "]"}]}], "]"}]}], "]"}],
+   "//", "AbsoluteTiming"}]], "Input",
+ CellChangeTimes->{{3.752823621376848*^9, 3.752823627664834*^9}, {
+  3.752824721655418*^9, 3.7528247229192667`*^9}},
+ CellLabel->"In[31]:=",ExpressionUUID->"b4742911-c573-4cd2-9741-0bce37519e6f"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"Monitor", "[", 
+   RowBox[{
+    RowBox[{"UniformProgress", "[", "5", "]"}], ",", 
+    RowBox[{"Dynamic", "[", 
+     RowBox[{"First", "@", 
+      RowBox[{"Refresh", "[", 
+       RowBox[{"MyPaclet`PM`UniformProgress", ",", 
+        RowBox[{"UpdateInterval", "\[Rule]", "0.1"}]}], "]"}]}], "]"}]}], 
+   "]"}], "//", "AbsoluteTiming"}]], "Input",
+ CellChangeTimes->{{3.752824736437633*^9, 3.7528247367259607`*^9}},
+ CellLabel->"In[32]:=",ExpressionUUID->"2357b38d-a662-425c-9d31-357e2ae8964e"],
+
+Cell["\<\
+For the library function itself, the time of execution is affected by how \
+often you report progress in C++ code:\
+\>", "Text",
+ CellChangeTimes->{{3.7516258882522163`*^9, 3.7516259329723873`*^9}, {
+  3.752824865893735*^9, 
+  3.752824896102337*^9}},ExpressionUUID->"bc0f548a-6a4d-448f-bab4-\
+c09b9aac00a0"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"UniformProgress", "[", "3", "]"}], "//", 
+  "RepeatedTiming"}]], "Input",
+ CellChangeTimes->{{3.751370701768999*^9, 3.751370706838972*^9}, {
+  3.751395751707059*^9, 3.751395755160788*^9}, {3.751625811164565*^9, 
+  3.751625815196001*^9}, {3.7528249623280354`*^9, 3.752824970422388*^9}},
+ CellLabel->"In[33]:=",ExpressionUUID->"814a03e1-eac0-4600-8865-74916219e2ee"],
+
+Cell["\<\
+Compare with a function that does the same thing without reporting progress \
+but with checking for Aborts: \
+\>", "Text",
+ CellChangeTimes->{{3.752824899398116*^9, 
+  3.752824929446813*^9}},ExpressionUUID->"a3c0d7b4-729a-4746-8320-\
+1615bd749235"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"NoProgressButAbortable", "=", 
+   RowBox[{"SafeLibraryFunction", "[", 
+    RowBox[{"\"\<NoProgressButAbortable\>\"", ",", 
+     RowBox[{"{", "Real", "}"}], ",", "Integer"}], "]"}]}], ";"}]], "Input",
+ CellLabel->"In[34]:=",ExpressionUUID->"67967d20-ea81-4322-bc40-b93f575d4ee8"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"NoProgressButAbortable", "[", "3", "]"}], "//", 
+  "RepeatedTiming"}]], "Input",
+ CellChangeTimes->{{3.751625794875709*^9, 3.751625824226663*^9}, {
+  3.752824992784165*^9, 3.752824997862754*^9}},
+ CellLabel->"In[35]:=",ExpressionUUID->"51fd854e-b50d-4e09-94b2-0c054bc79a0f"],
+
+Cell["\<\
+Finally, compare with a function that neither reports progress nor checks for \
+Abort:\
+\>", "Text",
+ CellChangeTimes->{{3.7528260003626337`*^9, 
+  3.752826020378306*^9}},ExpressionUUID->"3dcbc8a9-ef85-4f33-b05b-\
+916a9ffb8e11"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"NoProgressNotAbortable", "=", 
+   RowBox[{"SafeLibraryFunction", "[", 
+    RowBox[{"\"\<NoProgressNotAbortable\>\"", ",", 
+     RowBox[{"{", "Real", "}"}], ",", "Integer"}], "]"}]}], ";"}]], "Input",
+ CellChangeTimes->{{3.752825556905465*^9, 3.752825561096634*^9}},
+ CellLabel->"In[15]:=",ExpressionUUID->"32427894-e551-4be9-8065-28712e920379"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"NoProgressNotAbortable", "[", "3", "]"}], "//", 
+  "RepeatedTiming"}]], "Input",
+ CellChangeTimes->{{3.751625794875709*^9, 3.751625824226663*^9}, {
+  3.752824992784165*^9, 3.752824997862754*^9}, {3.752825564553688*^9, 
+  3.7528255648567677`*^9}},
+ CellLabel->"In[16]:=",ExpressionUUID->"e7957752-b4a8-4b48-9942-35d445017d1a"],
+
+Cell["Time difference is negligible.", "Text",
+ CellChangeTimes->{{3.752825149927099*^9, 
+  3.752825159127084*^9}},ExpressionUUID->"2ed2c392-9aba-4036-9c8d-\
+65298c137773"]
 }, Open  ]],
 
 Cell[CellGroupData[{
@@ -615,8 +569,6 @@ Cell["Compile the source code", "Subsubsection",
  CellChangeTimes->{{3.75139150845397*^9, 
   3.751391512776342*^9}},ExpressionUUID->"759be7e2-4a81-453b-b8cb-\
 53eefb74aa28"],
-
-Cell[CellGroupData[{
 
 Cell[BoxData[{
  RowBox[{
@@ -642,8 +594,8 @@ Cell[BoxData[{
      RowBox[{"{", 
       RowBox[{
        RowBox[{"ParentDirectory", "[", "currentDirectory", "]"}], ",", 
-       "\"\<TestConfig.wl\>\""}], "}"}], "]"}], "]"}], ";"}], 
-  "\[IndentingNewLine]", "\n", 
+       "\"\<TestConfig.wl\>\""}], "}"}], "]"}], "]"}], ";"}], "\n", 
+  "\[IndentingNewLine]", 
   RowBox[{"(*", 
    RowBox[{"Compile", " ", "the", " ", "test", " ", "library"}], 
    "*)"}]}], "\[IndentingNewLine]", 
@@ -670,153 +622,17 @@ Cell[BoxData[{
  CellChangeTimes->{{3.75136973141927*^9, 3.7513697441112137`*^9}, {
    3.7513697816158247`*^9, 3.751369841488006*^9}, {3.751370020756031*^9, 
    3.751370036832384*^9}, 3.751370150685916*^9, {3.7513701842758837`*^9, 
-   3.7513701858106623`*^9}, 3.751372601022505*^9},
- CellLabel->"In[11]:=",ExpressionUUID->"8d8ffc89-fa90-48f9-b2fe-5e1f44fede66"],
-
-Cell[CellGroupData[{
-
-Cell[BoxData["\<\"/usr/bin/gcc -shared -o \
-\\\"/home/rafal/.Mathematica/SystemFiles/LibraryResources/Linux-x86-64/\
-Working-rafal-asus-10115-2286746688-2/ProgressTest.so\\\" -m64 -x c++ -fPIC \
--O2 -O2 -std=c++14 -Wall --pedantic -fvisibility=hidden  \
--I\\\"/home/rafal/Wolfram/XKernel/SystemFiles/IncludeFiles/C\\\" \
--I\\\"/home/rafal/Wolfram/XKernel/SystemFiles/Links/MathLink/DeveloperKit/\
-Linux-x86-64/CompilerAdditions\\\" \
--I\\\"/home/rafal/Wolfram/workspace/IMEX/LibraryLinkUtilities/install/include\
-\\\" \\\"/home/rafal/Wolfram/workspace/IMEX/LibraryLinkUtilities/tests/\
-UnitTests/ProgressMonitor/ProgressTest.cpp\\\"  \
--L\\\"/home/rafal/Wolfram/XKernel/SystemFiles/Links/MathLink/DeveloperKit/\
-Linux-x86-64/CompilerAdditions\\\" \
--L\\\"/home/rafal/Wolfram/XKernel/SystemFiles/Libraries/Linux-x86-64\\\" -L\\\
-\"/home/rafal/Wolfram/workspace/IMEX/LibraryLinkUtilities/install/lib\\\"  -l\
-\\\"LLU\\\"  2>&1\"\>"], "Print",
- InitializationCell->True,
- CellChangeTimes->{
-  3.7515402636286373`*^9, 3.75154093408591*^9, 3.751541549119823*^9, 
-   3.7515424140067863`*^9, {3.751555064173966*^9, 3.7515550899275723`*^9}, 
-   3.751555142427294*^9, 3.75155543045022*^9, 3.75155661591103*^9, {
-   3.751558407491723*^9, 3.751558408417818*^9}, {3.751558829896039*^9, 
-   3.751558830771998*^9}, {3.751558922008602*^9, 3.751558922876642*^9}, 
-   3.751558979839966*^9, {3.751559417742115*^9, 3.751559439953705*^9}, 
-   3.7515595129250813`*^9, 3.751559621642086*^9, 3.751560114720915*^9, {
-   3.751562103391698*^9, 3.751562104579834*^9}, {3.751562474417008*^9, 
-   3.75156252606409*^9}, 3.7515627355955*^9, {3.7515627875534286`*^9, 
-   3.751562809856142*^9}, 3.75156287116918*^9, {3.7515633150406837`*^9, 
-   3.7515633358585787`*^9}, 3.7515633974292917`*^9, 3.751563444266271*^9, 
-   3.7515637077275877`*^9, {3.751564512236128*^9, 3.751564513479954*^9}, {
-   3.751625739585237*^9, 3.751625740497939*^9}},
- CellLabel->
-  "During evaluation of \
-In[11]:=",ExpressionUUID->"503a55b3-c607-4b1e-8008-da82137feb76"],
-
-Cell[BoxData["\<\"\"\>"], "Print",
- InitializationCell->True,
- CellChangeTimes->{
-  3.7515402636286373`*^9, 3.75154093408591*^9, 3.751541549119823*^9, 
-   3.7515424140067863`*^9, {3.751555064173966*^9, 3.7515550899275723`*^9}, 
-   3.751555142427294*^9, 3.75155543045022*^9, 3.75155661591103*^9, {
-   3.751558407491723*^9, 3.751558408417818*^9}, {3.751558829896039*^9, 
-   3.751558830771998*^9}, {3.751558922008602*^9, 3.751558922876642*^9}, 
-   3.751558979839966*^9, {3.751559417742115*^9, 3.751559439953705*^9}, 
-   3.7515595129250813`*^9, 3.751559621642086*^9, 3.751560114720915*^9, {
-   3.751562103391698*^9, 3.751562104579834*^9}, {3.751562474417008*^9, 
-   3.75156252606409*^9}, 3.7515627355955*^9, {3.7515627875534286`*^9, 
-   3.751562809856142*^9}, 3.75156287116918*^9, {3.7515633150406837`*^9, 
-   3.7515633358585787`*^9}, 3.7515633974292917`*^9, 3.751563444266271*^9, 
-   3.7515637077275877`*^9, {3.751564512236128*^9, 3.751564513479954*^9}, {
-   3.751625739585237*^9, 3.751625741059061*^9}},
- CellLabel->
-  "During evaluation of \
-In[11]:=",ExpressionUUID->"f1c736fc-d58a-408b-81e0-b3563488e7fa"]
-}, Open  ]]
-}, Open  ]]
-}, Open  ]],
-
-Cell[CellGroupData[{
-
-Cell["Load functions", "Subsubsection",
- InitializationCell->True,
- CellChangeTimes->{{3.7515424275674143`*^9, 
-  3.751542438960186*^9}},ExpressionUUID->"675ccbd0-ec72-4a1a-9661-\
-d16552d1df26"],
-
-Cell[BoxData[{
- RowBox[{
-  RowBox[{"UniformProgress", "=", 
-   RowBox[{"SafeLibraryFunction", "[", 
-    RowBox[{"\"\<UniformProgress\>\"", ",", 
-     RowBox[{"{", "Real", "}"}], ",", "Integer", ",", " ", 
-     RowBox[{"\"\<ProgressMonitor\>\"", "\[Rule]", "Automatic"}]}], "]"}]}], 
-  ";"}], "\n", 
- RowBox[{
-  RowBox[{"NoProgressButAbortable", "=", 
-   RowBox[{"SafeLibraryFunction", "[", 
-    RowBox[{"\"\<NoProgressButAbortable\>\"", ",", 
-     RowBox[{"{", "Real", "}"}], ",", "Integer"}], "]"}]}], 
-  ";"}], "\[IndentingNewLine]", 
- RowBox[{
-  RowBox[{"PrepareProcessAndFormat", "=", 
-   RowBox[{"SafeLibraryFunction", "[", 
-    RowBox[{"\"\<PrepareProcessAndFormat\>\"", ",", 
-     RowBox[{"{", "Real", "}"}], ",", "Integer", ",", 
-     RowBox[{"\"\<ProgressMonitor\>\"", "\[Rule]", 
-      RowBox[{"<|", 
-       RowBox[{
-        RowBox[{"\"\<ShowPercentage\>\"", "\[Rule]", "True"}], ",", 
-        RowBox[{"\"\<CaptionFunction\>\"", "\[Rule]", 
-         RowBox[{"(", 
-          RowBox[{
-           RowBox[{"Which", "[", 
-            RowBox[{
-             RowBox[{"#", "<", " ", "0.3"}], ",", "\"\<Gathering data...\>\"",
-              ",", 
-             RowBox[{"#", ">", "0.8"}], ",", "\"\<Formatting result...\>\"", 
-             ",", "True", ",", "\"\<Processing data...\>\""}], "]"}], "&"}], 
-          ")"}]}]}], "|>"}]}]}], "]"}]}], ";"}], "\n", 
- RowBox[{
-  RowBox[{"DecreaseProgress", "=", 
-   RowBox[{"SafeLibraryFunction", "[", 
-    RowBox[{"\"\<DecreaseProgress\>\"", ",", 
-     RowBox[{"{", "Real", "}"}], ",", "Integer", ",", " ", 
-     RowBox[{"\"\<ProgressMonitor\>\"", "\[Rule]", 
-      RowBox[{"<|", 
-       RowBox[{
-        RowBox[{"\"\<ShowPercentage\>\"", "\[Rule]", "True"}], ",", 
-        RowBox[{"\"\<CaptionFunction\>\"", "\[Rule]", 
-         RowBox[{"(", 
-          RowBox[{
-           RowBox[{"Which", "[", 
-            RowBox[{
-             RowBox[{"#", "<", " ", "0.3"}], ",", "\"\<Gathering data...\>\"",
-              ",", 
-             RowBox[{"#", ">", "0.8"}], ",", "\"\<Formatting result...\>\"", 
-             ",", "True", ",", "\"\<Processing data...\>\""}], "]"}], "&"}], 
-          ")"}]}]}], "|>"}]}]}], "]"}]}], ";"}]}], "Input",
- InitializationCell->True,
- CellChangeTimes->{{3.7513703687415667`*^9, 3.7513703816201077`*^9}, {
-   3.751370449204803*^9, 3.751370472629136*^9}, {3.7513715047860737`*^9, 
-   3.751371517515976*^9}, {3.751371630782241*^9, 3.751371633372617*^9}, {
-   3.751372562991775*^9, 3.7513725654603252`*^9}, {3.75138765586685*^9, 
-   3.751387658153194*^9}, {3.7513879050209217`*^9, 3.751387914954103*^9}, {
-   3.751389450240505*^9, 3.7513894686550093`*^9}, {3.751389523265399*^9, 
-   3.7513895611205807`*^9}, {3.7513896057967663`*^9, 
-   3.7513896111029387`*^9}, {3.751389737137278*^9, 3.751389741711521*^9}, {
-   3.7513898413340807`*^9, 3.751389937184472*^9}, {3.751390035380846*^9, 
-   3.7513900723368473`*^9}, {3.7515386174295273`*^9, 
-   3.7515386196802273`*^9}, {3.751542382527347*^9, 3.7515424093914967`*^9}, 
-   3.751555069951002*^9, {3.751555218993367*^9, 3.751555276785935*^9}, {
-   3.751559431012718*^9, 3.751559433411264*^9}, {3.7515601065877047`*^9, 
-   3.751560135926558*^9}, {3.751563746890167*^9, 3.751563747641643*^9}, {
-   3.751625753277841*^9, 3.751625769634493*^9}},
- CellLabel->"In[18]:=",ExpressionUUID->"e1493ba5-3c94-40be-bc75-39e1024663c6"]
+   3.7513701858106623`*^9}, 3.751372601022505*^9, {3.751695427410557*^9, 
+   3.751695428177534*^9}, {3.751695573939899*^9, 3.751695574305032*^9}},
+ CellLabel->"In[8]:=",ExpressionUUID->"8d8ffc89-fa90-48f9-b2fe-5e1f44fede66"]
 }, Open  ]]
 }, Open  ]]
 }, Open  ]]
 }, Open  ]]
 },
 WindowSize->{1305, 1004},
-WindowMargins->{{Automatic, 279}, {0, Automatic}},
-FrontEndVersion->"12.0 for Linux x86 (64-bit) (November 15, 2018)",
+WindowMargins->{{Automatic, 113}, {0, Automatic}},
+FrontEndVersion->"12.0 for Linux x86 (64-bit) (November 28, 2018)",
 StyleDefinitions->"Default.nb"
 ]
 (* End of Notebook Content *)
@@ -833,110 +649,77 @@ Notebook[{
 Cell[CellGroupData[{
 Cell[580, 22, 236, 4, 99, "Title",ExpressionUUID->"40bbd71e-31a4-4bfe-9593-efe64dd6a92b"],
 Cell[819, 28, 168, 3, 36, "Text",ExpressionUUID->"fd6e321a-5063-405e-9625-e8e982207266"],
-Cell[990, 33, 155, 3, 70, "Chapter",ExpressionUUID->"90816697-4a4e-4137-a536-514e555d77cd"],
-Cell[1148, 38, 151, 3, 59, "Chapter",ExpressionUUID->"61ae3398-66b4-4b88-9805-72c0c19cce64"],
 Cell[CellGroupData[{
-Cell[1324, 45, 157, 3, 59, "Chapter",ExpressionUUID->"a090b3fb-33e4-4ff7-8992-8b95f80231fd"],
+Cell[1012, 35, 157, 3, 70, "Chapter",ExpressionUUID->"a090b3fb-33e4-4ff7-8992-8b95f80231fd"],
 Cell[CellGroupData[{
-Cell[1506, 52, 186, 3, 55, "Subsection",ExpressionUUID->"9dbefded-fe14-44ed-a0d9-9128e5ab328f"],
-Cell[1695, 57, 592, 13, 60, "Text",ExpressionUUID->"f1713439-beca-443c-89cf-e4bdce992488"],
-Cell[2290, 72, 1144, 19, 31, "Input",ExpressionUUID->"e6b8c376-3ae5-45b0-bdeb-fa64e6bba3c2"],
-Cell[3437, 93, 211, 5, 36, "Text",ExpressionUUID->"450a742e-3a93-4a91-ac8a-788247d59d6f"],
-Cell[CellGroupData[{
-Cell[3673, 102, 262, 4, 31, "Input",ExpressionUUID->"ee42ec9c-b25e-418c-a3c0-940ab1722665"],
-Cell[3938, 108, 339, 5, 35, "Output",ExpressionUUID->"6d263ac1-deaa-4df8-b3d0-266301f08c0a"]
-}, Open  ]],
-Cell[4292, 116, 440, 8, 36, "Text",ExpressionUUID->"4737378a-f6d3-48bd-a2ce-1714db024014"],
-Cell[CellGroupData[{
-Cell[4757, 128, 203, 3, 46, "Subsubsection",ExpressionUUID->"1e02dc36-acdb-4dd2-9628-57d6293c6185"],
-Cell[4963, 133, 378, 8, 36, "Text",ExpressionUUID->"5658f195-4cfb-402d-a8d6-282c0d618145"],
-Cell[CellGroupData[{
-Cell[5366, 145, 499, 10, 31, "Input",ExpressionUUID->"d7745514-8ff3-4b6a-b555-0b9b8fbe7bb6"],
-Cell[5868, 157, 272, 4, 35, "Output",ExpressionUUID->"bd8da6bb-1311-437e-9d71-fe25efe72156"]
-}, Open  ]],
-Cell[6155, 164, 226, 4, 36, "Text",ExpressionUUID->"f3862c0a-5834-48c2-abc1-24578c515369"],
-Cell[CellGroupData[{
-Cell[6406, 172, 515, 10, 31, "Input",ExpressionUUID->"98cf2366-64d7-47d7-a659-5d30ee1f715e"],
-Cell[6924, 184, 202, 3, 35, "Output",ExpressionUUID->"1bc7ad3b-5333-4f19-b8d4-6d11cc0878ea"]
-}, Open  ]],
-Cell[7141, 190, 316, 7, 36, "Text",ExpressionUUID->"3058cab8-9847-4339-988a-fa5c80973d25"],
-Cell[CellGroupData[{
-Cell[7482, 201, 449, 10, 31, "Input",ExpressionUUID->"fd167e02-58be-4d80-9cdc-b2504ef89ba9"],
-Cell[7934, 213, 6310, 129, 67, "Output",ExpressionUUID->"25fcfb8d-82be-41c0-9274-c686259635f9"]
-}, Open  ]]
+Cell[1194, 42, 228, 4, 46, "Subsubsection",ExpressionUUID->"7b883ded-7426-45db-a40b-dd43cf972d60"],
+Cell[1425, 48, 436, 9, 60, "Text",ExpressionUUID->"518c2a01-6cfb-4d32-813f-1e822672a9ab"],
+Cell[1864, 59, 217, 3, 31, "Input",ExpressionUUID->"1cd556f4-51a5-4134-83b2-4fd76cc200a4"],
+Cell[2084, 64, 149, 3, 36, "Text",ExpressionUUID->"94ab3b33-992c-4115-9ea2-231996b70699"],
+Cell[2236, 69, 535, 9, 60, "Text",ExpressionUUID->"8e530686-0a75-46e3-8f06-f0a4c1128487"],
+Cell[2774, 80, 472, 10, 31, "Input",ExpressionUUID->"83a24cf0-19db-4172-8862-842c2d029df0"],
+Cell[3249, 92, 226, 5, 36, "Text",ExpressionUUID->"9299360c-c713-4874-aa4a-912b215553f3"],
+Cell[3478, 99, 215, 4, 31, "Input",ExpressionUUID->"0db7ee16-1936-4928-b4d7-1c91657600a8"],
+Cell[3696, 105, 550, 11, 31, "Input",ExpressionUUID->"5a68a8c4-fa39-4cdc-8668-0a573ce16d2b"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[14293, 348, 215, 4, 46, "Subsubsection",ExpressionUUID->"9cd78cdf-37fe-4e66-a733-03ee027615ac"],
-Cell[14511, 354, 366, 8, 36, "Text",ExpressionUUID->"8aa21973-8439-4195-b9cb-8384faaf7b36"],
-Cell[CellGroupData[{
-Cell[14902, 366, 408, 9, 31, "Input",ExpressionUUID->"9b8f5e98-deb6-45ee-a24e-f5523a55cdd3"],
-Cell[15313, 377, 172, 2, 35, "Output",ExpressionUUID->"308df8f5-71f5-45d2-a507-8a4b070ccc51"]
-}, Open  ]]
+Cell[4283, 121, 220, 3, 46, "Subsubsection",ExpressionUUID->"4cea20bb-748d-41dc-8947-864815118e8b"],
+Cell[4506, 126, 328, 7, 36, "Text",ExpressionUUID->"eade9eae-45df-4eac-8a72-fe232f1ef258"],
+Cell[4837, 135, 266, 4, 31, "Input",ExpressionUUID->"b07c9626-c01c-4a8e-91be-1101b94fefe2"],
+Cell[5106, 141, 498, 9, 60, "Text",ExpressionUUID->"b85e0ae8-74aa-4f13-99bf-93683b1489b4"],
+Cell[5607, 152, 303, 4, 31, "Input",ExpressionUUID->"89921e41-f7c1-4c0c-bc68-55bd6af8c19f"],
+Cell[5913, 158, 147, 2, 31, "Input",ExpressionUUID->"145dc527-6672-4e83-b744-326c063b4839"],
+Cell[6063, 162, 367, 8, 36, "Text",ExpressionUUID->"c80c5ffd-c877-44a0-8c52-2e4b6752f709"],
+Cell[6433, 172, 325, 6, 31, "Input",ExpressionUUID->"b6919e1c-6cb7-4c51-a172-321dbd5ebe9d"],
+Cell[6761, 180, 147, 2, 31, "Input",ExpressionUUID->"126e110c-3dae-4dd7-9970-7a3f41f506d1"],
+Cell[6911, 184, 167, 3, 36, "Text",ExpressionUUID->"29bd87a6-9530-4db4-957c-fda646225274"],
+Cell[7081, 189, 824, 19, 31, "Input",ExpressionUUID->"bbb3fa45-f0d8-4658-b308-adfceaa12a9d"],
+Cell[7908, 210, 339, 7, 36, "Text",ExpressionUUID->"1541ad0c-5698-4850-8110-b0545d16c1e9"],
+Cell[8250, 219, 241, 4, 31, "Input",ExpressionUUID->"68e74c69-74a5-4b25-b4e8-72ff7c576e93"],
+Cell[8494, 225, 397, 7, 31, "Input",ExpressionUUID->"bba2ce36-db7e-43d4-9d93-8fa2587d3d97"],
+Cell[8894, 234, 147, 2, 31, "Input",ExpressionUUID->"96d0ce73-c0f5-477a-a84f-2d4e0264dd19"],
+Cell[9044, 238, 229, 3, 31, "Input",ExpressionUUID->"b983bdc4-82cd-4bbc-b90a-7f446cb785cb"],
+Cell[9276, 243, 147, 2, 31, "Input",ExpressionUUID->"66c979a5-8865-4413-9694-d5560aef894c"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[15534, 385, 265, 5, 46, "Subsubsection",ExpressionUUID->"a7fbf32c-909f-44e3-95fd-fd9a6bb3aef7"],
-Cell[15802, 392, 569, 10, 60, "Text",ExpressionUUID->"2a724e62-61c5-4aa0-af30-1b224ffbd176"],
-Cell[16374, 404, 522, 12, 31, "Input",ExpressionUUID->"809424c3-907a-4dba-a960-65f099a2c755"],
-Cell[16899, 418, 235, 6, 36, "Text",ExpressionUUID->"8208645d-aeb6-4630-b80f-6c0555b0e35b"],
-Cell[CellGroupData[{
-Cell[17159, 428, 556, 11, 31, "Input",ExpressionUUID->"c13ae2fc-a69f-4b5e-8f6e-d3031d2884f6"],
-Cell[17718, 441, 198, 3, 35, "Output",ExpressionUUID->"7389e535-1d91-4f77-8af0-78e3d344bf22"]
-}, Open  ]],
-Cell[17931, 447, 243, 6, 36, "Text",ExpressionUUID->"1c4f685a-bcd1-42ef-adea-761d6efb5373"]
-}, Open  ]]
+Cell[9460, 250, 189, 3, 46, "Subsubsection",ExpressionUUID->"9dbefded-fe14-44ed-a0d9-9128e5ab328f"],
+Cell[9652, 255, 186, 3, 36, "Text",ExpressionUUID->"1741807a-9dd1-4518-b026-34e6889cb1b3"],
+Cell[9841, 260, 774, 16, 31, "Input",ExpressionUUID->"aab8375a-77ca-4959-a1eb-739d3980e812"],
+Cell[10618, 278, 197, 3, 36, "Text",ExpressionUUID->"1be35906-1369-4530-ac0d-aa4e7ab43d57"],
+Cell[10818, 283, 1338, 31, 124, "Input",ExpressionUUID->"b5d78bd9-af2b-4fa5-be94-ea9a5ad2f0c6"],
+Cell[12159, 316, 388, 8, 60, "Text",ExpressionUUID->"dd1812ba-2bff-4dcc-958d-aa799a4d64aa"],
+Cell[12550, 326, 619, 14, 31, "Input",ExpressionUUID->"413d4a64-9ed4-430e-a7e0-8e228c9c134d"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[18223, 459, 217, 4, 55, "Subsection",ExpressionUUID->"e330938e-49b7-4db7-8fdb-adf2c320305d"],
-Cell[18443, 465, 312, 7, 36, "Text",ExpressionUUID->"74e95cc3-9135-43be-a8e1-f7ace18ccc79"],
-Cell[CellGroupData[{
-Cell[18780, 476, 525, 11, 31, "Input",ExpressionUUID->"1c801ab0-0f52-42b7-9f0f-b2406d3eaa62"],
-Cell[19308, 489, 252, 4, 35, "Output",ExpressionUUID->"d34970cb-e475-4963-9e3e-ecbaed786bf4"]
-}, Open  ]],
-Cell[19575, 496, 161, 3, 36, "Text",ExpressionUUID->"c263ee57-c9af-41f3-b7f8-c15fe4856782"],
-Cell[CellGroupData[{
-Cell[19761, 503, 215, 3, 31, "Input",ExpressionUUID->"9bd2837e-64c7-40c2-8f81-38d52661c536"],
-Cell[19979, 508, 207, 3, 35, "Output",ExpressionUUID->"c94d9f6c-a911-4987-996e-4912db0583f4"]
-}, Open  ]],
-Cell[20201, 514, 283, 6, 36, "Text",ExpressionUUID->"bc0f548a-6a4d-448f-bab4-c09b9aac00a0"],
-Cell[CellGroupData[{
-Cell[20509, 524, 351, 7, 31, "Input",ExpressionUUID->"814a03e1-eac0-4600-8865-74916219e2ee"],
-Cell[20863, 533, 525, 8, 35, "Output",ExpressionUUID->"96e5d43c-7818-4e41-b219-d59a51d19724"]
-}, Open  ]],
-Cell[CellGroupData[{
-Cell[21425, 546, 260, 5, 31, "Input",ExpressionUUID->"51fd854e-b50d-4e09-94b2-0c054bc79a0f"],
-Cell[21688, 553, 226, 4, 35, "Output",ExpressionUUID->"cfa8e2c4-885c-4b84-b109-ae7495881ca0"]
-}, Open  ]],
-Cell[21929, 560, 291, 6, 36, "Text",ExpressionUUID->"65a53786-1bb2-4b27-b62f-991dad3942c3"],
-Cell[CellGroupData[{
-Cell[22245, 570, 264, 4, 31, "Input",ExpressionUUID->"45a46b44-26b8-4f25-b9dd-d0897dea5b59"],
-Cell[22512, 576, 366, 6, 35, "Output",ExpressionUUID->"7811794a-576d-4e53-a120-5457f63316c8"]
+Cell[13206, 345, 220, 4, 46, "Subsubsection",ExpressionUUID->"e330938e-49b7-4db7-8fdb-adf2c320305d"],
+Cell[13429, 351, 161, 3, 36, "Text",ExpressionUUID->"c263ee57-c9af-41f3-b7f8-c15fe4856782"],
+Cell[13593, 356, 483, 11, 31, "Input",ExpressionUUID->"49434241-ff07-42f3-b2cb-71da71a3d730"],
+Cell[14079, 369, 291, 6, 36, "Text",ExpressionUUID->"65a53786-1bb2-4b27-b62f-991dad3942c3"],
+Cell[14373, 377, 450, 10, 31, "Input",ExpressionUUID->"95de4cae-7e1e-4d97-8ff5-8fb70b70057a"],
+Cell[14826, 389, 715, 14, 124, "Input",ExpressionUUID->"45a46b44-26b8-4f25-b9dd-d0897dea5b59"],
+Cell[15544, 405, 341, 7, 36, "Text",ExpressionUUID->"6c17bdab-bae7-477e-92c8-b7efd753e937"],
+Cell[15888, 414, 468, 10, 55, "Input",ExpressionUUID->"f814cf25-b0ea-41db-845c-59afaf55bf6e"],
+Cell[16359, 426, 802, 17, 55, "Input",ExpressionUUID->"df2d8a44-67ad-446e-8324-da5542e7a6b9"],
+Cell[17164, 445, 254, 6, 36, "Text",ExpressionUUID->"225bfb0d-ecc8-4a61-90a8-24da4da6d9ad"],
+Cell[17421, 453, 570, 13, 31, "Input",ExpressionUUID->"b4742911-c573-4cd2-9741-0bce37519e6f"],
+Cell[17994, 468, 524, 12, 31, "Input",ExpressionUUID->"2357b38d-a662-425c-9d31-357e2ae8964e"],
+Cell[18521, 482, 317, 7, 36, "Text",ExpressionUUID->"bc0f548a-6a4d-448f-bab4-c09b9aac00a0"],
+Cell[18841, 491, 399, 7, 31, "Input",ExpressionUUID->"814a03e1-eac0-4600-8865-74916219e2ee"],
+Cell[19243, 500, 258, 6, 36, "Text",ExpressionUUID->"a3c0d7b4-729a-4746-8320-1615bd749235"],
+Cell[19504, 508, 313, 6, 31, "Input",ExpressionUUID->"67967d20-ea81-4322-bc40-b93f575d4ee8"],
+Cell[19820, 516, 309, 6, 31, "Input",ExpressionUUID->"51fd854e-b50d-4e09-94b2-0c054bc79a0f"],
+Cell[20132, 524, 238, 6, 36, "Text",ExpressionUUID->"3dcbc8a9-ef85-4f33-b05b-916a9ffb8e11"],
+Cell[20373, 532, 379, 7, 31, "Input",ExpressionUUID->"32427894-e551-4be9-8065-28712e920379"],
+Cell[20755, 541, 360, 7, 31, "Input",ExpressionUUID->"e7957752-b4a8-4b48-9942-35d445017d1a"],
+Cell[21118, 550, 172, 3, 36, "Text",ExpressionUUID->"2ed2c392-9aba-4036-9c8d-65298c137773"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[22915, 587, 272, 4, 31, "Input",ExpressionUUID->"df2d8a44-67ad-446e-8324-da5542e7a6b9"],
-Cell[23190, 593, 344, 5, 35, "Output",ExpressionUUID->"ab255090-de4c-4b69-a68a-2d1a8d41d26f"]
-}, Open  ]]
-}, Open  ]],
-Cell[CellGroupData[{
-Cell[23583, 604, 196, 4, 55, "Subsection",ExpressionUUID->"6a610cff-6e3f-4b13-a801-1bc5619f8069",
+Cell[21327, 558, 196, 4, 55, "Subsection",ExpressionUUID->"6a610cff-6e3f-4b13-a801-1bc5619f8069",
  InitializationCell->True],
 Cell[CellGroupData[{
-Cell[23804, 612, 200, 4, 46, "Subsubsection",ExpressionUUID->"759be7e2-4a81-453b-b8cb-53eefb74aa28",
+Cell[21548, 566, 200, 4, 46, "Subsubsection",ExpressionUUID->"759be7e2-4a81-453b-b8cb-53eefb74aa28",
  InitializationCell->True],
-Cell[CellGroupData[{
-Cell[24029, 620, 2057, 53, 255, "Input",ExpressionUUID->"8d8ffc89-fa90-48f9-b2fe-5e1f44fede66",
- InitializationCell->True],
-Cell[CellGroupData[{
-Cell[26111, 677, 2012, 32, 180, "Print",ExpressionUUID->"503a55b3-c607-4b1e-8008-da82137feb76",
- InitializationCell->True],
-Cell[28126, 711, 1106, 18, 25, "Print",ExpressionUUID->"f1c736fc-d58a-408b-81e0-b3563488e7fa",
- InitializationCell->True]
-}, Open  ]]
-}, Open  ]]
-}, Open  ]],
-Cell[CellGroupData[{
-Cell[29293, 736, 194, 4, 46, "Subsubsection",ExpressionUUID->"675ccbd0-ec72-4a1a-9661-d16552d1df26",
- InitializationCell->True],
-Cell[29490, 742, 3328, 68, 209, "Input",ExpressionUUID->"e1493ba5-3c94-40be-bc75-39e1024663c6",
+Cell[21751, 572, 2152, 54, 255, "Input",ExpressionUUID->"8d8ffc89-fa90-48f9-b2fe-5e1f44fede66",
  InitializationCell->True]
 }, Open  ]]
 }, Open  ]]
