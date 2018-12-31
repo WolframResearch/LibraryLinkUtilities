@@ -1,7 +1,7 @@
 /**
  * @file	ProgressMonitor.h
  * @author	Rafal Chojna <rafalc@wolfram.com>
- * @brief	
+ * @brief	Definition of ProgressMonitor class
  */
 #ifndef LLUTILS_PROGRESSMONITOR_H
 #define LLUTILS_PROGRESSMONITOR_H

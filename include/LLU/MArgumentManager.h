@@ -368,9 +368,11 @@ namespace LibraryLinkUtils {
 		void setDataList(const DataList<T, PassingMode>& ds);
 
 		/**
-		 * @brief
-		 * @param step
-		 * @return
+		 * @brief 	Get ProgressMonitor shared with WL Kernel.
+		 * @param 	step - step value for progress monitor
+		 * @return	A new instance of ProgressMonitor class.
+		 * @warning If you haven't specified "ProgressMonitor" option when loading the library function
+		 * 			with SafeLibraryFunction, then the behavior of \c getProgressMonitor is undefined.
 		 */
 		ProgressMonitor getProgressMonitor(double step = .1) const;
 

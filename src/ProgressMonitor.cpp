@@ -1,7 +1,7 @@
 /**
  * @file	ProgressMonitor.cpp
  * @author	Rafal Chojna <rafalc@wolfram.com>
- * @brief	
+ * @brief	Implementation file for ProgressMonitor class
  */
 #include "LLU/ProgressMonitor.h"
 

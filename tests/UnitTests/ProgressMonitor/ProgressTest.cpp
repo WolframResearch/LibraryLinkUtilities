@@ -1,7 +1,7 @@
 /**
  * @file	progressTest.cpp
  * @author	Rafal Chojna <rafalc@wolfram.com>
- * @brief
+ * @brief 	Unit tests for ProgressMonitor
  */
 #include <chrono>
 #include <thread>
