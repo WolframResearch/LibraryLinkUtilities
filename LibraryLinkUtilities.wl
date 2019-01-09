@@ -42,7 +42,7 @@ $CorePacletFailureLUT = <|
 	"FunctionLoadFailure" -> {21, "Failed to load the function `FunctionName` from `LibraryName`."},
 	"RegisterFailure" -> {22, "Incorrect arguments to RegisterPacletErrors."},
 	"UnknownFailure" -> {23, "The error `ErrorName` has not been registered."},
-	"ProgressMonInvalidValue" -> {24, "Value for option \"ProgressMonitor\" must be None or a Symbol."}
+	"ProgressMonInvalidValue" -> {24, "Expecting None or a Symbol for the option \"ProgressMonitor\"."}
 |>;
 
 
