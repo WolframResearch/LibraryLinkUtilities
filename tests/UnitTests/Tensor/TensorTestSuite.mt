@@ -155,16 +155,13 @@ Test[
 	TestID->"TensorOperations-20150819-D8C1Y0"
 ]
 
-(*
-Test[(*Changing data in C function*)
-	f = Compile[{{n, _Integer}}, 
-  		Module[{ls}, ls = Table[i/1., {i, 1, n}];add1[ls];ls], 
-  			CompilationOptions -> {"InlineExternalDefinitions" -> True}];
-  	f[5]
+
+Test[
+	copyShared[RandomReal[1., {3, 5}]]
 	,
-	{2., 3., 4., 5., 6.}
+	110
 	,
 	TestID->"TensorOperations-20150831-L0U3V3"
 ]
-*)
+
 EndRequirement[]

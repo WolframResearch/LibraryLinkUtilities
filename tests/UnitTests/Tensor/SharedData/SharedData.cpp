@@ -1,5 +1,6 @@
 #include "WolframLibrary.h"
 
+#include "LLU/LibraryLinkFunctionMacro.h"
 #include "LLU/MArgumentManager.h"
 #include "LLU/LibraryLinkError.h"
 #include "LLU/Containers/Tensor.h"
@@ -97,6 +98,24 @@ EXTERN_C DLLEXPORT int add1(WolframLibraryData libData, mint Argc, MArgument *Ar
 		for (auto& elem : tx) {
 			elem++;
 		}
+	}
+	catch (const LibraryLinkError& e) {
+		err = e.which();
+	}
+	catch (...) {
+		err = LLErrorCode::FunctionError;
+	}
+	return err;
+}
+
+LIBRARY_LINK_FUNCTION(copyShared) {
+	auto err = LLErrorCode::NoError;
+	try {
+		MArgumentManager mngr(Argc, Args, Res);
+		auto sharedTensor = mngr.getTensor<double>(0);
+		auto sc = sharedTensor.shareCount();
+		auto copy = sharedTensor; // create deep copy of the shared Tensor
+		mngr.setInteger(100 * sc + 10 * sharedTensor.shareCount() + copy.shareCount());
 	}
 	catch (const LibraryLinkError& e) {
 		err = e.which();
