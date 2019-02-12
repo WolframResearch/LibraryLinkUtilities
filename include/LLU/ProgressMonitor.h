@@ -6,7 +6,7 @@
 #ifndef LLUTILS_PROGRESSMONITOR_H
 #define LLUTILS_PROGRESSMONITOR_H
 
-
+#include "LLU/Containers/Passing/Shared.hpp"
 #include "LLU/Containers/Tensor.h"
 
 namespace LibraryLinkUtils {
@@ -21,12 +21,13 @@ namespace LibraryLinkUtils {
 	 **/
 	class ProgressMonitor {
 	public:
+		using SharedTensor = Tensor<double, Passing::Shared>;
 		/**
 		 * @brief Construct a new ProgressMonitor
 		 * @param sharedIndicator - shared Tensor of type \c double. If tensor length is smaller than 1, the behavior is undefined.
 		 * @param step - by how much to modify the progress value in operator++ and operator--
 		 */
-		explicit ProgressMonitor(Tensor<double> sharedIndicator, double step = .1);
+		explicit ProgressMonitor(SharedTensor sharedIndicator, double step = .1);
 
 		/**
 		 * @brief Copy-constructor is disabled because ProgressMonitor shares a Tensor with WL Kernel.
@@ -39,9 +40,9 @@ namespace LibraryLinkUtils {
 		ProgressMonitor(ProgressMonitor&&) = default;
 
 		/**
-		 * @brief Destructor will disown the shared Tensor.
+		 * @brief Default destructor.
 		 */
-		~ProgressMonitor();
+		~ProgressMonitor() = default;
 
 		/**
 		 * @brief Get current value of the progress.
@@ -101,7 +102,7 @@ namespace LibraryLinkUtils {
 	private:
 
 		/// This tensor stores current progress as the first element.
-		Tensor<double> sharedIndicator;
+		SharedTensor sharedIndicator;
 
 		/// Step determines by how much will ++ or -- operators modify the current progress.
 		double step;

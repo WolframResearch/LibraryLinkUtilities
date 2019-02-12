@@ -10,11 +10,7 @@
 
 namespace LibraryLinkUtils {
 
-	ProgressMonitor::ProgressMonitor(Tensor<double> sharedIndicator, double step) : sharedIndicator(std::move(sharedIndicator)), step(step) {}
-
-	ProgressMonitor::~ProgressMonitor() {
-		sharedIndicator.disown();
-	}
+	ProgressMonitor::ProgressMonitor(Tensor<double, Passing::Shared> sharedIndicator, double step) : sharedIndicator(std::move(sharedIndicator)), step(step) {}
 
 	double ProgressMonitor::get() const {
 		return sharedIndicator[0];
