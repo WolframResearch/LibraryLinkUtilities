@@ -12,6 +12,7 @@
 #include <algorithm>
 
 #include "LLU/Containers/MArray.hpp"
+#include "LLU/Containers/Passing/Shared.hpp"
 
 namespace LibraryLinkUtils {
 
@@ -144,7 +145,7 @@ namespace LibraryLinkUtils {
 
 	ProgressMonitor MArgumentManager::getProgressMonitor(double step) const {
 		auto pmIndex = argc - 1; // shared Tensor will be passed as the last argument
-		Tensor<double> sharedIndicator = getTensor<double>(pmIndex);
+		auto sharedIndicator = getTensor<double, Passing::Shared>(pmIndex);
 		return ProgressMonitor { std::move(sharedIndicator), step };
 	}
 

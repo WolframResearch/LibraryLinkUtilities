@@ -175,8 +175,8 @@ namespace LibraryLinkUtils {
 		 *   @throws        LLErrorName::MArgumentIndexError - if \c index is out-of-bounds
 		 *   @see			NumericArray<T>::NumericArray(const MNumericArray);
 		 **/
-		template<typename T>
-		NumericArray<T> getNumericArray(unsigned int index) const;
+		template<typename T, class PassingMode = Passing::Automatic>
+		NumericArray<T, PassingMode> getNumericArray(unsigned int index) const;
 		
 		/**
 		 *   @brief         Get MArgument of type MNumericArray at position \c index
@@ -201,8 +201,8 @@ namespace LibraryLinkUtils {
 		 *   @tparam		T - NumericArray data type
 		 *   @param[in]     ra - reference to NumericArray which should pass its internal MNumericArray to LibraryLink
 		 **/
-		template<typename T>
-		void setNumericArray(NumericArray<T>& ra);
+		template<typename T, class PassingMode >
+		void setNumericArray(NumericArray<T, PassingMode>& ra);
 
 		/**
 		 *   @brief         Set MNumericArray as output MArgument
@@ -248,16 +248,16 @@ namespace LibraryLinkUtils {
 		 *   @throws        LLErrorName::MArgumentIndexError - if \c index is out-of-bounds
 		 *   @see			Tensor<T>::Tensor(const MTensor);
 		 **/
-		template<typename T>
-		Tensor<T> getTensor(unsigned int index) const;
+		template<typename T, class PassingMode = Passing::Automatic>
+		Tensor<T, PassingMode> getTensor(unsigned int index) const;
 
 		/**
 		 *   @brief         Set MTensor wrapped by \c ten as output MArgument
 		 *   @tparam		T - Tensor data type
 		 *   @param[in]     ten - reference to Tensor which should pass its internal MTensor to LibraryLink
 		 **/
-		template<typename T>
-		void setTensor(Tensor<T>& ten);
+		template<typename T, class PassingMode>
+		void setTensor(Tensor<T, PassingMode>& ten);
 
 		/**
 		 *   @brief         Set MTensor as output MArgument
@@ -305,16 +305,16 @@ namespace LibraryLinkUtils {
 		 *   @throws        LLErrorName::MArgumentIndexError - if \c index is out-of-bounds
 		 *   @see			Image<T>::Image(const MImage ra);
 		 **/
-		template<typename T>
-		Image<T> getImage(unsigned int index) const;
+		template<typename T, class PassingMode = Passing::Automatic>
+		Image<T, PassingMode> getImage(unsigned int index) const;
 
 		/**
 		 *   @brief         Set MImage wrapped by \c mi as output MArgument
 		 *   @tparam		T - Image data type
 		 *   @param[in]     mi - reference to Image which should pass its internal MImage to LibraryLink
 		 **/
-		template<typename T>
-		void setImage(Image<T>& mi);
+		template<typename T, class PassingMode = Passing::Automatic>
+		void setImage(Image<T, PassingMode>& mi);
 
 		/**
 		 *   @brief         Get type of MImage at position \c index in \c Args
@@ -356,7 +356,7 @@ namespace LibraryLinkUtils {
 		 *   @throws        LLErrorName::MArgumentIndexError - if \c index is out-of-bounds
 		 *   @see			DataList<T>::DataList(DataStore ds);
 		 **/
-		template<MArgumentType T, template<typename> class PassingMode = Passing::Automatic>
+		template<MArgumentType T, class PassingMode = Passing::Automatic>
 		DataList<T, PassingMode> getDataList(unsigned int index) const;
 
 		/**
@@ -364,7 +364,7 @@ namespace LibraryLinkUtils {
 		 *   @tparam		T - type of data stored in each node of DataStore
 		 *   @param[in]     ten - const reference to DataList which should pass its internal DataStore to LibraryLink
 		 **/
-		template<MArgumentType T, template<typename> class PassingMode = Passing::Automatic>
+		template<MArgumentType T, class PassingMode>
 		void setDataList(const DataList<T, PassingMode>& ds);
 
 		/**
@@ -451,13 +451,13 @@ namespace LibraryLinkUtils {
 			}
 	}
 
-	template<typename T>
-	NumericArray<T> MArgumentManager::getNumericArray(unsigned int index) const {
-		return NumericArray<T>(MArgument_getMNumericArray(getArgs(index)));
+	template<typename T, class PassingMode>
+	NumericArray<T, PassingMode> MArgumentManager::getNumericArray(unsigned int index) const {
+		return NumericArray<T, PassingMode>(MArgument_getMNumericArray(getArgs(index)));
 	}
 
-	template<typename T>
-	void MArgumentManager::setNumericArray(NumericArray<T>& ra) {
+	template<typename T, class PassingMode>
+	void MArgumentManager::setNumericArray(NumericArray<T, PassingMode>& ra) {
 		ra.passAsResult(res);
 	}
 
@@ -550,13 +550,13 @@ namespace LibraryLinkUtils {
 		}
 	}
 
-	template<typename T>
-	Tensor<T> MArgumentManager::getTensor(unsigned int index) const {
-		return Tensor<T>(MArgument_getMTensor(getArgs(index)));
+	template<typename T, class PassingMode>
+	Tensor<T, PassingMode> MArgumentManager::getTensor(unsigned int index) const {
+		return Tensor<T, PassingMode>(MArgument_getMTensor(getArgs(index)));
 	}
 
-	template<typename T>
-	void MArgumentManager::setTensor(Tensor<T>& ten) {
+	template<typename T, class PassingMode>
+	void MArgumentManager::setTensor(Tensor<T, PassingMode>& ten) {
 		ten.passAsResult(res);
 	}
 
@@ -598,13 +598,13 @@ namespace LibraryLinkUtils {
 	}
 
 
-	template<typename T>
-	Image<T> MArgumentManager::getImage(unsigned int index) const {
-		return Image<T>(MArgument_getMImage(getArgs(index)));
+	template<typename T, class PassingMode>
+	Image<T, PassingMode> MArgumentManager::getImage(unsigned int index) const {
+		return Image<T, PassingMode>(MArgument_getMImage(getArgs(index)));
 	}
 
-	template<typename T>
-	void MArgumentManager::setImage(Image<T>& mi) {
+	template<typename T, class PassingMode>
+	void MArgumentManager::setImage(Image<T, PassingMode>& mi) {
 		mi.passAsResult(res);
 	}
 
@@ -656,12 +656,12 @@ namespace LibraryLinkUtils {
 	}
 
 
-	template<MArgumentType T, template<typename> class PassingMode>
+	template<MArgumentType T, class PassingMode>
 	DataList<T, PassingMode> MArgumentManager::getDataList(unsigned int index) const {
 		return DataList<T, PassingMode>(MArgument_getDataStore(getArgs(index)));
 	}
 
-	template<MArgumentType T, template<typename> class PassingMode>
+	template<MArgumentType T, class PassingMode>
 	void MArgumentManager::setDataList(const DataList<T, PassingMode>& ds) {
 		ds.passAsResult(res);
 	}
