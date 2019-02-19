@@ -110,28 +110,6 @@ namespace LibraryLinkUtils {
 		 **/
 		virtual ~MArrayBase() = default;
 
-
-		/**
-		 *	@brief 		Pass the container as a result to LibraryLink via MArgument
-		 *	@param[out]	res - MArgument that will carry the internal container
-		 **/
-		void passAsResult(MArgument& res) noexcept {
-			passInternal(res);
-			setOwner(false);
-		}
-
-		/**
-		 * 	@brief		Check whether this object owns the underlying data structure from WolframLibrary. If it does, it is responsible for freeing the resources.
-		 * 	@return		true if and only if the object owns the underlying data structure from WolframLibrary
-		 */
-		bool isOwner() const;
-
-		/**
-		 * 	@brief		Set the ownership of the underlying data structure from WolframLibrary.
-		 * 	@param 		arrayOwnerQ - whether the object is now the owner of the underlying data structure from WolframLibrary
-		 */
-		void setOwner(bool arrayOwnerQ);
-
 	protected:
 
 		/// Total number of elements in the container
@@ -184,8 +162,6 @@ namespace LibraryLinkUtils {
 		}
 
 	private:
-		/// Determines if MArray should free the underlying container
-		bool arrayOwnerQ = false;
 
 		/**
 		 *	@brief 		Check if container size will fit into \b mint
@@ -201,22 +177,6 @@ namespace LibraryLinkUtils {
 		 *	@throws		LLErrorName::DimensionsError - if \c v is too big
 		 **/
 		mint checkContainerSize(std::initializer_list<mint> v) const;
-
-		/**
-		 *   @brief 	Create internal container
-		 **/
-		virtual void createInternal() = 0;
-
-		/**
-		 *   @brief 	Free internal container
-		 **/
-		virtual void freeInternal() noexcept = 0;
-
-		/**
-		 *   @brief 		Set internal container as result for LibraryLink.
-		 *   @param[out]	res - MArgument that will carry the internal container
-		 **/
-		virtual void passInternal(MArgument& res) noexcept = 0;
 
 		/// Calculate total array length based on current value of dims
 		mint totalLengthFromDims() const noexcept;

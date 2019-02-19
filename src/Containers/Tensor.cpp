@@ -3,7 +3,7 @@
  * @author	Rafal Chojna <rafalc@wolfram.com>
  * @date	18/04/2017
  *
- * @brief	Template specialization of certain methods from Tensor class for all underlying data types that we support
+ * @brief	Template specialization of certain methods from TypedTensor class for all underlying data types that we support
  *
  */
 
@@ -13,24 +13,24 @@
 
 namespace LibraryLinkUtils {
 	template<>
-	const unsigned char Tensor<mint>::type = MType_Integer;
+	const mint TypedTensor<mint>::type = MType_Integer;
 	template<>
-	const unsigned char Tensor<double>::type = MType_Real;
+	const mint TypedTensor<double>::type = MType_Real;
 	template<>
-	const unsigned char Tensor<std::complex<double>>::type = MType_Complex;
+	const mint TypedTensor<std::complex<double>>::type = MType_Complex;
 
 	template<>
-	mint* Tensor<mint>::getData() const noexcept {
-		return this->libData->MTensor_getIntegerData(internalMT);
+	mint* TypedTensor<mint>::getData() const noexcept {
+		return this->libData->MTensor_getIntegerData(this->getInternal());
 	}
 
 	template<>
-	double* Tensor<double>::getData() const noexcept {
-		return this->libData->MTensor_getRealData(internalMT);
+	double* TypedTensor<double>::getData() const noexcept {
+		return this->libData->MTensor_getRealData(this->getInternal());
 	}
 
 	template<>
-	std::complex<double>* Tensor<std::complex<double>>::getData() const noexcept {
-		return reinterpret_cast<std::complex<double>*>(this->libData->MTensor_getComplexData(internalMT));
+	std::complex<double>* TypedTensor<std::complex<double>>::getData() const noexcept {
+		return reinterpret_cast<std::complex<double>*>(this->libData->MTensor_getComplexData(this->getInternal()));
 	}
 } /* namespace LibraryLinkUtils */

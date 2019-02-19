@@ -34,7 +34,13 @@ namespace LibraryLinkUtils {
 		 *   @brief         Get currently owned WolframLibraryData.
 		 *   @return     	a non-owning pointer to current instance of st_WolframLibraryData stored in LibDataHolder or nullptr in case there is none
 		 **/
-		static WolframLibraryData getLibraryData() noexcept;
+		static WolframLibraryData getLibraryData();
+
+		static WolframNumericArrayLibrary_Functions getNumericArrayFunctions();
+
+		static WolframImageLibrary_Functions getImageFunctions();
+
+		static WolframIOLibrary_Functions getIOFunctions();
 
 	protected:
 		static std::unique_ptr<st_WolframLibraryData> libData;

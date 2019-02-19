@@ -23,8 +23,29 @@ namespace LibraryLinkUtils {
 		ioFuns = ld? libData->ioLibraryFunctions : nullptr;
 	}
 
-	WolframLibraryData LibDataHolder::getLibraryData() noexcept {
+	WolframLibraryData LibDataHolder::getLibraryData() {
 		return libData.get();
+	}
+
+	WolframNumericArrayLibrary_Functions LibDataHolder::getNumericArrayFunctions() {
+		if(!naFuns) {
+			//TODO throw
+		}
+		return naFuns;
+	}
+
+	WolframImageLibrary_Functions LibDataHolder::getImageFunctions() {
+		if(!imgFuns) {
+			//TODO throw
+		}
+		return imgFuns;
+	}
+
+	WolframIOLibrary_Functions LibDataHolder::getIOFunctions() {
+		if(!ioFuns) {
+			//TODO throw
+		}
+		return ioFuns;
 	}
 
 }
