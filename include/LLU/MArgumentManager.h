@@ -313,7 +313,7 @@ namespace LibraryLinkUtils {
 		 *   @tparam		T - Image data type
 		 *   @param[in]     mi - reference to Image which should pass its internal MImage to LibraryLink
 		 **/
-		template<typename T, class PassingMode = Passing::Automatic>
+		template<typename T, class PassingMode>
 		void setImage(Image<T, PassingMode>& mi);
 
 		/**
