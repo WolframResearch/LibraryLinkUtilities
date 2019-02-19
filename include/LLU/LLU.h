@@ -41,7 +41,7 @@ using Tensor = LibraryLinkUtils::Tensor<T>;
 template<typename T>
 using Image = LibraryLinkUtils::Image<T>;
 
-template<LibraryLinkUtils::MArgumentType T, template<typename> class PassingMode = Passing::Manual>
+template<LibraryLinkUtils::MArgumentType T, class PassingMode = Passing::Manual>
 using DataList = LibraryLinkUtils::DataList<T, PassingMode>;
 
 

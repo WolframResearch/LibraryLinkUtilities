@@ -173,6 +173,21 @@ namespace LibraryLinkUtils {
 		}
 	}
 
+	namespace NA {
+		/**
+		 * @brief Possible methods of handling out-of-range data when converting a NumericArray to different type.
+		 */
+		enum class ConversionMethod {
+			Check = MNumericArray_Convert_Check,
+			Clip = MNumericArray_Convert_Clip,
+			Round = MNumericArray_Convert_Round,
+			ClipRound = MNumericArray_Convert_Clip_Round,
+			ClipScale = MNumericArray_Convert_Clip_Scale,
+			Cast = MNumericArray_Convert_Cast,
+			Reinterpret = MNumericArray_Convert_Reinterpret
+		};
+	}
+
 } /* namespace LibraryLinkUtils */
 
 #endif /* LLUTILS_UTILITIES_H_ */
