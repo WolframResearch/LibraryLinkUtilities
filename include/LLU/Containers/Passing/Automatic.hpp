@@ -13,12 +13,9 @@
 namespace LibraryLinkUtils {
 	namespace Passing {
 
-		template<typename LLContainer>
-		class Automatic : public PassingPolicy<LLContainer> {
+		class Automatic : public PassingPolicy {
 		public:
-			using Super = PassingPolicy<LLContainer>;
-		public:
-			explicit Automatic(LLContainer newCont) : Super(newCont, false) {}
+			Automatic() : PassingPolicy(false) {}
 
 			Automatic(const Automatic&) = delete;
 
@@ -30,9 +27,8 @@ namespace LibraryLinkUtils {
 
 			~Automatic() = default;
 
-			void passAsResult(MArgument& res) const noexcept override {
-				this->passInternal(res);
-				this->setOwner(false);
+			void cleanup() const noexcept override {
+				// Automatic never owns the container so no cleanup
 			}
 		};
 	}

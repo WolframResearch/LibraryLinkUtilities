@@ -12,37 +12,32 @@
 namespace LibraryLinkUtils {
 	namespace Passing {
 
-		template<typename LLContainer>
 		class PassingPolicy {
 		public:
-			PassingPolicy(LLContainer newCont, bool ownerQ) : internalContainer(newCont), argumentOwnerQ(ownerQ) {}
 
+			/**
+			 *	@brief 		Pass the container as a result to LibraryLink via MArgument
+			 *	@param[out]	res - MArgument that will carry the internal container
+			 **/
+			void passAsResult(MArgument& res) const noexcept {
+				// If the MTensor is shared between the library and the Wolfram Language,
+				// then automatic return does not change anything in the ownership of the MTensor.
+				pass(res);
+				setOwner(false); // FIXME wrong for Shared
+			}
+
+			virtual void cleanup() const noexcept = 0;
+		protected:
+
+			PassingPolicy(bool ownerQ) : argumentOwnerQ(ownerQ) {}
+
+			PassingPolicy() = default;
 			PassingPolicy(const PassingPolicy&) = default;
 			PassingPolicy(PassingPolicy&&) noexcept = default;
 			PassingPolicy& operator=(const PassingPolicy&) = default;
 			PassingPolicy& operator=(PassingPolicy&&) noexcept = default;
 			virtual ~PassingPolicy() = default;
 
-			LLContainer disownInternal() const {
-				setOwner(false);
-				return getInternal();
-			}
-
-			LLContainer getInternal() const {
-				return internalContainer;
-			};
-
-			/**
-			 *	@brief 		Pass the container as a result to LibraryLink via MArgument
-			 *	@param[out]	res - MArgument that will carry the internal container
-			 **/
-			virtual void passAsResult(MArgument& res) const noexcept = 0;
-
-			/**
-			 *	@brief 		Pass the container as a result to LibraryLink via a shared MArgument
-			 *	@param[out]	res - MArgument that will carry the internal container
-			 **/
-			//virtual void passAsSharedResult(MArgument& res) noexcept = 0;
 
 			/**
 			 * 	@brief		Check whether this object owns the underlying data structure from WolframLibrary. If it does, it is responsible for freeing the resources.
@@ -60,26 +55,16 @@ namespace LibraryLinkUtils {
 				argumentOwnerQ = ownerQ;
 			}
 
-		protected:
-			/**
-			 *   @brief 	Free internal container
-			 **/
-			virtual void freeInternal() noexcept {};
+        protected:
+            virtual void free() const noexcept = 0;
 
-			/**
-			 *   @brief 		Set internal container as result for LibraryLink.
-			 *   @param[out]	res - MArgument that will carry the internal container
-			 **/
-			virtual void passInternal(MArgument& res) const noexcept = 0;
+			virtual void pass(MArgument& res) const = 0;
 
-			virtual LLContainer cloneInternal() const = 0;
+            virtual void disown() const noexcept = 0;
 
-		private:
-			LLContainer internalContainer {};
-
+        private:
 			/// Determines if MArray should free the underlying container
 			mutable bool argumentOwnerQ = false;
-
 		};
 	}
 }

@@ -13,33 +13,33 @@
 namespace LibraryLinkUtils {
 	namespace Passing {
 
-		template<typename LLContainer>
-		class Manual : public PassingPolicy<LLContainer> {
+		class Manual : public PassingPolicy {
 		public:
-			using Super = PassingPolicy<LLContainer>;
-		public:
-			explicit Manual(LLContainer newCont) : Super(newCont, true) {}
+			Manual() : PassingPolicy(true) {}
 
-			Manual(const Manual& other) : Super(other.cloneInternal(), true) {};
+			Manual(const Manual&) : PassingPolicy(true) {};
 
-			Manual(Manual&&) noexcept = default;
+			Manual(Manual&& other) noexcept : PassingPolicy(true) {
+				other.setOwner(false);
+			}
 
 			Manual& operator=(const Manual&) {
-				this->setOwner(true);
+				setOwner(true);
 				return *this;
 			};
 
-			Manual& operator=(Manual&&) noexcept = default;
-
-			~Manual() {
-				if (this->isOwner()) {
-					this->freeInternal();
-				}
+			Manual& operator=(Manual&& other) noexcept {
+				setOwner(true);
+				other.setOwner(false);
+				return *this;
 			}
 
-			void passAsResult(MArgument& res) const noexcept override {
-				this->passInternal(res);
-				this->setOwner(false);
+			~Manual() = default;
+
+			void cleanup() const noexcept override {
+                if (isOwner()) {
+					free();
+				}
 			}
 		};
 	}
