@@ -203,7 +203,7 @@ LIBRARY_LINK_FUNCTION(convert) {
 	try {
 		MArgumentManager mngr(Argc, Args, Res);
 		mngr.operateOnNumericArray(0, [&mngr](const auto& numArr) {
-			NumericArray<std::uint16_t> converted { numArr, static_cast<NA::ConversionMethod>(mngr.getInteger<int>(1))};
+			NumericArray<std::uint16_t> converted { numArr, static_cast<NA::ConversionMethod>(mngr.getInteger<int>(1)), mngr.getReal(2)};
 			mngr.setNumericArray(converted);
 		});
 	}

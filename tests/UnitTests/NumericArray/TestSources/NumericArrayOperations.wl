@@ -9,4 +9,4 @@ cloneNA = LibraryFunctionLoad[lib, "cloneNumericArray", {"NumericArray"}, "Numer
 changeSharedNA  = LibraryFunctionLoad[lib, "changeSharedNumericArray", {{"NumericArray","Shared"}}, "Void"];
 getSharedNA = LibraryFunctionLoad[lib, "getSharedNumericArray", {}, "NumericArray"];
 accumulateIntegers = LibraryFunctionLoad[lib, "accumulateIntegers", {{"NumericArray", "Constant"}}, Integer];
-convert = LibraryFunctionLoad[lib, "convert", {{"NumericArray", "Constant"}, Integer}, "NumericArray"];
+convert = LibraryFunctionLoad[lib, "convert", {{"NumericArray", "Constant"}, Integer, Real}, "NumericArray"];
