@@ -150,11 +150,21 @@ Test[
 Test[
 	unloadRealArray[]
 	,
-	0
+	1
 	,
 	TestID->"TensorOperations-20150819-D8C1Y0"
 ]
 
+Test[
+	t = RandomReal[1., {3, 5}];
+	oldT = t;
+	add1[t];
+	t
+	,
+	oldT + 1.
+	,
+	TestID->"TensorOperations-20150831-LGONV3"
+]
 
 Test[
 	copyShared[RandomReal[1., {3, 5}]]

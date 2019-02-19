@@ -35,7 +35,7 @@ LIBRARY_LINK_FUNCTION(EchoElement) {
 	auto err = LLErrorCode::NoError;
 	try {
 		MArgumentManager mngr(Argc, Args, Res);
-		auto na = mngr.getNumericArray<std::int64_t>(0);
+		auto na { mngr.getNumericArray<std::int64_t>(0) };
 		auto coords = mngr.getTensor<mint>(1);
 		std::vector<mint> coordsVec(coords.begin(), coords.end());
 		mngr.setInteger(na.at(coordsVec));

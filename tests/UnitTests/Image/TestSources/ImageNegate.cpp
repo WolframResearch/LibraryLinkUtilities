@@ -21,8 +21,8 @@ template<>
 uint16_t negator<uint16_t> = 0xFFFF;
 
 struct ImageNegator {
-	template<typename T>
-	void operator()(Image<T> in, MArgumentManager& mngr) {
+	template<typename T, class P>
+	void operator()(Image<T, P> in, MArgumentManager& mngr) {
 		Image<T> out(in.is3D()? in.slices() : 0, in.columns(), in.rows(), in.channels(), in.colorspace(), in.interleavedQ());
 
 		std::transform(std::cbegin(in), std::cend(in), std::begin(out), [](T inElem) {
@@ -31,11 +31,13 @@ struct ImageNegator {
 		mngr.setImage(out);
 	}
 
-	void operator()(Image<float> in, MArgumentManager& mngr) {
+	template<class P>
+	void operator()(Image<float, P> in, MArgumentManager& mngr) {
 		throw std::runtime_error("Cannot negate Real32 image");
 	}
 
-	void operator()(Image<double> in, MArgumentManager& mngr) {
+	template<class P>
+	void operator()(Image<double, P> in, MArgumentManager& mngr) {
 		throw std::runtime_error("Cannot negate Real image");
 	}
 };

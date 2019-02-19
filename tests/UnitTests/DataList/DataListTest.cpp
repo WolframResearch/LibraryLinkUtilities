@@ -74,10 +74,10 @@ LIBRARY_LINK_FUNCTION(JoinDataStores) {
 		if (returnCopyQ) {
 			auto dsOut1 = ds1.clone();
 			auto dsOut2 = ds2.clone();
-			DataList<MArgumentType::DataStore, Passing::Manual> dsOut { dsOut1.getInternal(), dsOut2.getInternal() };
+			DataList<MArgumentType::DataStore, Passing::Manual> dsOut { dsOut1.getContainer(), dsOut2.getContainer() };
 			mngr.setDataList(dsOut);
 		} else {
-			DataList<MArgumentType::DataStore, Passing::Manual> dsOut { ds1.getInternal(), ds2.getInternal() };
+			DataList<MArgumentType::DataStore, Passing::Manual> dsOut { ds1.getContainer(), ds2.getContainer() };
 			mngr.setDataList(dsOut);
 		}
 	} catch (const LibraryLinkError& e) {
@@ -95,7 +95,7 @@ LIBRARY_LINK_FUNCTION(TestSelfReferencialDataStore) {
 	try {
 		MArgumentManager mngr { Argc, Args, Res };
 		auto dsIn = mngr.getDataList<MArgumentType::MArgument>(0);
-		dsIn.push_back<MArgumentType::DataStore>(dsIn.getInternal());
+		dsIn.push_back<MArgumentType::DataStore>(dsIn.getContainer());
 		mngr.setDataList(dsIn);
 	} catch (const LibraryLinkError& e) {
 		err = e.which();
