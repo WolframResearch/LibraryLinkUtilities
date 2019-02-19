@@ -375,8 +375,9 @@ namespace LibraryLinkUtils {
 		if (!this->naFuns) {
 			initError();
 		}
-		MNumericArray newInternal = this->naFuns->MNumericArray_convertType(other.getInternal(), type, static_cast<numericarray_convert_method_t>(method), tolerance);
-		if (!newInternal) {
+		MNumericArray newInternal;
+		auto status = this->naFuns->MNumericArray_convertType(&newInternal, other.getInternal(), type, static_cast<numericarray_convert_method_t>(method), tolerance);
+		if (!status) { // return values for MNumericArray_convertType are not documented, we have to guess that 0 means OK
 			ErrorManager::throwException(LLErrorName::NumericArrayConversionError,
 					"Conversion from type " + std::to_string(static_cast<int>(other.getType())) + " to " + std::to_string(static_cast<int>(this->type)) + " failed.");
 		}
