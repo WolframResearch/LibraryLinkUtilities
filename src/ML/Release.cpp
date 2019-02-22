@@ -8,51 +8,47 @@
 
 #include "../../include/LLU/ML/Release.h"
 
-namespace LibraryLinkUtils {
+namespace LibraryLinkUtils::ML {
 
-	namespace ML {
+    template<>
+    ReleaseArray<unsigned char>::Func ReleaseArray<unsigned char>::Release = MLReleaseInteger8Array;
 
-		template<>
-		ReleaseArray<unsigned char>::Func ReleaseArray<unsigned char>::Release = MLReleaseInteger8Array;
-
-		template<>
-		ReleaseList<unsigned char>::Func ReleaseList<unsigned char>::Release = MLReleaseInteger8List;
+    template<>
+    ReleaseList<unsigned char>::Func ReleaseList<unsigned char>::Release = MLReleaseInteger8List;
 
 
-		template<>
-		ReleaseArray<short>::Func ReleaseArray<short>::Release = MLReleaseInteger16Array;
+    template<>
+    ReleaseArray<short>::Func ReleaseArray<short>::Release = MLReleaseInteger16Array;
 
-		template<>
-		ReleaseList<short>::Func ReleaseList<short>::Release = MLReleaseInteger16List;
-
-
-		template<>
-		ReleaseArray<int>::Func ReleaseArray<int>::Release = MLReleaseInteger32Array;
-
-		template<>
-		ReleaseList<int>::Func ReleaseList<int>::Release = MLReleaseInteger32List;
+    template<>
+    ReleaseList<short>::Func ReleaseList<short>::Release = MLReleaseInteger16List;
 
 
-		template<>
-		ReleaseArray<mlint64>::Func ReleaseArray<mlint64>::Release = MLReleaseInteger64Array;
+    template<>
+    ReleaseArray<int>::Func ReleaseArray<int>::Release = MLReleaseInteger32Array;
 
-		template<>
-		ReleaseList<mlint64>::Func ReleaseList<mlint64>::Release = MLReleaseInteger64List;
+    template<>
+    ReleaseList<int>::Func ReleaseList<int>::Release = MLReleaseInteger32List;
 
-		template<>
-		ReleaseArray<float>::Func ReleaseArray<float>::Release = MLReleaseReal32Array;
 
-		template<>
-		ReleaseList<float>::Func ReleaseList<float>::Release = MLReleaseReal32List;
+    template<>
+    ReleaseArray<mlint64>::Func ReleaseArray<mlint64>::Release = MLReleaseInteger64Array;
 
-		template<>
-		ReleaseArray<double>::Func ReleaseArray<double>::Release = MLReleaseReal64Array;
+    template<>
+    ReleaseList<mlint64>::Func ReleaseList<mlint64>::Release = MLReleaseInteger64List;
 
-		template<>
-		ReleaseList<double>::Func ReleaseList<double>::Release = MLReleaseReal64List;
+    template<>
+    ReleaseArray<float>::Func ReleaseArray<float>::Release = MLReleaseReal32Array;
 
-	}
+    template<>
+    ReleaseList<float>::Func ReleaseList<float>::Release = MLReleaseReal32List;
 
-} /* namespace LibraryLinkUtils */
+    template<>
+    ReleaseArray<double>::Func ReleaseArray<double>::Release = MLReleaseReal64Array;
+
+    template<>
+    ReleaseList<double>::Func ReleaseList<double>::Release = MLReleaseReal64List;
+
+} /* namespace LibraryLinkUtils::ML */
 
 #endif
