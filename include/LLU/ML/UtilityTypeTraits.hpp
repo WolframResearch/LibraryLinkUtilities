@@ -34,14 +34,17 @@ namespace LibraryLinkUtils {
 		template<> struct IsSupportedInMLArithmetic<double> : std::true_type {};
 		/// @endcond
 
-		template<typename T, typename U>
-		using ScalarSupportedTypeQ = std::enable_if_t<IsSupportedInMLArithmetic<remove_cv_ref<T>>::value, U>;
+        template<typename T>
+        constexpr bool scalarSupportedTypeQ = IsSupportedInMLArithmetic<remove_cv_ref<T>>::value;
 
 		template<typename T, typename U>
-		using NotScalarSupportedTypeQ = std::enable_if_t<!IsSupportedInMLArithmetic<remove_cv_ref<T>>::value, U>;
+		using ScalarSupportedTypeQ = std::enable_if_t<scalarSupportedTypeQ<T>, U>;
 
 		template<typename T, typename U>
-		using ScalarNotSupportedTypeQ = std::enable_if_t<std::is_arithmetic<T>::value && !IsSupportedInMLArithmetic<remove_cv_ref<T>>::value, U>;
+		using NotScalarSupportedTypeQ = std::enable_if_t<!scalarSupportedTypeQ<T>, U>;
+
+		template<typename T, typename U>
+		using ScalarNotSupportedTypeQ = std::enable_if_t<std::is_arithmetic_v<T> && !scalarSupportedTypeQ<T>, U>;
 
 		/**
 		 * @struct 	IsSupportedInMLString

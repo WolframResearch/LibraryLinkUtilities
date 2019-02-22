@@ -121,12 +121,6 @@ namespace LibraryLinkUtils {
 		static constexpr bool ValidNodeTypeQ = (T == MArgumentType::MArgument || U == T);
 
 		template<MArgumentType MArgT>
-		using ValidNodeType = std::enable_if_t<ValidNodeTypeQ<MArgT>>;
-
-		template<MArgumentType MArgT>
-		using InvalidNodeType = std::enable_if_t<!ValidNodeTypeQ<MArgT>>;
-
-		template<MArgumentType MArgT>
 		using IsMArgument = std::enable_if_t<MArgT == MArgumentType::MArgument>;
 
 	public:
@@ -292,22 +286,12 @@ namespace LibraryLinkUtils {
 		IsMArgument<U> push_back(const std::string& name, MArgument& nodeData, MArgumentType MArgT);
 
 		/**
-		 * @brief	Add new node to the DataList. This overload is considered only if T is MArgumentType::MArgument or MArgT is equal to T.
+		 * @brief	Add new node to the DataList (only if T is MArgumentType::MArgument or MArgT is equal to T, otherwise - a compile-time error).
 		 * @tparam 	MArgT - type of MArgument data
 		 * @param 	nodeData - actual data to store in the new node
-		 * @return	nothing
 		 */
 		template<MArgumentType MArgT>
-		ValidNodeType<MArgT> push_back(const MType_t<MArgT>& nodeData);
-
-		/**
-		 * @brief	Issue compile-time error message. This overload is considered only if T is not MArgumentType::MArgument and MArgT is not equal to T.
-		 * @tparam 	MArgT - type of MArgument data
-		 */
-		template<MArgumentType MArgT>
-		InvalidNodeType<MArgT> push_back(const MType_t<MArgT>&) {
-			static_assert(alwaysFalse<MArgT>, "Trying to add DataList node of incorrect type.");
-		}
+		void push_back(const MType_t<MArgT>& nodeData);
 
 		/**
 		 * @brief 	Add new named node to the DataList. This overload is considered only if T is MArgumentType::MArgument or MArgT is equal to T.
@@ -317,16 +301,8 @@ namespace LibraryLinkUtils {
 		 * @return 	nothing
 		 */
 		template<MArgumentType MArgT>
-		ValidNodeType<MArgT> push_back(const std::string& name, const MType_t<MArgT>& nodeData);
+		void push_back(const std::string& name, const MType_t<MArgT>& nodeData);
 
-		/**
-		 * @brief	Issue compile-time error message. This overload is considered only if T is not MArgumentType::MArgument and MArgT is not equal to T.
-		 * @tparam 	MArgT - type of MArgument data
-		 */
-		template<MArgumentType MArgT>
-		InvalidNodeType<MArgT> push_back(const std::string&, const MType_t<MArgT>&) {
-			static_assert(alwaysFalse<MArgT>, "Trying to add DataList node of incorrect type.");
-		}
 
 		/**
 		 * @brief 	Add new node to the DataList.
@@ -449,14 +425,22 @@ namespace LibraryLinkUtils {
 
 	template<MArgumentType T, template<typename> class PassingMode>
 	template<MArgumentType MArgT>
-	auto DataList<T, PassingMode>::push_back(const MType_t<MArgT>& nodeData) -> ValidNodeType<MArgT> {
-		push_back<MArgT>("", nodeData);
+	void DataList<T, PassingMode>::push_back(const MType_t<MArgT>& nodeData) {
+	    if constexpr (ValidNodeTypeQ<MArgT>) {
+            push_back<MArgT>("", nodeData);
+	    } else {
+            static_assert(alwaysFalse<MArgT>, "Trying to add DataList node of incorrect type.");
+	    }
 	}
 
 	template<MArgumentType T, template<typename> class PassingMode>
 	template<MArgumentType MArgT>
-	auto DataList<T, PassingMode>::push_back(const std::string& name, const MType_t<MArgT>& nodeData) -> ValidNodeType<MArgT> {
-		Argument<MArgT>::addDataStoreNode(this->getInternal(), name, nodeData);
+	void DataList<T, PassingMode>::push_back(const std::string& name, const MType_t<MArgT>& nodeData) {
+        if constexpr (ValidNodeTypeQ<MArgT>) {
+		    Argument<MArgT>::addDataStoreNode(this->getInternal(), name, nodeData);
+        } else {
+            static_assert(alwaysFalse<MArgT>, "Trying to add DataList node of incorrect type.");
+        }
 	}
 
 	template<MArgumentType T, template<typename> class PassingMode>

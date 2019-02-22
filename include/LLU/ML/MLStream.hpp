@@ -205,23 +205,13 @@ namespace LibraryLinkUtils {
 
 		/**
 		 *   @brief			Sends a std::vector via MathLink, it is interpreted as a List in Mathematica
-		 *   @tparam		T - vector element type, it has to be a simple type that is supported in MLPut*List
+		 *   @tparam		T - vector element type
 		 *   @param[in] 	l - std::vector to be sent
 		 *
 		 *   @throws 		LLErrorName::MLPutListError
 		 **/
 		template<typename T>
-		ML::ScalarSupportedTypeQ<T, MLStream&> operator<<(const std::vector<T>& l);
-
-		/**
-		 *   @brief			Sends a std::vector via MathLink, it is interpreted as a List in Mathematica
-		 *   @tparam		T - vector element type, this overload will handle any type not supported in MLPut*List
-		 *   @param[in] 	l - std::vector to be sent
-		 *
-		 *   @throws 		LLErrorName::MLPutListError
-		 **/
-		template<typename T>
-		ML::NotScalarSupportedTypeQ<T, MLStream&> operator<<(const std::vector<T>& l);
+		MLStream& operator<<(const std::vector<T>& l);
 
 		/**
 		 *   @brief			Sends a MathLink string
@@ -422,23 +412,14 @@ namespace LibraryLinkUtils {
 
 		/**
 		 *   @brief			Receives a List from MathLink and assigns it to std::vector
-		 *   @tparam		T - vector element type, it has to be a simple type that is supported in MLGet*List
+		 *   @tparam		T - vector element type
 		 *   @param[out] 	l - argument to which the List received from MathLink will be assigned
 		 *
 		 *   @throws 		LLErrorName::MLGetListError
 		 **/
 		template<typename T>
-		ML::ScalarSupportedTypeQ<T, MLStream&> operator>>(std::vector<T>& l);
+		MLStream& operator>>(std::vector<T>& l);
 
-		/**
-		 *   @brief			Receives a List from MathLink and assigns it to std::vector
-		 *   @tparam		T - vector element type, it can be any type supported by MathLink
-		 *   @param[out] 	l - argument to which the List received from MathLink will be assigned
-		 *
-		 *   @throws 		LLErrorName::MLGetListError
-		 **/
-		template<typename T>
-		ML::NotScalarSupportedTypeQ<T, MLStream&> operator>>(std::vector<T>& l);
 
 		/**
 		 *   @brief			Receives a MathLink string
@@ -769,18 +750,15 @@ namespace LibraryLinkUtils {
 
 	template<ML::Encoding EIn, ML::Encoding EOut>
 	template<typename T>
-	auto MLStream<EIn, EOut>::operator<<(const std::vector<T>& l) -> ML::ScalarSupportedTypeQ<T, MLStream&> {
-		ML::PutList<T>::put(m, l.data(), static_cast<int>(l.size()));
-		return *this;
-	}
-
-	template<ML::Encoding EIn, ML::Encoding EOut>
-	template<typename T>
-	auto MLStream<EIn, EOut>::operator<<(const std::vector<T>& l) -> ML::NotScalarSupportedTypeQ<T, MLStream&> {
-		*this << ML::List(l.size());
-		for (const auto& elem : l) {
-			*this << elem;
-		}
+    auto MLStream<EIn, EOut>::operator<<(const std::vector<T>& l) -> MLStream& {
+	    if constexpr (ML::scalarSupportedTypeQ<T>) {
+            ML::PutList<T>::put(m, l.data(), static_cast<int>(l.size()));
+	    } else {
+            *this << ML::List(l.size());
+            for (const auto& elem : l) {
+                *this << elem;
+            }
+	    }
 		return *this;
 	}
 
@@ -882,20 +860,20 @@ namespace LibraryLinkUtils {
 
 	template<ML::Encoding EIn, ML::Encoding EOut>
 	auto MLStream<EIn, EOut>::operator>>(ML::Function& f) -> MLStream& {
-		if (!f.getHead().empty()) {
-			if (f.getArgc() < 0) {
-				f.setArgc(testHead(f.getHead().c_str()));
+		if (auto& head = f.getHead(); !head.empty()) {
+			if (auto argc = f.getArgc(); argc < 0) {
+				f.setArgc(testHead(head.c_str()));
 			}
 			else {
-				testHead(f.getHead().c_str(), f.getArgc());
+				testHead(head.c_str(), argc);
 			}
 		}
 		else {
-			const char* head;
+			const char* newHead;
 			int argc;
-			check(MLGetFunction(m, &head, &argc), LLErrorName::MLGetFunctionError, "Cannot get function");
-			f.setHead(head);
-			MLReleaseSymbol(m, head);
+			check(MLGetFunction(m, &newHead, &argc), LLErrorName::MLGetFunctionError, "Cannot get function");
+			f.setHead(newHead);
+			MLReleaseSymbol(m, newHead);
 			f.setArgc(argc);
 		}
 		return *this;
@@ -941,24 +919,21 @@ namespace LibraryLinkUtils {
 
 	template<ML::Encoding EIn, ML::Encoding EOut>
 	template<typename T>
-	auto MLStream<EIn, EOut>::operator>>(std::vector<T>& l) -> ML::ScalarSupportedTypeQ<T, MLStream&> {
-		auto list = ML::GetList<T>::get(m);
-		T* start = list.get();
-		auto listLen = list.get_deleter().getLength();
-		l = std::vector<T> { start, start + listLen };
-		return *this;
-	}
-
-	template<ML::Encoding EIn, ML::Encoding EOut>
-	template<typename T>
-	auto MLStream<EIn, EOut>::operator>>(std::vector<T>& l) -> ML::NotScalarSupportedTypeQ<T, MLStream&> {
-		ML::List inList;
-		*this >> inList;
-		std::vector<T> res(inList.getArgc());
-		for(auto& elem : res) {
-			*this >> elem;
-		}
-		l = std::move(res);
+	auto MLStream<EIn, EOut>::operator>>(std::vector<T>& l) -> MLStream& {
+	    if constexpr (ML::scalarSupportedTypeQ<T>) {
+            auto list = ML::GetList<T>::get(m);
+            T* start = list.get();
+            auto listLen = list.get_deleter().getLength();
+            l = std::vector<T> { start, start + listLen };
+	    } else {
+            ML::List inList;
+            *this >> inList;
+            std::vector<T> res(inList.getArgc());
+            for(auto& elem : res) {
+                *this >> elem;
+            }
+            l = std::move(res);
+	    }
 		return *this;
 	}
 
