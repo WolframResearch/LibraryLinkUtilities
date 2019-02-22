@@ -15,10 +15,10 @@
 
 #define LIBRARY_LINK_FUNCTION(name) \
 		EXTERN_C DLLEXPORT int name(WolframLibraryData, mint, MArgument*, MArgument); \
-		int name(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res)
+		int name([[maybe_unused]] WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res)
 
 #define LIBRARY_MATHLINK_FUNCTION(name) \
 		EXTERN_C DLLEXPORT int name(WolframLibraryData, MLINK); \
-		int name(WolframLibraryData libData, MLINK mlp)
+		int name([[maybe_unused]] WolframLibraryData libData, MLINK mlp)
 
 #endif /* LLUTILS_LIBRARYLINKFUNCTIONMACRO_H_ */
