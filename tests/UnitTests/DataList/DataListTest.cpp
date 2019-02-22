@@ -108,7 +108,6 @@ LIBRARY_LINK_FUNCTION(TestSelfReferencialDataStore) {
 
 /* Returns a empty DataStore */
 LIBRARY_LINK_FUNCTION(EmptyDataStore) {
-	LibraryLinkUtils::Unused(libData);
 	auto err = LLErrorCode::NoError;
 	try {
 		MArgumentManager mngr { Argc, Args, Res };

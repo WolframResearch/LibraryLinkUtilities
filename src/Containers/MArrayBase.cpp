@@ -64,7 +64,7 @@ namespace LibraryLinkUtils {
 	}
 
 	mint MArrayBase::totalLengthFromDims() const noexcept {
-		return std::accumulate(std::begin(dims), std::end(dims), static_cast<mint>(1), std::multiplies<mint>());
+		return std::accumulate(std::begin(dims), std::end(dims), static_cast<mint>(1), std::multiplies<>());
 	}
 
 

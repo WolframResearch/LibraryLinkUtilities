@@ -116,7 +116,7 @@ namespace LibraryLinkUtils {
 		 */
 		struct Association : Function {
 			Association() : Function("Association") {}
-			Association(int argCount) : Function("Association", argCount) {}
+            explicit Association(int argCount) : Function("Association", argCount) {}
 		};
 
 		/**
@@ -125,7 +125,7 @@ namespace LibraryLinkUtils {
 		 */
 		struct List : Function {
 			List() : Function("List") {}
-			List(int argCount) : Function("List", argCount) {}
+            explicit List(int argCount) : Function("List", argCount) {}
 		};
 
 		/**
@@ -134,7 +134,7 @@ namespace LibraryLinkUtils {
 		 */
 		struct Missing : Function {
 			Missing() : Function("Missing") {}
-			Missing(std::string r) : Function("Missing", 1), reason(std::move(r)) {}
+			explicit Missing(std::string r) : Function("Missing", 1), reason(std::move(r)) {}
 
 			const std::string& why() const { return reason; }
 		private:

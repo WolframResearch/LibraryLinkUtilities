@@ -127,13 +127,12 @@ namespace LibraryLinkUtils {
 
 	void ErrorManager::set(const ErrorStringData& errorData) {
 		auto& errorMap = errors();
-		auto elem = errorMap.emplace(errorData.first, LibraryLinkError { nextErrorId()--, errorData.first, errorData.second });
-		if (!elem.second) {
+		if (auto [elem, success] = errorMap.emplace(errorData.first, LibraryLinkError { nextErrorId()--, errorData.first, errorData.second }); success) {
 			// Revert nextErrorId because nothing was inserted
 			nextErrorId()++;
 
 			// Throw only if someone attempted to insert an error with existing key but different message
-			if (elem.first->second.message() != errorData.second) {
+			if (elem->second.message() != errorData.second) {
 				throw errors().find("ErrorManagerCreateNameError")->second;
 			}
 		}
@@ -178,8 +177,7 @@ namespace LibraryLinkUtils {
 		ms << ML::EndPacket << ML::Flush;
 	}
 
-	EXTERN_C DLLEXPORT int sendRegisteredErrors(WolframLibraryData libData, MLINK mlp) {
-		Unused(libData);
+	EXTERN_C DLLEXPORT int sendRegisteredErrors([[maybe_unused]] WolframLibraryData libData, MLINK mlp) {
 		auto err = LLErrorCode::NoError;
 		try {
 			ErrorManager::sendRegisteredErrorsViaMathlink(mlp);
