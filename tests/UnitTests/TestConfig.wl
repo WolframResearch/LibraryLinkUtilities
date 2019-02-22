@@ -19,7 +19,11 @@ options = {
 	"IncludeDirectories" -> { $LLUIncDir },
 	"Libraries" -> { $LLULib },
 	"LibraryDirectories" -> { $LLULibDir },
-	"CompileOptions" -> If[MatchQ[$SystemID, "Windows-x86-64" | "Windows"], "/O2 /EHsc /W3 /std:c++14" , "-O2 -std=c++14 -Wall --pedantic -fvisibility=hidden"],
+	"CompileOptions" -> If[MatchQ[$SystemID, "Windows-x86-64" | "Windows"],
+		"/O2 /EHsc /W4 /std:c++17"
+		,
+		"-O2 -std=c++17 -Wall -Wextra --pedantic -fvisibility=hidden"
+	],
 	"ShellOutputFunction" -> Print,
 	"ShellCommandFunction" -> Print,
 	"Language" -> "C++"

@@ -92,7 +92,7 @@ if(NOT TARGET LLU)
 
 	#compilation options
 	set_target_properties(LLU PROPERTIES
-	    CXX_STANDARD 14
+	    CXX_STANDARD 17
 	    CXX_STANDARD_REQUIRED YES
 	    CXX_EXTENSIONS NO
 		CXX_VISIBILITY_PRESET hidden
@@ -121,15 +121,14 @@ if(NOT TARGET LLU)
 			PRIVATE "-Wall"
 			PRIVATE "-Wextra"
 			PRIVATE "-pedantic"
-			PRIVATE "-Werror-implicit-function-declaration"
 			PRIVATE "$<$<NOT:$<CONFIG:Debug>>:-O3>"
 		)
 	endif()
 
-	# tell all targets importing LLU that public part of LLU uses C++14 features
+	# tell all targets importing LLU that public part of LLU uses C++17 features
 	target_compile_features(LLU
 		PUBLIC
-			cxx_std_14
+			cxx_std_17
 	)
 
 	#add the include directory for the project
