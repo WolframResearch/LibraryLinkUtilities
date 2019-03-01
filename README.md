@@ -28,9 +28,9 @@ Containers like MImage and MTensor are wrapped in templated classes. Managing MA
 | MArgument           	| MArgumentManager 	|
 | LinkObject			| MLStream			|
 
-For more details about each class see [the documentation](http://malgorithmswin.wri.wolfram.com:8080/importexport/LLU).
+For more details about each class see [the documentation](http://algorithms.wolfram.com:8080/documentation/LibraryLinkUtilities).
 
-__The project is new and not really field-tested. Please send all suggestions, feature requests and bug reports to <rafalc@wolfram.com>__
+__Please send all suggestions, feature requests and bug reports to <rafalc@wolfram.com>__
 
 <a name="motivation"></a>
 # Motivation
@@ -548,7 +548,7 @@ The list below may not be complete.
 
 Doxygen is used to generate documentation for _LibraryLink Utilities_ API. You can browse generated docs online here: 
 
-<http://malgorithmswin.wri.wolfram.com:8080/importexport/LLU>
+<http://algorithms.wolfram.com:8080/documentation/LibraryLinkUtilities>
 
 <a name="contributors"></a>
 # Contributors
