@@ -409,16 +409,16 @@ Now, in the function that reads data:
 
 void readData(std::shared_ptr<DataSource> source) {
     if (!source) {
-        ErrorManager::throwError("NoSourceError");
+        ErrorManager::throwException("NoSourceError");
     }
     if (source->empty()) {
-        ErrorManager::throwError("EmptySourceError");
+        ErrorManager::throwException("EmptySourceError");
     }
     //...
 }
 ```
 
-Each call to `ErroManager::throwError` causes an exception of class `LibraryLinkError` with predefined name and error code to be thrown. The only thing left do now is to catch such exception. 
+Each call to `ErrorManager::throwException` causes an exception of class `LibraryLinkError` with predefined name and error code to be thrown. The only thing left do now is to catch such exception. 
 Usually, you will catch only in the interface functions (the ones with `EXTERN_C DLLEXPORT`), extract the error code from exception and return it:
 
 ```cpp
