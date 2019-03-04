@@ -6,13 +6,14 @@
 4. [MathLink support](#mathlink)
     * [Main features](#mathlink-features)
     * [Example](#mathlink-example)
-5. [Limitations](#limitations)
-6. [How to Use](#howToUse)
+5. [Error handling](#error-handling)
+6. [Limitations](#limitations)
+7. [How to Use](#howToUse)
     * [Prerequisites](#howToUse-prerequisites)
     * [Step-by-Step](#howToUse-stepbystep)
     * [Note for I/E developers](#howToUse-note)
-7. [API reference](#APIreference)
-8. [Contributors](#contributors)
+8. [API reference](#APIreference)
+9. [Contributors](#contributors)
 
 <a name="introduction"></a>
 # Introduction
@@ -374,6 +375,70 @@ for (auto& f : extractedFrames) {
 
 ms << ML::EndPacket << ML::Flush;
 ```
+<a name="error-handling"></a>
+# Error handling
+Every LibraryLink function in C code has a fixed signature `int f (WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res)`. The actual result of computations should be returned via the
+"out-parameter" `Res`. The value of `Res` is only considered in top-level if the actual return value of `f` (the `int`) was equal to `LIBRARY_NO_ERROR` (with LLU use `LLErrorCode::NoError`!).
+
+That means, that the only information about an error which occurred in the library that makes it to the top-level is a single integer. In C++ exceptions are the preferred way of error handling, so LLU
+offers a special class of exceptions that can be easily translated to error codes, returned to LibraryLink and then translated to descriptive `Failure` objects in Wolfram Language.
+
+Such exceptions are identified in the C++ code by name - a short string. For example, imagine you have a function that reads data from a source. If the source does not exist or is empty, you want to throw
+exceptions, let's call them "NoSourceError" and "EmptySourceError", respectively. First, you **must** register all your exceptions inside `WolframLibrary_initialize` function:
+
+```cpp
+EXTERN_C DLLEXPORT int WolframLibrary_initialize(WolframLibraryData libData) {
+    try {
+        ErrorManager::registerPacletErrors({
+            {"NoSourceError", "Requested data source does not exist."},
+            {"EmptySourceError", "Requested data source is empty."}
+        });
+    } catch(...) {
+        return LLErrorCode::FunctionError;
+    }
+    return LLErrorCode::NoError;
+}
+```
+
+In the code above, the second element of each pair is a textual description of the error which will be visible in the `Failure` object. Unfortunately, for now this text has to be static.
+Notice that there is no way to assign specific error codes to your custom exceptions, this is handled internally by LLU.
+
+Now, in the function that reads data:
+
+```cpp
+
+void readData(std::shared_ptr<DataSource> source) {
+    if (!source) {
+        ErrorManager::throwError("NoSourceError");
+    }
+    if (source->empty()) {
+        ErrorManager::throwError("EmptySourceError");
+    }
+    //...
+}
+```
+
+Each call to `ErroManager::throwError` causes an exception of class `LibraryLinkError` with predefined name and error code to be thrown. The only thing left do now is to catch such exception. 
+Usually, you will catch only in the interface functions (the ones with `EXTERN_C DLLEXPORT`), extract the error code from exception and return it:
+
+```cpp
+EXTERN_C DLLEXPORT int MyFunction(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
+    auto err = LLErrorCode::NoError;    // no error initially
+    try {
+        //...
+    } catch (const LibraryLinkError& e) {
+        err = e.which();    // extract error code from LibraryLinkError
+    } catch (...) {
+        err = LLErrorCode::FunctionError;   // to be safe, handle non-LLU exceptions as well and return generic error code
+    }
+    return err;
+}
+```
+
+The Wolfram Language part of the error-handling functionality of LLU is responsible for converting error codes returned by library functions into nice and informative `Failure` objects.
+
+Finally, you can take a look at [PacletTemplate](https://stash.wolfram.com/projects/IMEX/repos/paclettemplate) (both source code and the test notebook), which is a simple "model paclet" that uses LLU.
+
 <a name="limitations"></a>
 # Limitations with respect to LibraryLink
 
