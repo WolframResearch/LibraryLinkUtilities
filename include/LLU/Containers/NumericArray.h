@@ -27,12 +27,11 @@ namespace LibraryLinkUtils {
 		 */
 		enum class ConversionMethod {
 			Check = MNumericArray_Convert_Check,
-			Clip = MNumericArray_Convert_Clip,
+            Coerce = MNumericArray_Convert_Coerce,
+			ClipCoerce = MNumericArray_Convert_Clip_Coerce,
 			Round = MNumericArray_Convert_Round,
 			ClipRound = MNumericArray_Convert_Clip_Round,
 			ClipScale = MNumericArray_Convert_Clip_Scale,
-			Cast = MNumericArray_Convert_Cast,
-			Reinterpret = MNumericArray_Convert_Reinterpret
 		};
 	}
 
@@ -145,9 +144,10 @@ namespace LibraryLinkUtils {
 		 *   @tparam		U - data type of the NumericArray to be converted
 		 *   @param[in]     other - const reference to a NumericArray any type
 		 *   @param[in]		method - conversion method to be used
+		 *   @param[in]     tolerance - undocumented parameter for NumericArray conversion that became part of the public interface
 		 **/
 		template<typename U>
-		NumericArray(const NumericArray<U>& other, NA::ConversionMethod method = NA::ConversionMethod::ClipRound);
+		NumericArray(const NumericArray<U>& other, NA::ConversionMethod method, double tolerance);
 
 		/**
 		 *   @brief         Copy constructor
@@ -371,12 +371,13 @@ namespace LibraryLinkUtils {
 
 	template<typename T>
 	template<typename U>
-	NumericArray<T>::NumericArray(const NumericArray<U>& other, NA::ConversionMethod method) : MArray<T>(other)  {
+	NumericArray<T>::NumericArray(const NumericArray<U>& other, NA::ConversionMethod method, double tolerance) : MArray<T>(other)  {
 		if (!this->naFuns) {
 			initError();
 		}
-		MNumericArray newInternal = this->naFuns->MNumericArray_convertType(other.getInternal(), type, static_cast<numericarray_convert_method_t>(method));
-		if (!newInternal) {
+		MNumericArray newInternal;
+		auto status = this->naFuns->MNumericArray_convertType(&newInternal, other.getInternal(), type, static_cast<numericarray_convert_method_t>(method), tolerance);
+		if (!status) { // 0 means OK, but no way to learn anything more specific if conversion failed
 			ErrorManager::throwException(LLErrorName::NumericArrayConversionError,
 					"Conversion from type " + std::to_string(static_cast<int>(other.getType())) + " to " + std::to_string(static_cast<int>(this->type)) + " failed.");
 		}
