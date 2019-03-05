@@ -86,7 +86,7 @@ Test[
 ]
 
 Test[
-	convert[NumericArray[{3.5}], 5 (* Clip and Round *), 0.1]
+	convert[NumericArray[{3.5}], 5 (* Clip and Round *), 0]
 	,
 	NumericArray[NumericArray[{3.5}], "UnsignedInteger16"]
 	,
@@ -94,7 +94,7 @@ Test[
 ]
 
 Test[
-	convert[NumericArray[{3.5}], 1 (* Check *), 0.1] // Head
+	convert[NumericArray[{3.5}], 1 (* Check *), 0] // Head
 	,
 	LibraryFunctionError
 	,
@@ -104,7 +104,7 @@ Test[
 ]
 
 Test[
-	convert[NumericArray[Range[10]], 6 (* ClipAndScale *), 0.1]
+	convert[NumericArray[Range[10]], 6 (* ClipAndScale *), 1]
 	,
 	NumericArray[NumericArray[Range[10]], "UnsignedInteger16", "ClipAndScale"]
 	,
