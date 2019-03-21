@@ -5,11 +5,13 @@
  * @brief	Implementation file with miscellaneous definitions used throughout the MathLink-related part of LibraryLinkUtilities
  */
 
-#include "../../include/LLU/ML/Utilities.h"
+#include <LLU/ML/Utilities.h>
 
 #include <string>
 
 #include "mathlink.h"
+
+#include <LLU/ErrorManager.h>
 
 namespace LibraryLinkUtils {
 
@@ -44,6 +46,10 @@ namespace LibraryLinkUtils {
 			if (!statusOk) {
 				ErrorManager::throwException(errorName, getMLErrorText(m) + debugInfo);
 			}
+		}
+
+		void throwLLUException(const std::string& errorName, const std::string& debugInfo) {
+			ErrorManager::throwException(errorName, debugInfo);
 		}
 
 		MLINK getNewLoopback(MLINK m) {
