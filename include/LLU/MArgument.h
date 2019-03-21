@@ -13,7 +13,6 @@
 #include "WolframLibrary.h"
 #include "WolframIOLibraryFunctions.h"
 
-#include "LLU/LibraryLinkError.h"
 #include "LLU/Containers/LibDataHolder.h"
 
 namespace LibraryLinkUtils {
