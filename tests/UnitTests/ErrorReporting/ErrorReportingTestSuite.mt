@@ -24,8 +24,6 @@ TestExecute[
 		"TopLevelNumberedSlotsError" -> "Slot number one: `1`, number two: `2`."
 	|>];
 
-	RepeatedTemplate = SafeLibraryFunction["RepeatedTemplate", {}, "Void"];
-
 ];
 
 (*********************************************************** Top-level failures **************************************************************)
@@ -182,6 +180,7 @@ Test[
 ]
 
 Test[
+	RepeatedTemplate = SafeLibraryFunction["RepeatedTemplate", {}, "Void"];
 	RepeatedTemplate[]
 	,
 	Failure["RepeatedTemplateError", <|
