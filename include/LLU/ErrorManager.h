@@ -160,16 +160,18 @@ namespace LibraryLinkUtils {
 	template<typename... T>
 	void ErrorManager::throwException(WolframLibraryData libData, const std::string& errorName, T&&... args) {
 		constexpr auto argCount = sizeof...(T);
-		MLStream<ML::Encoding::UTF8> mls { libData->getWSLINK(libData) };
-		mls << ML::Function("EvaluatePacket", 1);
-		mls << ML::Function("Set", 2);
-		mls << ML::Symbol(exceptionDetailsSymbol);
-		mls << ML::List(argCount);
-		static_cast<void>(std::initializer_list<int> { (mls << args, 0)... });
-		libData->processWSLINK(mls.get());
-		auto pkt = MLNextPacket(mls.get());
-		if ( pkt == RETURNPKT) {
-			mls << ML::NewPacket;
+		if (libData) {
+			MLStream<ML::Encoding::UTF8> mls { libData->getWSLINK(libData) };
+			mls << ML::Function("EvaluatePacket", 1);
+			mls << ML::Function("Set", 2);
+			mls << ML::Symbol(exceptionDetailsSymbol);
+			mls << ML::List(argCount);
+			static_cast<void>(std::initializer_list<int> { (mls << args, 0)... });
+			libData->processWSLINK(mls.get());
+			auto pkt = MLNextPacket(mls.get());
+			if ( pkt == RETURNPKT) {
+				mls << ML::NewPacket;
+			}
 		}
 		throw findError(errorName);
 	}
