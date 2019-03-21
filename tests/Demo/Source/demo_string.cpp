@@ -10,7 +10,7 @@
 #include "WolframLibrary.h"
 
 #include "LLU/MArgumentManager.h"
-#include "LLU/LibraryLinkError.h"
+#include "LLU/ErrorManager.h"
 
 using namespace LibraryLinkUtils;
 

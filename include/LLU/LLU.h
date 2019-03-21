@@ -8,7 +8,7 @@
 #ifndef LLUTILS_LLU_H_
 #define LLUTILS_LLU_H_
 
-#include "LibraryLinkError.h"
+#include "ErrorManager.h"
 #include "MArgumentManager.h"
 
 #include "LLU/Containers/NumericArray.h"

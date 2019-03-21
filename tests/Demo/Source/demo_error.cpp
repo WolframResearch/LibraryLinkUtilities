@@ -10,7 +10,7 @@
 #include <iostream>
 #include <ostream>
 
-#include "LLU/LibraryLinkError.h"
+#include "LLU/ErrorManager.h"
 #include "LLU/Containers/Tensor.h"
 #include "LLU/LibraryLinkFunctionMacro.h"
 

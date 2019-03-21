@@ -6,7 +6,7 @@
 #include "LLU/ProgressMonitor.h"
 
 #include "LLU/Containers/LibDataHolder.h"
-#include "LLU/LibraryLinkError.h"
+#include "LLU/ErrorManager.h"
 
 namespace LibraryLinkUtils {
 

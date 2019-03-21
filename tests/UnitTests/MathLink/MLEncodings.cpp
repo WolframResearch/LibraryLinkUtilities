@@ -9,7 +9,7 @@
 
 #include "mathlink.h"
 
-#include "LLU/LibraryLinkError.h"
+#include "LLU/ErrorManager.h"
 #include "LLU/LibraryLinkFunctionMacro.h"
 #include "LLU/ML/MLStream.hpp"
 
@@ -38,7 +38,6 @@ LIBRARY_MATHLINK_FUNCTION(NestedPutAs) {
 	}
 	catch (LibraryLinkError& e) {
 		err = e.which();
-		std::cerr << e.debug() << std::endl;
 	}
 	catch (...) {
 		err = LLErrorCode::FunctionError;
@@ -74,7 +73,6 @@ LIBRARY_MATHLINK_FUNCTION(CharacterCodes) {
 	}
 	catch (LibraryLinkError& e) {
 		err = e.which();
-		std::cerr << e.debug() << std::endl;
 	}
 	catch (...) {
 		err = LLErrorCode::FunctionError;
@@ -103,7 +101,6 @@ LIBRARY_MATHLINK_FUNCTION(AllEncodingsRoundtrip) {
 	}
 	catch (LibraryLinkError& e) {
 		err = e.which();
-		std::cerr << e.debug() << std::endl;
 	}
 	catch (...) {
 		err = LLErrorCode::FunctionError;

@@ -2,7 +2,7 @@
 
 #include "LLU/MArgumentManager.h"
 #include "LLU/Containers/Image.h"
-#include "LLU/LibraryLinkError.h"
+#include "LLU/ErrorManager.h"
 #include "LLU/LibraryLinkFunctionMacro.h"
 #include <cstdint>
 
