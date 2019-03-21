@@ -142,14 +142,6 @@ namespace LibraryLinkUtils {
 		using IdType = int;
 
 		/**
-		 * Set debug info
-		 * @param dbg - additional information helpful in debugging
-		 */
-		void setDebugInfo(std::string dbg) {
-			debugInfo = std::move(dbg);
-		}
-
-		/**
 		 *   @brief Get the value of error code
 		 **/
 		IdType id() const noexcept {
@@ -177,13 +169,6 @@ namespace LibraryLinkUtils {
 			return messageTemplate;
 		}
 
-		/**
-		 *   @brief Get debug info
-		 **/
-		const std::string& debug() const noexcept {
-			return debugInfo;
-		}
-
 	private:
 		/**
 		 *   @brief         Constructs an exception with given error code and predefined error message
@@ -200,7 +185,6 @@ namespace LibraryLinkUtils {
 		const IdType errorId;
 		const std::string type;
 		const std::string messageTemplate;
-		std::string debugInfo;
 	};
 
 
@@ -230,17 +214,29 @@ namespace LibraryLinkUtils {
 		static void registerPacletErrors(const std::vector<ErrorStringData>& errors);
 
 		/**
-		 * @brief 	Throw exception with given name.
-		 * @param 	errorName - name of the error that will be thrown
+		 * @brief	Throw exception with given name.
+		 * 			Optionally, send arbitrary details of the exception occurrence to top-level. This will send any number of arguments via MathLink
+		 * 			as a List and assign this List to the symbol specified in ErrorManager::exceptionDetailsSymbol.
+		 * @tparam 	T - type template parameter pack
+		 * @param 	errorName - name of error to be thrown, must be registered beforehand
+		 * @param 	args - any number of arguments that will replace TemplateSlots (``, `1`, `xx`, etd) in the message text in top-level
+		 * @note	This function requires a copy of WolframLibraryData to be saved in WolframLibrary_initialize via LibDataHolder::setLibraryData
+		 * 			or MArgumentManager::setLibraryData.
 		 */
-		[[noreturn]] static void throwException(const std::string& errorName);
+		template<typename... T>
+		[[noreturn]] static void throwException(const std::string& errorName, T&&... args);
 
 		/**
-		 * @brief 	Throw exception with given name and some additional debug information.
-		 * @param 	errorName - name of the error that will be thrown
-		 * @param	debugInfo - additional message with debug info, this message will not be passed to top-level Failure object
+		 * @brief	Throw exception with given name.
+		 * 			Optionally, send arbitrary details of the exception occurrence to top-level. This will send any number of arguments via MathLink
+		 * 			as a List and assign this List to the symbol specified in ErrorManager::exceptionDetailsSymbol.
+		 * @tparam 	T - type template parameter pack
+		 * @param	libData - a copy of WolframLibraryData which should be used to extract the MLink for MathLink connection
+		 * @param 	errorName - name of error to be thrown, must be registered beforehand
+		 * @param 	args - any number of arguments that will replace TemplateSlots (``, `1`, `xx`, etd) in the message text in top-level
 		 */
-		[[noreturn]] static void throwException(const std::string& errorName, const std::string& debugInfo);
+		template<typename... T>
+		[[noreturn]] static void throwException(WolframLibraryData libData, const std::string& errorName, T&&... args);
 
 		/**
 		 * @brief 	Throw exception of given class that carries the error with given name.
@@ -263,6 +259,19 @@ namespace LibraryLinkUtils {
 		 * @param mlp - active MathLink connection
 		 */
 		static void sendRegisteredErrorsViaMathlink(MLINK mlp);
+
+		/**
+		 * @brief	Set custom Wolfram Language symbol that will hold the details of last thrown exception.
+		 * @param 	newSymbol - a Wolfram Language symbol name
+		 * @note 	This function does not check if \p newSymbol is actually a valid Wolfram Language symbol which is not Protected.
+		 */
+		static void setExceptionDetailsSymbol(std::string newSymbol);
+
+		/**
+		 * @brief	Get current symbol that will hold the details of last thrown exception.
+		 * @return	a WL symbol that will hold the details of last thrown exception
+		 */
+		static const std::string& getExceptionDetailsSymbol();
 
 	private:
 
@@ -302,6 +311,9 @@ namespace LibraryLinkUtils {
 
 		/// Id that will be assigned to the next registered error.
 		static int& nextErrorId();
+
+		/// A WL symbol that will hold the details of last thrown exception.
+		static std::string exceptionDetailsSymbol;
 	};
 
 	template<class Error, typename... Args>

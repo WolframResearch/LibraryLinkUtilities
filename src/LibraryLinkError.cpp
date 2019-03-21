@@ -10,6 +10,7 @@
 
 #include "LLU/LibraryLinkError.h"
 
+#include "LLU/Containers/LibDataHolder.h"
 #include "LLU/Utilities.hpp"
 #include "LLU/ML/MLStream.hpp"
 #include "LLU/ML/Utilities.h"
@@ -106,6 +107,16 @@ namespace LibraryLinkUtils {
 		return errMap;
 	}
 
+	std::string ErrorManager::exceptionDetailsSymbol = "LLU`$LastFailureParameters";
+
+	void ErrorManager::setExceptionDetailsSymbol(std::string newSymbol) {
+		exceptionDetailsSymbol = std::move(newSymbol);
+	}
+
+	const std::string& ErrorManager::getExceptionDetailsSymbol() {
+		return exceptionDetailsSymbol;
+	}
+
 	int& ErrorManager::nextErrorId() {
 		static int id = LLErrorCode::VersionError;
 		return id;
@@ -139,14 +150,26 @@ namespace LibraryLinkUtils {
 		}
 	}
 
-	void ErrorManager::throwException(const std::string& errorName) {
-		throw findError(errorName);
+	template<typename... T>
+	void ErrorManager::throwException(const std::string& errorName, T&&... args) {
+		throwException(LibDataHolder::getLibraryData(), errorName, std::forward<T>(args)...);
 	}
 
-	void ErrorManager::throwException(const std::string& errorName, const std::string& debugInfo) {
-		auto exception = findError(errorName);
-		exception.setDebugInfo(debugInfo);
-		throw exception;
+	template<typename... T>
+	void ErrorManager::throwException(WolframLibraryData libData, const std::string& errorName, T&&... args) {
+		constexpr auto argCount = sizeof...(T);
+		MLStream<ML::Encoding::UTF8> mls { libData->getWSLINK(libData) };
+		mls << ML::Function("EvaluatePacket", 1);
+		mls << ML::Function("Set", 2);
+		mls << ML::Symbol(exceptionDetailsSymbol);
+		mls << ML::List(argCount);
+		static_cast<void>(std::initializer_list<int> { (mls << args, 0)... });
+		libData->processWSLINK(mls.get());
+		auto pkt = MLNextPacket(mls.get());
+		if ( pkt == RETURNPKT) {
+			mls << ML::NewPacket;
+		}
+		throw findError(errorName);
 	}
 
 	const LibraryLinkError& ErrorManager::findError(int errorId) {
