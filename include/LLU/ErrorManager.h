@@ -87,6 +87,33 @@ namespace LibraryLinkUtils {
 		[[noreturn]] static void throwCustomException(const std::string& errorName, Args&&... args);
 
 		/**
+		 * @brief	Throw exception with given name.
+		 * 			Optionally, send arbitrary details of the exception occurrence to top-level. This will send any number of arguments via MathLink
+		 * 			as a List and assign this List to the symbol specified in ErrorManager::exceptionDetailsSymbol.
+		 * @tparam 	T - type template parameter pack
+		 * @param 	errorName - name of error to be thrown, must be registered beforehand
+		 * @param	debugInfo - additional message with debug info, this message will not be passed to top-level Failure object
+		 * @param 	args - any number of arguments that will replace TemplateSlots (``, `1`, `xx`, etd) in the message text in top-level
+		 * @note	This function requires a copy of WolframLibraryData to be saved in WolframLibrary_initialize via LibDataHolder::setLibraryData
+		 * 			or MArgumentManager::setLibraryData.
+		 */
+		template<typename... T>
+		[[noreturn]] static void throwExceptionWithDebugInfo(const std::string& errorName, const std::string& debugInfo, T&&... args);
+
+		/**
+		 * @brief	Throw exception with given name.
+		 * 			Optionally, send arbitrary details of the exception occurrence to top-level. This will send any number of arguments via MathLink
+		 * 			as a List and assign this List to the symbol specified in ErrorManager::exceptionDetailsSymbol.
+		 * @tparam 	T - type template parameter pack
+		 * @param	libData - a copy of WolframLibraryData which should be used to extract the MLink for MathLink connection
+		 * @param 	errorName - name of error to be thrown, must be registered beforehand
+		 * @param	debugInfo - additional message with debug info, this message will not be passed to top-level Failure object
+		 * @param 	args - any number of arguments that will replace TemplateSlots (``, `1`, `xx`, etd) in the message text in top-level
+		 */
+		template<typename... T>
+		[[noreturn]] static void throwExceptionWithDebugInfo(WolframLibraryData libData, const std::string& errorName, const std::string& debugInfo, T&&... args);
+
+		/**
 		 * @brief Function used to send all registered errors to top-level Mathematica code.
 		 *
 		 * Sending registered errors allows for nice and meaningful Failure objects to be generated when paclet function fails in top level,
@@ -134,6 +161,16 @@ namespace LibraryLinkUtils {
 		 */
 		static const LibraryLinkError& findError(const std::string& errorName);
 
+		/**
+		 * @brief	Send a number of failure parameters to top-level.
+		 * 			They will be assigned in a List to symbol whose name is stored in ErrorManager::exceptionDetailsSymbol
+		 * @tparam 	T - any type that MLStream supports
+		 * @param 	libData - WolframLibraryData, if nullptr, the parameters will not be send
+		 * @param 	args - parameters of an exception currently being thrown
+		 */
+		template<typename... T>
+		static void sendExceptionParameters(WolframLibraryData libData, T&&... args);
+
 		/***
 		 * @brief Initialization of static error map
 		 * @param initList - list of errors used internally by LLU
@@ -151,14 +188,8 @@ namespace LibraryLinkUtils {
 		static std::string exceptionDetailsSymbol;
 	};
 
-
 	template<typename... T>
-	void ErrorManager::throwException(const std::string& errorName, T&&... args) {
-		throwException(LibDataHolder::getLibraryData(), errorName, std::forward<T>(args)...);
-	}
-
-	template<typename... T>
-	void ErrorManager::throwException(WolframLibraryData libData, const std::string& errorName, T&&... args) {
+	void ErrorManager::sendExceptionParameters(WolframLibraryData libData, T&&... args) {
 		constexpr auto argCount = sizeof...(T);
 		if (libData) {
 			MLStream<ML::Encoding::UTF8> mls { libData->getWSLINK(libData) };
@@ -173,12 +204,35 @@ namespace LibraryLinkUtils {
 				mls << ML::NewPacket;
 			}
 		}
+	}
+
+	template<typename... T>
+	void ErrorManager::throwException(const std::string& errorName, T&&... args) {
+		throwException(LibDataHolder::getLibraryData(), errorName, std::forward<T>(args)...);
+	}
+
+	template<typename... T>
+	void ErrorManager::throwException(WolframLibraryData libData, const std::string& errorName, T&&... args) {
+		sendExceptionParameters(libData, std::forward<T>(args)...);
 		throw findError(errorName);
 	}
 
 	template<class Error, typename... Args>
 	void ErrorManager::throwCustomException(const std::string& errorName, Args&&... args) {
 		throw Error(findError(errorName), std::forward<Args>(args)...);
+	}
+
+	template<typename... T>
+	void ErrorManager::throwExceptionWithDebugInfo(const std::string& errorName, const std::string& debugInfo, T&&... args) {
+		throwExceptionWithDebugInfo(LibDataHolder::getLibraryData(), errorName, debugInfo, std::forward<T>(args)...);
+	}
+
+	template<typename... T>
+	void ErrorManager::throwExceptionWithDebugInfo(WolframLibraryData libData, const std::string& errorName, const std::string& debugInfo, T&&... args) {
+		auto exception = findError(errorName);
+		exception.setDebugInfo(debugInfo);
+		sendExceptionParameters(libData, std::forward<T>(args)...);
+		throw exception;
 	}
 
 }  /* namespace LibraryLinkUtils */

@@ -139,6 +139,14 @@ namespace LibraryLinkUtils {
 		using IdType = int;
 
 		/**
+		 * Set debug info
+		 * @param dbg - additional information helpful in debugging
+		 */
+		void setDebugInfo(std::string dbg) {
+			debugInfo = std::move(dbg);
+		}
+
+		/**
 		 *   @brief Get the value of error code
 		 **/
 		IdType id() const noexcept {
@@ -166,6 +174,13 @@ namespace LibraryLinkUtils {
 			return messageTemplate;
 		}
 
+		/**
+		 *   @brief Get debug info
+		 **/
+		const std::string& debug() const noexcept {
+			return debugInfo;
+		}
+
 	private:
 		/**
 		 *   @brief         Constructs an exception with given error code and predefined error message
@@ -182,6 +197,7 @@ namespace LibraryLinkUtils {
 		const IdType errorId;
 		const std::string type;
 		const std::string messageTemplate;
+		std::string debugInfo;
 	};
 
 } /* namespace LibraryLinkUtils */

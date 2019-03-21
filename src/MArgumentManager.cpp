@@ -131,7 +131,7 @@ namespace LibraryLinkUtils {
 
 	MArgument MArgumentManager::getArgs(unsigned int index) const {
 		if (index >= argc)
-			ErrorManager::throwException(LLErrorName::MArgumentIndexError, "Index " + std::to_string(index) + " out-of-bound when accessing LibraryLink argument");
+			ErrorManager::throwExceptionWithDebugInfo(LLErrorName::MArgumentIndexError, "Index " + std::to_string(index) + " out-of-bound when accessing LibraryLink argument");
 		return args[index];
 	}
 

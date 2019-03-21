@@ -44,19 +44,19 @@ namespace LibraryLinkUtils {
 
 		void checkError(MLINK m, int statusOk, const std::string& errorName, const std::string& debugInfo) {
 			if (!statusOk) {
-				ErrorManager::throwException(errorName, getMLErrorText(m) + debugInfo);
+				ErrorManager::throwExceptionWithDebugInfo(errorName, getMLErrorText(m) + debugInfo);
 			}
 		}
 
 		void throwLLUException(const std::string& errorName, const std::string& debugInfo) {
-			ErrorManager::throwException(errorName, debugInfo);
+			ErrorManager::throwExceptionWithDebugInfo(errorName, debugInfo);
 		}
 
 		MLINK getNewLoopback(MLINK m) {
 			int err = 0;
 			auto loopback = MLLoopbackOpen(MLLinkEnvironment(m), &err);
 			if (loopback == static_cast<MLINK>(0) || err != MLEOK) {
-				ErrorManager::throwException(LLErrorName::MLCreateLoopbackError, "Error code: " + std::to_string(err));
+				ErrorManager::throwExceptionWithDebugInfo(LLErrorName::MLCreateLoopbackError, "Error code: " + std::to_string(err));
 			}
 			return loopback;
 		}
