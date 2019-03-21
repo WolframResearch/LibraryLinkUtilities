@@ -208,8 +208,9 @@ Block[{msgParam, param, errorCode, msgTemplate, errorType},
 GetCCodeFailureParams[msgTemplate_String?StringQ] :=
   Block[{slotNames, slotValues, data},
     slotNames = Cases[First @ StringTemplate[msgTemplate], TemplateSlot[s_] -> s];
-    (* If too many slot values came from C++ code - drop some, otherwise - pad with empty strings *)
-    slotValues = PadRight[LLU`$LastFailureParameters, Length[slotNames], ""];
+		slotValues = If[ListQ[LLU`$LastFailureParameters], LLU`$LastFailureParameters, {}];
+		(* If too many slot values came from C++ code - drop some, otherwise - pad with empty strings *)
+    slotValues = PadRight[slotValues, Length[slotNames], ""];
     AssociationThread[slotNames, slotValues]
   ];
 
