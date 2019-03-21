@@ -1,12 +1,7 @@
-#include "WolframLibrary.h"
-
-#include "LLU/MArgumentManager.h"
-#include "LLU/Containers/Image.h"
-#include "LLU/ErrorManager.h"
-#include "LLU/LibraryLinkFunctionMacro.h"
 #include <cstdint>
 
-using namespace LibraryLinkUtils;
+#include "LLU/LLU.h"
+#include "LLU/LibraryLinkFunctionMacro.h"
 
 template<typename T>
 T negator;

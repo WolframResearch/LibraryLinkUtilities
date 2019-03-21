@@ -85,7 +85,7 @@ Test[
 	TestID->"NumericArrayTestSuite-20181030-P4G8W4"
 ]
 
-Test[
+(*Test[
 	convert[NumericArray[{3.5}], 5 (* Clip and Round *), 0]
 	,
 	NumericArray[NumericArray[{3.5}], "UnsignedInteger16"]
@@ -110,6 +110,6 @@ Test[
 	,
 	TestID->"NumericArrayTestSuite-20181105-W8Z5G6"
 ]
-
+*)
 
 EndRequirement[]

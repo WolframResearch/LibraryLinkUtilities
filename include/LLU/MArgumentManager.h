@@ -9,8 +9,6 @@
 #ifndef LLUTILS_MARGUMENTMANAGER_H_
 #define LLUTILS_MARGUMENTMANAGER_H_
 
-#include "WolframLibrary.h"
-
 #include <complex>
 #include <cstdint>
 #include <limits>
@@ -18,15 +16,17 @@
 #include <string>
 #include <vector>
 
+#include "LLU/ErrorManager.h"
 #include "LLU/Containers/DataList.h"
 #include "LLU/Containers/Image.h"
 #include "LLU/Containers/LibDataHolder.h"
 #include "LLU/Containers/NumericArray.h"
 #include "LLU/Containers/Tensor.h"
 #include "LLU/Containers/Passing/Automatic.hpp"
-#include "LLU/ErrorManager.h"
 #include "LLU/MArgument.h"
 #include "LLU/ProgressMonitor.h"
+
+#include "WolframLibrary.h"
 
 namespace LibraryLinkUtils {
 

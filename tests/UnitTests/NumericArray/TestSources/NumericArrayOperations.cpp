@@ -1,15 +1,11 @@
-#include "WolframLibrary.h"
-#include "WolframNumericArrayLibrary.h"
-
 #include <iostream>
 #include <numeric>
 #include <type_traits>
 
-#include "LLU/MArgumentManager.h"
+#include "LLU/LLU.h"
 #include "LLU/LibraryLinkFunctionMacro.h"
-#include "LLU/Containers/NumericArray.h"
 
-using namespace LibraryLinkUtils;
+namespace NA = LibraryLinkUtils::NA;
 
 static MNumericArray shared_numeric = 0;
 

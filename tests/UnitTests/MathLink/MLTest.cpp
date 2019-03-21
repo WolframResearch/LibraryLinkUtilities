@@ -102,7 +102,7 @@ EXTERN_C DLLEXPORT int BoolAnd(WolframLibraryData libData, MLINK mlp) {
 	auto err = LLErrorCode::NoError;
 	try {
 		MathLinkStream ml(mlp);
-		
+
 		ML::List l;
 		ml >> l;
 
@@ -719,7 +719,6 @@ EXTERN_C DLLEXPORT int ReverseSymbolsOrder(WolframLibraryData libData, MLINK mlp
 	}
 	catch (const LibraryLinkError& e) {
 		err = e.which();
-		std::cerr << e.debug() << std::endl;
 	}
 	catch (...) {
 		err = LLErrorCode::FunctionError;
@@ -748,7 +747,6 @@ EXTERN_C DLLEXPORT int TakeLibraryFunction(WolframLibraryData libData, MLINK mlp
 	}
 	catch (const LibraryLinkError& e) {
 		err = e.which();
-		std::cerr << e.debug() << std::endl;
 	}
 	catch (...) {
 		err = LLErrorCode::FunctionError;
@@ -785,7 +783,6 @@ EXTERN_C DLLEXPORT int GetSet(WolframLibraryData libData, MLINK mlp) {
 	}
 	catch (const LibraryLinkError& e) {
 		err = e.which();
-		std::cerr << e.debug() << std::endl;
 	}
 	catch (...) {
 		err = LLErrorCode::FunctionError;
@@ -825,7 +822,6 @@ LIBRARY_MATHLINK_FUNCTION(ReadNestedMap) {
 	}
 	catch (const LibraryLinkError& e) {
 		err = e.which();
-		std::cerr << e.debug() << std::endl;
 	}
 	catch (...) {
 		err = LLErrorCode::FunctionError;
