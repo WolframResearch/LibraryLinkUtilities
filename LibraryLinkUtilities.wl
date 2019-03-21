@@ -53,8 +53,8 @@ $CorePacletFailureLUT = <|
 
 ErrorCodeToName[errorCode_Integer]:=
 Block[{name = Select[$CorePacletFailureLUT, MatchQ[#, {errorCode, _}] &]},
-	If[Length@name > 0 && Depth[name] > 2,
-		First@Keys@name
+	If[Length[name] > 0 && Depth[name] > 2,
+		First @ Keys @ name
 		,
 		""
 	]
@@ -177,31 +177,41 @@ Options[CreatePacletFailure] = {
 };
 
 CreatePacletFailure[type_?StringQ, opts:OptionsPattern[]] :=
-Block[{msgParam, param, lookup},
+Block[{msgParam, param, errorCode, msgTemplate, errorType},
 	msgParam = Replace[OptionValue["MessageParameters"], Except[_?AssociationQ] -> <||>];
 	param = Replace[OptionValue["Parameters"], {p_?StringQ :> {p}, Except[{_?StringQ.. }] -> {}}];
-	lookup =
+	{errorCode, msgTemplate} =
 		Lookup[
 			$CorePacletFailureLUT
 			,
 			errorType = type
 			,
-			(	
+			(
 				AppendTo[msgParam, "ErrorName" -> type];
 				$CorePacletFailureLUT[errorType = "UnknownFailure"]
 			)
 		];
 	$ErrorCount++;
+	If[errorCode < 0, (* if failure comes from the C++ code, extract message template parameters *)
+		msgParam = GetCCodeFailureParams[msgTemplate];
+	];
 	Failure[errorType,
 		<|
-			"MessageTemplate" -> lookup[[2]],
+			"MessageTemplate" -> msgTemplate,
 			"MessageParameters" -> msgParam,
-			"ErrorCode" -> lookup[[1]],
+			"ErrorCode" -> errorCode,
 			"Parameters" -> param
 		|>
 	]
 ]
 
+GetCCodeFailureParams[msgTemplate_String?StringQ] :=
+  Block[{slotNames, slotValues, data},
+    slotNames = Cases[First @ StringTemplate[msgTemplate], TemplateSlot[s_] -> s];
+    (* If too many slot values came from C++ code - drop some, otherwise - pad with empty strings *)
+    slotValues = PadRight[LLU`$LastFailureParameters, Length[slotNames], ""];
+    AssociationThread[slotNames, slotValues]
+  ];
 
 (* ::SubSection:: *)
 (* CatchLibraryLinkError *)
@@ -241,7 +251,7 @@ With[{result = Quiet[f, {
 	}]}, 
 	
 	If[Head[result] === LibraryFunctionError,
-		Throw@CreatePacletFailure[ErrorCodeToName[result[[2]]]]
+		Throw @ CreatePacletFailure[ErrorCodeToName[result[[2]]]]
 	, (* else *)
 		result
 	]
