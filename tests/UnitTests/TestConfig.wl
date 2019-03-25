@@ -29,6 +29,17 @@ options = {
 LibraryLoad /@ FileNames[{"*.so", "*.dll", "*.dylib"}, $LLULibDir];
 
 
+(* Helper definitions *)
+
+TopLevelErrorCodeQ[c_Integer] := c > 7;
+TopLevelErrorCodeQ[_] := False;
+
+LLErrorCodeQ[c_Integer] := 0 <= c <= 7;
+LLErrorCodeQ[_] := False;
+
+CppErrorCodeQ[c_Integer] := c < 0;
+CppErrorCodeQ[_] := False;
+
 (* Memory leak test *)
 ClearAll[MemoryLeakTest];
 SetAttributes[MemoryLeakTest, HoldAll];

@@ -40,7 +40,7 @@ Test[
 	TestID->"ErrorReportingTestSuite-20171201-L1W7O4"
 ]
 
-Test[
+TestMatch[
 	CreatePacletFailure["StaticTopLevelError"]
 	,
 	Failure["StaticTopLevelError", <|
@@ -50,227 +50,197 @@ Test[
 		"Parameters" -> {}
 	|>]/; n > 7
 	,
-	SameTest -> MatchQ
-	,
 	TestID->"ErrorReportingTestSuite-20190320-V9F7V7"
 ]
 
-Test[
+TestMatch[
 	CreatePacletFailure["StaticTopLevelError", "MessageParameters" -> <|"X" -> 3|>, "Parameters" -> {"p1", "p2"}]
 	,
 	Failure["StaticTopLevelError", <|
 		"MessageTemplate" -> "This top-level error has a static error message.",
 		"MessageParameters" -> <|"X" -> 3|>,
-		"ErrorCode" -> n_,
+		"ErrorCode" -> n_?TopLevelErrorCodeQ,
 		"Parameters" -> {"p1", "p2"}
-	|>]/; n > 7
-	,
-	SameTest -> MatchQ
+	|>]
 	,
 	TestID->"ErrorReportingTestSuite-20190320-C8I1M4"
 ]
 
-Test[
-	CreatePacletFailure["StaticTopLevelError", "MessageParameters" -> {"Must", "be", "association"}, "Parameters" -> {1, 2}]
+TestMatch[
+	CreatePacletFailure["StaticTopLevelError", "MessageParameters" -> "Must be Association or List", "Parameters" -> {1, 2}]
 	,
 	Failure["StaticTopLevelError", <|
 		"MessageTemplate" -> "This top-level error has a static error message.",
 		"MessageParameters" -> <||>,
-		"ErrorCode" -> n_,
+		"ErrorCode" -> n_?TopLevelErrorCodeQ,
 		"Parameters" -> {}
-	|>]/; n > 7
-	,
-	SameTest -> MatchQ
+	|>]
 	,
 	TestID->"ErrorReportingTestSuite-20190320-N4O5P9"
 ]
 
-Test[
+TestMatch[
 	CreatePacletFailure["TopLevelNamedSlotsError", "MessageParameters" -> <|"name" -> "John", "when" -> ToString[Now], "unused" -> "param"|>]
 	,
 	Failure["TopLevelNamedSlotsError", <|
 		"MessageTemplate" -> "Hi `name`! Error occurred `when`.",
 		"MessageParameters" ->  <|"name" -> "John", "when" -> _String, "unused" -> "param"|>,
-		"ErrorCode" -> n_,
+		"ErrorCode" -> n_?TopLevelErrorCodeQ,
 		"Parameters" -> {}
-	|>]/; n > 7
-	,
-	SameTest -> MatchQ
+	|>]
 	,
 	TestID->"ErrorReportingTestSuite-20190320-D1Q8T7"
 ]
 
-Test[
+TestMatch[
 	CreatePacletFailure["TopLevelNumberedSlotsError", "MessageParameters" -> {"x", "y", "z"}]
 	,
 	Failure["TopLevelNumberedSlotsError", <|
 		"MessageTemplate" -> "Slot number one: `1`, number two: `2`.",
 		"MessageParameters" ->  {"x", "y", "z"},
-		"ErrorCode" -> n_,
+		"ErrorCode" -> n_?TopLevelErrorCodeQ,
 		"Parameters" -> {}
-	|>]/; n > 7
-	,
-	SameTest -> MatchQ
+	|>]
 	,
 	TestID->"ErrorReportingTestSuite-20190320-Z5Q7P0"
 ]
 
 (*********************************************************** C++ code failures **************************************************************)
 
-Test[
+TestMatch[
 	ReadData = SafeLibraryFunction["ReadData", {String}, "Void"];
 	ReadData["test.txt"]
 	,
 	Failure["DataFileError", <|
 		"MessageTemplate" -> "Data in file `fname` in line `lineNumber` is invalid because `reason`.",
-		"MessageParameters" ->  <|"fname" -> "test.txt", "line" -> 8, "reason" -> "data type is not supported"|>,
-		"ErrorCode" -> n_,
+		"MessageParameters" ->  <|"fname" -> "test.txt", "lineNumber" -> 8, "reason" -> "data type is not supported"|>,
+		"ErrorCode" -> n_?CppErrorCodeQ,
 		"Parameters" -> {}
-	|>]/; n < 0
-	,
-	SameTest -> MatchQ
+	|>]
 	,
 	TestID->"ErrorReportingTestSuite-20190320-Z5Q2A7"
 ]
 
-Test[
+TestMatch[
 	ReadData["somefile.txt"]
 	,
 	Failure["DataFileError", <|
 		"MessageTemplate" -> "Data in file `fname` in line `lineNumber` is invalid because `reason`.",
-		"MessageParameters" ->  <|"fname" -> "somefile.txt", "line" -> 12, "reason" -> "data type is not supported"|>,
-		"ErrorCode" -> n_,
+		"MessageParameters" ->  <|"fname" -> "somefile.txt", "lineNumber" -> 12, "reason" -> "data type is not supported"|>,
+		"ErrorCode" -> n_?CppErrorCodeQ,
 		"Parameters" -> {}
-	|>]/; n < 0
-	,
-	SameTest -> MatchQ
+	|>]
 	,
 	TestID->"ErrorReportingTestSuite-20190320-W3B2B3"
 ]
 
-Test[
+TestMatch[
 	ReadData2 = SafeLibraryFunction["ReadDataLocalWLD", {String}, "Void"];
 	ReadData2["test.txt"]
 	,
 	Failure["DataFileError", <|
 		"MessageTemplate" -> "Data in file `fname` in line `lineNumber` is invalid because `reason`.",
-		"MessageParameters" ->  <|"fname" -> "test.txt", "line" -> 8, "reason" -> "data type is not supported"|>,
-		"ErrorCode" -> n_,
+		"MessageParameters" ->  <|"fname" -> "test.txt", "lineNumber" -> 8, "reason" -> "data type is not supported"|>,
+		"ErrorCode" -> n_?CppErrorCodeQ,
 		"Parameters" -> {}
-	|>]/; n < 0
-	,
-	SameTest -> MatchQ
+	|>]
 	,
 	TestID->"ErrorReportingTestSuite-20190320-V5I1S9"
 ]
 
-Test[
+TestMatch[
 	ReadData2["somefile.txt"]
 	,
 	Failure["DataFileError", <|
 		"MessageTemplate" -> "Data in file `fname` in line `lineNumber` is invalid because `reason`.",
-		"MessageParameters" ->  <|"fname" -> "somefile.txt", "line" -> 12, "reason" -> "data type is not supported"|>,
-		"ErrorCode" -> n_,
+		"MessageParameters" ->  <|"fname" -> "somefile.txt", "lineNumber" -> 12, "reason" -> "data type is not supported"|>,
+		"ErrorCode" -> n_?CppErrorCodeQ,
 		"Parameters" -> {}
-	|>]/; n < 0
-	,
-	SameTest -> MatchQ
+	|>]
 	,
 	TestID->"ErrorReportingTestSuite-20190320-A4B7N1"
 ]
 
-Test[
+TestMatch[
 	RepeatedTemplate = SafeLibraryFunction["RepeatedTemplate", {}, "Void"];
 	RepeatedTemplate[]
 	,
 	Failure["RepeatedTemplateError", <|
 		"MessageTemplate" -> "Cannot accept `x` nor `y` because `x` is unacceptable. So are `y` and `z`.",
 		"MessageParameters" ->  <|"x" -> "x", "y" -> "y", "z" -> "z"|>,
-		"ErrorCode" -> n_,
+		"ErrorCode" -> n_?CppErrorCodeQ,
 		"Parameters" -> {}
-	|>]/; n < 0
-	,
-	SameTest -> MatchQ
+	|>]
 	,
 	TestID->"ErrorReportingTestSuite-20190320-G2N3F5"
 ]
 
-Test[
+TestMatch[
 	NumberedSlots = SafeLibraryFunction["NumberedSlots", {}, "Void"];
 	NumberedSlots[]
 	,
 	Failure["NumberedSlotsError", <|
 		"MessageTemplate" -> "First slot is `1` and second is `2`.",
 		"MessageParameters" ->  {1, {"2", "3", "4"}},
-		"ErrorCode" -> n_,
+		"ErrorCode" -> n_?CppErrorCodeQ,
 		"Parameters" -> {}
-	|>]/; n < 0
-	,
-	SameTest -> MatchQ
+	|>]
 	,
 	TestID->"ErrorReportingTestSuite-20190320-N1J5Q8"
 ]
 
-Test[
+TestMatch[
 	RepeatedNumberTemplate = SafeLibraryFunction["RepeatedNumberTemplate", {}, "Void"];
 	RepeatedNumberTemplate[]
 	,
 	Failure["RepeatedNumberTemplateError", <|
 		"MessageTemplate" -> "Cannot accept `` nor `` because `1` is unacceptable. So are `2` and ``.",
 		"MessageParameters" ->  {"x", "y", "z"},
-		"ErrorCode" -> n_,
+		"ErrorCode" -> n_?CppErrorCodeQ,
 		"Parameters" -> {}
-	|>]/; n < 0
-	,
-	SameTest -> MatchQ
+	|>]
 	,
 	TestID->"ErrorReportingTestSuite-20190320-R9L9R5"
 ]
 
-Test[
+TestMatch[
 	TooManyValues = SafeLibraryFunction["TooManyValues", {}, "Void"];
 	TooManyValues[]
 	,
 	Failure["NumberedSlotsError", <|
 		"MessageTemplate" -> "First slot is `1` and second is `2`.",
 		"MessageParameters" ->  {1, 2, 3, 4, 5},
-		"ErrorCode" -> n_,
+		"ErrorCode" -> n_?CppErrorCodeQ,
 		"Parameters" -> {}
-	|>]/; n < 0
-	,
-	SameTest -> MatchQ
+	|>]
 	,
 	TestID->"ErrorReportingTestSuite-20190320-A9U4T2"
 ]
 
-Test[
+TestMatch[
 	TooFewValues = SafeLibraryFunction["TooFewValues", {}, "Void"];
 	TooFewValues[]
 	,
 	Failure["NumberedSlotsError", <|
 		"MessageTemplate" -> "First slot is `1` and second is `2`.",
 		"MessageParameters" ->  {},
-		"ErrorCode" -> n_,
+		"ErrorCode" -> n_?CppErrorCodeQ,
 		"Parameters" -> {}
-	|>]/; n < 0
-	,
-	SameTest -> MatchQ
+	|>]
 	,
 	TestID->"ErrorReportingTestSuite-20190320-R0E3G0"
 ]
 
-Test[
+TestMatch[
 	MixedSlots = SafeLibraryFunction["MixedSlots", {}, "Void"];
 	MixedSlots[]
 	,
 	Failure["MixedSlotsError", <|
 		"MessageTemplate" -> "This message `` mixes `2` different `kinds` of `` slots.",
-		"MessageParameters" ->  {1, 2, 3, 4},
-		"ErrorCode" -> n_,
+		"MessageParameters" ->  {1, 2, <|"kinds" -> 3|>, 4},
+		"ErrorCode" -> n_?CppErrorCodeQ,
 		"Parameters" -> {}
-	|>]/; n < 0
-	,
-	SameTest -> MatchQ
+	|>]
 	,
 	TestID->"ErrorReportingTestSuite-20190320-C0V5L0"
 ]
