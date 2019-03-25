@@ -178,7 +178,7 @@ Options[CreatePacletFailure] = {
 
 CreatePacletFailure[type_?StringQ, opts:OptionsPattern[]] :=
 Block[{msgParam, param, errorCode, msgTemplate, errorType},
-	msgParam = Replace[OptionValue["MessageParameters"], Except[_?AssociationQ] -> <||>];
+	msgParam = Replace[OptionValue["MessageParameters"], Except[_?AssociationQ | _List] -> <||>];
 	param = Replace[OptionValue["Parameters"], {p_?StringQ :> {p}, Except[{_?StringQ.. }] -> {}}];
 	{errorCode, msgTemplate} =
 		Lookup[
@@ -208,10 +208,20 @@ Block[{msgParam, param, errorCode, msgTemplate, errorType},
 GetCCodeFailureParams[msgTemplate_String?StringQ] :=
   Block[{slotNames, slotValues, data},
     slotNames = Cases[First @ StringTemplate[msgTemplate], TemplateSlot[s_] -> s];
+		slotNames = DeleteDuplicates[slotNames];
 		slotValues = If[ListQ[LLU`$LastFailureParameters], LLU`$LastFailureParameters, {}];
-		(* If too many slot values came from C++ code - drop some, otherwise - pad with empty strings *)
-    slotValues = PadRight[slotValues, Length[slotNames], ""];
-    AssociationThread[slotNames, slotValues]
+		If[MatchQ[slotNames, {_Integer..}],
+			(* for numbered slots return just a list of slot template values *)
+			slotValues
+			, (* otherwise, return an Association with slot names as keys *)
+			(* If too many slot values came from C++ code - drop some, otherwise - pad with empty strings *)
+			slotValues = PadRight[slotValues, Length[slotNames], ""];
+			If[VectorQ[slotNames, StringQ],
+				AssociationThread[slotNames, slotValues]
+				, (* mixed slots are not officially supported but let's do the best we can *)
+				MapThread[If[StringQ[#1], <|#1 -> #2|>, #2]&, {slotNames, slotValues}]
+			]
+		]
   ];
 
 (* ::SubSection:: *)
