@@ -778,7 +778,7 @@ namespace LibraryLinkUtils {
 	template<ML::Encoding EIn, ML::Encoding EOut>
 	template<typename T>
 	auto MLStream<EIn, EOut>::operator<<(const std::vector<T>& l) -> ML::NotScalarSupportedTypeQ<T, MLStream&> {
-		*this << ML::List(l.size());
+		*this << ML::List(static_cast<int>(l.size()));
 		for (const auto& elem : l) {
 			*this << elem;
 		}
