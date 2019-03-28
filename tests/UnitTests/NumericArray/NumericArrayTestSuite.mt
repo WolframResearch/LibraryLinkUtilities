@@ -109,12 +109,15 @@ Test[
 	TestID->"NumericArrayTestSuite-20181105-I0C6A3"
 ]
 
-Test[
-	convert[NumericArray[{3.5}], 1 (* Check *), 0] // Head
+TestMatch[
+	convert[NumericArray[{3.5}], 1 (* Check *), 0]
 	,
-	LibraryFunctionError
-	,
-	{Message[LibraryFunction::rterr, "convert", _]}
+	Failure["NumericArrayConversionError", <|
+		"MessageTemplate" -> "Failed to convert NumericArray from different type.", 
+		"MessageParameters" -> <||>, 
+		"ErrorCode" -> _?CppErrorCodeQ, 
+		"Parameters" -> {}|>
+	]
 	,
 	TestID->"NumericArrayTestSuite-20181105-P7M0S7"
 ]
