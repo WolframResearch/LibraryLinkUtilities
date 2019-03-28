@@ -27,10 +27,12 @@ namespace LibraryLinkUtils {
 		 */
 		enum class ConversionMethod {
 			Check = MNumericArray_Convert_Check,
+			ClipCheck = MNumericArray_Convert_Clip_Check,
             Coerce = MNumericArray_Convert_Coerce,
 			ClipCoerce = MNumericArray_Convert_Clip_Coerce,
 			Round = MNumericArray_Convert_Round,
 			ClipRound = MNumericArray_Convert_Clip_Round,
+			Scale = MNumericArray_Convert_Scale,
 			ClipScale = MNumericArray_Convert_Clip_Scale,
 		};
 	}
@@ -378,8 +380,8 @@ namespace LibraryLinkUtils {
 		MNumericArray newInternal;
 		auto status = this->naFuns->MNumericArray_convertType(&newInternal, other.getInternal(), type, static_cast<numericarray_convert_method_t>(method), tolerance);
 		if (!status) { // 0 means OK, but no way to learn anything more specific if conversion failed
-			ErrorManager::throwException(LLErrorName::NumericArrayConversionError,
-					"Conversion from type " + std::to_string(static_cast<int>(other.getType())) + " to " + std::to_string(static_cast<int>(this->type)) + " failed.");
+			ErrorManager::throwExceptionWithDebugInfo(LLErrorName::NumericArrayConversionError,
+					"Conversion from type " + std::to_string(static_cast<int>(other.getType())) + " to " + std::to_string(static_cast<int>(type)) + " failed.");
 		}
 		this->setOwner(true);
 		extractPropertiesFromInternal(newInternal);
