@@ -143,7 +143,10 @@ namespace LibraryLinkUtils {
 	}
 
 	ProgressMonitor MArgumentManager::getProgressMonitor(double step) const {
-		auto pmIndex = argc - 1; // shared Tensor will be passed as the last argument
+		if (argc < 1) {
+			ErrorManager::throwExceptionWithDebugInfo(LLErrorName::MArgumentIndexError, "Index too small when accessing ProgressMonitor.");
+		}
+		auto pmIndex = static_cast<unsigned>(argc - 1); // shared Tensor will be passed as the last argument
 		Tensor<double> sharedIndicator = getTensor<double>(pmIndex);
 		return ProgressMonitor { std::move(sharedIndicator), step };
 	}
