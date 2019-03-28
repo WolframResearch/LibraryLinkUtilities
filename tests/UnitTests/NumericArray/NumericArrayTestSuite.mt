@@ -80,15 +80,31 @@ Test[
 Test[
 	accumulateIntegers[NumericArray[{3.5}]]
 	,
-	LibraryFunctionError["LIBRARY_FUNCTION_ERROR", 6]
+	Failure["FunctionError", <|"MessageTemplate" -> "An error occurred in the library function.", "MessageParameters" -> <||>, "ErrorCode" -> 6, "Parameters" -> {}|>]
 	,
 	TestID->"NumericArrayTestSuite-20181030-P4G8W4"
 ]
 
 Test[
-	convert[NumericArray[{3.5}], 5 (* Clip and Round *), 0]
+	convertMethodName /@ Range[8]
 	,
-	NumericArray[NumericArray[{3.5}], "UnsignedInteger16"]
+	{"Check", "ClipCheck", "Coerce", "ClipCoerce", "Round", "ClipRound", "Scale", "ClipScale"}
+	,
+	TestID->"NumericArrayTestSuite-20190328-S2I8Q2"
+]
+
+TestMatch[
+	convertMethodName[9]
+	,
+	_Failure
+	,
+	TestID->"NumericArrayTestSuite-20190328-R8Y1F1"
+]
+
+Test[
+	convert[NumericArray[{3.5}], 5 (* Round *), 0]
+	,
+	NumericArray[NumericArray[{3.5}], "UnsignedInteger16", "Round"]
 	,
 	TestID->"NumericArrayTestSuite-20181105-I0C6A3"
 ]
@@ -104,7 +120,7 @@ Test[
 ]
 
 Test[
-	convert[NumericArray[Range[10]], 6 (* ClipAndScale *), 1]
+	convert[NumericArray[Range[10]], 8 (* ClipAndScale *), 1]
 	,
 	NumericArray[NumericArray[Range[10]], "UnsignedInteger16", "ClipAndScale"]
 	,
