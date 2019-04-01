@@ -19,7 +19,7 @@
 
 #include "LLU/MArgumentManager.h"
 #include "LLU/Containers/Image.h"
-#include "LLU/ErrorManager.h"
+#include "LLU/Error/ErrorManager.h"
 #include "LLU/LibraryLinkFunctionMacro.h"
 
 using namespace LibraryLinkUtils;

@@ -21,6 +21,7 @@
 
 #include "LLU/LibraryLinkFunctionMacro.h"
 #include "LLU/ML/MLStream.hpp"
+#include "LLU/Error/LibraryLinkError.h"
 
 using namespace LibraryLinkUtils;
 using MathLinkStream = MLStream<ML::Encoding::UTF8>;

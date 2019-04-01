@@ -9,7 +9,7 @@
 
 #include "mathlink.h"
 
-#include "LLU/ErrorManager.h"
+#include "LLU/Error/ErrorManager.h"
 #include "LLU/LibraryLinkFunctionMacro.h"
 #include "LLU/ML/MLStream.hpp"
 

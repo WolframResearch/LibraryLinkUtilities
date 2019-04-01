@@ -7,6 +7,7 @@
 #ifndef LLUTILS_MLSTREAM_HPP_
 #define LLUTILS_MLSTREAM_HPP_
 
+#include <algorithm>
 #include <iterator>
 #include <map>
 #include <stack>
@@ -16,7 +17,7 @@
 
 #include "mathlink.h"
 
-#include "LLU/LibraryLinkError.h"
+#include "LLU/Error/Errors.h"
 #include "LLU/Utilities.hpp"
 #include "Utilities.h"
 #include "UtilityTypeTraits.hpp"

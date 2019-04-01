@@ -16,7 +16,7 @@
 #include <string>
 #include <vector>
 
-#include "LLU/ErrorManager.h"
+#include "LLU/Error/ErrorManager.h"
 #include "LLU/Containers/DataList.h"
 #include "LLU/Containers/Image.h"
 #include "LLU/Containers/LibDataHolder.h"

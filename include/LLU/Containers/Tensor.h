@@ -14,7 +14,7 @@
 
 #include "WolframLibrary.h"
 
-#include "LLU/ErrorManager.h"
+#include "LLU/Error/ErrorManager.h"
 #include "MArray.hpp"
 #include "LLU/Utilities.hpp"
 
