@@ -73,7 +73,7 @@ if(NOT TARGET LLU)
 	set(LLU_SOURCE_FILES
 		${LLU_SOURCE_DIR}/Containers/Image.cpp
 		${LLU_SOURCE_DIR}/Containers/LibDataHolder.cpp
-		${LLU_SOURCE_DIR}/LibraryLinkError.cpp
+		${LLU_SOURCE_DIR}/Error/LibraryLinkError.cpp
 		${LLU_SOURCE_DIR}/MArgumentManager.cpp
 		${LLU_SOURCE_DIR}/Containers/MArrayBase.cpp
 		${LLU_SOURCE_DIR}/Containers/NumericArray.cpp
@@ -85,8 +85,9 @@ if(NOT TARGET LLU)
 		${LLU_SOURCE_DIR}/ML/Utilities.cpp
 		${LLU_SOURCE_DIR}/MArgument.cpp
 		${LLU_SOURCE_DIR}/ProgressMonitor.cpp
-        ${LLU_SOURCE_DIR}/ErrorManager.cpp
-    )
+        ${LLU_SOURCE_DIR}/Error/ErrorManager.cpp
+		${LLU_SOURCE_DIR}/Error/Errors.cpp
+	)
 
 	#add the main library
 	add_library(LLU ${LLU_SOURCE_FILES})

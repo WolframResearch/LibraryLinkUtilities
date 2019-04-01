@@ -1,22 +1,15 @@
 /**
- * @file	LibraryLinkError.h
+ * @file	Errors.h
  * @author	Rafal Chojna <rafalc@wolfram.com>
- *
- * @brief	Error class and error codes used by LibraryLink Utilities classes
- *
+ * @date	March 31, 2019
+ * @brief	Definitions of error names and error codes used across LLU.
  */
-#ifndef LLUTILS_LIBRARYLINKERROR_H_
-#define LLUTILS_LIBRARYLINKERROR_H_
+#ifndef LLUTILS_ERRORS_H
+#define LLUTILS_ERRORS_H
 
-#include <stdexcept>
 #include <string>
 
-/**
- * @namespace LibraryLinkUtils
- * @brief Main namespace of LibraryLinkUtilities
- */
 namespace LibraryLinkUtils {
-
 
 	/**
 	 * @brief Error codes predefined in Library Link
@@ -123,83 +116,6 @@ namespace LibraryLinkUtils {
 		extern const std::string Aborted;    	///< Computation aborted by the user
 	}
 
-	// Forward declare ErrorManager class. See ErrorManager.h for the actual definition.
-	class ErrorManager;
+}
 
-	/**
-	 * @class	LibraryLinkError
-	 * @brief	Class representing an exception in paclet code
-	 *
-	 * All exceptions that are thrown from paclet code should be of this class. To prevent users from overriding predefined LLU exceptions the constructor
-	 * of LibraryLinkError class is private. Developers should use ErrorManager::throwException method to throw exceptions.
-	 **/
-	class LibraryLinkError: public std::runtime_error {
-		friend class ErrorManager;
-	public:
-		using IdType = int;
-
-		/**
-		 * Set debug info
-		 * @param dbg - additional information helpful in debugging
-		 */
-		void setDebugInfo(std::string dbg) {
-			debugInfo = std::move(dbg);
-		}
-
-		/**
-		 *   @brief Get the value of error code
-		 **/
-		IdType id() const noexcept {
-			return errorId;
-		}
-
-		/**
-		 *   @brief Alias for id() to preserve backwards compatibility
-		 **/
-		IdType which() const noexcept {
-			return errorId;
-		}
-
-		/**
-		 *   @brief Get the value of error code
-		 **/
-		const std::string& name() const noexcept {
-			return type;
-		}
-
-		/**
-		 *   @brief Get the value of error code
-		 **/
-		const std::string& message() const noexcept {
-			return messageTemplate;
-		}
-
-		/**
-		 *   @brief Get debug info
-		 **/
-		const std::string& debug() const noexcept {
-			return debugInfo;
-		}
-
-	private:
-		/**
-		 *   @brief         Constructs an exception with given error code and predefined error message
-		 *   @param[in]     which - error code
-		 *   @param[in]		t - error type/name
-		 *   @param[in]		msg - error description
-		 *   @warning		This is constructor is not supposed to be used directly by paclet developers. All errors should be thrown by ErrorManager.
-		 **/
-		LibraryLinkError(IdType which, std::string t, std::string msg) :
-				std::runtime_error(t), errorId(which), type(std::move(t)), messageTemplate(std::move(msg)) {
-
-		}
-
-		const IdType errorId;
-		const std::string type;
-		const std::string messageTemplate;
-		std::string debugInfo;
-	};
-
-} /* namespace LibraryLinkUtils */
-
-#endif /* LLUTILS_LIBRARYLINKERROR_H_ */
+#endif //LLUTILS_ERRORS_H

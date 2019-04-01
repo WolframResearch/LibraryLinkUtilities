@@ -18,8 +18,7 @@
 #include "WolframLibrary.h"
 
 #include <LLU/Containers/LibDataHolder.h>
-#include <LLU/LibraryLinkError.h>
-#include <LLU/ML/MLStream.hpp>
+#include <LLU/Error/LibraryLinkError.h>
 
 namespace LibraryLinkUtils {
 
@@ -122,19 +121,6 @@ namespace LibraryLinkUtils {
 		 */
 		static void sendRegisteredErrorsViaMathlink(MLINK mlp);
 
-		/**
-		 * @brief	Set custom Wolfram Language symbol that will hold the details of last thrown exception.
-		 * @param 	newSymbol - a Wolfram Language symbol name
-		 * @note 	This function does not check if \p newSymbol is actually a valid Wolfram Language symbol which is not Protected.
-		 */
-		static void setExceptionDetailsSymbol(std::string newSymbol);
-
-		/**
-		 * @brief	Get current symbol that will hold the details of last thrown exception.
-		 * @return	a WL symbol that will hold the details of last thrown exception
-		 */
-		static const std::string& getExceptionDetailsSymbol();
-
 	private:
 
 		/// Errors are stored in a map with elements of the form { "ErrorName", immutable LibraryLinkError object }
@@ -161,16 +147,6 @@ namespace LibraryLinkUtils {
 		 */
 		static const LibraryLinkError& findError(const std::string& errorName);
 
-		/**
-		 * @brief	Send a number of failure parameters to top-level.
-		 * 			They will be assigned in a List to symbol whose name is stored in ErrorManager::exceptionDetailsSymbol
-		 * @tparam 	T - any type that MLStream supports
-		 * @param 	libData - WolframLibraryData, if nullptr, the parameters will not be send
-		 * @param 	args - parameters of an exception currently being thrown
-		 */
-		template<typename... T>
-		static void sendExceptionParameters(WolframLibraryData libData, T&&... args);
-
 		/***
 		 * @brief Initialization of static error map
 		 * @param initList - list of errors used internally by LLU
@@ -184,27 +160,9 @@ namespace LibraryLinkUtils {
 		/// Id that will be assigned to the next registered error.
 		static int& nextErrorId();
 
-		/// A WL symbol that will hold the details of last thrown exception.
-		static std::string exceptionDetailsSymbol;
+		/// Boolean flag that determines whether ErrorManager should trigger the transfer of message parameters to top-level for LibraryLinkErrors it throws.
+		static bool sendParametersImmediately;
 	};
-
-	template<typename... T>
-	void ErrorManager::sendExceptionParameters(WolframLibraryData libData, T&&... args) {
-		constexpr auto argCount = sizeof...(T);
-		if (libData) {
-			MLStream<ML::Encoding::UTF8> mls { libData->getWSLINK(libData) };
-			mls << ML::Function("EvaluatePacket", 1);
-			mls << ML::Function("Set", 2);
-			mls << ML::Symbol(exceptionDetailsSymbol);
-			mls << ML::List(argCount);
-			static_cast<void>(std::initializer_list<int> { (mls << args, 0)... });
-			libData->processWSLINK(mls.get());
-			auto pkt = MLNextPacket(mls.get());
-			if ( pkt == RETURNPKT) {
-				mls << ML::NewPacket;
-			}
-		}
-	}
 
 	template<typename... T>
 	void ErrorManager::throwException(const std::string& errorName, T&&... args) {
@@ -213,8 +171,7 @@ namespace LibraryLinkUtils {
 
 	template<typename... T>
 	void ErrorManager::throwException(WolframLibraryData libData, const std::string& errorName, T&&... args) {
-		sendExceptionParameters(libData, std::forward<T>(args)...);
-		throw findError(errorName);
+		throwExceptionWithDebugInfo(libData, errorName, "", std::forward<T>(args)...);
 	}
 
 	template<class Error, typename... Args>
@@ -229,10 +186,15 @@ namespace LibraryLinkUtils {
 
 	template<typename... T>
 	void ErrorManager::throwExceptionWithDebugInfo(WolframLibraryData libData, const std::string& errorName, const std::string& debugInfo, T&&... args) {
-		auto exception = findError(errorName);
-		exception.setDebugInfo(debugInfo);
-		sendExceptionParameters(libData, std::forward<T>(args)...);
-		throw exception;
+		auto e = findError(errorName);
+		e.setDebugInfo(debugInfo);
+		if (libData) {
+			e.setMessageParameters(libData, std::forward<T>(args)...);
+			if (sendParametersImmediately) {
+				e.sendParameters(libData);
+			}
+		}
+		throw std::move(e);
 	}
 
 }  /* namespace LibraryLinkUtils */

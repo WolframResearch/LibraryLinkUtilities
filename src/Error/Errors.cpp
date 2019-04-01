@@ -1,15 +1,14 @@
-/** 
- * @file	LibraryLinkError.cpp
+/**
+ * @file	Errors.cpp
  * @author	Rafal Chojna <rafalc@wolfram.com>
- *
- * @brief	Contains definitions of ErrorManager members and implementation of interface function sendRegisteredErrors used by PacletFailure framework in LLU
- *
+ * @date	March 31, 2019
  */
-#include "LLU/LibraryLinkError.h"
+
+#include "LLU/Error/Errors.h"
 
 namespace LibraryLinkUtils {
 
-#define LLU_DEFINE_ERROR_NAME(errorIdentifier) const std::string errorIdentifier = #errorIdentifier
+	#define LLU_DEFINE_ERROR_NAME(errorIdentifier) const std::string errorIdentifier = #errorIdentifier
 
 	namespace LLErrorName {
 		LLU_DEFINE_ERROR_NAME(VersionError);
@@ -87,4 +86,3 @@ namespace LibraryLinkUtils {
 	}
 
 } /* namespace LibraryLinkUtils */
-

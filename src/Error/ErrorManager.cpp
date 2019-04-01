@@ -4,7 +4,7 @@
  * @date	March 21, 2019
  * @brief	
  */
-#include "LLU/ErrorManager.h"
+#include "LLU/Error/ErrorManager.h"
 
 #include "LLU/Containers/LibDataHolder.h"
 #include "LLU/Utilities.hpp"
@@ -101,15 +101,7 @@ namespace LibraryLinkUtils {
 		return errMap;
 	}
 
-	std::string ErrorManager::exceptionDetailsSymbol = "LLU`$LastFailureParameters";
-
-	void ErrorManager::setExceptionDetailsSymbol(std::string newSymbol) {
-		exceptionDetailsSymbol = std::move(newSymbol);
-	}
-
-	const std::string& ErrorManager::getExceptionDetailsSymbol() {
-		return exceptionDetailsSymbol;
-	}
+	bool ErrorManager::sendParametersImmediately = true;
 
 	int& ErrorManager::nextErrorId() {
 		static int id = LLErrorCode::VersionError;
