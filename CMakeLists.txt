@@ -24,7 +24,7 @@ option(BUILD_SHARED_LIBS "Whether to build LLU as a shared library (default is s
 mark_as_advanced(BUILD_SHARED_LIBS)
 
 #Mathematica version
-set(MATHEMATICA_VERSION 12.0 CACHE STRING "Mathematica version")
+set(MATHEMATICA_VERSION 12.1 CACHE STRING "Mathematica version")
 
 #Mathematica location
 if(NOT MATHEMATICA_INSTALL_DIR)
