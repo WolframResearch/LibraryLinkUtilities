@@ -49,8 +49,8 @@ namespace LibraryLinkUtils {
 
 		/**
 		 * @brief	Throw exception with given name.
-		 * 			Optionally, send arbitrary details of the exception occurrence to top-level. This will send any number of arguments via MathLink
-		 * 			as a List and assign this List to the symbol specified in ErrorManager::exceptionDetailsSymbol.
+		 * 			Optionally, store arbitrary details of the exception occurrence on a loopback link in the exception object. Those details may later be sent
+		 * 			via MathLink to top-level and assigned as a List to a predefined symbol.
 		 * @tparam 	T - type template parameter pack
 		 * @param 	errorName - name of error to be thrown, must be registered beforehand
 		 * @param 	args - any number of arguments that will replace TemplateSlots (``, `1`, `xx`, etd) in the message text in top-level
@@ -62,8 +62,8 @@ namespace LibraryLinkUtils {
 
 		/**
 		 * @brief	Throw exception with given name.
-		 * 			Optionally, send arbitrary details of the exception occurrence to top-level. This will send any number of arguments via MathLink
-		 * 			as a List and assign this List to the symbol specified in ErrorManager::exceptionDetailsSymbol.
+		 * 			Optionally, store arbitrary details of the exception occurrence on a loopback link in the exception object. Those details may later be sent
+		 * 			via MathLink to top-level and assigned as a List to a predefined symbol.
 		 * @tparam 	T - type template parameter pack
 		 * @param	libData - a copy of WolframLibraryData which should be used to extract the MLink for MathLink connection
 		 * @param 	errorName - name of error to be thrown, must be registered beforehand
