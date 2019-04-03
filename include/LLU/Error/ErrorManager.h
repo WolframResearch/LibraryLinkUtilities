@@ -111,6 +111,25 @@ namespace LibraryLinkUtils {
 		template<typename... T>
 		[[noreturn]] static void throwExceptionWithDebugInfo(WolframLibraryData libData, const std::string& errorName, const std::string& debugInfo, T&&... args);
 
+
+		/**
+		 * @brief   Sets new value for the sendParametersImmediately flag. Pass false to make sure that exception do not send their parameters to top-level when they are thrown.
+		 * 			This is essential in multithreaded applications since the WL symbol that parameters are assigned to may be treated as a global shared resource.
+		 * 			It is recommended to use this method in WolframLibrary_initialize.
+		 * @param 	newValue - new value for the sendParametersImmediately flag
+		 */
+		static void setSendParametersImmediately(bool newValue) {
+		  sendParametersImmediately = newValue;
+		}
+
+		/**
+		 * @brief 	Get the current value of sendParametersImmediately flag.
+		 * @return 	current value of sendParametersImmediately flag.
+		 */
+		static bool getSendParametrsImmediately() {
+		  return sendParametersImmediately;
+		}
+
 		/**
 		 * @brief Function used to send all registered errors to top-level Mathematica code.
 		 *
