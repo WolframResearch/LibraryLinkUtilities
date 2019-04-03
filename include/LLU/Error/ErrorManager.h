@@ -48,8 +48,11 @@ namespace LibraryLinkUtils {
 
 		/**
 		 * @brief	Throw exception with given name.
-		 * 			Optionally, store arbitrary details of the exception occurrence on a loopback link in the exception object. Those details may later be sent
-		 * 			via MathLink to top-level and assigned as a List to a predefined symbol.
+		 * 			Optionally, pass arbitrary details of the exception occurrence and they will be stored on a loopback link in the exception object.
+		 * 			Those details may later be sent via MathLink to top-level and assigned as a List to to the symbol specified
+		 * 			in ErrorManager::exceptionDetailsSymbol. To trigger exception details transfer one should call LibraryLinkError::sendParameters
+		 * 			on the exception object. However, if ErrorManager::sendParametersImmediately is set to true, this call will be done automatically
+		 * 			in throwException.
 		 * @tparam 	T - type template parameter pack
 		 * @param 	errorName - name of error to be thrown, must be registered beforehand
 		 * @param 	args - any number of arguments that will replace TemplateSlots (``, `1`, `xx`, etd) in the message text in top-level
@@ -61,8 +64,11 @@ namespace LibraryLinkUtils {
 
 		/**
 		 * @brief	Throw exception with given name.
-		 * 			Optionally, store arbitrary details of the exception occurrence on a loopback link in the exception object. Those details may later be sent
-		 * 			via MathLink to top-level and assigned as a List to a predefined symbol.
+		 * 			Optionally, pass arbitrary details of the exception occurrence and they will be stored on a loopback link in the exception object.
+		 * 			Those details may later be sent via MathLink to top-level and assigned as a List to to the symbol specified
+		 * 			in ErrorManager::exceptionDetailsSymbol. To trigger exception details transfer one should call LibraryLinkError::sendParameters
+		 * 			on the exception object. However, if ErrorManager::sendParametersImmediately is set to true, this call will be done automatically
+		 * 			in throwException.
 		 * @tparam 	T - type template parameter pack
 		 * @param	libData - a copy of WolframLibraryData which should be used to extract the MLink for MathLink connection
 		 * @param 	errorName - name of error to be thrown, must be registered beforehand
@@ -85,9 +91,14 @@ namespace LibraryLinkUtils {
 		[[noreturn]] static void throwCustomException(const std::string& errorName, Args&&... args);
 
 		/**
-		 * @brief	Throw exception with given name.
-		 * 			Optionally, send arbitrary details of the exception occurrence to top-level. This will send any number of arguments via MathLink
-		 * 			as a List and assign this List to the symbol specified in ErrorManager::exceptionDetailsSymbol.
+		 * @brief	Throw exception with given name and additional information that might be helpful in debugging.
+		 * 			Optionally, pass arbitrary details of the exception occurrence and they will be stored on a loopback link in the exception object.
+		 * 			Those details may later be sent via MathLink to top-level and assigned as a List to to the symbol specified
+		 * 			in ErrorManager::exceptionDetailsSymbol. To trigger exception details transfer one should call LibraryLinkError::sendParameters
+		 * 			on the exception object. However, if ErrorManager::sendParametersImmediately is set to true, this call will be done automatically
+		 * 			in throwException.
+		 * 			The debugInfo is a string stored inside the LibraryLinkError object. It is never transferred to top-level but might be for example logged
+		 * 			to a file in a "catch" block in C++ code.
 		 * @tparam 	T - type template parameter pack
 		 * @param 	errorName - name of error to be thrown, must be registered beforehand
 		 * @param	debugInfo - additional message with debug info, this message will not be passed to top-level Failure object
@@ -99,9 +110,14 @@ namespace LibraryLinkUtils {
 		[[noreturn]] static void throwExceptionWithDebugInfo(const std::string& errorName, const std::string& debugInfo, T&&... args);
 
 		/**
-		 * @brief	Throw exception with given name.
-		 * 			Optionally, send arbitrary details of the exception occurrence to top-level. This will send any number of arguments via MathLink
-		 * 			as a List and assign this List to the symbol specified in ErrorManager::exceptionDetailsSymbol.
+		 * @brief	Throw exception with given name and additional information that might be helpful in debugging.
+		 * 			Optionally, pass arbitrary details of the exception occurrence and they will be stored on a loopback link in the exception object.
+		 * 			Those details may later be sent via MathLink to top-level and assigned as a List to to the symbol specified
+		 * 			in ErrorManager::exceptionDetailsSymbol. To trigger exception details transfer one should call LibraryLinkError::sendParameters
+		 * 			on the exception object. However, if ErrorManager::sendParametersImmediately is set to true, this call will be done automatically
+		 * 			in throwException.
+		 * 			The debugInfo is a string stored inside the LibraryLinkError object. It is never transferred to top-level but might be for example logged
+		 * 			to a file in a "catch" block in C++ code.
 		 * @tparam 	T - type template parameter pack
 		 * @param	libData - a copy of WolframLibraryData which should be used to extract the MLink for MathLink connection
 		 * @param 	errorName - name of error to be thrown, must be registered beforehand

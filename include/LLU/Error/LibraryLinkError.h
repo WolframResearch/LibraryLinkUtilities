@@ -98,6 +98,7 @@ namespace LibraryLinkUtils {
 		 * 			They will be assigned as a List to symbol passed in \p WLSymbol parameter.
 		 * @param 	libData - WolframLibraryData, if nullptr, the parameters will not be send
 		 * @param	WLSymbol - symbol to assign parameters to in top-level
+		 * @return	LLErrorCode because this function is noexcept
 		 */
 		int sendParameters(WolframLibraryData libData, const std::string& WLSymbol = exceptionDetailsSymbol) const noexcept;
 
