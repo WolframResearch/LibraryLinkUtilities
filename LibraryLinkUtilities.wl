@@ -8,7 +8,7 @@ $InitLibraryLinkUtils = False;
 InitLibraryLinkUtils[libPath_?StringQ] :=
 If[TrueQ[$InitLibraryLinkUtils],
 	$InitLibraryLinkUtils
-	,
+	, (* else *)
 	$InitLibraryLinkUtils =
 		Catch[
 			SetPacletLibrary[libPath];
@@ -103,13 +103,13 @@ SafeLibraryFunction[fname_?StringQ, fParams_, retType_, opts : OptionsPattern[Sa
 Module[{errorHandler, pmSymbol, newParams, f},
     errorHandler = If[TrueQ[OptionValue["Throws"]],
 	    CatchAndThrowLibraryFunctionError
-	,
+		,
 	    CatchLibraryFunctionError
     ];
     pmSymbol = OptionValue[Automatic, Automatic, "ProgressMonitor", Hold];
     If[fParams === LinkObject || pmSymbol === Hold[None],
 	    errorHandler @* SafeLibraryFunctionLoad[fname, fParams, retType]
-	    ,
+	    , (* else *)
 	    If[Not @ Developer`SymbolQ @ ReleaseHold @ pmSymbol,
 		    Throw @ CreatePacletFailure["ProgressMonInvalidValue"];
 	    ];
@@ -206,23 +206,23 @@ Block[{msgParam, param, errorCode, msgTemplate, errorType},
 ]
 
 GetCCodeFailureParams[msgTemplate_String?StringQ] :=
-  Block[{slotNames, slotValues, data},
-    slotNames = Cases[First @ StringTemplate[msgTemplate], TemplateSlot[s_] -> s];
-		slotNames = DeleteDuplicates[slotNames];
-		slotValues = If[ListQ[LLU`$LastFailureParameters], LLU`$LastFailureParameters, {}];
-		If[MatchQ[slotNames, {_Integer..}],
-			(* for numbered slots return just a list of slot template values *)
-			slotValues
-			, (* otherwise, return an Association with slot names as keys *)
-			(* If too many slot values came from C++ code - drop some, otherwise - pad with empty strings *)
-			slotValues = PadRight[slotValues, Length[slotNames], ""];
-			If[VectorQ[slotNames, StringQ],
-				AssociationThread[slotNames, slotValues]
-				, (* mixed slots are not officially supported but let's do the best we can *)
-				MapThread[If[StringQ[#1], <|#1 -> #2|>, #2]&, {slotNames, slotValues}]
-			]
+Block[{slotNames, slotValues, data},
+	slotNames = Cases[First @ StringTemplate[msgTemplate], TemplateSlot[s_] -> s];
+	slotNames = DeleteDuplicates[slotNames];
+	slotValues = If[ListQ[LLU`$LastFailureParameters], LLU`$LastFailureParameters, {}];
+	If[MatchQ[slotNames, {_Integer..}],
+		(* for numbered slots return just a list of slot template values *)
+		slotValues
+		, (* otherwise, return an Association with slot names as keys *)
+		(* If too many slot values came from C++ code - drop some, otherwise - pad with empty strings *)
+		slotValues = PadRight[slotValues, Length[slotNames], ""];
+		If[VectorQ[slotNames, StringQ],
+			AssociationThread[slotNames, slotValues]
+			, (* mixed slots are not officially supported but let's do the best we can *)
+			MapThread[If[StringQ[#1], <|#1 -> #2|>, #2]&, {slotNames, slotValues}]
 		]
-  ];
+	]
+];
 
 (* ::SubSection:: *)
 (* CatchLibraryLinkError *)
@@ -245,7 +245,7 @@ With[{result = Quiet[f, {
 	
 	If[Head[result] === LibraryFunctionError,
 		CreatePacletFailure[ErrorCodeToName[result[[2]]]]
-	, (* else *)
+		, (* else *)
 		result
 	]
 ]
@@ -263,7 +263,7 @@ With[{result = Quiet[f, {
 	
 	If[Head[result] === LibraryFunctionError,
 		Throw @ CreatePacletFailure[ErrorCodeToName[result[[2]]]]
-	, (* else *)
+		, (* else *)
 		result
 	]
 ]
