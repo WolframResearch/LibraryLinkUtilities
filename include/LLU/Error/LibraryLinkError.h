@@ -19,9 +19,6 @@
  */
 namespace LibraryLinkUtils {
 
-	// Forward declare ErrorManager class. See ErrorManager.h for the actual definition.
-	class ErrorManager;
-
 	/**
 	 * @class	LibraryLinkError
 	 * @brief	Class representing an exception in paclet code

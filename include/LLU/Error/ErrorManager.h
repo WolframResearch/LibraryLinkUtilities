@@ -14,7 +14,6 @@
 #include <unordered_map>
 #include <utility>
 
-#include "mathlink.h"
 #include "WolframLibrary.h"
 
 #include <LLU/Containers/LibDataHolder.h>
