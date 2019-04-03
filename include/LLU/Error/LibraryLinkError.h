@@ -153,7 +153,7 @@ namespace LibraryLinkUtils {
 		}
 		MLStream<ML::Encoding::UTF8> loopback { messageParams };
 		auto messageParamsCount = sizeof...(T);
-		loopback << ML::List(messageParamsCount);
+		loopback << ML::List(static_cast<int>(messageParamsCount));
 		static_cast<void>(std::initializer_list<int> { (loopback << params, 0)... });
 	}
 } /* namespace LibraryLinkUtils */
