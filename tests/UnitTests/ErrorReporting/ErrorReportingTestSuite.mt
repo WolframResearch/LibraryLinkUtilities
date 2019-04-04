@@ -1,5 +1,5 @@
 (* Wolfram Language Test file *)
-TestRequirement[$VersionNumber > 10.3]
+TestRequirement[$VersionNumber > 10.3];
 (***************************************************************************************************************************************)
 				(*
 					Set of test cases to test LLU functionality related to error reporting
@@ -8,16 +8,16 @@ TestRequirement[$VersionNumber > 10.3]
 TestExecute[
 	Needs["CCompilerDriver`"];
 	currentDirectory = DirectoryName[$CurrentFile];
-	
+
 	(* Get configuration (path to LLU sources, compilation options, etc.) *)
 	Get[FileNameJoin[{ParentDirectory[currentDirectory], "TestConfig.wl"}]];
 
 	(* Compile the test library *)
 	lib = CCompilerDriver`CreateLibrary[{FileNameJoin[{currentDirectory, "ErrorReportingTest.cpp"}]}, "ErrorReporting", options];
-	
-	
+
+
 	Get[FileNameJoin[{$LLUSharedDir, "LibraryLinkUtilities.wl"}]];
-	
+
 	RegisterPacletErrors[lib, <|
 		"StaticTopLevelError" -> "This top-level error has a static error message.",
 		"TopLevelNamedSlotsError" -> "Hi `name`! Error occurred `when`.",
@@ -40,20 +40,20 @@ Test[
 	|>]
 	,
 	TestID->"ErrorReportingTestSuite-20171201-L1W7O4"
-]
+];
 
 TestMatch[
 	CreatePacletFailure["StaticTopLevelError"]
 	,
 	Failure["StaticTopLevelError", <|
 		"MessageTemplate" -> "This top-level error has a static error message.",
-		"MessageParameters" -> <||>, 
-		"ErrorCode" -> n_, 
+		"MessageParameters" -> <||>,
+		"ErrorCode" -> n_,
 		"Parameters" -> {}
 	|>]/; n > 7
 	,
 	TestID->"ErrorReportingTestSuite-20190320-V9F7V7"
-]
+];
 
 TestMatch[
 	CreatePacletFailure["StaticTopLevelError", "MessageParameters" -> <|"X" -> 3|>, "Parameters" -> {"p1", "p2"}]
@@ -66,7 +66,7 @@ TestMatch[
 	|>]
 	,
 	TestID->"ErrorReportingTestSuite-20190320-C8I1M4"
-]
+];
 
 TestMatch[
 	CreatePacletFailure["StaticTopLevelError", "MessageParameters" -> "Must be Association or List", "Parameters" -> {1, 2}]
@@ -79,7 +79,7 @@ TestMatch[
 	|>]
 	,
 	TestID->"ErrorReportingTestSuite-20190320-N4O5P9"
-]
+];
 
 TestMatch[
 	CreatePacletFailure["TopLevelNamedSlotsError", "MessageParameters" -> <|"name" -> "John", "when" -> ToString[Now], "unused" -> "param"|>]
@@ -92,7 +92,7 @@ TestMatch[
 	|>]
 	,
 	TestID->"ErrorReportingTestSuite-20190320-D1Q8T7"
-]
+];
 
 TestMatch[
 	CreatePacletFailure["TopLevelNumberedSlotsError", "MessageParameters" -> {"x", "y", "z"}]
@@ -105,7 +105,7 @@ TestMatch[
 	|>]
 	,
 	TestID->"ErrorReportingTestSuite-20190320-Z5Q7P0"
-]
+];
 
 (*********************************************************** C++ code failures **************************************************************)
 
@@ -121,7 +121,7 @@ TestMatch[
 	|>]
 	,
 	TestID->"ErrorReportingTestSuite-20190320-Z5Q2A7"
-]
+];
 
 TestMatch[
 	ReadData["somefile.txt"]
@@ -134,7 +134,7 @@ TestMatch[
 	|>]
 	,
 	TestID->"ErrorReportingTestSuite-20190320-W3B2B3"
-]
+];
 
 TestMatch[
 	ReadData2 = SafeLibraryFunction["ReadDataLocalWLD", {String}, "Void"];
@@ -148,7 +148,7 @@ TestMatch[
 	|>]
 	,
 	TestID->"ErrorReportingTestSuite-20190320-V5I1S9"
-]
+];
 
 TestMatch[
 	ReadData2["somefile.txt"]
@@ -161,7 +161,7 @@ TestMatch[
 	|>]
 	,
 	TestID->"ErrorReportingTestSuite-20190320-A4B7N1"
-]
+];
 
 TestMatch[
 	RepeatedTemplate = SafeLibraryFunction["RepeatedTemplate", {}, "Void"];
@@ -175,7 +175,7 @@ TestMatch[
 	|>]
 	,
 	TestID->"ErrorReportingTestSuite-20190320-G2N3F5"
-]
+];
 
 TestMatch[
 	NumberedSlots = SafeLibraryFunction["NumberedSlots", {}, "Void"];
@@ -189,7 +189,7 @@ TestMatch[
 	|>]
 	,
 	TestID->"ErrorReportingTestSuite-20190320-N1J5Q8"
-]
+];
 
 TestMatch[
 	RepeatedNumberTemplate = SafeLibraryFunction["RepeatedNumberTemplate", {}, "Void"];
@@ -203,7 +203,7 @@ TestMatch[
 	|>]
 	,
 	TestID->"ErrorReportingTestSuite-20190320-R9L9R5"
-]
+];
 
 TestMatch[
 	TooManyValues = SafeLibraryFunction["TooManyValues", {}, "Void"];
@@ -217,7 +217,7 @@ TestMatch[
 	|>]
 	,
 	TestID->"ErrorReportingTestSuite-20190320-A9U4T2"
-]
+];
 
 TestMatch[
 	TooFewValues = SafeLibraryFunction["TooFewValues", {}, "Void"];
@@ -231,7 +231,7 @@ TestMatch[
 	|>]
 	,
 	TestID->"ErrorReportingTestSuite-20190320-R0E3G0"
-]
+];
 
 TestMatch[
 	MixedSlots = SafeLibraryFunction["MixedSlots", {}, "Void"];
@@ -245,7 +245,7 @@ TestMatch[
 	|>]
 	,
 	TestID->"ErrorReportingTestSuite-20190320-C0V5L0"
-]
+];
 
 
 (* Unit tests of ErrorManager::throwCustomException *)
@@ -262,7 +262,7 @@ TestMatch[
 	|>]
 	,
 	TestID->"ErrorReportingTestSuite-20190404-F2M3A2"
-]
+];
 
 TestMatch[
 	ReadDataWithLoggingError["ThisFileHasExtremelyLongName.txt"]
@@ -275,7 +275,7 @@ TestMatch[
 	|>]
 	,
 	TestID->"ErrorReportingTestSuite-20190404-B7J4Y9"
-]
+];
 
 TestMatch[
 	ReadDataWithLoggingError["Secret:Data"]
@@ -288,7 +288,7 @@ TestMatch[
 	|>]
 	,
 	TestID->"ErrorReportingTestSuite-20190404-K3J3E1"
-]
+];
 
 Test[
 	exCount = StringCount[Import["LLUErrorLog.txt"], "Exception"];
@@ -298,7 +298,7 @@ Test[
 	3
 	,
 	TestID->"ErrorReportingTestSuite-20190404-U4H9N8"
-]
+];
 
 
 (* Unit tests of ErrorManager::sendParamatersImmediately *)
@@ -310,12 +310,12 @@ Test[
   True
   ,
   TestID->"ErrorReportingTestSuite-20190404-F9O0O1"
-]
+];
 
 Tes[
   SetSPI = SafeLibraryFunction["SetSendParametersImmediately", {"Boolean"}, "Void"];
   SetSPI[False];
-  
+
   LLU`$LastFailureParameters = {"This", "will", "not", "be", "overwritten"};
   ReadData["somefile.txt"];
   LLU`$LastFailureParameters
@@ -323,7 +323,7 @@ Tes[
   {"This", "will", "not", "be", "overwritten"}
   ,
   TestID->"ErrorReportingTestSuite-20190404-O3A4K4"
-]
+];
 
 TestMatch[
   ReadDataDelayedParametersTransfer = SafeLibraryFunction["ReadDataDelayedParametersTransfer", {String}, "Void"];
@@ -337,4 +337,4 @@ TestMatch[
   |>]
   ,
   TestID->"ErrorReportingTestSuite-20190404-N7X5J6"
-]
+];
