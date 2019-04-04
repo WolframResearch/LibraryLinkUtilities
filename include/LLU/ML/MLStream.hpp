@@ -17,7 +17,7 @@
 
 #include "mathlink.h"
 
-#include "LLU/Error/Errors.h"
+#include "LLU/ErrorLog/Errors.h"
 #include "LLU/Utilities.hpp"
 #include "Utilities.h"
 #include "UtilityTypeTraits.hpp"

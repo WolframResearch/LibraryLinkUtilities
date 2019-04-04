@@ -4,7 +4,7 @@
  * @date	March 31, 2019
  */
 
-#include "LLU/Error/Errors.h"
+#include "LLU/ErrorLog/Errors.h"
 
 namespace LibraryLinkUtils {
 

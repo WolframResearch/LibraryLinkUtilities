@@ -17,7 +17,7 @@
 #include "WolframLibrary.h"
 
 #include <LLU/Containers/LibDataHolder.h>
-#include <LLU/Error/LibraryLinkError.h>
+#include <LLU/ErrorLog/LibraryLinkError.h>
 
 namespace LibraryLinkUtils {
 

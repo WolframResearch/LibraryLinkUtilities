@@ -4,7 +4,7 @@
  * @date	March 21, 2019
  * @brief	
  */
-#include "LLU/Error/ErrorManager.h"
+#include "LLU/ErrorLog/ErrorManager.h"
 
 #include "LLU/Containers/LibDataHolder.h"
 #include "LLU/Utilities.hpp"

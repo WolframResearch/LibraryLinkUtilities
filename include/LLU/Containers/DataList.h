@@ -18,7 +18,7 @@
 #include "WolframLibrary.h"
 #include "WolframIOLibraryFunctions.h"
 
-#include "LLU/Error/ErrorManager.h"
+#include "LLU/ErrorLog/ErrorManager.h"
 #include "LLU/MArgument.h"
 #include "LLU/Containers/LibDataHolder.h"
 #include "LLU/Containers/Passing/Automatic.hpp"

@@ -17,7 +17,7 @@
 #include <vector>
 
 #include "LibDataHolder.h"
-#include "LLU/Error/ErrorManager.h"
+#include "LLU/ErrorLog/ErrorManager.h"
 #include "LLU/Utilities.hpp"
 
 namespace LibraryLinkUtils {

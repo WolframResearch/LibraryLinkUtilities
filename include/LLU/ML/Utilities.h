@@ -12,7 +12,7 @@
 
 #include "mathlink.h"
 
-#include "LLU/Error/Errors.h"
+#include "LLU/ErrorLog/Errors.h"
 #include "EncodingTraits.hpp"
 
 namespace LibraryLinkUtils {

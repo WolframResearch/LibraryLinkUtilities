@@ -11,7 +11,7 @@
 
 #include "mathlink.h"
 
-#include <LLU/Error/ErrorManager.h>
+#include <LLU/ErrorLog/ErrorManager.h>
 
 namespace LibraryLinkUtils {
 

@@ -5,9 +5,9 @@
  * @brief	Contains definitions of ErrorManager members and implementation of interface function sendRegisteredErrors used by PacletFailure framework in LLU
  *
  */
-#include "LLU/Error/LibraryLinkError.h"
+#include "LLU/ErrorLog/LibraryLinkError.h"
 
-#include "LLU/Error/Errors.h"
+#include "LLU/ErrorLog/Errors.h"
 #include "LLU/ML/MLStream.hpp"
 
 
