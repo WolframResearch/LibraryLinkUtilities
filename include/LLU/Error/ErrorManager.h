@@ -142,7 +142,7 @@ namespace LibraryLinkUtils {
 		 * @brief 	Get the current value of sendParametersImmediately flag.
 		 * @return 	current value of sendParametersImmediately flag.
 		 */
-		static bool getSendParametrsImmediately() {
+		static bool getSendParametersImmediately() {
 		  return sendParametersImmediately;
 		}
 
