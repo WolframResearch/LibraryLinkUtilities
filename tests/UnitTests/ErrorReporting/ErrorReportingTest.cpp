@@ -143,6 +143,7 @@ EXTERN_C DLLEXPORT int MixedSlots(WolframLibraryData, mint, MArgument*, MArgumen
 	return err;
 }
 
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// Tests and demonstration of ErrorManager::throwCustomError
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -184,6 +185,60 @@ LIBRARY_LINK_FUNCTION(ReadDataWithLoggingError) {
 	// Notice that even though we use custom error class that does some extra work, the error handling code stays the same
 	catch (const LibraryLinkError& e) {
 		err = e.which();
+	}
+	catch (...) {
+		err = LLErrorCode::FunctionError;
+	}
+	return err;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/// Tests and demonstration of ErrorManager::sendParametersImmediately
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+LIBRARY_LINK_FUNCTION(GetSendParametersImmediately) {
+	LibraryLinkUtils::Unused(libData);
+	auto err = LLErrorCode::NoError;
+	try {
+		MArgumentManager mngr(Argc, Args, Res);
+		mngr.setBoolean(ErrorManager::getSendParametersImmediately());
+	}
+	catch (const LibraryLinkError& e) {
+		err = e.which();
+	}
+	catch (...) {
+		err = LLErrorCode::FunctionError;
+	}
+	return err;
+}
+
+LIBRARY_LINK_FUNCTION(SetSendParametersImmediately) {
+	LibraryLinkUtils::Unused(libData);
+	auto err = LLErrorCode::NoError;
+	try {
+		MArgumentManager mngr(Argc, Args, Res);
+		ErrorManager::setSendParametersImmediately(mngr.getBoolean(0));
+	}
+	catch (const LibraryLinkError& e) {
+		err = e.which();
+	}
+	catch (...) {
+		err = LLErrorCode::FunctionError;
+	}
+	return err;
+}
+
+LIBRARY_LINK_FUNCTION(ReadDataDelayedParametersTransfer) {
+	auto err = LLErrorCode::NoError;
+	try {
+		MArgumentManager mngr(Argc, Args, Res);
+		auto fileName = mngr.getString(0);
+		auto fileNameLen = static_cast<mlint64>(fileName.length());
+		ErrorManager::throwException("DataFileError", fileName, fileNameLen, "data type is not supported");
+	}
+	catch (const LibraryLinkError& e) {
+		err = e.which();
+		e.sendParameters(libData);
 	}
 	catch (...) {
 		err = LLErrorCode::FunctionError;

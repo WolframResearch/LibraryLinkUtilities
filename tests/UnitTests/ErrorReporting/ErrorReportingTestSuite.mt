@@ -247,6 +247,9 @@ TestMatch[
 	TestID->"ErrorReportingTestSuite-20190320-C0V5L0"
 ]
 
+
+(* Unit tests of ErrorManager::throwCustomException *)
+
 TestMatch[
 	ReadDataWithLoggingError = SafeLibraryFunction["ReadDataWithLoggingError", {String}, "Void"];
 	ReadDataWithLoggingError["test.txt"]
@@ -295,4 +298,43 @@ Test[
 	3
 	,
 	TestID->"ErrorReportingTestSuite-20190404-U4H9N8"
+]
+
+
+(* Unit tests of ErrorManager::sendParamatersImmediately *)
+
+Test[
+  GetSPI = SafeLibraryFunction["GetSendParametersImmediately", {}, "Boolean"];
+  GetSPI[]
+  ,
+  True
+  ,
+  TestID->"ErrorReportingTestSuite-20190404-F9O0O1"
+]
+
+Tes[
+  SetSPI = SafeLibraryFunction["SetSendParametersImmediately", {"Boolean"}, "Void"];
+  SetSPI[False];
+  
+  LLU`$LastFailureParameters = {"This", "will", "not", "be", "overwritten"};
+  ReadData["somefile.txt"];
+  LLU`$LastFailureParameters
+  ,
+  {"This", "will", "not", "be", "overwritten"}
+  ,
+  TestID->"ErrorReportingTestSuite-20190404-O3A4K4"
+]
+
+TestMatch[
+  ReadDataDelayedParametersTransfer = SafeLibraryFunction["ReadDataDelayedParametersTransfer", {String}, "Void"];
+  ReadDataDelayedParametersTransfer["somefile.txt"]
+  ,
+  Failure["DataFileError", <|
+    "MessageTemplate" -> "Data in file `fname` in line `lineNumber` is invalid because `reason`.",
+    "MessageParameters" ->  <|"fname" -> "somefile.txt", "lineNumber" -> 12, "reason" -> "data type is not supported"|>,
+    "ErrorCode" -> n_?CppErrorCodeQ,
+    "Parameters" -> {}
+  |>]
+  ,
+  TestID->"ErrorReportingTestSuite-20190404-N7X5J6"
 ]
