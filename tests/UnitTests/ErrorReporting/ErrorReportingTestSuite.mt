@@ -24,6 +24,8 @@ TestExecute[
 		"TopLevelNumberedSlotsError" -> "Slot number one: `1`, number two: `2`."
 	|>];
 
+	(* Make sure the log file used in "ReadDataWithLoggingError" does not exist *)
+	Quiet @ DeleteFile["LLUErrorLog.txt"];
 ];
 
 (*********************************************************** Top-level failures **************************************************************)
@@ -243,4 +245,54 @@ TestMatch[
 	|>]
 	,
 	TestID->"ErrorReportingTestSuite-20190320-C0V5L0"
+]
+
+TestMatch[
+	ReadDataWithLoggingError = SafeLibraryFunction["ReadDataWithLoggingError", {String}, "Void"];
+	ReadDataWithLoggingError["test.txt"]
+	,
+	Failure["DataFileError", <|
+		"MessageTemplate" -> "Data in file `fname` in line `lineNumber` is invalid because `reason`.",
+		"MessageParameters" ->  <|"fname" -> "test.txt", "lineNumber" -> 8, "reason" -> "data type is not supported"|>,
+		"ErrorCode" -> n_?CppErrorCodeQ,
+		"Parameters" -> {}
+	|>]
+	,
+	TestID->"ErrorReportingTestSuite-20190404-F2M3A2"
+]
+
+TestMatch[
+	ReadDataWithLoggingError["ThisFileHasExtremelyLongName.txt"]
+	,
+	Failure["DataFileError", <|
+		"MessageTemplate" -> "Data in file `fname` in line `lineNumber` is invalid because `reason`.",
+		"MessageParameters" ->  <|"fname" -> "ThisFileHasExtremelyLongName.txt", "lineNumber" -> 32, "reason" -> "file name is too long"|>,
+		"ErrorCode" -> n_?CppErrorCodeQ,
+		"Parameters" -> {}
+	|>]
+	,
+	TestID->"ErrorReportingTestSuite-20190404-B7J4Y9"
+]
+
+TestMatch[
+	ReadDataWithLoggingError["Secret:Data"]
+	,
+	Failure["DataFileError", <|
+		"MessageTemplate" -> "Data in file `fname` in line `lineNumber` is invalid because `reason`.",
+		"MessageParameters" ->  <|"fname" -> "Secret:Data", "lineNumber" -> 0, "reason" -> "file name contains a possibly problematic character \":\""|>,
+		"ErrorCode" -> n_?CppErrorCodeQ,
+		"Parameters" -> {}
+	|>]
+	,
+	TestID->"ErrorReportingTestSuite-20190404-K3J3E1"
+]
+
+Test[
+	exCount = StringCount[Import["LLUErrorLog.txt"], "Exception"];
+	Quiet @ DeleteFile["LLUErrorLog.txt"];
+	exCount
+	,
+	3
+	,
+	TestID->"ErrorReportingTestSuite-20190404-U4H9N8"
 ]
