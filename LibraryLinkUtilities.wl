@@ -267,3 +267,58 @@ With[{result = Quiet[f, {
 		result
 	]
 ]
+
+
+(* ::SubSection:: *)
+(* Logging *)
+(* ------------------------------------------------------------------------- *)
+(* ------------------------------------------------------------------------- *)
+
+LLU`Logger`LevelColor = <|"Error" -> Red;, "Warning" -> Orange, "Debug" -> Darker[Green]|>;
+
+LLU`Logger`StyledLevel[logLevel_] :=
+		Style["[" <> ToString @ logLevel <> "]", LLU`Logger`LevelColor[logLevel]];
+
+LLU`Logger`StyledMessageLocation[file_, line_, fn_] :=
+		Tooltip[Style["Line " <> ToString[line] <> " in " <> FileNameTake[file] <> ", function " <> fn, Darker[Gray]], file];
+
+LLU`Logger`StyledMessageText[args_List, size_:Automatic] :=
+		Style[StringJoin @@ ToString /@ args, size];
+
+LLU`Logger`LogToList[args___] := {args};
+
+LLU`Logger`LogToAssociation[logLevel_, line_, file_, fn_, args___] :=
+		Association["Level" -> logLevel, "Line" -> line, "File" -> file, "Function" -> fn, "Message" -> LLU`Logger`StyledMessageText[{args}]];
+
+LLU`Logger`LogToString[logLevel_, line_, file_, fn_, args___] :=
+	"[" <> ToString @ logLevel <> "] In file " <> file <> ", line " <> ToString[line] <> ", function " <> fn <> ":\n" <> (StringJoin @@ ToString /@ {args});
+
+LLU`Logger`LogToShortString[logLevel_, line_, file_, fn_, args___] :=
+	"[" <> ToString @ logLevel <> "] " <> FileNameTake[file] <> ":" <> ToString[line] <> " (" <> fn <> "): " <> (StringJoin @@ ToString /@ {args});
+
+LLU`Logger`LogToGrid[logLevel_, line_, file_, fn_, args___] :=
+		TextGrid[{
+			{LLU`Logger`StyledLevel[logLevel], LLU`Logger`StyledMessageLocation[file, line, fn]},
+			{SpanFromAbove, LLU`Logger`StyledMessageText[{args}, 14]}
+		}];
+
+LLU`Logger`LogToRow[logLevel_, line_, file_, fn_, args___] :=
+    Row[{Style["(" <> FileNameTake[file] <> ":" <> ToString[line] <> ")", LLU`Logger`LevelColor[logLevel]], LLU`Logger`StyledMessageText[{args}]}];
+
+LLU`Logger`FormattedLog = LLU`Logger`LogToGrid;
+
+LLU`Logger`PrintToNotebook[args___] :=
+		Print @ LLU`Logger`FormattedLog[args];
+
+LLU`Logger`PrintToMessagesWindow[args___] :=
+    NotebookWrite[MessagesNotebook[], Cell[RawBoxes @ ToBoxes[LLU`Logger`FormattedLog[args]], "Output"]];
+
+Attributes[LLU`Logger`PrintToSymbol] = {HoldFirst};
+LLU`Logger`PrintToSymbol[x_] := (
+	If[Not @ ListQ @ x,
+		x = {}
+	];
+	AppendTo[x, LLU`Logger`FormattedLog[##]];
+)&;
+
+LLU`Logger`Print = LLU`Logger`PrintToNotebook;
