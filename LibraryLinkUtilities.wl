@@ -274,45 +274,65 @@ With[{result = Quiet[f, {
 (* ------------------------------------------------------------------------- *)
 (* ------------------------------------------------------------------------- *)
 
+(************** Functions defining how to style different parts of a log message *************)
+
+(* Colors associated with different log severities *)
 LLU`Logger`LevelColor = <|"Error" -> Red;, "Warning" -> Orange, "Debug" -> Darker[Green]|>;
 
+(* Styled part of a message containing log level description *)
 LLU`Logger`StyledLevel[logLevel_] :=
 		Style["[" <> ToString @ logLevel <> "]", LLU`Logger`LevelColor[logLevel]];
 
+(* Styled part of a message containing info on where the log was issued *)
 LLU`Logger`StyledMessageLocation[file_, line_, fn_] :=
 		Tooltip[Style["Line " <> ToString[line] <> " in " <> FileNameTake[file] <> ", function " <> fn, Darker[Gray]], file];
 
+(* Styled part of a message containing the actual log text *)
 LLU`Logger`StyledMessageText[args_List, size_:Automatic] :=
 		Style[StringJoin @@ ToString /@ args, size];
 
+(************* Functions defining how to format a log message *************)
+
+(* Put all message parts in a list unstyled *)
 LLU`Logger`LogToList[args___] := {args};
 
+(* Put all message parts in Association *)
 LLU`Logger`LogToAssociation[logLevel_, line_, file_, fn_, args___] :=
 		Association["Level" -> logLevel, "Line" -> line, "File" -> file, "Function" -> fn, "Message" -> LLU`Logger`StyledMessageText[{args}]];
 
+(* Combine all log parts to a String. No styling, contains a newline character. *)
 LLU`Logger`LogToString[logLevel_, line_, file_, fn_, args___] :=
 	"[" <> ToString @ logLevel <> "] In file " <> file <> ", line " <> ToString[line] <> ", function " <> fn <> ":\n" <> (StringJoin @@ ToString /@ {args});
 
+(* Combine all log parts to a condensed String. No styling, single line (unless message text contains newlines). *)
 LLU`Logger`LogToShortString[logLevel_, line_, file_, fn_, args___] :=
 	"[" <> ToString @ logLevel <> "] " <> FileNameTake[file] <> ":" <> ToString[line] <> " (" <> fn <> "): " <> (StringJoin @@ ToString /@ {args});
 
+(* Place fully styled log message in a TextGrid. Looks nice, good default choice for printing to the notebook. *)
 LLU`Logger`LogToGrid[logLevel_, line_, file_, fn_, args___] :=
 		TextGrid[{
 			{LLU`Logger`StyledLevel[logLevel], LLU`Logger`StyledMessageLocation[file, line, fn]},
 			{SpanFromAbove, LLU`Logger`StyledMessageText[{args}, 14]}
 		}];
 
+(* Fully styled, condensed log message in a Row. Good choice if you expect many log messages and want to see them all in the notebook. *)
 LLU`Logger`LogToRow[logLevel_, line_, file_, fn_, args___] :=
     Row[{Style["(" <> FileNameTake[file] <> ":" <> ToString[line] <> ")", LLU`Logger`LevelColor[logLevel]], LLU`Logger`StyledMessageText[{args}]}];
 
+(* This is a selector called by other functions below. Feel free to modify/Block this symbol, see examples. *)
 LLU`Logger`FormattedLog = LLU`Logger`LogToGrid;
 
+(************* Functions defining where to place a log message *************)
+
+(* Print to current notebook *)
 LLU`Logger`PrintToNotebook[args___] :=
 		Print @ LLU`Logger`FormattedLog[args];
 
+(* Print to Messages window. Remember that this window may be hidden by default. *)
 LLU`Logger`PrintToMessagesWindow[args___] :=
     NotebookWrite[MessagesNotebook[], Cell[RawBoxes @ ToBoxes[LLU`Logger`FormattedLog[args]], "Output"]];
 
+(* Append to a list and assign to given symbol. Good choice if you don't want to see logs immediately, but want to store them for later analysis. *)
 Attributes[LLU`Logger`PrintToSymbol] = {HoldFirst};
 LLU`Logger`PrintToSymbol[x_] := (
 	If[Not @ ListQ @ x,
@@ -321,4 +341,47 @@ LLU`Logger`PrintToSymbol[x_] := (
 	AppendTo[x, LLU`Logger`FormattedLog[##]];
 )&;
 
+(* This is a function MathLink will call from the C++ code. It all starts here. Feel free to modify/Block this symbol, see examples. *)
 LLU`Logger`Print = LLU`Logger`PrintToNotebook;
+
+(************* Examples of overriding default logger behavior *************)
+
+(*** Make logger format logs as Association and append to a list under a symbol TestLogSymbol:
+
+LLU`Logger`Print =
+	Block[{LLU`Logger`FormattedLog = LLU`Logger`LogToAssociation},
+		LLU`Logger`PrintToSymbol[TestLogSymbol][##]
+	]&
+
+after you evaluate some library function the TestLogSymbol may be a list similar this:
+
+{
+	<|
+		"Level" -> "Debug",
+		"Line" -> 17,
+		"File" -> "main.cpp",
+		"Function" -> "ReadData",
+		"Message" -> Style["Library function entered with 4 arguments.", Automatic]
+	|>,
+	<|
+		"Level" -> "Warning",
+		"Line" -> 20,
+		"File" -> "Utilities.cpp",
+		"Function" -> "validateDimensions",
+		"Message" -> Style["Dimensions are too large.", Automatic]
+	|>,
+	...
+}
+*)
+(*** Log styled condensed logs to Messages window:
+
+LLU`Logger`Print = Block[{LLU`Logger`FormattedLog = LLU`Logger`LogToRow},
+	LLU`Logger`PrintToNotebook[##]
+]&
+*)
+(*** Sow logs formatted as short Strings instead of printing:
+
+LLU`Logger`Print = Sow @* LLU`Logger`LogToShortString;
+
+Remember to call library functions inside Reap!
+*)
