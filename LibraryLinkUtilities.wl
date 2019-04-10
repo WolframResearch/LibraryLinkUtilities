@@ -274,75 +274,113 @@ With[{result = Quiet[f, {
 (* ------------------------------------------------------------------------- *)
 (* ------------------------------------------------------------------------- *)
 
+Begin["LLU`Logger`"];
+
 (************** Functions defining how to style different parts of a log message *************)
 
 (* Colors associated with different log severities *)
-LLU`Logger`LevelColor = <|"Error" -> Red;, "Warning" -> Orange, "Debug" -> Darker[Green]|>;
+`LevelColor = <|"Error" -> Red, "Warning" -> Orange, "Debug" -> Darker[Green]|>;
 
 (* Styled part of a message containing log level description *)
-LLU`Logger`StyledLevel[logLevel_] :=
-		Style["[" <> ToString @ logLevel <> "]", LLU`Logger`LevelColor[logLevel]];
+`StyledLevel[logLevel_] :=
+		Style["[" <> ToString @ logLevel <> "]", `LevelColor[logLevel]];
 
 (* Styled part of a message containing info on where the log was issued *)
-LLU`Logger`StyledMessageLocation[file_, line_, fn_] :=
+`StyledMessageLocation[file_, line_, fn_] :=
 		Tooltip[Style["Line " <> ToString[line] <> " in " <> FileNameTake[file] <> ", function " <> fn, Darker[Gray]], file];
 
 (* Styled part of a message containing the actual log text *)
-LLU`Logger`StyledMessageText[args_List, size_:Automatic] :=
+`StyledMessageText[args_List, size_:Automatic] :=
 		Style[StringJoin @@ ToString /@ args, size];
 
 (************* Functions defining how to format a log message *************)
 
 (* Put all message parts in a list unstyled *)
-LLU`Logger`LogToList[args___] := {args};
+`LogToList[args___] := {args};
 
 (* Put all message parts in Association *)
-LLU`Logger`LogToAssociation[logLevel_, line_, file_, fn_, args___] :=
-		Association["Level" -> logLevel, "Line" -> line, "File" -> file, "Function" -> fn, "Message" -> LLU`Logger`StyledMessageText[{args}]];
+`LogToAssociation[logLevel_, line_, file_, fn_, args___] :=
+		Association["Level" -> logLevel, "Line" -> line, "File" -> file, "Function" -> fn, "Message" -> `StyledMessageText[{args}]];
 
 (* Combine all log parts to a String. No styling, contains a newline character. *)
-LLU`Logger`LogToString[logLevel_, line_, file_, fn_, args___] :=
+`LogToString[logLevel_, line_, file_, fn_, args___] :=
 	"[" <> ToString @ logLevel <> "] In file " <> file <> ", line " <> ToString[line] <> ", function " <> fn <> ":\n" <> (StringJoin @@ ToString /@ {args});
 
 (* Combine all log parts to a condensed String. No styling, single line (unless message text contains newlines). *)
-LLU`Logger`LogToShortString[logLevel_, line_, file_, fn_, args___] :=
+`LogToShortString[logLevel_, line_, file_, fn_, args___] :=
 	"[" <> ToString @ logLevel <> "] " <> FileNameTake[file] <> ":" <> ToString[line] <> " (" <> fn <> "): " <> (StringJoin @@ ToString /@ {args});
 
 (* Place fully styled log message in a TextGrid. Looks nice, good default choice for printing to the notebook. *)
-LLU`Logger`LogToGrid[logLevel_, line_, file_, fn_, args___] :=
+`LogToGrid[logLevel_, line_, file_, fn_, args___] :=
 		TextGrid[{
-			{LLU`Logger`StyledLevel[logLevel], LLU`Logger`StyledMessageLocation[file, line, fn]},
-			{SpanFromAbove, LLU`Logger`StyledMessageText[{args}, 14]}
+			{`StyledLevel[logLevel], `StyledMessageLocation[file, line, fn]},
+			{SpanFromAbove, `StyledMessageText[{args}, 14]}
 		}];
 
 (* Fully styled, condensed log message in a Row. Good choice if you expect many log messages and want to see them all in the notebook. *)
-LLU`Logger`LogToRow[logLevel_, line_, file_, fn_, args___] :=
-    Row[{Style["(" <> FileNameTake[file] <> ":" <> ToString[line] <> ")", LLU`Logger`LevelColor[logLevel]], LLU`Logger`StyledMessageText[{args}]}];
+`LogToRow[logLevel_, line_, file_, fn_, args___] :=
+    Row[{Style["(" <> FileNameTake[file] <> ":" <> ToString[line] <> ")", `LevelColor[logLevel]], `StyledMessageText[{args}]}];
 
-(* This is a selector called by other functions below. Feel free to modify/Block this symbol, see examples. *)
-LLU`Logger`FormattedLog = LLU`Logger`LogToGrid;
+(* This is a "selector" called by other functions below. Feel free to modify/Block this symbol, see examples. *)
+`FormattedLog := `LogToGrid;
+
+
+(************* Functions filtering log messages *************)
+
+(* Define a symbol for filtered-out messages *)
+`LogFiltered = Missing["FilteredOut"];
+
+(* Simple filter that does no filtering *)
+`FilterAcceptAll[args___] := args;
+
+(* Filter that rejects everything *)
+`FilterRejectAll[___] := `LogFiltered;
+
+(* Meta function for defining filters that filter by a single element of a log: level, line, file name or function name *)
+`FilterBySingleFeature[featureIndex_][test_] := Sequence @@ If[TrueQ @ test[Slot[featureIndex]], {##}, {`LogFiltered}]&;
+
+(* Define single element filters *)
+{`FilterByLevel, `FilterByLine, `FilterByFile, `FilterByFunction} = (`FilterBySingleFeature /@ Range[4]);
+
+(* Define custom filter - test function have access to all elements of the log *)
+`FilterCustom[test_] := Sequence @@ If[TrueQ @ test[##], {##}, {`LogFiltered}]&;
+
+(* This is a "selector" called by other functions below. Feel free to modify/Block this symbol, see examples. *)
+`Filter := `FilterAcceptAll;
 
 (************* Functions defining where to place a log message *************)
 
+(* Discard the log *)
+`Discard[___] := Null;
+
 (* Print to current notebook *)
-LLU`Logger`PrintToNotebook[args___] :=
-		Print @ LLU`Logger`FormattedLog[args];
+`PrintToNotebook[args___] :=
+		Print @ `FormattedLog[args];
+`PrintToNotebook[`LogFiltered] := `Discard[];
 
 (* Print to Messages window. Remember that this window may be hidden by default. *)
-LLU`Logger`PrintToMessagesWindow[args___] :=
-    NotebookWrite[MessagesNotebook[], Cell[RawBoxes @ ToBoxes[LLU`Logger`FormattedLog[args]], "Output"]];
+`PrintToMessagesWindow[args___] :=
+    NotebookWrite[MessagesNotebook[], Cell[RawBoxes @ ToBoxes[`FormattedLog[args]], "Output"]];
+`PrintToMessagesWindow[`LogFiltered] := `Discard[];
 
-(* Append to a list and assign to given symbol. Good choice if you don't want to see logs immediately, but want to store them for later analysis. *)
-Attributes[LLU`Logger`PrintToSymbol] = {HoldFirst};
-LLU`Logger`PrintToSymbol[x_] := (
+(* Append to a list and assign to given symbol. Good choice if you don't want to see the logs immediately, but want to store them for later analysis. *)
+Attributes[`PrintToSymbol] = {HoldFirst};
+`PrintToSymbol[x_] := (
 	If[Not @ ListQ @ x,
 		x = {}
 	];
-	AppendTo[x, LLU`Logger`FormattedLog[##]];
+	AppendTo[x, `FormattedLog[##]];
 )&;
+`PrintToSymbol[`LogFiltered] := `Discard[];
+
+(* This is a "selector" called by other functions below. Feel free to modify/Block this symbol, see examples. *)
+`Print := `PrintToNotebook;
+
 
 (* This is a function MathLink will call from the C++ code. It all starts here. Feel free to modify/Block this symbol, see examples. *)
-LLU`Logger`Print = LLU`Logger`PrintToNotebook;
+`Log := `Print @* `Filter;
+
+End[];
 
 (************* Examples of overriding default logger behavior *************)
 

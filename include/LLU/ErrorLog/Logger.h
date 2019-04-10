@@ -50,7 +50,7 @@ namespace LibraryLinkUtils {
 
 	namespace Logger {
 
-		constexpr const char* TopLevelLogCallback = "LLU`Logger`Print";
+		constexpr const char* TopLevelLogCallback = "LLU`Logger`Log";
 
 		enum class Level {
 			Debug,
