@@ -13,20 +13,26 @@
 #include "LLU/Containers/LibDataHolder.h"
 #include "LLU/ML/MLStream.hpp"
 
+// "Public" macros:
 
+/// Define LLU_LOG_DEBUG to enable all log levels
 #ifdef LLU_LOG_DEBUG
 #define LLU_LOG_LEVEL_DEBUG
 #define LLU_LOG_WARNING
 #endif
 
+/// Define LLU_LOG_WARNING to enable warning and error logs. Debug logs will be ignored.
 #ifdef LLU_LOG_WARNING
 #define LLU_LOG_LEVEL_WARNING
 #define LLU_LOG_ERROR
 #endif
 
+/// Define LLU_LOG_ERROR to enable only error logs. Debug and warning logs will be ignored.
 #ifdef LLU_LOG_ERROR
 #define LLU_LOG_LEVEL_ERROR
 #endif
+
+// "Private" macros:
 
 #ifdef LLU_LOG_LEVEL_DEBUG
 #define LLU_DEBUG(...) LibraryLinkUtils::Logger::log<LibraryLinkUtils::Logger::Level::Debug>(__LINE__, __FILE__, __func__, __VA_ARGS__)
@@ -50,8 +56,10 @@ namespace LibraryLinkUtils {
 
 	namespace Logger {
 
+		/// Name of the WL function, to which log elements will be sent as arguments via MathLink.
 		constexpr const char* TopLevelLogCallback = "LLU`Logger`Log";
 
+		/// Possible log severity levels
 		enum class Level {
 			Debug,
 			Warning,
@@ -112,13 +120,15 @@ namespace LibraryLinkUtils {
 		}
 
 		/**
-		 *
-		 * @tparam L
-		 * @tparam T
-		 * @param line
-		 * @param fileName
-		 * @param function
-		 * @param args
+		 * @brief	Send a log message of given severity.
+		 * @tparam 	L - log level, severity of the log
+		 * @tparam 	T - any number of mathlink-supported types
+		 * @param 	line - line number where the log was called
+		 * @param 	fileName - name of the file in which the log was called
+		 * @param 	function - function in which the log was called
+		 * @param 	args - additional parameters carrying the actual log message contents
+		 * @warning This function communicates with MathLink and if this communication goes wrong, MLStream may throw
+		 * 			so be careful when logging in destructors.
 		 */
 		template<Logger::Level L, typename... T>
 		void log(int line, const std::string& fileName, const std::string& function, T&&... args) {
