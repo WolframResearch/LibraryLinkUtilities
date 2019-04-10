@@ -343,9 +343,9 @@ TestMatch[
 (*********************************************************** Logging tests **************************************************************)
 TestExecute[
 	loggerTestPath = FileNameJoin[{currentDirectory, "LoggerTest.cpp"}];
-	LLU`Logger`Print = Block[{LLU`Logger`FormattedLog = LLU`Logger`LogToAssociation},
-		LLU`Logger`PrintToSymbol[TestLogSymbol][##]
-	]&
+	LLU`Logger`Print[args___] := Block[{LLU`Logger`FormattedLog = LLU`Logger`LogToAssociation},
+		LLU`Logger`PrintToSymbol[TestLogSymbol][args]
+	]
 ];
 
 Test[
@@ -389,9 +389,9 @@ Test[
 
 TestExecute[
 	TestLogSymbol = 5; (* assign a number to TestLogSymbol to see if LLU`Logger`PrintToSymbol can handle it *)
-	LLU`Logger`Print = Block[{LLU`Logger`FormattedLog = LLU`Logger`LogToList},
-		LLU`Logger`PrintToSymbol[TestLogSymbol][##]
-	]&
+	LLU`Logger`Print[args___] := Block[{LLU`Logger`FormattedLog = LLU`Logger`LogToList},
+		LLU`Logger`PrintToSymbol[TestLogSymbol][args]
+	]
 ];
 
 Test[
@@ -410,7 +410,7 @@ Test[
 ];
 
 TestExecute[
-	LLU`Logger`Print = Sow @* LLU`Logger`LogToShortString;
+	LLU`Logger`Print[args___] := Sow @ LLU`Logger`LogToShortString[args];
 ];
 
 TestMatch[
@@ -433,4 +433,51 @@ TestMatch[
 	}
 	,
 	TestID->"ErrorReportingTestSuite-20190409-P1S6Y9"
+];
+
+TestExecute[
+	(* Disable logging in top-level, messages are still transferred from the library *)
+	LLU`Logger`Filter = LLU`Logger`FilterRejectAll;
+];
+
+Test[
+	Reap @ GreaterAt["my:file.txt", {5, 6, 7, 8, 9}, 1, 3]
+	,
+	{False, {}}
+	,
+	TestID->"ErrorReportingTestSuite-20190410-R2D4P1"
+];
+
+TestExecute[
+	(* Log only warnings *)
+	LLU`Logger`Filter = LLU`Logger`FilterByLevel[StringMatchQ["warning", IgnoreCase -> True]];
+];
+
+Test[
+	Reap @ GreaterAt["my:file.txt", {5, 6, 7, 8, 9}, 1, 3]
+	,
+	{False, {{"[Warning] LoggerTest.cpp:24 (GreaterAt): File name my:file.txt contains a possibly problematic character \":\"."}}}
+	,
+	TestID->"ErrorReportingTestSuite-20190410-H8S6D5"
+];
+
+TestExecute[
+	(* Log only messages issued from even line numbers *)
+	LLU`Logger`Filter = LLU`Logger`FilterByLine[EvenQ];
+];
+
+Test[
+	Reap @ GreaterAt["my:file.txt", {5, 6, 7, 8, 9}, 1, 3]
+	,
+	{
+		False, {
+			{
+				"[Debug] LoggerTest.cpp:20 (GreaterAt): Starting try-block, current error code: 0",
+				"[Warning] LoggerTest.cpp:24 (GreaterAt): File name my:file.txt contains a possibly problematic character \":\".",
+				"[Debug] LoggerTest.cpp:26 (GreaterAt): Input tensor is of type: 2"
+			}
+		}
+	}
+	,
+	TestID->"ErrorReportingTestSuite-20190410-G6A5W4"
 ];
