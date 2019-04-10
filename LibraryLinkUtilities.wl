@@ -386,10 +386,9 @@ End[];
 
 (*** Make logger format logs as Association and append to a list under a symbol TestLogSymbol:
 
-LLU`Logger`Print =
-	Block[{LLU`Logger`FormattedLog = LLU`Logger`LogToAssociation},
-		LLU`Logger`PrintToSymbol[TestLogSymbol][##]
-	]&
+LLU`Logger`Print[args___] := Block[{LLU`Logger`FormattedLog = LLU`Logger`LogToAssociation},
+	LLU`Logger`PrintToSymbol[TestLogSymbol][args]
+]
 
 after you evaluate some library function the TestLogSymbol may be a list similar this:
 
@@ -413,13 +412,19 @@ after you evaluate some library function the TestLogSymbol may be a list similar
 *)
 (*** Log styled condensed logs to Messages window:
 
-LLU`Logger`Print = Block[{LLU`Logger`FormattedLog = LLU`Logger`LogToRow},
-	LLU`Logger`PrintToNotebook[##]
-]&
+LLU`Logger`Print[args___] := Block[{LLU`Logger`FormattedLog = LLU`Logger`LogToRow},
+	LLU`Logger`PrintToMessagesWindow[args]
+]
 *)
 (*** Sow logs formatted as short Strings instead of printing:
 
-LLU`Logger`Print = Sow @* LLU`Logger`LogToShortString;
+	LLU`Logger`Print[args___] := Sow @ LLU`Logger`LogToShortString[args];
 
 Remember to call library functions inside Reap!
+
+You could theoretically write
+
+	LLU`Logger`Print = Sow @* LLU`Logger`LogToShortString;
+
+But in this case, you are loosing the correct handling of filtered-out messages so it's only fine with the default "accept-all" filter.
 *)
