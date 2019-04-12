@@ -290,8 +290,8 @@ Begin["LLU`Logger`"];
 		Tooltip[Style["Line " <> ToString[line] <> " in " <> FileNameTake[file] <> ", function " <> fn, Darker[Gray]], file];
 
 (* Styled part of a message containing the actual log text *)
-`StyledMessageText[args_List, size_:Automatic] :=
-		Style[StringJoin @@ ToString /@ args, size];
+`StyledMessageText[args_List, size_:Inherited] :=
+		Style[StringJoin @@ ToString /@ args, FontSize -> size];
 
 (************* Functions defining how to format a log message *************)
 
