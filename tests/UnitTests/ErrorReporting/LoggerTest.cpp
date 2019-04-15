@@ -13,31 +13,6 @@
 #include "LLU/LLU.h"
 #include "LLU/ProgressMonitor.h"
 
-EXTERN_C DLLEXPORT int WolframLibrary_initialize(WolframLibraryData libData) {
-	MArgumentManager::setLibraryData(libData);
-	return 0;
-}
-
-LIBRARY_LINK_FUNCTION(LogDemo) {
-	LLU_DEBUG("Library function entered with ", Argc, " arguments.");
-	auto err = LLErrorCode::NoError;
-	try {
-		MArgumentManager mngr(Argc, Args, Res);
-		auto index = mngr.getInteger<mint>(0);
-		if (index >= Argc) {
-			LLU_WARNING("Index ", index, " is too big for the number of arguments: ", Argc, ". Changing to ", Argc - 1);
-			index = Argc - 1;
-		}
-		auto value = mngr.getInteger<mint>(index);
-		mngr.setInteger(value);
-	}
-	catch (const LibraryLinkError& e) {
-		LLU_ERROR("Caught LLU exception ", e.what(), ": ", e.debug());
-		err = e.which();
-	}
-	return err;
-}
-
 LIBRARY_LINK_FUNCTION(GreaterAt) {
 	LLU_DEBUG("Library function entered with ", Argc, " arguments.");
 	auto err = LLErrorCode::NoError;
@@ -70,6 +45,31 @@ LIBRARY_LINK_FUNCTION(GreaterAt) {
 	}
 	catch (...) {
 		err = LLErrorCode::FunctionError;
+	}
+	return err;
+}
+
+EXTERN_C DLLEXPORT int WolframLibrary_initialize(WolframLibraryData libData) {
+	MArgumentManager::setLibraryData(libData);
+	return 0;
+}
+
+LIBRARY_LINK_FUNCTION(LogDemo) {
+	LLU_DEBUG("Library function entered with ", Argc, " arguments.");
+	auto err = LLErrorCode::NoError;
+	try {
+		MArgumentManager mngr(Argc, Args, Res);
+		auto index = mngr.getInteger<mint>(0);
+		if (index >= Argc) {
+			LLU_WARNING("Index ", index, " is too big for the number of arguments: ", Argc, ". Changing to ", Argc - 1);
+			index = Argc - 1;
+		}
+		auto value = mngr.getInteger<mint>(index);
+		mngr.setInteger(value);
+	}
+	catch (const LibraryLinkError& e) {
+		LLU_ERROR("Caught LLU exception ", e.what(), ": ", e.debug());
+		err = e.which();
 	}
 	return err;
 }
