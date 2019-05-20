@@ -14,9 +14,9 @@ If[TrueQ[$InitLibraryLinkUtils],
 			SetPacletLibrary[libPath];
 			SafeLibraryLoad[libPath];
 			$GetCErrorCodes = SafeMathLinkFunction["sendRegisteredErrors"];
-			$SetLoggerContext = LoadOptionalFunction @ Catch @ SafeLibraryFunction["setLoggerContext", {"UTF8String"}, "Void"];
-			$SetExceptionDetailsContext = SafeLibraryFunction["setExceptionDetailsContext", {"UTF8String"}, "Void"];
-			SetContexts[$Context]; (* Tell C++ part of LLU in which context were top-level symbols loaded. *)
+			$SetLoggerContext = LoadOptionalFunction @ Catch @ SafeLibraryFunction["setLoggerContext", {"UTF8String"}, "UTF8String"];
+			$SetExceptionDetailsContext = SafeLibraryFunction["setExceptionDetailsContext", {"UTF8String"}, "UTF8String"];
+			SetContexts[Context[$InitLibraryLinkUtils]]; (* Tell C++ part of LLU in which context were top-level symbols loaded. *)
 			True
 		]
 ]	

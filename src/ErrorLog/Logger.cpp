@@ -32,6 +32,7 @@ namespace LibraryLinkUtils {
 			MArgumentManager mngr {libData, Argc, Args, Res};
 			auto newContext = mngr.getString(0);
 			Logger::setContext(newContext);
+			mngr.setString(Logger::getSymbol());
 		}
 		catch (LibraryLinkError& e) {
 			err = e.which();

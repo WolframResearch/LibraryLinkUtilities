@@ -109,6 +109,14 @@ namespace LibraryLinkUtils {
 			logSymbolContext = std::move(context);
 		}
 
+		/**
+		 * Get the top-level symbol with full context, to which all logs are sent
+		 * @return top-level symbol to which logs are sent
+		 */
+		static std::string getSymbol() {
+			return logSymbolContext + topLevelLogCallback;
+		}
+
 	private:
 		/// Name of the WL function, to which log elements will be sent as arguments via MathLink.
 		static constexpr const char* topLevelLogCallback = "LLU`Logger`Log";
@@ -139,7 +147,7 @@ namespace LibraryLinkUtils {
 
 		MLStream<ML::Encoding::UTF8> mls { libData->getWSLINK(libData) };
 		mls << ML::Function("EvaluatePacket", 1);
-		mls << ML::Function(logSymbolContext + topLevelLogCallback, 4 + sizeof...(T));
+		mls << ML::Function(getSymbol(), 4 + sizeof...(T));
 		mls << L << line << fileName << function;
 		static_cast<void>(std::initializer_list<int> { (mls << args, 0)... });
 		libData->processWSLINK(mls.get());
