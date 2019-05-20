@@ -54,10 +54,9 @@
 
 namespace LibraryLinkUtils {
 
-	namespace Logger {
 
-		/// Name of the WL function, to which log elements will be sent as arguments via MathLink.
-		constexpr const char* TopLevelLogCallback = "LLU`Logger`Log";
+	class Logger {
+	public:
 
 		/// Possible log severity levels
 		enum class Level {
@@ -65,27 +64,6 @@ namespace LibraryLinkUtils {
 			Warning,
 			Error
 		};
-
-		/**
-		 * Converts Logger::Level value to std::string
-		 * @param l - log level
-		 * @return a string representation of the input log level
-		 */
-		std::string to_string(Level l);
-
-		/**
-		 * Sends a Logger::Level value via MLStream
-		 * @tparam 	EIn - MLStream input encoding
-		 * @tparam 	EOut - MLStream output encoding
-		 * @param 	ms - reference to the MLStream object
-		 * @param 	l - log level
-		 * @return	reference to the input stream
-		 */
-		template<ML::Encoding EIn, ML::Encoding EOut>
-		MLStream<EIn, EOut>& operator<<(MLStream<EIn, EOut>& ms, Level l) {
-			return ms << to_string(l);
-		}
-
 
 		/**
 		 * @brief	Send a log message of given severity.
@@ -99,25 +77,8 @@ namespace LibraryLinkUtils {
 		 * @warning This function communicates with MathLink and if this communication goes wrong, MLStream may throw
 		 * 			so be careful when logging in destructors.
 		 */
-		template<Logger::Level L, typename... T>
-		void log(WolframLibraryData libData, int line, const std::string& fileName, const std::string& function, T&&... args) {
-			static std::mutex mlinkGuard;
-			if (!libData) {
-				return;
-			}
-			std::lock_guard<std::mutex> lock(mlinkGuard);
-
-			MLStream<ML::Encoding::UTF8> mls { libData->getWSLINK(libData) };
-			mls << ML::Function("EvaluatePacket", 1);
-			mls << ML::Function(TopLevelLogCallback, 4 + sizeof...(T));
-			mls << L << line << fileName << function;
-			static_cast<void>(std::initializer_list<int> { (mls << args, 0)... });
-			libData->processWSLINK(mls.get());
-			auto pkt = MLNextPacket(mls.get());
-			if ( pkt == RETURNPKT) {
-				mls << ML::NewPacket;
-			}
-		}
+		template<Level L, typename... T>
+		static void log(WolframLibraryData libData, int line, const std::string& fileName, const std::string& function, T&&... args);
 
 		/**
 		 * @brief	Send a log message of given severity.
@@ -130,11 +91,68 @@ namespace LibraryLinkUtils {
 		 * @warning This function communicates with MathLink and if this communication goes wrong, MLStream may throw
 		 * 			so be careful when logging in destructors.
 		 */
-		template<Logger::Level L, typename... T>
-		void log(int line, const std::string& fileName, const std::string& function, T&&... args) {
-			log<L>(LibDataHolder::getLibraryData(), line, fileName, function, std::forward<T>(args)...);
+		template<Level L, typename... T>
+		static void log(int line, const std::string& fileName, const std::string& function, T&&... args);
+
+		/**
+		 * Converts Logger::Level value to std::string
+		 * @param l - log level
+		 * @return a string representation of the input log level
+		 */
+		static std::string to_string(Level l);
+
+		/**
+		 * Set new context for the top-level symbol that will handle logging.
+		 * @param context - new context, must end with "`"
+		 */
+		static void setContext(std::string context) {
+			logSymbolContext = std::move(context);
 		}
-	} // namespace Logger
+
+	private:
+		/// Name of the WL function, to which log elements will be sent as arguments via MathLink.
+		static constexpr const char* topLevelLogCallback = "LLU`Logger`Log";
+
+		static std::string logSymbolContext;
+	};
+
+	/**
+	 * Sends a Logger::Level value via MLStream
+	 * @tparam 	EIn - MLStream input encoding
+	 * @tparam 	EOut - MLStream output encoding
+	 * @param 	ms - reference to the MLStream object
+	 * @param 	l - log level
+	 * @return	reference to the input stream
+	 */
+	template<ML::Encoding EIn, ML::Encoding EOut>
+	static MLStream<EIn, EOut>& operator<<(MLStream<EIn, EOut>& ms, Logger::Level l) {
+		return ms << Logger::to_string(l);
+	}
+
+	template<Logger::Level L, typename... T>
+	void Logger::log(WolframLibraryData libData, int line, const std::string& fileName, const std::string& function, T&&... args) {
+		static std::mutex mlinkGuard;
+		if (!libData) {
+			return;
+		}
+		std::lock_guard<std::mutex> lock(mlinkGuard);
+
+		MLStream<ML::Encoding::UTF8> mls { libData->getWSLINK(libData) };
+		mls << ML::Function("EvaluatePacket", 1);
+		mls << ML::Function(logSymbolContext + topLevelLogCallback, 4 + sizeof...(T));
+		mls << L << line << fileName << function;
+		static_cast<void>(std::initializer_list<int> { (mls << args, 0)... });
+		libData->processWSLINK(mls.get());
+		auto pkt = MLNextPacket(mls.get());
+		if ( pkt == RETURNPKT) {
+			mls << ML::NewPacket;
+		}
+	}
+
+	template<Logger::Level L, typename... T>
+	void Logger::log(int line, const std::string& fileName, const std::string& function, T&&... args) {
+		log<L>(LibDataHolder::getLibraryData(), line, fileName, function, std::forward<T>(args)...);
+	}
 
 }
 #endif //LLUTILS_LOGGER_H

@@ -31,14 +31,14 @@ namespace LibraryLinkUtils {
 	public:
 		using IdType = int;
 
-		LibraryLinkError(const LibraryLinkError& e);
+		LibraryLinkError(const LibraryLinkError& e) noexcept;
 
 		LibraryLinkError(LibraryLinkError&& e) noexcept : std::runtime_error(e), errorId(e.errorId), type(e.type), messageTemplate(e.messageTemplate),
 														  debugInfo(e.debugInfo), messageParams(e.messageParams) {
 			e.messageParams = nullptr;
 		}
 
-		~LibraryLinkError();
+		~LibraryLinkError() override;
 
 		/**
 		 * Set debug info
@@ -100,20 +100,25 @@ namespace LibraryLinkUtils {
 		 * @param	WLSymbol - symbol to assign parameters to in top-level
 		 * @return	LLErrorCode because this function is noexcept
 		 */
-		int sendParameters(WolframLibraryData libData, const std::string& WLSymbol = exceptionDetailsSymbol) const noexcept;
+		int sendParameters(WolframLibraryData libData, const std::string& WLSymbol = getExceptionDetailsSymbol()) const noexcept;
 
 		/**
-		 * @brief	Set custom Wolfram Language symbol that will hold the details of last thrown exception.
-		 * @param 	newSymbol - a Wolfram Language symbol name
-		 * @note 	This function does not check if \p newSymbol is actually a valid Wolfram Language symbol which is not Protected.
+		 * @brief	Get symbol that will hold details of last thrown exception.
+		 * @return	a WL symbol
 		 */
-		static void setExceptionDetailsSymbol(std::string newSymbol);
+		static std::string getExceptionDetailsSymbol();
 
 		/**
-		 * @brief	Get current symbol that will hold the details of last thrown exception.
-		 * @return	a WL symbol that will hold the details of last thrown exception
+		 * @brief	Set custom context for the Wolfram Language symbol that will hold the details of last thrown exception.
+		 * @param 	newSymbol - any valid WL context, it \b must end with a backtick (`)
 		 */
-		static const std::string& getExceptionDetailsSymbol();
+		static void setExceptionDetailsSymbolContext(std::string newContext);
+
+		/**
+		 * @brief	Get current context of the symbol that will hold the details of last thrown exception.
+		 * @return	a WL context
+		 */
+		static const std::string& getExceptionDetailsSymbolContext();
 
 	private:
 		/**
@@ -135,8 +140,11 @@ namespace LibraryLinkUtils {
 		 */
 		static MLINK openLoopback(MLENV env);
 
-		/// A WL symbol that will hold the details of last thrown exception.
-		static std::string exceptionDetailsSymbol;
+		/// A WL symbol that will hold the details of last thrown exception. It cannot be modified directly, you can only change it's context.
+		static constexpr const char* exceptionDetailsSymbol = "LLU`$LastFailureParameters";
+
+		/// Context for the exceptionDetailsSymbol. It needs to be adjustable because every paclet loads LLU into its own context.
+		static std::string exceptionDetailsSymbolContext;
 
 		const IdType errorId;
 		const std::string type;

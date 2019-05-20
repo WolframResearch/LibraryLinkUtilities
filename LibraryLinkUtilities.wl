@@ -14,6 +14,9 @@ If[TrueQ[$InitLibraryLinkUtils],
 			SetPacletLibrary[libPath];
 			SafeLibraryLoad[libPath];
 			$GetCErrorCodes = SafeMathLinkFunction["sendRegisteredErrors"];
+			$SetLoggerContext = LoadOptionalFunction @ Catch @ SafeLibraryFunction["setLoggerContext", {"UTF8String"}, "Void"];
+			$SetExceptionDetailsContext = SafeLibraryFunction["setExceptionDetailsContext", {"UTF8String"}, "Void"];
+			SetContexts[$Context]; (* Tell C++ part of LLU in which context were top-level symbols loaded. *)
 			True
 		]
 ]	
@@ -23,7 +26,6 @@ If[TrueQ[$InitLibraryLinkUtils],
 (* Internal Utilities *)
 (* ------------------------------------------------------------------------- *)
 (* ------------------------------------------------------------------------- *)
-
 
 (* ::SubSection:: *)
 (* Globals *)
@@ -58,8 +60,24 @@ Block[{name = Select[$CorePacletFailureLUT, MatchQ[#, {errorCode, _}] &]},
 		,
 		""
 	]
-]
+];
 
+LoadOptionalFunction[_?FailureQ] := Null&; (* Return a function that always returns Null *)
+LoadOptionalFunction[f_] := f;
+
+AppendBacktickIfNeeded[s_?StringQ] := If[StringEndsQ[s, "`"], s, s <> "`"];
+
+SetLoggerContext[context_?StringQ] :=
+	$SetLoggerContext @ AppendBacktickIfNeeded @ context;
+
+SetExceptionDetailsContext[context_?StringQ] :=
+	$SetExceptionDetailsContext @ AppendBacktickIfNeeded @ context;
+
+SetContexts[context_?StringQ] := SetContexts[context, context];
+SetContexts[loggerContext_?StringQ, exceptionContext_?StringQ] := (
+	SetLoggerContext[loggerContext];
+	SetExceptionDetailsContext[exceptionContext];
+);
 
 (* ::Section:: *)
 (* Developer API *)
@@ -209,7 +227,7 @@ GetCCodeFailureParams[msgTemplate_String?StringQ] :=
 Block[{slotNames, slotValues, data},
 	slotNames = Cases[First @ StringTemplate[msgTemplate], TemplateSlot[s_] -> s];
 	slotNames = DeleteDuplicates[slotNames];
-	slotValues = If[ListQ[LLU`$LastFailureParameters], LLU`$LastFailureParameters, {}];
+	slotValues = If[ListQ[`LLU`$LastFailureParameters], `LLU`$LastFailureParameters, {}];
 	If[MatchQ[slotNames, {_Integer..}],
 		(* for numbered slots return just a list of slot template values *)
 		slotValues
@@ -274,7 +292,7 @@ With[{result = Quiet[f, {
 (* ------------------------------------------------------------------------- *)
 (* ------------------------------------------------------------------------- *)
 
-Begin["LLU`Logger`"];
+Begin["`LLU`Logger`"];
 
 (************** Functions defining how to style different parts of a log message *************)
 
@@ -380,15 +398,15 @@ Attributes[`PrintToSymbol] = {HoldFirst};
 (* This is a function MathLink will call from the C++ code. It all starts here. Feel free to modify/Block this symbol, see examples. *)
 `Log := `Print @* `Filter;
 
-End[];
+End[]; (* `LLU`Logger` *)
 
 (************* Examples of overriding default logger behavior *************)
 
 (*** Make logger format logs as Association and append to a list under a symbol TestLogSymbol:
 
-LLU`Logger`Print[args___] := Block[{LLU`Logger`FormattedLog = LLU`Logger`LogToAssociation},
-	LLU`Logger`PrintToSymbol[TestLogSymbol][args]
-]
+`LLU`Logger`Print := Block[{`LLU`Logger`FormattedLog = `LLU`Logger`LogToAssociation},
+	`LLU`Logger`PrintToSymbol[TestLogSymbol][##]
+]&
 
 after you evaluate some library function the TestLogSymbol may be a list similar this:
 
@@ -412,19 +430,22 @@ after you evaluate some library function the TestLogSymbol may be a list similar
 *)
 (*** Log styled condensed logs to Messages window:
 
-LLU`Logger`Print[args___] := Block[{LLU`Logger`FormattedLog = LLU`Logger`LogToRow},
-	LLU`Logger`PrintToMessagesWindow[args]
-]
+`LLU`Logger`Print := Block[{`LLU`Logger`FormattedLog = `LLU`Logger`LogToRow},
+	`LLU`Logger`PrintToMessagesWindow[##]
+]&
 *)
 (*** Sow logs formatted as short Strings instead of printing:
 
-	LLU`Logger`Print[args___] := Sow @ LLU`Logger`LogToShortString[args];
+	`LLU`Logger`Print :=
+		If[## =!= `LLU`Logger`LogFiltered,
+			Sow @ `LLU`Logger`LogToShortString[##]
+		]&;
 
-Remember to call library functions inside Reap!
+Remember that in this case library functions must be wrapped with Reap.
 
-You could theoretically write
+You could theoretically write simply
 
-	LLU`Logger`Print = Sow @* LLU`Logger`LogToShortString;
+	LLU`Logger`Print := Sow @* LLU`Logger`LogToShortString;
 
 But in this case, you are loosing the correct handling of filtered-out messages so it's only fine with the default "accept-all" filter.
 *)

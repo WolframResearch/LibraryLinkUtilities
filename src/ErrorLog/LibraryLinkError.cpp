@@ -7,20 +7,25 @@
  */
 #include "LLU/ErrorLog/LibraryLinkError.h"
 
-#include "LLU/ErrorLog/Errors.h"
+#include "LLU/LLU.h"
+#include "LLU/LibraryLinkFunctionMacro.h"
 #include "LLU/ML/MLStream.hpp"
 
 
 namespace LibraryLinkUtils {
 
-	std::string LibraryLinkError::exceptionDetailsSymbol = "LLU`$LastFailureParameters";
+	std::string LibraryLinkError::exceptionDetailsSymbolContext;
 
-	void LibraryLinkError::setExceptionDetailsSymbol(std::string newSymbol) {
-		exceptionDetailsSymbol = std::move(newSymbol);
+	void LibraryLinkError::setExceptionDetailsSymbolContext(std::string newContext) {
+		exceptionDetailsSymbolContext = std::move(newContext);
 	}
 
-	const std::string& LibraryLinkError::getExceptionDetailsSymbol() {
-		return exceptionDetailsSymbol;
+	const std::string& LibraryLinkError::getExceptionDetailsSymbolContext() {
+		return exceptionDetailsSymbolContext;
+	}
+
+	std::string LibraryLinkError::getExceptionDetailsSymbol() {
+		return exceptionDetailsSymbolContext + exceptionDetailsSymbol;
 	}
 
 	MLINK LibraryLinkError::openLoopback(MLENV env) {
@@ -76,5 +81,20 @@ namespace LibraryLinkUtils {
 		return LLErrorCode::NoError;
 	}
 
+	LIBRARY_LINK_FUNCTION(setExceptionDetailsContext) {
+		auto err = LLErrorCode::NoError;
+		try {
+			MArgumentManager mngr {libData, Argc, Args, Res};
+			auto newContext = mngr.getString(0);
+			LibraryLinkError::setExceptionDetailsSymbolContext(std::move(newContext));
+		}
+		catch (LibraryLinkError& e) {
+			err = e.which();
+		}
+		catch (...) {
+			err = LLErrorCode::FunctionError;
+		}
+		return err;
+	}
 } /* namespace LibraryLinkUtils */
 

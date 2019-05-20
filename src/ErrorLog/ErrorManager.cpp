@@ -179,6 +179,4 @@ namespace LibraryLinkUtils {
 		}
 		return err;
 	}
-
-
 }
