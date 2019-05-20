@@ -14,7 +14,7 @@ TestExecute[
 
 	(* Compile the test library *)
 	lib = CCompilerDriver`CreateLibrary[FileNameJoin[{currentDirectory, #}]& /@ {"ErrorReportingTest.cpp"},
-		"ErrorReporting", options, "Defines" -> {"LLU_LOG_DEBUG"}];
+		"ErrorReporting", options];
 
 	Get[FileNameJoin[{$LLUSharedDir, "LibraryLinkUtilities.wl"}]];
 
@@ -316,9 +316,9 @@ Test[
   SetSPI = SafeLibraryFunction["SetSendParametersImmediately", {"Boolean"}, "Void"];
   SetSPI[False];
 
-  LLU`$LastFailureParameters = {"This", "will", "not", "be", "overwritten"};
+  `LLU`$LastFailureParameters = {"This", "will", "not", "be", "overwritten"};
   ReadData["somefile.txt"];
-  LLU`$LastFailureParameters
+  `LLU`$LastFailureParameters
   ,
   {"This", "will", "not", "be", "overwritten"}
   ,
@@ -348,9 +348,9 @@ TestExecute[
 	RegisterPacletErrors[libLogDebug, <||>];
 
 	loggerTestPath = FileNameJoin[{currentDirectory, "LoggerTest.cpp"}];
-	LLU`Logger`Print[args___] := Block[{LLU`Logger`FormattedLog = LLU`Logger`LogToAssociation},
-		LLU`Logger`PrintToSymbol[TestLogSymbol][args]
-	]
+	`LLU`Logger`Print := Block[{`LLU`Logger`FormattedLog = `LLU`Logger`LogToAssociation},
+		`LLU`Logger`PrintToSymbol[TestLogSymbol][##]
+	]&;
 ];
 
 Test[
@@ -394,9 +394,9 @@ Test[
 
 TestExecute[
 	TestLogSymbol = 5; (* assign a number to TestLogSymbol to see if LLU`Logger`PrintToSymbol can handle it *)
-	LLU`Logger`Print[args___] := Block[{LLU`Logger`FormattedLog = LLU`Logger`LogToList},
-		LLU`Logger`PrintToSymbol[TestLogSymbol][args]
-	]
+	`LLU`Logger`Print := Block[{`LLU`Logger`FormattedLog = `LLU`Logger`LogToList},
+		`LLU`Logger`PrintToSymbol[TestLogSymbol][##]
+	]&
 ];
 
 Test[
@@ -435,7 +435,10 @@ TestMatch[
 ];
 
 TestExecute[
-	LLU`Logger`Print[args___] := Sow @ LLU`Logger`LogToShortString[args];
+	`LLU`Logger`Print := 
+		If[## =!= `LLU`Logger`LogFiltered,
+			Sow @ `LLU`Logger`LogToShortString[##]
+		]&;
 ];
 
 TestMatch[
@@ -462,7 +465,7 @@ TestMatch[
 
 TestExecute[
 	(* Disable logging in top-level, messages are still transferred from the library *)
-	LLU`Logger`Filter = LLU`Logger`FilterRejectAll;
+	`LLU`Logger`Filter = `LLU`Logger`FilterRejectAll;
 ];
 
 Test[
@@ -475,7 +478,7 @@ Test[
 
 TestExecute[
 	(* Log only warnings *)
-	LLU`Logger`Filter = LLU`Logger`FilterByLevel[StringMatchQ["warning", IgnoreCase -> True]];
+	`LLU`Logger`Filter = `LLU`Logger`FilterByLevel[StringMatchQ["warning", IgnoreCase -> True]];
 ];
 
 Test[
@@ -488,7 +491,7 @@ Test[
 
 TestExecute[
 	(* Log only messages issued from even line numbers *)
-	LLU`Logger`Filter = LLU`Logger`FilterByLine[EvenQ];
+	`LLU`Logger`Filter = `LLU`Logger`FilterByLine[EvenQ];
 ];
 
 Test[
@@ -542,7 +545,7 @@ Test[
 ];
 
 TestExecute[
-	LLU`Logger`Print[args___] := Sow @ LLU`Logger`LogToShortString[args];
+	`LLU`Logger`Print := Sow @ `LLU`Logger`LogToShortString[##]&;
 ];
 
 TestMatch[
@@ -566,9 +569,9 @@ TestMatch[
 
 TestExecute[
 	TestLogSymbol = {};
-	LLU`Logger`Print[args___] := Block[{LLU`Logger`FormattedLog = LLU`Logger`LogToList},
-		LLU`Logger`PrintToSymbol[TestLogSymbol][args]
-	];
+	`LLU`Logger`Print := Block[{`LLU`Logger`FormattedLog = `LLU`Logger`LogToList},
+		`LLU`Logger`PrintToSymbol[TestLogSymbol][##]
+	]&;
 	LogDemo = SafeLibraryFunction["LogDemo", {Integer, Integer, Integer, Integer, Integer}, Integer];
 ];
 

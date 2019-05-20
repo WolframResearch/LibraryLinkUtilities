@@ -31,7 +31,7 @@ namespace LibraryLinkUtils {
 	public:
 		using IdType = int;
 
-		LibraryLinkError(const LibraryLinkError& e) noexcept;
+		LibraryLinkError(const LibraryLinkError& e);
 
 		LibraryLinkError(LibraryLinkError&& e) noexcept : std::runtime_error(e), errorId(e.errorId), type(e.type), messageTemplate(e.messageTemplate),
 														  debugInfo(e.debugInfo), messageParams(e.messageParams) {
