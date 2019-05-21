@@ -414,22 +414,22 @@ Test[
 	TestID->"ErrorReportingTestSuite-20190409-L8V2U9"
 ];
 
-TestMatch[
+Test[
 	MultiThreadedLog = SafeLibraryFunction["LogsFromThreads", {Integer}, "Void"];
 	Clear[TestLogSymbol];
 	MultiThreadedLog[3];
-	TestLogSymbol
+	And @@ (MatchQ[
+		{"Debug", 88, loggerTestPath, "LogsFromThreads", "Starting ", 3, " threads."} |
+		{"Debug", 91, loggerTestPath, "operator()" | "operator ()", "Thread ", _, " going to sleep."} |
+		{"Debug", 93, loggerTestPath, "operator()" | "operator ()", "Thread ", _, " slept for ", _, "ms."} |
+		{"Debug", 99, loggerTestPath, "LogsFromThreads", "All threads joined."}
+	] /@ TestLogSymbol)
+	&&
+	First[TestLogSymbol] === {"Debug", 88, loggerTestPath, "LogsFromThreads", "Starting ", 3, " threads."}
+	&&
+	Last[TestLogSymbol] === {"Debug", 99, loggerTestPath, "LogsFromThreads", "All threads joined."}
 	,
-	{
-		{"Debug", 88, loggerTestPath, "LogsFromThreads", "Starting ", 3, " threads."},
-		(* The order of thread logs may be arbitrary but there should be no garbage or partial logs *)
-		{"Debug", 91, loggerTestPath, "operator()", "Thread ", _, " going to sleep."}, 
-		{"Debug", 91, loggerTestPath, "operator()", "Thread ", _, " going to sleep."}, 
-		{"Debug", 91, loggerTestPath, "operator()", "Thread ", _, " going to sleep."}, 
-		{"Debug", 93, loggerTestPath, "operator()", "Thread ", _, " slept for ", _, "ms."}, 
-		{"Debug", 93, loggerTestPath, "operator()", "Thread ", _, " slept for ", _, "ms."}, 
-		{"Debug", 93, loggerTestPath, "operator()", "Thread ", _, " slept for ", _, "ms."}, 
-		{"Debug", 99, loggerTestPath, "LogsFromThreads", "All threads joined."}}
+	True
 	,
 	TestID->"ErrorReportingTestSuite-20190415-Y8F3L2"
 ];

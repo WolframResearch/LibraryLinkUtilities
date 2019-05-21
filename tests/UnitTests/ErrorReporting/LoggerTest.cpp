@@ -64,7 +64,7 @@ LIBRARY_LINK_FUNCTION(LogDemo) {
 			LLU_WARNING("Index ", index, " is too big for the number of arguments: ", Argc, ". Changing to ", Argc - 1);
 			index = Argc - 1;
 		}
-		auto value = mngr.getInteger<mint>(index);
+		auto value = mngr.getInteger<mint>(static_cast<unsigned int>(index));
 		mngr.setInteger(value);
 	}
 	catch (const LibraryLinkError& e) {
