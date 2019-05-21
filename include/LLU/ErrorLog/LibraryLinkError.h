@@ -140,7 +140,7 @@ namespace LibraryLinkUtils {
 		 */
 		static MLINK openLoopback(MLENV env);
 
-		/// A WL symbol that will hold the details of last thrown exception. It cannot be modified directly, you can only change it's context.
+		/// A WL symbol that will hold the details of last thrown exception. It cannot be modified directly, you can only change its context.
 		static constexpr const char* exceptionDetailsSymbol = "LLU`$LastFailureParameters";
 
 		/// Context for the exceptionDetailsSymbol. It needs to be adjustable because every paclet loads LLU into its own context.
