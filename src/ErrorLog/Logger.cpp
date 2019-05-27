@@ -21,7 +21,7 @@ namespace LibraryLinkUtils {
 			case Level::Error:
 				return "Error";
 			default:
-				return "Unknown ";
+				return "Unknown";
 		}
 	}
 
