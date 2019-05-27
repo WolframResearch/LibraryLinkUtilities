@@ -422,12 +422,12 @@ Test[
 		{"Debug", 88, loggerTestPath, "LogsFromThreads", "Starting ", 3, " threads."} |
 		{"Debug", 91, loggerTestPath, "operator()" | "operator ()", "Thread ", _, " going to sleep."} |
 		{"Debug", 93, loggerTestPath, "operator()" | "operator ()", "Thread ", _, " slept for ", _, "ms."} |
-		{"Debug", 99, loggerTestPath, "LogsFromThreads", "All threads joined."}
+		{"Debug", 101, loggerTestPath, "LogsFromThreads", "All threads joined."}
 	] /@ TestLogSymbol)
 	&&
 	First[TestLogSymbol] === {"Debug", 88, loggerTestPath, "LogsFromThreads", "Starting ", 3, " threads."}
 	&&
-	Last[TestLogSymbol] === {"Debug", 99, loggerTestPath, "LogsFromThreads", "All threads joined."}
+	Last[TestLogSymbol] === {"Debug", 101, loggerTestPath, "LogsFromThreads", "All threads joined."}
 	,
 	True
 	,

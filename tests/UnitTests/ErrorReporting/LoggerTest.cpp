@@ -94,7 +94,9 @@ LIBRARY_LINK_FUNCTION(LogsFromThreads) {
 			}, dis(gen));
 		}
 		for (auto& t : threads) {
-			t.join();
+			if (t.joinable()) {
+				t.join();
+			}
 		}
 		LLU_DEBUG("All threads joined.");
 	}
