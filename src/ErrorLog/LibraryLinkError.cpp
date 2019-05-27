@@ -57,7 +57,7 @@ namespace LibraryLinkUtils {
 		}
 	}
 
-	int LibraryLinkError::sendParameters(WolframLibraryData libData, const std::string& WLSymbol) const noexcept {
+	auto LibraryLinkError::sendParameters(WolframLibraryData libData, const std::string& WLSymbol) const noexcept -> IdType {
 		try {
 			if (libData) {
 				MLStream<ML::Encoding::UTF8> mls{libData->getWSLINK(libData)};

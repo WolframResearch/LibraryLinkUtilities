@@ -100,7 +100,7 @@ namespace LibraryLinkUtils {
 		 * @param	WLSymbol - symbol to assign parameters to in top-level
 		 * @return	LLErrorCode because this function is noexcept
 		 */
-		int sendParameters(WolframLibraryData libData, const std::string& WLSymbol = getExceptionDetailsSymbol()) const noexcept;
+		IdType sendParameters(WolframLibraryData libData, const std::string& WLSymbol = getExceptionDetailsSymbol()) const noexcept;
 
 		/**
 		 * @brief	Get symbol that will hold details of last thrown exception.
