@@ -400,52 +400,58 @@ Attributes[`PrintToSymbol] = {HoldFirst};
 
 End[]; (* `LLU`Logger` *)
 
+
 (************* Examples of overriding default logger behavior *************)
 
-(*** Make logger format logs as Association and append to a list under a symbol TestLogSymbol:
+(***
+	Make logger format logs as Association and append to a list under a symbol TestLogSymbol:
 
-`LLU`Logger`Print := Block[{`LLU`Logger`FormattedLog = `LLU`Logger`LogToAssociation},
-	`LLU`Logger`PrintToSymbol[TestLogSymbol][##]
-]&
+		`LLU`Logger`Print := Block[{`LLU`Logger`FormattedLog = `LLU`Logger`LogToAssociation},
+			`LLU`Logger`PrintToSymbol[TestLogSymbol][##]
+		]&
 
-after you evaluate some library function the TestLogSymbol may be a list similar this:
+	after you evaluate some library function the TestLogSymbol may be a list similar this:
 
-{
-	<|
-		"Level" -> "Debug",
-		"Line" -> 17,
-		"File" -> "main.cpp",
-		"Function" -> "ReadData",
-		"Message" -> Style["Library function entered with 4 arguments.", Automatic]
-	|>,
-	<|
-		"Level" -> "Warning",
-		"Line" -> 20,
-		"File" -> "Utilities.cpp",
-		"Function" -> "validateDimensions",
-		"Message" -> Style["Dimensions are too large.", Automatic]
-	|>,
-	...
-}
-*)
-(*** Log styled condensed logs to Messages window:
+		{
+			<|
+				"Level" -> "Debug",
+				"Line" -> 17,
+				"File" -> "main.cpp",
+				"Function" -> "ReadData",
+				"Message" -> Style["Library function entered with 4 arguments.", Automatic]
+			|>,
+			<|
+				"Level" -> "Warning",
+				"Line" -> 20,
+				"File" -> "Utilities.cpp",
+				"Function" -> "validateDimensions",
+				"Message" -> Style["Dimensions are too large.", Automatic]
+			|>,
+			...
+		}
+***)
 
-`LLU`Logger`Print := Block[{`LLU`Logger`FormattedLog = `LLU`Logger`LogToRow},
-	`LLU`Logger`PrintToMessagesWindow[##]
-]&
-*)
-(*** Sow logs formatted as short Strings instead of printing:
+(***
+	Log styled condensed logs to Messages window:
 
-	`LLU`Logger`Print :=
-		If[## =!= `LLU`Logger`LogFiltered,
-			Sow @ `LLU`Logger`LogToShortString[##]
-		]&;
+		`LLU`Logger`Print := Block[{`LLU`Logger`FormattedLog = `LLU`Logger`LogToRow},
+			`LLU`Logger`PrintToMessagesWindow[##]
+		]&
+***)
 
-Remember that in this case library functions must be wrapped with Reap.
+(***
+	Sow logs formatted as short Strings instead of printing:
 
-You could theoretically write simply
+		`LLU`Logger`Print :=
+			If[## =!= `LLU`Logger`LogFiltered,
+				Sow @ `LLU`Logger`LogToShortString[##]
+			]&;
 
-	LLU`Logger`Print := Sow @* LLU`Logger`LogToShortString;
+	Remember that in this case library functions must be wrapped with Reap.
 
-But in this case, you are loosing the correct handling of filtered-out messages so it's only fine with the default "accept-all" filter.
-*)
+	You could theoretically write simply
+
+		LLU`Logger`Print := Sow @* LLU`Logger`LogToShortString;
+
+	But in this case, you are loosing the correct handling of filtered-out messages so it's only fine with the default "accept-all" filter.
+***)
