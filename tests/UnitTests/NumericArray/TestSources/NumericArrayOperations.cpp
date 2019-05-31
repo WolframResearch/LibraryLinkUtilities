@@ -1,15 +1,11 @@
-#include "WolframLibrary.h"
-#include "WolframNumericArrayLibrary.h"
-
 #include <iostream>
 #include <numeric>
 #include <type_traits>
 
-#include "LLU/MArgumentManager.h"
+#include "LLU/LLU.h"
 #include "LLU/LibraryLinkFunctionMacro.h"
-#include "LLU/Containers/NumericArray.h"
 
-using namespace LibraryLinkUtils;
+namespace NA = LibraryLinkUtils::NA;
 
 static MNumericArray shared_numeric = 0;
 
@@ -19,6 +15,9 @@ EXTERN_C DLLEXPORT mint WolframLibrary_getVersion() {
 
 EXTERN_C DLLEXPORT int WolframLibrary_initialize(WolframLibraryData libData) {
 	MArgumentManager::setLibraryData(libData);
+	ErrorManager::registerPacletErrors({
+		{"InvalidConversionMethod", "NumericArray conversion method `method` is invalid."}
+	});
 	return 0;
 }
 
@@ -176,7 +175,7 @@ struct AccumulateIntegers {
 
 	template<typename T>
 	std::enable_if_t<std::is_integral<T>::value> operator()(NumericArray<T> ra, MArgumentManager& mngr) {
-		auto result = std::accumulate(ra.begin(), ra.end(), 0L);
+		auto result = std::accumulate(ra.begin(), ra.end(), static_cast<T>(0));
 		mngr.setInteger(result);
 	}
 };
@@ -197,13 +196,51 @@ EXTERN_C DLLEXPORT int accumulateIntegers(WolframLibraryData libData, mint Argc,
 	return err;
 }
 
+// check if conversion methods are mapped correctly
+LIBRARY_LINK_FUNCTION(convertMethodName) {
+	auto err = LLErrorCode::NoError;
+	try {
+		MArgumentManager mngr(Argc, Args, Res);
+		auto method = mngr.getInteger<NA::ConversionMethod>(0);
+		std::string methodStr;
+		switch (method) {
+			case NA::ConversionMethod::Check: methodStr = "Check";
+				break;
+			case NA::ConversionMethod::ClipCheck: methodStr = "ClipCheck";
+				break;
+			case NA::ConversionMethod::Coerce: methodStr = "Coerce";
+				break;
+			case NA::ConversionMethod::ClipCoerce: methodStr = "ClipCoerce";
+				break;
+			case NA::ConversionMethod::Round: methodStr = "Round";
+				break;
+			case NA::ConversionMethod::ClipRound: methodStr = "ClipRound";
+				break;
+			case NA::ConversionMethod::Scale: methodStr = "Scale";
+				break;
+			case NA::ConversionMethod::ClipScale: methodStr = "ClipScale";
+				break;
+			default:
+				ErrorManager::throwException("InvalidConversionMethod", static_cast<int>(method));
+		}
+		mngr.setString(std::move(methodStr));
+	}
+	catch (const LibraryLinkError& e) {
+		err = e.which();
+	}
+	catch (...) {
+		err = LLErrorCode::FunctionError;
+	}
+	return err;
+}
+
 // convert NumericArray
 LIBRARY_LINK_FUNCTION(convert) {
 	auto err = LLErrorCode::NoError;
 	try {
 		MArgumentManager mngr(Argc, Args, Res);
 		mngr.operateOnNumericArray(0, [&mngr](const auto& numArr) {
-			NumericArray<std::uint16_t> converted { numArr, static_cast<NA::ConversionMethod>(mngr.getInteger<int>(1))};
+			NumericArray<std::uint16_t> converted { numArr, mngr.getInteger<NA::ConversionMethod>(1), mngr.getReal(2) };
 			mngr.setNumericArray(converted);
 		});
 	}

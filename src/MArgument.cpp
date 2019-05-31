@@ -7,6 +7,8 @@
 
 #include "LLU/MArgument.h"
 
+#include "LLU/ErrorLog/ErrorManager.h"
+
 namespace LibraryLinkUtils {
 
 #define ARGUMENT_DEFINE_SPECIALIZATIONS_OF_MEMBER_FUNCTIONS(ArgType, MArgGetPrefix, MArgSetPrefix, DSAdd) \

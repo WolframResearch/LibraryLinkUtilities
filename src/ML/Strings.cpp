@@ -8,7 +8,7 @@
 #include <algorithm>
 #include <type_traits>
 
-#include "../../include/LLU/ML/Strings.h"
+#include "LLU/ML/Strings.h"
 
 namespace LibraryLinkUtils {
 

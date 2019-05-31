@@ -45,7 +45,6 @@ LIBRARY_MATHLINK_FUNCTION(Wrong) {
 
 	} catch (LibraryLinkError& e) {
 		err = e.which();
-		std::cerr << e.debug() << std::endl;
 	} catch (...) {
 		err = LLErrorCode::FunctionError;
 	}

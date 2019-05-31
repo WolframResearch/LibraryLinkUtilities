@@ -19,6 +19,7 @@
 
 	set(TEST_MODULES
 		"DataList"
+		"ErrorReporting"
 		"Image"
 		"MathLink"
 		"NumericArray"

@@ -1,28 +1,15 @@
 /**
- * @file	LibraryLinkError.h
+ * @file	Errors.h
  * @author	Rafal Chojna <rafalc@wolfram.com>
- *
- * @brief	Error class and error codes used by LibraryLink Utilities classes
- *
+ * @date	March 31, 2019
+ * @brief	Definitions of error names and error codes used across LLU.
  */
-#ifndef LLUTILS_LIBRARYLINKERROR_H_
-#define LLUTILS_LIBRARYLINKERROR_H_
+#ifndef LLUTILS_ERRORS_H
+#define LLUTILS_ERRORS_H
 
-#include <stdexcept>
 #include <string>
-#include <vector>
-#include <algorithm>
-#include <unordered_map>
-#include <utility>
 
-#include "WolframLibrary.h"
-
-/**
- * @namespace LibraryLinkUtils
- * @brief Main namespace of LibraryLinkUtilities
- */
 namespace LibraryLinkUtils {
-
 
 	/**
 	 * @brief Error codes predefined in Library Link
@@ -129,186 +116,6 @@ namespace LibraryLinkUtils {
 		extern const std::string Aborted;    	///< Computation aborted by the user
 	}
 
-	/**
-	 * @class	LibraryLinkError
-	 * @brief	Class representing an exception in paclet code
-	 *
-	 * All exceptions that are thrown from paclet code should be of this class. To prevent users from overriding predefined LLU exceptions the constructor
-	 * of LibraryLinkError class is private. Developers should use ErrorManager::throwException method to throw exceptions.
-	 **/
-	class LibraryLinkError: public std::runtime_error {
-		friend class ErrorManager;
-	public:
-		using IdType = int;
+}
 
-		/**
-		 * Set debug info
-		 * @param dbg - additional information helpful in debugging
-		 */
-		void setDebugInfo(std::string dbg) {
-			debugInfo = std::move(dbg);
-		}
-
-		/**
-		 *   @brief Get the value of error code
-		 **/
-		IdType id() const noexcept {
-			return errorId;
-		}
-
-		/**
-		 *   @brief Alias for id() to preserve backwards compatibility
-		 **/
-		IdType which() const noexcept {
-			return errorId;
-		}
-
-		/**
-		 *   @brief Get the value of error code
-		 **/
-		const std::string& name() const noexcept {
-			return type;
-		}
-
-		/**
-		 *   @brief Get the value of error code
-		 **/
-		const std::string& message() const noexcept {
-			return messageTemplate;
-		}
-
-		/**
-		 *   @brief Get debug info
-		 **/
-		const std::string& debug() const noexcept {
-			return debugInfo;
-		}
-
-	private:
-		/**
-		 *   @brief         Constructs an exception with given error code and predefined error message
-		 *   @param[in]     which - error code
-		 *   @param[in]		t - error type/name
-		 *   @param[in]		msg - error description
-		 *   @warning		This is constructor is not supposed to be used directly by paclet developers. All errors should be thrown by ErrorManager.
-		 **/
-		LibraryLinkError(IdType which, std::string t, std::string msg) :
-				std::runtime_error(t), errorId(which), type(std::move(t)), messageTemplate(std::move(msg)) {
-
-		}
-
-		const IdType errorId;
-		const std::string type;
-		const std::string messageTemplate;
-		std::string debugInfo;
-	};
-
-
-	/**
-	 * @class	ErrorManager
-	 * @brief	"Static" class responsible for error registration and throwing
-	 *
-	 * ErrorManager holds a map with all errors that may be thrown from paclet code. These are: LLU errors, framework errors (e.g. MDevices)
-	 * and paclet-specific errors which should be registered (for example in WolframLibrary_initialize) using registerPacletErrors function.
-	 * Developers must never throw LibraryLinkErrors directly, instead they should use one of ErrorManager::throwException overloads.
-	 **/
-	class ErrorManager {
-	public:
-		using ErrorStringData = std::pair<std::string, std::string>;
-
-	public:
-
-		/**
-		 * @brief Default constructor is deleted since ErrorManager is supposed to be completely static
-		 */
-		ErrorManager() = delete;
-
-		/**
-		 * @brief 	Function used to register paclet-specific errors.
-		 * @param 	errors - a list of pairs: {"ErrorName", "Short string with error description"}
-		 */
-		static void registerPacletErrors(const std::vector<ErrorStringData>& errors);
-
-		/**
-		 * @brief 	Throw exception with given name.
-		 * @param 	errorName - name of the error that will be thrown
-		 */
-		[[noreturn]] static void throwException(const std::string& errorName);
-
-		/**
-		 * @brief 	Throw exception with given name and some additional debug information.
-		 * @param 	errorName - name of the error that will be thrown
-		 * @param	debugInfo - additional message with debug info, this message will not be passed to top-level Failure object
-		 */
-		[[noreturn]] static void throwException(const std::string& errorName, const std::string& debugInfo);
-
-		/**
-		 * @brief 	Throw exception of given class that carries the error with given name.
-		 *
-		 * This is useful if you want to throw custom exception classes from your paclet and still see the nice Failure objects in top-level.
-		 *
-		 * @tparam	Error - custom exception class it must define a constructor that takes a LibraryLinkError as first parameter
-		 * but it doesn't have to derive from LibraryLinkError
-		 * @param 	errorName - name of error to be thrown
-		 * @param 	args - additional arguments that will be perfectly forwarded to the constructor of Error class
-		 */
-		template<class Error, typename... Args>
-		[[noreturn]] static void throwCustomException(const std::string& errorName, Args&&... args);
-
-		/**
-		 * @brief Function used to send all registered errors to top-level Mathematica code.
-		 *
-		 * Sending registered errors allows for nice and meaningful Failure objects to be generated when paclet function fails in top level,
-		 * instead of usual LibraryFunctionError expressions.
-		 * @param mlp - active MathLink connection
-		 */
-		static void sendRegisteredErrorsViaMathlink(MLINK mlp);
-
-	private:
-
-		/// Errors are stored in a map with elements of the form { "ErrorName", immutable LibraryLinkError object }
-		using ErrorMap = std::unordered_map<std::string, const LibraryLinkError>;
-
-	private:
-		/**
-		 * @brief 	Use this function to add new entry to the map of registered errors.
-		 * @param 	errorData - a pair of strings: error name + error description
-		 */
-		static void set(const ErrorStringData& errorData);
-
-		/**
-		 * @brief Find error by id.
-		 * @param errorId - error id
-		 * @return const& to the desired error
-		 */
-		static const LibraryLinkError& findError(int errorId);
-
-		/**
-		 * @brief Find error by name.
-		 * @param errorName - error name
-		 * @return const& to the desired error
-		 */
-		static const LibraryLinkError& findError(const std::string& errorName);
-
-		/***
-		 * @brief Initialization of static error map
-		 * @param initList - list of errors used internally by LLU
-		 * @return reference to static error map
-		 */
-		static ErrorMap registerLLUErrors(std::initializer_list<ErrorStringData> initList);
-
-		/// Static map of registered errors
-		static ErrorMap& errors();
-
-		/// Id that will be assigned to the next registered error.
-		static int& nextErrorId();
-	};
-
-	template<class Error, typename... Args>
-	void ErrorManager::throwCustomException(const std::string& errorName, Args&&... args) {
-		throw Error(findError(errorName), std::forward<Args>(args)...);
-	}
-
-} /* namespace LibraryLinkUtils */
-
-#endif /* LLUTILS_LIBRARYLINKERROR_H_ */
+#endif //LLUTILS_ERRORS_H

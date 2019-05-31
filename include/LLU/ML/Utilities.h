@@ -12,7 +12,7 @@
 
 #include "mathlink.h"
 
-#include "../LibraryLinkError.h"
+#include "LLU/ErrorLog/Errors.h"
 #include "EncodingTraits.hpp"
 
 namespace LibraryLinkUtils {
@@ -33,6 +33,13 @@ namespace LibraryLinkUtils {
 		 * @param[in] 	debugInfo - additional info to be attached to the exception
 		 */
 		void checkError(MLINK m, int statusOk, const std::string& errorName, const std::string& debugInfo = "");
+
+		/**
+		 * @brief	Simple wrapper over ErrorManager::throwException used to break dependency cycle between MLStream and ErrorManager.
+		 * @param 	errorName - what error name to put in the exception
+		 * @param 	debugInfo - additional info to be attached to the exception
+		 */
+		[[noreturn]] void throwLLUException(const std::string& errorName, const std::string& debugInfo = "");
 
 		/**
 		 * @struct 	Symbol

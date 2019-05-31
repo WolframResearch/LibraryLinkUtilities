@@ -13,7 +13,7 @@
 
 #include "mathlink.h"
 
-#include "LLU/LibraryLinkError.h"
+#include "LLU/ErrorLog/Errors.h"
 #include "LLU/ML/Release.h"
 #include "LLU/Utilities.hpp"
 

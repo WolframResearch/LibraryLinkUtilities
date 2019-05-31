@@ -1,4 +1,3 @@
-#include "WolframLibrary.h"
 #include "LLU/MArgumentManager.h"
 
 using namespace LibraryLinkUtils;
