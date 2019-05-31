@@ -119,7 +119,7 @@ namespace LibraryLinkUtils {
 
 	private:
 		/// Name of the WL function, to which log elements will be sent as arguments via MathLink.
-		static constexpr const char* topLevelLogCallback = "LLU`Logger`Log";
+		static constexpr const char* topLevelLogCallback = "LLU`Logger`LogHandler";
 
 		static std::string logSymbolContext;
 	};
