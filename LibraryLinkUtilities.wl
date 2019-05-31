@@ -9,17 +9,16 @@ InitLibraryLinkUtils[libPath_?StringQ] :=
 If[TrueQ[$InitLibraryLinkUtils],
 	$InitLibraryLinkUtils
 	, (* else *)
-	$InitLibraryLinkUtils =
-		Catch[
-			SetPacletLibrary[libPath];
-			SafeLibraryLoad[libPath];
-			$GetCErrorCodes = SafeMathLinkFunction["sendRegisteredErrors"];
-			$SetLoggerContext = LoadOptionalFunction @ Catch @ SafeLibraryFunction["setLoggerContext", {"UTF8String"}, "UTF8String"];
-			$SetExceptionDetailsContext = SafeLibraryFunction["setExceptionDetailsContext", {"UTF8String"}, "UTF8String"];
-			SetContexts[Context[$InitLibraryLinkUtils]]; (* Tell C++ part of LLU in which context were top-level symbols loaded. *)
-			True
-		]
-]	
+	$InitLibraryLinkUtils = (
+		SetPacletLibrary[libPath];
+		SafeLibraryLoad[libPath];
+		$GetCErrorCodes = SafeMathLinkFunction["sendRegisteredErrors"];
+		$SetLoggerContext = SafeLibraryFunction["setLoggerContext", {"UTF8String"}, "UTF8String", "Optional" -> True];
+		$SetExceptionDetailsContext = SafeLibraryFunction["setExceptionDetailsContext", {"UTF8String"}, "UTF8String"];
+		SetContexts[Context[$InitLibraryLinkUtils]]; (* Tell C++ part of LLU in which context were top-level symbols loaded. *)
+		True
+	)
+];
 
 
 (* ::Section:: *)
@@ -62,9 +61,6 @@ Block[{name = Select[$CorePacletFailureLUT, MatchQ[#, {errorCode, _}] &]},
 	]
 ];
 
-LoadOptionalFunction[_?FailureQ] := Null&; (* Return a function that always returns Null *)
-LoadOptionalFunction[f_] := f;
-
 AppendBacktickIfNeeded[s_?StringQ] := If[StringEndsQ[s, "`"], s, s <> "`"];
 
 SetLoggerContext[context_?StringQ] :=
@@ -101,14 +97,22 @@ SafeLibraryLoad[lib_] :=
 		]
 	]
 
-SafeLibraryFunctionLoad[args___] :=
+Options[SafeLibraryFunctionLoad] = {
+	"Optional" -> False
+};
+
+SafeLibraryFunctionLoad[args___, opts : OptionsPattern[SafeLibraryFunctionLoad]] :=
 	Quiet[
 		Check[
 			LibraryFunctionLoad[$PacletLibrary, args]
 			,
-			Throw @ CreatePacletFailure["FunctionLoadFailure", "MessageParameters" -> <|"FunctionName" -> First[{args}], "LibraryName" -> $PacletLibrary|>];
+			If[TrueQ @ OptionValue["Optional"],
+				Null&
+				,
+				Throw @ CreatePacletFailure["FunctionLoadFailure", "MessageParameters" -> <|"FunctionName" -> First[{args}], "LibraryName" -> $PacletLibrary|>]
+			]
 		]
-	]
+	];
 
 Options[SafeLibraryFunction] = {
 	"ProgressMonitor" -> None,
@@ -117,22 +121,24 @@ Options[SafeLibraryFunction] = {
 
 holdSet[Hold[sym_], rhs_] := sym = rhs;
 
-SafeLibraryFunction[fname_?StringQ, fParams_, retType_, opts : OptionsPattern[SafeLibraryFunction]] :=
-Module[{errorHandler, pmSymbol, newParams, f},
-    errorHandler = If[TrueQ[OptionValue["Throws"]],
+SafeLibraryFunction[fname_?StringQ, fParams_, retType_, opts : OptionsPattern[]] :=
+Module[{errorHandler, pmSymbol, newParams, f, functionOptions, loadOptions},
+	functionOptions = FilterRules[{opts}, Options[SafeLibraryFunction]];
+    errorHandler = If[TrueQ[OptionValue[Automatic, functionOptions, "Throws"]],
 	    CatchAndThrowLibraryFunctionError
 		,
 	    CatchLibraryFunctionError
     ];
-    pmSymbol = OptionValue[Automatic, Automatic, "ProgressMonitor", Hold];
+    pmSymbol = OptionValue[Automatic, functionOptions, "ProgressMonitor", Hold];
+	loadOptions = FilterRules[{opts}, Options[SafeLibraryFunctionLoad]];
     If[fParams === LinkObject || pmSymbol === Hold[None],
-	    errorHandler @* SafeLibraryFunctionLoad[fname, fParams, retType]
+	    errorHandler @* SafeLibraryFunctionLoad[fname, fParams, retType, loadOptions]
 	    , (* else *)
 	    If[Not @ Developer`SymbolQ @ ReleaseHold @ pmSymbol,
 		    Throw @ CreatePacletFailure["ProgressMonInvalidValue"];
 	    ];
 	    newParams = Append[fParams, {Real, 1, "Shared"}];
-	    f = errorHandler @* SafeLibraryFunctionLoad[fname, newParams, retType];
+	    f = errorHandler @* SafeLibraryFunctionLoad[fname, newParams, retType, loadOptions];
 	    (
 		    holdSet[pmSymbol, Developer`ToPackedArray[{0.0}]];
 		    f[##, ReleaseHold[pmSymbol]]
@@ -150,9 +156,7 @@ SafeMathLinkFunction[fname_String, opts : OptionsPattern[SafeLibraryFunction]] :
 
 RegisterPacletErrors[libPath_?StringQ, errors_?AssociationQ] :=
 Block[{cErrorCodes, max},
-	If[!TrueQ[InitLibraryLinkUtils[libPath]],
-		Throw @ CreatePacletFailure["LibraryLoadFailure", "MessageParameters" -> <|"LibraryName" -> libPath|>];
-	];
+	InitLibraryLinkUtils[libPath];
 	cErrorCodes = $GetCErrorCodes[]; (* <|"TestError1" -> (-1 -> "TestError1 message."), "TestError2" -> (-2 -> "TestError2 message.")|> *)
 	If[Length[$CorePacletFailureLUT] > 0,
 		max = MaximalBy[$CorePacletFailureLUT, First];
