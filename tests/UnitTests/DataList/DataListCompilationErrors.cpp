@@ -15,7 +15,7 @@ LIBRARY_LINK_FUNCTION(WrongNodeType) {
 	try {
 		MArgumentManager mngr { Argc, Args, Res };
 		auto dsIn = mngr.getDataList<MArgumentType::Tensor>(0);
-		dsIn.push_back<MArgumentType::DataStore>(dsIn.getInternal()); // compile time error - "Trying to add DataList node of incorrect type."
+		dsIn.push_back<MArgumentType::DataStore>(dsIn.getContainer()); // compile time error - "Trying to add DataList node of incorrect type."
 		mngr.setDataList(dsIn);
 	} catch (const LibraryLinkError& e) {
 		err = e.which();
@@ -31,7 +31,7 @@ LIBRARY_LINK_FUNCTION(TryToAddMArgument) {
 		MArgumentManager mngr{ Argc, Args, Res };
 		auto dsIn = mngr.getDataList<MArgumentType::Real>(0);
 
-		LibraryLinkUtils::Argument<MArgumentType::MArgument>::addDataStoreNode(dsIn.getInternal(), "NoName", Args[0]); // compile time error - attempting to use deleted function
+		LibraryLinkUtils::Argument<MArgumentType::MArgument>::addDataStoreNode(dsIn.getContainer(), "NoName", Args[0]); // compile time error - attempting to use deleted function
 
 		mngr.setDataList(dsIn);
 	}

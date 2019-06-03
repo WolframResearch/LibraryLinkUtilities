@@ -41,7 +41,7 @@ LIBRARY_LINK_FUNCTION(PassDataStore) {
 	auto err = LLErrorCode::NoError;
 	try {
 		MArgumentManager mngr { Argc, Args, Res };
-		auto dlIn = mngr.getDataList<MArgumentType::MArgument>(0);
+		auto dlIn { mngr.getDataList<MArgumentType::MArgument>(0) };
 		auto returnCopyQ = mngr.getBoolean(1);
 
 		if (returnCopyQ) {
@@ -237,7 +237,7 @@ LIBRARY_LINK_FUNCTION(SeparateKeysAndValues) {
 			values.push_back(listElem.getValue());
 		}
 
-		DataList<MArgumentType::DataStore> dsOut { {"Keys", keys.disownInternal()}, {"Values", values.disownInternal()}};
+		DataList<MArgumentType::DataStore> dsOut { {"Keys", keys.abandonContainer()}, {"Values", values.abandonContainer()}};
 		mngr.setDataList(dsOut);
 	} catch (const LibraryLinkError& e) {
 		err = e.which();

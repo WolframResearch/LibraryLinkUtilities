@@ -179,12 +179,13 @@ namespace LibraryLinkUtils {
 		 */
 		enum class ConversionMethod {
 			Check = MNumericArray_Convert_Check,
-			Clip = MNumericArray_Convert_Clip,
+			ClipCheck = MNumericArray_Convert_Clip_Check,
+			Coerce = MNumericArray_Convert_Coerce,
+			ClipCoerce = MNumericArray_Convert_Clip_Coerce,
 			Round = MNumericArray_Convert_Round,
 			ClipRound = MNumericArray_Convert_Clip_Round,
+			Scale = MNumericArray_Convert_Scale,
 			ClipScale = MNumericArray_Convert_Clip_Scale,
-			Cast = MNumericArray_Convert_Cast,
-			Reinterpret = MNumericArray_Convert_Reinterpret
 		};
 	}
 

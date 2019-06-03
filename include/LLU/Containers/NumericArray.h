@@ -19,7 +19,6 @@
 #include "LLU/Containers/Passing/PassingPolicy.hpp"
 #include "LLU/Containers/Passing/Automatic.hpp"
 #include "LLU/Containers/Passing/Manual.hpp"
-#include "LLU/LibraryLinkError.h"
 #include "LLU/Containers/MContainer.hpp"
 #include "LLU/Utilities.hpp"
 
@@ -78,7 +77,7 @@ namespace LibraryLinkUtils {
 		 *
 		 *   @warning		It is user's responsibility to make sure that length of v fits into mint!
 		 **/
-		template<typename Container, typename = disable_if_same_or_derived<NumericArray<T>, Container>>
+		template<typename Container, typename = disable_if_same_or_derived<NumericArray, Container>>
 		NumericArray(Container&& v);
 
 		/**
@@ -158,13 +157,13 @@ namespace LibraryLinkUtils {
 		NumericArray(const MNumericArray na);
 
 		/**
-		 *   @brief         Create NumericArray from NumericArray of different type
+		 *   @bri	ef         Create NumericArray from NumericArray of different type
 		 *   @tparam		U - data type of the NumericArray to be converted
 		 *   @param[in]     other - const reference to a NumericArray any type
 		 *   @param[in]		method - conversion method to be used
 		 **/
 		template<typename U, class P>
-		NumericArray(const NumericArray<U, P>& other, NA::ConversionMethod method = NA::ConversionMethod::ClipRound);
+		NumericArray(const NumericArray<U, P>& other, NA::ConversionMethod method = NA::ConversionMethod::ClipRound, double param = 0.0);
 
 		/**
 		 *   @brief         Copy constructor
@@ -318,8 +317,8 @@ namespace LibraryLinkUtils {
 
 	template<typename T, class PassingMode>
 	template<typename U, class P>
-	NumericArray<T, PassingMode>::NumericArray(const NumericArray<U, P>& other, NA::ConversionMethod method) : MArray<T>(other),
-	        GenericNumericArray(other.convert()) {
+	NumericArray<T, PassingMode>::NumericArray(const NumericArray<U, P>& other, NA::ConversionMethod method, double param) : TypedNumericArray<T>(other),
+	        GenericNumericArray(other.convert(this->getType(), method, param)) {
 		if (!this->naFuns) {
 			initError();
 		}

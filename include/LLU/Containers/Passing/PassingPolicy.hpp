@@ -34,7 +34,8 @@ namespace LibraryLinkUtils {
 			PassingPolicy() = default;
 			PassingPolicy(const PassingPolicy&) = default;
 			PassingPolicy(PassingPolicy&&) noexcept = default;
-			PassingPolicy& operator=(const PassingPolicy&) = default;
+
+			virtual PassingPolicy& operator=(const PassingPolicy&) = default;
 			PassingPolicy& operator=(PassingPolicy&&) noexcept = default;
 			virtual ~PassingPolicy() = default;
 

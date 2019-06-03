@@ -335,6 +335,11 @@ namespace LibraryLinkUtils {
 			static_assert(alwaysFalse<MArgT>, "Trying to add DataList node of incorrect type.");
 		}
 
+		template<MArgumentType MArgT, class P>
+		ValidNodeType<MArgT> push_back(const std::string &name, const MContainer<MArgT, P> &nodeData) {
+			push_back(name, nodeData.abandonInternal());
+		}
+
 		/**
 		 * @brief 	Add new node to the DataList.
 		 * @param 	nodeData - actual data to store in the new node

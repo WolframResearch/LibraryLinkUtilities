@@ -102,9 +102,10 @@ TestMatch[
 ]
 
 Test[
-	convert[NumericArray[{3.5}], 5 (* Round *), 0]
+	na = NumericArray[{3.5}];
+	convert[na, 5 (* Round *), 0]
 	,
-	NumericArray[NumericArray[{3.5}], "UnsignedInteger16", "Round"]
+	NumericArray[NumericArray[{3.5}], "UnsignedInteger16", "Round", Tolerance -> 0]
 	,
 	TestID->"NumericArrayTestSuite-20181105-I0C6A3"
 ]
@@ -125,7 +126,7 @@ TestMatch[
 Test[
 	convert[NumericArray[Range[10]], 8 (* ClipAndScale *), 1]
 	,
-	NumericArray[NumericArray[Range[10]], "UnsignedInteger16", "ClipAndScale"]
+	NumericArray[NumericArray[Range[10]], "UnsignedInteger16", "ClipAndScale", Tolerance -> 1]
 	,
 	TestID->"NumericArrayTestSuite-20181105-W8Z5G6"
 ]

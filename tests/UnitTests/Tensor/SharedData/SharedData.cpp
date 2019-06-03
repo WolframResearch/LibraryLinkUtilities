@@ -4,7 +4,6 @@
 
 #include "LLU/LibraryLinkFunctionMacro.h"
 #include "LLU/MArgumentManager.h"
-#include "LLU/LibraryLinkError.h"
 #include "LLU/Containers/Tensor.h"
 #include "LLU/Containers/Passing/Shared.hpp"
 

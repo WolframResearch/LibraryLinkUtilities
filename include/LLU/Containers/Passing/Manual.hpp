@@ -17,13 +17,13 @@ namespace LibraryLinkUtils {
 		public:
 			Manual() : PassingPolicy(true) {}
 
-			Manual(const Manual&) : PassingPolicy(true) {};
+			Manual(const PassingPolicy&) : PassingPolicy(true) {};
 
 			Manual(Manual&& other) noexcept : PassingPolicy(true) {
 				other.setOwner(false);
 			}
 
-			Manual& operator=(const Manual&) {
+			Manual& operator=(const PassingPolicy&) noexcept override {
 				setOwner(true);
 				return *this;
 			};
@@ -34,7 +34,7 @@ namespace LibraryLinkUtils {
 				return *this;
 			}
 
-			~Manual() = default;
+			~Manual() override = default;
 
 			void cleanup() const noexcept override {
                 if (isOwner()) {

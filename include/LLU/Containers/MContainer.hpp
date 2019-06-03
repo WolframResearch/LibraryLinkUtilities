@@ -13,7 +13,6 @@
 
 #include "LLU/Containers/LibDataHolder.h"
 #include "LLU/Containers/Passing/Manual.hpp"
-#include "LLU/LibraryLinkError.h"
 #include "LLU/MArgument.h"
 #include "LLU/Utilities.hpp"
 
@@ -31,7 +30,8 @@ namespace LibraryLinkUtils {
 		explicit MContainerBase(Container c) : container(c) {}
 
 		template<class P>
-		MContainerBase(const MContainerBase<Type, P>& mc) : PassingMode(mc), container(mc.clone()) {}
+		MContainerBase(const MContainerBase<Type, P>& mc) : PassingMode(mc), container(mc.clone()) {
+		}
 
         template<class P>
 		MContainerBase(MContainerBase<Type, P>&& mc) noexcept : PassingMode(std::move(mc)), container(mc.container) {
@@ -86,7 +86,6 @@ namespace LibraryLinkUtils {
 		 *   Therefore passing or returning MTensors as "Shared" is discouraged and if you do that you are responsible for managing MTensor memory.
 		 **/
 		void disown() const noexcept override {
-            std::cout << "Disowning a tensor" << std::endl;
 			if (container) {
 				disownImpl();
 			}
@@ -105,6 +104,11 @@ namespace LibraryLinkUtils {
 		}
 
 		Container getContainer() const noexcept {
+			return container;
+		}
+
+		Container abandonContainer() const noexcept {
+			this->setOwner(false);
 			return container;
 		}
 
@@ -203,7 +207,7 @@ namespace LibraryLinkUtils {
 		}
 
 		void passImpl(MArgument& res) const noexcept override {
-			MArgument_setMTensor(res, this->getContainer());
+			MArgument_setMTensor(res, this->abandonContainer());
 		}
 
 		RawContainer cloneImpl() const override {
@@ -235,12 +239,18 @@ namespace LibraryLinkUtils {
 
 		MContainer(RawContainer i) : Base(i), imgFuns(LibDataHolder::getImageFunctions()) {}
 
+		template<class P>
+		MContainer(const MContainer<MArgumentType::Image, P> &mc) : Base(mc), imgFuns(LibDataHolder::getImageFunctions()) {}
+
+		template<class P>
+		MContainer(MContainer<MArgumentType::Image, P> &&mc) noexcept : Base(std::move(mc)), imgFuns(LibDataHolder::getImageFunctions()) {
+		}
+
         ~MContainer() {
             this->cleanup();
         };
 
-		template<class P>
-		MContainer<MArgumentType::Image, P> convert(imagedata_t t, mbool interleavingQ) const {
+		MContainer<MArgumentType::Image, Passing::Manual> convert(imagedata_t t, mbool interleavingQ) const {
 			auto newImage = imgFuns->MImage_convertType(this->getContainer(), t, interleavingQ);
 			if (!newImage) {
 				ErrorManager::throwException(LLErrorName::ImageNewError, "Conversion to type " + std::to_string(static_cast<int>(t)) + " failed.");
@@ -248,8 +258,7 @@ namespace LibraryLinkUtils {
 			return newImage;
 		}
 
-		template<class P>
-		MContainer<MArgumentType::Image, P> convert(imagedata_t t) const {
+		MContainer<MArgumentType::Image, Passing::Manual> convert(imagedata_t t) const {
 			return convert(t, interleavedQ());
 		}
 
@@ -392,10 +401,11 @@ namespace LibraryLinkUtils {
             this->cleanup();
         };
 
-		template<class P>
-		MContainer<MArgumentType::NumericArray, P> convert(numericarray_data_t t, NA::ConversionMethod method) const {
-			auto newNA = LibDataHolder::getLibraryData()->numericarrayLibraryFunctions->MNumericArray_convertType(this->getContainer(), t, static_cast<numericarray_convert_method_t>(method));
-			if (!newNA) {
+		MContainer<MArgumentType::NumericArray, Passing::Manual> convert(numericarray_data_t t, NA::ConversionMethod method, double param) const {
+			MNumericArray newNA = nullptr;
+			auto err = LibDataHolder::getLibraryData()->numericarrayLibraryFunctions->MNumericArray_convertType(&newNA, this->getContainer(), t,
+					static_cast<numericarray_convert_method_t>(method), param);
+			if (err) {
 				ErrorManager::throwException(LLErrorName::NumericArrayConversionError, "Conversion to type " + std::to_string(static_cast<int>(t)) + " failed.");
 			}
 			return newNA;
@@ -439,6 +449,25 @@ namespace LibraryLinkUtils {
 		}
 
 		MContainer(RawContainer t) : Base(t) {};
+
+		template<class P>
+		MContainer(const MContainer<MArgumentType::DataStore, P> &mc) : Base(mc) {}
+
+		template<class P>
+		MContainer(MContainer<MArgumentType::DataStore, P> &&mc) noexcept : Base(std::move(mc)) {
+		}
+
+		template<class P>
+		MContainer &operator=(const MContainer<MArgumentType::DataStore, P> &mc) {
+			Base::operator=(mc);
+			return *this;
+		}
+
+		template<class P>
+		MContainer &operator=(MContainer<MArgumentType::DataStore, P> &&mc) noexcept {
+			Base::operator=(mc);
+			return *this;
+		}
 
         ~MContainer() {
             this->cleanup();

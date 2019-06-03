@@ -17,7 +17,6 @@
 #include "LLU/Containers/Passing/PassingPolicy.hpp"
 #include "LLU/Containers/Passing/Automatic.hpp"
 #include "LLU/Containers/Passing/Manual.hpp"
-#include "LLU/LibraryLinkError.h"
 
 namespace LibraryLinkUtils {
 
@@ -150,6 +149,19 @@ namespace LibraryLinkUtils {
 		 **/
 		Image(const MImage mi);
 
+		/**
+		 *   @brief         Copy constructor
+		 *   @param[in]     other - const reference to an Image
+		 **/
+		template<class P>
+		Image(const Image<T, P>& other) : TypedImage<T>(other), GenericImage(other) {}
+
+		/**
+		 *   @brief         Move constructor
+		 *   @param[in]     other - rvalue reference to an Image
+		 **/
+		template<class P>
+		Image(Image<T, P>&& other) : TypedImage<T>(std::move(other)), GenericImage(std::move(other)) {}
 
 		/**
 		 *   @brief         Copy constructor with type conversion
@@ -234,7 +246,7 @@ namespace LibraryLinkUtils {
 
     template<typename T, class PassingMode>
     template<typename U, class P>
-    Image<T, PassingMode>::Image(const Image<U, P> &i2, bool interleavedQ) : TypedImage<T>(i2), GenericImage(i2.template convert<PassingMode>(this->getType(), interleavedQ)) {
+    Image<T, PassingMode>::Image(const Image<U, P> &i2, bool interleavedQ) : TypedImage<T>(i2), GenericImage(i2.convert(this->getType(), interleavedQ)) {
     }
 
 

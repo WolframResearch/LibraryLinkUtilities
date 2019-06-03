@@ -100,7 +100,8 @@ LIBRARY_LINK_FUNCTION(cloneNumericArray) {
 	try {
 		MArgumentManager mngr(Argc, Args, Res);
 		mngr.operateOnNumericArray(0, [&mngr](auto&& rarray1) {
-			auto rarray2 = rarray1;
+			using T = typename std::decay_t<decltype(rarray1)>::value_type;
+			NumericArray<T, Passing::Manual> rarray2 = rarray1;
 			mngr.setNumericArray(rarray2);
 		});
 	}
@@ -140,12 +141,13 @@ EXTERN_C DLLEXPORT int getSharedNumericArray(WolframLibraryData libData, mint Ar
 }
 
 struct ZeroReal64 {
-	template<typename T>
-	void operator()(NumericArray<T>, MArgumentManager&) {
+	template<typename T, class P>
+	void operator()(NumericArray<T, P>, MArgumentManager&) {
 		ErrorManager::throwException(LLErrorName::FunctionError);
 	}
 
-	void operator()(NumericArray<double>& ra, MArgumentManager& mngr) {
+	template<class P>
+	void operator()(NumericArray<double, P>& ra, MArgumentManager& mngr) {
 		std::fill(ra.begin(), ra.end(), 0.0);
 		mngr.setNumericArray(ra);
 	}
@@ -168,13 +170,13 @@ EXTERN_C DLLEXPORT int numericZeroData(WolframLibraryData libData, mint Argc, MA
 }
 
 struct AccumulateIntegers {
-	template<typename T>
-	std::enable_if_t<!std::is_integral<T>::value> operator()(NumericArray<T>, MArgumentManager&) {
+	template<typename T, class P>
+	std::enable_if_t<!std::is_integral<T>::value> operator()(NumericArray<T, P>, MArgumentManager&) {
 		ErrorManager::throwException(LLErrorName::FunctionError);
 	}
 
-	template<typename T>
-	std::enable_if_t<std::is_integral<T>::value> operator()(NumericArray<T> ra, MArgumentManager& mngr) {
+	template<typename T, class P>
+	std::enable_if_t<std::is_integral<T>::value> operator()(NumericArray<T, P> ra, MArgumentManager& mngr) {
 		auto result = std::accumulate(ra.begin(), ra.end(), static_cast<T>(0));
 		mngr.setInteger(result);
 	}
@@ -239,7 +241,7 @@ LIBRARY_LINK_FUNCTION(convert) {
 	auto err = LLErrorCode::NoError;
 	try {
 		MArgumentManager mngr(Argc, Args, Res);
-		mngr.operateOnNumericArray(0, [&mngr](const auto& numArr) {
+		mngr.operateOnNumericArray(0, [&mngr](auto&& numArr) {
 			NumericArray<std::uint16_t> converted { numArr, mngr.getInteger<NA::ConversionMethod>(1), mngr.getReal(2) };
 			mngr.setNumericArray(converted);
 		});

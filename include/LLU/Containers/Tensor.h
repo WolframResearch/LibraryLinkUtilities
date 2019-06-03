@@ -19,7 +19,6 @@
 #include "LLU/Containers/Passing/PassingPolicy.hpp"
 #include "LLU/Containers/Passing/Automatic.hpp"
 #include "LLU/Containers/Passing/Manual.hpp"
-#include "LLU/LibraryLinkError.h"
 #include "LLU/Utilities.hpp"
 
 namespace LibraryLinkUtils {

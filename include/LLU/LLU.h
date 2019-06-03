@@ -33,14 +33,14 @@ namespace LLErrorName = LibraryLinkUtils::LLErrorName;
 // Containers
 namespace Passing = LibraryLinkUtils::Passing;
 
-template<typename T>
-using NumericArray = LibraryLinkUtils::NumericArray<T>;
+template<typename T, class PassingMode = Passing::Manual>
+using NumericArray = LibraryLinkUtils::NumericArray<T, PassingMode>;
 
-template<typename T>
-using Tensor = LibraryLinkUtils::Tensor<T>;
+template<typename T, class PassingMode = Passing::Manual>
+using Tensor = LibraryLinkUtils::Tensor<T, PassingMode>;
 
-template<typename T>
-using Image = LibraryLinkUtils::Image<T>;
+template<typename T, class PassingMode = Passing::Manual>
+using Image = LibraryLinkUtils::Image<T, PassingMode>;
 
 template<LibraryLinkUtils::MArgumentType T, class PassingMode = Passing::Manual>
 using DataList = LibraryLinkUtils::DataList<T, PassingMode>;

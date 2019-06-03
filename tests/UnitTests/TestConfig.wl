@@ -22,7 +22,8 @@ options = {
 	"CompileOptions" -> If[MatchQ[$SystemID, "Windows-x86-64" | "Windows"], "/O2 /EHsc /W3 /std:c++14" , "-O2 -std=c++14 -Wall --pedantic -fvisibility=hidden"],
 	"ShellOutputFunction" -> Print,
 	"ShellCommandFunction" -> Print,
-	"Language" -> "C++"
+	"Language" -> "C++",
+	"Debug" -> True
 };
 
 (* If dynamic version of LLU was built, we want to load it to Mathematica before test libs are loaded *)
