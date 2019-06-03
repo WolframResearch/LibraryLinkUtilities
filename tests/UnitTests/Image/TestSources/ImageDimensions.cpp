@@ -1,10 +1,6 @@
-#include "WolframLibrary.h"
-
-#include "LLU/MArgumentManager.h"
-#include "LLU/LibraryLinkError.h"
+#include "LLU/LLU.h"
 #include "LLU/LibraryLinkFunctionMacro.h"
 
-using namespace LibraryLinkUtils;
 
 LIBRARY_LINK_FUNCTION(ImageColumnCount) {
 	auto err = LLErrorCode::NoError;

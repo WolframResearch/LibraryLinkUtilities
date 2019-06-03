@@ -8,7 +8,7 @@ $InitLibraryLinkUtils = False;
 InitLibraryLinkUtils[libPath_?StringQ] :=
 If[TrueQ[$InitLibraryLinkUtils],
 	$InitLibraryLinkUtils
-	,
+	, (* else *)
 	$InitLibraryLinkUtils =
 		Catch[
 			SetPacletLibrary[libPath];
@@ -53,8 +53,8 @@ $CorePacletFailureLUT = <|
 
 ErrorCodeToName[errorCode_Integer]:=
 Block[{name = Select[$CorePacletFailureLUT, MatchQ[#, {errorCode, _}] &]},
-	If[Length@name > 0 && Depth[name] > 2,
-		First@Keys@name
+	If[Length[name] > 0 && Depth[name] > 2,
+		First @ Keys @ name
 		,
 		""
 	]
@@ -103,13 +103,13 @@ SafeLibraryFunction[fname_?StringQ, fParams_, retType_, opts : OptionsPattern[Sa
 Module[{errorHandler, pmSymbol, newParams, f},
     errorHandler = If[TrueQ[OptionValue["Throws"]],
 	    CatchAndThrowLibraryFunctionError
-	,
+		,
 	    CatchLibraryFunctionError
     ];
     pmSymbol = OptionValue[Automatic, Automatic, "ProgressMonitor", Hold];
     If[fParams === LinkObject || pmSymbol === Hold[None],
 	    errorHandler @* SafeLibraryFunctionLoad[fname, fParams, retType]
-	    ,
+	    , (* else *)
 	    If[Not @ Developer`SymbolQ @ ReleaseHold @ pmSymbol,
 		    Throw @ CreatePacletFailure["ProgressMonInvalidValue"];
 	    ];
@@ -177,31 +177,52 @@ Options[CreatePacletFailure] = {
 };
 
 CreatePacletFailure[type_?StringQ, opts:OptionsPattern[]] :=
-Block[{msgParam, param, lookup},
-	msgParam = Replace[OptionValue["MessageParameters"], Except[_?AssociationQ] -> <||>];
+Block[{msgParam, param, errorCode, msgTemplate, errorType},
+	msgParam = Replace[OptionValue["MessageParameters"], Except[_?AssociationQ | _List] -> <||>];
 	param = Replace[OptionValue["Parameters"], {p_?StringQ :> {p}, Except[{_?StringQ.. }] -> {}}];
-	lookup =
+	{errorCode, msgTemplate} =
 		Lookup[
 			$CorePacletFailureLUT
 			,
 			errorType = type
 			,
-			(	
+			(
 				AppendTo[msgParam, "ErrorName" -> type];
 				$CorePacletFailureLUT[errorType = "UnknownFailure"]
 			)
 		];
 	$ErrorCount++;
+	If[errorCode < 0, (* if failure comes from the C++ code, extract message template parameters *)
+		msgParam = GetCCodeFailureParams[msgTemplate];
+	];
 	Failure[errorType,
 		<|
-			"MessageTemplate" -> lookup[[2]],
+			"MessageTemplate" -> msgTemplate,
 			"MessageParameters" -> msgParam,
-			"ErrorCode" -> lookup[[1]],
+			"ErrorCode" -> errorCode,
 			"Parameters" -> param
 		|>
 	]
 ]
 
+GetCCodeFailureParams[msgTemplate_String?StringQ] :=
+Block[{slotNames, slotValues, data},
+	slotNames = Cases[First @ StringTemplate[msgTemplate], TemplateSlot[s_] -> s];
+	slotNames = DeleteDuplicates[slotNames];
+	slotValues = If[ListQ[LLU`$LastFailureParameters], LLU`$LastFailureParameters, {}];
+	If[MatchQ[slotNames, {_Integer..}],
+		(* for numbered slots return just a list of slot template values *)
+		slotValues
+		, (* otherwise, return an Association with slot names as keys *)
+		(* If too many slot values came from C++ code - drop some, otherwise - pad with empty strings *)
+		slotValues = PadRight[slotValues, Length[slotNames], ""];
+		If[VectorQ[slotNames, StringQ],
+			AssociationThread[slotNames, slotValues]
+			, (* mixed slots are not officially supported but let's do the best we can *)
+			MapThread[If[StringQ[#1], <|#1 -> #2|>, #2]&, {slotNames, slotValues}]
+		]
+	]
+];
 
 (* ::SubSection:: *)
 (* CatchLibraryLinkError *)
@@ -224,7 +245,7 @@ With[{result = Quiet[f, {
 	
 	If[Head[result] === LibraryFunctionError,
 		CreatePacletFailure[ErrorCodeToName[result[[2]]]]
-	, (* else *)
+		, (* else *)
 		result
 	]
 ]
@@ -241,8 +262,8 @@ With[{result = Quiet[f, {
 	}]}, 
 	
 	If[Head[result] === LibraryFunctionError,
-		Throw@CreatePacletFailure[ErrorCodeToName[result[[2]]]]
-	, (* else *)
+		Throw @ CreatePacletFailure[ErrorCodeToName[result[[2]]]]
+		, (* else *)
 		result
 	]
 ]

@@ -9,8 +9,6 @@
 #ifndef LLUTILS_MARGUMENTMANAGER_H_
 #define LLUTILS_MARGUMENTMANAGER_H_
 
-#include "WolframLibrary.h"
-
 #include <complex>
 #include <cstdint>
 #include <limits>
@@ -18,7 +16,7 @@
 #include <string>
 #include <vector>
 
-#include "LibraryLinkError.h"
+#include "LLU/ErrorLog/ErrorManager.h"
 #include "LLU/Containers/DataList.h"
 #include "LLU/Containers/Image.h"
 #include "LLU/Containers/LibDataHolder.h"
@@ -27,6 +25,8 @@
 #include "LLU/Containers/Passing/Automatic.hpp"
 #include "LLU/MArgument.h"
 #include "LLU/ProgressMonitor.h"
+
+#include "WolframLibrary.h"
 
 namespace LibraryLinkUtils {
 
@@ -502,7 +502,7 @@ namespace LibraryLinkUtils {
 				op(this->getNumericArray<std::complex<double>>(index), std::forward<Args>(args)...);
 				break;
 			default:
-				ErrorManager::throwException(LLErrorName::MArgumentNumericArrayError, "Incorrect type of NumericArray argument. Argument index: " + std::to_string(index));
+				ErrorManager::throwExceptionWithDebugInfo(LLErrorName::MArgumentNumericArrayError, "Incorrect type of NumericArray argument. Argument index: " + std::to_string(index));
 		}
 	}
 
@@ -546,7 +546,7 @@ namespace LibraryLinkUtils {
 				op(this->getNumericArray<std::complex<double>>(index));
 				break;
 			default:
-				ErrorManager::throwException(LLErrorName::MArgumentNumericArrayError, "Incorrect type of NumericArray argument. Argument index: " + std::to_string(index));
+				ErrorManager::throwExceptionWithDebugInfo(LLErrorName::MArgumentNumericArrayError, "Incorrect type of NumericArray argument. Argument index: " + std::to_string(index));
 		}
 	}
 
@@ -575,7 +575,7 @@ namespace LibraryLinkUtils {
 				op(this->getTensor<std::complex<double>>(index), std::forward<Args>(args)...);
 				break;
 			default:
-				ErrorManager::throwException(LLErrorName::MArgumentTensorError, "Incorrect type of Tensor argument. Argument index: " + std::to_string(index));
+				ErrorManager::throwExceptionWithDebugInfo(LLErrorName::MArgumentTensorError, "Incorrect type of Tensor argument. Argument index: " + std::to_string(index));
 		}
 	}
 
@@ -593,7 +593,7 @@ namespace LibraryLinkUtils {
 				op(this->getTensor<std::complex<double>>(index));
 				break;
 			default:
-				ErrorManager::throwException(LLErrorName::MArgumentTensorError, "Incorrect type of Tensor argument. Argument index: " + std::to_string(index));
+				ErrorManager::throwExceptionWithDebugInfo(LLErrorName::MArgumentTensorError, "Incorrect type of Tensor argument. Argument index: " + std::to_string(index));
 		}
 	}
 
@@ -628,7 +628,7 @@ namespace LibraryLinkUtils {
 				op(this->getImage<double>(index), std::forward<Args>(args)...);
 				break;
 			default:
-				ErrorManager::throwException(LLErrorName::MArgumentImageError, "Incorrect type of Image argument. Argument index: " + std::to_string(index));
+				ErrorManager::throwExceptionWithDebugInfo(LLErrorName::MArgumentImageError, "Incorrect type of Image argument. Argument index: " + std::to_string(index));
 		}
 	}
 
@@ -651,7 +651,7 @@ namespace LibraryLinkUtils {
 				op(this->getImage<double>(index));
 				break;
 			default:
-				ErrorManager::throwException(LLErrorName::MArgumentImageError, "Incorrect type of Image argument. Argument index: " + std::to_string(index));
+				ErrorManager::throwExceptionWithDebugInfo(LLErrorName::MArgumentImageError, "Incorrect type of Image argument. Argument index: " + std::to_string(index));
 		}
 	}
 

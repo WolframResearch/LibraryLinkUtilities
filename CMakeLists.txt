@@ -13,7 +13,7 @@ if(NOT DEFINED ENV{MACOSX_DEPLOYMENT_TARGET})
 	set(CMAKE_OSX_DEPLOYMENT_TARGET "10.10" CACHE STRING "Minimum OS X deployment version")
 endif()
 
-project(LLU VERSION 0.0.1 LANGUAGES CXX)
+project(LLU VERSION 1.0.0 LANGUAGES CXX)
 
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 
@@ -24,7 +24,7 @@ option(BUILD_SHARED_LIBS "Whether to build LLU as a shared library (default is s
 mark_as_advanced(BUILD_SHARED_LIBS)
 
 #Mathematica version
-set(MATHEMATICA_VERSION 12.0 CACHE STRING "Mathematica version")
+set(MATHEMATICA_VERSION 12.1 CACHE STRING "Mathematica version")
 
 #Mathematica location
 if(NOT MATHEMATICA_INSTALL_DIR)
@@ -73,7 +73,7 @@ if(NOT TARGET LLU)
 	set(LLU_SOURCE_FILES
 		${LLU_SOURCE_DIR}/Containers/Image.cpp
 		${LLU_SOURCE_DIR}/Containers/LibDataHolder.cpp
-		${LLU_SOURCE_DIR}/LibraryLinkError.cpp
+		${LLU_SOURCE_DIR}/ErrorLog/LibraryLinkError.cpp
 		${LLU_SOURCE_DIR}/MArgumentManager.cpp
 		${LLU_SOURCE_DIR}/Containers/MArrayBase.cpp
 		${LLU_SOURCE_DIR}/Containers/NumericArray.cpp
@@ -85,6 +85,8 @@ if(NOT TARGET LLU)
 		${LLU_SOURCE_DIR}/ML/Utilities.cpp
 		${LLU_SOURCE_DIR}/MArgument.cpp
 		${LLU_SOURCE_DIR}/ProgressMonitor.cpp
+        ${LLU_SOURCE_DIR}/ErrorLog/ErrorManager.cpp
+		${LLU_SOURCE_DIR}/ErrorLog/Errors.cpp
 	)
 
 	#add the main library

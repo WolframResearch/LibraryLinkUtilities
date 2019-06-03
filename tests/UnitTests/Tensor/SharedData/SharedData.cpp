@@ -1,10 +1,4 @@
-#include "WolframLibrary.h"
-
-#include "LLU/MArgumentManager.h"
-#include "LLU/LibraryLinkError.h"
-#include "LLU/Containers/Tensor.h"
-
-using namespace LibraryLinkUtils;
+#include "LLU/LLU.h"
 
 static Tensor<double> tensor;
 

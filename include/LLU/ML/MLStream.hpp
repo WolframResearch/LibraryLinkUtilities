@@ -7,6 +7,7 @@
 #ifndef LLUTILS_MLSTREAM_HPP_
 #define LLUTILS_MLSTREAM_HPP_
 
+#include <algorithm>
 #include <iterator>
 #include <map>
 #include <stack>
@@ -16,6 +17,7 @@
 
 #include "mathlink.h"
 
+#include "LLU/ErrorLog/Errors.h"
 #include "LLU/Utilities.hpp"
 #include "Utilities.h"
 #include "UtilityTypeTraits.hpp"
@@ -588,14 +590,14 @@ namespace LibraryLinkUtils {
 	void MLStream<EIn, EOut>::testHead(const std::string& head, int argc) {
 		int argcount = testHead(head);
 		if (argc != argcount) {
-			ErrorManager::throwException(LLErrorName::MLTestHeadError, "Expected " + std::to_string(argc) + " arguments but got " + std::to_string(argcount));
+			ML::throwLLUException(LLErrorName::MLTestHeadError, "Expected " + std::to_string(argc) + " arguments but got " + std::to_string(argcount));
 		}
 	}
 
 	template<ML::Encoding EIn, ML::Encoding EOut>
 	void MLStream<EIn, EOut>::refreshCurrentMLINK() {
 		if (loopbackStack.empty()) {
-			ErrorManager::throwException(LLErrorName::MLLoopbackStackSizeError, "Stack is empty in refreshCurrentMLINK()");
+			ML::throwLLUException(LLErrorName::MLLoopbackStackSizeError, "Stack is empty in refreshCurrentMLINK()");
 		}
 		m = std::get<MLINK>(loopbackStack.top());
 	}
@@ -667,7 +669,7 @@ namespace LibraryLinkUtils {
 	auto MLStream<EIn, EOut>::operator<<(const ML::DropExpr&) -> MLStream& {
 		// check if the stack has reasonable size
 		if (loopbackStack.size() < 2) {
-			ErrorManager::throwException(LLErrorName::MLLoopbackStackSizeError, "Trying to Drop expression with loopback stack size " + std::to_string(loopbackStack.size()));
+			ML::throwLLUException(LLErrorName::MLLoopbackStackSizeError, "Trying to Drop expression with loopback stack size " + std::to_string(loopbackStack.size()));
 		}
 		// we are dropping the expression so just close the link and hope that MathLink will do the cleanup
 		MLClose(std::get<MLINK>(loopbackStack.top()));
@@ -691,7 +693,7 @@ namespace LibraryLinkUtils {
 
 		// check if the stack has reasonable size
 		if (loopbackStack.size() < 2) {
-			ErrorManager::throwException(LLErrorName::MLLoopbackStackSizeError, "Trying to End expression with loopback stack size " + std::to_string(loopbackStack.size()));
+			ML::throwLLUException(LLErrorName::MLLoopbackStackSizeError, "Trying to End expression with loopback stack size " + std::to_string(loopbackStack.size()));
 		}
 
 		// extract active loopback link and expression head
@@ -754,7 +756,7 @@ namespace LibraryLinkUtils {
 	    if constexpr (ML::scalarSupportedTypeQ<T>) {
             ML::PutList<T>::put(m, l.data(), static_cast<int>(l.size()));
 	    } else {
-            *this << ML::List(l.size());
+            *this << ML::List(static_cast<int>(l.size()));
             for (const auto& elem : l) {
                 *this << elem;
             }
@@ -890,7 +892,7 @@ namespace LibraryLinkUtils {
 			b = false;
 		}
 		else {
-			ErrorManager::throwException(LLErrorName::MLWrongSymbolForBool, R"(Expected "True" or "False", got )" + boolean.getHead());
+			ML::throwLLUException(LLErrorName::MLWrongSymbolForBool, R"(Expected "True" or "False", got )" + boolean.getHead());
 		}
 		return *this;
 	}

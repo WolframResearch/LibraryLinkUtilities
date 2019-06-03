@@ -14,7 +14,7 @@
 
 #include "WolframLibrary.h"
 
-#include "LLU/LibraryLinkError.h"
+#include "LLU/ErrorLog/ErrorManager.h"
 #include "MArray.hpp"
 #include "LLU/Utilities.hpp"
 
@@ -299,7 +299,7 @@ namespace LibraryLinkUtils {
 	Tensor<T>::Tensor(InputIt first, InputIt last, Container&& dims) : MArray<T>(std::forward<Container>(dims)) {
 		createInternal();
 		if (std::distance(first, last) != this->flattenedLength)
-			ErrorManager::throwException(LLErrorName::TensorNewError, "Length of data range does not match specified dimensions");
+			ErrorManager::throwExceptionWithDebugInfo(LLErrorName::TensorNewError, "Length of data range does not match specified dimensions");
 		this->setOwner(true);
 		std::copy(first, last, this->begin());
 	}
@@ -309,7 +309,7 @@ namespace LibraryLinkUtils {
 	Tensor<T>::Tensor(InputIt first, InputIt last, std::initializer_list<mint> dims) : MArray<T>(dims) {
 		createInternal();
 		if (std::distance(first, last) != this->flattenedLength)
-			ErrorManager::throwException(LLErrorName::TensorNewError, "Length of data range does not match specified dimensions");
+			ErrorManager::throwExceptionWithDebugInfo(LLErrorName::TensorNewError, "Length of data range does not match specified dimensions");
 		this->setOwner(true);
 		std::copy(first, last, this->begin());
 	}

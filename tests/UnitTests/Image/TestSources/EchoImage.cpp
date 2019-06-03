@@ -1,13 +1,9 @@
-#include "WolframLibrary.h"
-#include "LLU/MArgumentManager.h"
-#include "LLU/Containers/Image.h"
-#include "LLU/LibraryLinkError.h"
+#include "LLU/LLU.h"
 #include "LLU/LibraryLinkFunctionMacro.h"
 
 #include <type_traits>
 #include <cstdint>
 
-using namespace LibraryLinkUtils;
 
 LIBRARY_LINK_FUNCTION(EchoImage1) {
 	auto err = LLErrorCode::NoError;

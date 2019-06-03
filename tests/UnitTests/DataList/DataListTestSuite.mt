@@ -271,7 +271,7 @@ Test[
 ];
 
 
-Test[
+TestMatch[
 	ReverseListOfStrings[Developer`DataStore["aaaa", "b", 2]]
 	,
 	Failure["DLInvalidNodeType", <|
@@ -280,8 +280,6 @@ Test[
 		"ErrorCode" -> n_?IntegerQ, 
 		"Parameters" -> {}
 	|>]
-	,
-	SameTest -> MatchQ
 	,
 	TestID->"DataListTestSuite-20180906-Z7K0I0"
 ];

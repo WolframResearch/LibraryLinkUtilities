@@ -15,7 +15,7 @@
 #include "WolframLibrary.h"
 #include "WolframNumericArrayLibrary.h"
 
-#include "LLU/LibraryLinkError.h"
+#include "LLU/ErrorLog/ErrorManager.h"
 #include "MArray.hpp"
 #include "LLU/Utilities.hpp"
 
@@ -27,10 +27,12 @@ namespace LibraryLinkUtils {
 		 */
 		enum class ConversionMethod {
 			Check = MNumericArray_Convert_Check,
+			ClipCheck = MNumericArray_Convert_Clip_Check,
             Coerce = MNumericArray_Convert_Coerce,
 			ClipCoerce = MNumericArray_Convert_Clip_Coerce,
 			Round = MNumericArray_Convert_Round,
 			ClipRound = MNumericArray_Convert_Clip_Round,
+			Scale = MNumericArray_Convert_Scale,
 			ClipScale = MNumericArray_Convert_Clip_Scale,
 		};
 	}
@@ -334,7 +336,7 @@ namespace LibraryLinkUtils {
 	NumericArray<T>::NumericArray(InputIt first, InputIt last, Container&& dims) : MArray<T>(std::forward<Container>(dims)) {
 		createInternal();
 		if (std::distance(first, last) != this->flattenedLength)
-			ErrorManager::throwException(LLErrorName::NumericArrayNewError, "Length of data range does not match specified dimensions");
+			ErrorManager::throwExceptionWithDebugInfo(LLErrorName::NumericArrayNewError, "Length of data range does not match specified dimensions");
 		this->setOwner(true);
 		std::copy(first, last, this->begin());
 	}
@@ -344,7 +346,7 @@ namespace LibraryLinkUtils {
 	NumericArray<T>::NumericArray(InputIt first, InputIt last, std::initializer_list<mint> dims) : MArray<T>(dims) {
 		createInternal();
 		if (std::distance(first, last) != this->flattenedLength)
-			ErrorManager::throwException(LLErrorName::NumericArrayNewError, "Length of data range does not match specified dimensions");
+			ErrorManager::throwExceptionWithDebugInfo(LLErrorName::NumericArrayNewError, "Length of data range does not match specified dimensions");
 		this->setOwner(true);
 		std::copy(first, last, this->begin());
 	}
@@ -375,11 +377,11 @@ namespace LibraryLinkUtils {
 		if (!this->naFuns) {
 			initError();
 		}
-		MNumericArray newInternal;
+		MNumericArray newInternal = nullptr;
 		auto status = this->naFuns->MNumericArray_convertType(&newInternal, other.getInternal(), type, static_cast<numericarray_convert_method_t>(method), tolerance);
-		if (!status) { // 0 means OK, but no way to learn anything more specific if conversion failed
-			ErrorManager::throwException(LLErrorName::NumericArrayConversionError,
-					"Conversion from type " + std::to_string(static_cast<int>(other.getType())) + " to " + std::to_string(static_cast<int>(this->type)) + " failed.");
+		if (status) { // 0 means OK, but no way to learn anything more specific if conversion failed
+			ErrorManager::throwExceptionWithDebugInfo(LLErrorName::NumericArrayConversionError,
+					"Conversion from type " + std::to_string(static_cast<int>(other.getType())) + " to " + std::to_string(static_cast<int>(type)) + " failed.");
 		}
 		this->setOwner(true);
 		extractPropertiesFromInternal(newInternal);
