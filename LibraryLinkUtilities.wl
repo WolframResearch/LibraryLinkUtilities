@@ -377,7 +377,7 @@ DiscardLog[___] := Null;
 
 (* Print to current notebook *)
 PrintLogToNotebook[args___] :=
-		Print @ FormattedLog[args];
+	Print @ FormattedLog[args];
 PrintLogToNotebook[LogFiltered] := DiscardLog[];
 
 (* Print to Messages window. Remember that this window may be hidden by default. *)
