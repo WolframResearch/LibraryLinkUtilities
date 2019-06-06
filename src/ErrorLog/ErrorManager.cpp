@@ -124,7 +124,7 @@ namespace LibraryLinkUtils {
 
 	void ErrorManager::set(const ErrorStringData& errorData) {
 		auto& errorMap = errors();
-		if (auto [elem, success] = errorMap.emplace(errorData.first, LibraryLinkError { nextErrorId()--, errorData.first, errorData.second }); success) {
+		if (auto [elem, success] = errorMap.emplace(errorData.first, LibraryLinkError { nextErrorId()--, errorData.first, errorData.second }); !success) {
 			// Revert nextErrorId because nothing was inserted
 			nextErrorId()++;
 

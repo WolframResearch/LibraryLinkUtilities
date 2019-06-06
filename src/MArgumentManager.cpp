@@ -151,4 +151,8 @@ namespace LibraryLinkUtils {
 		return ProgressMonitor { std::move(sharedIndicator), step };
 	}
 
+	void MArgumentManager::setDataStore(DataStore ds) {
+		MArgument_setDataStore(res, ds);
+	}
+
 } /* namespace LibraryLinkUtils */

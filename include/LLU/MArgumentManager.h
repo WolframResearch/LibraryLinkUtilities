@@ -368,6 +368,12 @@ namespace LibraryLinkUtils {
 		void setDataList(const DataList<T, PassingMode>& ds);
 
 		/**
+		 *
+		 * @param ds
+		 */
+		void setDataStore(DataStore ds);
+
+		/**
 		 * @brief 	Get ProgressMonitor shared with WL Kernel.
 		 * @param 	step - step value for progress monitor
 		 * @return	A new instance of ProgressMonitor class.
