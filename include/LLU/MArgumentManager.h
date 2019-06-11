@@ -374,6 +374,12 @@ namespace LibraryLinkUtils {
 		void setDataStore(DataStore ds);
 
 		/**
+		 *
+		 * @param sa
+		 */
+		void setSparseArray(MSparseArray sa);
+
+		/**
 		 * @brief 	Get ProgressMonitor shared with WL Kernel.
 		 * @param 	step - step value for progress monitor
 		 * @return	A new instance of ProgressMonitor class.

@@ -155,4 +155,7 @@ namespace LibraryLinkUtils {
 		MArgument_setDataStore(res, ds);
 	}
 
+	void MArgumentManager::setSparseArray(MSparseArray sa) {
+		MArgument_setMSparseArray(res, sa);
+	}
 } /* namespace LibraryLinkUtils */
