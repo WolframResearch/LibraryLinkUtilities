@@ -78,7 +78,7 @@ namespace LibraryLinkUtils {
 		 *   @warning		It is user's responsibility to make sure that length of v fits into mint!
 		 **/
 		template<typename Container, typename = disable_if_same_or_derived<NumericArray, Container>>
-		NumericArray(Container&& v);
+		explicit NumericArray(Container&& v);
 
 		/**
 		 *   @brief         Constructs flat NumericArray based on a list of elements
@@ -149,12 +149,14 @@ namespace LibraryLinkUtils {
 		NumericArray(InputIt first, InputIt last, std::initializer_list<mint> dims);
 
 		/**
-		 *   @brief         Constructs NumericArray based on MNumericArray
-		 *   @param[in]     na - LibraryLink structure to be wrapped
+		 *   @brief
+		 *   @param[in]     na -
 		 *   @throws        LLErrorName::NumericArrayInitError - if structure with WolframNumericArrayLibrary functions is not initialized
 		 *   @throws		LLErrorName::NumericArrayTypeError - if template parameter \b T does not match MNumericArray data type
 		 **/
-		NumericArray(const MNumericArray na);
+		NumericArray(MContainer<MArgumentType::NumericArray, PassingMode> na);
+
+		NumericArray(MNumericArray na);
 
 		/**
 		 *   @bri	ef         Create NumericArray from NumericArray of different type
@@ -238,12 +240,6 @@ namespace LibraryLinkUtils {
 		void sizeError() const override {
 			ErrorManager::throwException(LLErrorName::NumericArraySizeError);
 		}
-
-		/**
-		 * @brief 	Set \p na as internal container and extract properties like dimensions, depth and total length.
-		 * @param 	na - MNumericArray of matching type
-		 */
-		void extractPropertiesFromInternal();
 	};
 
 
@@ -297,23 +293,16 @@ namespace LibraryLinkUtils {
 	}
 
 	template<typename T, class PassingMode>
-	void NumericArray<T, PassingMode>::extractPropertiesFromInternal() {
-		auto internalNA = this->getContainer();
-		this->depth = this->naFuns->MNumericArray_getRank(internalNA);
-		this->flattenedLength = this->naFuns->MNumericArray_getFlattenedLength(internalNA);
-		const mint* rawDims = this->naFuns->MNumericArray_getDimensions(internalNA);
-		this->dims.assign(rawDims, rawDims + this->rank());
-		this->fillOffsets();
+	NumericArray<T, PassingMode>::NumericArray(GenericNumericArray na) : TypedNumericArray<T>(na.getDimensions(), na.getRank()),
+			GenericNumericArray(std::move(na)) {
+		if (!this->naFuns)
+			initError();
+		if (TypedNumericArray<T>::getType() != GenericNumericArray::type())
+			ErrorManager::throwException(LLErrorName::NumericArrayTypeError);
 	}
 
 	template<typename T, class PassingMode>
-	NumericArray<T, PassingMode>::NumericArray(const MNumericArray na) : GenericNumericArray(na) {
-		if (!this->naFuns)
-			initError();
-		if (TypedNumericArray<T>::getType() != this->naFuns->MNumericArray_getType(na))
-			ErrorManager::throwException(LLErrorName::NumericArrayTypeError);
-		extractPropertiesFromInternal();
-	}
+	NumericArray<T, PassingMode>::NumericArray(MNumericArray na) : NumericArray(GenericNumericArray { na }) {}
 
 	template<typename T, class PassingMode>
 	template<typename U, class P>
@@ -322,7 +311,6 @@ namespace LibraryLinkUtils {
 		if (!this->naFuns) {
 			initError();
 		}
-		extractPropertiesFromInternal();
 	}
 
 } /* namespace LibraryLinkUtils */

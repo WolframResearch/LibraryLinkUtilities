@@ -147,7 +147,7 @@ namespace LibraryLinkUtils {
 		 *   @throws		LLErrorName::ImageTypeError - if template parameter \b T does not match MImage data type
 		 *   @throws		LLErrorName::ImageSizeError - if constructor failed to calculate image dimensions properly
 		 **/
-		Image(const MImage mi);
+		Image(MImage mi);
 
 		/**
 		 *   @brief         Copy constructor
@@ -231,7 +231,7 @@ namespace LibraryLinkUtils {
 	}
 
 	template<typename T, class PassingMode>
-	Image<T, PassingMode>::Image(const MImage mi) : GenericImage(mi) {
+	Image<T, PassingMode>::Image(MImage mi) : GenericImage(mi) {
 		if (!imgFuns)
 			this->initError();
 		if (TypedImage<T>::getType() != GenericImage::type())

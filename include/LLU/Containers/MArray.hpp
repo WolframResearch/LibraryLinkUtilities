@@ -50,29 +50,7 @@ namespace LibraryLinkUtils {
 		/// Constant reference type
 		using const_reference = const value_type&;
 
-		MArray() = default;
-
-		/**
-		 * 	@brief		Constructs uninitialized container with given dimensions
-		 *	@param[in]	dims - list of MArray dimensions
-		 *	@throws		LLErrorName::DimensionsError - if \c dims are invalid
-		 *	@throws		LLErrorName::FunctionError - if any of Wolfram*Library structures was not initialized
-		 **/
-		MArray(std::initializer_list<mint> dims) : MArrayBase(dims) {}
-
-		/**
-		 * 	@brief		Constructs uninitialized container with given dimensions
-		 *	@param[in]	dims - container with MArray dimensions
-		 *	@tparam		Container - any type of container that has member \b value_type and this type is convertible to mint
-		 *	@throws		LLErrorName::DimensionsError - if \c dims are invalid
-		 *	@throws		LLErrorName::FunctionError - if any of Wolfram*Library structures was not initialized
-		 **/
-		template<
-			class Container,
-			typename = disable_if_same_or_derived<MArrayBase, Container>,
-			typename = typename std::enable_if_t<std::is_integral<typename std::remove_reference_t<Container>::value_type>::value>
-		>
-		MArray(Container&& dims) : MArrayBase(std::forward<Container>(dims)) {}
+		using MArrayBase::MArrayBase;
 
 
 		/**

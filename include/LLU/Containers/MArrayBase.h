@@ -47,6 +47,15 @@ namespace LibraryLinkUtils {
 
 		/**
 		 * 	@brief		Constructs uninitialized container with given dimensions
+		 *	@param[in]	dims - pointer to the memory where consecutive dimensions are stored
+		 *	@param[in]	rank - length of the \p dims array
+		 *	@throws		LLErrorName::DimensionsError - if \c dims are invalid
+		 *	@throws		LLErrorName::FunctionError - if any of Wolfram*Library structures was not initialized
+		 **/
+		MArrayBase(const mint* dims, mint rank);
+
+		/**
+		 * 	@brief		Constructs uninitialized container with given dimensions
 		 *	@param[in]	dims - container with MArray dimensions
 		 *	@tparam		Container - any type of container that has member \b value_type and this type is convertible to mint
 		 *	@throws		LLErrorName::DimensionsError - if \c dims are invalid

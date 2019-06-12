@@ -20,13 +20,21 @@ namespace LibraryLinkUtils {
 	MArrayBase::MArrayBase(std::initializer_list<mint> dimensions) {
 		if (!libData || !naFuns || !imgFuns)
 			initError();
-		depth = checkContainerSize(dimensions);
 		dims = dimensions;
+		depth = checkContainerSize(dimensions);
 		flattenedLength = totalLengthFromDims();
 		fillOffsets();
 	}
 
-
+	MArrayBase::MArrayBase(const mint *dimensions, mint rank) {
+		dims = std::vector<mint>(dimensions, dimensions + rank);
+		depth = checkContainerSize(dims);
+		if (depth != rank) {
+			//TODO throw exception
+		}
+		flattenedLength = totalLengthFromDims();
+		fillOffsets();
+	}
 
 	void MArrayBase::fillOffsets() {
 		offsets.assign(static_cast<decltype(offsets)::size_type>(rank()), 1);

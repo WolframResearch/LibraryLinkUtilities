@@ -166,12 +166,14 @@ namespace LibraryLinkUtils {
 		Tensor(InputIt first, InputIt last, std::initializer_list<mint> dims);
 
 		/**
-		 *   @brief         Constructs Tensor based on MTensor
-		 *   @param[in]     v - LibraryLink structure to be wrapped
+		 *   @brief
+		 *   @param[in]
 		 *   @throws        LLErrorName::TensorInitError - if WolframLibraryData structure is not initialized
 		 *   @throws		LLErrorName::TensorTypeError - if template parameter \b T does not match MTensor data type
 		 **/
-		Tensor(const MTensor v);
+		Tensor(MContainer<MArgumentType::Tensor, PassingMode> t);
+
+		Tensor(MTensor t);
 
 		Tensor(const Tensor&) = default;
 
@@ -246,7 +248,6 @@ namespace LibraryLinkUtils {
 		std::fill(this->begin(), this->end(), init);
 	}
 
-
 	template<typename T, class PassingMode>
 	template<class InputIt, class Container, typename, typename>
 	Tensor<T, PassingMode>::Tensor(InputIt first, InputIt last, Container&& dims) : TypedTensor<T>(std::forward<Container>(dims),
@@ -266,18 +267,16 @@ namespace LibraryLinkUtils {
 	}
 
 	template<typename T, class PassingMode>
-	Tensor<T, PassingMode>::Tensor(const MTensor t) : GenericTensor(t) {
+	Tensor<T, PassingMode>::Tensor(GenericTensor t) : TypedTensor<T>(t.getDimensions(), t.getRank()), GenericTensor(std::move(t)) {
 		if (!this->libData)
 			initError();
 		if (TypedTensor<T>::getType() != GenericTensor::type())
 			ErrorManager::throwException(LLErrorName::TensorTypeError);
-		this->depth = this->rawRank();
-		this->flattenedLength = this->rawFlattenedLength();
-		const mint* rawDims = this->rawDimensions();
-		this->dims.assign(rawDims, rawDims + this->rawRank());
-		this->fillOffsets();
 	}
 
+	template<typename T, class PassingMode>
+	Tensor<T, PassingMode>::Tensor(MTensor na) : Tensor(GenericTensor{ na }) {}
+	
 } /* namespace LibraryLinkUtils */
 
 #endif /* LLUTILS_TENSOR_H_ */

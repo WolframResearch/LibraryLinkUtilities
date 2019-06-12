@@ -131,7 +131,7 @@ namespace LibraryLinkUtils {
 		Container container {};
 	};
 
-	template<MArgumentType Type, class PassingMode = Passing::Manual>
+	template<MArgumentType Type, class PassingMode>
 	class MContainer {
 		static_assert(dependent_false_v<Type>, "Trying to instantiate unspecialized MContainer template.");
 	};
@@ -143,7 +143,7 @@ namespace LibraryLinkUtils {
 		using RawContainer = typename Base::Container;
 
 		MContainer(mint type, mint rank, const mint* dims) {
-			RawContainer tmp;
+			RawContainer tmp {};
 			if (LibDataHolder::getLibraryData()->MTensor_new(type, rank, dims, &tmp)) {
 				ErrorManager::throwException(LLErrorName::TensorNewError);
 			}
@@ -175,15 +175,15 @@ namespace LibraryLinkUtils {
             this->cleanup();
         };
 
-        mint rawRank() const noexcept {
+        mint getRank() const noexcept {
             return LibDataHolder::getLibraryData()->MTensor_getRank(this->getContainer());
 		}
 
-        mint const* rawDimensions() const {
+        mint const* getDimensions() const {
             return LibDataHolder::getLibraryData()->MTensor_getDimensions(this->getContainer());
         }
 
-        mint rawFlattenedLength( ) const {
+        mint getFlattenedLength( ) const {
             return LibDataHolder::getLibraryData()->MTensor_getFlattenedLength(this->getContainer());
         }
 
@@ -210,7 +210,7 @@ namespace LibraryLinkUtils {
 		}
 
 		RawContainer cloneImpl() const override {
-			RawContainer tmp;
+			RawContainer tmp {};
 			if(LibDataHolder::getLibraryData()->MTensor_clone(this->getContainer(), &tmp)) {
 				ErrorManager::throwException(LLErrorName::TensorCloneError);
 			}
@@ -228,7 +228,7 @@ namespace LibraryLinkUtils {
 			MContainer(0, width, height, channels, type, colorSpace, interleaving) {}
 
 		MContainer(mint slices, mint width, mint height, mint channels, imagedata_t type, colorspace_t colorSpace, mbool interleaving) : imgFuns(LibDataHolder::getImageFunctions()) {
-			RawContainer tmp;
+			RawContainer tmp{};
 			if (slices ? imgFuns->MImage_new3D(slices, width, height, channels, type, colorSpace, interleaving, &tmp) :
 					imgFuns->MImage_new2D(width, height, channels, type, colorSpace, interleaving, &tmp)) {
 				ErrorManager::throwException(LLErrorName::ImageNewError);
@@ -334,7 +334,7 @@ namespace LibraryLinkUtils {
 	private:
 
 		RawContainer cloneImpl() const override {
-			RawContainer tmp;
+			RawContainer tmp{};
 			if(LibDataHolder::getLibraryData()->imageLibraryFunctions->MImage_clone(this->getContainer(), &tmp)) {
 				ErrorManager::throwException(LLErrorName::ImageCloneError);
 			}
@@ -368,7 +368,7 @@ namespace LibraryLinkUtils {
 		using RawContainer = typename Base::Container;
 
 		MContainer(numericarray_data_t type, mint rank, const mint* dims) {
-			RawContainer tmp;
+			RawContainer tmp {};
 			if (LibDataHolder::getLibraryData()->numericarrayLibraryFunctions->MNumericArray_new(type, rank, dims, &tmp)) {
 				ErrorManager::throwException(LLErrorName::NumericArrayNewError);
 			}
@@ -409,10 +409,26 @@ namespace LibraryLinkUtils {
 			}
 			return newNA;
 		}
+
+		mint getRank() const noexcept {
+			return LibDataHolder::getLibraryData()->numericarrayLibraryFunctions->MNumericArray_getRank(this->getContainer());
+		}
+
+		mint const *getDimensions() const {
+			return LibDataHolder::getLibraryData()->numericarrayLibraryFunctions->MNumericArray_getDimensions(this->getContainer());
+		}
+
+		mint getFlattenedLength() const {
+			return LibDataHolder::getLibraryData()->numericarrayLibraryFunctions->MNumericArray_getFlattenedLength(this->getContainer());
+		}
+
+		mint type() const {
+			return LibDataHolder::getLibraryData()->numericarrayLibraryFunctions->MNumericArray_getType(this->getContainer());
+		}
 	private:
 
 		RawContainer cloneImpl() const override {
-			RawContainer tmp;
+			RawContainer tmp {};
 			if(LibDataHolder::getLibraryData()->numericarrayLibraryFunctions->MNumericArray_clone(this->getContainer(), &tmp)) {
 				ErrorManager::throwException(LLErrorName::NumericArrayCloneError);
 			}
