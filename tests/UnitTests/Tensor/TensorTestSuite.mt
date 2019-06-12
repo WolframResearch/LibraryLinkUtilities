@@ -158,6 +158,7 @@ Test[
 Test[
 	t = RandomReal[1., {3, 5}];
 	oldT = t;
+	t += 0; (* now oldT becomes and actual copy of t and will not be affected by the next line *)
 	add1[t];
 	t
 	,

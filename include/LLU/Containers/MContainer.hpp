@@ -198,7 +198,6 @@ namespace LibraryLinkUtils {
 		}
 
 		void disownImpl() const noexcept override {
-            std::cout << "Really disowning the tensor" << std::endl;
 			LibDataHolder::getLibraryData()->MTensor_disown(this->getContainer());
 		}
 

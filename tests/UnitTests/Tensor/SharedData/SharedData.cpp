@@ -42,7 +42,7 @@ EXTERN_C DLLEXPORT int getRealArray(WolframLibraryData libData, mint Argc, MArgu
 	try {
 		MArgumentManager mngr(Argc, Args, Res);
 		if (!tensor) {
-            return LIBRARY_FUNCTION_ERROR;
+            return LLErrorCode::FunctionError;
 		}
 		auto& out = *tensor;
 		mngr.setTensor(out);
@@ -61,7 +61,7 @@ EXTERN_C DLLEXPORT int doubleRealArray(WolframLibraryData libData, mint Argc, MA
 	try {
 		MArgumentManager mngr(Argc, Args, Res);
         if (!tensor) {
-            return LIBRARY_FUNCTION_ERROR;
+            return LLErrorCode::FunctionError;
         }
 		auto& out = *tensor;
 
@@ -84,7 +84,7 @@ EXTERN_C DLLEXPORT int unloadRealArray(WolframLibraryData libData, mint Argc, MA
 	try {
 		MArgumentManager mngr(Argc, Args, Res);
         if (!tensor) {
-            return LIBRARY_FUNCTION_ERROR;
+            return LLErrorCode::FunctionError;
         }
 		mngr.setInteger(tensor->shareCount());
         tensor.release();

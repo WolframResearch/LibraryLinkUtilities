@@ -74,10 +74,10 @@ LIBRARY_LINK_FUNCTION(JoinDataStores) {
 		if (returnCopyQ) {
 			auto dsOut1 = ds1.clone();
 			auto dsOut2 = ds2.clone();
-			DataList<MArgumentType::DataStore, Passing::Manual> dsOut { dsOut1.getContainer(), dsOut2.getContainer() };
+			DataList<MArgumentType::DataStore, Passing::Manual> dsOut { dsOut1.abandonContainer(), dsOut2.abandonContainer() };
 			mngr.setDataList(dsOut);
 		} else {
-			DataList<MArgumentType::DataStore, Passing::Manual> dsOut { ds1.getContainer(), ds2.getContainer() };
+			DataList<MArgumentType::DataStore, Passing::Manual> dsOut { ds1.abandonContainer(), ds2.abandonContainer() };
 			mngr.setDataList(dsOut);
 		}
 	} catch (const LibraryLinkError& e) {

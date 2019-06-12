@@ -136,11 +136,11 @@ namespace LibraryLinkUtils {
 		 */
 		DataList() : DataList(ioFuns->createDataStore()) {}
 
-//		/**
-//		 * @brief	Create DataList wrapping around an existing DataStore with nodes of matching type
-//		 * @param 	ds - DataStore
-//		 */
-//		explicit DataList(DataStore ds);
+		/**
+		 * @brief	Create DataList wrapping around an existing DataStore with nodes of matching type
+		 * @param 	ds - DataStore
+		 */
+		explicit DataList(DataStore ds);
 
         /**
          * @brief	Create DataList wrapping around an existing GenericDataStore with matching passing policy
@@ -384,13 +384,13 @@ namespace LibraryLinkUtils {
 
 	/* Definitions od DataList methods */
 
-//	template<MArgumentType T, class PassingMode>
-//	DataList<T, PassingMode>::DataList(DataStore ds) : GenericDataStore(ds) {
-//		if (!this->getContainer()) {
-//			ErrorManager::throwException(LLErrorName::DLNullRawDataStore);
-//		}
-//		makeProxy();
-//	}
+	template<MArgumentType T, class PassingMode>
+	DataList<T, PassingMode>::DataList(DataStore ds) : GenericDataStore(ds) {
+		if (!this->getContainer()) {
+			ErrorManager::throwException(LLErrorName::DLNullRawDataStore);
+		}
+		makeProxy();
+	}
 
     template<MArgumentType T, class PassingMode>
     DataList<T, PassingMode>::DataList(GenericDataStore gds) : GenericDataStore(std::move(gds)) {
