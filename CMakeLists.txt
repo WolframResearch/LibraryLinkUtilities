@@ -87,6 +87,7 @@ if(NOT TARGET LLU)
 		${LLU_SOURCE_DIR}/ProgressMonitor.cpp
         ${LLU_SOURCE_DIR}/ErrorLog/ErrorManager.cpp
 		${LLU_SOURCE_DIR}/ErrorLog/Errors.cpp
+		${LLU_SOURCE_DIR}/ErrorLog/Logger.cpp
 	)
 
 	#add the main library
