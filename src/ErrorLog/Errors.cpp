@@ -20,7 +20,8 @@ namespace LibraryLinkUtils {
 		LLU_DEFINE_ERROR_NAME(TypeError);
 		LLU_DEFINE_ERROR_NAME(NoError);
 
-		LLU_DEFINE_ERROR_NAME(MArgumentLibDataError);
+		LLU_DEFINE_ERROR_NAME(LibDataError);
+
 		LLU_DEFINE_ERROR_NAME(MArgumentIndexError);
 		LLU_DEFINE_ERROR_NAME(MArgumentNumericArrayError);
 		LLU_DEFINE_ERROR_NAME(MArgumentTensorError);
@@ -30,7 +31,6 @@ namespace LibraryLinkUtils {
 		LLU_DEFINE_ERROR_NAME(ErrorManagerThrowNameError);
 		LLU_DEFINE_ERROR_NAME(ErrorManagerCreateNameError);
 
-		LLU_DEFINE_ERROR_NAME(NumericArrayInitError);
 		LLU_DEFINE_ERROR_NAME(NumericArrayNewError);
 		LLU_DEFINE_ERROR_NAME(NumericArrayCloneError);
 		LLU_DEFINE_ERROR_NAME(NumericArrayTypeError);
@@ -38,14 +38,12 @@ namespace LibraryLinkUtils {
 		LLU_DEFINE_ERROR_NAME(NumericArrayIndexError);
 		LLU_DEFINE_ERROR_NAME(NumericArrayConversionError);
 
-		LLU_DEFINE_ERROR_NAME(TensorInitError);
 		LLU_DEFINE_ERROR_NAME(TensorNewError);
 		LLU_DEFINE_ERROR_NAME(TensorCloneError);
 		LLU_DEFINE_ERROR_NAME(TensorTypeError);
 		LLU_DEFINE_ERROR_NAME(TensorSizeError);
 		LLU_DEFINE_ERROR_NAME(TensorIndexError);
 
-		LLU_DEFINE_ERROR_NAME(ImageInitError);
 		LLU_DEFINE_ERROR_NAME(ImageNewError);
 		LLU_DEFINE_ERROR_NAME(ImageCloneError);
 		LLU_DEFINE_ERROR_NAME(ImageTypeError);

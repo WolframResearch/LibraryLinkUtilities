@@ -21,16 +21,16 @@ namespace LibraryLinkUtils {
 
 	template<>
 	mint* TypedTensor<mint>::getData() const noexcept {
-		return this->libData->MTensor_getIntegerData(this->getInternal());
+		return LibraryData::API()->MTensor_getIntegerData(this->getInternal());
 	}
 
 	template<>
 	double* TypedTensor<double>::getData() const noexcept {
-		return this->libData->MTensor_getRealData(this->getInternal());
+		return LibraryData::API()->MTensor_getRealData(this->getInternal());
 	}
 
 	template<>
 	std::complex<double>* TypedTensor<std::complex<double>>::getData() const noexcept {
-		return reinterpret_cast<std::complex<double>*>(this->libData->MTensor_getComplexData(this->getInternal()));
+		return reinterpret_cast<std::complex<double>*>(LibraryData::API()->MTensor_getComplexData(this->getInternal()));
 	}
 } /* namespace LibraryLinkUtils */

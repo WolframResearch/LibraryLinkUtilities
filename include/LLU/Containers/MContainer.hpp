@@ -11,7 +11,7 @@
 #include <type_traits>
 #include <LLU/Containers/Passing/Shared.hpp>
 
-#include "LLU/Containers/LibDataHolder.h"
+#include "LLU/LibraryData.h"
 #include "LLU/Containers/Passing/Manual.hpp"
 #include "LLU/MArgument.h"
 #include "LLU/Utilities.hpp"
@@ -144,7 +144,7 @@ namespace LibraryLinkUtils {
 
 		MContainer(mint type, mint rank, const mint* dims) {
 			RawContainer tmp {};
-			if (LibDataHolder::getLibraryData()->MTensor_new(type, rank, dims, &tmp)) {
+			if (LibraryData::API()->MTensor_new(type, rank, dims, &tmp)) {
 				ErrorManager::throwException(LLErrorName::TensorNewError);
 			}
 			this->setContainer(tmp);
@@ -176,33 +176,33 @@ namespace LibraryLinkUtils {
         };
 
         mint getRank() const noexcept {
-            return LibDataHolder::getLibraryData()->MTensor_getRank(this->getContainer());
+            return LibraryData::API()->MTensor_getRank(this->getContainer());
 		}
 
         mint const* getDimensions() const {
-            return LibDataHolder::getLibraryData()->MTensor_getDimensions(this->getContainer());
+            return LibraryData::API()->MTensor_getDimensions(this->getContainer());
         }
 
         mint getFlattenedLength( ) const {
-            return LibDataHolder::getLibraryData()->MTensor_getFlattenedLength(this->getContainer());
+            return LibraryData::API()->MTensor_getFlattenedLength(this->getContainer());
         }
 
         mint type() const {
-            return LibDataHolder::getLibraryData()->MTensor_getType(this->getContainer());
+            return LibraryData::API()->MTensor_getType(this->getContainer());
         }
 
 	private:
 
 		mint shareCountImpl() const noexcept override {
-			return LibDataHolder::getLibraryData()->MTensor_shareCount(this->getContainer());
+			return LibraryData::API()->MTensor_shareCount(this->getContainer());
 		}
 
 		void disownImpl() const noexcept override {
-			LibDataHolder::getLibraryData()->MTensor_disown(this->getContainer());
+			LibraryData::API()->MTensor_disown(this->getContainer());
 		}
 
 		void freeImpl() const noexcept override {
-			LibDataHolder::getLibraryData()->MTensor_free(this->getContainer());
+			LibraryData::API()->MTensor_free(this->getContainer());
 		}
 
 		void passImpl(MArgument& res) const noexcept override {
@@ -211,7 +211,7 @@ namespace LibraryLinkUtils {
 
 		RawContainer cloneImpl() const override {
 			RawContainer tmp {};
-			if(LibDataHolder::getLibraryData()->MTensor_clone(this->getContainer(), &tmp)) {
+			if(LibraryData::API()->MTensor_clone(this->getContainer(), &tmp)) {
 				ErrorManager::throwException(LLErrorName::TensorCloneError);
 			}
 			return tmp;
@@ -227,22 +227,22 @@ namespace LibraryLinkUtils {
 		MContainer(mint width, mint height, mint channels, imagedata_t type, colorspace_t colorSpace, mbool interleaving) :
 			MContainer(0, width, height, channels, type, colorSpace, interleaving) {}
 
-		MContainer(mint slices, mint width, mint height, mint channels, imagedata_t type, colorspace_t colorSpace, mbool interleaving) : imgFuns(LibDataHolder::getImageFunctions()) {
+		MContainer(mint slices, mint width, mint height, mint channels, imagedata_t type, colorspace_t colorSpace, mbool interleaving) {
 			RawContainer tmp{};
-			if (slices ? imgFuns->MImage_new3D(slices, width, height, channels, type, colorSpace, interleaving, &tmp) :
-					imgFuns->MImage_new2D(width, height, channels, type, colorSpace, interleaving, &tmp)) {
+			if (slices ? LibraryData::ImageAPI()->MImage_new3D(slices, width, height, channels, type, colorSpace, interleaving, &tmp) :
+					LibraryData::ImageAPI()->MImage_new2D(width, height, channels, type, colorSpace, interleaving, &tmp)) {
 				ErrorManager::throwException(LLErrorName::ImageNewError);
 			}
 			this->setContainer(tmp);
 		}
 
-		MContainer(RawContainer i) : Base(i), imgFuns(LibDataHolder::getImageFunctions()) {}
+		MContainer(RawContainer i) : Base(i) {}
 
 		template<class P>
-		MContainer(const MContainer<MArgumentType::Image, P> &mc) : Base(mc), imgFuns(LibDataHolder::getImageFunctions()) {}
+		MContainer(const MContainer<MArgumentType::Image, P> &mc) : Base(mc) {}
 
 		template<class P>
-		MContainer(MContainer<MArgumentType::Image, P> &&mc) noexcept : Base(std::move(mc)), imgFuns(LibDataHolder::getImageFunctions()) {
+		MContainer(MContainer<MArgumentType::Image, P> &&mc) noexcept : Base(std::move(mc)) {
 		}
 
         ~MContainer() {
@@ -250,7 +250,7 @@ namespace LibraryLinkUtils {
         };
 
 		MContainer<MArgumentType::Image, Passing::Manual> convert(imagedata_t t, mbool interleavingQ) const {
-			auto newImage = imgFuns->MImage_convertType(this->getContainer(), t, interleavingQ);
+			auto newImage = LibraryData::ImageAPI()->MImage_convertType(this->getContainer(), t, interleavingQ);
 			if (!newImage) {
 				ErrorManager::throwException(LLErrorName::ImageNewError, "Conversion to type " + std::to_string(static_cast<int>(t)) + " failed.");
 			}
@@ -266,7 +266,7 @@ namespace LibraryLinkUtils {
 		 *   @see <http://reference.wolfram.com/language/LibraryLink/ref/callback/MImage_getColorSpace.html>
 		 **/
 		colorspace_t colorspace() const noexcept {
-			return imgFuns->MImage_getColorSpace(this->getContainer());
+			return LibraryData::ImageAPI()->MImage_getColorSpace(this->getContainer());
 		}
 
 		/**
@@ -274,7 +274,7 @@ namespace LibraryLinkUtils {
 		 *   @see <http://reference.wolfram.com/language/LibraryLink/ref/callback/MImage_getRowCount.html>
 		 **/
 		mint rows() const noexcept {
-			return imgFuns->MImage_getRowCount(this->getContainer());
+			return LibraryData::ImageAPI()->MImage_getRowCount(this->getContainer());
 		}
 
 		/**
@@ -282,7 +282,7 @@ namespace LibraryLinkUtils {
 		 *   @see <http://reference.wolfram.com/language/LibraryLink/ref/callback/MImage_getColumnCount.html>
 		 **/
 		mint columns() const noexcept {
-			return imgFuns->MImage_getColumnCount(this->getContainer());
+			return LibraryData::ImageAPI()->MImage_getColumnCount(this->getContainer());
 		}
 
 		/**
@@ -290,7 +290,7 @@ namespace LibraryLinkUtils {
 		 *   @see <http://reference.wolfram.com/language/LibraryLink/ref/callback/MImage_getSliceCount.html>
 		 **/
 		mint slices() const noexcept {
-			return imgFuns->MImage_getSliceCount(this->getContainer());
+			return LibraryData::ImageAPI()->MImage_getSliceCount(this->getContainer());
 		}
 
 		/**
@@ -298,7 +298,7 @@ namespace LibraryLinkUtils {
 		 *   @see <http://reference.wolfram.com/language/LibraryLink/ref/callback/MImage_getChannels.html>
 		 **/
 		mint channels() const noexcept {
-			return imgFuns->MImage_getChannels(this->getContainer());
+			return LibraryData::ImageAPI()->MImage_getChannels(this->getContainer());
 		}
 
 		/**
@@ -306,7 +306,7 @@ namespace LibraryLinkUtils {
 		 *   @see <http://reference.wolfram.com/language/LibraryLink/ref/callback/MImage_alphaChannelQ.html>
 		 **/
 		bool alphaChannelQ() const noexcept {
-			return imgFuns->MImage_alphaChannelQ(this->getContainer());
+			return LibraryData::ImageAPI()->MImage_alphaChannelQ(this->getContainer());
 		}
 
 		/**
@@ -314,51 +314,49 @@ namespace LibraryLinkUtils {
 		 *   @see <http://reference.wolfram.com/language/LibraryLink/ref/callback/MImage_interleavedQ.html>
 		 **/
 		bool interleavedQ() const noexcept {
-			return imgFuns->MImage_interleavedQ(this->getContainer());
+			return LibraryData::ImageAPI()->MImage_interleavedQ(this->getContainer());
 		}
 
 		/**
 		 *   @brief Check if internal MImage is 3D
 		 **/
 		bool is3D() const noexcept {
-			return imgFuns->MImage_getRank(this->getContainer()) == 3;
+			return LibraryData::ImageAPI()->MImage_getRank(this->getContainer()) == 3;
 		}
 
         imagedata_t type() const noexcept {
-            return imgFuns->MImage_getDataType(this->getContainer());
+            return LibraryData::ImageAPI()->MImage_getDataType(this->getContainer());
         }
 
         void* rawData() const noexcept {
-            return imgFuns->MImage_getRawData(this->getContainer());
+            return LibraryData::ImageAPI()->MImage_getRawData(this->getContainer());
         }
 	private:
 
 		RawContainer cloneImpl() const override {
 			RawContainer tmp{};
-			if(LibDataHolder::getLibraryData()->imageLibraryFunctions->MImage_clone(this->getContainer(), &tmp)) {
+			if(LibraryData::ImageAPI()->MImage_clone(this->getContainer(), &tmp)) {
 				ErrorManager::throwException(LLErrorName::ImageCloneError);
 			}
 			return tmp;
 		}
 
 		mint shareCountImpl() const noexcept override {
-			return LibDataHolder::getLibraryData()->imageLibraryFunctions->MImage_shareCount(this->getContainer());
+			return LibraryData::ImageAPI()->MImage_shareCount(this->getContainer());
 		}
 
 		void disownImpl() const noexcept override {
-			LibDataHolder::getLibraryData()->imageLibraryFunctions->MImage_disown(this->getContainer());
+			LibraryData::ImageAPI()->MImage_disown(this->getContainer());
 		}
 
 		void freeImpl() const noexcept override {
-			LibDataHolder::getLibraryData()->imageLibraryFunctions->MImage_free(this->getContainer());
+			LibraryData::ImageAPI()->MImage_free(this->getContainer());
 		}
 
 		void passImpl(MArgument& res) const noexcept override {
 			MArgument_setMImage(res, this->getContainer());
 		}
 
-	private:
-		WolframImageLibrary_Functions imgFuns;
 	};
 
 	template<class PassingMode>
@@ -369,7 +367,7 @@ namespace LibraryLinkUtils {
 
 		MContainer(numericarray_data_t type, mint rank, const mint* dims) {
 			RawContainer tmp {};
-			if (LibDataHolder::getLibraryData()->numericarrayLibraryFunctions->MNumericArray_new(type, rank, dims, &tmp)) {
+			if (LibraryData::NumericArrayAPI()->MNumericArray_new(type, rank, dims, &tmp)) {
 				ErrorManager::throwException(LLErrorName::NumericArrayNewError);
 			}
 			this->setContainer(tmp);
@@ -402,8 +400,8 @@ namespace LibraryLinkUtils {
 
 		MContainer<MArgumentType::NumericArray, Passing::Manual> convert(numericarray_data_t t, NA::ConversionMethod method, double param) const {
 			MNumericArray newNA = nullptr;
-			auto err = LibDataHolder::getLibraryData()->numericarrayLibraryFunctions->MNumericArray_convertType(&newNA, this->getContainer(), t,
-					static_cast<numericarray_convert_method_t>(method), param);
+			auto err = LibraryData::NumericArrayAPI()->MNumericArray_convertType(&newNA, this->getContainer(), t,
+																											  static_cast<numericarray_convert_method_t>(method), param);
 			if (err) {
 				ErrorManager::throwException(LLErrorName::NumericArrayConversionError, "Conversion to type " + std::to_string(static_cast<int>(t)) + " failed.");
 			}
@@ -411,40 +409,40 @@ namespace LibraryLinkUtils {
 		}
 
 		mint getRank() const noexcept {
-			return LibDataHolder::getLibraryData()->numericarrayLibraryFunctions->MNumericArray_getRank(this->getContainer());
+			return LibraryData::NumericArrayAPI()->MNumericArray_getRank(this->getContainer());
 		}
 
 		mint const *getDimensions() const {
-			return LibDataHolder::getLibraryData()->numericarrayLibraryFunctions->MNumericArray_getDimensions(this->getContainer());
+			return LibraryData::NumericArrayAPI()->MNumericArray_getDimensions(this->getContainer());
 		}
 
 		mint getFlattenedLength() const {
-			return LibDataHolder::getLibraryData()->numericarrayLibraryFunctions->MNumericArray_getFlattenedLength(this->getContainer());
+			return LibraryData::NumericArrayAPI()->MNumericArray_getFlattenedLength(this->getContainer());
 		}
 
 		mint type() const {
-			return LibDataHolder::getLibraryData()->numericarrayLibraryFunctions->MNumericArray_getType(this->getContainer());
+			return LibraryData::NumericArrayAPI()->MNumericArray_getType(this->getContainer());
 		}
 	private:
 
 		RawContainer cloneImpl() const override {
 			RawContainer tmp {};
-			if(LibDataHolder::getLibraryData()->numericarrayLibraryFunctions->MNumericArray_clone(this->getContainer(), &tmp)) {
+			if(LibraryData::NumericArrayAPI()->MNumericArray_clone(this->getContainer(), &tmp)) {
 				ErrorManager::throwException(LLErrorName::NumericArrayCloneError);
 			}
 			return tmp;
 		}
 
 		mint shareCountImpl() const noexcept override {
-			return LibDataHolder::getLibraryData()->numericarrayLibraryFunctions->MNumericArray_shareCount(this->getContainer());
+			return LibraryData::NumericArrayAPI()->MNumericArray_shareCount(this->getContainer());
 		}
 
 		void disownImpl() const noexcept override {
-			LibDataHolder::getLibraryData()->numericarrayLibraryFunctions->MNumericArray_disown(this->getContainer());
+			LibraryData::NumericArrayAPI()->MNumericArray_disown(this->getContainer());
 		}
 
 		void freeImpl() const noexcept override {
-			LibDataHolder::getLibraryData()->numericarrayLibraryFunctions->MNumericArray_free(this->getContainer());
+			LibraryData::NumericArrayAPI()->MNumericArray_free(this->getContainer());
 		}
 
 		void passImpl(MArgument& res) const noexcept override {
@@ -460,7 +458,7 @@ namespace LibraryLinkUtils {
 		using Base = MContainerBase<MArgumentType::DataStore, PassingMode>;
 		using RawContainer = typename Base::Container;
 
-		MContainer() : MContainer(LibDataHolder::getLibraryData()->ioLibraryFunctions->createDataStore()) {
+		MContainer() : MContainer(LibraryData::DataStoreAPI()->createDataStore()) {
 		}
 
 		MContainer(RawContainer t) : Base(t) {};
@@ -491,7 +489,7 @@ namespace LibraryLinkUtils {
 	private:
 
 		RawContainer cloneImpl() const override {
-			return LibDataHolder::getLibraryData()->ioLibraryFunctions->copyDataStore(this->getContainer());
+			return LibraryData::DataStoreAPI()->copyDataStore(this->getContainer());
 		}
 
 		mint shareCountImpl() const noexcept override {
@@ -502,7 +500,7 @@ namespace LibraryLinkUtils {
 		}
 
 		void freeImpl() const noexcept override {
-			LibDataHolder::getLibraryData()->ioLibraryFunctions->deleteDataStore(this->getContainer());
+			LibraryData::DataStoreAPI()->deleteDataStore(this->getContainer());
 		}
 
 		void passImpl(MArgument& res) const noexcept override {

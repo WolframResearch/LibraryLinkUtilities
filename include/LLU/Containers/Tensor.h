@@ -58,10 +58,6 @@ namespace LibraryLinkUtils {
             return type;
         }
 
-    protected:
-        /// Functions from WolframLibrary
-        using MArray<T>::libData;
-
     private:
 
         T* getData() const noexcept override;
@@ -168,7 +164,6 @@ namespace LibraryLinkUtils {
 		/**
 		 *   @brief
 		 *   @param[in]
-		 *   @throws        LLErrorName::TensorInitError - if WolframLibraryData structure is not initialized
 		 *   @throws		LLErrorName::TensorTypeError - if template parameter \b T does not match MTensor data type
 		 **/
 		Tensor(MContainer<MArgumentType::Tensor, PassingMode> t);
@@ -197,14 +192,6 @@ namespace LibraryLinkUtils {
 		 **/
 		void indexError() const override {
 			ErrorManager::throwException(LLErrorName::TensorIndexError);
-		}
-
-		/**
-		 *   @brief 	Sub-class implementation of virtual void MArray<T>::initError()
-		 *   @throws 	LibraryLinkError(LLErrorName::TensorInitError)
-		 **/
-		void initError() const override {
-			ErrorManager::throwException(LLErrorName::TensorInitError);
 		}
 
 		/**
@@ -268,8 +255,6 @@ namespace LibraryLinkUtils {
 
 	template<typename T, class PassingMode>
 	Tensor<T, PassingMode>::Tensor(GenericTensor t) : TypedTensor<T>(t.getDimensions(), t.getRank()), GenericTensor(std::move(t)) {
-		if (!this->libData)
-			initError();
 		if (TypedTensor<T>::getType() != GenericTensor::type())
 			ErrorManager::throwException(LLErrorName::TensorTypeError);
 	}

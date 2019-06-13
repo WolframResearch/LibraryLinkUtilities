@@ -72,7 +72,7 @@ if(NOT TARGET LLU)
 	# define source files
 	set(LLU_SOURCE_FILES
 		${LLU_SOURCE_DIR}/Containers/Image.cpp
-		${LLU_SOURCE_DIR}/Containers/LibDataHolder.cpp
+		${LLU_SOURCE_DIR}/LibraryData.cpp
 		${LLU_SOURCE_DIR}/ErrorLog/LibraryLinkError.cpp
 		${LLU_SOURCE_DIR}/MArgumentManager.cpp
 		${LLU_SOURCE_DIR}/Containers/MArrayBase.cpp

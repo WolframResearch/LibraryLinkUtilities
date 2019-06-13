@@ -19,7 +19,6 @@
 #include "LLU/ErrorLog/ErrorManager.h"
 #include "LLU/Containers/DataList.h"
 #include "LLU/Containers/Image.h"
-#include "LLU/Containers/LibDataHolder.h"
 #include "LLU/Containers/NumericArray.h"
 #include "LLU/Containers/Tensor.h"
 #include "LLU/Containers/Passing/Automatic.hpp"
@@ -39,7 +38,7 @@ namespace LibraryLinkUtils {
 	 *
 	 * @todo	Make sure all MArgument passing modes ("Constant", "Shared", etc.) are correctly handled
 	 **/
-	class MArgumentManager : public LibDataHolder {
+	class MArgumentManager {
 	public:
 
 		/**
@@ -47,7 +46,6 @@ namespace LibraryLinkUtils {
 		 *   @param[in]     Argc - number of MArguments provided
 		 *   @param[in]     Args - MArguments provided
 		 *   @param[in]		Res - reference to output MArgument
-		 *   @throws        LLErrorName::MArgumentInitError - if static member libData is not initialized
 		 **/
 		MArgumentManager(mint Argc, MArgument* Args, MArgument& Res);
 

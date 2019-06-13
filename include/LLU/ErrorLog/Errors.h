@@ -42,8 +42,10 @@ namespace LibraryLinkUtils {
 		extern const std::string TypeError; 		///< same as LIBRARY_TYPE_ERROR
 		extern const std::string NoError; 			///< same as LIBRARY_NO_ERROR
 
+		// LibraryData errors
+		extern const std::string LibDataError;        ///< WolframLibraryData is not set
+
 		// MArgument errors:
-		extern const std::string MArgumentLibDataError; 		///< WolframLibraryData is not set
 		extern const std::string MArgumentIndexError; 		///< wrong argument index
 		extern const std::string MArgumentNumericArrayError; 	///< error involving NumericArray argument
 		extern const std::string MArgumentTensorError; 		///< error involving Tensor argument
@@ -55,7 +57,6 @@ namespace LibraryLinkUtils {
 		extern const std::string ErrorManagerCreateNameError; 	///< trying to register exception with already existing name
 
 		// NumericArray errors:
-		extern const std::string NumericArrayInitError; 		///< construction of NumericArray failed
 		extern const std::string NumericArrayNewError; 			///< creating new NumericArray failed
 		extern const std::string NumericArrayCloneError; 		///< NumericArray cloning failed
 		extern const std::string NumericArrayTypeError; 		///< NumericArray type mismatch
@@ -64,7 +65,6 @@ namespace LibraryLinkUtils {
 		extern const std::string NumericArrayConversionError;   ///< conversion from NumericArray of different type failed
 
 		// MTensor errors:
-		extern const std::string TensorInitError; 		///< Tensor construction failed
 		extern const std::string TensorNewError; 		///< creating new MTensor failed
 		extern const std::string TensorCloneError; 		///< MTensor cloning failed
 		extern const std::string TensorTypeError; 		///< Tensor type mismatch
@@ -72,7 +72,6 @@ namespace LibraryLinkUtils {
 		extern const std::string TensorIndexError; 		///< trying to access non-existing element
 
 		// MImage errors:
-		extern const std::string ImageInitError; 		///< Image construction failed
 		extern const std::string ImageNewError; 		///< creating new MImage failed
 		extern const std::string ImageCloneError; 		///< MImage cloning failed
 		extern const std::string ImageTypeError; 		///< Image type mismatch

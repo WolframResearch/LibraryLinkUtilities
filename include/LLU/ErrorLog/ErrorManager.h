@@ -16,7 +16,7 @@
 
 #include "WolframLibrary.h"
 
-#include <LLU/Containers/LibDataHolder.h>
+#include <LLU/LibraryData.h>
 #include <LLU/ErrorLog/LibraryLinkError.h>
 
 namespace LibraryLinkUtils {
@@ -200,7 +200,7 @@ namespace LibraryLinkUtils {
 
 	template<typename... T>
 	void ErrorManager::throwException(const std::string& errorName, T&&... args) {
-		throwException(LibDataHolder::getLibraryData(), errorName, std::forward<T>(args)...);
+		throwException(LibraryData::API(), errorName, std::forward<T>(args)...);
 	}
 
 	template<typename... T>
@@ -215,7 +215,7 @@ namespace LibraryLinkUtils {
 
 	template<typename... T>
 	void ErrorManager::throwExceptionWithDebugInfo(const std::string& errorName, const std::string& debugInfo, T&&... args) {
-		throwExceptionWithDebugInfo(LibDataHolder::getLibraryData(), errorName, debugInfo, std::forward<T>(args)...);
+		throwExceptionWithDebugInfo(LibraryData::API(), errorName, debugInfo, std::forward<T>(args)...);
 	}
 
 	template<typename... T>

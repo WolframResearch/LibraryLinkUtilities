@@ -10,10 +10,7 @@
 
 #include <string>
 
-#include "WolframLibrary.h"
-#include "WolframIOLibraryFunctions.h"
-
-#include "LLU/Containers/LibDataHolder.h"
+#include "LLU/LibraryData.h"
 
 namespace LibraryLinkUtils {
 
@@ -69,7 +66,7 @@ namespace LibraryLinkUtils {
 	 * @tparam 	T - any value of type MArgumentType
 	 */
 	template<MArgumentType T>
-	class Argument : public LibDataHolder {
+	class Argument {
 	public:
 		/// This is the actual type of data stored in \c arg
 		using value_type = MType_t<T>;

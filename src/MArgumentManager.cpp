@@ -11,6 +11,7 @@
 
 #include <algorithm>
 
+#include "LLU/LibraryData.h"
 #include "LLU/Containers/MArray.hpp"
 #include "LLU/Containers/Passing/Shared.hpp"
 
@@ -24,14 +25,12 @@ namespace LibraryLinkUtils {
 
 	MArgumentManager::MArgumentManager(mint Argc, MArgument* Args, MArgument& Res) :
 			argc(Argc), args(Args), res(Res) {
-		if (!libData)
-			ErrorManager::throwException(LLErrorName::MArgumentLibDataError);
 		initStringArgs();
 	}
 
 	MArgumentManager::MArgumentManager(WolframLibraryData ld, mint Argc, MArgument* Args, MArgument& Res) :
 			argc(Argc), args(Args), res(Res) {
-		setLibraryData(ld);
+		LibraryData::setLibraryData(ld);
 		initStringArgs();
 	}
 
@@ -117,17 +116,17 @@ namespace LibraryLinkUtils {
 
 	numericarray_data_t MArgumentManager::getNumericArrayType(unsigned int index) const {
 		MNumericArray tmp = MArgument_getMNumericArray(getArgs(index));
-		return libData->numericarrayLibraryFunctions->MNumericArray_getType(tmp);
+		return LibraryData::NumericArrayAPI()->MNumericArray_getType(tmp);
 	}
 
 	unsigned char MArgumentManager::getTensorType(unsigned int index) const {
 		MTensor tmp = MArgument_getMTensor(getArgs(index));
-		return static_cast<unsigned char>(libData->MTensor_getType(tmp));
+		return static_cast<unsigned char>(LibraryData::API()->MTensor_getType(tmp));
 	}
 
 	imagedata_t MArgumentManager::getImageType(unsigned int index) const {
 		MImage tmp = MArgument_getMImage(getArgs(index));
-		return libData->imageLibraryFunctions->MImage_getDataType(tmp);
+		return LibraryData::ImageAPI()->MImage_getDataType(tmp);
 	}
 
 	MArgument MArgumentManager::getArgs(unsigned int index) const {
@@ -139,7 +138,7 @@ namespace LibraryLinkUtils {
 	void MArgumentManager::initStringArgs() {
 		stringArgs.reserve(argc);
 		for (int i = 0; i < argc; ++i) {
-			stringArgs.emplace_back(nullptr, libData->UTF8String_disown);
+			stringArgs.emplace_back(nullptr, LibraryData::API()->UTF8String_disown);
 		}
 	}
 

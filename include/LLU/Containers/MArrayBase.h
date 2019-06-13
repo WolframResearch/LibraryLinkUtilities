@@ -16,7 +16,6 @@
 #include <type_traits>
 #include <vector>
 
-#include "LibDataHolder.h"
 #include "LLU/ErrorLog/ErrorManager.h"
 #include "LLU/Utilities.hpp"
 
@@ -29,7 +28,7 @@ namespace LibraryLinkUtils {
 	 * It mostly carries meta-information about container's size and dimensions, as these are independent of the data type.
 	 *
 	 */
-	class MArrayBase : public LibDataHolder {
+	class MArrayBase {
 	public:
 
 		/**
@@ -66,7 +65,7 @@ namespace LibraryLinkUtils {
 			typename = disable_if_same_or_derived<MArrayBase, Container>,
 			typename = typename std::enable_if_t<std::is_integral<typename std::remove_reference_t<Container>::value_type>::value>
 		>
-		MArrayBase(Container&& dims);
+		explicit MArrayBase(Container&& dims);
 
 		/**
 		 *	@brief Get container rank
@@ -155,14 +154,6 @@ namespace LibraryLinkUtils {
 		virtual void indexError() const = 0;
 
 		/**
-		 *   @brief 	Throw exception relating to container initialization
-		 *   @throws 	LibraryLinkError(LLErrorName::FunctionError)
-		 **/
-		virtual void initError() const {
-			ErrorManager::throwException(LLErrorName::FunctionError);
-		}
-
-		/**
 		 *   @brief 	Throw exception relating to container size
 		 *   @throws 	LibraryLinkError(LLErrorName::DimensionsError)
 		 **/
@@ -193,8 +184,6 @@ namespace LibraryLinkUtils {
 
 	template<class Container, typename, typename>
 	MArrayBase::MArrayBase(Container&& dimensions) {
-		if (!libData || !naFuns || !imgFuns)
-			initError();
 		depth = checkContainerSize(std::forward<Container>(dimensions));
 		auto dimsOk = std::all_of(std::begin(dimensions), std::end(dimensions), [](typename std::remove_reference_t<Container>::value_type d) {
 			return (d > 0) && (d <= (std::numeric_limits<mint>::max)());

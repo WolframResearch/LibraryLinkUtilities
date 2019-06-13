@@ -5,7 +5,7 @@
  */
 #include "LLU/ProgressMonitor.h"
 
-#include "LLU/Containers/LibDataHolder.h"
+#include "LLU/LibraryData.h"
 #include "LLU/ErrorLog/ErrorManager.h"
 
 namespace LibraryLinkUtils {
@@ -31,11 +31,7 @@ namespace LibraryLinkUtils {
 	}
 
 	void ProgressMonitor::checkAbort() {
-		auto libData = LibDataHolder::getLibraryData();
-		if (!libData) {
-			ErrorManager::throwException(LLErrorName::MArgumentLibDataError);
-		}
-		if(libData->AbortQ()) {
+		if(LibraryData::API()->AbortQ()) {
 			ErrorManager::throwException(LLErrorName::Aborted);
 		}
 	}

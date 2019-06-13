@@ -19,7 +19,7 @@ namespace LibraryLinkUtils {
 		return MArgGetPrefix##ArgType(arg);\
 	}\
 	template<> void Argument<MArgumentType::ArgType>::addDataStoreNode(DataStore ds, const std::string& name, const value_type& val) {\
-		ioFuns->DataStore_##DSAdd(ds, const_cast<char*>(name.c_str()), val);\
+        LibraryData::DataStoreAPI()->DataStore_##DSAdd(ds, const_cast<char*>(name.c_str()), val);\
 	}\
 	template<> auto Argument<MArgumentType::ArgType>::getAddress() const -> typename Argument::value_type* {\
 		return MArgGetPrefix##ArgType##Address(arg);\

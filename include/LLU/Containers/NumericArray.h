@@ -36,16 +36,12 @@ namespace LibraryLinkUtils {
             return type;
         }
 
-    protected:
-        /// Functions from WolframNumericArrayLibrary
-        using MArray<T>::naFuns;
-
     private:
         /**
          *   @brief Return raw pointer to underlying data
          **/
         T* getData() const noexcept override {
-            return static_cast<T*>(naFuns->MNumericArray_getData(this->getInternal()));
+            return static_cast<T*>(LibraryData::NumericArrayAPI()->MNumericArray_getData(this->getInternal()));
         }
 
         virtual void indexError() const = 0;
@@ -151,7 +147,6 @@ namespace LibraryLinkUtils {
 		/**
 		 *   @brief
 		 *   @param[in]     na -
-		 *   @throws        LLErrorName::NumericArrayInitError - if structure with WolframNumericArrayLibrary functions is not initialized
 		 *   @throws		LLErrorName::NumericArrayTypeError - if template parameter \b T does not match MNumericArray data type
 		 **/
 		NumericArray(MContainer<MArgumentType::NumericArray, PassingMode> na);
@@ -226,14 +221,6 @@ namespace LibraryLinkUtils {
 		}
 
 		/**
-		 *   @brief 	Sub-class implementation of virtual void MArray<T>::initError()
-		 *   @throws 	LibraryLinkError(LLErrorName::NumericArrayInitError)
-		 **/
-		void initError() const override {
-			ErrorManager::throwException(LLErrorName::NumericArrayInitError);
-		}
-
-		/**
 		 *   @brief 	Sub-class implementation of virtual void MArray<T>::sizeError()
 		 *   @throws 	LibraryLinkError(LLErrorName::NumericArraySizeError)
 		 **/
@@ -295,8 +282,6 @@ namespace LibraryLinkUtils {
 	template<typename T, class PassingMode>
 	NumericArray<T, PassingMode>::NumericArray(GenericNumericArray na) : TypedNumericArray<T>(na.getDimensions(), na.getRank()),
 			GenericNumericArray(std::move(na)) {
-		if (!this->naFuns)
-			initError();
 		if (TypedNumericArray<T>::getType() != GenericNumericArray::type())
 			ErrorManager::throwException(LLErrorName::NumericArrayTypeError);
 	}
@@ -308,9 +293,6 @@ namespace LibraryLinkUtils {
 	template<typename U, class P>
 	NumericArray<T, PassingMode>::NumericArray(const NumericArray<U, P>& other, NA::ConversionMethod method, double param) : TypedNumericArray<T>(other),
 	        GenericNumericArray(other.convert(this->getType(), method, param)) {
-		if (!this->naFuns) {
-			initError();
-		}
 	}
 
 } /* namespace LibraryLinkUtils */

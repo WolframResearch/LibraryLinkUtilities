@@ -82,14 +82,10 @@ namespace LibraryLinkUtils {
 			return type;
 		}
 
-	protected:
-		/// Functions from WolframImageLibrary
-		using MArray<T>::imgFuns;
-
 	private:
 
 		T* getData() const noexcept override {
-			return static_cast<T*>(imgFuns->MImage_getRawData(this->getInternal()));
+			return static_cast<T*>(LibraryData::ImageAPI()->MImage_getRawData(this->getInternal()));
 		}
 
 		virtual void indexError() const = 0;
@@ -135,7 +131,6 @@ namespace LibraryLinkUtils {
 		 *   @param[in]     channels - number of channels
 		 *   @param[in]     cs - color space
 		 *   @param[in]     interleavingQ - whether Image data should be interleaved
-		 *   @throws        LLErrorName::ImageInitError - if structure with WolframImageLibrary functions is not initialized
 		 *   @throws		LLErrorName::ImageNewError - if internal MImage creation failed
 		 **/
 		Image(mint nFrames, mint w, mint h, mint channels, colorspace_t cs, bool interleavingQ);
@@ -143,7 +138,6 @@ namespace LibraryLinkUtils {
 		/**
 		 *   @brief         Constructs Image based on MImage
 		 *   @param[in]     mi - LibraryLink structure to be wrapped
-		 *   @throws        LLErrorName::ImageInitError - if structure with WolframImageLibrary functions is not initialized
 		 *   @throws		LLErrorName::ImageTypeError - if template parameter \b T does not match MImage data type
 		 *   @throws		LLErrorName::ImageSizeError - if constructor failed to calculate image dimensions properly
 		 **/
@@ -180,10 +174,6 @@ namespace LibraryLinkUtils {
 		template<typename U, class P>
 		Image(const Image<U, P>& t2, bool interleavedQ);
 
-	protected:
-		/// Functions from WolframImageLibrary
-		using TypedImage<T>::imgFuns;
-
 	private:
 		using GenericImage = MContainer<MArgumentType::Image, PassingMode>;
 
@@ -197,14 +187,6 @@ namespace LibraryLinkUtils {
 		 **/
 		void indexError() const override {
 			ErrorManager::throwException(LLErrorName::ImageIndexError);
-		}
-
-		/**
-		 *   @brief 	Sub-class implementation of virtual void MArray<T>::initError()
-		 *   @throws 	LibraryLinkError(LLErrorName::ImageInitError)
-		 **/
-		void initError() const override {
-			ErrorManager::throwException(LLErrorName::ImageInitError);
 		}
 
 		/**
@@ -225,15 +207,11 @@ namespace LibraryLinkUtils {
 	template<typename T, class PassingMode>
 	Image<T, PassingMode>::Image(mint nFrames, mint w, mint h, mint channels, colorspace_t cs, bool interleavingQ) :
 			GenericImage(nFrames, w, h, channels, this->getType(), cs, interleavingQ)  {
-		if (!imgFuns)
-			this->initError();
 		initDataMembers();
 	}
 
 	template<typename T, class PassingMode>
 	Image<T, PassingMode>::Image(MImage mi) : GenericImage(mi) {
-		if (!imgFuns)
-			this->initError();
 		if (TypedImage<T>::getType() != GenericImage::type())
 			ErrorManager::throwException(LLErrorName::ImageTypeError);
 		initDataMembers();
@@ -252,8 +230,8 @@ namespace LibraryLinkUtils {
 
 	template<typename T, class PassingMode>
 	void Image<T, PassingMode>::initDataMembers() {
-        this->depth = imgFuns->MImage_getRank(this->getInternal()) + (this->channels() == 1 ? 0 : 1);
-        this->flattenedLength = imgFuns->MImage_getFlattenedLength(this->getInternal());
+        this->depth = LibraryData::ImageAPI()->MImage_getRank(this->getInternal()) + (this->channels() == 1 ? 0 : 1);
+        this->flattenedLength = LibraryData::ImageAPI()->MImage_getFlattenedLength(this->getInternal());
         if (this->is3D())
             this->dims = {this->slices(), this->rows(), this->columns()};
         else

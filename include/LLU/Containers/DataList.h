@@ -20,7 +20,7 @@
 
 #include "LLU/ErrorLog/ErrorManager.h"
 #include "LLU/MArgument.h"
-#include "LLU/Containers/LibDataHolder.h"
+#include "LLU/LibraryData.h"
 #include "LLU/Containers/Passing/Automatic.hpp"
 #include "LLU/Containers/Passing/Manual.hpp"
 #include "MContainer.hpp"
@@ -34,7 +34,7 @@ namespace LibraryLinkUtils {
 	 * @tparam 	MArgType - type of the argument stored in the node, see enum MArgumentType
 	 */
 	template<MArgumentType MArgType>
-	class DataNode : public LibDataHolder {
+	class DataNode {
 	public:
 		using T = MType_t<MArgType>;
 
@@ -83,7 +83,7 @@ namespace LibraryLinkUtils {
 		 * @return	Actual type of node value
 		 */
 		MArgumentType getRawType() {
-			return static_cast<MArgumentType>(ioFuns->DataStoreNode_getDataType(rawNode));
+			return static_cast<MArgumentType>(LibraryData::DataStoreAPI()->DataStoreNode_getDataType(rawNode));
 		}
 
 		/// static data member holding the template parameter
@@ -105,7 +105,7 @@ namespace LibraryLinkUtils {
 	 * @tparam 	PassingMode - policy for memory management of the internal container
 	 */
 	template<MArgumentType T, class PassingMode = Passing::Manual>
-	class DataList : public LibDataHolder, public MContainer<MArgumentType::DataStore, PassingMode> {
+	class DataList : public MContainer<MArgumentType::DataStore, PassingMode> {
 
 		/// private proxy list with top-level wrappers of each node of the internal DataStore
 		std::list<DataNode<T>> proxyList;
@@ -134,7 +134,7 @@ namespace LibraryLinkUtils {
 		/**
 		 * @brief	Create empty DataList
 		 */
-		DataList() : DataList(ioFuns->createDataStore()) {}
+		DataList() : DataList(LibraryData::DataStoreAPI()->createDataStore()) {}
 
 		/**
 		 * @brief	Create DataList wrapping around an existing DataStore with nodes of matching type
@@ -373,11 +373,11 @@ namespace LibraryLinkUtils {
 			ErrorManager::throwException(LLErrorName::DLInvalidNodeType);
 		}
 		char* rawName = nullptr;
-		ioFuns->DataStoreNode_getName(rawNode, &rawName);
+		LibraryData::DataStoreAPI()->DataStoreNode_getName(rawNode, &rawName);
 		if (rawName != nullptr) {
 			name = rawName;
 		}
-		if (ioFuns->DataStoreNode_getData(rawNode, &nodeArg) != 0) {
+		if (LibraryData::DataStoreAPI()->DataStoreNode_getData(rawNode, &nodeArg) != 0) {
 			ErrorManager::throwException(LLErrorName::DLGetNodeDataError);
 		}
 	}
@@ -423,11 +423,11 @@ namespace LibraryLinkUtils {
 
 	template<MArgumentType T, class PassingMode>
 	void DataList<T, PassingMode>::makeProxy() {
-		auto size = ioFuns->DataStore_getLength(this->getContainer());
-		auto currentNode = ioFuns->DataStore_getFirstNode(this->getContainer());
+		auto size = LibraryData::DataStoreAPI()->DataStore_getLength(this->getContainer());
+		auto currentNode = LibraryData::DataStoreAPI()->DataStore_getFirstNode(this->getContainer());
 		for (mint i = 0; i < size; ++i) {
 			proxyList.emplace_back(currentNode);
-			currentNode = ioFuns->DataStoreNode_getNextNode(currentNode);
+			currentNode = LibraryData::DataStoreAPI()->DataStoreNode_getNextNode(currentNode);
 		}
 	}
 
@@ -463,7 +463,7 @@ namespace LibraryLinkUtils {
 	template<MArgumentType T, class PassingMode>
 	void DataList<T, PassingMode>::push_back(const std::string& name, const DataList::value_type& nodeData) {
 		Argument<T>::addDataStoreNode(this->getContainer(), name, nodeData);
-		proxyList.emplace_back(ioFuns->DataStore_getLastNode(this->getContainer()));
+		proxyList.emplace_back(LibraryData::DataStoreAPI()->DataStore_getLastNode(this->getContainer()));
 	}
 
 	template<MArgumentType T, class PassingMode>

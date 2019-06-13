@@ -6,8 +6,8 @@
  * @brief	Definition of the LibDataHolder class.
  *
  */
-#ifndef LLUTILS_LIBDATAHOLDER_H
-#define LLUTILS_LIBDATAHOLDER_H
+#ifndef LLUTILS_LIBRARYDATA_H
+#define LLUTILS_LIBRARYDATA_H
 
 #include <memory>
 
@@ -15,6 +15,7 @@
 #include "WolframImageLibrary.h"
 #include "WolframNumericArrayLibrary.h"
 #include "WolframIOLibraryFunctions.h"
+#include "WolframSparseLibrary.h"
 
 namespace LibraryLinkUtils {
 
@@ -22,7 +23,7 @@ namespace LibraryLinkUtils {
 	 * @struct 	LibDataHolder
 	 * @brief	This structure offers a static copy of WolframLibData accessible throughout the whole life of the DLL.
 	 */
-	struct LibDataHolder {
+	struct LibraryData {
 		/**
 		 *   @brief         Set WolframLibraryData structure as static member of LibDataHolder. Call this function in WolframLibrary_initialize.
 		 *   @param[in]     ld - WolframLibraryData passed to every library function via LibraryLink
@@ -31,24 +32,29 @@ namespace LibraryLinkUtils {
 		static void setLibraryData(WolframLibraryData ld);
 
 		/**
+		 *
+		 * @return
+		 */
+		static bool hasLibraryData();
+
+		/**
 		 *   @brief         Get currently owned WolframLibraryData.
 		 *   @return     	a non-owning pointer to current instance of st_WolframLibraryData stored in LibDataHolder or nullptr in case there is none
 		 **/
-		static WolframLibraryData getLibraryData();
+		static WolframLibraryData API();
 
-		static WolframNumericArrayLibrary_Functions getNumericArrayFunctions();
+		static const st_WolframNumericArrayLibrary_Functions* NumericArrayAPI();
 
-		static WolframImageLibrary_Functions getImageFunctions();
+		static const st_WolframSparseLibrary_Functions* SparseArrayAPI();
 
-		static WolframIOLibrary_Functions getIOFunctions();
+		static const st_WolframImageLibrary_Functions* ImageAPI();
 
-	protected:
-		static std::unique_ptr<st_WolframLibraryData> libData;
-		static WolframNumericArrayLibrary_Functions naFuns;
-		static WolframImageLibrary_Functions imgFuns;
-		static WolframIOLibrary_Functions ioFuns;
+		static const st_WolframIOLibrary_Functions* DataStoreAPI();
+
+	private:
+		static WolframLibraryData libData;
 	};
 
 }
 
-#endif //LLUTILS_LIBDATAHOLDER_H
+#endif //LLUTILS_LIBRARYDATA_H

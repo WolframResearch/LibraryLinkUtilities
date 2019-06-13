@@ -6,7 +6,7 @@
  */
 #include "LLU/ErrorLog/ErrorManager.h"
 
-#include "LLU/Containers/LibDataHolder.h"
+#include "LLU/LibraryData.h"
 #include "LLU/Utilities.hpp"
 #include "LLU/ML/MLStream.hpp"
 #include "LLU/ML/Utilities.h"
@@ -16,7 +16,7 @@ namespace LibraryLinkUtils {
 	auto ErrorManager::errors() -> ErrorManager::ErrorMap& {
 		static ErrorMap errMap = registerLLUErrors({
 			// Original LibraryLink error codes:
-			{ LLErrorName::VersionError,	"An error was caused by an incompatible function call. The library was compiled with a previous WolframLibrary version." },
+			{ LLErrorName::VersionError,	"An error was caused by an incompatible function call. The library was compiled with a previous LibraryData version." },
 			{ LLErrorName::FunctionError,	"An error occurred in the library function." },
 			{ LLErrorName::MemoryError,		"An error was caused by failed memory allocation or insufficient memory." },
 			{ LLErrorName::NumericalError,	"A numerical error was encountered." },
@@ -25,8 +25,10 @@ namespace LibraryLinkUtils {
 			{ LLErrorName::TypeError,		"An error caused by inconsistent types was encountered." },
 			{ LLErrorName::NoError,			"No errors occurred." },
 
+			// LibraryData errors:
+			{ LLErrorName::LibDataError, "WolframLibraryData is not set. Make sure to call LibraryData::setLibraryData in WolframLibrary_initialize."},
+
 			// MArgument errors:
-			{ LLErrorName::MArgumentLibDataError,		"WolframLibraryData is not set." },
 			{ LLErrorName::MArgumentIndexError,		"An error was caused by an incorrect argument index." },
 			{ LLErrorName::MArgumentNumericArrayError,	"An error was caused by a NumericArray argument." },
 			{ LLErrorName::MArgumentTensorError,	"An error was caused by a Tensor argument." },
@@ -38,7 +40,6 @@ namespace LibraryLinkUtils {
 			{ LLErrorName::ErrorManagerCreateNameError,	"An exception was registered with a name that already exists." },
 
 			// NumericArray errors:
-			{ LLErrorName::NumericArrayInitError,	"Failed to construct NumericArray." },
 			{ LLErrorName::NumericArrayNewError,	"Failed to create a new NumericArray." },
 			{ LLErrorName::NumericArrayCloneError,	"Failed to clone NumericArray." },
 			{ LLErrorName::NumericArrayTypeError,	"An error was caused by an NumericArray type mismatch." },
@@ -47,7 +48,6 @@ namespace LibraryLinkUtils {
 			{ LLErrorName::NumericArrayConversionError, "Failed to convert NumericArray from different type."},
 
 			// MTensor errors:
-			{ LLErrorName::TensorInitError,		"Failed to construct Tensor." },
 			{ LLErrorName::TensorNewError,		"Failed to create a new MTensor." },
 			{ LLErrorName::TensorCloneError,	"Failed to clone MTensor." },
 			{ LLErrorName::TensorTypeError,		"An error was caused by an MTensor type mismatch." },
@@ -55,7 +55,6 @@ namespace LibraryLinkUtils {
 			{ LLErrorName::TensorIndexError,	"An error was caused by attempting to access a nonexistent Tensor element." },
 
 			// MImage errors:
-			{ LLErrorName::ImageInitError,	"Failed to construct Image." },
 			{ LLErrorName::ImageNewError,	"Failed to create a new MImage." },
 			{ LLErrorName::ImageCloneError,	"Failed to clone MImage." },
 			{ LLErrorName::ImageTypeError,	"An error was caused by an MImage type mismatch." },
