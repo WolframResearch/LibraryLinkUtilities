@@ -13,7 +13,7 @@ TestExecute[
 	Get[FileNameJoin[{ParentDirectory[currentDirectory], "TestConfig.wl"}]];
 
 	(* Compile the test library *)
-	lib = CCompilerDriver`CreateLibrary[FileNameJoin[{currentDirectory, #}]& /@ {"ErrorReportingTest.cpp"},
+	lib = CCompilerDriver`CreateLibrary[FileNameJoin[{currentDirectory, "TestSources", #}]& /@ {"ErrorReportingTest.cpp"},
 		"ErrorReporting", options];
 
 	Get[FileNameJoin[{$LLUSharedDir, "LibraryLinkUtilities.wl"}]];
@@ -341,13 +341,12 @@ TestMatch[
 
 (*********************************************************** Logging tests **************************************************************)
 TestExecute[
-	libLogDebug = CCompilerDriver`CreateLibrary[FileNameJoin[{currentDirectory, #}]& /@ {"LoggerTest.cpp"},
-		"LogDebug", options, "Defines" -> {"LLU_LOG_DEBUG"}];
+	loggerTestPath = FileNameJoin[{currentDirectory, "TestSources", "LoggerTest.cpp"}];
+	libLogDebug = CCompilerDriver`CreateLibrary[{loggerTestPath}, "LogDebug", options, "Defines" -> {"LLU_LOG_DEBUG"}];
 
 	$InitLibraryLinkUtils = False;
 	RegisterPacletErrors[libLogDebug, <||>];
 
-	loggerTestPath = FileNameJoin[{currentDirectory, "LoggerTest.cpp"}];
 	`LLU`Logger`PrintLogFunctionSelector := Block[{`LLU`Logger`FormattedLog = `LLU`Logger`LogToAssociation},
 		`LLU`Logger`PrintLogToSymbol[TestLogSymbol][##]
 	]&;
@@ -361,28 +360,28 @@ Test[
 	{
 		<|
 			"Level" -> "Debug", 
-			"Line" -> 17, 
+			"Line" -> 19,
 			"File" -> loggerTestPath, 
 			"Function" -> "GreaterAt", 
 			"Message" -> Style["Library function entered with 4 arguments.", FontSize -> Inherited]
 		|>,
 		<|
 			"Level" -> "Debug", 
-			"Line" -> 20, 
+			"Line" -> 22,
 			"File" -> loggerTestPath, 
 			"Function" -> "GreaterAt", 
 			"Message" -> Style["Starting try-block, current error code: 0", FontSize -> Inherited]
 		|>, 
 		<|
 			"Level" -> "Debug", 
-			"Line" -> 26, 
+			"Line" -> 28,
 			"File" -> loggerTestPath, 
 			"Function" -> "GreaterAt", 
 			"Message" -> Style["Input tensor is of type: 2", FontSize -> Inherited]
 		|>, 
 		<|
 			"Level" -> "Debug", 
-			"Line" -> 39, 
+			"Line" -> 41,
 			"File" -> loggerTestPath, 
 			"Function" -> "GreaterAt", 
 			"Message" -> Style["Comparing 5 with 7", FontSize -> Inherited]
@@ -404,11 +403,11 @@ Test[
 	TestLogSymbol
 	,
 	{
-		{"Debug", 17, loggerTestPath, "GreaterAt", "Library function entered with ", 4, " arguments."}, 
-		{"Debug", 20, loggerTestPath, "GreaterAt", "Starting try-block, current error code: ", 0},
-		{"Warning", 24, loggerTestPath, "GreaterAt", "File name ", "my:file.txt", " contains a possibly problematic character \":\"."}, 
-		{"Debug", 26, loggerTestPath, "GreaterAt", "Input tensor is of type: ", 2}, 
-		{"Debug", 39, loggerTestPath, "GreaterAt", "Comparing ", 5, " with ", 7}
+		{"Debug", 19, loggerTestPath, "GreaterAt", "Library function entered with ", 4, " arguments."},
+		{"Debug", 22, loggerTestPath, "GreaterAt", "Starting try-block, current error code: ", 0},
+		{"Warning", 26, loggerTestPath, "GreaterAt", "File name ", "my:file.txt", " contains a possibly problematic character \":\"."}, 
+		{"Debug", 28, loggerTestPath, "GreaterAt", "Input tensor is of type: ", 2}, 
+		{"Debug", 41, loggerTestPath, "GreaterAt", "Comparing ", 5, " with ", 7}
 	}
 	,
 	TestID->"ErrorReportingTestSuite-20190409-L8V2U9"
@@ -419,15 +418,15 @@ Test[
 	Clear[TestLogSymbol];
 	MultiThreadedLog[3];
 	And @@ (MatchQ[
-		{"Debug", 88, loggerTestPath, "LogsFromThreads", "Starting ", 3, " threads."} |
-		{"Debug", 91, loggerTestPath, "operator()" | "operator ()", "Thread ", _, " going to sleep."} |
-		{"Debug", 93, loggerTestPath, "operator()" | "operator ()", "Thread ", _, " slept for ", _, "ms."} |
-		{"Debug", 101, loggerTestPath, "LogsFromThreads", "All threads joined."}
+		{"Debug", 90, loggerTestPath, "LogsFromThreads", "Starting ", 3, " threads."} |
+		{"Debug", 93, loggerTestPath, "operator()" | "operator ()", "Thread ", _, " going to sleep."} |
+		{"Debug", 95, loggerTestPath, "operator()" | "operator ()", "Thread ", _, " slept for ", _, "ms."} |
+		{"Debug", 103, loggerTestPath, "LogsFromThreads", "All threads joined."}
 	] /@ TestLogSymbol)
 	&&
-	First[TestLogSymbol] === {"Debug", 88, loggerTestPath, "LogsFromThreads", "Starting ", 3, " threads."}
+	First[TestLogSymbol] === {"Debug", 90, loggerTestPath, "LogsFromThreads", "Starting ", 3, " threads."}
 	&&
-	Last[TestLogSymbol] === {"Debug", 101, loggerTestPath, "LogsFromThreads", "All threads joined."}
+	Last[TestLogSymbol] === {"Debug", 103, loggerTestPath, "LogsFromThreads", "All threads joined."}
 	,
 	True
 	,
@@ -452,10 +451,10 @@ TestMatch[
 			"Parameters" -> {}
 		|>], {
 			{
-				"[Debug] LoggerTest.cpp:17 (GreaterAt): Library function entered with 4 arguments.", 
-				"[Debug] LoggerTest.cpp:20 (GreaterAt): Starting try-block, current error code: 0", 
-				"[Debug] LoggerTest.cpp:26 (GreaterAt): Input tensor is of type: 2", 
-				"[Error] LoggerTest.cpp:43 (GreaterAt): Caught LLU exception TensorIndexError: Indices (-1, 3) must be positive."
+				"[Debug] LoggerTest.cpp:19 (GreaterAt): Library function entered with 4 arguments.", 
+				"[Debug] LoggerTest.cpp:22 (GreaterAt): Starting try-block, current error code: 0", 
+				"[Debug] LoggerTest.cpp:28 (GreaterAt): Input tensor is of type: 2", 
+				"[Error] LoggerTest.cpp:45 (GreaterAt): Caught LLU exception TensorIndexError: Indices (-1, 3) must be positive."
 			}
 		}
 	}
@@ -484,7 +483,7 @@ TestExecute[
 Test[
 	Reap @ GreaterAt["my:file.txt", {5, 6, 7, 8, 9}, 1, 3]
 	,
-	{False, {{"[Warning] LoggerTest.cpp:24 (GreaterAt): File name my:file.txt contains a possibly problematic character \":\"."}}}
+	{False, {{"[Warning] LoggerTest.cpp:26 (GreaterAt): File name my:file.txt contains a possibly problematic character \":\"."}}}
 	,
 	TestID->"ErrorReportingTestSuite-20190410-H8S6D5"
 ];
@@ -500,9 +499,9 @@ Test[
 	{
 		False, {
 			{
-				"[Debug] LoggerTest.cpp:20 (GreaterAt): Starting try-block, current error code: 0",
-				"[Warning] LoggerTest.cpp:24 (GreaterAt): File name my:file.txt contains a possibly problematic character \":\".",
-				"[Debug] LoggerTest.cpp:26 (GreaterAt): Input tensor is of type: 2"
+				"[Debug] LoggerTest.cpp:22 (GreaterAt): Starting try-block, current error code: 0",
+				"[Warning] LoggerTest.cpp:26 (GreaterAt): File name my:file.txt contains a possibly problematic character \":\".",
+				"[Debug] LoggerTest.cpp:28 (GreaterAt): Input tensor is of type: 2"
 			}
 		}
 	}
@@ -511,7 +510,7 @@ Test[
 ];
 
 TestExecute[
-	libLogWarning = CCompilerDriver`CreateLibrary[FileNameJoin[{currentDirectory, #}]& /@ {"LoggerTest.cpp"},
+	libLogWarning = CCompilerDriver`CreateLibrary[FileNameJoin[{currentDirectory, "TestSources", #}]& /@ {"LoggerTest.cpp"},
 		"LogWarning", options, "Defines" -> {"LLU_LOG_WARNING"}];
 		
 	$InitLibraryLinkUtils = False;
@@ -523,7 +522,7 @@ Test[
 	Reap @ GreaterAtW["my:file.txt", {5, 6, 7, 8, 9}, 1, 3]
 	,
 	{
-		False, {{"[Warning] LoggerTest.cpp:24 (GreaterAt): File name my:file.txt contains a possibly problematic character \":\"."}}
+		False, {{"[Warning] LoggerTest.cpp:26 (GreaterAt): File name my:file.txt contains a possibly problematic character \":\"."}}
 	}
 	,
 	TestID->"ErrorReportingTestSuite-20190415-F5I9D0"
@@ -559,7 +558,7 @@ TestMatch[
 			"Parameters" -> {}
 		|>], {
 			{
-				"[Error] LoggerTest.cpp:43 (GreaterAt): Caught LLU exception TensorIndexError: Indices (-1, 3) must be positive."
+				"[Error] LoggerTest.cpp:45 (GreaterAt): Caught LLU exception TensorIndexError: Indices (-1, 3) must be positive."
 			}
 		}
 	}
@@ -589,7 +588,7 @@ Test[
 	{
 		9,
 		{
-			{"Warning", 64, loggerTestPath, "LogDemo", "Index ", 5, " is too big for the number of arguments: ", 5, ". Changing to ", 4}
+			{"Warning", 66, loggerTestPath, "LogDemo", "Index ", 5, " is too big for the number of arguments: ", 5, ". Changing to ", 4}
 		}
 	}
 	,
@@ -610,7 +609,7 @@ Test[
 			|>
 		],
 		{
-			{"Error", 71, loggerTestPath, "LogDemo", "Caught LLU exception ", "MArgumentIndexError", ": ", "Index 4294967295 out-of-bound when accessing LibraryLink argument"}
+			{"Error", 73, loggerTestPath, "LogDemo", "Caught LLU exception ", "MArgumentIndexError", ": ", "Index 4294967295 out-of-bound when accessing LibraryLink argument"}
 		}
 	}
 	,

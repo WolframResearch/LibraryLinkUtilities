@@ -4,17 +4,18 @@
 #include <type_traits>
 #include <cstdint>
 
+namespace LLErrorCode = LLU::ErrorCode;
 
 LIBRARY_LINK_FUNCTION(EchoImage1) {
 	auto err = LLErrorCode::NoError;
 	try {
-		MArgumentManager mngr(libData, Argc, Args, Res);
+		LLU::MArgumentManager mngr(libData, Argc, Args, Res);
 		mngr.operateOnImage(0, [&mngr](auto&& in) {
 			auto& out = in;
 			mngr.setImage(out);
 		});
 	}
-	catch (const LibraryLinkError& e) {
+	catch (const LLU::LibraryLinkError& e) {
 		err = e.which();
 	}
 	catch (...) {
@@ -26,7 +27,7 @@ LIBRARY_LINK_FUNCTION(EchoImage1) {
 LIBRARY_LINK_FUNCTION(EchoImage2) {
 	auto err = LLErrorCode::NoError;
 	try {
-		MArgumentManager mngr(libData, Argc, Args, Res);
+		LLU::MArgumentManager mngr(libData, Argc, Args, Res);
 
 		mngr.operateOnImage(0, [&mngr](auto&& in) {
 			auto slices = in.is3D()? in.slices() : 0;
@@ -37,7 +38,7 @@ LIBRARY_LINK_FUNCTION(EchoImage2) {
 			auto interleaving = in.interleavedQ();
 
 			using T = typename std::remove_reference_t<decltype(in)>::value_type;
-			Image<T> out(slices, columns, rows, channels, colorspace, interleaving);
+			LLU::Image<T> out(slices, columns, rows, channels, colorspace, interleaving);
 			
 			for (mint column = 1; column <= columns; column++) {
 				for (mint row = 1; row <= rows; row++) {
@@ -53,7 +54,7 @@ LIBRARY_LINK_FUNCTION(EchoImage2) {
 			mngr.setImage(out);
 		});
 	}
-	catch (const LibraryLinkError& e) {
+	catch (const LLU::LibraryLinkError& e) {
 		err = e.which();
 	}
 	catch (...) {
@@ -65,13 +66,13 @@ LIBRARY_LINK_FUNCTION(EchoImage2) {
 LIBRARY_LINK_FUNCTION(ConvertImageToByte) {
 	auto err = LLErrorCode::NoError;
 	try {
-		MArgumentManager mngr(libData, Argc, Args, Res);
+		LLU::MArgumentManager mngr(libData, Argc, Args, Res);
 		mngr.operateOnImage(0, [&mngr](auto&& in) {
-			Image<std::uint8_t> out(in);
+			LLU::Image<std::uint8_t> out(in);
 			mngr.setImage(out);
 		});
 	}
-	catch (const LibraryLinkError& e) {
+	catch (const LLU::LibraryLinkError& e) {
 		err = e.which();
 	}
 	catch (...) {
@@ -83,18 +84,18 @@ LIBRARY_LINK_FUNCTION(ConvertImageToByte) {
 LIBRARY_LINK_FUNCTION(UnifyImageTypes) {
 	auto err = LLErrorCode::NoError;
 	try {
-		MArgumentManager mngr(libData, Argc, Args, Res);
+		LLU::MArgumentManager mngr(libData, Argc, Args, Res);
 		mngr.operateOnImage(0, [&mngr](auto&& in) {
 			using T = typename std::remove_reference_t<decltype(in)>::value_type;
 			T x = 0;
 			mngr.operateOnImage(1, [&mngr, x](auto&& in2) {
-				Image<decltype(x)> out(in2);
+				LLU::Image<decltype(x)> out(in2);
 				mngr.setImage(out);
 			});
 
 		});
 	}
-	catch (const LibraryLinkError& e) {
+	catch (const LLU::LibraryLinkError& e) {
 		err = e.which();
 	}
 	catch (...) {

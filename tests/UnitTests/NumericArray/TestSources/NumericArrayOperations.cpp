@@ -5,7 +5,11 @@
 #include "LLU/LLU.h"
 #include "LLU/LibraryLinkFunctionMacro.h"
 
-namespace NA = LibraryLinkUtils::NA;
+namespace NA = LLU::NA;
+namespace LLErrorCode = LLU::ErrorCode;
+using LLU::LibraryLinkError;
+using LLU::MArgumentManager;
+using LLU::NumericArray;
 
 static MNumericArray shared_numeric = 0;
 
@@ -14,8 +18,8 @@ EXTERN_C DLLEXPORT mint WolframLibrary_getVersion() {
 }
 
 EXTERN_C DLLEXPORT int WolframLibrary_initialize(WolframLibraryData libData) {
-	MArgumentManager::setLibraryData(libData);
-	ErrorManager::registerPacletErrors({
+	LLU::LibraryData::setLibraryData(libData);
+	LLU::ErrorManager::registerPacletErrors({
 		{"InvalidConversionMethod", "NumericArray conversion method `method` is invalid."}
 	});
 	return 0;
@@ -101,7 +105,7 @@ LIBRARY_LINK_FUNCTION(cloneNumericArray) {
 		MArgumentManager mngr(Argc, Args, Res);
 		mngr.operateOnNumericArray(0, [&mngr](auto&& rarray1) {
 			using T = typename std::decay_t<decltype(rarray1)>::value_type;
-			NumericArray<T, Passing::Manual> rarray2 = rarray1;
+			NumericArray<T, LLU::Passing::Manual> rarray2 = rarray1;
 			mngr.setNumericArray(rarray2);
 		});
 	}
@@ -143,7 +147,7 @@ EXTERN_C DLLEXPORT int getSharedNumericArray(WolframLibraryData libData, mint Ar
 struct ZeroReal64 {
 	template<typename T, class P>
 	void operator()(NumericArray<T, P>, MArgumentManager&) {
-		ErrorManager::throwException(LLErrorName::FunctionError);
+		LLU::ErrorManager::throwException(LLU::ErrorName::FunctionError);
 	}
 
 	template<class P>
@@ -172,7 +176,7 @@ EXTERN_C DLLEXPORT int numericZeroData(WolframLibraryData libData, mint Argc, MA
 struct AccumulateIntegers {
 	template<typename T, class P>
 	std::enable_if_t<!std::is_integral<T>::value> operator()(NumericArray<T, P>, MArgumentManager&) {
-		ErrorManager::throwException(LLErrorName::FunctionError);
+		LLU::ErrorManager::throwException(LLU::ErrorName::FunctionError);
 	}
 
 	template<typename T, class P>
@@ -223,7 +227,7 @@ LIBRARY_LINK_FUNCTION(convertMethodName) {
 			case NA::ConversionMethod::ClipScale: methodStr = "ClipScale";
 				break;
 			default:
-				ErrorManager::throwException("InvalidConversionMethod", static_cast<int>(method));
+				LLU::ErrorManager::throwException("InvalidConversionMethod", static_cast<int>(method));
 		}
 		mngr.setString(std::move(methodStr));
 	}
