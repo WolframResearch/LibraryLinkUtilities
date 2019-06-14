@@ -19,7 +19,7 @@
 #include <LLU/LibraryData.h>
 #include <LLU/ErrorLog/LibraryLinkError.h>
 
-namespace LibraryLinkUtils {
+namespace LLU {
 
 	/**
 	 * @class	ErrorManager
@@ -231,6 +231,6 @@ namespace LibraryLinkUtils {
 		throw std::move(e);
 	}
 
-}  /* namespace LibraryLinkUtils */
+}  /* namespace LLU */
 
 #endif //LLUTILS_ERRORMANAGER_H

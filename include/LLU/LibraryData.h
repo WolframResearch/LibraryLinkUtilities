@@ -17,7 +17,7 @@
 #include "WolframIOLibraryFunctions.h"
 #include "WolframSparseLibrary.h"
 
-namespace LibraryLinkUtils {
+namespace LLU {
 
 	/**
 	 * @struct 	LibDataHolder

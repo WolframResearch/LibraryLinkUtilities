@@ -22,7 +22,7 @@
 #include "LLU/Containers/MContainer.hpp"
 #include "LLU/Utilities.hpp"
 
-namespace LibraryLinkUtils {
+namespace LLU {
 
     template<typename T>
     class TypedNumericArray : public MArray<T> {
@@ -217,7 +217,7 @@ namespace LibraryLinkUtils {
 		 *   @throws 	LibraryLinkError(LLErrorName::NumericArrayIndexError)
 		 **/
 		void indexError() const override {
-			ErrorManager::throwException(LLErrorName::NumericArrayIndexError);
+			ErrorManager::throwException(ErrorName::NumericArrayIndexError);
 		}
 
 		/**
@@ -225,7 +225,7 @@ namespace LibraryLinkUtils {
 		 *   @throws 	LibraryLinkError(LLErrorName::NumericArraySizeError)
 		 **/
 		void sizeError() const override {
-			ErrorManager::throwException(LLErrorName::NumericArraySizeError);
+			ErrorManager::throwException(ErrorName::NumericArraySizeError);
 		}
 	};
 
@@ -266,7 +266,7 @@ namespace LibraryLinkUtils {
 	NumericArray<T, PassingMode>::NumericArray(InputIt first, InputIt last, Container&& dims) : TypedNumericArray<T>(std::forward<Container>(dims)),
 	        GenericNumericArray(TypedNumericArray<T>::getType(), this->depth, this->dimensionsData()) {
 		if (std::distance(first, last) != this->flattenedLength)
-			ErrorManager::throwException(LLErrorName::NumericArrayNewError, "Length of data range does not match specified dimensions");
+			ErrorManager::throwException(ErrorName::NumericArrayNewError, "Length of data range does not match specified dimensions");
 		std::copy(first, last, this->begin());
 	}
 
@@ -275,7 +275,7 @@ namespace LibraryLinkUtils {
 	NumericArray<T, PassingMode>::NumericArray(InputIt first, InputIt last, std::initializer_list<mint> dims) :TypedNumericArray<T>(dims),
 	        GenericNumericArray(TypedNumericArray<T>::getType(), this->depth, this->dimensionsData()) {
 		if (std::distance(first, last) != this->flattenedLength)
-			ErrorManager::throwException(LLErrorName::NumericArrayNewError, "Length of data range does not match specified dimensions");
+			ErrorManager::throwException(ErrorName::NumericArrayNewError, "Length of data range does not match specified dimensions");
 		std::copy(first, last, this->begin());
 	}
 
@@ -283,7 +283,7 @@ namespace LibraryLinkUtils {
 	NumericArray<T, PassingMode>::NumericArray(GenericNumericArray na) : TypedNumericArray<T>(na.getDimensions(), na.getRank()),
 			GenericNumericArray(std::move(na)) {
 		if (TypedNumericArray<T>::getType() != GenericNumericArray::type())
-			ErrorManager::throwException(LLErrorName::NumericArrayTypeError);
+			ErrorManager::throwException(ErrorName::NumericArrayTypeError);
 	}
 
 	template<typename T, class PassingMode>
@@ -295,6 +295,6 @@ namespace LibraryLinkUtils {
 	        GenericNumericArray(other.convert(this->getType(), method, param)) {
 	}
 
-} /* namespace LibraryLinkUtils */
+} /* namespace LLU */
 
 #endif /* LLUTILS_NUMERICARRAY_H_ */

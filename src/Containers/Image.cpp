@@ -12,7 +12,7 @@
 #include <array>
 #include <cstdint>
 
-namespace LibraryLinkUtils {
+namespace LLU {
 
 	//
 	//	Template specializations for Bit images
@@ -129,5 +129,5 @@ namespace LibraryLinkUtils {
 		}
 	}
 
-} /* namespace LibraryLinkUtils */
+} /* namespace LLU */
 

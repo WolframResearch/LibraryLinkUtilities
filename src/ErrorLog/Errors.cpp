@@ -6,11 +6,11 @@
 
 #include "LLU/ErrorLog/Errors.h"
 
-namespace LibraryLinkUtils {
+namespace LLU {
 
 	#define LLU_DEFINE_ERROR_NAME(errorIdentifier) const std::string errorIdentifier = #errorIdentifier
 
-	namespace LLErrorName {
+	namespace ErrorName {
 		LLU_DEFINE_ERROR_NAME(VersionError);
 		LLU_DEFINE_ERROR_NAME(FunctionError);
 		LLU_DEFINE_ERROR_NAME(MemoryError);
@@ -83,4 +83,4 @@ namespace LibraryLinkUtils {
 		LLU_DEFINE_ERROR_NAME(Aborted);
 	}
 
-} /* namespace LibraryLinkUtils */
+} /* namespace LLU */

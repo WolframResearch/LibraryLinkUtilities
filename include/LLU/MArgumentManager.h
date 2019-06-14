@@ -27,7 +27,7 @@
 
 #include "WolframLibrary.h"
 
-namespace LibraryLinkUtils {
+namespace LLU {
 
 	/**
 	 * @class	MArgumentManager
@@ -500,7 +500,7 @@ namespace LibraryLinkUtils {
 				op(this->getNumericArray<std::complex<double>>(index), std::forward<Args>(args)...);
 				break;
 			default:
-				ErrorManager::throwExceptionWithDebugInfo(LLErrorName::MArgumentNumericArrayError, "Incorrect type of NumericArray argument. Argument index: " + std::to_string(index));
+				ErrorManager::throwExceptionWithDebugInfo(ErrorName::MArgumentNumericArrayError, "Incorrect type of NumericArray argument. Argument index: " + std::to_string(index));
 		}
 	}
 
@@ -544,7 +544,7 @@ namespace LibraryLinkUtils {
 				op(this->getNumericArray<std::complex<double>>(index));
 				break;
 			default:
-				ErrorManager::throwExceptionWithDebugInfo(LLErrorName::MArgumentNumericArrayError, "Incorrect type of NumericArray argument. Argument index: " + std::to_string(index));
+				ErrorManager::throwExceptionWithDebugInfo(ErrorName::MArgumentNumericArrayError, "Incorrect type of NumericArray argument. Argument index: " + std::to_string(index));
 		}
 	}
 
@@ -573,7 +573,7 @@ namespace LibraryLinkUtils {
 				op(this->getTensor<std::complex<double>>(index), std::forward<Args>(args)...);
 				break;
 			default:
-				ErrorManager::throwExceptionWithDebugInfo(LLErrorName::MArgumentTensorError, "Incorrect type of Tensor argument. Argument index: " + std::to_string(index));
+				ErrorManager::throwExceptionWithDebugInfo(ErrorName::MArgumentTensorError, "Incorrect type of Tensor argument. Argument index: " + std::to_string(index));
 		}
 	}
 
@@ -591,7 +591,7 @@ namespace LibraryLinkUtils {
 				op(this->getTensor<std::complex<double>>(index));
 				break;
 			default:
-				ErrorManager::throwExceptionWithDebugInfo(LLErrorName::MArgumentTensorError, "Incorrect type of Tensor argument. Argument index: " + std::to_string(index));
+				ErrorManager::throwExceptionWithDebugInfo(ErrorName::MArgumentTensorError, "Incorrect type of Tensor argument. Argument index: " + std::to_string(index));
 		}
 	}
 
@@ -626,7 +626,7 @@ namespace LibraryLinkUtils {
 				op(this->getImage<double>(index), std::forward<Args>(args)...);
 				break;
 			default:
-				ErrorManager::throwExceptionWithDebugInfo(LLErrorName::MArgumentImageError, "Incorrect type of Image argument. Argument index: " + std::to_string(index));
+				ErrorManager::throwExceptionWithDebugInfo(ErrorName::MArgumentImageError, "Incorrect type of Image argument. Argument index: " + std::to_string(index));
 		}
 	}
 
@@ -649,7 +649,7 @@ namespace LibraryLinkUtils {
 				op(this->getImage<double>(index));
 				break;
 			default:
-				ErrorManager::throwExceptionWithDebugInfo(LLErrorName::MArgumentImageError, "Incorrect type of Image argument. Argument index: " + std::to_string(index));
+				ErrorManager::throwExceptionWithDebugInfo(ErrorName::MArgumentImageError, "Incorrect type of Image argument. Argument index: " + std::to_string(index));
 		}
 	}
 
@@ -664,7 +664,7 @@ namespace LibraryLinkUtils {
 		ds.passAsResult(res);
 	}
 
-} /* namespace LibraryLinkUtils */
+} /* namespace LLU */
 
 
 #endif /* LLUTILS_MARGUMENTMANAGER_H_ */

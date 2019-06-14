@@ -10,7 +10,7 @@
 
 #include "LLU/ML/Strings.h"
 
-namespace LibraryLinkUtils {
+namespace LLU {
 
 	namespace ML {
 
@@ -116,4 +116,4 @@ namespace LibraryLinkUtils {
 
 	}
 
-} /* namespace LibraryLinkUtils */
+} /* namespace LLU */

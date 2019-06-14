@@ -18,7 +18,7 @@
 #include "LLU/Containers/Passing/Automatic.hpp"
 #include "LLU/Containers/Passing/Manual.hpp"
 
-namespace LibraryLinkUtils {
+namespace LLU {
 
 
 	template<typename T>
@@ -186,7 +186,7 @@ namespace LibraryLinkUtils {
 		 *   @throws 	LibraryLinkError(LLErrorName::ImageIndexError)
 		 **/
 		void indexError() const override {
-			ErrorManager::throwException(LLErrorName::ImageIndexError);
+			ErrorManager::throwException(ErrorName::ImageIndexError);
 		}
 
 		/**
@@ -194,7 +194,7 @@ namespace LibraryLinkUtils {
 		 *   @throws 	LibraryLinkError(LLErrorName::ImageSizeError)
 		 **/
 		void sizeError() const override {
-			ErrorManager::throwException(LLErrorName::ImageSizeError);
+			ErrorManager::throwException(ErrorName::ImageSizeError);
 		}
 
 		void initDataMembers();
@@ -213,7 +213,7 @@ namespace LibraryLinkUtils {
 	template<typename T, class PassingMode>
 	Image<T, PassingMode>::Image(MImage mi) : GenericImage(mi) {
 		if (TypedImage<T>::getType() != GenericImage::type())
-			ErrorManager::throwException(LLErrorName::ImageTypeError);
+			ErrorManager::throwException(ErrorName::ImageTypeError);
 		initDataMembers();
 	}
 
@@ -246,7 +246,7 @@ namespace LibraryLinkUtils {
             this->sizeError();
         this->fillOffsets();
 	}
-} /* namespace LibraryLinkUtils */
+} /* namespace LLU */
 
 
 #endif /* LLUTILS_IMAGE_H_ */

@@ -11,7 +11,7 @@
 
 #include <complex>
 
-namespace LibraryLinkUtils {
+namespace LLU {
 	template<>
 	const mint TypedTensor<mint>::type = MType_Integer;
 	template<>
@@ -33,4 +33,4 @@ namespace LibraryLinkUtils {
 	std::complex<double>* TypedTensor<std::complex<double>>::getData() const noexcept {
 		return reinterpret_cast<std::complex<double>*>(LibraryData::API()->MTensor_getComplexData(this->getInternal()));
 	}
-} /* namespace LibraryLinkUtils */
+} /* namespace LLU */

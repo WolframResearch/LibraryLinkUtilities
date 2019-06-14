@@ -17,7 +17,7 @@
 #include "LLU/ML/Release.h"
 #include "LLU/Utilities.hpp"
 
-namespace LibraryLinkUtils {
+namespace LLU {
 
 	namespace ML {
 		template<typename T>
@@ -35,7 +35,7 @@ namespace LibraryLinkUtils {
 				int* dims;
 				char** heads;
 				int rank;
-				checkError(m, ArrayF(m, &rawResult, &dims, &heads, &rank), LLErrorName::MLGetArrayError, ArrayFName);
+				checkError(m, ArrayF(m, &rawResult, &dims, &heads, &rank), ErrorName::MLGetArrayError, ArrayFName);
 				return { rawResult, ReleaseArray<T> { m, dims, heads, rank } };
 			}
 
@@ -51,7 +51,7 @@ namespace LibraryLinkUtils {
 			static ListData<T> get(MLINK m) {
 				T* rawResult;
 				int len;
-				checkError(m, ListF(m, &rawResult, &len), LLErrorName::MLGetListError, ListFName);
+				checkError(m, ListF(m, &rawResult, &len), ErrorName::MLGetListError, ListFName);
 				return { rawResult, ReleaseList<T> { m, len } };
 			}
 
@@ -66,7 +66,7 @@ namespace LibraryLinkUtils {
 
 			static T get(MLINK m) {
 				T rawResult;
-				checkError(m, ScalarF(m, &rawResult), LLErrorName::MLGetScalarError, ScalarFName);
+				checkError(m, ScalarF(m, &rawResult), ErrorName::MLGetScalarError, ScalarFName);
 				return rawResult;
 			}
 
@@ -291,6 +291,6 @@ namespace LibraryLinkUtils {
 
 	} /* namespace ML */
 
-} /* namespace LibraryLinkUtils */
+} /* namespace LLU */
 
 #endif /* LLUTILS_ML_MLGET_H_ */

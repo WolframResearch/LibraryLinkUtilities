@@ -14,7 +14,7 @@
 #include "LLU/ErrorLog/Errors.h"
 #include "LLU/Utilities.hpp"
 
-namespace LibraryLinkUtils {
+namespace LLU {
 
 	namespace ML {
 
@@ -23,11 +23,11 @@ namespace LibraryLinkUtils {
 			using Func = std::function<int(MLINK, const T*, const int*, const char**, int)>;
 
 			static void put(MLINK m, const T* array, const int* dims, const char** heads, int len) {
-				checkError(m, ArrayF(m, array, dims, heads, len), LLErrorName::MLPutArrayError, ArrayFName);
+				checkError(m, ArrayF(m, array, dims, heads, len), ErrorName::MLPutArrayError, ArrayFName);
 			}
 
 			static void put(MLINK m, const T* array, const int* dims, char** heads, int len) {
-				checkError(m, ArrayF(m, array, dims, const_cast<const char**>(heads), len), LLErrorName::MLPutArrayError, ArrayFName);
+				checkError(m, ArrayF(m, array, dims, const_cast<const char**>(heads), len), ErrorName::MLPutArrayError, ArrayFName);
 			}
 
 		private:
@@ -40,7 +40,7 @@ namespace LibraryLinkUtils {
 			using Func = std::function<int(MLINK, const T*, int)>;
 
 			static void put(MLINK m, const T* list, int len) {
-				checkError(m, ListF(m, list, len), LLErrorName::MLPutListError, ListFName);
+				checkError(m, ListF(m, list, len), ErrorName::MLPutListError, ListFName);
 			}
 
 		private:
@@ -53,7 +53,7 @@ namespace LibraryLinkUtils {
 			using Func = std::function<int(MLINK, T)>;
 
 			static void put(MLINK m, T scalar) {
-				checkError(m, ScalarF(m, scalar), LLErrorName::MLPutScalarError, ScalarFName);
+				checkError(m, ScalarF(m, scalar), ErrorName::MLPutScalarError, ScalarFName);
 			}
 
 		private:
@@ -277,6 +277,6 @@ namespace LibraryLinkUtils {
 #endif
 	}  /* namespace ML */
 
-} /* namespace LibraryLinkUtils */
+} /* namespace LLU */
 
 #endif /* LLUTILS_ML_MLPUT_H_ */

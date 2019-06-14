@@ -10,7 +10,7 @@
 
 #include "PassingPolicy.hpp"
 
-namespace LibraryLinkUtils {
+namespace LLU {
 	namespace Passing {
 
 		class Manual : public PassingPolicy {

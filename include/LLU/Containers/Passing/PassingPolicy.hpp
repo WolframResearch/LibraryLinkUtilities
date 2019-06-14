@@ -9,7 +9,7 @@
 
 #include "WolframLibrary.h"
 
-namespace LibraryLinkUtils {
+namespace LLU {
 	namespace Passing {
 
 		class PassingPolicy {

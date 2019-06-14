@@ -11,7 +11,7 @@
 
 #include "LLU/ErrorLog/ErrorManager.h"
 
-namespace LibraryLinkUtils {
+namespace LLU {
 
 	WolframLibraryData LibraryData::libData = nullptr;
 
@@ -25,35 +25,35 @@ namespace LibraryLinkUtils {
 
 	WolframLibraryData LibraryData::API() {
 		if (!libData) {
-			ErrorManager::throwException(LLErrorName::LibDataError);
+			ErrorManager::throwException(ErrorName::LibDataError);
 		}
 		return libData;
 	}
 
 	const st_WolframNumericArrayLibrary_Functions * LibraryData::NumericArrayAPI() {
 		if (!libData) {
-			ErrorManager::throwException(LLErrorName::LibDataError);
+			ErrorManager::throwException(ErrorName::LibDataError);
 		}
 		return libData->numericarrayLibraryFunctions;
 	}
 
 	const st_WolframSparseLibrary_Functions * LibraryData::SparseArrayAPI() {
 		if (!libData) {
-			ErrorManager::throwException(LLErrorName::LibDataError);
+			ErrorManager::throwException(ErrorName::LibDataError);
 		}
 		return libData->sparseLibraryFunctions;
 	}
 
 	const st_WolframImageLibrary_Functions * LibraryData::ImageAPI() {
 		if (!libData) {
-			ErrorManager::throwException(LLErrorName::LibDataError);
+			ErrorManager::throwException(ErrorName::LibDataError);
 		}
 		return libData->imageLibraryFunctions;
 	}
 
 	const st_WolframIOLibrary_Functions * LibraryData::DataStoreAPI() {
 		if (!libData) {
-			ErrorManager::throwException(LLErrorName::LibDataError);
+			ErrorManager::throwException(ErrorName::LibDataError);
 		}
 		return libData->ioLibraryFunctions;
 	}

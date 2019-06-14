@@ -9,12 +9,12 @@
 
 #include <string>
 
-namespace LibraryLinkUtils {
+namespace LLU {
 
 	/**
 	 * @brief Error codes predefined in Library Link
 	 */
-	namespace LLErrorCode {
+	namespace ErrorCode {
 
 		// Original LibraryLink error codes:
 		constexpr int VersionError = 7;		///< same as LIBRARY_VERSION_ERROR
@@ -30,7 +30,7 @@ namespace LibraryLinkUtils {
 	/**
 	 * @brief Names of all errors used across LLU
 	 */
-	namespace LLErrorName {
+	namespace ErrorName {
 
 		// Original LibraryLink error codes:
 		extern const std::string VersionError;		///< same as LIBRARY_VERSION_ERROR

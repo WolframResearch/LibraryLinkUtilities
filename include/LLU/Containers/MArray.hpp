@@ -20,7 +20,7 @@
 #include "MArrayBase.h"
 #include "LLU/Utilities.hpp"
 
-namespace LibraryLinkUtils {
+namespace LLU {
 
 	/**
 	 * @class MArray
@@ -257,7 +257,7 @@ namespace LibraryLinkUtils {
 		return os;
 	}
 
-} /* namespace LibraryLinkUtils */
+} /* namespace LLU */
 
 
 #endif /* LLUTILS_MARRAY_HPP_ */

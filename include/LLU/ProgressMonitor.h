@@ -9,7 +9,7 @@
 #include "LLU/Containers/Passing/Shared.hpp"
 #include "LLU/Containers/Tensor.h"
 
-namespace LibraryLinkUtils {
+namespace LLU {
 
 	/**
 	 * @brief	Stores and updates current progress of computation in a location shared between the library and WL Kernel.

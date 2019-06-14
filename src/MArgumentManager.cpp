@@ -15,7 +15,7 @@
 #include "LLU/Containers/MArray.hpp"
 #include "LLU/Containers/Passing/Shared.hpp"
 
-namespace LibraryLinkUtils {
+namespace LLU {
 
 	/* Static data members */
 
@@ -131,7 +131,7 @@ namespace LibraryLinkUtils {
 
 	MArgument MArgumentManager::getArgs(unsigned int index) const {
 		if (index >= argc)
-			ErrorManager::throwExceptionWithDebugInfo(LLErrorName::MArgumentIndexError, "Index " + std::to_string(index) + " out-of-bound when accessing LibraryLink argument");
+			ErrorManager::throwExceptionWithDebugInfo(ErrorName::MArgumentIndexError, "Index " + std::to_string(index) + " out-of-bound when accessing LibraryLink argument");
 		return args[index];
 	}
 
@@ -144,11 +144,11 @@ namespace LibraryLinkUtils {
 
 	ProgressMonitor MArgumentManager::getProgressMonitor(double step) const {
 		if (argc < 1) {
-			ErrorManager::throwExceptionWithDebugInfo(LLErrorName::MArgumentIndexError, "Index too small when accessing ProgressMonitor.");
+			ErrorManager::throwExceptionWithDebugInfo(ErrorName::MArgumentIndexError, "Index too small when accessing ProgressMonitor.");
 		}
 		auto pmIndex = static_cast<unsigned>(argc - 1); // shared Tensor will be passed as the last argument
 		auto sharedIndicator = getTensor<double, Passing::Shared>(pmIndex);
 		return ProgressMonitor { std::move(sharedIndicator), step };
 	}
 
-} /* namespace LibraryLinkUtils */
+} /* namespace LLU */

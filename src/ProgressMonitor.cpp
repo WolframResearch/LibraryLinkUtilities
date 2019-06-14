@@ -8,7 +8,7 @@
 #include "LLU/LibraryData.h"
 #include "LLU/ErrorLog/ErrorManager.h"
 
-namespace LibraryLinkUtils {
+namespace LLU {
 
 	ProgressMonitor::ProgressMonitor(Tensor<double, Passing::Shared> sharedIndicator, double step) : sharedIndicator(std::move(sharedIndicator)), step(step) {}
 
@@ -32,7 +32,7 @@ namespace LibraryLinkUtils {
 
 	void ProgressMonitor::checkAbort() {
 		if(LibraryData::API()->AbortQ()) {
-			ErrorManager::throwException(LLErrorName::Aborted);
+			ErrorManager::throwException(ErrorName::Aborted);
 		}
 	}
 

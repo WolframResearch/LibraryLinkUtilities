@@ -17,7 +17,7 @@
 #include "WolframNumericArrayLibrary.h"
 
 
-namespace LibraryLinkUtils {
+namespace LLU {
 
 	/**
 	 * @brief 	Utility type that strips any given type from reference and cv qualifiers
@@ -189,6 +189,6 @@ namespace LibraryLinkUtils {
 		};
 	}
 
-} /* namespace LibraryLinkUtils */
+} /* namespace LLU */
 
 #endif /* LLUTILS_UTILITIES_H_ */

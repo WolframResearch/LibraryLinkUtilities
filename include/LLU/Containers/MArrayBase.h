@@ -19,7 +19,7 @@
 #include "LLU/ErrorLog/ErrorManager.h"
 #include "LLU/Utilities.hpp"
 
-namespace LibraryLinkUtils {
+namespace LLU {
 
 	/**
 	 * @class MArrayBase
@@ -158,7 +158,7 @@ namespace LibraryLinkUtils {
 		 *   @throws 	LibraryLinkError(LLErrorName::DimensionsError)
 		 **/
 		virtual void sizeError() const {
-			ErrorManager::throwException(LLErrorName::DimensionsError);
+			ErrorManager::throwException(ErrorName::DimensionsError);
 		}
 
 	private:
@@ -189,7 +189,7 @@ namespace LibraryLinkUtils {
 			return (d > 0) && (d <= (std::numeric_limits<mint>::max)());
 		});
 		if (!dimsOk)
-			ErrorManager::throwExceptionWithDebugInfo(LLErrorName::DimensionsError, "Invalid input vector with array dimensions");
+			ErrorManager::throwExceptionWithDebugInfo(ErrorName::DimensionsError, "Invalid input vector with array dimensions");
 		dims.reserve(depth);
 		std::copy(std::begin(dimensions), std::end(dimensions), std::back_inserter(dims));
 		flattenedLength = totalLengthFromDims();
@@ -203,6 +203,6 @@ namespace LibraryLinkUtils {
 		return static_cast<mint>(v.size());
 	}
 
-} /* namespace LibraryLinkUtils */
+} /* namespace LLU */
 
 #endif /* LLUTILS_MARRAYBASE_H_ */

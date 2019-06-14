@@ -11,7 +11,7 @@
 #include <complex>
 #include <cstdint>
 
-namespace LibraryLinkUtils {
+namespace LLU {
 
 	template<>
 	const numericarray_data_t TypedNumericArray<uint8_t>::type = MNumericArray_Type_UBit8;
@@ -49,4 +49,4 @@ namespace LibraryLinkUtils {
 	template<>
 	const numericarray_data_t TypedNumericArray<std::complex<double>>::type = MNumericArray_Type_Complex_Real64;
 
-} /* namespace LibraryLinkUtils */
+} /* namespace LLU */

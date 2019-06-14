@@ -21,7 +21,7 @@
 #include "LLU/Containers/Passing/Manual.hpp"
 #include "LLU/Utilities.hpp"
 
-namespace LibraryLinkUtils {
+namespace LLU {
 
     template<typename T>
     class TypedTensor : public MArray<T> {
@@ -191,7 +191,7 @@ namespace LibraryLinkUtils {
 		 *   @throws 	LibraryLinkError(LLErrorName::TensorIndexError)
 		 **/
 		void indexError() const override {
-			ErrorManager::throwException(LLErrorName::TensorIndexError);
+			ErrorManager::throwException(ErrorName::TensorIndexError);
 		}
 
 		/**
@@ -199,7 +199,7 @@ namespace LibraryLinkUtils {
 		 *   @throws 	LibraryLinkError(LLErrorName::TensorSizeError)
 		 **/
 		void sizeError() const override {
-			ErrorManager::throwException(LLErrorName::TensorSizeError);
+			ErrorManager::throwException(ErrorName::TensorSizeError);
 		}
 
 	};
@@ -240,7 +240,7 @@ namespace LibraryLinkUtils {
 	Tensor<T, PassingMode>::Tensor(InputIt first, InputIt last, Container&& dims) : TypedTensor<T>(std::forward<Container>(dims),
 	        GenericTensor(TypedTensor<T>::getType(), this->depth, this->dimensionsData())) {
 		if (std::distance(first, last) != this->flattenedLength)
-			ErrorManager::throwException(LLErrorName::TensorNewError, "Length of data range does not match specified dimensions");
+			ErrorManager::throwException(ErrorName::TensorNewError, "Length of data range does not match specified dimensions");
 		std::copy(first, last, this->begin());
 	}
 
@@ -249,19 +249,19 @@ namespace LibraryLinkUtils {
 	Tensor<T, PassingMode>::Tensor(InputIt first, InputIt last, std::initializer_list<mint> dims) : TypedTensor<T>(dims),
 	        GenericTensor(TypedTensor<T>::getType(), this->depth, this->dimensionsData()) {
 		if (std::distance(first, last) != this->flattenedLength)
-			ErrorManager::throwException(LLErrorName::TensorNewError, "Length of data range does not match specified dimensions");
+			ErrorManager::throwException(ErrorName::TensorNewError, "Length of data range does not match specified dimensions");
 		std::copy(first, last, this->begin());
 	}
 
 	template<typename T, class PassingMode>
 	Tensor<T, PassingMode>::Tensor(GenericTensor t) : TypedTensor<T>(t.getDimensions(), t.getRank()), GenericTensor(std::move(t)) {
 		if (TypedTensor<T>::getType() != GenericTensor::type())
-			ErrorManager::throwException(LLErrorName::TensorTypeError);
+			ErrorManager::throwException(ErrorName::TensorTypeError);
 	}
 
 	template<typename T, class PassingMode>
 	Tensor<T, PassingMode>::Tensor(MTensor na) : Tensor(GenericTensor{ na }) {}
 	
-} /* namespace LibraryLinkUtils */
+} /* namespace LLU */
 
 #endif /* LLUTILS_TENSOR_H_ */

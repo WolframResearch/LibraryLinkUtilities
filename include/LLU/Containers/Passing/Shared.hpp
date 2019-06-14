@@ -9,7 +9,7 @@
 
 #include "PassingPolicy.hpp"
 
-namespace LibraryLinkUtils {
+namespace LLU {
 	namespace Passing {
 
 		class Shared : public PassingPolicy {

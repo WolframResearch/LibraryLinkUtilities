@@ -15,7 +15,7 @@
 #include <limits>
 #include <numeric>
 
-namespace LibraryLinkUtils {
+namespace LLU {
 
 	MArrayBase::MArrayBase(std::initializer_list<mint> dimensions) {
 		dims = dimensions;
@@ -74,4 +74,4 @@ namespace LibraryLinkUtils {
 	}
 
 
-} /* namespace LibraryLinkUtils */
+} /* namespace LLU */

@@ -25,7 +25,7 @@
 #include "Put.h"
 #include "Strings.h"
 
-namespace LibraryLinkUtils {
+namespace LLU {
 
 
 	/**
@@ -598,8 +598,8 @@ namespace LibraryLinkUtils {
 	int MLStream<EIn, EOut>::testHead(const std::string& head) {
 		int argcount;
 		check(
-			MLTestHead(m, head.c_str(), &argcount),
-			LLErrorName::MLTestHeadError,
+				MLTestHead(m, head.c_str(), &argcount),
+				ErrorName::MLTestHeadError,
 			"Expected \"" + head + "\""
 		);
 		return argcount;
@@ -609,14 +609,14 @@ namespace LibraryLinkUtils {
 	void MLStream<EIn, EOut>::testHead(const std::string& head, int argc) {
 		int argcount = testHead(head);
 		if (argc != argcount) {
-			ML::throwLLUException(LLErrorName::MLTestHeadError, "Expected " + std::to_string(argc) + " arguments but got " + std::to_string(argcount));
+			ML::throwLLUException(ErrorName::MLTestHeadError, "Expected " + std::to_string(argc) + " arguments but got " + std::to_string(argcount));
 		}
 	}
 
 	template<ML::Encoding EIn, ML::Encoding EOut>
 	void MLStream<EIn, EOut>::refreshCurrentMLINK() {
 		if (loopbackStack.empty()) {
-			ML::throwLLUException(LLErrorName::MLLoopbackStackSizeError, "Stack is empty in refreshCurrentMLINK()");
+			ML::throwLLUException(ErrorName::MLLoopbackStackSizeError, "Stack is empty in refreshCurrentMLINK()");
 		}
 		m = std::get<MLINK>(loopbackStack.top());
 	}
@@ -638,8 +638,8 @@ namespace LibraryLinkUtils {
 	template<ML::Encoding EIn, ML::Encoding EOut>
 	auto MLStream<EIn, EOut>::operator<<(const ML::Symbol& s) -> MLStream& {
 		check(
-			MLPutSymbol(m, s.getHead().c_str()),
-			LLErrorName::MLPutSymbolError,
+				MLPutSymbol(m, s.getHead().c_str()),
+				ErrorName::MLPutSymbolError,
 			"Cannot put symbol: \"" + s.getHead() + "\""
 		);
 		return *this;
@@ -648,8 +648,8 @@ namespace LibraryLinkUtils {
 	template<ML::Encoding EIn, ML::Encoding EOut>
 	auto MLStream<EIn, EOut>::operator<<(const ML::Function& f) -> MLStream& {
 		check(
-			MLPutFunction(m, f.getHead().c_str(), f.getArgc()),
-			LLErrorName::MLPutFunctionError,
+				MLPutFunction(m, f.getHead().c_str(), f.getArgc()),
+				ErrorName::MLPutFunctionError,
 			"Cannot put function: \"" + f.getHead() + "\" with " + std::to_string(f.getArgc()) + " arguments"
 		);
 		return *this;
@@ -658,8 +658,8 @@ namespace LibraryLinkUtils {
 	template<ML::Encoding EIn, ML::Encoding EOut>
 	auto MLStream<EIn, EOut>::operator<<(const ML::Missing& f) -> MLStream& {
 		check(
-			MLPutFunction(m, f.getHead().c_str(), 1), //f.getArgc() could be 0 but we still want to send f.reason, even if it's an empty string
-			LLErrorName::MLPutFunctionError,
+				MLPutFunction(m, f.getHead().c_str(), 1), //f.getArgc() could be 0 but we still want to send f.reason, even if it's an empty string
+			ErrorName::MLPutFunctionError,
 			"Cannot put function: \"" + f.getHead() + "\" with 1 argument"
 		);
 		*this << f.why();
@@ -688,7 +688,7 @@ namespace LibraryLinkUtils {
 	auto MLStream<EIn, EOut>::operator<<(const ML::DropExpr&) -> MLStream& {
 		// check if the stack has reasonable size
 		if (loopbackStack.size() < 2) {
-			ML::throwLLUException(LLErrorName::MLLoopbackStackSizeError, "Trying to Drop expression with loopback stack size " + std::to_string(loopbackStack.size()));
+			ML::throwLLUException(ErrorName::MLLoopbackStackSizeError, "Trying to Drop expression with loopback stack size " + std::to_string(loopbackStack.size()));
 		}
 		// we are dropping the expression so just close the link and hope that MathLink will do the cleanup
 		MLClose(std::get<MLINK>(loopbackStack.top()));
@@ -712,7 +712,7 @@ namespace LibraryLinkUtils {
 
 		// check if the stack has reasonable size
 		if (loopbackStack.size() < 2) {
-			ML::throwLLUException(LLErrorName::MLLoopbackStackSizeError, "Trying to End expression with loopback stack size " + std::to_string(loopbackStack.size()));
+			ML::throwLLUException(ErrorName::MLLoopbackStackSizeError, "Trying to End expression with loopback stack size " + std::to_string(loopbackStack.size()));
 		}
 
 		// extract active loopback link and expression head
@@ -727,8 +727,8 @@ namespace LibraryLinkUtils {
 		auto argCnt = ML::countExpressionsInLoopbackLink(exprArgs);
 		*this << ML::Function(std::get<std::string>(currentPartialExpr), argCnt);
 		check(
-			MLTransferToEndOfLoopbackLink(m, exprArgs),
-			LLErrorName::MLTransferToLoopbackError,
+				MLTransferToEndOfLoopbackLink(m, exprArgs),
+				ErrorName::MLTransferToLoopbackError,
 			"Could not transfer " + std::to_string(argCnt) + " expressions from Loopback Link"
 		);
 		// finally, close the loopback link
@@ -858,18 +858,18 @@ namespace LibraryLinkUtils {
 
 	template<ML::Encoding EIn, ML::Encoding EOut>
 	auto MLStream<EIn, EOut>::operator>>(const ML::Symbol& s) -> MLStream& {
-		check(MLTestSymbol(m, s.getHead().c_str()), LLErrorName::MLTestSymbolError, "Cannot get symbol: \"" + s.getHead() + "\"");
+		check(MLTestSymbol(m, s.getHead().c_str()), ErrorName::MLTestSymbolError, "Cannot get symbol: \"" + s.getHead() + "\"");
 		return *this;
 	}
 
 	template<ML::Encoding EIn, ML::Encoding EOut>
 	auto MLStream<EIn, EOut>::operator>>(ML::Symbol& s) -> MLStream& {
 		if (!s.getHead().empty()) {
-			check(MLTestSymbol(m, s.getHead().c_str()), LLErrorName::MLTestSymbolError, "Cannot get symbol: \"" + s.getHead() + "\"");
+			check(MLTestSymbol(m, s.getHead().c_str()), ErrorName::MLTestSymbolError, "Cannot get symbol: \"" + s.getHead() + "\"");
 		}
 		else {
 			const char* head;
-			check(MLGetSymbol(m, &head), LLErrorName::MLGetSymbolError, "Cannot get symbol");
+			check(MLGetSymbol(m, &head), ErrorName::MLGetSymbolError, "Cannot get symbol");
 			s.setHead(head);
 			MLReleaseSymbol(m, head);
 		}
@@ -895,7 +895,7 @@ namespace LibraryLinkUtils {
 		else {
 			const char* head;
 			int argc;
-			check(MLGetFunction(m, &head, &argc), LLErrorName::MLGetFunctionError, "Cannot get function");
+			check(MLGetFunction(m, &head, &argc), ErrorName::MLGetFunctionError, "Cannot get function");
 			f.setHead(head);
 			MLReleaseSymbol(m, head);
 			f.setArgc(argc);
@@ -914,7 +914,7 @@ namespace LibraryLinkUtils {
 			b = false;
 		}
 		else {
-			ML::throwLLUException(LLErrorName::MLWrongSymbolForBool, R"(Expected "True" or "False", got )" + boolean.getHead());
+			ML::throwLLUException(ErrorName::MLWrongSymbolForBool, R"(Expected "True" or "False", got )" + boolean.getHead());
 		}
 		return *this;
 	}
@@ -1007,7 +1007,7 @@ namespace LibraryLinkUtils {
 		return *this;
 	}
 
-} /* namespace LibraryLinkUtils */
+} /* namespace LLU */
 
 
 #endif /* LLUTILS_MLSTREAM_HPP_ */

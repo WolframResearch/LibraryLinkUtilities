@@ -12,7 +12,7 @@
 
 #include "LLU/LibraryData.h"
 
-namespace LibraryLinkUtils {
+namespace LLU {
 
 	/**
 	 * @brief Strongly type enum with possible types of data stored in MArgument.
@@ -157,6 +157,6 @@ namespace LibraryLinkUtils {
 
 #undef ARGUMENT_DEFINE_SPECIALIZATIONS_OF_MEMBER_FUNCTIONS
 
-} // namespace LibraryLinkUtils
+} // namespace LLU
 
 #endif //LLUTILS_MARGUMENT_H

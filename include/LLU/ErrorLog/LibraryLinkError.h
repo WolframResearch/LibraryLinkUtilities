@@ -17,7 +17,7 @@
  * @namespace LibraryLinkUtils
  * @brief Main namespace of LibraryLinkUtilities
  */
-namespace LibraryLinkUtils {
+namespace LLU {
 
 	/**
 	 * @class	LibraryLinkError
@@ -165,6 +165,6 @@ namespace LibraryLinkUtils {
 		loopback << ML::List(static_cast<int>(messageParamsCount));
 		static_cast<void>(std::initializer_list<int> { (loopback << params, 0)... });
 	}
-} /* namespace LibraryLinkUtils */
+} /* namespace LLU */
 
 #endif /* LLUTILS_LIBRARYLINKERROR_H_ */

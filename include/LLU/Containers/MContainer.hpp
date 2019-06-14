@@ -16,7 +16,7 @@
 #include "LLU/MArgument.h"
 #include "LLU/Utilities.hpp"
 
-namespace LibraryLinkUtils {
+namespace LLU {
 
 	template<MArgumentType Type, class PassingMode>
 	class MContainerBase : public PassingMode {
@@ -145,7 +145,7 @@ namespace LibraryLinkUtils {
 		MContainer(mint type, mint rank, const mint* dims) {
 			RawContainer tmp {};
 			if (LibraryData::API()->MTensor_new(type, rank, dims, &tmp)) {
-				ErrorManager::throwException(LLErrorName::TensorNewError);
+				ErrorManager::throwException(ErrorName::TensorNewError);
 			}
 			this->setContainer(tmp);
 		}
@@ -212,7 +212,7 @@ namespace LibraryLinkUtils {
 		RawContainer cloneImpl() const override {
 			RawContainer tmp {};
 			if(LibraryData::API()->MTensor_clone(this->getContainer(), &tmp)) {
-				ErrorManager::throwException(LLErrorName::TensorCloneError);
+				ErrorManager::throwException(ErrorName::TensorCloneError);
 			}
 			return tmp;
 		}
@@ -231,7 +231,7 @@ namespace LibraryLinkUtils {
 			RawContainer tmp{};
 			if (slices ? LibraryData::ImageAPI()->MImage_new3D(slices, width, height, channels, type, colorSpace, interleaving, &tmp) :
 					LibraryData::ImageAPI()->MImage_new2D(width, height, channels, type, colorSpace, interleaving, &tmp)) {
-				ErrorManager::throwException(LLErrorName::ImageNewError);
+				ErrorManager::throwException(ErrorName::ImageNewError);
 			}
 			this->setContainer(tmp);
 		}
@@ -252,7 +252,7 @@ namespace LibraryLinkUtils {
 		MContainer<MArgumentType::Image, Passing::Manual> convert(imagedata_t t, mbool interleavingQ) const {
 			auto newImage = LibraryData::ImageAPI()->MImage_convertType(this->getContainer(), t, interleavingQ);
 			if (!newImage) {
-				ErrorManager::throwException(LLErrorName::ImageNewError, "Conversion to type " + std::to_string(static_cast<int>(t)) + " failed.");
+				ErrorManager::throwException(ErrorName::ImageNewError, "Conversion to type " + std::to_string(static_cast<int>(t)) + " failed.");
 			}
 			return newImage;
 		}
@@ -336,7 +336,7 @@ namespace LibraryLinkUtils {
 		RawContainer cloneImpl() const override {
 			RawContainer tmp{};
 			if(LibraryData::ImageAPI()->MImage_clone(this->getContainer(), &tmp)) {
-				ErrorManager::throwException(LLErrorName::ImageCloneError);
+				ErrorManager::throwException(ErrorName::ImageCloneError);
 			}
 			return tmp;
 		}
@@ -368,7 +368,7 @@ namespace LibraryLinkUtils {
 		MContainer(numericarray_data_t type, mint rank, const mint* dims) {
 			RawContainer tmp {};
 			if (LibraryData::NumericArrayAPI()->MNumericArray_new(type, rank, dims, &tmp)) {
-				ErrorManager::throwException(LLErrorName::NumericArrayNewError);
+				ErrorManager::throwException(ErrorName::NumericArrayNewError);
 			}
 			this->setContainer(tmp);
 		}
@@ -403,7 +403,7 @@ namespace LibraryLinkUtils {
 			auto err = LibraryData::NumericArrayAPI()->MNumericArray_convertType(&newNA, this->getContainer(), t,
 																											  static_cast<numericarray_convert_method_t>(method), param);
 			if (err) {
-				ErrorManager::throwException(LLErrorName::NumericArrayConversionError, "Conversion to type " + std::to_string(static_cast<int>(t)) + " failed.");
+				ErrorManager::throwException(ErrorName::NumericArrayConversionError, "Conversion to type " + std::to_string(static_cast<int>(t)) + " failed.");
 			}
 			return newNA;
 		}
@@ -428,7 +428,7 @@ namespace LibraryLinkUtils {
 		RawContainer cloneImpl() const override {
 			RawContainer tmp {};
 			if(LibraryData::NumericArrayAPI()->MNumericArray_clone(this->getContainer(), &tmp)) {
-				ErrorManager::throwException(LLErrorName::NumericArrayCloneError);
+				ErrorManager::throwException(ErrorName::NumericArrayCloneError);
 			}
 			return tmp;
 		}

@@ -25,7 +25,7 @@
 #include "LLU/Containers/Passing/Manual.hpp"
 #include "MContainer.hpp"
 
-namespace LibraryLinkUtils {
+namespace LLU {
 
 	/**
 	 * @class	DataNode
@@ -367,10 +367,10 @@ namespace LibraryLinkUtils {
 	template<MArgumentType MArgType>
 	DataNode<MArgType>::DataNode(DataStoreNode dsn) : rawNode(dsn) {
 		if (!rawNode) {
-			ErrorManager::throwException(LLErrorName::DLNullRawNode);
+			ErrorManager::throwException(ErrorName::DLNullRawNode);
 		}
 		if (MArgType != MArgumentType::MArgument && MArgType != getRawType()) {
-			ErrorManager::throwException(LLErrorName::DLInvalidNodeType);
+			ErrorManager::throwException(ErrorName::DLInvalidNodeType);
 		}
 		char* rawName = nullptr;
 		LibraryData::DataStoreAPI()->DataStoreNode_getName(rawNode, &rawName);
@@ -378,7 +378,7 @@ namespace LibraryLinkUtils {
 			name = rawName;
 		}
 		if (LibraryData::DataStoreAPI()->DataStoreNode_getData(rawNode, &nodeArg) != 0) {
-			ErrorManager::throwException(LLErrorName::DLGetNodeDataError);
+			ErrorManager::throwException(ErrorName::DLGetNodeDataError);
 		}
 	}
 
@@ -387,7 +387,7 @@ namespace LibraryLinkUtils {
 	template<MArgumentType T, class PassingMode>
 	DataList<T, PassingMode>::DataList(DataStore ds) : GenericDataStore(ds) {
 		if (!this->getContainer()) {
-			ErrorManager::throwException(LLErrorName::DLNullRawDataStore);
+			ErrorManager::throwException(ErrorName::DLNullRawDataStore);
 		}
 		makeProxy();
 	}
@@ -395,7 +395,7 @@ namespace LibraryLinkUtils {
     template<MArgumentType T, class PassingMode>
     DataList<T, PassingMode>::DataList(GenericDataStore gds) : GenericDataStore(std::move(gds)) {
         if (!this->getContainer()) {
-            ErrorManager::throwException(LLErrorName::DLNullRawDataStore);
+            ErrorManager::throwException(ErrorName::DLNullRawDataStore);
         }
         makeProxy();
     }
