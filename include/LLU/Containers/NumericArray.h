@@ -154,13 +154,12 @@ namespace LLU {
 		NumericArray(MNumericArray na);
 
 		/**
-		 *   @bri	ef         Create NumericArray from NumericArray of different type
-		 *   @tparam		U - data type of the NumericArray to be converted
-		 *   @param[in]     other - const reference to a NumericArray any type
+		 *   @brief         Create NumericArray from generic NumericArray
+		 *   @param[in]     other - const reference to a generic NumericArray
 		 *   @param[in]		method - conversion method to be used
 		 **/
-		template<typename U, class P>
-		NumericArray(const NumericArray<U, P>& other, NA::ConversionMethod method = NA::ConversionMethod::ClipRound, double param = 0.0);
+		template<class P>
+		NumericArray(const MContainer<MArgumentType::NumericArray, P>& other, NA::ConversionMethod method = NA::ConversionMethod::ClipRound, double param = 0.0);
 
 		/**
 		 *   @brief         Copy constructor
@@ -290,9 +289,9 @@ namespace LLU {
 	NumericArray<T, PassingMode>::NumericArray(MNumericArray na) : NumericArray(GenericNumericArray { na }) {}
 
 	template<typename T, class PassingMode>
-	template<typename U, class P>
-	NumericArray<T, PassingMode>::NumericArray(const NumericArray<U, P>& other, NA::ConversionMethod method, double param) : TypedNumericArray<T>(other),
-	        GenericNumericArray(other.convert(this->getType(), method, param)) {
+	template<class P>
+	NumericArray<T, PassingMode>::NumericArray(const MContainer<MArgumentType::NumericArray, P>& other, NA::ConversionMethod method, double param) :
+			TypedNumericArray<T>(other.getDimensions(), other.getRank()), GenericNumericArray(other.convert(this->getType(), method, param)) {
 	}
 
 } /* namespace LLU */

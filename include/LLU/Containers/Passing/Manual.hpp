@@ -29,7 +29,7 @@ namespace LLU {
 			};
 
 			Manual& operator=(Manual&& other) noexcept {
-				setOwner(true);
+				setOwner(other.isOwner());
 				other.setOwner(false);
 				return *this;
 			}

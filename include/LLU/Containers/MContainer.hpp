@@ -27,6 +27,7 @@ namespace LLU {
 		MContainerBase() {
 			static_assert(std::is_same<PassingMode, Passing::Manual>::value, "New MContainer can only be created with passing mode Manual.");
 		}
+
 		explicit MContainerBase(Container c) : container(c) {}
 
 		template<class P>
@@ -40,15 +41,15 @@ namespace LLU {
 
         template<class P>
 		MContainerBase& operator=(const MContainerBase<Type, P>& mc) {
-			PassingMode::oparator=(mc);
-			set(mc.clone());
+			PassingMode::operator=(mc);
+			setContainer(mc.clone());
 			return *this;
 		}
 
         template<class P>
 		MContainerBase& operator=(MContainerBase<Type, P>&& mc) noexcept {
-			PassingMode::oparator=(std::move(mc));
-			set(mc.container);
+			PassingMode::operator=(std::move(mc));
+			setContainer(mc.container);
 			mc.container = nullptr;
 			return *this;
 		}
@@ -133,7 +134,7 @@ namespace LLU {
 
 	template<MArgumentType Type, class PassingMode>
 	class MContainer {
-		static_assert(dependent_false_v<Type>, "Trying to instantiate unspecialized MContainer template.");
+		static_assert(dependent_false_v<PassingMode>, "Trying to instantiate unspecialized MContainer template.");
 	};
 
 	template<class PassingMode>
@@ -167,7 +168,7 @@ namespace LLU {
 
         template<class P>
         MContainer& operator=(MContainer<MArgumentType::Tensor, P>&& mc) noexcept {
-            Base::operator=(mc);
+            Base::operator=(std::move(mc));
             return *this;
         }
 
@@ -390,7 +391,7 @@ namespace LLU {
 
         template<class P>
         MContainer& operator=(MContainer<MArgumentType::NumericArray, P>&& mc) noexcept {
-            Base::operator=(mc);
+            Base::operator=(std::move(mc));
             return *this;
         }
 
@@ -478,7 +479,7 @@ namespace LLU {
 
 		template<class P>
 		MContainer &operator=(MContainer<MArgumentType::DataStore, P> &&mc) noexcept {
-			Base::operator=(mc);
+			Base::operator=(std::move(mc));
 			return *this;
 		}
 
