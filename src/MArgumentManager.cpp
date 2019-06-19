@@ -44,19 +44,19 @@ namespace LLU {
 		return static_cast<double>(MArgument_getReal(getArgs(index)));
 	}
 
-	void MArgumentManager::acquireUTF8String(unsigned int index) {
+	void MArgumentManager::acquireUTF8String(unsigned int index) const {
 		if (!stringArgs.at(index)) {
 			char* strArg = MArgument_getUTF8String(getArgs(index));
 			stringArgs[index].reset(strArg);
 		}
 	}
 
-	char* MArgumentManager::getCString(unsigned int index) {
+	char* MArgumentManager::getCString(unsigned int index) const {
 		acquireUTF8String(index);
 		return stringArgs[index].get();
 	}
 
-	std::string MArgumentManager::getString(unsigned int index) {
+	std::string MArgumentManager::getString(unsigned int index) const {
 		acquireUTF8String(index);
 		return stringArgs[index].get();
 	}
@@ -102,16 +102,32 @@ namespace LLU {
 		return MArgument_getMNumericArray(getArgs(index));
 	}
 
-	void MArgumentManager::setMNumericArray(MNumericArray ra) {
-		MArgument_setMNumericArray(res, ra);
-	}	
-
 	MTensor MArgumentManager::getMTensor(unsigned int index) const {
 		return MArgument_getMTensor(getArgs(index));
 	}
 
+	MImage MArgumentManager::getMImage(unsigned int index) const {
+		return MArgument_getMImage(getArgs(index));
+	}
+
+	DataStore MArgumentManager::getDataStore(unsigned int index) const {
+		return MArgument_getDataStore(getArgs(index));
+	}
+
+	void MArgumentManager::setMNumericArray(MNumericArray ra) {
+		MArgument_setMNumericArray(res, ra);
+	}
+
 	void MArgumentManager::setMTensor(MTensor t) {
 		MArgument_setMTensor(res, t);
+	}
+
+	void MArgumentManager::setMImage(MImage mi) {
+		MArgument_setMImage(res, mi);
+	}
+
+	void MArgumentManager::setDataStore(DataStore ds){
+		MArgument_setDataStore(res, ds);
 	}
 
 	numericarray_data_t MArgumentManager::getNumericArrayType(unsigned int index) const {
