@@ -167,7 +167,7 @@ Test[
  Calling tensor API with shared data
 *)
 TestExecute[
-	loadRealArray = LibraryFunctionLoad[lib, "loadRealArray", {{Real, _, "Shared"}}, "Void"];
+	loadRealArray = LibraryFunctionLoad[lib, "loadRealArray", {{_, _, "Shared"}}, "Void"];
 	getRealArray = LibraryFunctionLoad[lib, "getRealArray", {}, {Real, 1}];
 	doubleRealArray = LibraryFunctionLoad[lib, "doubleRealArray", {}, {Real, 1}];
 	unloadRealArray = LibraryFunctionLoad[lib, "unloadRealArray", {}, Integer];
@@ -182,6 +182,17 @@ Test[
 	{2.3,4.5}
 	,
 	TestID->"TensorOperations-20150819-F5H0C3"
+];
+
+TestMatch[
+	loadRealArray[Range[10]];
+	getRealArray[]
+	,
+	{2.3,4.5}
+	,
+	{LibraryFunction::rterr}
+	,
+	TestID -> "TensorTestSuite-20190619-Q0I1G2"
 ];
 
 Test[

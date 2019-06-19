@@ -26,7 +26,8 @@ EXTERN_C DLLEXPORT int loadRealArray(WolframLibraryData libData, mint Argc, MArg
 	auto err = ErrorCode::NoError;
 	try {
 		MArgumentManager mngr(Argc, Args, Res);
-		tensor = std::make_unique<Tensor<double, Passing::Shared>>(mngr.getTensor<double, Passing::Shared>(0));
+		auto genericTensor = mngr.getGenericTensor<Passing::Shared>(0);
+		tensor = std::make_unique<Tensor<double, Passing::Shared>>(std::move(genericTensor));
 	}
 	catch (const LibraryLinkError& e) {
 		err = e.which();
@@ -45,7 +46,7 @@ EXTERN_C DLLEXPORT int getRealArray(WolframLibraryData libData, mint Argc, MArgu
             return ErrorCode::FunctionError;
 		}
 		auto& out = *tensor;
-		mngr.setTensor(out);
+		mngr.set(out);
 	}
 	catch (const LibraryLinkError& e) {
 		err = e.which();
@@ -68,7 +69,7 @@ EXTERN_C DLLEXPORT int doubleRealArray(WolframLibraryData libData, mint Argc, MA
 		for (auto& elem : out) {
 			elem *= 2;
 		}
-		mngr.setTensor(out);
+		mngr.set(out);
 	}
 	catch (const LibraryLinkError& e) {
 		err = e.which();
@@ -87,7 +88,7 @@ EXTERN_C DLLEXPORT int unloadRealArray(WolframLibraryData libData, mint Argc, MA
             return ErrorCode::FunctionError;
         }
 		mngr.setInteger(tensor->shareCount());
-        tensor.release();
+        tensor.reset();
 	}
 	catch (const LibraryLinkError& e) {
 		err = e.which();

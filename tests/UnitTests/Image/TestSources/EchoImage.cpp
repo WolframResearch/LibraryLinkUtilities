@@ -63,6 +63,19 @@ LIBRARY_LINK_FUNCTION(EchoImage2) {
 	return err;
 }
 
+LIBRARY_LINK_FUNCTION(EchoImage3) {
+	auto err = LLErrorCode::NoError;
+	try {
+		LLU::MArgumentManager mngr(libData, Argc, Args, Res);
+		auto img = mngr.getGenericImage(0);
+		mngr.set(img);
+	}
+	catch (const LLU::LibraryLinkError &e) {
+		err = e.which();
+	}
+	return err;
+}
+
 LIBRARY_LINK_FUNCTION(ConvertImageToByte) {
 	auto err = LLErrorCode::NoError;
 	try {

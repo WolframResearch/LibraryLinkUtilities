@@ -75,15 +75,15 @@ LIBRARY_LINK_FUNCTION(JoinDataStores) {
 
 		auto returnCopyQ = mngr.getBoolean(2);
 
+		DataList<MArgumentType::DataStore, LLU::Passing::Manual> dsOut;
 		if (returnCopyQ) {
-			auto dsOut1 = ds1.clone();
-			auto dsOut2 = ds2.clone();
-			DataList<MArgumentType::DataStore, LLU::Passing::Manual> dsOut { dsOut1.abandonContainer(), dsOut2.abandonContainer() };
-			mngr.setDataList(dsOut);
+			dsOut.push_back(ds1.clone());
+			dsOut.push_back(ds2.clone());
 		} else {
-			DataList<MArgumentType::DataStore, LLU::Passing::Manual> dsOut { ds1.abandonContainer(), ds2.abandonContainer() };
-			mngr.setDataList(dsOut);
+			dsOut.push_back(ds1);
+			dsOut.push_back(ds2);
 		}
+		mngr.setDataList(dsOut);
 	} catch (const LLU::LibraryLinkError& e) {
 		err = e.which();
 	} catch (...) {
@@ -126,7 +126,7 @@ LIBRARY_LINK_FUNCTION(EmptyDataStore) {
 	return err;
 }
 
-/* Reverse each string in a list of strings using DataStore */
+/* Reverse each string in a list of strings using DataList */
 LIBRARY_LINK_FUNCTION(ReverseListOfStrings) {
 	auto err = LLErrorCode::NoError;
 	try {
@@ -236,7 +236,6 @@ LIBRARY_LINK_FUNCTION(SeparateKeysAndValues) {
 		DataList<MArgumentType::Complex> values;
 
 		for(auto&& listElem : dsIn) {
-			std::cout << listElem.getName() << std::endl;
 			keys.push_back(const_cast<char*>(listElem.getName().c_str()));
 			values.push_back(listElem.getValue());
 		}

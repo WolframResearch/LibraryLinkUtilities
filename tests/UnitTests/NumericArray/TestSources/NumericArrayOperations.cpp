@@ -11,7 +11,10 @@ using LLU::LibraryLinkError;
 using LLU::MArgumentManager;
 using LLU::NumericArray;
 
-static MNumericArray shared_numeric = 0;
+template<class PassingMode>
+using GenericArray = LLU::MContainer<LLU::MArgumentType::NumericArray, PassingMode>;
+
+static GenericArray<LLU::Passing::Shared> shared_numeric { nullptr };
 
 EXTERN_C DLLEXPORT mint WolframLibrary_getVersion() {
 	return WolframLibraryVersion;
@@ -119,28 +122,35 @@ LIBRARY_LINK_FUNCTION(cloneNumericArray) {
 }
 
 LIBRARY_LINK_FUNCTION(changeSharedNumericArray) {
-	WolframNumericArrayLibrary_Functions numericArrayFunctions = libData->numericarrayLibraryFunctions;
-	int err = LIBRARY_NO_ERROR;
-
-	if (shared_numeric) {
-		numericArrayFunctions->MNumericArray_disown(shared_numeric);
-		shared_numeric = 0;
+	auto err = LLErrorCode::NoError;
+	try {
+		MArgumentManager mngr(Argc, Args, Res);
+		auto oldShareCount = shared_numeric.shareCount();
+		shared_numeric = mngr.getGenericNumericArray<LLU::Passing::Shared>(0);
+		mngr.set(10 * oldShareCount + shared_numeric.shareCount());
 	}
-
-	shared_numeric = MArgument_getMNumericArray(Args[0]);
-
+	catch (const LibraryLinkError &e) {
+		err = e.which();
+	}
+	catch (...) {
+		err = LLErrorCode::FunctionError;
+	}
 	return err;
 }
 
 EXTERN_C DLLEXPORT int getSharedNumericArray(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
-	int err = LIBRARY_NO_ERROR;
-
-	if (shared_numeric) {
-		MArgument_setMNumericArray(Res, shared_numeric);
+	auto err = LLErrorCode::NoError;
+	try {
+		MArgumentManager mngr(Argc, Args, Res);
+		if (shared_numeric.getContainer()) {
+			mngr.set(shared_numeric);
+		} else {
+			return LLErrorCode::FunctionError;
+		}
 	}
-	else
-		err = LIBRARY_FUNCTION_ERROR;
-
+	catch (const LibraryLinkError &e) {
+		err = e.which();
+	}
 	return err;
 }
 
@@ -251,6 +261,24 @@ LIBRARY_LINK_FUNCTION(convert) {
 		});
 	}
 	catch (const LibraryLinkError& e) {
+		err = e.which();
+	}
+	catch (...) {
+		err = LLErrorCode::FunctionError;
+	}
+	return err;
+}
+
+// convert generic NumericArray
+LIBRARY_LINK_FUNCTION(convertGeneric) {
+	auto err = LLErrorCode::NoError;
+	try {
+		MArgumentManager mngr(Argc, Args, Res);
+		auto numArr = mngr.getGenericNumericArray(0);
+		NumericArray<std::uint16_t> converted { numArr, mngr.getInteger<NA::ConversionMethod>(1), mngr.getReal(2) };
+		mngr.set(converted);
+	}
+	catch (const LibraryLinkError &e) {
 		err = e.which();
 	}
 	catch (...) {

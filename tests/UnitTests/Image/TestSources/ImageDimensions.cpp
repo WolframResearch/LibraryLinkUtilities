@@ -6,9 +6,8 @@ LIBRARY_LINK_FUNCTION(ImageColumnCount) {
 	auto err = LLU::ErrorCode::NoError;
 	try {
 		LLU::MArgumentManager mngr(libData, Argc, Args, Res);
-		mngr.operateOnImage(0, [&mngr](auto&& image) {
-			mngr.setInteger(image.columns());
-		});
+		auto image = mngr.getGenericImage(0);
+		mngr.setInteger(image.columns());
 	}
 	catch (const LLU::LibraryLinkError& e) {
 		err = e.which();
@@ -42,9 +41,8 @@ LIBRARY_LINK_FUNCTION(ImageRowCount) {
 	auto err = LLU::ErrorCode::NoError;
 	try {
 		LLU::MArgumentManager mngr(libData, Argc, Args, Res);
-		mngr.operateOnImage(0, [&mngr](auto&& image) {
-			mngr.setInteger(image.rows());
-		});
+		auto image = mngr.getGenericImage(0);
+		mngr.setInteger(image.rows());
 	}
 	catch (const LLU::LibraryLinkError& e) {
 		err = e.which();

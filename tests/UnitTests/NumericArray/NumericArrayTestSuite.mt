@@ -58,8 +58,8 @@ Test[
 	,
 	TestID->"NumericArrayOperations-20150827-I0C3X0"
 ]
-
-Test[(*check NumericArray shared APi's*)
+	
+Test[(*check NumericArray shared APi's*)	
 	changeSharedNA[na];
 	sna = getSharedNA[];
 	SameQ[sna, na]
@@ -131,5 +131,21 @@ Test[
 	TestID->"NumericArrayTestSuite-20181105-W8Z5G6"
 ]
 
+Test[
+	na = NumericArray[{3.5}];
+	convertGeneric[na, 5, 0]
+	,
+	NumericArray[NumericArray[{3.5}], "UnsignedInteger16", "Round", Tolerance -> 0]
+	,
+	TestID -> "NumericArrayTestSuite-20190619-X9O3E1"
+]
+
+Test[
+	convertGeneric[NumericArray[Range[10]], 8, 1]
+	,
+	NumericArray[NumericArray[Range[10]], "UnsignedInteger16", "ClipAndScale", Tolerance -> 1]
+	,
+	TestID -> "NumericArrayTestSuite-20190619-O5L5G6"
+]
 
 EndRequirement[]

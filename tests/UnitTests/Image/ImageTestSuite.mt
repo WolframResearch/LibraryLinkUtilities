@@ -21,6 +21,7 @@ TestExecute[
 
 	EchoImage1 = LibraryFunctionLoad[lib, "EchoImage1", { LibraryDataType[Image | Image3D] }, LibraryDataType[Image | Image3D] ];
 	EchoImage2 = LibraryFunctionLoad[lib, "EchoImage2", { LibraryDataType[Image | Image3D] }, LibraryDataType[Image | Image3D] ];
+	EchoImage3 = LibraryFunctionLoad[lib, "EchoImage3", { LibraryDataType[Image | Image3D] }, LibraryDataType[Image | Image3D] ];
 	ConvertImageToByte = LibraryFunctionLoad[lib, "ConvertImageToByte", { LibraryDataType[Image | Image3D] }, LibraryDataType[Image | Image3D] ];
 	UnifyImageTypes = LibraryFunctionLoad[lib, "UnifyImageTypes", { LibraryDataType[Image | Image3D], LibraryDataType[Image | Image3D] }, LibraryDataType[Image | Image3D]];
 
@@ -70,6 +71,20 @@ Test[
 	,
 	TestID -> "ImageBitOperations-20150731-M0R8N3"
 ];
+
+Test[
+	res = EchoImage3[testImage3D];
+	And[SameQ[ImageType[testImage3D], ImageType[res]],
+		SameQ[ImageData[testImage3D], ImageData[res]],
+		SameQ[ImageChannels[testImage3D], ImageChannels[res]],
+		SameQ[ImageColorSpace[testImage3D], ImageColorSpace[res]]
+	]
+	,
+	True
+	,
+	TestID -> "ImageTestSuite-20190618-S9B1D3"
+];
+
 
 Test[
 	ConvertImageToByte[testImage]
@@ -210,6 +225,20 @@ Test[
 ];
 
 Test[
+	res = EchoImage3[testImage3D];
+	And[SameQ[ImageType[testImage3D], ImageType[res]],
+		SameQ[ImageData[testImage3D], ImageData[res]],
+		SameQ[ImageChannels[testImage3D], ImageChannels[res]],
+		SameQ[ImageColorSpace[testImage3D], ImageColorSpace[res]]
+	]
+	,
+	True
+	,
+	TestID -> "ImageTestSuite-20190618-T3U5T6"
+];
+
+
+Test[
 	res = EchoImage2[testImage3D];
 	And[SameQ[ImageType[testImage3D], ImageType[res]],
 		SameQ[ImageData[testImage3D, "Byte"], ImageData[res, "Byte"]],
@@ -339,6 +368,19 @@ Test[
 	True
 	,
 	TestID -> "ImageBit16Operations-20170804-J6D3N1"
+];
+
+Test[
+	res = EchoImage3[testImage3D];
+	And[SameQ[ImageType[testImage3D], ImageType[res]],
+		SameQ[ImageData[testImage3D], ImageData[res]],
+		SameQ[ImageChannels[testImage3D], ImageChannels[res]],
+		SameQ[ImageColorSpace[testImage3D], ImageColorSpace[res]]
+	]
+	,
+	True
+	,
+	TestID -> "ImageTestSuite-20190618-H3L0K4"
 ];
 
 Test[
@@ -495,6 +537,19 @@ Test[
 ];
 
 Test[
+	res = EchoImage3[testImage3D];
+	And[SameQ[ImageType[testImage3D], ImageType[res]],
+		SameQ[ImageData[testImage3D], ImageData[res]],
+		SameQ[ImageChannels[testImage3D], ImageChannels[res]],
+		SameQ[ImageColorSpace[testImage3D], ImageColorSpace[res]]
+	]
+	,
+	True
+	,
+	TestID -> "ImageTestSuite-20190618-A8K2M2"
+];
+
+Test[
 	ConvertImageToByte[testImage]
 	,
 	Image[testImage, "Byte"]
@@ -605,6 +660,19 @@ Test[
 	True
 	,
 	TestID -> "ImageRealOperations-20150731-M0R8N3"
+];
+
+Test[
+	res = EchoImage3[testImage3D];
+	And[SameQ[ImageType[testImage3D], ImageType[res]],
+		SameQ[ImageData[testImage3D], ImageData[res]],
+		SameQ[ImageChannels[testImage3D], ImageChannels[res]],
+		SameQ[ImageColorSpace[testImage3D], ImageColorSpace[res]]
+	]
+	,
+	True
+	,
+	TestID -> "ImageTestSuite-20190618-F5T5X2"
 ];
 
 Test[
