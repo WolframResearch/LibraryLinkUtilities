@@ -14,10 +14,10 @@
 #include "LLU/ProgressMonitor.h"
 
 LIBRARY_LINK_FUNCTION(GreaterAt) {
-	LLU_DEBUG("Library function entered with ", Argc, " arguments.");
+	LLU_DEBUG("Library function entered with ", static_cast<mlint64>(Argc), " arguments.");
 	auto err = LLErrorCode::NoError;
 	try {
-		LLU_DEBUG("Starting try-block, current error code: ", static_cast<int>(err));
+		LLU_DEBUG("Starting try-block, current error code: ", static_cast<mlint64>(err));
 		MArgumentManager mngr(Argc, Args, Res);
 		auto fileName = mngr.getString(0);
 		if (fileName.find(':') != std::string::npos) {
@@ -36,7 +36,7 @@ LIBRARY_LINK_FUNCTION(GreaterAt) {
 			ErrorManager::throwExceptionWithDebugInfo(LLErrorName::TensorIndexError,
 					"Indices (" + std::to_string(index1) + ", " +  std::to_string(index2) + ") must be positive.");
 		}
-		LLU_DEBUG("Comparing ", t.at(index1 - 1), " with ", t.at(index2 - 1));
+		LLU_DEBUG("Comparing ", static_cast<mlint64>(t.at(index1 - 1)), " with ", static_cast<mlint64>(t.at(index2 - 1)));
 		mngr.setBoolean(t.at(index1 - 1) > t.at(index2 - 1));
 	}
 	catch (const LibraryLinkError& e) {
@@ -55,13 +55,13 @@ EXTERN_C DLLEXPORT int WolframLibrary_initialize(WolframLibraryData libData) {
 }
 
 LIBRARY_LINK_FUNCTION(LogDemo) {
-	LLU_DEBUG("Library function entered with ", Argc, " arguments.");
+	LLU_DEBUG("Library function entered with ", static_cast<mlint64>(Argc), " arguments.");
 	auto err = LLErrorCode::NoError;
 	try {
 		MArgumentManager mngr(Argc, Args, Res);
 		auto index = mngr.getInteger<mint>(0);
 		if (index >= Argc) {
-			LLU_WARNING("Index ", index, " is too big for the number of arguments: ", Argc, ". Changing to ", Argc - 1);
+			LLU_WARNING("Index ", static_cast<mlint64>(index), " is too big for the number of arguments: ", static_cast<mlint64>(Argc), ". Changing to ", static_cast<mlint64>(Argc - 1));
 			index = Argc - 1;
 		}
 		auto value = mngr.getInteger<mint>(static_cast<unsigned int>(index));
@@ -85,7 +85,7 @@ LIBRARY_LINK_FUNCTION(LogsFromThreads) {
 		MArgumentManager mngr(Argc, Args, Res);
 		auto threadCount = mngr.getInteger<mint>(0);
 		std::vector<std::thread> threads(threadCount);
-		LLU_DEBUG("Starting ", threadCount, " threads.");
+		LLU_DEBUG("Starting ", static_cast<mlint64>(threadCount), " threads.");
 		for (int i = 0; i < threadCount; ++i) {
 			threads[i] = std::thread([i](int sleepTime) {
 				LLU_DEBUG("Thread ", i, " going to sleep.");
