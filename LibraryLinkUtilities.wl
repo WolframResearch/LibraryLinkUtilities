@@ -1,3 +1,5 @@
+Begin["`LLU`"];
+
 (* ::Section:: *)
 (* Load Dependencies *)
 (* ------------------------------------------------------------------------- *)
@@ -146,7 +148,7 @@ Module[{errorHandler, pmSymbol, newParams, f, functionOptions, loadOptions},
     ]
 ]
 
-SafeMathLinkFunction[fname_String, opts : OptionsPattern[SafeLibraryFunction]] := 
+SafeMathLinkFunction[fname_String, opts : OptionsPattern[SafeLibraryFunction]] :=
 	SafeLibraryFunction[fname, LinkObject, LinkObject, opts]
 
 (* ::SubSection:: *)
@@ -179,7 +181,7 @@ Block[{cErrorCodes, max},
 				MapIndexed[#[[1]] -> {(First[#2] + 99), #[[2]]} &, Normal[errors]]
 				,
 				cErrorCodes
-			]	
+			]
 		];
 	];
 ]
@@ -257,15 +259,15 @@ Attributes[CatchAndThrowLibraryFunctionError] = {HoldAll};
 
 CatchLibraryFunctionError[f_] :=
 With[{result = Quiet[f, {
-		LibraryFunction::typerr, 
-		LibraryFunction::rnkerr, 
-		LibraryFunction::dimerr, 
-		LibraryFunction::numerr, 
-		LibraryFunction::memerr, 
-		LibraryFunction::verserr, 
+		LibraryFunction::typerr,
+		LibraryFunction::rnkerr,
+		LibraryFunction::dimerr,
+		LibraryFunction::numerr,
+		LibraryFunction::memerr,
+		LibraryFunction::verserr,
 		LibraryFunction::rterr
-	}]}, 
-	
+	}]},
+
 	If[Head[result] === LibraryFunctionError,
 		CreatePacletFailure[ErrorCodeToName[result[[2]]]]
 		, (* else *)
@@ -275,15 +277,15 @@ With[{result = Quiet[f, {
 
 CatchAndThrowLibraryFunctionError[f_] :=
 With[{result = Quiet[f, {
-		LibraryFunction::typerr, 
-		LibraryFunction::rnkerr, 
-		LibraryFunction::dimerr, 
-		LibraryFunction::numerr, 
-		LibraryFunction::memerr, 
-		LibraryFunction::verserr, 
+		LibraryFunction::typerr,
+		LibraryFunction::rnkerr,
+		LibraryFunction::dimerr,
+		LibraryFunction::numerr,
+		LibraryFunction::memerr,
+		LibraryFunction::verserr,
 		LibraryFunction::rterr
-	}]}, 
-	
+	}]},
+
 	If[Head[result] === LibraryFunctionError,
 		Throw @ CreatePacletFailure[ErrorCodeToName[result[[2]]]]
 		, (* else *)
@@ -297,7 +299,7 @@ With[{result = Quiet[f, {
 (* ------------------------------------------------------------------------- *)
 (* ------------------------------------------------------------------------- *)
 
-Begin["`LLU`Logger`"];
+Begin["`Logger`"];
 
 (************** Functions defining how to style different parts of a log message *************)
 
@@ -460,3 +462,5 @@ End[]; (* `LLU`Logger` *)
 
 	But in this case, you are loosing the correct handling of filtered-out messages so it's only fine with the default "accept-all" filter.
 ***)
+
+End[]; (* `LLU` *)
