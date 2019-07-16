@@ -46,6 +46,14 @@ Test[
 ];
 
 Test[
+	EchoTensor[{}]
+	,
+	{}
+	,
+	TestID->"TensorTestSuite-20190703-L8P5C2"
+];
+
+Test[
 	EchoFirst[{1, 2, 3}]
 	,
 	1
