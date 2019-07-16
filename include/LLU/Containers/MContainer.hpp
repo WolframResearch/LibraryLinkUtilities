@@ -20,6 +20,10 @@ namespace LLU {
 
 	template<MArgumentType Type, class PassingMode>
 	class MContainerBase : public PassingMode {
+
+		template<MArgumentType, class>
+		friend class MContainerBase;
+
 	public:
 		using Container = MType_t<Type>;
 
@@ -63,6 +67,16 @@ namespace LLU {
 			return cloneImpl();
 		}
 
+
+		Container getContainer() const noexcept {
+			return container;
+		}
+
+		Container abandonContainer() const noexcept {
+			this->setOwner(false);
+			return container;
+		}
+
 		/**
 		 *   @brief 	Return share count of internal MTensor.
 		 *   Use this to manually manage shared MTensors.
@@ -78,6 +92,13 @@ namespace LLU {
 			return 0;
 		}
 
+		void pass(MArgument& res) const override {
+			if (container) {
+				passImpl(res);
+			}
+		}
+
+	protected:
 		/**
 		 *   @brief 	Disown internal MTensor that is shared with Mathematica.
 		 *   Use this to manually manage shared MTensors.
@@ -98,22 +119,6 @@ namespace LLU {
 			}
 		}
 
-		void pass(MArgument& res) const override {
-			if (container) {
-				passImpl(res);
-			}
-		}
-
-		Container getContainer() const noexcept {
-			return container;
-		}
-
-		Container abandonContainer() const noexcept {
-			this->setOwner(false);
-			return container;
-		}
-
-	protected:
 		void setContainer(Container newCont) noexcept {
 			container = newCont;
 		}
@@ -136,6 +141,17 @@ namespace LLU {
 	class MContainer {
 		static_assert(dependent_false_v<PassingMode>, "Trying to instantiate unspecialized MContainer template.");
 	};
+
+	template<class PassingMode>
+	using GenericTensor = MContainer<MArgumentType::Tensor, PassingMode>;
+
+	template<class PassingMode>
+	using GenericNumericArray = MContainer<MArgumentType::NumericArray, PassingMode>;
+
+	template<class PassingMode>
+	using GenericImage = MContainer<MArgumentType::Image, PassingMode>;
+
+
 
 	template<class PassingMode>
 	class MContainer<MArgumentType::Tensor, PassingMode> : public MContainerBase<MArgumentType::Tensor, PassingMode> {

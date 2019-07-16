@@ -367,7 +367,7 @@ namespace LLU {
 
 		/// @copydoc setNumericArray
 		template<typename T, class PassingMode>
-		void set(NumericArray<T, PassingMode>& na) { setNumericArray(na); }
+		void set(const NumericArray<T, PassingMode>& na) { setNumericArray(na); }
 
 		/**
 		 *
@@ -375,7 +375,7 @@ namespace LLU {
 		 * @param na
 		 */
 		template<class PassingMode>
-		void set(MContainer<MArgumentType::NumericArray, PassingMode>& na) { setMNumericArray(na.abandonContainer()); }
+		void set(const GenericNumericArray<PassingMode>& na) { na.pass(res); }
 
 		/// @copydoc setTensor
 		template<typename T, class PassingMode>
@@ -387,7 +387,7 @@ namespace LLU {
 		 * @param na
 		 */
 		template<class PassingMode>
-		void set(MContainer<MArgumentType::Tensor, PassingMode>& t) { setMTensor(t.abandonContainer()); }
+		void set(const GenericTensor<PassingMode>& t) { t.pass(res); }
 
 		/// @copydoc setImage
 		template<typename T, class PassingMode>
@@ -399,7 +399,7 @@ namespace LLU {
 		 * @param na
 		 */
 		template<class PassingMode>
-		void set(MContainer<MArgumentType::Image, PassingMode>& im) { setMImage(im.abandonContainer()); }
+		void set(const GenericImage<PassingMode>& im) { im.pass(res); }
 
 		/// @copydoc setDataList
 		template<MArgumentType T, class PassingMode>
@@ -411,7 +411,7 @@ namespace LLU {
 		 * @param na
 		 */
 		template<class PassingMode>
-		void set(MContainer<MArgumentType::DataStore, PassingMode>& ds) { setDataStore(ds.abandonContainer()); }
+		void set(const MContainer<MArgumentType::DataStore, PassingMode>& ds) { ds.pass(res); }
 
 		/************************************ utility functions ************************************/
 
