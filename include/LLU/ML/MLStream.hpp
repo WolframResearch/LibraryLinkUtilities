@@ -175,6 +175,14 @@ namespace LibraryLinkUtils {
 		MLStream& operator<<(bool b);
 
 		/**
+		 *   @brief			Sends a mint value.
+		 *   @param[in] 	i - a mint value
+		 *
+		 *   @throws		LLErrorName::MLPutScalarError
+		 **/
+		MLStream& operator<<(mint i);
+
+		/**
 		 *   @brief			Sends a MathLink array
 		 *   @tparam		T - array element type
 		 *   @param[in] 	a - ArrayData to be sent
@@ -743,6 +751,11 @@ namespace LibraryLinkUtils {
 	template<ML::Encoding EIn, ML::Encoding EOut>
 	auto MLStream<EIn, EOut>::operator<<(bool b) -> MLStream& {
 		return *this << ML::Symbol(b? "True" : "False");
+	}
+
+	template<ML::Encoding EIn, ML::Encoding EOut>
+	auto MLStream<EIn, EOut>::operator<<(mint i) -> MLStream& {
+		return *this << static_cast<mlint64>(i);
 	}
 
 	template<ML::Encoding EIn, ML::Encoding EOut>
