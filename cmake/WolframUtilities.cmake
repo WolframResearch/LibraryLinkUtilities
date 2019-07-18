@@ -24,38 +24,40 @@ function(get_default_mathematica_dir MATHEMATICA_VERSION DEFAULT_MATHEMATICA_INS
 endfunction()
 
 function(detect_system_id DETECTED_SYSTEM_ID)
-	#set system id and build platform
-	set(BITNESS 32)
-	if(CMAKE_SIZEOF_VOID_P EQUAL 8)
-		set(BITNESS 64)
+	if(NOT ${DETECTED_SYSTEM_ID})
+		#set system id and build platform
+		set(BITNESS 32)
+		if(CMAKE_SIZEOF_VOID_P EQUAL 8)
+			set(BITNESS 64)
+		endif()
+
+		set(INITIAL_SYSTEMID NOTFOUND)
+
+		# Determine the current machine's systemid.
+		if(CMAKE_C_COMPILER MATCHES "androideabi")
+			set(INITIAL_SYSTEMID Android)
+		elseif(CMAKE_SYSTEM_PROCESSOR MATCHES "arm*")
+			set(INITIAL_SYSTEMID Linux-ARM)
+		elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux" AND BITNESS EQUAL 64)
+			set(INITIAL_SYSTEMID Linux-x86-64)
+		elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux" AND BITNESS EQUAL 32)
+			set(INITIAL_SYSTEMID Linux)
+		elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows" AND BITNESS EQUAL 64)
+			set(INITIAL_SYSTEMID Windows-x86-64)
+		elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows" AND BITNESS EQUAL 32)
+			set(INITIAL_SYSTEMID Windows)
+		elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin" AND BITNESS EQUAL 64)
+			set(INITIAL_SYSTEMID MacOSX-x86-64)
+		elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin" AND BITNESS EQUAL 32)
+			set(INITIAL_SYSTEMID MacOSX-x86)
+		endif()
+
+		if(NOT INITIAL_SYSTEMID)
+			message(FATAL_ERROR "Unable to determine System ID.")
+		endif()
+
+		set(${DETECTED_SYSTEM_ID} "${INITIAL_SYSTEMID}" PARENT_SCOPE)
 	endif()
-
-	set(INITIAL_SYSTEMID NOTFOUND)
-
-	# Determine the current machine's systemid.
-	if(CMAKE_C_COMPILER MATCHES "androideabi")
-		set(INITIAL_SYSTEMID Android)
-	elseif(CMAKE_SYSTEM_PROCESSOR MATCHES "arm*")
-		set(INITIAL_SYSTEMID Linux-ARM)
-	elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux" AND BITNESS EQUAL 64)
-		set(INITIAL_SYSTEMID Linux-x86-64)
-	elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux" AND BITNESS EQUAL 32)
-		set(INITIAL_SYSTEMID Linux)
-	elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows" AND BITNESS EQUAL 64)
-		set(INITIAL_SYSTEMID Windows-x86-64)
-	elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows" AND BITNESS EQUAL 32)
-		set(INITIAL_SYSTEMID Windows)
-	elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin" AND BITNESS EQUAL 64)
-		set(INITIAL_SYSTEMID MacOSX-x86-64)
-	elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin" AND BITNESS EQUAL 32)
-		set(INITIAL_SYSTEMID MacOSX-x86)
-	endif()
-
-	if(NOT INITIAL_SYSTEMID)
-		message(FATAL_ERROR "Unable to determine System ID.")
-	endif()
-
-	set(${DETECTED_SYSTEM_ID} "${INITIAL_SYSTEMID}" PARENT_SCOPE)
 endfunction()
 
 function(detect_build_platform DETECTED_BUILD_PLATFORM)
