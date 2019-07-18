@@ -200,7 +200,7 @@ function(get_library_from_cvs PACKAGE_NAME PACKAGE_VERSION PACKAGE_LOCATION)
 	include(FetchContent)
 	FetchContent_declare(
 		${PACKAGE_NAME}
-		SOURCE_DIR ${PACKAGE_LOCATION}/${PACKAGE_VERSION}
+		SOURCE_DIR ${${PACKAGE_LOCATION}}/${PACKAGE_VERSION}
 		CVS_REPOSITORY $ENV{CVSROOT}
 		CVS_MODULE "Components/${PACKAGE_NAME}/${PACKAGE_VERSION}"
 	)
@@ -211,8 +211,9 @@ function(get_library_from_cvs PACKAGE_NAME PACKAGE_VERSION PACKAGE_LOCATION)
 		FetchContent_populate(${PACKAGE_NAME})
 	endif ()
 
-	set(${PACKAGE_LOCATION} ${${PACKAGE_NAME}_SOURCE_DIR} PARENT_SCOPE)
+	string(TOLOWER ${PACKAGE_NAME} lc_package_name)
+	set(${PACKAGE_LOCATION} ${${lc_package_name}_SOURCE_DIR} PARENT_SCOPE)
 
-	message(STATUS "${PACKAGE_NAME} downloaded to ${PACKAGE_LOCATION}/${PACKAGE_VERSION}")
+	message(STATUS "${PACKAGE_NAME} downloaded to ${${PACKAGE_LOCATION}}/${PACKAGE_VERSION}")
 
 endfunction()
