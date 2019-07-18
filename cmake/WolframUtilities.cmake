@@ -192,17 +192,43 @@ function(set_rpath TARGET_NAME NEW_RPATH)
 	set_target_properties(${TARGET_NAME} PROPERTIES INSTALL_RPATH ${NEW_RPATH})
 endfunction()
 
+# helper function for get_library_from_cvs
+function(_set_package_args PACKAGE_SYSTEM_ID PACKAGE_BUILD_PLATFORM TAG VALUE)
+	if(${TAG} STREQUAL SYSTEM_ID)
+		set(${PACKAGE_SYSTEM_ID} ${VALUE} PARENT_SCOPE)
+	elseif(${TAG} STREQUAL BUILD_PLATFORM)
+		set(${PACKAGE_BUILD_PLATFORM} ${VALUE} PARENT_SCOPE)
+	endif()
+endfunction()
+
 # Download a library from Wolfram's CVS repository.
+# PACKAGE_LOCATION is meant to be passed in as an in/out variable that gets set by this function to the download location.
 function(get_library_from_cvs PACKAGE_NAME PACKAGE_VERSION PACKAGE_LOCATION)
 
 	message(STATUS "Looking for CVS library: ${PACKAGE_NAME} version ${PACKAGE_VERSION}")
 
+	# Check optional arguments
+	if(ARGC GREATER_EQUAL 5)
+		_set_package_args(PACKAGE_SYSTEM_ID PACKAGE_BUILD_PLATFORM ${ARGV3} ${ARGV4})
+		if(ARGC GREATER_EQUAL 7)
+			_set_package_args(PACKAGE_SYSTEM_ID PACKAGE_BUILD_PLATFORM ${ARGV5} ${ARGV6})
+		endif()
+	endif()
+
+	set(_PACKAGE_PATH_SUFFIX ${PACKAGE_VERSION})
+	if(PACKAGE_SYSTEM_ID)
+		set(_PACKAGE_PATH_SUFFIX ${_PACKAGE_PATH_SUFFIX}/${PACKAGE_SYSTEM_ID})
+		if(PACKAGE_BUILD_PLATFORM)
+			set(_PACKAGE_PATH_SUFFIX ${_PACKAGE_PATH_SUFFIX}/${PACKAGE_BUILD_PLATFORM})
+		endif()
+	endif()
+
 	include(FetchContent)
 	FetchContent_declare(
 		${PACKAGE_NAME}
-		SOURCE_DIR ${${PACKAGE_LOCATION}}/${PACKAGE_VERSION}
+		SOURCE_DIR ${${PACKAGE_LOCATION}}/${_PACKAGE_PATH_SUFFIX}
 		CVS_REPOSITORY $ENV{CVSROOT}
-		CVS_MODULE "Components/${PACKAGE_NAME}/${PACKAGE_VERSION}"
+		CVS_MODULE "Components/${PACKAGE_NAME}/${_PACKAGE_PATH_SUFFIX}"
 	)
 
 	FetchContent_getproperties(${PACKAGE_NAME})
@@ -214,6 +240,6 @@ function(get_library_from_cvs PACKAGE_NAME PACKAGE_VERSION PACKAGE_LOCATION)
 	string(TOLOWER ${PACKAGE_NAME} lc_package_name)
 	set(${PACKAGE_LOCATION} ${${lc_package_name}_SOURCE_DIR} PARENT_SCOPE)
 
-	message(STATUS "${PACKAGE_NAME} downloaded to ${${PACKAGE_LOCATION}}/${PACKAGE_VERSION}")
+	message(STATUS "${PACKAGE_NAME} downloaded to ${${PACKAGE_LOCATION}}/${_PACKAGE_PATH_SUFFIX}")
 
 endfunction()
