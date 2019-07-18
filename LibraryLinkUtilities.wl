@@ -43,7 +43,9 @@ $CorePacletFailureLUT = <|
 	"FunctionLoadFailure" -> {21, "Failed to load the function `FunctionName` from `LibraryName`."},
 	"RegisterFailure" -> {22, "Incorrect arguments to RegisterPacletErrors."},
 	"UnknownFailure" -> {23, "The error `ErrorName` has not been registered."},
-	"ProgressMonInvalidValue" -> {24, "Expecting None or a Symbol for the option \"ProgressMonitor\"."}
+	"ProgressMonInvalidValue" -> {24, "Expecting None or a Symbol for the option \"ProgressMonitor\"."},
+	"InvalidManagedExpressionID" -> {25, "`expr` is not a valid ManagedExpression." },
+	"UnexpectedManagedExpression" -> {26, "Expected managed `expected`, got `actual`." }
 |>;
 
 
@@ -101,15 +103,21 @@ Options[SafeLibraryFunctionLoad] = {
 	"Optional" -> False
 };
 
-SafeLibraryFunctionLoad[args___, opts : OptionsPattern[SafeLibraryFunctionLoad]] :=
+SafeLibraryFunctionLoad[fname_?StringQ, fParams_, retType_, opts : OptionsPattern[SafeLibraryFunctionLoad]] :=
 	Quiet[
 		Check[
-			LibraryFunctionLoad[$PacletLibrary, args]
+			Block[{specialArgs = argumentCategorizer[fParams]},
+				If[Length @ specialArgs > 0,
+					LibraryFunctionLoad[$PacletLibrary, fname, normalizeArgTypes @ fParams, retType] @* argumentParser[specialArgs]
+					,
+					LibraryFunctionLoad[$PacletLibrary, fname, fParams, retType]
+				]
+			]
 			,
 			If[TrueQ @ OptionValue["Optional"],
 				Null&
 				,
-				Throw @ CreatePacletFailure["FunctionLoadFailure", "MessageParameters" -> <|"FunctionName" -> First[{args}], "LibraryName" -> $PacletLibrary|>]
+				Throw @ CreatePacletFailure["FunctionLoadFailure", "MessageParameters" -> <|"FunctionName" -> fname, "LibraryName" -> $PacletLibrary|>]
 			]
 		]
 	];
@@ -118,6 +126,26 @@ Options[SafeLibraryFunction] = {
 	"ProgressMonitor" -> None,
 	"Throws" -> False
 };
+
+specialArgQ[a_`LLU`Managed] := True;
+specialArgQ[_] := False;
+
+argumentCategorizer[argTypes_List] := Association @ MapIndexed[If[specialArgQ[#1], First[#2] -> #1, Nothing]&, argTypes];
+argumentCategorizer[LinkObject] = {};
+
+normalizeArgTypes[argTypes_List] := argTypes /. {`LLU`Managed[h_] :> Integer};
+
+parseManaged[`LLU`Managed[expectedHead_], expectedHead_[id_Integer]] :=
+    If[ManagedLibraryExpressionQ[expectedHead[id]],
+	    id
+	    ,
+	    Throw @ CreatePacletFailure["InvalidManagedExpressionID", "MessageParameters" -> <|"expr" -> expectedHead[id]|>];
+    ];
+parseManaged[`LLU`Managed[expectedHead_], differentHead_[id_Integer]] :=
+	Throw @ CreatePacletFailure["UnexpectedManagedExpression", "MessageParameters" -> <|"expected" -> expectedHead, "actual" -> differentHead[id]|>];
+parseManaged[_, arg_] := arg;
+
+argumentParser[specialArgs_?AssociationQ] := Sequence @@ MapIndexed[parseManaged[specialArgs[First @ #2], #1]&, {##}]&;
 
 holdSet[Hold[sym_], rhs_] := sym = rhs;
 
@@ -144,10 +172,13 @@ Module[{errorHandler, pmSymbol, newParams, f, functionOptions, loadOptions},
 		    f[##, ReleaseHold[pmSymbol]]
 	    )&
     ]
-]
+];
 
 SafeMathLinkFunction[fname_String, opts : OptionsPattern[SafeLibraryFunction]] := 
-	SafeLibraryFunction[fname, LinkObject, LinkObject, opts]
+	SafeLibraryFunction[fname, LinkObject, LinkObject, opts];
+
+LibraryMemberFunction[exprHead_][fname_String, fParams_, retType_, opts : OptionsPattern[SafeLibraryFunction]] :=
+	SafeLibraryFunction[fname, Prepend[fParams, `LLU`Managed[exprHead]], retType, opts];
 
 (* ::SubSection:: *)
 (* RegisterPacletErrors *)
@@ -460,3 +491,11 @@ End[]; (* `LLU`Logger` *)
 
 	But in this case, you are loosing the correct handling of filtered-out messages so it's only fine with the default "accept-all" filter.
 ***)
+`LLU`Constructor;
+
+`LLU`NewManagedExpression[exprHead_][args___] :=
+	Block[{res},
+		res = CreateManagedLibraryExpression[SymbolName[exprHead], exprHead];
+		`LLU`Constructor[exprHead][ManagedLibraryExpressionID[res], args];
+		res
+	];

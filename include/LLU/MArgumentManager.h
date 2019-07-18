@@ -23,6 +23,7 @@
 #include "LLU/Containers/Tensor.h"
 #include "LLU/Containers/Passing/Automatic.hpp"
 #include "LLU/MArgument.h"
+#include "LLU/ManagedExpression.hpp"
 #include "LLU/ProgressMonitor.h"
 
 #include "WolframLibrary.h"
@@ -231,6 +232,9 @@ namespace LLU {
 		 *   @throws        ErrorName::MArgumentIndexError - if \c index is out-of-bounds
 		 **/
 		DataStore getDataStore(unsigned int index) const;
+
+		template<class ManagedExpr>
+		ManagedExpr& getManagedExpression(unsigned int index, ManagedExpressionStore<ManagedExpr> &) const;
 
 		/************************************ MArgument "setters" ************************************/
 
@@ -825,6 +829,12 @@ namespace LLU {
 	template<class PassingMode>
 	GenericDataList<PassingMode> MArgumentManager::getGenericDataList(unsigned int index) const {
 		return getDataStore(index);
+	}
+
+	template<class ManagedExpr>
+	ManagedExpr& MArgumentManager::getManagedExpression(unsigned int index, ManagedExpressionStore<ManagedExpr>& store) const {
+		auto exprID = getInteger<mint>(index);
+		return store.getInstance(exprID);
 	}
 
 } /* namespace LLU */
