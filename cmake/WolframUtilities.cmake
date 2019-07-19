@@ -202,7 +202,7 @@ function(_set_package_args PACKAGE_SYSTEM_ID PACKAGE_BUILD_PLATFORM TAG VALUE)
 endfunction()
 
 # Download a library from Wolfram's CVS repository.
-# PACKAGE_LOCATION is meant to be passed in as an in/out variable that gets set by this function to the download location.
+# PACKAGE_LOCATION is an in/out variable that gets set by this function to the download location.
 function(get_library_from_cvs PACKAGE_NAME PACKAGE_VERSION PACKAGE_LOCATION)
 
 	message(STATUS "Looking for CVS library: ${PACKAGE_NAME} version ${PACKAGE_VERSION}")
@@ -241,5 +241,64 @@ function(get_library_from_cvs PACKAGE_NAME PACKAGE_VERSION PACKAGE_LOCATION)
 	set(${PACKAGE_LOCATION} ${${lc_package_name}_SOURCE_DIR} PARENT_SCOPE)
 
 	message(STATUS "${PACKAGE_NAME} downloaded to ${${PACKAGE_LOCATION}}/${_PACKAGE_PATH_SUFFIX}")
+
+endfunction()
+
+# Resolve full path to a CVS dependency, downloading if necessary
+function(find_cvs_dependency
+			LIB_NAME LIB_VERSION LIB_SYSTEMID LIB_BUILD_PLATFORM
+			PATHVARS #break up the arguments a bit for readability!
+			LIB_DIR LIB_LOCATION CVS_DIR)
+
+	# helper variable
+	set(_LIB_DIR_SUFFIX ${LIB_VERSION}/${LIB_SYSTEMID}/${LIB_BUILD_PLATFORM})
+
+	# Check if there is a full path to the dependency with version, system id and build platform.
+	if(${LIB_DIR})
+		if(NOT EXISTS ${${LIB_DIR}})
+			message(FATAL_ERROR "Specified full path to Lib does not exist: ${${LIB_DIR}}")
+		endif()
+	else()
+		# Check if there is a path to the Lib component
+		if(${LIB_LOCATION})
+			if(NOT EXISTS ${${LIB_LOCATION}})
+				message(FATAL_ERROR "Specified location of Lib does not exist: ${${LIB_LOCATION}}")
+			elseif(EXISTS ${${LIB_LOCATION}}/${_LIB_DIR_SUFFIX})
+				set(_LIB_DIR ${${LIB_LOCATION}}/${_LIB_DIR_SUFFIX})
+			endif()
+		endif()
+
+		if(NOT _LIB_DIR)
+			# Check if there is a path to CVS modules
+			if(${CVS_DIR})
+				set(_CVS_COMPONENTS_DIR ${${CVS_DIR}})
+			elseif(DEFINED ENV{${CVS_DIR}})
+				set(_CVS_COMPONENTS_DIR $ENV{${CVS_DIR}})
+			endif()
+
+			if(_CVS_COMPONENTS_DIR)
+				if(NOT EXISTS ${_CVS_COMPONENTS_DIR})
+					message(FATAL_ERROR "Specified location of CVS components does not exist: ${_CVS_COMPONENTS_DIR}")
+				elseif(EXISTS ${_CVS_COMPONENTS_DIR}/${LIB_NAME}/${_LIB_DIR_SUFFIX})
+					set(_LIB_DIR ${_CVS_COMPONENTS_DIR}/${LIB_NAME}/${_LIB_DIR_SUFFIX})
+				endif()
+			endif()
+
+			if(NOT _LIB_DIR)
+				# Set location of library sources checked out from cvs
+				set(${LIB_LOCATION} "${CMAKE_BINARY_DIR}/Components/${LIB_NAME}" CACHE PATH "Location of lib root directory.")
+
+				# get_library_from_cvs is a utility function implemented in WolframUtilities.cmake
+				get_library_from_cvs(${LIB_NAME} ${LIB_VERSION} ${LIB_LOCATION}
+					SYSTEM_ID ${LIB_SYSTEMID}
+					BUILD_PLATFORM ${LIB_BUILD_PLATFORM}
+				)
+				set(_LIB_DIR ${${LIB_LOCATION}})
+			endif()
+		endif()
+
+		set(${LIB_DIR} ${_LIB_DIR} PARENT_SCOPE)
+
+	endif()
 
 endfunction()
