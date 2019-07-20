@@ -201,13 +201,12 @@ function(_set_package_args PACKAGE_SYSTEM_ID PACKAGE_BUILD_PLATFORM TAG VALUE)
 	endif()
 endfunction()
 
-# Download a library from Wolfram's CVS repository.
-# PACKAGE_LOCATION is an in/out variable that gets set by this function to the download location.
+# Download a library from Wolfram's CVS repository and set PACKAGE_LOCATION to the download location.
 function(get_library_from_cvs PACKAGE_NAME PACKAGE_VERSION PACKAGE_LOCATION)
 
 	message(STATUS "Looking for CVS library: ${PACKAGE_NAME} version ${PACKAGE_VERSION}")
 
-	# Check optional arguments
+	# Check optional system id and build platform
 	if(ARGC GREATER_EQUAL 5)
 		_set_package_args(PACKAGE_SYSTEM_ID PACKAGE_BUILD_PLATFORM ${ARGV3} ${ARGV4})
 		if(ARGC GREATER_EQUAL 7)
@@ -260,6 +259,7 @@ function(find_and_parse_library_conf)
 	find_file(LIBRARY_CONF
 		library.conf
 		PATHS "${CMAKE_CURRENT_SOURCE_DIR}/scripts"
+		NO_DEFAULT_PATH
 	)
 
 	if(${LIBRARY_CONF} STREQUAL LIBRARY_CONF-NOTFOUND)
@@ -314,8 +314,8 @@ function(find_and_parse_library_conf)
 endfunction()
 
 
-
 # Resolve full path to a CVS dependency, downloading if necessary
+# Prioritize ${LIB_NAME}_DIR, ${LIB_NAME}_LOCATION, CVS_COMPONENTS_DIR, then CVS download
 function(find_cvs_dependency LIB_NAME)
 	detect_system_id(SYSTEMID)
 
