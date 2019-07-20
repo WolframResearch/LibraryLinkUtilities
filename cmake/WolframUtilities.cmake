@@ -244,36 +244,111 @@ function(get_library_from_cvs PACKAGE_NAME PACKAGE_VERSION PACKAGE_LOCATION)
 
 endfunction()
 
-# Resolve full path to a CVS dependency, downloading if necessary
-function(find_cvs_dependency
-			LIB_NAME LIB_VERSION LIB_SYSTEMID LIB_BUILD_PLATFORM
-			PATHVARS #break up the arguments a bit for readability!
-			LIB_DIR LIB_LOCATION CVS_DIR)
 
-	# helper variable
-	set(_LIB_DIR_SUFFIX ${LIB_VERSION}/${LIB_SYSTEMID}/${LIB_BUILD_PLATFORM})
+# Splits comma delimited string STR and saves list to variable LIST
+function(split_string_to_list STR LIST)
+	string(REPLACE " " "" _STR ${STR})
+	string(REPLACE "," ";" _STR ${_STR})
+	set(${LIST} ${_STR} PARENT_SCOPE)
+endfunction()
+
+# Finds library.conf and sets:
+# ${LIBRARY_NAME}_SYSTEMID
+# ${LIBRARY_NAME}_VERSION
+# ${LIBRARY_NAME}_BUILD_PLATFORM
+function(find_and_parse_library_conf)
+	find_file(LIBRARY_CONF
+		library.conf
+		PATHS "${CMAKE_CURRENT_SOURCE_DIR}/scripts"
+	)
+
+	if(${LIBRARY_CONF} STREQUAL LIBRARY_CONF-NOTFOUND)
+		message(FATAL_ERROR "Unable to find ${CMAKE_CURRENT_SOURCE_DIR}/scripts/library.conf")
+	else()
+		message(STATUS "Found ${LIBRARY_CONF}")
+	endif()
+
+	file(STRINGS ${LIBRARY_CONF} _LIBRARY_CONF_STRINGS)
+
+	set(_LIBRARY_CONF_LIBRARY_LIST ${_LIBRARY_CONF_STRINGS})
+	list(FILTER _LIBRARY_CONF_LIBRARY_LIST INCLUDE REGEX "\\[Library\\]")
+
+	string(REGEX REPLACE
+		"\\[Library\\][ \t]+(.*)" "\\1" 
+		_LIBRARY_CONF_LIBRARY_LIST "${_LIBRARY_CONF_LIBRARY_LIST}"
+	)
+	split_string_to_list(${_LIBRARY_CONF_LIBRARY_LIST} _LIBRARY_CONF_LIBRARY_LIST)
+
+	detect_system_id(SYSTEMID)
+
+	foreach(LIBRARY ${_LIBRARY_CONF_LIBRARY_LIST})
+		string(TOUPPER ${LIBRARY} _LIBRARY)
+
+		set(LIB_SYSTEMID ${_LIBRARY}_SYSTEMID)
+		set(LIB_VERSION ${_LIBRARY}_VERSION)
+		set(LIB_BUILD_PLATFORM ${_LIBRARY}_BUILD_PLATFORM)
+
+		if(NOT ${LIB_SYSTEMID})
+			message(STATUS "Setting ${LIB_SYSTEMID} to ${SYSTEMID}")
+			set(${LIB_SYSTEMID} ${SYSTEMID})
+			set(${LIB_SYSTEMID} ${SYSTEMID} PARENT_SCOPE)
+		endif()
+
+		set(_LIBRARY_CONF_LIBRARY_STRING ${_LIBRARY_CONF_STRINGS})
+		list(FILTER _LIBRARY_CONF_LIBRARY_STRING INCLUDE REGEX "${${LIB_SYSTEMID}}[ \t]+${LIBRARY}")
+
+		string(REGEX REPLACE
+			"${${LIB_SYSTEMID}}[ \t]+${LIBRARY}[ \t]+([0-9.]+)[ \t]+([A-Za-z0-9_\\-]+)" "\\1;\\2"
+			_LIB_VERSION_BUILD_PLATFORM ${_LIBRARY_CONF_LIBRARY_STRING}
+		)
+
+		list(GET _LIB_VERSION_BUILD_PLATFORM 0 _LIB_VERSION)
+		list(GET _LIB_VERSION_BUILD_PLATFORM 1 _LIB_BUILD_PLATFORM)
+
+		message(STATUS "Setting ${LIB_VERSION} to ${_LIB_VERSION}")
+		set(${LIB_VERSION} ${_LIB_VERSION} PARENT_SCOPE)
+
+		message(STATUS "Setting ${LIB_BUILD_PLATFORM} to ${_LIB_BUILD_PLATFORM}")
+		set(${LIB_BUILD_PLATFORM} ${_LIB_BUILD_PLATFORM} PARENT_SCOPE)
+	endforeach()
+endfunction()
+
+
+
+# Resolve full path to a CVS dependency, downloading if necessary
+function(find_cvs_dependency LIB_NAME)
+	detect_system_id(SYSTEMID)
+
+	# helper variables
+	string(TOUPPER ${LIB_NAME} _LIB_NAME)
+	set(LIB_DIR ${_LIB_NAME}_DIR)
+	set(LIB_LOCATION ${_LIB_NAME}_LOCATION)
+	set(LIB_VERSION ${_LIB_NAME}_VERSION)
+	set(LIB_SYSTEMID ${_LIB_NAME}_SYSTEMID)
+	set(LIB_BUILD_PLATFORM ${_LIB_NAME}_BUILD_PLATFORM)
+	set(_LIB_DIR_SUFFIX ${${LIB_VERSION}}/${${LIB_SYSTEMID}}/${${LIB_BUILD_PLATFORM}})
 
 	# Check if there is a full path to the dependency with version, system id and build platform.
-	if(${LIB_DIR})
-		if(NOT EXISTS ${${LIB_DIR}})
-			message(FATAL_ERROR "Specified full path to Lib does not exist: ${${LIB_DIR}}")
+	if(${${LIB_DIR}})
+		if(NOT EXISTS ${${${LIB_DIR}}})
+			message(FATAL_ERROR "Specified full path to Lib does not exist: ${${${LIB_DIR}}}")
 		endif()
 	else()
 		# Check if there is a path to the Lib component
-		if(${LIB_LOCATION})
-			if(NOT EXISTS ${${LIB_LOCATION}})
-				message(FATAL_ERROR "Specified location of Lib does not exist: ${${LIB_LOCATION}}")
-			elseif(EXISTS ${${LIB_LOCATION}}/${_LIB_DIR_SUFFIX})
-				set(_LIB_DIR ${${LIB_LOCATION}}/${_LIB_DIR_SUFFIX})
+		if(${${LIB_LOCATION}})
+			if(NOT EXISTS ${${${LIB_LOCATION}}})
+				message(FATAL_ERROR "Specified location of Lib does not exist: ${${${LIB_LOCATION}}}")
+			elseif(EXISTS ${${${LIB_LOCATION}}}/${_LIB_DIR_SUFFIX})
+				set(_LIB_DIR ${${${LIB_LOCATION}}}/${_LIB_DIR_SUFFIX})
 			endif()
 		endif()
 
 		if(NOT _LIB_DIR)
 			# Check if there is a path to CVS modules
-			if(${CVS_DIR})
-				set(_CVS_COMPONENTS_DIR ${${CVS_DIR}})
-			elseif(DEFINED ENV{${CVS_DIR}})
-				set(_CVS_COMPONENTS_DIR $ENV{${CVS_DIR}})
+			if(${CVS_COMPONENTS_DIR})
+				set(_CVS_COMPONENTS_DIR ${${CVS_COMPONENTS_DIR}})
+			elseif(DEFINED ENV{${CVS_COMPONENTS_DIR}})
+				set(_CVS_COMPONENTS_DIR $ENV{${CVS_COMPONENTS_DIR}})
 			endif()
 
 			if(_CVS_COMPONENTS_DIR)
@@ -288,15 +363,15 @@ function(find_cvs_dependency
 				# Set location of library sources checked out from cvs
 				set(${LIB_LOCATION} "${CMAKE_BINARY_DIR}/Components/${LIB_NAME}" CACHE PATH "Location of lib root directory.")
 
-				# get_library_from_cvs is a utility function implemented in WolframUtilities.cmake
-				get_library_from_cvs(${LIB_NAME} ${LIB_VERSION} ${LIB_LOCATION}
-					SYSTEM_ID ${LIB_SYSTEMID}
-					BUILD_PLATFORM ${LIB_BUILD_PLATFORM}
+				get_library_from_cvs(${LIB_NAME} ${${LIB_VERSION}} ${LIB_LOCATION}
+					SYSTEM_ID ${${LIB_SYSTEMID}}
+					BUILD_PLATFORM ${${LIB_BUILD_PLATFORM}}
 				)
 				set(_LIB_DIR ${${LIB_LOCATION}})
 			endif()
 		endif()
 
+		message(STATUS "Setting ${LIB_DIR} to ${_LIB_DIR}")
 		set(${LIB_DIR} ${_LIB_DIR} PARENT_SCOPE)
 
 	endif()
