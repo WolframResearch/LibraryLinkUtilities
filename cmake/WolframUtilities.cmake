@@ -264,8 +264,6 @@ function(find_and_parse_library_conf)
 
 	if(${LIBRARY_CONF} STREQUAL LIBRARY_CONF-NOTFOUND)
 		message(FATAL_ERROR "Unable to find ${CMAKE_CURRENT_SOURCE_DIR}/scripts/library.conf")
-	else()
-		message(STATUS "Found ${LIBRARY_CONF}")
 	endif()
 
 	file(STRINGS ${LIBRARY_CONF} _LIBRARY_CONF_STRINGS)
@@ -289,7 +287,6 @@ function(find_and_parse_library_conf)
 		set(LIB_BUILD_PLATFORM ${_LIBRARY}_BUILD_PLATFORM)
 
 		if(NOT ${LIB_SYSTEMID})
-			message(STATUS "Setting ${LIB_SYSTEMID} to ${SYSTEMID}")
 			set(${LIB_SYSTEMID} ${SYSTEMID})
 			set(${LIB_SYSTEMID} ${SYSTEMID} PARENT_SCOPE)
 		endif()
@@ -305,10 +302,8 @@ function(find_and_parse_library_conf)
 		list(GET _LIB_VERSION_BUILD_PLATFORM 0 _LIB_VERSION)
 		list(GET _LIB_VERSION_BUILD_PLATFORM 1 _LIB_BUILD_PLATFORM)
 
-		message(STATUS "Setting ${LIB_VERSION} to ${_LIB_VERSION}")
 		set(${LIB_VERSION} ${_LIB_VERSION} PARENT_SCOPE)
 
-		message(STATUS "Setting ${LIB_BUILD_PLATFORM} to ${_LIB_BUILD_PLATFORM}")
 		set(${LIB_BUILD_PLATFORM} ${_LIB_BUILD_PLATFORM} PARENT_SCOPE)
 	endforeach()
 endfunction()
@@ -371,7 +366,6 @@ function(find_cvs_dependency LIB_NAME)
 			endif()
 		endif()
 
-		message(STATUS "Setting ${LIB_DIR} to ${_LIB_DIR}")
 		set(${LIB_DIR} ${_LIB_DIR} PARENT_SCOPE)
 
 	endif()
