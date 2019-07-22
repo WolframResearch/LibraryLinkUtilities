@@ -755,7 +755,8 @@ namespace LibraryLinkUtils {
 
 	template<ML::Encoding EIn, ML::Encoding EOut>
 	auto MLStream<EIn, EOut>::operator<<(mint i) -> MLStream& {
-		return *this << static_cast<mlint64>(i);
+		ML::PutScalar<mlint64>::put(m, static_cast<mlint64>(i));
+		return *this;
 	}
 
 	template<ML::Encoding EIn, ML::Encoding EOut>
