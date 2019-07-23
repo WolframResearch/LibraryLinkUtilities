@@ -222,7 +222,7 @@ namespace LLU {
 	void ErrorManager::throwExceptionWithDebugInfo(WolframLibraryData libData, const std::string& errorName, const std::string& debugInfo, T&&... args) {
 		auto e = findError(errorName);
 		e.setDebugInfo(debugInfo);
-		if (libData) {
+		if (libData && sizeof...(args) > 0) {
 			e.setMessageParameters(libData, std::forward<T>(args)...);
 			if (sendParametersImmediately) {
 				e.sendParameters(libData);

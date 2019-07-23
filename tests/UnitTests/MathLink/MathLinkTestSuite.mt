@@ -68,6 +68,15 @@ Test[
 ]
 
 Test[
+	WriteMint = SafeMathLinkFunction["WriteMint"];
+	WriteMint[]
+	,
+	-1
+	,
+	TestID->"MathLinkTestSuite-20190718-U5N0F1"
+]
+
+Test[
 	SameFloats = SafeMathLinkFunction["SameFloats"];
 	{pi, e} = SameFloats[N[Pi], N[E]];
 	(Abs[Pi-pi] < 10^-4) && (E == e)

@@ -79,6 +79,7 @@ namespace LLU {
 		extern const std::string ImageIndexError; 		///< trying to access non-existing element
 
 		// MathLink errors:
+		extern const std::string MLNullMlinkError;      ///< Trying to create MLStream with NULL MLINK
 		extern const std::string MLTestHeadError; 		///< MLTestHead failed (wrong head or number of arguments)
 		extern const std::string MLPutSymbolError; 		///< MLPutSymbol failed
 		extern const std::string MLPutFunctionError; 	///< MLPutFunction failed

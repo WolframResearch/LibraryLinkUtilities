@@ -316,11 +316,11 @@ Test[
   SetSPI = SafeLibraryFunction["SetSendParametersImmediately", {"Boolean"}, "Void"];
   SetSPI[False];
 
-  `LLU`$LastFailureParameters = {"This", "will", "not", "be", "overwritten"};
+  `LLU`$LastFailureParameters = {"This", "will", "be", "overwritten"};
   ReadData["somefile.txt"];
   `LLU`$LastFailureParameters
   ,
-  {"This", "will", "not", "be", "overwritten"}
+  {}
   ,
   TestID->"ErrorReportingTestSuite-20190404-O3A4K4"
 ];

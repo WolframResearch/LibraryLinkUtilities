@@ -81,6 +81,24 @@ EXTERN_C DLLEXPORT int MaxInts(WolframLibraryData libData, MLINK mlp) {
 	return err;
 }
 
+EXTERN_C DLLEXPORT int WriteMint(WolframLibraryData libData, MLINK mlp) {
+	auto err = LLErrorCode::NoError;
+	try {
+		MathLinkStream m(mlp);
+		ML::List l;
+		m >> l;
+		mint i = -1;
+		m << i;
+	}
+	catch (const LibraryLinkError& e) {
+		err = e.which();
+	}
+	catch (...) {
+		err = LLErrorCode::FunctionError;
+	}
+	return err;
+}
+
 EXTERN_C DLLEXPORT int SameFloats(WolframLibraryData libData, MLINK mlp) {
 	auto err = ErrorCode::NoError;
 	try {

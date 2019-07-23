@@ -232,7 +232,8 @@ Block[{slotNames, slotValues, data},
 	slotNames = Cases[First @ StringTemplate[msgTemplate], TemplateSlot[s_] -> s];
 	slotNames = DeleteDuplicates[slotNames];
 	slotValues = If[ListQ[`LLU`$LastFailureParameters], `LLU`$LastFailureParameters, {}];
-	If[MatchQ[slotNames, {_Integer..}],
+	`LLU`$LastFailureParameters = {};
+ 	If[MatchQ[slotNames, {_Integer..}],
 		(* for numbered slots return just a list of slot template values *)
 		slotValues
 		, (* otherwise, return an Association with slot names as keys *)

@@ -36,15 +36,17 @@ namespace LLU {
 		std::string getMLErrorText(MLINK mlp) {
 			std::string err = "Error code reported by MathLink: " + std::to_string(MLError(mlp)) + "\n";
 			auto mlErrorMsg = MLErrorMessage(mlp);
-			err += "\"" + std::string(mlErrorMsg) + "\"\nDebug info: ";
-			MLReleaseErrorMessage(mlp, mlErrorMsg);
+			if (mlErrorMsg) {
+				err += "\"" + std::string(mlErrorMsg) + "\"";
+				MLReleaseErrorMessage(mlp, mlErrorMsg);
+			}
 			MLClearError(mlp);
 			return err;
 		}
 
 		void checkError(MLINK m, int statusOk, const std::string& errorName, const std::string& debugInfo) {
 			if (!statusOk) {
-				ErrorManager::throwExceptionWithDebugInfo(errorName, getMLErrorText(m) + debugInfo);
+				ErrorManager::throwExceptionWithDebugInfo(errorName, getMLErrorText(m) + "\nDebug info: " + debugInfo);
 			}
 		}
 

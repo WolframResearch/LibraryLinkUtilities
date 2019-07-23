@@ -19,7 +19,7 @@ LIBRARY_LINK_FUNCTION(GreaterAt) {
 	LLU_DEBUG("Library function entered with ", Argc, " arguments.");
 	auto err = LLErrorCode::NoError;
 	try {
-		LLU_DEBUG("Starting try-block, current error code: ", static_cast<int>(err));
+		LLU_DEBUG("Starting try-block, current error code: ", err);
 		LLU::MArgumentManager mngr(Argc, Args, Res);
 		auto fileName = mngr.getString(0);
 		if (fileName.find(':') != std::string::npos) {

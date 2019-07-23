@@ -62,6 +62,7 @@ namespace LLU {
 			{ErrorName::ImageIndexError,             "An error was caused by attempting to access a nonexistent Image element." },
 
 			// MathLink errors:
+			{ErrorName::MLNullMlinkError,        "Trying to create MLStream with NULL MLINK"},
 			{ErrorName::MLTestHeadError,             "MLTestHead failed (wrong head or number of arguments)." },
 			{ErrorName::MLPutSymbolError,            "MLPutSymbol failed." },
 			{ErrorName::MLPutFunctionError,          "MLPutFunction failed." },
