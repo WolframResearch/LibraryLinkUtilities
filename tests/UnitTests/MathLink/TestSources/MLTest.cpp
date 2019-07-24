@@ -82,7 +82,7 @@ EXTERN_C DLLEXPORT int MaxInts(WolframLibraryData libData, MLINK mlp) {
 }
 
 EXTERN_C DLLEXPORT int WriteMint(WolframLibraryData libData, MLINK mlp) {
-	auto err = LLErrorCode::NoError;
+	auto err = ErrorCode::NoError;
 	try {
 		MathLinkStream m(mlp);
 		ML::List l;
@@ -94,7 +94,7 @@ EXTERN_C DLLEXPORT int WriteMint(WolframLibraryData libData, MLINK mlp) {
 		err = e.which();
 	}
 	catch (...) {
-		err = LLErrorCode::FunctionError;
+		err = ErrorCode::FunctionError;
 	}
 	return err;
 }

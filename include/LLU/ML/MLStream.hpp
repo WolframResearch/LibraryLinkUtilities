@@ -573,7 +573,7 @@ namespace LLU {
 	template<ML::Encoding EIn, ML::Encoding EOut>
 	MLStream<EIn, EOut>::MLStream(MLINK mlp) : m(mlp), loopbackStack(std::deque<LoopbackData> {{"", mlp}}) {
 		if (!mlp) {
-			ML::throwLLUException(LLErrorName::MLNullMlinkError);
+			ML::throwLLUException(ErrorName::MLNullMlinkError);
 		}
 	}
 
