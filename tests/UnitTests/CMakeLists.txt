@@ -23,7 +23,7 @@
 		"Image"
 		"MathLink"
 		"NumericArray"
-		"PassingPolicies"
+		"GenericContainers"
 		"Scalar"
 		"String"
 		"Tensor"

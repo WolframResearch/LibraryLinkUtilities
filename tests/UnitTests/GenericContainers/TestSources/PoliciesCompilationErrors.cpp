@@ -41,3 +41,17 @@ LIBRARY_LINK_FUNCTION(DisownManual) {
 	na.disown();
 	return 0;
 }
+
+LIBRARY_LINK_FUNCTION(CopyAutomatic) {
+	LLU::MArgumentManager mngr{libData, Argc, Args, Res};
+	LLU::GenericTensor<Automatic> t = mngr.getGenericTensor(0);
+	auto copy = t;
+	return 0;
+}
+
+LIBRARY_LINK_FUNCTION(CopyShared) {
+	LLU::MArgumentManager mngr{libData, Argc, Args, Res};
+	auto t = mngr.getGenericImage<Shared>(0);
+	auto copy = t;
+	return 0;
+}

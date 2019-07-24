@@ -11,10 +11,7 @@ using LLU::LibraryLinkError;
 using LLU::MArgumentManager;
 using LLU::NumericArray;
 
-template<class PassingMode>
-using GenericArray = LLU::MContainer<LLU::MArgumentType::NumericArray, PassingMode>;
-
-static GenericArray<LLU::Passing::Shared> shared_numeric { nullptr };
+static LLU::GenericNumericArray<LLU::Passing::Shared> shared_numeric { nullptr };
 
 EXTERN_C DLLEXPORT mint WolframLibrary_getVersion() {
 	return WolframLibraryVersion;
