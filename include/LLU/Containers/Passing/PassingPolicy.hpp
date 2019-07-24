@@ -26,10 +26,19 @@ namespace LLU {
 				setOwner(false); // FIXME wrong for Shared
 			}
 
+			/**
+			 * 	@brief		Check whether this object owns the underlying data structure from WolframLibrary. If it does, it is responsible for freeing the resources.
+			 * 	@return		true if and only if the object owns the underlying data structure from WolframLibrary
+			 */
+			bool isOwner() const {
+				return argumentOwnerQ;
+			}
+
 			virtual void cleanup() const noexcept = 0;
+
 		protected:
 
-			PassingPolicy(bool ownerQ) : argumentOwnerQ(ownerQ) {}
+			explicit PassingPolicy(bool ownerQ) : argumentOwnerQ(ownerQ) {}
 
 			PassingPolicy() = default;
 			PassingPolicy(const PassingPolicy&) = default;
@@ -38,15 +47,6 @@ namespace LLU {
 			virtual PassingPolicy& operator=(const PassingPolicy&) = default;
 			PassingPolicy& operator=(PassingPolicy&&) noexcept = default;
 			virtual ~PassingPolicy() = default;
-
-
-			/**
-			 * 	@brief		Check whether this object owns the underlying data structure from WolframLibrary. If it does, it is responsible for freeing the resources.
-			 * 	@return		true if and only if the object owns the underlying data structure from WolframLibrary
-			 */
-			bool isOwner() const {
-				return argumentOwnerQ;
-			}
 
 			/**
 			 * 	@brief		Set the ownership of the underlying data structure from WolframLibrary.

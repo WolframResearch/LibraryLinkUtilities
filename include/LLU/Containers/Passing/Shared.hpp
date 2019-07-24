@@ -30,7 +30,7 @@ namespace LLU {
 				return *this;
 			}
 
-			~Shared() = default;
+			~Shared() override = default;
 
 			void cleanup() const noexcept override {
 				if (isOwner()) {

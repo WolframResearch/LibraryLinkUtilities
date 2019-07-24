@@ -38,8 +38,10 @@ namespace LLU {
 		MContainerBase(const MContainerBase<Type, P>& mc) : PassingMode(mc), container(mc.clone()) {
 		}
 
-        template<class P>
-		MContainerBase(MContainerBase<Type, P>&& mc) noexcept : PassingMode(std::move(mc)), container(mc.container) {
+		MContainerBase(const MContainerBase &mc) : PassingMode(mc), container(mc.clone()) {
+		}
+
+		MContainerBase(MContainerBase &&mc) noexcept : PassingMode(std::move(mc)), container(mc.container) {
 			mc.container = nullptr;
 		}
 
@@ -50,15 +52,14 @@ namespace LLU {
 			return *this;
 		}
 
-        template<class P>
-		MContainerBase& operator=(MContainerBase<Type, P>&& mc) noexcept {
+		MContainerBase& operator=(MContainerBase&& mc) noexcept {
 			PassingMode::operator=(std::move(mc));
 			setContainer(mc.container);
 			mc.container = nullptr;
 			return *this;
 		}
 
-		virtual ~MContainerBase() = default;
+		~MContainerBase() override = default;
 
 		Container clone() const {
 			if (container == nullptr) {
@@ -151,7 +152,8 @@ namespace LLU {
 	template<class PassingMode>
 	using GenericImage = MContainer<MArgumentType::Image, PassingMode>;
 
-
+	template<class PassingMode>
+	using GenericDataStore = MContainer<MArgumentType::DataStore, PassingMode>;
 
 	template<class PassingMode>
 	class MContainer<MArgumentType::Tensor, PassingMode> : public MContainerBase<MArgumentType::Tensor, PassingMode> {
@@ -167,14 +169,14 @@ namespace LLU {
 			this->setContainer(tmp);
 		}
 
-		MContainer(RawContainer t) : Base(t) {}
+		/* implicit */ MContainer(RawContainer t) : Base(t) {}
 
         template<class P>
         MContainer(const MContainer<MArgumentType::Tensor, P>& mc) : Base(mc) {}
 
-        template<class P>
-        MContainer(MContainer<MArgumentType::Tensor, P>&& mc) noexcept : Base(std::move(mc)) {
-        }
+		MContainer(const MContainer &mc) = default;
+
+		MContainer(MContainer &&mc) noexcept = default;
 
         template<class P>
         MContainer& operator=(const MContainer<MArgumentType::Tensor, P>& mc) {
@@ -182,11 +184,10 @@ namespace LLU {
             return *this;
         }
 
-        template<class P>
-        MContainer& operator=(MContainer<MArgumentType::Tensor, P>&& mc) noexcept {
-            Base::operator=(std::move(mc));
-            return *this;
-        }
+		MContainer &operator=(MContainer &&mc) noexcept {
+			Base::operator=(std::move(mc));
+			return *this;
+		}
 
         ~MContainer() {
             this->cleanup();
@@ -253,16 +254,27 @@ namespace LLU {
 			this->setContainer(tmp);
 		}
 
-		MContainer(RawContainer i) : Base(i) {}
+		/* implicit */ MContainer(RawContainer i) : Base(i) {}
 
 		template<class P>
 		MContainer(const MContainer<MArgumentType::Image, P> &mc) : Base(mc) {}
 
+		MContainer(const MContainer &mc) = default;
+
+		MContainer(MContainer &&mc) noexcept = default;
+
 		template<class P>
-		MContainer(MContainer<MArgumentType::Image, P> &&mc) noexcept : Base(std::move(mc)) {
+		MContainer &operator=(const MContainer<MArgumentType::Image, P> &mc) {
+			Base::operator=(mc);
+			return *this;
 		}
 
-        ~MContainer() {
+		MContainer &operator=(MContainer &&mc) noexcept {
+			Base::operator=(std::move(mc));
+			return *this;
+		}
+
+        ~MContainer() override {
             this->cleanup();
         };
 
@@ -371,7 +383,7 @@ namespace LLU {
 		}
 
 		void passImpl(MArgument& res) const noexcept override {
-			MArgument_setMImage(res, this->getContainer());
+			MArgument_setMImage(res, this->abandonContainer());
 		}
 
 	};
@@ -390,14 +402,14 @@ namespace LLU {
 			this->setContainer(tmp);
 		}
 
-		MContainer(RawContainer t) : Base(t) {};
+		/* implicit */ MContainer(RawContainer t) : Base(t) {};
 
         template<class P>
         MContainer(const MContainer<MArgumentType::NumericArray, P>& mc) : Base(mc) {}
 
-        template<class P>
-        MContainer(MContainer<MArgumentType::NumericArray, P>&& mc) noexcept : Base(std::move(mc)) {
-        }
+		MContainer(const MContainer &mc) = default;
+
+		MContainer(MContainer &&mc) noexcept = default;
 
         template<class P>
         MContainer& operator=(const MContainer<MArgumentType::NumericArray, P>& mc) {
@@ -405,17 +417,16 @@ namespace LLU {
             return *this;
         }
 
-        template<class P>
-        MContainer& operator=(MContainer<MArgumentType::NumericArray, P>&& mc) noexcept {
+        MContainer& operator=(MContainer&& mc) noexcept {
             Base::operator=(std::move(mc));
             return *this;
         }
 
-        ~MContainer() {
+        ~MContainer() override {
             this->cleanup();
         };
 
-		MContainer<MArgumentType::NumericArray, Passing::Manual> convert(numericarray_data_t t, NA::ConversionMethod method, double param) const {
+		GenericNumericArray<Passing::Manual> convert(numericarray_data_t t, NA::ConversionMethod method, double param) const {
 			MNumericArray newNA = nullptr;
 			auto err = LibraryData::NumericArrayAPI()->MNumericArray_convertType(&newNA, this->getContainer(), t,
 																											  static_cast<numericarray_convert_method_t>(method), param);
@@ -463,7 +474,7 @@ namespace LLU {
 		}
 
 		void passImpl(MArgument& res) const noexcept override {
-			MArgument_setMNumericArray(res, this->getContainer());
+			MArgument_setMNumericArray(res, this->abandonContainer());
 		}
 	};
 
@@ -478,14 +489,13 @@ namespace LLU {
 		MContainer() : MContainer(LibraryData::DataStoreAPI()->createDataStore()) {
 		}
 
-		MContainer(RawContainer t) : Base(t) {};
+		/* implicit */ MContainer(RawContainer t) : Base(t) {};
 
 		template<class P>
 		MContainer(const MContainer<MArgumentType::DataStore, P> &mc) : Base(mc) {}
 
-		template<class P>
-		MContainer(MContainer<MArgumentType::DataStore, P> &&mc) noexcept : Base(std::move(mc)) {
-		}
+		MContainer(const MContainer &mc) = default;
+		MContainer(MContainer&& mc) noexcept  = default;
 
 		template<class P>
 		MContainer &operator=(const MContainer<MArgumentType::DataStore, P> &mc) {
@@ -493,8 +503,7 @@ namespace LLU {
 			return *this;
 		}
 
-		template<class P>
-		MContainer &operator=(MContainer<MArgumentType::DataStore, P> &&mc) noexcept {
+		MContainer &operator=(MContainer&& mc) noexcept {
 			Base::operator=(std::move(mc));
 			return *this;
 		}
@@ -521,7 +530,7 @@ namespace LLU {
 		}
 
 		void passImpl(MArgument& res) const noexcept override {
-			MArgument_setDataStore(res, this->getContainer());
+			MArgument_setDataStore(res, this->abandonContainer());
 		}
 	};
 

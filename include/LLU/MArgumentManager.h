@@ -136,7 +136,7 @@ namespace LLU {
 		 * 	@return		MContainer wrapper of MNumericArray with given passing policy
 		 */
 		template<class PassingMode = Passing::Automatic>
-		MContainer<MArgumentType::NumericArray, PassingMode> getGenericNumericArray(unsigned int index) const;
+		GenericNumericArray<PassingMode> getGenericNumericArray(unsigned int index) const;
 
 		/**
 		 *   @brief         Get MArgument of type MNumericArray at position \c index
@@ -165,7 +165,7 @@ namespace LLU {
 		 * 	@return		MContainer wrapper of MTensor with given passing policy
 		 */
 		template<class PassingMode = Passing::Automatic>
-		MContainer<MArgumentType::Tensor, PassingMode> getGenericTensor(unsigned int index) const;
+		GenericTensor<PassingMode> getGenericTensor(unsigned int index) const;
 
 		/**
 		 *   @brief         Get MArgument of type MTensor at position \c index.
@@ -194,7 +194,7 @@ namespace LLU {
 		 * 	@return		MContainer wrapper of MImage with given passing policy
 		 */
 		template<class PassingMode = Passing::Automatic>
-		MContainer<MArgumentType::Image, PassingMode> getGenericImage(unsigned int index) const;
+		GenericImage<PassingMode> getGenericImage(unsigned int index) const;
 
 		/**
 		 *   @brief         Get MArgument of type MImage at position \c index.
@@ -223,7 +223,7 @@ namespace LLU {
 		 * 	@return		MContainer wrapper of DataStore with given passing policy
 		 */
 		template<class PassingMode = Passing::Automatic>
-		MContainer<MArgumentType::DataStore, PassingMode> getGenericDataStore(unsigned int index) const;
+		GenericDataStore<PassingMode> getGenericDataStore(unsigned int index) const;
 
 		/**
 		 *   @brief         Get MArgument of type DataStore at position \c index.
@@ -411,7 +411,7 @@ namespace LLU {
 		 * @param na
 		 */
 		template<class PassingMode>
-		void set(const MContainer<MArgumentType::DataStore, PassingMode>& ds) { ds.pass(res); }
+		void set(const GenericDataStore<PassingMode>& ds) { ds.pass(res); }
 
 		/************************************ utility functions ************************************/
 
@@ -809,22 +809,22 @@ namespace LLU {
 	}
 
 	template<class PassingMode>
-	MContainer<MArgumentType::NumericArray, PassingMode> MArgumentManager::getGenericNumericArray(unsigned int index) const {
+	GenericNumericArray<PassingMode> MArgumentManager::getGenericNumericArray(unsigned int index) const {
 		return getMNumericArray(index);
 	}
 
 	template<class PassingMode>
-	MContainer<MArgumentType::Tensor, PassingMode> MArgumentManager::getGenericTensor(unsigned int index) const {
+	GenericTensor<PassingMode> MArgumentManager::getGenericTensor(unsigned int index) const {
 		return getMTensor(index);
 	}
 
 	template<class PassingMode>
-	MContainer<MArgumentType::Image, PassingMode> MArgumentManager::getGenericImage(unsigned int index) const {
+	GenericImage<PassingMode> MArgumentManager::getGenericImage(unsigned int index) const {
 		return getMImage(index);
 	}
 
 	template<class PassingMode>
-	MContainer<MArgumentType::DataStore, PassingMode> MArgumentManager::getGenericDataStore(unsigned int index) const {
+	GenericDataStore<PassingMode> MArgumentManager::getGenericDataStore(unsigned int index) const {
 		return getDataStore(index);
 	}
 

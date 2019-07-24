@@ -17,7 +17,9 @@ namespace LLU {
 		public:
 			Manual() : PassingPolicy(true) {}
 
-			Manual(const PassingPolicy&) : PassingPolicy(true) {};
+			explicit Manual(const PassingPolicy &) : PassingPolicy(true) {};
+
+			Manual(const Manual&) : PassingPolicy(true) {};
 
 			Manual(Manual&& other) noexcept : PassingPolicy(true) {
 				other.setOwner(false);
