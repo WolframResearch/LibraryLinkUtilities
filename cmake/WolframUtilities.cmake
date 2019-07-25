@@ -251,19 +251,14 @@ function(split_string_to_list STR LIST)
 	set(${LIST} ${_STR} PARENT_SCOPE)
 endfunction()
 
-# Finds library.conf and sets:
+# Finds library.conf and for each library therein sets:
 # ${LIBRARY_NAME}_SYSTEMID
 # ${LIBRARY_NAME}_VERSION
 # ${LIBRARY_NAME}_BUILD_PLATFORM
 function(find_and_parse_library_conf)
-	find_file(LIBRARY_CONF
-		library.conf
-		PATHS "${CMAKE_CURRENT_SOURCE_DIR}/scripts"
-		NO_DEFAULT_PATH
-	)
-
-	if(${LIBRARY_CONF} STREQUAL LIBRARY_CONF-NOTFOUND)
-		message(FATAL_ERROR "Unable to find ${CMAKE_CURRENT_SOURCE_DIR}/scripts/library.conf")
+	set(LIBRARY_CONF "${CMAKE_CURRENT_SOURCE_DIR}/scripts/library.conf")
+	if(NOT EXISTS ${LIBRARY_CONF})
+		message(FATAL_ERROR "Unable to find ${LIBRARY_CONF}")
 	endif()
 
 	file(STRINGS ${LIBRARY_CONF} _LIBRARY_CONF_STRINGS)
