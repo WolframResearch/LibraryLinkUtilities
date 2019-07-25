@@ -307,31 +307,32 @@ endfunction()
 # Resolve full path to a CVS dependency, downloading if necessary
 # Prioritize ${LIB_NAME}_DIR, ${LIB_NAME}_LOCATION, CVS_COMPONENTS_DIR, then CVS download
 # Do not download if ${LIB_NAME}_DIR or ${LIB_NAME}_LOCATION are set
+# ${LIB_NAME}_VERSION|SYSTEMID|BUILD_PLATFORM are expected to be previously set
 function(find_cvs_dependency LIB_NAME)
 
 	# helper variables
 	string(TOUPPER ${LIB_NAME} _LIB_NAME)
-	set(LIB_DIR ${_LIB_NAME}_DIR)
-	set(LIB_LOCATION ${_LIB_NAME}_LOCATION)
-	set(LIB_VERSION ${_LIB_NAME}_VERSION)
-	set(LIB_SYSTEMID ${_LIB_NAME}_SYSTEMID)
-	set(LIB_BUILD_PLATFORM ${_LIB_NAME}_BUILD_PLATFORM)
-	set(_LIB_DIR_SUFFIX ${${LIB_VERSION}}/${${LIB_SYSTEMID}}/${${LIB_BUILD_PLATFORM}})
+	set(LIB_DIR "${${_LIB_NAME}_DIR}")
+	set(LIB_LOCATION "${${_LIB_NAME}_LOCATION}")
+	set(LIB_VERSION ${${_LIB_NAME}_VERSION})
+	set(LIB_SYSTEMID ${${_LIB_NAME}_SYSTEMID})
+	set(LIB_BUILD_PLATFORM ${${_LIB_NAME}_BUILD_PLATFORM})
+	set(_LIB_DIR_SUFFIX ${LIB_VERSION}/${LIB_SYSTEMID}/${LIB_BUILD_PLATFORM})
 
 	# Check if there is a full path to the dependency with version, system id and build platform.
-	if(${LIB_DIR})
-		if(NOT EXISTS ${${LIB_DIR}})
-			message(FATAL_ERROR "Specified full path to Lib does not exist: ${${LIB_DIR}}")
+	if(NOT ${LIB_DIR} STREQUAL "")
+		if(NOT EXISTS ${LIB_DIR})
+			message(FATAL_ERROR "Specified full path to Lib does not exist: ${LIB_DIR}")
 		endif()
 		return()
 	endif()
 
 	# Check if there is a path to the Lib component
-	if(${LIB_LOCATION})
-		if(NOT EXISTS ${${LIB_LOCATION}})
-			message(FATAL_ERROR "Specified location of Lib does not exist: ${${LIB_LOCATION}}")
-		elseif(EXISTS ${${LIB_LOCATION}}/${_LIB_DIR_SUFFIX})
-			set(${LIB_DIR} ${${LIB_LOCATION}}/${_LIB_DIR_SUFFIX} PARENT_SCOPE)
+	if(NOT ${LIB_LOCATION} STREQUAL "")
+		if(NOT EXISTS ${LIB_LOCATION})
+			message(FATAL_ERROR "Specified location of Lib does not exist: ${LIB_LOCATION}")
+		elseif(EXISTS ${LIB_LOCATION}/${_LIB_DIR_SUFFIX})
+			set(${_LIB_NAME}_DIR ${LIB_LOCATION}/${_LIB_DIR_SUFFIX} PARENT_SCOPE)
 			return()
 		endif()
 	endif()
@@ -347,19 +348,20 @@ function(find_cvs_dependency LIB_NAME)
 		if(NOT EXISTS ${_CVS_COMPONENTS_DIR})
 			message(FATAL_ERROR "Specified location of CVS components does not exist: ${_CVS_COMPONENTS_DIR}")
 		elseif(EXISTS ${_CVS_COMPONENTS_DIR}/${LIB_NAME}/${_LIB_DIR_SUFFIX})
-			set(${LIB_DIR} ${_CVS_COMPONENTS_DIR}/${LIB_NAME}/${_LIB_DIR_SUFFIX} PARENT_SCOPE)
+			set(${_LIB_NAME}_DIR ${_CVS_COMPONENTS_DIR}/${LIB_NAME}/${_LIB_DIR_SUFFIX} PARENT_SCOPE)
 			return()
 		endif()
 	endif()
 
 	# Finally download component from cvs
 	# Set location of library sources checked out from cvs
-	set(${LIB_LOCATION} "${CMAKE_BINARY_DIR}/Components/${LIB_NAME}" CACHE PATH "Location of lib root directory.")
+	set(LIB_LOCATION "${CMAKE_BINARY_DIR}/Components/${LIB_NAME}")
+	set(${_LIB_NAME}_LOCATION ${LIB_LOCATION} CACHE PATH "Location of ${LIB_NAME} root directory.")
 
-	get_library_from_cvs(${LIB_NAME} ${${LIB_VERSION}} ${LIB_LOCATION}
-		SYSTEM_ID ${${LIB_SYSTEMID}}
-		BUILD_PLATFORM ${${LIB_BUILD_PLATFORM}}
+	get_library_from_cvs(${LIB_NAME} ${LIB_VERSION} LIB_LOCATION
+		SYSTEM_ID ${LIB_SYSTEMID}
+		BUILD_PLATFORM ${LIB_BUILD_PLATFORM}
 	)
-	set(${LIB_DIR} ${${LIB_LOCATION}} PARENT_SCOPE)
+	set(${_LIB_NAME}_DIR ${LIB_LOCATION} PARENT_SCOPE)
 
 endfunction()
