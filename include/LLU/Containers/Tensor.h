@@ -15,7 +15,7 @@
 #include "WolframLibrary.h"
 
 #include "LLU/Containers/MArray.hpp"
-#include "LLU/Containers/MContainer.hpp"
+#include "LLU/Containers/Generic/Tensor.hpp"
 #include "LLU/Containers/Passing/PassingPolicy.hpp"
 #include "LLU/Containers/Passing/Automatic.hpp"
 #include "LLU/Containers/Passing/Manual.hpp"

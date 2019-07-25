@@ -19,7 +19,7 @@
 #include "LLU/Containers/Passing/PassingPolicy.hpp"
 #include "LLU/Containers/Passing/Automatic.hpp"
 #include "LLU/Containers/Passing/Manual.hpp"
-#include "LLU/Containers/MContainer.hpp"
+#include "LLU/Containers/Generic/NumericArray.hpp"
 #include "LLU/Utilities.hpp"
 
 namespace LLU {

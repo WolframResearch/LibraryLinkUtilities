@@ -11,7 +11,6 @@
 
 #include "LLU/Containers/DataList.h"
 #include "LLU/Containers/Image.h"
-#include "LLU/Containers/MContainer.hpp"
 #include "LLU/Containers/NumericArray.h"
 #include "LLU/Containers/Tensor.h"
 
