@@ -311,6 +311,7 @@ endfunction()
 
 # Resolve full path to a CVS dependency, downloading if necessary
 # Prioritize ${LIB_NAME}_DIR, ${LIB_NAME}_LOCATION, CVS_COMPONENTS_DIR, then CVS download
+# Do not download if ${LIB_NAME}_DIR or ${LIB_NAME}_LOCATION are set
 function(find_cvs_dependency LIB_NAME)
 	detect_system_id(SYSTEMID)
 
