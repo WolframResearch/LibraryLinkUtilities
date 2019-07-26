@@ -13,8 +13,8 @@ TestExecute[
 	Get[FileNameJoin[{ParentDirectory[currentDirectory], "TestConfig.wl"}]];
 
 	(* Compile the test library *)
-	lib = CCompilerDriver`CreateLibrary[{FileNameJoin[{currentDirectory, "ErrorReportingTest.cpp"}]}, "ErrorReporting", options];
-
+	lib = CCompilerDriver`CreateLibrary[FileNameJoin[{currentDirectory, #}]& /@ {"ErrorReportingTest.cpp"},
+		"ErrorReporting", options];
 
 	Get[FileNameJoin[{$LLUSharedDir, "LibraryLinkUtilities.wl"}]];
 
@@ -312,15 +312,15 @@ Test[
   TestID->"ErrorReportingTestSuite-20190404-F9O0O1"
 ];
 
-Tes[
+Test[
   SetSPI = SafeLibraryFunction["SetSendParametersImmediately", {"Boolean"}, "Void"];
   SetSPI[False];
 
-  LLU`$LastFailureParameters = {"This", "will", "not", "be", "overwritten"};
+  `LLU`$LastFailureParameters = {"This", "will", "be", "overwritten"};
   ReadData["somefile.txt"];
-  LLU`$LastFailureParameters
+  `LLU`$LastFailureParameters
   ,
-  {"This", "will", "not", "be", "overwritten"}
+  {}
   ,
   TestID->"ErrorReportingTestSuite-20190404-O3A4K4"
 ];
@@ -337,4 +337,282 @@ TestMatch[
   |>]
   ,
   TestID->"ErrorReportingTestSuite-20190404-N7X5J6"
+];
+
+(*********************************************************** Logging tests **************************************************************)
+TestExecute[
+	libLogDebug = CCompilerDriver`CreateLibrary[FileNameJoin[{currentDirectory, #}]& /@ {"LoggerTest.cpp"},
+		"LogDebug", options, "Defines" -> {"LLU_LOG_DEBUG"}];
+
+	$InitLibraryLinkUtils = False;
+	RegisterPacletErrors[libLogDebug, <||>];
+
+	loggerTestPath = FileNameJoin[{currentDirectory, "LoggerTest.cpp"}];
+	`LLU`Logger`PrintLogFunctionSelector := Block[{`LLU`Logger`FormattedLog = `LLU`Logger`LogToAssociation},
+		`LLU`Logger`PrintLogToSymbol[TestLogSymbol][##]
+	]&;
+];
+
+Test[
+	GreaterAt = SafeLibraryFunction["GreaterAt", {String, {_, 1}, Integer, Integer}, "Boolean"];
+	GreaterAt["file.txt", {5, 6, 7, 8, 9}, 1, 3];
+	TestLogSymbol
+	,
+	{
+		<|
+			"Level" -> "Debug", 
+			"Line" -> 17, 
+			"File" -> loggerTestPath, 
+			"Function" -> "GreaterAt", 
+			"Message" -> Style["Library function entered with 4 arguments.", FontSize -> Inherited]
+		|>,
+		<|
+			"Level" -> "Debug", 
+			"Line" -> 20, 
+			"File" -> loggerTestPath, 
+			"Function" -> "GreaterAt", 
+			"Message" -> Style["Starting try-block, current error code: 0", FontSize -> Inherited]
+		|>, 
+		<|
+			"Level" -> "Debug", 
+			"Line" -> 26, 
+			"File" -> loggerTestPath, 
+			"Function" -> "GreaterAt", 
+			"Message" -> Style["Input tensor is of type: 2", FontSize -> Inherited]
+		|>, 
+		<|
+			"Level" -> "Debug", 
+			"Line" -> 39, 
+			"File" -> loggerTestPath, 
+			"Function" -> "GreaterAt", 
+			"Message" -> Style["Comparing 5 with 7", FontSize -> Inherited]
+		|>
+	}
+	,
+	TestID->"ErrorReportingTestSuite-20190409-U4I2Y8"
+];
+
+TestExecute[
+	TestLogSymbol = 5; (* assign a number to TestLogSymbol to see if LLU`Logger`PrintToSymbol can handle it *)
+	`LLU`Logger`PrintLogFunctionSelector := Block[{`LLU`Logger`FormattedLog = `LLU`Logger`LogToList},
+		`LLU`Logger`PrintLogToSymbol[TestLogSymbol][##]
+	]&
+];
+
+Test[
+	GreaterAt["my:file.txt", {5, 6, 7, 8, 9}, 1, 3];
+	TestLogSymbol
+	,
+	{
+		{"Debug", 17, loggerTestPath, "GreaterAt", "Library function entered with ", 4, " arguments."}, 
+		{"Debug", 20, loggerTestPath, "GreaterAt", "Starting try-block, current error code: ", 0},
+		{"Warning", 24, loggerTestPath, "GreaterAt", "File name ", "my:file.txt", " contains a possibly problematic character \":\"."}, 
+		{"Debug", 26, loggerTestPath, "GreaterAt", "Input tensor is of type: ", 2}, 
+		{"Debug", 39, loggerTestPath, "GreaterAt", "Comparing ", 5, " with ", 7}
+	}
+	,
+	TestID->"ErrorReportingTestSuite-20190409-L8V2U9"
+];
+
+Test[
+	MultiThreadedLog = SafeLibraryFunction["LogsFromThreads", {Integer}, "Void"];
+	Clear[TestLogSymbol];
+	MultiThreadedLog[3];
+	And @@ (MatchQ[
+		{"Debug", 88, loggerTestPath, "LogsFromThreads", "Starting ", 3, " threads."} |
+		{"Debug", 91, loggerTestPath, "operator()" | "operator ()", "Thread ", _, " going to sleep."} |
+		{"Debug", 93, loggerTestPath, "operator()" | "operator ()", "Thread ", _, " slept for ", _, "ms."} |
+		{"Debug", 101, loggerTestPath, "LogsFromThreads", "All threads joined."}
+	] /@ TestLogSymbol)
+	&&
+	First[TestLogSymbol] === {"Debug", 88, loggerTestPath, "LogsFromThreads", "Starting ", 3, " threads."}
+	&&
+	Last[TestLogSymbol] === {"Debug", 101, loggerTestPath, "LogsFromThreads", "All threads joined."}
+	,
+	True
+	,
+	TestID->"ErrorReportingTestSuite-20190415-Y8F3L2"
+];
+
+TestExecute[
+	`LLU`Logger`PrintLogFunctionSelector :=
+		If[## =!= `LLU`Logger`LogFiltered,
+			Sow @ `LLU`Logger`LogToShortString[##]
+		]&;
+];
+
+TestMatch[
+	Reap @ GreaterAt["file.txt", {5, 6, 7, 8, 9}, -1, 3]
+	,
+	{
+		Failure["TensorIndexError", <|
+			"MessageTemplate" -> "An error was caused by attempting to access a nonexistent Tensor element.",
+			"MessageParameters" -> <||>,
+			"ErrorCode" ->  n_?CppErrorCodeQ, 
+			"Parameters" -> {}
+		|>], {
+			{
+				"[Debug] LoggerTest.cpp:17 (GreaterAt): Library function entered with 4 arguments.", 
+				"[Debug] LoggerTest.cpp:20 (GreaterAt): Starting try-block, current error code: 0", 
+				"[Debug] LoggerTest.cpp:26 (GreaterAt): Input tensor is of type: 2", 
+				"[Error] LoggerTest.cpp:43 (GreaterAt): Caught LLU exception TensorIndexError: Indices (-1, 3) must be positive."
+			}
+		}
+	}
+	,
+	TestID->"ErrorReportingTestSuite-20190409-P1S6Y9"
+];
+
+TestExecute[
+	(* Disable logging in top-level, messages are still transferred from the library *)
+	`LLU`Logger`LogFilterSelector = `LLU`Logger`FilterRejectAll;
+];
+
+Test[
+	Reap @ GreaterAt["my:file.txt", {5, 6, 7, 8, 9}, 1, 3]
+	,
+	{False, {}}
+	,
+	TestID->"ErrorReportingTestSuite-20190410-R2D4P1"
+];
+
+TestExecute[
+	(* Log only warnings *)
+	`LLU`Logger`LogFilterSelector = `LLU`Logger`FilterByLevel[StringMatchQ["warning", IgnoreCase -> True]];
+];
+
+Test[
+	Reap @ GreaterAt["my:file.txt", {5, 6, 7, 8, 9}, 1, 3]
+	,
+	{False, {{"[Warning] LoggerTest.cpp:24 (GreaterAt): File name my:file.txt contains a possibly problematic character \":\"."}}}
+	,
+	TestID->"ErrorReportingTestSuite-20190410-H8S6D5"
+];
+
+TestExecute[
+	(* Log only messages issued from even line numbers *)
+	`LLU`Logger`LogFilterSelector = `LLU`Logger`FilterByLine[EvenQ];
+];
+
+Test[
+	Reap @ GreaterAt["my:file.txt", {5, 6, 7, 8, 9}, 1, 3]
+	,
+	{
+		False, {
+			{
+				"[Debug] LoggerTest.cpp:20 (GreaterAt): Starting try-block, current error code: 0",
+				"[Warning] LoggerTest.cpp:24 (GreaterAt): File name my:file.txt contains a possibly problematic character \":\".",
+				"[Debug] LoggerTest.cpp:26 (GreaterAt): Input tensor is of type: 2"
+			}
+		}
+	}
+	,
+	TestID->"ErrorReportingTestSuite-20190410-G6A5W4"
+];
+
+TestExecute[
+	libLogWarning = CCompilerDriver`CreateLibrary[FileNameJoin[{currentDirectory, #}]& /@ {"LoggerTest.cpp"},
+		"LogWarning", options, "Defines" -> {"LLU_LOG_WARNING"}];
+		
+	$InitLibraryLinkUtils = False;
+	RegisterPacletErrors[libLogWarning, <||>];
+	GreaterAtW = SafeLibraryFunction["GreaterAt", {String, {_, 1}, Integer, Integer}, "Boolean"];
+];
+
+Test[
+	Reap @ GreaterAtW["my:file.txt", {5, 6, 7, 8, 9}, 1, 3]
+	,
+	{
+		False, {{"[Warning] LoggerTest.cpp:24 (GreaterAt): File name my:file.txt contains a possibly problematic character \":\"."}}
+	}
+	,
+	TestID->"ErrorReportingTestSuite-20190415-F5I9D0"
+];
+
+TestExecute[
+	Get[FileNameJoin[{$LLUSharedDir, "LibraryLinkUtilities.wl"}]];
+	RegisterPacletErrors[libLogWarning, <||>];
+];
+
+Test[
+	Reap @ GreaterAtW["my:file.txt", {5, 6, 7, 8, 9}, 1, 3]
+	,
+	{
+		False, {}
+	}
+	,
+	TestID->"ErrorReportingTestSuite-20190415-A6S8Y7"
+];
+
+TestExecute[
+	`LLU`Logger`PrintLogFunctionSelector := Sow @ `LLU`Logger`LogToShortString[##]&;
+];
+
+TestMatch[
+	Reap @ GreaterAtW["file.txt", {5, 6, 7, 8, 9}, -1, 3]
+	,
+	{
+		Failure["TensorIndexError", <|
+			"MessageTemplate" -> "An error was caused by attempting to access a nonexistent Tensor element.",
+			"MessageParameters" -> <||>,
+			"ErrorCode" ->  n_?CppErrorCodeQ, 
+			"Parameters" -> {}
+		|>], {
+			{
+				"[Error] LoggerTest.cpp:43 (GreaterAt): Caught LLU exception TensorIndexError: Indices (-1, 3) must be positive."
+			}
+		}
+	}
+	,
+	TestID->"ErrorReportingTestSuite-20190415-P3C4F8"
+];
+
+TestExecute[
+	TestLogSymbol = {};
+	`LLU`Logger`PrintLogFunctionSelector := Block[{`LLU`Logger`FormattedLog = `LLU`Logger`LogToList},
+		`LLU`Logger`PrintLogToSymbol[TestLogSymbol][##]
+	]&;
+	LogDemo = SafeLibraryFunction["LogDemo", {Integer, Integer, Integer, Integer, Integer}, Integer];
+];
+
+Test[
+	{LogDemo[1, 6, 7, 8, 9], TestLogSymbol}
+	,
+	{6,{}}
+	,
+	TestID->"ErrorReportingTestSuite-20190415-C0D7H6"
+];
+
+Test[
+	{LogDemo[5, 6, 7, 8, 9], TestLogSymbol}
+	,
+	{
+		9,
+		{
+			{"Warning", 64, loggerTestPath, "LogDemo", "Index ", 5, " is too big for the number of arguments: ", 5, ". Changing to ", 4}
+		}
+	}
+	,
+	TestID->"ErrorReportingTestSuite-20190415-J1G2K9"
+];
+
+Test[
+	TestLogSymbol = {};
+	{LogDemo[-1, 6, 7, 8, 9], TestLogSymbol}
+	,
+	{
+		Failure["MArgumentIndexError", 
+			<|
+				"MessageTemplate" -> "An error was caused by an incorrect argument index.", 
+				"MessageParameters" -> <||>, 
+				"ErrorCode" -> -2, 
+				"Parameters" -> {}
+			|>
+		],
+		{
+			{"Error", 71, loggerTestPath, "LogDemo", "Caught LLU exception ", "MArgumentIndexError", ": ", "Index 4294967295 out-of-bound when accessing LibraryLink argument"}
+		}
+	}
+	,
+	TestID->"ErrorReportingTestSuite-20190415-U9M7O6"
 ];

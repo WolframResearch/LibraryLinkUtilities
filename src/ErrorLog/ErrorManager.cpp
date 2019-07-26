@@ -63,6 +63,7 @@ namespace LibraryLinkUtils {
 			{ LLErrorName::ImageIndexError,	"An error was caused by attempting to access a nonexistent Image element." },
 
 			// MathLink errors:
+			{ LLErrorName::MLNullMlinkError,        "Trying to create MLStream with NULL MLINK"},
 			{ LLErrorName::MLTestHeadError,			"MLTestHead failed (wrong head or number of arguments)." },
 			{ LLErrorName::MLPutSymbolError,		"MLPutSymbol failed." },
 			{ LLErrorName::MLPutFunctionError,		"MLPutFunction failed." },
@@ -177,6 +178,4 @@ namespace LibraryLinkUtils {
 		}
 		return err;
 	}
-
-
 }
