@@ -202,6 +202,8 @@ function(_set_package_args PACKAGE_SYSTEM_ID PACKAGE_BUILD_PLATFORM TAG VALUE)
 endfunction()
 
 # Download a library from Wolfram's CVS repository and set PACKAGE_LOCATION to the download location.
+# SystemId and BuildPlatform can be provided as optional arguments to only download a specific instance of the library.
+# If a Source directory exists in the component root directory, it will be downloaded.
 function(get_library_from_cvs PACKAGE_NAME PACKAGE_VERSION PACKAGE_LOCATION)
 
 	message(STATUS "Looking for CVS library: ${PACKAGE_NAME} version ${PACKAGE_VERSION}")
@@ -222,6 +224,7 @@ function(get_library_from_cvs PACKAGE_NAME PACKAGE_VERSION PACKAGE_LOCATION)
 		endif()
 	endif()
 
+	# Download component library
 	include(FetchContent)
 	FetchContent_declare(
 		${PACKAGE_NAME}
@@ -230,13 +233,36 @@ function(get_library_from_cvs PACKAGE_NAME PACKAGE_VERSION PACKAGE_LOCATION)
 		CVS_MODULE "Components/${PACKAGE_NAME}/${_PACKAGE_PATH_SUFFIX}"
 	)
 
+	string(TOLOWER ${PACKAGE_NAME} lc_package_name)
 	FetchContent_getproperties(${PACKAGE_NAME})
-	if (NOT ${PACKAGE_NAME}_POPULATED)
+	if (NOT ${lc_package_name}_POPULATED)
 		message(STATUS "Downloading CVS library: ${PACKAGE_NAME}")
 		FetchContent_populate(${PACKAGE_NAME})
 	endif ()
 
-	string(TOLOWER ${PACKAGE_NAME} lc_package_name)
+	# Check if a Source directory exists
+	execute_process(
+		COMMAND cvs -d $ENV{CVSROOT} rdiff -r 1.1 -r 1.1 Components/${PACKAGE_NAME}/${PACKAGE_VERSION}/Source
+		WORKING_DIRECTORY ${${PACKAGE_LOCATION}}
+		RESULT_VARIABLE RES
+		OUTPUT_QUIET ERROR_QUIET
+	)
+	if("${RES}" STREQUAL "0")
+		# Download component source
+		FetchContent_declare(
+			${PACKAGE_NAME}_SOURCE
+			SOURCE_DIR ${${PACKAGE_LOCATION}}/${PACKAGE_VERSION}/Source
+			CVS_REPOSITORY $ENV{CVSROOT}
+			CVS_MODULE "Components/${PACKAGE_NAME}/${PACKAGE_VERSION}/Source"
+		)
+
+		FetchContent_getproperties(${PACKAGE_NAME}_SOURCE)
+		if (NOT ${lc_package_name}_source_POPULATED)
+			message(STATUS "Downloading CVS source: ${PACKAGE_NAME}/${PACKAGE_VERSION}/Source")
+			FetchContent_populate(${PACKAGE_NAME}_SOURCE)
+		endif ()
+	endif()
+
 	set(${PACKAGE_LOCATION} ${${lc_package_name}_SOURCE_DIR} PARENT_SCOPE)
 
 	message(STATUS "${PACKAGE_NAME} downloaded to ${${PACKAGE_LOCATION}}/${_PACKAGE_PATH_SUFFIX}")
