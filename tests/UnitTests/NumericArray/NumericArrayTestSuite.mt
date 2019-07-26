@@ -9,6 +9,22 @@ TestExecute[
 
 (****************************NumericArray Operations****************************************)
 Test[
+	emptyVector[]
+	,
+	{}
+	,
+	TestID->"NumericArrayTestSuite-20190726-G2E3E0"
+];
+
+Test[
+	Dimensions @ emptyMatrix[]
+	,
+	{3, 5, 0}
+	,
+	TestID->"NumericArrayTestSuite-20190726-M2J7A2"
+];
+
+Test[
 	na = NumericArray[{1, 2, 3, 4}];
 	echoNumericArray[na]
 	,

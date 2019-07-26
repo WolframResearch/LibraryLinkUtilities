@@ -3,6 +3,8 @@ lib = CreateLibrary[{"NumericArrayOperations.cpp"}, "NumericArrayOperations", op
 Get[FileNameJoin[{$LLUSharedDir, "LibraryLinkUtilities.wl"}]];
 RegisterPacletErrors[lib, <||>];
 
+emptyVector = SafeLibraryFunction["CreateEmptyVector", {}, NumericArray];
+emptyMatrix = SafeLibraryFunction["CreateEmptyMatrix", {}, NumericArray];
 echoNumericArray = SafeLibraryFunction["echoNumericArray",{"NumericArray"},"NumericArray"];
 getNALength = SafeLibraryFunction["getNumericArrayLength", {"NumericArray"}, Integer];
 getNARank = SafeLibraryFunction["getNumericArrayRank", {"NumericArray"}, Integer];

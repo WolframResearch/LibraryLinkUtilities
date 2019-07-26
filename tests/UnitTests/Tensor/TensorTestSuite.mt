@@ -64,6 +64,22 @@ Test[
 	TestID->"TensorOperations-20150811-Y4J6R0"
 ]
 
+Test[
+	EmptyVector[]
+	,
+	{}
+	,
+	TestID -> "TensorTestSuite-20190726-H3G2M8"
+];
+
+Test[
+	Dimensions @ EmptyMatrix[]
+	,
+	{3, 5, 0}
+	,
+	TestID -> "TensorTestSuite-20190726-N5W9J1"
+];
+
 ExactTest[
 	Get[FileNameJoin[{currentDirectory, "MeanValue", "MeanValue.wl"}]];
 	MeanValue[{2.2,3.3,4.4}]

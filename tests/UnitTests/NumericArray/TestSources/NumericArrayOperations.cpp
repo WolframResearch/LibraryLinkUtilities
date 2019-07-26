@@ -21,6 +21,24 @@ EXTERN_C DLLEXPORT int WolframLibrary_initialize(WolframLibraryData libData) {
 	return 0;
 }
 
+LIBRARY_LINK_FUNCTION(CreateEmptyVector) {
+	MArgumentManager mngr(libData, Argc, Args, Res);
+
+	NumericArray<std::uint16_t> out(0, {0});
+
+	mngr.setNumericArray(out);
+	return LLErrorCode::NoError;
+}
+
+LIBRARY_LINK_FUNCTION(CreateEmptyMatrix) {
+	MArgumentManager mngr(libData, Argc, Args, Res);
+
+	NumericArray<double> out(0, {3, 5, 0});
+
+	mngr.setNumericArray(out);
+	return LLErrorCode::NoError;
+}
+
 LIBRARY_LINK_FUNCTION(echoNumericArray) {
 	auto err = LLErrorCode::NoError;
 	try {
