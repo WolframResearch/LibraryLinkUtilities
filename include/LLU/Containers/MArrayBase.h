@@ -227,11 +227,12 @@ namespace LibraryLinkUtils {
 		if (!libData || !naFuns || !imgFuns)
 			initError();
 		depth = checkContainerSize(std::forward<Container>(dimensions));
-		auto dimsOk = std::all_of(std::begin(dimensions), std::end(dimensions), [](typename std::remove_reference_t<Container>::value_type d) {
+		auto dimsOk = std::all_of(std::begin(dimensions), std::end(dimensions) - 1, [](typename std::remove_reference_t<Container>::value_type d) {
 			return (d > 0) && (d <= (std::numeric_limits<mint>::max)());
-		});
-		if (!dimsOk)
+		}) && (dimensions[depth - 1] >= 0) && (dimensions[depth - 1] <= (std::numeric_limits<mint>::max)());
+		if (!dimsOk) {
 			ErrorManager::throwExceptionWithDebugInfo(LLErrorName::DimensionsError, "Invalid input vector with array dimensions");
+		}
 		dims.reserve(depth);
 		std::copy(std::begin(dimensions), std::end(dimensions), std::back_inserter(dims));
 		flattenedLength = totalLengthFromDims();
@@ -240,7 +241,7 @@ namespace LibraryLinkUtils {
 
 	template<class Container>
 	mint MArrayBase::checkContainerSize(Container&& v) const {
-		if (v.size() > (std::numeric_limits<mint>::max)())
+		if (v.size() > (std::numeric_limits<mint>::max)() || v.size() == 0)
 			sizeError();
 		return static_cast<mint>(v.size());
 	}
