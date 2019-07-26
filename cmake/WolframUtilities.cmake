@@ -242,7 +242,7 @@ function(get_library_from_cvs PACKAGE_NAME PACKAGE_VERSION PACKAGE_LOCATION)
 
 	# Check if a Source directory exists
 	execute_process(
-		COMMAND cvs -d $ENV{CVSROOT} rdiff -r 1.1 -r 1.1 Components/${PACKAGE_NAME}/${PACKAGE_VERSION}/Source
+		COMMAND cvs -d $ENV{CVSROOT} rdiff -r HEAD Components/${PACKAGE_NAME}/${PACKAGE_VERSION}/Source
 		WORKING_DIRECTORY ${${PACKAGE_LOCATION}}
 		RESULT_VARIABLE RES
 		OUTPUT_QUIET ERROR_QUIET
