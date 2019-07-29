@@ -5,6 +5,8 @@ TestExecute[
 	Get[FileNameJoin[{ParentDirectory[currentDirectory], "TestConfig.wl"}]];
 	sourceDirectory = FileNameJoin[{currentDirectory, "TestSources"}];
 	Get[FileNameJoin[{sourceDirectory, "NumericArrayOperations.wl"}]];
+	
+	na = NumericArray[{1, 2, 3, 4}];
 ]
 
 (****************************NumericArray Operations****************************************)
@@ -68,7 +70,6 @@ Test[
 ];
 
 Test[
-	na = NumericArray[{1, 2, 3, 4}];
 	echoNumericArray[na]
 	,
 	NumericArray[{1, 2, 3, 4}, "UnsignedInteger8"]
@@ -110,12 +111,19 @@ Test[
 ]
 
 Test[
-	cl = cloneNA[na];
-	SameQ[cl, na]
+	cloneNA[na]
 	,
-	True
+	na
 	,
 	TestID->"NumericArrayOperations-20150827-I0C3X0"
+]
+
+Test[
+	cloneNA[NumericArray[{}, "UnsignedInteger8"]]
+	,
+	NumericArray[{}, "UnsignedInteger8"]
+	,
+	TestID -> "NumericArrayTestSuite-20190729-V6U8K6"
 ]
 
 Test[(*check NumericArray shared APi's*)

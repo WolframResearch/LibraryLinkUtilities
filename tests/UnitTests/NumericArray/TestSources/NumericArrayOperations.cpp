@@ -118,8 +118,9 @@ LIBRARY_LINK_FUNCTION(cloneNumericArray) {
 	try {
 		MArgumentManager mngr(Argc, Args, Res);
 		mngr.operateOnNumericArray(0, [&mngr](auto&& rarray1) {
-			auto rarray2 = rarray1;
-			mngr.setNumericArray(rarray2);
+			auto rarray2 {rarray1};
+			auto rarray3 = rarray2; // test both copy constructor and copy assignment
+			mngr.setNumericArray(rarray3);
 		});
 	}
 	catch (const LibraryLinkError& e) {
