@@ -331,7 +331,7 @@ namespace LibraryLinkUtils {
 
 
 	template<typename T>
-	Tensor<T>::Tensor(const Tensor<T>& t2) : MArray<T>(t2) {
+	Tensor<T>::Tensor(const Tensor<T>& t2) : MArray<T>(static_cast<const MArray<T>&>(t2)) {
 		if (this->libData->MTensor_clone(t2.internalMT, &this->internalMT)) {
 			ErrorManager::throwException(LLErrorName::TensorCloneError);
 		}

@@ -373,7 +373,7 @@ namespace LibraryLinkUtils {
 	}
 
 	template<typename T>
-	Image<T>::Image(const Image<T>& i2) : MArray<T>(i2) {
+	Image<T>::Image(const Image<T>& i2) : MArray<T>(static_cast<const MArray<T>&>(i2)) {
 		allowSlices = i2.allowSlices;
 		if (this->imgFuns->MImage_clone(i2.internalMI, &this->internalMI)) {
 			ErrorManager::throwException(LLErrorName::ImageCloneError);
