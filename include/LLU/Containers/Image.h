@@ -361,7 +361,7 @@ namespace LibraryLinkUtils {
 
 	template<typename T>
 	template<typename U>
-	Image<T>::Image(const Image<U>& i2, bool interleavedQ) : MArray<T>(i2) {
+	Image<T>::Image(const Image<U>& i2, bool interleavedQ) : MArray<T>(static_cast<const MArray<U>&>(i2)) {
 		internalMI = imgFuns->MImage_convertType(i2.getInternal(), type, interleavedQ);
 		allowSlices = i2.is3D();
 	}

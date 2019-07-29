@@ -47,17 +47,21 @@ namespace LibraryLinkUtils {
 
 		/**
 		 * 	@brief		Constructs uninitialized container with given dimensions
-		 *	@param[in]	dims - container with MArray dimensions
+		 *	@param[in]	dimensions - container with MArray dimensions
 		 *	@tparam		Container - any type of container that has member \b value_type and this type is convertible to mint
 		 *	@throws		LLErrorName::DimensionsError - if \c dims are invalid
 		 *	@throws		LLErrorName::FunctionError - if any of Wolfram*Library structures was not initialized
 		 **/
 		template<
 			class Container,
-			typename = disable_if_same_or_derived<MArrayBase, Container>,
 			typename = typename std::enable_if_t<std::is_integral<typename std::remove_reference_t<Container>::value_type>::value>
 		>
-		MArrayBase(Container&& dims);
+		explicit MArrayBase(Container&& dimensions);
+
+		/**
+		 *	@brief Default destructor
+		 **/
+		virtual ~MArrayBase() = default;
 
 		/**
 		 *	@brief Get container rank
@@ -104,12 +108,6 @@ namespace LibraryLinkUtils {
 		mint empty() const noexcept {
 			return flattenedLength == 0;
 		}
-
-		/**
-		 *	@brief Default destructor
-		 **/
-		virtual ~MArrayBase() = default;
-
 
 		/**
 		 *	@brief 		Pass the container as a result to LibraryLink via MArgument
@@ -222,7 +220,7 @@ namespace LibraryLinkUtils {
 		mint totalLengthFromDims() const noexcept;
 	};
 
-	template<class Container, typename, typename>
+	template<class Container, typename>
 	MArrayBase::MArrayBase(Container&& dimensions) {
 		if (!libData || !naFuns || !imgFuns)
 			initError();
