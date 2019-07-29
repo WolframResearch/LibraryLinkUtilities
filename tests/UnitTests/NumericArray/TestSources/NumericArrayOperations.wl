@@ -15,3 +15,5 @@ getSharedNA = SafeLibraryFunction["getSharedNumericArray", {}, "NumericArray"];
 accumulateIntegers = SafeLibraryFunction["accumulateIntegers", {{"NumericArray", "Constant"}}, Integer];
 convertMethodName = SafeLibraryFunction["convertMethodName", {Integer}, String];
 convert = SafeLibraryFunction["convert", {{"NumericArray", "Constant"}, Integer, Real}, "NumericArray"];
+testDimensions = SafeLibraryFunction["TestDimensions", {{Integer, 1, "Constant"}}, "NumericArray"];
+testDimensions2 = SafeLibraryFunction["TestDimensions2", {}, "DataStore"];

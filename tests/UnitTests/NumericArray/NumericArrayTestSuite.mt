@@ -25,6 +25,49 @@ Test[
 ];
 
 Test[
+	testDimensions[{}]
+	,
+	Failure["DimensionsError", <|
+		"MessageTemplate" -> "An error caused by inconsistent dimensions or by exceeding array bounds.", 
+		"MessageParameters" -> <||>, 
+		"ErrorCode" -> 3, 
+		"Parameters" -> {}|>
+	]
+	,
+	TestID->"NumericArrayTestSuite-20190729-X1X5Q8"
+];
+
+Test[
+	Normal @* testDimensions /@ {{0}, {3}, {3, 0}, {3, 2}, {3, 2, 0}, {3, 2, 4}}
+	,
+	{
+		{}, 
+		{0., 0., 0.}, 
+		{{}, {}, {}}, 
+		{{0., 0.}, {0., 0.}, {0., 0.}}, 
+		{{{}, {}}, {{}, {}}, {{}, {}}}, 
+		{{{0., 0., 0., 0.}, {0., 0., 0., 0.}}, {{0., 0., 0., 0.}, {0., 0., 0., 0.}}, {{0., 0., 0., 0.}, {0., 0., 0., 0.}}}
+	}
+	,
+	TestID->"NumericArrayTestSuite-20190729-R3O9K3"
+];
+
+Test[
+	Normal /@ List @@ testDimensions2[]
+	,
+	{
+		{}, 
+		{0., 0., 0.}, 
+		{{}, {}, {}}, 
+		{{0., 0.}, {0., 0.}, {0., 0.}}, 
+		{{{}, {}}, {{}, {}}, {{}, {}}}, 
+		{{{0., 0., 0., 0.}, {0., 0., 0., 0.}}, {{0., 0., 0., 0.}, {0., 0., 0., 0.}}, {{0., 0., 0., 0.}, {0., 0., 0., 0.}}}
+	}
+	,
+	TestID->"NumericArrayTestSuite-20190729-I2O3D2"
+];
+
+Test[
 	na = NumericArray[{1, 2, 3, 4}];
 	echoNumericArray[na]
 	,
