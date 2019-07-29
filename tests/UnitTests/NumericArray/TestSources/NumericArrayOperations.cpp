@@ -21,6 +21,24 @@ EXTERN_C DLLEXPORT int WolframLibrary_initialize(WolframLibraryData libData) {
 	return 0;
 }
 
+LIBRARY_LINK_FUNCTION(CreateEmptyVector) {
+	MArgumentManager mngr(libData, Argc, Args, Res);
+
+	NumericArray<std::uint16_t> out(0, {0});
+
+	mngr.setNumericArray(out);
+	return LLErrorCode::NoError;
+}
+
+LIBRARY_LINK_FUNCTION(CreateEmptyMatrix) {
+	MArgumentManager mngr(libData, Argc, Args, Res);
+
+	NumericArray<double> out(0, {3, 5, 0});
+
+	mngr.setNumericArray(out);
+	return LLErrorCode::NoError;
+}
+
 LIBRARY_LINK_FUNCTION(echoNumericArray) {
 	auto err = LLErrorCode::NoError;
 	try {
@@ -100,8 +118,9 @@ LIBRARY_LINK_FUNCTION(cloneNumericArray) {
 	try {
 		MArgumentManager mngr(Argc, Args, Res);
 		mngr.operateOnNumericArray(0, [&mngr](auto&& rarray1) {
-			auto rarray2 = rarray1;
-			mngr.setNumericArray(rarray2);
+			auto rarray2 {rarray1};
+			auto rarray3 = rarray2; // test both copy constructor and copy assignment
+			mngr.setNumericArray(rarray3);
 		});
 	}
 	catch (const LibraryLinkError& e) {
@@ -248,6 +267,48 @@ LIBRARY_LINK_FUNCTION(convert) {
 		err = e.which();
 	}
 	catch (...) {
+		err = LLErrorCode::FunctionError;
+	}
+	return err;
+}
+
+LIBRARY_LINK_FUNCTION(TestDimensions) {
+	auto err = LLErrorCode::NoError;
+	try {
+		MArgumentManager mngr(libData, Argc, Args, Res);
+		Tensor<mint> dims = mngr.getTensor<mint>(0);
+		NumericArray<float> na(0.0f, dims);
+		mngr.setNumericArray(na);
+	} catch (const LibraryLinkError &e) {
+		err = e.which();
+	}
+	return err;
+}
+
+
+LIBRARY_LINK_FUNCTION(TestDimensions2) {
+	auto err = LLErrorCode::NoError;
+	try {
+		MArgumentManager mngr(Argc, Args, Res);
+		DataList<MArgumentType::NumericArray> naList;
+
+		std::vector<std::vector<mint>> dimsList{
+				{0},
+				{3},
+				{3, 0},
+				{3, 2},
+				{3, 2, 0},
+				{3, 2, 4}
+		};
+
+		for (auto &dims : dimsList) {
+			NumericArray<float> na(0.0f, dims);
+			naList.push_back(na.getInternal());
+			na.setOwner(false);
+		}
+
+		mngr.setDataList(naList);
+	} catch (const LibraryLinkError &e) {
 		err = LLErrorCode::FunctionError;
 	}
 	return err;

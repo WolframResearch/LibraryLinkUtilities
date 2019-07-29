@@ -361,7 +361,7 @@ namespace LibraryLinkUtils {
 
 	template<typename T>
 	template<typename U>
-	Image<T>::Image(const Image<U>& i2, bool interleavedQ) : MArray<T>(i2) {
+	Image<T>::Image(const Image<U>& i2, bool interleavedQ) : MArray<T>(static_cast<const MArray<U>&>(i2)) {
 		internalMI = imgFuns->MImage_convertType(i2.getInternal(), type, interleavedQ);
 		allowSlices = i2.is3D();
 	}
@@ -373,7 +373,7 @@ namespace LibraryLinkUtils {
 	}
 
 	template<typename T>
-	Image<T>::Image(const Image<T>& i2) : MArray<T>(i2) {
+	Image<T>::Image(const Image<T>& i2) : MArray<T>(static_cast<const MArray<T>&>(i2)) {
 		allowSlices = i2.allowSlices;
 		if (this->imgFuns->MImage_clone(i2.internalMI, &this->internalMI)) {
 			ErrorManager::throwException(LLErrorName::ImageCloneError);

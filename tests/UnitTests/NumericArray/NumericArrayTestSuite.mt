@@ -5,11 +5,71 @@ TestExecute[
 	Get[FileNameJoin[{ParentDirectory[currentDirectory], "TestConfig.wl"}]];
 	sourceDirectory = FileNameJoin[{currentDirectory, "TestSources"}];
 	Get[FileNameJoin[{sourceDirectory, "NumericArrayOperations.wl"}]];
+	
+	na = NumericArray[{1, 2, 3, 4}];
 ]
 
 (****************************NumericArray Operations****************************************)
 Test[
-	na = NumericArray[{1, 2, 3, 4}];
+	emptyVector[]
+	,
+	{}
+	,
+	TestID->"NumericArrayTestSuite-20190726-G2E3E0"
+];
+
+Test[
+	Dimensions @ emptyMatrix[]
+	,
+	{3, 5, 0}
+	,
+	TestID->"NumericArrayTestSuite-20190726-M2J7A2"
+];
+
+Test[
+	testDimensions[{}]
+	,
+	Failure["DimensionsError", <|
+		"MessageTemplate" -> "An error caused by inconsistent dimensions or by exceeding array bounds.", 
+		"MessageParameters" -> <||>, 
+		"ErrorCode" -> 3, 
+		"Parameters" -> {}|>
+	]
+	,
+	TestID->"NumericArrayTestSuite-20190729-X1X5Q8"
+];
+
+Test[
+	Normal @* testDimensions /@ {{0}, {3}, {3, 0}, {3, 2}, {3, 2, 0}, {3, 2, 4}}
+	,
+	{
+		{}, 
+		{0., 0., 0.}, 
+		{{}, {}, {}}, 
+		{{0., 0.}, {0., 0.}, {0., 0.}}, 
+		{{{}, {}}, {{}, {}}, {{}, {}}}, 
+		{{{0., 0., 0., 0.}, {0., 0., 0., 0.}}, {{0., 0., 0., 0.}, {0., 0., 0., 0.}}, {{0., 0., 0., 0.}, {0., 0., 0., 0.}}}
+	}
+	,
+	TestID->"NumericArrayTestSuite-20190729-R3O9K3"
+];
+
+Test[
+	Normal /@ List @@ testDimensions2[]
+	,
+	{
+		{}, 
+		{0., 0., 0.}, 
+		{{}, {}, {}}, 
+		{{0., 0.}, {0., 0.}, {0., 0.}}, 
+		{{{}, {}}, {{}, {}}, {{}, {}}}, 
+		{{{0., 0., 0., 0.}, {0., 0., 0., 0.}}, {{0., 0., 0., 0.}, {0., 0., 0., 0.}}, {{0., 0., 0., 0.}, {0., 0., 0., 0.}}}
+	}
+	,
+	TestID->"NumericArrayTestSuite-20190729-I2O3D2"
+];
+
+Test[
 	echoNumericArray[na]
 	,
 	NumericArray[{1, 2, 3, 4}, "UnsignedInteger8"]
@@ -51,12 +111,19 @@ Test[
 ]
 
 Test[
-	cl = cloneNA[na];
-	SameQ[cl, na]
+	cloneNA[na]
 	,
-	True
+	na
 	,
 	TestID->"NumericArrayOperations-20150827-I0C3X0"
+]
+
+Test[
+	cloneNA[NumericArray[{}, "UnsignedInteger8"]]
+	,
+	NumericArray[{}, "UnsignedInteger8"]
+	,
+	TestID -> "NumericArrayTestSuite-20190729-V6U8K6"
 ]
 
 Test[(*check NumericArray shared APi's*)

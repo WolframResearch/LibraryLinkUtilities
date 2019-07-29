@@ -62,7 +62,7 @@ namespace LibraryLinkUtils {
 		 *
 		 *   @warning		It is user's responsibility to make sure that length of v fits into mint!
 		 **/
-		template<typename Container, typename = disable_if_same_or_derived<NumericArray<T>, Container>>
+		template<typename Container, typename = disable_if_same_or_derived<NumericArray, Container>>
 		NumericArray(Container&& v);
 
 		/**
@@ -155,26 +155,26 @@ namespace LibraryLinkUtils {
 		 *   @brief         Copy constructor
 		 *   @param[in]     other - const reference to a NumericArray of matching type
 		 **/
-		NumericArray(const NumericArray<T>& other);
+		NumericArray(const NumericArray& other);
 		
 		/**
 		 *   @brief         Move constructor
 		 *   @param[in]     other - rvalue reference to a NumericArray of matching type
 		 **/
-		NumericArray(NumericArray<T>&& other);
+		NumericArray(NumericArray&& other);
 
 
 		/**
 		 *   @brief         Copy-assignment operator
 		 *   @param[in]     other - const reference to a NumericArray of matching type
 		 **/
-		void operator=(const NumericArray<T>& other);
+		void operator=(const NumericArray& other);
 
 		/**
 		 *   @brief         Move-assignment operator
 		 *   @param[in]     other - rvalue reference to a NumericArray of matching type
 		 **/
-		void operator=(NumericArray<T>&& other);
+		void operator=(NumericArray&& other);
 
 
 		/**
@@ -373,7 +373,7 @@ namespace LibraryLinkUtils {
 
 	template<typename T>
 	template<typename U>
-	NumericArray<T>::NumericArray(const NumericArray<U>& other, NA::ConversionMethod method, double tolerance) : MArray<T>(other)  {
+	NumericArray<T>::NumericArray(const NumericArray<U>& other, NA::ConversionMethod method, double tolerance) : MArray<T>(static_cast<const MArray<U>&>(other))  {
 		if (!this->naFuns) {
 			initError();
 		}
@@ -388,7 +388,7 @@ namespace LibraryLinkUtils {
 	}
 
 	template<typename T>
-	NumericArray<T>::NumericArray(const NumericArray<T>& other) : MArray<T>(other) {
+	NumericArray<T>::NumericArray(const NumericArray<T>& other) : MArray<T>(static_cast<const MArray<T>&>(other)) {
 		if (this->naFuns->MNumericArray_clone(other.internalNA, &this->internalNA)) {
 			ErrorManager::throwException(LLErrorName::NumericArrayCloneError);
 		}
