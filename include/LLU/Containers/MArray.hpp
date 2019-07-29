@@ -50,6 +50,8 @@ namespace LibraryLinkUtils {
 		/// Constant reference type
 		using const_reference = const value_type&;
 
+		MArray() = default;
+
 		using MArrayBase::MArrayBase;
 
 		/**
