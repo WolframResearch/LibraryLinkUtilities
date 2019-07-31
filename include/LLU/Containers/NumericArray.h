@@ -51,7 +51,7 @@ namespace LLU {
         /// NumericArray data type matching template parameter T
         static const numericarray_data_t type;
     };
-    
+
 	/**
 	 * @class NumericArray
 	 * @brief This is a class template, where template parameter T is the type of data elements. NumericArray is derived from MArray.

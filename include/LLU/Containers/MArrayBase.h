@@ -55,17 +55,21 @@ namespace LLU {
 
 		/**
 		 * 	@brief		Constructs uninitialized container with given dimensions
-		 *	@param[in]	dims - container with MArray dimensions
+		 *	@param[in]	dimensions - container with MArray dimensions
 		 *	@tparam		Container - any type of container that has member \b value_type and this type is convertible to mint
 		 *	@throws		LLErrorName::DimensionsError - if \c dims are invalid
 		 *	@throws		LLErrorName::FunctionError - if any of Wolfram*Library structures was not initialized
 		 **/
 		template<
 			class Container,
-			typename = disable_if_same_or_derived<MArrayBase, Container>,
 			typename = typename std::enable_if_t<std::is_integral<typename std::remove_reference_t<Container>::value_type>::value>
 		>
-		explicit MArrayBase(Container&& dims);
+		explicit MArrayBase(Container&& dimensions);
+
+		/**
+		 *	@brief Default destructor
+		 **/
+		virtual ~MArrayBase() = default;
 
 		/**
 		 *	@brief Get container rank
@@ -112,11 +116,6 @@ namespace LLU {
 		mint empty() const noexcept {
 			return flattenedLength == 0;
 		}
-
-		/**
-		 *	@brief Default destructor
-		 **/
-		virtual ~MArrayBase() = default;
 
 	protected:
 
@@ -182,14 +181,15 @@ namespace LLU {
 		mint totalLengthFromDims() const noexcept;
 	};
 
-	template<class Container, typename, typename>
+	template<class Container, typename>
 	MArrayBase::MArrayBase(Container&& dimensions) {
 		depth = checkContainerSize(std::forward<Container>(dimensions));
-		auto dimsOk = std::all_of(std::begin(dimensions), std::end(dimensions), [](typename std::remove_reference_t<Container>::value_type d) {
+		auto dimsOk = std::all_of(std::begin(dimensions), std::end(dimensions) - 1, [](typename std::remove_reference_t<Container>::value_type d) {
 			return (d > 0) && (d <= (std::numeric_limits<mint>::max)());
-		});
-		if (!dimsOk)
+		}) && (dimensions[depth - 1] >= 0) && (dimensions[depth - 1] <= (std::numeric_limits<mint>::max)());
+		if (!dimsOk) {
 			ErrorManager::throwExceptionWithDebugInfo(ErrorName::DimensionsError, "Invalid input vector with array dimensions");
+		}
 		dims.reserve(depth);
 		std::copy(std::begin(dimensions), std::end(dimensions), std::back_inserter(dims));
 		flattenedLength = totalLengthFromDims();
@@ -198,7 +198,7 @@ namespace LLU {
 
 	template<class Container>
 	mint MArrayBase::checkContainerSize(Container&& v) const {
-		if (v.size() > (std::numeric_limits<mint>::max)())
+		if (v.size() > (std::numeric_limits<mint>::max)() || v.size() == 0)
 			sizeError();
 		return static_cast<mint>(v.size());
 	}

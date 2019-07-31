@@ -73,7 +73,7 @@ namespace LLU {
         /// Tensor data type matching template parameter T
         static const mint type;
     };
-    
+
 	/**
 	 * @class Tensor
 	 * @brief This is a class template, where template parameter T is the type of data elements. Tensor is derived from MArray.
@@ -261,7 +261,7 @@ namespace LLU {
 
 	template<typename T, class PassingMode>
 	Tensor<T, PassingMode>::Tensor(MTensor na) : Tensor(GenericTensor{ na }) {}
-	
+
 } /* namespace LLU */
 
 #endif /* LLUTILS_TENSOR_H_ */

@@ -31,7 +31,9 @@ TestExecute[
 	EchoElement = LibraryFunctionLoad[lib, "EchoElement", {{"NumericArray", "Constant"}, {Integer, 1}}, Integer];
 
 	CreateMatrix = LibraryFunctionLoad[lib, "CreateMatrix", {Integer, Integer}, {Integer, 2}];
-
+	EmptyVector = LibraryFunctionLoad[lib, "CreateEmptyVector", {}, {Integer, 1}];
+	EmptyMatrix = LibraryFunctionLoad[lib, "CreateEmptyMatrix", {}, {Integer, _}];
+	
 	MeanValue = LibraryFunctionLoad[lib, "MeanValue", {{Real, 1}}, Real];
 
 	IntegerMatrixTranspose = LibraryFunctionLoad[lib, "IntegerMatrixTranspose", {{Integer, 2}}, {Integer, 2}];
@@ -95,6 +97,22 @@ Test[
 	{{1, 2, 3, 4}, {5, 6, 7, 8}, {9, 10, 11, 12}}
 	,
 	TestID->"TensorOperations-20150811-Y4J6R0"
+];
+
+Test[
+	EmptyVector[]
+	,
+	{}
+	,
+	TestID -> "TensorTestSuite-20190726-H3G2M8"
+];
+
+Test[
+	Dimensions @ EmptyMatrix[]
+	,
+	{3, 5, 0}
+	,
+	TestID -> "TensorTestSuite-20190726-N5W9J1"
 ];
 
 ExactTest[

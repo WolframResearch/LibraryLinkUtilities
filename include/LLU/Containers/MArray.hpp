@@ -50,8 +50,9 @@ namespace LLU {
 		/// Constant reference type
 		using const_reference = const value_type&;
 
-		using MArrayBase::MArrayBase;
+		MArray() = default;
 
+		using MArrayBase::MArrayBase;
 
 		/**
 		 * 	@brief		Converts given MArray of type U into MArray of type T
@@ -59,7 +60,7 @@ namespace LLU {
 		 *	@tparam		U - any type convertible to T
 		 **/
 		template<typename U>
-		MArray(const MArray<U>& ma2) : MArrayBase(ma2) {}
+		explicit MArray(const MArray<U>& ma2) : MArrayBase(static_cast<const MArrayBase&>(ma2)) {}
 
 		/**
 		 *	@brief Get raw pointer to underlying data

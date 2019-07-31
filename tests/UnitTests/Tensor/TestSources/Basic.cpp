@@ -24,7 +24,25 @@ EXTERN_C DLLEXPORT int CreateMatrix(WolframLibraryData libData, mint Argc, MArgu
 	}
 
 	mngr.setTensor(out);
-	return LIBRARY_NO_ERROR;
+	return ErrorCode::NoError;
+}
+
+EXTERN_C DLLEXPORT int CreateEmptyVector(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
+	MArgumentManager mngr(libData, Argc, Args, Res);
+
+	Tensor<mint> out(0, {0});
+
+	mngr.setTensor(out);
+	return ErrorCode::NoError;
+}
+
+EXTERN_C DLLEXPORT int CreateEmptyMatrix(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
+	MArgumentManager mngr(libData, Argc, Args, Res);
+
+	Tensor<mint> out(0, {3, 5, 0});
+
+	mngr.setTensor(out);
+	return ErrorCode::NoError;
 }
 
 LIBRARY_LINK_FUNCTION(EchoTensor) {
