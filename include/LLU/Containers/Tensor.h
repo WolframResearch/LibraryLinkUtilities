@@ -339,7 +339,7 @@ namespace LibraryLinkUtils {
 	}
 
 	template<typename T>
-	Tensor<T>::Tensor(Tensor<T>&& t2) : MArray<T>(std::move(t2)) {
+	Tensor<T>::Tensor(Tensor<T>&& t2) : MArray<T>(static_cast<MArray<T>&&>(t2)) {
 		this->internalMT = t2.internalMT;
 		t2.internalMT = nullptr;
 		t2.setOwner(false);
