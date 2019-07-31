@@ -78,6 +78,14 @@ Test[
 ]
 
 Test[
+	echoNumericArray[{{},{}}]
+	,
+	{{},{}}
+	,
+	TestID -> "NumericArrayTestSuite-20190731-L3E9L6"
+]
+
+Test[
 	num = NumericArray[N @ Range[0, 47]/47, "Real64"];
 	res = NumericArrayQ @ echoNumericArray[num]
 	,
@@ -119,9 +127,9 @@ Test[
 ]
 
 Test[
-	cloneNA[NumericArray[{}, "UnsignedInteger8"]]
+	cloneNA[NumericArray[{{{}}}, "UnsignedInteger8"]]
 	,
-	NumericArray[{}, "UnsignedInteger8"]
+	NumericArray[{{{}}}, "UnsignedInteger8"]
 	,
 	TestID -> "NumericArrayTestSuite-20190729-V6U8K6"
 ]

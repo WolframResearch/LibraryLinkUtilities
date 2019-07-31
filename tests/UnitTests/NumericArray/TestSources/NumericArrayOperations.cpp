@@ -43,9 +43,10 @@ LIBRARY_LINK_FUNCTION(echoNumericArray) {
 	auto err = LLErrorCode::NoError;
 	try {
 		MArgumentManager mngr(Argc, Args, Res);
-		mngr.operateOnNumericArray(0, [&mngr](auto&& rarray1) {
-			auto rarray2(std::move(rarray1));
-			mngr.setNumericArray(rarray2);
+		mngr.operateOnNumericArray(0, [&mngr](auto rarray1) {
+			auto rarray2 {std::move(rarray1)};  // test move constructor
+			auto rarray3 = std::move(rarray2);  // test move assignment
+			mngr.setNumericArray(rarray3);
 		});
 	}
 	catch (const LibraryLinkError& e) {
@@ -117,9 +118,9 @@ LIBRARY_LINK_FUNCTION(cloneNumericArray) {
 	auto err = LLErrorCode::NoError;
 	try {
 		MArgumentManager mngr(Argc, Args, Res);
-		mngr.operateOnNumericArray(0, [&mngr](auto&& rarray1) {
-			auto rarray2 {rarray1};
-			auto rarray3 = rarray2; // test both copy constructor and copy assignment
+		mngr.operateOnNumericArray(0, [&mngr](auto rarray1) {
+			auto rarray2 {rarray1};  // test copy constructor
+			auto rarray3 = rarray2;  // test copy assignment
 			mngr.setNumericArray(rarray3);
 		});
 	}
