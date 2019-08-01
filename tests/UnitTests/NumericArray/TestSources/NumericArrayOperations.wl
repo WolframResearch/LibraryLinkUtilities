@@ -1,5 +1,5 @@
 Needs["CCompilerDriver`"]
-lib = CreateLibrary[{"NumericArrayOperations.cpp"}, "NumericArrayOperations", options, "Debug" -> True];
+lib = CreateLibrary[{"NumericArrayOperations.cpp"}, "NumericArrayOperations", options];
 Get[FileNameJoin[{$LLUSharedDir, "LibraryLinkUtilities.wl"}]];
 RegisterPacletErrors[lib, <||>];
 
