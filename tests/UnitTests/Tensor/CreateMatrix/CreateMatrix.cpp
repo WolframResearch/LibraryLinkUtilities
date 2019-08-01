@@ -1,4 +1,5 @@
 #include "LLU/MArgumentManager.h"
+#include "LLU/LibraryLinkFunctionMacro.h"
 
 using namespace LibraryLinkUtils;
 
@@ -39,26 +40,26 @@ EXTERN_C DLLEXPORT int CreateEmptyMatrix(WolframLibraryData libData, mint Argc, 
 }
 
 //clone Tensor
-EXTERN_C DLLEXPORT int CloneTensor(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
-		auto err = LLErrorCode::NoError;
-		try {
-			MArgumentManager mngr(libData, Argc, Args, Res);
-			mngr.operateOnTensor(0, [&mngr](auto t1) {
-				auto t2{t1};  // test copy constructor
-				auto t3 = t2;  // test copy assignment
-				mngr.setTensor(t3);
-			});
-		}
-		catch (const LibraryLinkError& e) {
-			err = e.which();
-		}
-		catch (...) {
-			err = LLErrorCode::FunctionError;
-		}
-		return err;
+LIBRARY_LINK_FUNCTION(CloneTensor) {
+	auto err = LLErrorCode::NoError;
+	try {
+		MArgumentManager mngr(libData, Argc, Args, Res);
+		mngr.operateOnTensor(0, [&mngr](auto t1) {
+			auto t2{t1};  // test copy constructor
+			auto t3 = t2;  // test copy assignment
+			mngr.setTensor(t3);
+		});
+	}
+	catch (const LibraryLinkError& e) {
+		err = e.which();
+	}
+	catch (...) {
+		err = LLErrorCode::FunctionError;
+	}
+	return err;
 }
 
-EXTERN_C DLLEXPORT int TestDimensions(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
+LIBRARY_LINK_FUNCTION(TestDimensions) {
 		auto err = LLErrorCode::NoError;
 		try {
 			MArgumentManager mngr(libData, Argc, Args, Res);
@@ -72,7 +73,7 @@ EXTERN_C DLLEXPORT int TestDimensions(WolframLibraryData libData, mint Argc, MAr
 }
 
 
-EXTERN_C DLLEXPORT int TestDimensions2(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
+LIBRARY_LINK_FUNCTION(TestDimensions2) {
 		auto err = LLErrorCode::NoError;
 		try {
 			MArgumentManager mngr(libData, Argc, Args, Res);
