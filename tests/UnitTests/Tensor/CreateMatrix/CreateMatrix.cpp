@@ -60,43 +60,43 @@ LIBRARY_LINK_FUNCTION(CloneTensor) {
 }
 
 LIBRARY_LINK_FUNCTION(TestDimensions) {
-		auto err = LLErrorCode::NoError;
-		try {
-			MArgumentManager mngr(libData, Argc, Args, Res);
-			Tensor<mint> dims = mngr.getTensor<mint>(0);
-			Tensor<double> na(0.0, dims);
-			mngr.setTensor(na);
-		} catch (const LibraryLinkError &e) {
-			err = e.which();
-		}
-		return err;
+	auto err = LLErrorCode::NoError;
+	try {
+		MArgumentManager mngr(libData, Argc, Args, Res);
+		Tensor<mint> dims = mngr.getTensor<mint>(0);
+		Tensor<double> na(0.0, dims);
+		mngr.setTensor(na);
+	} catch (const LibraryLinkError &e) {
+		err = e.which();
+	}
+	return err;
 }
 
 
 LIBRARY_LINK_FUNCTION(TestDimensions2) {
-		auto err = LLErrorCode::NoError;
-		try {
-			MArgumentManager mngr(libData, Argc, Args, Res);
-			DataList<MArgumentType::Tensor> naList;
+	auto err = LLErrorCode::NoError;
+	try {
+		MArgumentManager mngr(libData, Argc, Args, Res);
+		DataList<MArgumentType::Tensor> naList;
 
-			std::vector<std::vector<mint>> dimsList{
-					{0},
-					{3},
-					{3, 0},
-					{3, 2},
-					{3, 2, 0},
-					{3, 2, 4}
-			};
+		std::vector<std::vector<mint>> dimsList{
+				{0},
+				{3},
+				{3, 0},
+				{3, 2},
+				{3, 2, 0},
+				{3, 2, 4}
+		};
 
-			for (auto &dims : dimsList) {
-				Tensor<double> na(0.0, dims);
-				naList.push_back(na.getInternal());
-				na.setOwner(false);
-			}
-
-			mngr.setDataList(naList);
-		} catch (const LibraryLinkError &e) {
-			err = LLErrorCode::FunctionError;
+		for (auto &dims : dimsList) {
+			Tensor<double> na(0.0, dims);
+			naList.push_back(na.getInternal());
+			na.setOwner(false);
 		}
-		return err;
+
+		mngr.setDataList(naList);
+	} catch (const LibraryLinkError &e) {
+		err = LLErrorCode::FunctionError;
+	}
+	return err;
 }
