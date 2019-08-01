@@ -9,8 +9,7 @@
 #ifndef LLUTILS_IMAGE_H_
 #define LLUTILS_IMAGE_H_
 
-#include "WolframLibrary.h"
-#include "WolframImageLibrary.h"
+#include <array>
 
 #include "LLU/Containers/MArray.hpp"
 #include "LLU/Containers/Generic/Image.hpp"

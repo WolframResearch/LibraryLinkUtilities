@@ -10,8 +10,6 @@
 #include "LLU/Containers/MArrayBase.h"
 
 #include <algorithm>
-#include <functional>
-#include <iterator>
 #include <limits>
 #include <numeric>
 

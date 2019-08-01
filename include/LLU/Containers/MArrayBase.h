@@ -198,7 +198,7 @@ namespace LLU {
 
 	template<class Container>
 	mint MArrayBase::checkContainerSize(Container&& v) const {
-		if (v.size() > (std::numeric_limits<mint>::max)() || v.size() == 0)
+		if (v.size() <= 0 || static_cast<std::uint64_t>(v.size()) > static_cast<std::uint64_t>((std::numeric_limits<mint>::max)()))
 			sizeError();
 		return static_cast<mint>(v.size());
 	}

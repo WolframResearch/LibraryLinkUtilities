@@ -9,7 +9,6 @@
 
 #include "LLU/Containers/Image.h"
 
-#include <array>
 #include <cstdint>
 
 namespace LLU {
