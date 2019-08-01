@@ -166,14 +166,14 @@ namespace LLU {
 		 *   @param[in]     other - const reference to a NumericArray of matching type
 		 **/
         template<class P>
-		NumericArray(const NumericArray<T, P>& other) : TypedNumericArray<T>(other), GenericNumericArray(other) {}
+		NumericArray(const NumericArray<T, P>& other) : TypedNumericArray<T>(static_cast<const TypedNumericArray<T>&>(other)), GenericNumericArray(other) {}
 		
 		/**
 		 *   @brief         Move constructor
 		 *   @param[in]     other - rvalue reference to a NumericArray of matching type
 		 **/
         template<class P>
-		NumericArray(NumericArray<T, P>&& other) : TypedNumericArray<T>(std::move(other)), GenericNumericArray(std::move(other)) {}
+		NumericArray(NumericArray<T, P>&& other) : TypedNumericArray<T>(static_cast<TypedNumericArray<T>&&>(other)), GenericNumericArray(std::move(other)) {}
 
 
 		/**

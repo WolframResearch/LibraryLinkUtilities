@@ -170,9 +170,9 @@ namespace LLU {
 
 		Tensor(MTensor t);
 
-		Tensor(const Tensor&) = default;
+		Tensor(const Tensor& other) : TypedTensor<T>(static_cast<const TypedTensor<T>&>(other)), GenericTensor(other) {}
 
-		Tensor(Tensor&&) = default;
+		Tensor(Tensor&& other) : TypedTensor<T>(static_cast<TypedTensor<T>&&>(other)), GenericTensor(std::move(other)) {}
 
 		/**
 		 *   @brief	Free internal MTensor if necessary

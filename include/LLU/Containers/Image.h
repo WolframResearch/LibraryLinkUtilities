@@ -148,14 +148,14 @@ namespace LLU {
 		 *   @param[in]     other - const reference to an Image
 		 **/
 		template<class P>
-		Image(const Image<T, P>& other) : TypedImage<T>(other), GenericImage(other) {}
+		Image(const Image<T, P>& other) : TypedImage<T>(static_cast<const TypedImage<T>&>(other)), GenericImage(other) {}
 
 		/**
 		 *   @brief         Move constructor
 		 *   @param[in]     other - rvalue reference to an Image
 		 **/
 		template<class P>
-		Image(Image<T, P>&& other) : TypedImage<T>(std::move(other)), GenericImage(std::move(other)) {}
+		Image(Image<T, P>&& other) : TypedImage<T>(static_cast<TypedImage<T>&&>(other)), GenericImage(std::move(other)) {}
 
 		/**
 		 *   @brief         Copy constructor with type conversion
