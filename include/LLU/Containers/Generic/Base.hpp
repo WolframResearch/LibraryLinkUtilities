@@ -137,9 +137,13 @@ namespace LLU {
 	};
 
 	template<MArgumentType Type, class PassingMode>
+#ifdef _WIN32
+	class MContainer; // On Windows we cannot provide a body with static_assert because of ridiculous MSVC compiler errors (probably a bug).
+#else // On other platforms we get a nice, compile-time error.
 	class MContainer {
 		static_assert(dependent_false_v<PassingMode>, "Trying to instantiate unspecialized MContainer template.");
 	};
+#endif
 }
 
 #endif //LLU_CONTAINERS_GENERIC_BASE_HPP
