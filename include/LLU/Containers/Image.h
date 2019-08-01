@@ -25,6 +25,12 @@ namespace LLU {
 	public:
 		using MArray<T>::MArray;
 
+		template<typename U>
+		explicit TypedImage(const TypedImage<U>& other) : MArray<T>(static_cast<const MArray<U>&>(other)) {}
+
+		template<typename U>
+		explicit TypedImage(TypedImage<U>&& other) : MArray<T>(static_cast<MArray<U>&&>(other)) {}
+
 		/**
 		 *   @brief         Get channel value at specified position in 2D image
 		 *   @param[in]     row - pixel row (in Mathematica-style indexing - starting from 1)
@@ -223,7 +229,8 @@ namespace LLU {
 
     template<typename T, class PassingMode>
     template<typename U, class P>
-    Image<T, PassingMode>::Image(const Image<U, P> &i2, bool interleavedQ) : TypedImage<T>(i2), GenericImage(i2.convert(this->getType(), interleavedQ)) {
+    Image<T, PassingMode>::Image(const Image<U, P> &i2, bool interleavedQ) : TypedImage<T>(static_cast<const TypedImage<U>&>(i2)), GenericImage(i2.convert(this->getType(),
+    		interleavedQ)) {
     }
 
 
