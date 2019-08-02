@@ -56,6 +56,22 @@ Test[
 ];
 
 Test[
+	EchoTensor[{{}, {}}]
+	,
+	{{}, {}}
+	,
+	TestID -> "TensorTestSuite-20190731-M4L3S5"
+]
+
+Test[
+	EchoTensor[{{3}, {6}}]
+	,
+	{{3}, {6}}
+	,
+	TestID -> "TensorTestSuite-20190731-C9Q9J9"
+]
+
+Test[
 	EchoFirst[{1, 2, 3}]
 	,
 	1
@@ -100,11 +116,35 @@ Test[
 ];
 
 Test[
-	EmptyVector[]
+	CloneTensor[{}]
 	,
 	{}
 	,
 	TestID -> "TensorTestSuite-20190726-H3G2M8"
+];
+
+Test[
+	CloneTensor[{3, 5, 7}]
+	,
+	{3, 5, 7}
+	,
+	TestID -> "TensorTestSuite-20190731-S6A1Q5"
+];
+
+Test[
+	CloneTensor[{{3.6, 4.7}, {4.8, 3.9}}]
+	,
+	{{3.6, 4.7}, {4.8, 3.9}}
+	,
+	TestID -> "TensorTestSuite-20190731-V3L7J9"
+];
+
+Test[
+	EmptyVector[]
+	,
+	{}
+	,
+	TestID -> "TensorTestSuite-20190731-Y9W4C9"
 ];
 
 Test[
@@ -114,6 +154,47 @@ Test[
 	,
 	TestID -> "TensorTestSuite-20190726-N5W9J1"
 ];
+
+Test[
+	TestDimensions[{}]
+	,
+	LibraryFunctionError["LIBRARY_DIMENSION_ERROR", 3]
+	,
+	LibraryFunction::dimerr
+	,
+	TestID -> "TensorTestSuite-20190729-X1X5Q8"
+];
+
+Test[
+	Normal @* TestDimensions /@ {{0}, {3}, {3, 0}, {3, 2}, {3, 2, 0}, {3, 2, 4}}
+	,
+	{
+		{},
+		{0., 0., 0.},
+		{{}, {}, {}},
+		{{0., 0.}, {0., 0.}, {0., 0.}},
+		{{{}, {}}, {{}, {}}, {{}, {}}},
+		{{{0., 0., 0., 0.}, {0., 0., 0., 0.}}, {{0., 0., 0., 0.}, {0., 0., 0., 0.}}, {{0., 0., 0., 0.}, {0., 0., 0., 0.}}}
+	}
+	,
+	TestID -> "TensorTestSuite-20190729-R3O9K3"
+];
+
+Test[
+	Normal /@ List @@ TestDimensions2[]
+	,
+	{
+		{},
+		{0., 0., 0.},
+		{{}, {}, {}},
+		{{0., 0.}, {0., 0.}, {0., 0.}},
+		{{{}, {}}, {{}, {}}, {{}, {}}},
+		{{{0., 0., 0., 0.}, {0., 0., 0., 0.}}, {{0., 0., 0., 0.}, {0., 0., 0., 0.}}, {{0., 0., 0., 0.}, {0., 0., 0., 0.}}}
+	}
+	,
+	TestID -> "TensorTestSuite-20190729-I2O3D2"
+];
+
 
 ExactTest[
 	MeanValue[{2.2,3.3,4.4}]

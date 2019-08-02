@@ -78,6 +78,14 @@ Test[
 ]
 
 Test[
+	echoNumericArray[{{},{}}]
+	,
+	{{},{}}
+	,
+	TestID -> "NumericArrayTestSuite-20190731-L3E9L6"
+]
+
+Test[
 	num = NumericArray[N @ Range[0, 47]/47, "Real64"];
 	res = NumericArrayQ @ echoNumericArray[num]
 	,

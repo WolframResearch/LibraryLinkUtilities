@@ -10,9 +10,10 @@ LIBRARY_LINK_FUNCTION(EchoImage1) {
 	auto err = LLErrorCode::NoError;
 	try {
 		LLU::MArgumentManager mngr(libData, Argc, Args, Res);
-		mngr.operateOnImage(0, [&mngr](auto&& in) {
-			auto& out = in;
-			mngr.setImage(out);
+		mngr.operateOnImage(0, [&mngr](auto im1) {
+			auto im2{std::move(im1)};  // test move constructor
+			auto im3 = std::move(im2);  // test move assignment
+			mngr.setImage(im3);
 		});
 	}
 	catch (const LLU::LibraryLinkError& e) {
@@ -109,6 +110,25 @@ LIBRARY_LINK_FUNCTION(UnifyImageTypes) {
 		});
 	}
 	catch (const LLU::LibraryLinkError& e) {
+		err = e.which();
+	}
+	catch (...) {
+		err = LLErrorCode::FunctionError;
+	}
+	return err;
+}
+
+LIBRARY_LINK_FUNCTION(CloneImage) {
+	auto err = LLErrorCode::NoError;
+	try {
+		LLU::MArgumentManager mngr(libData, Argc, Args, Res);
+		mngr.operateOnImage(0, [&mngr](auto im1) {
+			auto im2 {im1};  // test copy constructor
+			auto im3 = im2;  // test copy assignment
+			mngr.setImage(im3);
+		});
+	}
+	catch (const LLU::LibraryLinkError &e) {
 		err = e.which();
 	}
 	catch (...) {
