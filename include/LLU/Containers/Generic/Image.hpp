@@ -136,6 +136,14 @@ namespace LLU {
 			return LibraryData::ImageAPI()->MImage_getRank(this->getContainer()) == 3;
 		}
 
+		mint getRank() const noexcept {
+			return LibraryData::ImageAPI()->MImage_getRank(this->getContainer());
+		}
+
+		mint getFlattenedLength() const {
+			return LibraryData::ImageAPI()->MImage_getFlattenedLength(this->getContainer());
+		}
+
 		imagedata_t type() const noexcept {
 			return LibraryData::ImageAPI()->MImage_getDataType(this->getContainer());
 		}
