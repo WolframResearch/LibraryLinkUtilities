@@ -44,8 +44,6 @@ namespace LLU {
             return static_cast<T*>(LibraryData::NumericArrayAPI()->MNumericArray_getData(this->getInternal()));
         }
 
-        virtual void indexError() const = 0;
-
         virtual MNumericArray getInternal() const = 0;
 
         /// NumericArray data type matching template parameter T
@@ -64,17 +62,6 @@ namespace LLU {
 	template<typename T, class PassingMode = Passing::Manual>
 	class NumericArray: public TypedNumericArray<T>, public GenericNumericArray<PassingMode> {
 	public:
-
-		/**
-		 *   @brief         Constructs flat NumericArray based on a container of elements
-		 *   @param[in]     v - container
-		 *   @tparam		Container - any container with elements convertible to type \b T
-		 *   @throws		see NumericArray<T>::NumericArray(InputIt, InputIt, std::initializer_list<mint>)
-		 *
-		 *   @warning		It is user's responsibility to make sure that length of v fits into mint!
-		 **/
-		template<typename Container, typename = disable_if_same_or_derived<NumericArray, Container>>
-		explicit NumericArray(Container&& v);
 
 		/**
 		 *   @brief         Constructs flat NumericArray based on a list of elements
@@ -105,16 +92,7 @@ namespace LLU {
 		 *   @tparam		Container - any type of container that has member \b value_type and this type is convertible to mint
 		 *   @throws		see NumericArray<T>::createInternal() and MArray<T>::MArray(Container&&)
 		 **/
-		template<class Container, typename = enable_if_integral_elements<Container>>
-		NumericArray(T init, Container&& dims);
-
-		/**
-		 *   @brief         Constructs the NumericArray of given shape with all elements initialized to given value
-		 *   @param[in]     init - value of type \b T to initialize all elements of the NumericArray
-		 *   @param[in]     dims - initializer list with NumericArray dimensions
-		 *   @throws		see NumericArray<T>::createInternal() and MArray<T>::MArray(std::initializer_list<mint>)
-		 **/
-		NumericArray(T init, std::initializer_list<mint> dims);
+		NumericArray(T init, MArrayDimensions dims);
 
 		/**
 		 *   @brief         Constructs the NumericArray of given shape with elements from range [first, last)
@@ -125,24 +103,14 @@ namespace LLU {
 		 *   @throws		LLErrorName::NumericArrayNewError - if number of elements in \c v does not match total NumericArray size indicated by \c dims
 		 *   @throws		see NumericArray<T>::createInternal() and MArray<T>::MArray(Container&&)
 		 **/
-		template<
-			class InputIt,
-			class Container,
-			typename = enable_if_integral_elements<Container>,
-			typename = enable_if_input_iterator<InputIt>
-		>
-		NumericArray(InputIt first, InputIt last, Container&& dims);
+		template<class InputIt, typename = enable_if_input_iterator<InputIt>>
+		NumericArray(InputIt first, InputIt last, MArrayDimensions dims);
 
 		/**
-		 *   @brief         Constructs the NumericArray of given shape with elements from range [first, last)
-		 *   @param[in]     first - iterator to the beginning of range
-		 *   @param[in]		last - iterator past the end of range
-		 *   @param[in]     dims - initializer list with NumericArray dimensions
-		 *   @throws		LLErrorName::NumericArrayNewError - if number of elements in \c v does not match total NumericArray size indicated by \c dims
-		 *   @throws		see NumericArray<T>::createInternal() and MArray<T>::MArray(const std::vector<U>&)
-		 **/
-		template<class InputIt, typename = enable_if_input_iterator<InputIt>>
-		NumericArray(InputIt first, InputIt last, std::initializer_list<mint> dims);
+		 *
+		 * @param na
+		 */
+		explicit NumericArray(MNumericArray na);
 
 		/**
 		 *   @brief
@@ -150,8 +118,6 @@ namespace LLU {
 		 *   @throws		LLErrorName::NumericArrayTypeError - if template parameter \b T does not match MNumericArray data type
 		 **/
 		explicit NumericArray(GenericNumericArray<PassingMode> na);
-
-		explicit NumericArray(MNumericArray na);
 
 		/**
 		 *   @brief         Create NumericArray from generic NumericArray
@@ -162,19 +128,21 @@ namespace LLU {
 		explicit NumericArray(const GenericNumericArray<P>& other, NA::ConversionMethod method = NA::ConversionMethod::ClipRound, double param = 0.0);
 
 		/**
-		 *   @brief         Copy constructor
+		 *   @brief        	Copy constructor
 		 *   @param[in]     other - const reference to a NumericArray of matching type
 		 **/
-        template<class P>
-		explicit NumericArray(const NumericArray<T, P>& other) : TypedNumericArray<T>(static_cast<const TypedNumericArray<T>&>(other)), GenericBase(other) {}
-		
+		NumericArray(const NumericArray& other) : TypedNumericArray<T>(static_cast<const TypedNumericArray<T> &>(other)), GenericBase(other) {}
+
 		/**
 		 *   @brief         Move constructor
 		 *   @param[in]     other - rvalue reference to a NumericArray of matching type
 		 **/
-        template<class P>
-		explicit NumericArray(NumericArray<T, P>&& other) : TypedNumericArray<T>(static_cast<TypedNumericArray<T>&&>(other)), GenericBase(std::move(other)) {}
+		NumericArray(NumericArray &&other) noexcept : TypedNumericArray<T>(static_cast<TypedNumericArray<T> &&>(other)), GenericBase(std::move(other)) {}
 
+		/**
+		 *    @brief	Free internal MNumericArray if necessary
+		 **/
+		~NumericArray() = default;
 
 		/**
 		 *   @brief         Copy-assignment operator
@@ -191,18 +159,7 @@ namespace LLU {
 		 *   @brief         Move-assignment operator
 		 *   @param[in]     other - rvalue reference to a NumericArray of matching type
 		 **/
-        template<class P>
-        NumericArray& operator=(NumericArray<T, P>&& other) {
-            TypedNumericArray<T>::operator=(std::move(other));
-			GenericBase::operator=(std::move(other));
-            return *this;
-        }
-
-
-		/**
-		 *    @brief	Free internal MNumericArray if necessary
-		 **/
-		~NumericArray() = default;
+        NumericArray& operator=(NumericArray&& other) noexcept = default;
 
 	private:
 		using GenericBase = GenericNumericArray<PassingMode>;
@@ -210,31 +167,8 @@ namespace LLU {
         MNumericArray getInternal() const noexcept override {
             return this->getContainer();
         }
-
-		/**
-		 *   @brief 	Sub-class implementation of virtual void MArray<T>::indexError()
-		 *   @throws 	LibraryLinkError(LLErrorName::NumericArrayIndexError)
-		 **/
-		void indexError() const override {
-			ErrorManager::throwException(ErrorName::NumericArrayIndexError);
-		}
-
-		/**
-		 *   @brief 	Sub-class implementation of virtual void MArray<T>::sizeError()
-		 *   @throws 	LibraryLinkError(LLErrorName::NumericArraySizeError)
-		 **/
-		void sizeError() const override {
-			ErrorManager::throwException(ErrorName::NumericArraySizeError);
-		}
 	};
 
-
-
-	template<typename T, class PassingMode>
-	template<typename Container, typename>
-	NumericArray<T, PassingMode>::NumericArray(Container&& v) :
-			NumericArray(std::begin(v), std::end(v), { static_cast<mint>(v.size()) }) {
-	}
 
 	template<typename T, class PassingMode>
 	NumericArray<T, PassingMode>::NumericArray(std::initializer_list<T> v) :
@@ -248,38 +182,22 @@ namespace LLU {
 	}
 
 	template<typename T, class PassingMode>
-	template<class Container, typename>
-	NumericArray<T, PassingMode>::NumericArray(T init, Container&& dims) : TypedNumericArray<T>(std::forward<Container>(dims)),
-	        GenericBase(TypedNumericArray<T>::getType(), this->depth, this->dimensionsData()) {
+	NumericArray<T, PassingMode>::NumericArray(T init, MArrayDimensions dims) : TypedNumericArray<T>(std::move(dims)),
+	        GenericBase(TypedNumericArray<T>::getType(), this->rank(), this->dims.data()) {
 		std::fill(this->begin(), this->end(), init);
-	}
-
-	template<typename T, class PassingMode>
-	NumericArray<T, PassingMode>::NumericArray(T init, std::initializer_list<mint> dims) : TypedNumericArray<T>(dims),
-			GenericBase(TypedNumericArray<T>::getType(), this->depth, this->dimensionsData()) {
-		std::fill(this->begin(), this->end(), init);
-	}
-
-	template<typename T, class PassingMode>
-	template<class InputIt, class Container, typename, typename>
-	NumericArray<T, PassingMode>::NumericArray(InputIt first, InputIt last, Container&& dims) : TypedNumericArray<T>(std::forward<Container>(dims)),
-			GenericBase(TypedNumericArray<T>::getType(), this->depth, this->dimensionsData()) {
-		if (std::distance(first, last) != this->flattenedLength)
-			ErrorManager::throwException(ErrorName::NumericArrayNewError, "Length of data range does not match specified dimensions");
-		std::copy(first, last, this->begin());
 	}
 
 	template<typename T, class PassingMode>
 	template<class InputIt, typename>
-	NumericArray<T, PassingMode>::NumericArray(InputIt first, InputIt last, std::initializer_list<mint> dims) : TypedNumericArray<T>(dims),
-			GenericBase(TypedNumericArray<T>::getType(), this->depth, this->dimensionsData()) {
-		if (std::distance(first, last) != this->flattenedLength)
+	NumericArray<T, PassingMode>::NumericArray(InputIt first, InputIt last, MArrayDimensions dims) : TypedNumericArray<T>(std::move(dims)),
+			GenericBase(TypedNumericArray<T>::getType(), this->rank(), this->dims.data()) {
+		if (std::distance(first, last) != this->dims.flatCount())
 			ErrorManager::throwException(ErrorName::NumericArrayNewError, "Length of data range does not match specified dimensions");
 		std::copy(first, last, this->begin());
 	}
 
 	template<typename T, class PassingMode>
-	NumericArray<T, PassingMode>::NumericArray(GenericBase na) : TypedNumericArray<T>(na.getDimensions(), na.getRank()),
+	NumericArray<T, PassingMode>::NumericArray(GenericBase na) : TypedNumericArray<T>({na.getDimensions(), na.getRank()}),
 			GenericBase(std::move(na)) {
 		if (TypedNumericArray<T>::getType() != GenericBase::type())
 			ErrorManager::throwException(ErrorName::NumericArrayTypeError);
@@ -291,7 +209,7 @@ namespace LLU {
 	template<typename T, class PassingMode>
 	template<class P>
 	NumericArray<T, PassingMode>::NumericArray(const GenericNumericArray<P>& other, NA::ConversionMethod method, double param) :
-			TypedNumericArray<T>(other.getDimensions(), other.getRank()), GenericBase(other.convert(this->getType(), method, param)) {
+			TypedNumericArray<T>({other.getDimensions(), other.getRank()}), GenericBase(other.convert(this->getType(), method, param)) {
 	}
 
 } /* namespace LLU */

@@ -17,7 +17,7 @@
 
 #include "WolframLibrary.h"
 
-#include "MArrayBase.h"
+#include "MArrayDimensions.h"
 #include "LLU/Utilities.hpp"
 
 namespace LLU {
@@ -33,7 +33,9 @@ namespace LLU {
 	 * @tparam	T - type of underlying data
 	 */
 	template<typename T>
-	class MArray : public MArrayBase {
+	class MArray {
+		template<typename>
+		friend class MArray;
 	public:
 		/// Type of elements stored
 		using value_type = T;
@@ -52,15 +54,19 @@ namespace LLU {
 
 		MArray() = default;
 
-		using MArrayBase::MArrayBase;
+		/**
+		 *
+		 * @param d
+		 */
+		explicit MArray(MArrayDimensions d) : dims(std::move(d)) {}
 
 		/**
 		 * 	@brief		Converts given MArray of type U into MArray of type T
-		 *	@param[in]	ma2 - MArray of any type
+		 *	@param[in]	other - MArray of any type
 		 *	@tparam		U - any type convertible to T
 		 **/
 		template<typename U>
-		explicit MArray(const MArray<U>& ma2) : MArrayBase(static_cast<const MArrayBase&>(ma2)) {}
+		explicit MArray(const MArray<U>& other) : dims(other.dims) {}
 
 		/**
 		 *	@brief Get raw pointer to underlying data
@@ -74,6 +80,43 @@ namespace LLU {
 		 **/
 		const T* data() const noexcept {
 			return getData();
+		}
+
+		/**
+		 *	@brief Get total number of elements in the container
+		 **/
+		mint size() const noexcept {
+			return dims.flatCount();
+		}
+
+		/**
+		 *	@brief Get container rank
+		 **/
+		mint rank() const noexcept {
+			return dims.rank();
+		}
+
+		/**
+		 *	@brief Check whether container is empty
+		 **/
+		mint empty() const noexcept {
+			return dims.flatCount() == 0;
+		}
+
+		/**
+		 *
+		 * @return
+		 */
+		mint dimension(mint index) {
+			return dims.get(index);
+		}
+
+		/**
+		 *
+		 * @return
+		 */
+		const MArrayDimensions& dimensions() {
+			return dims;
 		}
 
 		/**
@@ -139,7 +182,7 @@ namespace LLU {
 		 *	@param[in]	indices - vector with coordinates of desired data element
 		 **/
 		T& operator[](const std::vector<mint>& indices) {
-			return  (*this)[getIndex(indices)];
+			return  (*this)[dims.getIndex(indices)];
 		}
 
 		/**
@@ -147,7 +190,7 @@ namespace LLU {
 		 *	@param[in]	indices - vector with coordinates of desired data element
 		 **/
 		const T& operator[](const std::vector<mint>& indices) const {
-			return  (*this)[getIndex(indices)];
+			return  (*this)[dims.getIndex(indices)];
 		}
 
 		/**
@@ -210,6 +253,18 @@ namespace LLU {
 			return *(cend() - 1);
 		}
 
+		/**
+		 * Copy contents of the MArray to a std::vector of matching type
+		 * @return	std::vector with the same data as MArray
+		 * @note	std::vector is always 1D, so the information about dimensions of MArray is lost
+		 */
+		std::vector<T> asVector() const {
+			return std::vector<T> { cbegin(), cend() };
+		}
+
+	protected:
+		MArrayDimensions dims;
+
 	private:
 		/**
 		 *	@brief	Get raw pointer to underlying data
@@ -219,28 +274,22 @@ namespace LLU {
 
 	template<typename T>
 	T& MArray<T>::at(mint index) {
-		if (index >= flattenedLength)
-			indexError();
-		return (*this)[index];
+		return (*this)[dims.getIndexChecked(index)];
 	}
 
 	template<typename T>
 	const T& MArray<T>::at(mint index) const {
-		if (index >= flattenedLength)
-			indexError();
-		return (*this)[index];
+		return (*this)[dims.getIndexChecked(index)];
 	}
 
 	template<typename T>
 	T& MArray<T>::at(const std::vector<mint>& indices) {
-		checkIndices(indices);
-		return  (*this)[getIndex(indices)];
+		return (*this)[dims.getIndexChecked(indices)];
 	}
 
 	template<typename T>
 	const T& MArray<T>::at(const std::vector<mint>& indices) const {
-		checkIndices(indices);
-		return  (*this)[getIndex(indices)];
+		return (*this)[dims.getIndexChecked(indices)];
 	}
 
 	/**

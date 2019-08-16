@@ -75,7 +75,7 @@ if(NOT TARGET LLU)
 		${LLU_SOURCE_DIR}/LibraryData.cpp
 		${LLU_SOURCE_DIR}/ErrorLog/LibraryLinkError.cpp
 		${LLU_SOURCE_DIR}/MArgumentManager.cpp
-		${LLU_SOURCE_DIR}/Containers/MArrayBase.cpp
+		${LLU_SOURCE_DIR}/Containers/MArrayDimensions.cpp
 		${LLU_SOURCE_DIR}/Containers/NumericArray.cpp
 		${LLU_SOURCE_DIR}/Containers/Tensor.cpp
 		${LLU_SOURCE_DIR}/ML/Get.cpp
