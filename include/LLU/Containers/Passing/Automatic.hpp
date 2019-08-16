@@ -31,6 +31,10 @@ namespace LLU {
 				// Automatic never owns the container so no cleanup
 			}
 		};
+
+		/// We don't have a separate class for Constant passing because from resource management point of view it is the same as Automatic.
+		/// We only define an alias for convenience.
+		using Constant = Automatic;
 	}
 }
 #endif //LLUTILS_AUTOMATIC_HPP
