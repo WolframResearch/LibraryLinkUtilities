@@ -45,13 +45,84 @@ EXTERN_C DLLEXPORT int CreateEmptyMatrix(WolframLibraryData libData, mint Argc, 
 	return ErrorCode::NoError;
 }
 
-LIBRARY_LINK_FUNCTION(EchoTensor) {
-	MArgumentManager mngr(libData, Argc, Args, Res);
+//clone Tensor
+LIBRARY_LINK_FUNCTION(CloneTensor) {
+	auto err = ErrorCode::NoError;
+	try {
+		MArgumentManager mngr(libData, Argc, Args, Res);
+		mngr.operateOnTensor(0, [&mngr](auto t1) {
+			using T = typename std::decay_t<decltype(t1)>::value_type;
+			Tensor<T, LLU::Passing::Manual> t2{t1};  // test copy constructor
+			Tensor<T> t3;
+			t3 = t2;  // test copy assignment
+			mngr.setTensor(t3);
+		});
+	}
+	catch (const LibraryLinkError &e) {
+		err = e.which();
+	}
+	catch (...) {
+		err = ErrorCode::FunctionError;
+	}
+	return err;
+}
 
-	mngr.operateOnTensor(0, [&mngr](auto &&t) {
-		mngr.setTensor(t);
-	});
-	return LIBRARY_NO_ERROR;
+LIBRARY_LINK_FUNCTION(TestDimensions) {
+	auto err = ErrorCode::NoError;
+	try {
+		MArgumentManager mngr(libData, Argc, Args, Res);
+		auto dims = mngr.getTensor<mint, Passing::Manual>(0);
+		Tensor<double> na(0.0, MArrayDimensions { dims.begin(), dims.end() });
+		mngr.setTensor(na);
+	} catch (const LibraryLinkError &e) {
+		err = e.which();
+	}
+	return err;
+}
+
+
+LIBRARY_LINK_FUNCTION(TestDimensions2) {
+	auto err = ErrorCode::NoError;
+	try {
+		MArgumentManager mngr(libData, Argc, Args, Res);
+		DataList<MArgumentType::Tensor> naList;
+
+		std::vector<std::vector<mint>> dimsList{
+				{0},
+				{3},
+				{3, 0},
+				{3, 2},
+				{3, 2, 0},
+				{3, 2, 4}
+		};
+
+		for (auto &dims : dimsList) {
+			Tensor<double> na(0.0, dims);
+			naList.push_back(na);
+		}
+
+		mngr.setDataList(naList);
+	} catch (const LibraryLinkError &e) {
+		err = ErrorCode::FunctionError;
+	}
+	return err;
+}
+
+LIBRARY_LINK_FUNCTION(EchoTensor) {
+	auto err = ErrorCode::NoError;
+	try {
+		MArgumentManager mngr(libData, Argc, Args, Res);
+		mngr.operateOnTensor(0, [&mngr](auto t1) {
+			using T = typename std::decay_t<decltype(t1)>::value_type;
+			auto t2 {std::move(t1)};  // test move constructor
+			Tensor<T> t3;
+			t3 = std::move(t2); // test move assignment
+			mngr.setTensor(t3);
+		});
+	} catch (const LibraryLinkError &e) {
+		err = e.which();
+	}
+	return err;
 }
 
 LIBRARY_LINK_FUNCTION(EchoFirst) {
@@ -76,7 +147,7 @@ LIBRARY_LINK_FUNCTION(EchoElement) {
 	auto err = ErrorCode::NoError;
 	try {
 		MArgumentManager mngr(Argc, Args, Res);
-		auto na{mngr.getNumericArray<std::int64_t>(0)};
+		auto na = mngr.getNumericArray<std::int64_t>(0);
 		auto coords = mngr.getTensor<mint>(1);
 		std::vector<mint> coordsVec(coords.begin(), coords.end());
 		mngr.setInteger(na.at(coordsVec));

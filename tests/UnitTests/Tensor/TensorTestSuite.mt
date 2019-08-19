@@ -16,7 +16,7 @@ TestExecute[
 	lib = CCompilerDriver`CreateLibrary[
 		FileNameJoin[{currentDirectory, "TestSources", #}]& /@ {"Basic.cpp", "ScalarOperations.cpp", "SharedData.cpp"},
 		"TensorTest",
-		options (* defined in TestConfig.wl *)
+		options, "Debug" -> True (* defined in TestConfig.wl *)
 	];
 ];
 
@@ -25,7 +25,7 @@ TestExecute[
  Basic operations
 *)
 TestExecute[
-	EchoTensor = LibraryFunctionLoad[lib, "EchoTensor", {{Integer, 1}}, {Integer, 1}];
+	EchoTensor = LibraryFunctionLoad[lib, "EchoTensor", {{Integer, _}}, {Integer, _}];
 	EchoFirst = LibraryFunctionLoad[lib, "EchoFirst", {{Integer, 1}}, Integer];
 	EchoLast = LibraryFunctionLoad[lib, "EchoLast", {{Integer, 1} }, Integer];
 	EchoElement = LibraryFunctionLoad[lib, "EchoElement", {{"NumericArray", "Constant"}, {Integer, 1}}, Integer];
@@ -33,7 +33,10 @@ TestExecute[
 	CreateMatrix = LibraryFunctionLoad[lib, "CreateMatrix", {Integer, Integer}, {Integer, 2}];
 	EmptyVector = LibraryFunctionLoad[lib, "CreateEmptyVector", {}, {Integer, 1}];
 	EmptyMatrix = LibraryFunctionLoad[lib, "CreateEmptyMatrix", {}, {Integer, _}];
-	
+	CloneTensor = LibraryFunctionLoad[lib, "CloneTensor", {{_, _, "Constant"}}, {_, _}];
+	TestDimensions = LibraryFunctionLoad[lib, "TestDimensions", {{Integer, 1, "Manual"}}, {Real, _}];
+	TestDimensions2 = LibraryFunctionLoad[lib, "TestDimensions2", {}, "DataStore"];
+
 	MeanValue = LibraryFunctionLoad[lib, "MeanValue", {{Real, 1}}, Real];
 
 	IntegerMatrixTranspose = LibraryFunctionLoad[lib, "IntegerMatrixTranspose", {{Integer, 2}}, {Integer, 2}];
@@ -96,13 +99,11 @@ Test[
 	TestID->"TensorTestSuite-20181121-W3gsdfgs"
 ];
 
-Test[
+TestMatch[
 	r = RandomInteger[1000, {10, 5, 20}];
 	Quiet @ EchoElement[NumericArray[r, "Integer64"], {3, 5, 12}]
 	,
 	LibraryFunctionError["LIBRARY_USER_ERROR", n_?IntegerQ]
-	,
-	SameTest -> MatchQ
 	,
 	TestID->"TensorTestSuite-20181121-asdgsdf"
 ];
@@ -233,14 +234,12 @@ Test[
 	TestID->"TensorOperations-20150817-F9U7F4"
 ];
 
-ExactTest[
+TestMatch[
 	getNthRealFromTR1[{1,2,3,4.7},100]
 	,
 	LibraryFunctionError["LIBRARY_USER_ERROR", n_] /; n < 0 (* even though we know what the error is, we cannot predict the error code *)
 	,
 	LibraryFunction::rterr
-	,
-	SameTest -> MatchQ
 	,
 	TestID->"TensorOperations-20150817-Z2M1Q2"
 ];

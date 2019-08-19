@@ -1,17 +1,19 @@
 #include <iostream>
 #include <numeric>
+#include <memory>
 #include <type_traits>
 
 #include "LLU/LLU.h"
 #include "LLU/LibraryLinkFunctionMacro.h"
 
 namespace NA = LLU::NA;
-namespace LLErrorCode = LLU::ErrorCode;
+namespace ErrorCode = LLU::ErrorCode;
+
 using LLU::LibraryLinkError;
 using LLU::MArgumentManager;
 using LLU::NumericArray;
 
-static LLU::GenericNumericArray<LLU::Passing::Shared> shared_numeric { nullptr };
+static std::unique_ptr<LLU::GenericNumericArray<LLU::Passing::Shared>> shared_numeric;
 
 EXTERN_C DLLEXPORT mint WolframLibrary_getVersion() {
 	return WolframLibraryVersion;
@@ -31,7 +33,7 @@ LIBRARY_LINK_FUNCTION(CreateEmptyVector) {
 	NumericArray<std::uint16_t> out(0, {0});
 
 	mngr.setNumericArray(out);
-	return LLErrorCode::NoError;
+	return ErrorCode::NoError;
 }
 
 LIBRARY_LINK_FUNCTION(CreateEmptyMatrix) {
@@ -40,16 +42,18 @@ LIBRARY_LINK_FUNCTION(CreateEmptyMatrix) {
 	NumericArray<double> out(0, {3, 5, 0});
 
 	mngr.setNumericArray(out);
-	return LLErrorCode::NoError;
+	return ErrorCode::NoError;
 }
 
 LIBRARY_LINK_FUNCTION(echoNumericArray) {
-	auto err = LLErrorCode::NoError;
+	auto err = ErrorCode::NoError;
 	try {
 		MArgumentManager mngr(Argc, Args, Res);
-		mngr.operateOnNumericArray(0, [&mngr](auto rarray1) {
-			auto rarray2 {std::move(rarray1)};  // test move constructor
-			auto rarray3 = std::move(rarray2);  // test move assignment
+		mngr.operateOnNumericArray(0, [&mngr](auto&& rarray1) {
+			using T = typename std::decay_t<decltype(rarray1)>::value_type;
+			auto  rarray2 {std::move(rarray1)};  // test move constructor
+			NumericArray<T> rarray3;
+			rarray3 = std::move(rarray2);  // test move assignment
 			mngr.setNumericArray(rarray3);
 		});
 	}
@@ -58,7 +62,7 @@ LIBRARY_LINK_FUNCTION(echoNumericArray) {
 		std::cout << e.what() << std::endl;
 	}
 	catch (...) {
-		err = LLErrorCode::FunctionError;
+		err = ErrorCode::FunctionError;
 	}
 	return err;
 }
@@ -67,7 +71,7 @@ LIBRARY_LINK_FUNCTION(echoNumericArray) {
  * Numeric array library functions
  */
 LIBRARY_LINK_FUNCTION(getNumericArrayLength) {
-	auto err = LLErrorCode::NoError;
+	auto err = ErrorCode::NoError;
 	try {
 		MArgumentManager mngr(Argc, Args, Res);
 		mngr.operateOnNumericArray(0, [&mngr](auto&& rarray) {
@@ -78,13 +82,13 @@ LIBRARY_LINK_FUNCTION(getNumericArrayLength) {
 		err = e.which();
 	}
 	catch (...) {
-		err = LLErrorCode::FunctionError;
+		err = ErrorCode::FunctionError;
 	}
 	return err;
 }
 
 LIBRARY_LINK_FUNCTION(getNumericArrayRank) {
-	auto err = LLErrorCode::NoError;
+	auto err = ErrorCode::NoError;
 	try {
 		MArgumentManager mngr(Argc, Args, Res);
 		mngr.operateOnNumericArray(0, [&mngr](auto&& rarray) {
@@ -95,14 +99,14 @@ LIBRARY_LINK_FUNCTION(getNumericArrayRank) {
 		err = e.which();
 	}
 	catch (...) {
-		err = LLErrorCode::FunctionError;
+		err = ErrorCode::FunctionError;
 	}
 	return err;
 }
 
 //create new numeric array
 LIBRARY_LINK_FUNCTION(newNumericArray) {
-	auto err = LLErrorCode::NoError;
+	auto err = ErrorCode::NoError;
 	try {
 		MArgumentManager mngr(Argc, Args, Res);
 		NumericArray<float> ra(0., { 3, 3 });
@@ -112,20 +116,21 @@ LIBRARY_LINK_FUNCTION(newNumericArray) {
 		err = e.which();
 	}
 	catch (...) {
-		err = LLErrorCode::FunctionError;
+		err = ErrorCode::FunctionError;
 	}
 	return err;
 }
 
 //clone NumericArray
 LIBRARY_LINK_FUNCTION(cloneNumericArray) {
-	auto err = LLErrorCode::NoError;
+	auto err = ErrorCode::NoError;
 	try {
 		MArgumentManager mngr(Argc, Args, Res);
-		mngr.operateOnNumericArray(0, [&mngr](auto rarray1) {
+		mngr.operateOnNumericArray(0, [&mngr](auto&& rarray1) {
 			using T = typename std::decay_t<decltype(rarray1)>::value_type;
 			NumericArray<T, LLU::Passing::Manual> rarray2 {rarray1};  // test copy constructor
-			auto rarray3 = rarray2;  // test copy assignment
+			NumericArray<T> rarray3;
+			rarray3 = rarray2;  // test copy assignment
 			mngr.setNumericArray(rarray3);
 		});
 	}
@@ -133,36 +138,36 @@ LIBRARY_LINK_FUNCTION(cloneNumericArray) {
 		err = e.which();
 	}
 	catch (...) {
-		err = LLErrorCode::FunctionError;
+		err = ErrorCode::FunctionError;
 	}
 	return err;
 }
 
 LIBRARY_LINK_FUNCTION(changeSharedNumericArray) {
-	auto err = LLErrorCode::NoError;
+	auto err = ErrorCode::NoError;
 	try {
 		MArgumentManager mngr(Argc, Args, Res);
-		auto oldShareCount = shared_numeric.shareCount();
-		shared_numeric = mngr.getGenericNumericArray<LLU::Passing::Shared>(0);
-		mngr.set(10 * oldShareCount + shared_numeric.shareCount());
+		auto oldShareCount = shared_numeric ? shared_numeric->shareCount() : 0;
+		shared_numeric = std::make_unique<LLU::GenericNumericArray<LLU::Passing::Shared>>(mngr.getGenericNumericArray<LLU::Passing::Shared>(0));
+		mngr.set(10 * oldShareCount + shared_numeric->shareCount());
 	}
 	catch (const LibraryLinkError &e) {
 		err = e.which();
 	}
 	catch (...) {
-		err = LLErrorCode::FunctionError;
+		err = ErrorCode::FunctionError;
 	}
 	return err;
 }
 
 EXTERN_C DLLEXPORT int getSharedNumericArray(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
-	auto err = LLErrorCode::NoError;
+	auto err = ErrorCode::NoError;
 	try {
 		MArgumentManager mngr(Argc, Args, Res);
-		if (shared_numeric.getContainer()) {
-			mngr.set(shared_numeric);
+		if (shared_numeric) {
+			mngr.set(*shared_numeric);
 		} else {
-			return LLErrorCode::FunctionError;
+			return ErrorCode::FunctionError;
 		}
 	}
 	catch (const LibraryLinkError &e) {
@@ -173,12 +178,12 @@ EXTERN_C DLLEXPORT int getSharedNumericArray(WolframLibraryData libData, mint Ar
 
 struct ZeroReal64 {
 	template<typename T, class P>
-	void operator()(NumericArray<T, P>, MArgumentManager&) {
+	void operator()(NumericArray<T, P>&&, MArgumentManager&) {
 		LLU::ErrorManager::throwException(LLU::ErrorName::FunctionError);
 	}
 
 	template<class P>
-	void operator()(NumericArray<double, P>& ra, MArgumentManager& mngr) {
+	void operator()(NumericArray<double, P>&& ra, MArgumentManager& mngr) {
 		std::fill(ra.begin(), ra.end(), 0.0);
 		mngr.setNumericArray(ra);
 	}
@@ -186,28 +191,28 @@ struct ZeroReal64 {
 
 //reset NumericArray
 EXTERN_C DLLEXPORT int numericZeroData(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
-	auto err = LLErrorCode::NoError;
+	auto err = ErrorCode::NoError;
 	try {
 		MArgumentManager mngr(Argc, Args, Res);
-		mngr.operateOnNumericArray<ZeroReal64>(0, mngr);
+		mngr.operateOnNumericArray<ZeroReal64, LLU::Passing::Automatic>(0, mngr);
 	}
 	catch (const LibraryLinkError& e) {
 		err = e.which();
 	}
 	catch (...) {
-		err = LLErrorCode::FunctionError;
+		err = ErrorCode::FunctionError;
 	}
 	return err;
 }
 
 struct AccumulateIntegers {
 	template<typename T, class P>
-	std::enable_if_t<!std::is_integral<T>::value> operator()(NumericArray<T, P>, MArgumentManager&) {
+	std::enable_if_t<!std::is_integral<T>::value> operator()(const NumericArray<T, P>&, MArgumentManager&) {
 		LLU::ErrorManager::throwException(LLU::ErrorName::FunctionError);
 	}
 
 	template<typename T, class P>
-	std::enable_if_t<std::is_integral<T>::value> operator()(NumericArray<T, P> ra, MArgumentManager& mngr) {
+	std::enable_if_t<std::is_integral<T>::value> operator()(const NumericArray<T, P>& ra, MArgumentManager& mngr) {
 		auto result = std::accumulate(ra.begin(), ra.end(), static_cast<T>(0));
 		mngr.setInteger(result);
 	}
@@ -215,23 +220,23 @@ struct AccumulateIntegers {
 
 //sum elements of a NumericArray but only if it is of integer type
 EXTERN_C DLLEXPORT int accumulateIntegers(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
-	auto err = LLErrorCode::NoError;
+	auto err = ErrorCode::NoError;
 	try {
 		MArgumentManager mngr(Argc, Args, Res);
-		mngr.operateOnNumericArray<AccumulateIntegers>(0, mngr);
+		mngr.operateOnNumericArray<AccumulateIntegers, LLU::Passing::Constant>(0, mngr);
 	}
 	catch (const LibraryLinkError& e) {
 		err = e.which();
 	}
 	catch (...) {
-		err = LLErrorCode::FunctionError;
+		err = ErrorCode::FunctionError;
 	}
 	return err;
 }
 
 // check if conversion methods are mapped correctly
 LIBRARY_LINK_FUNCTION(convertMethodName) {
-	auto err = LLErrorCode::NoError;
+	auto err = ErrorCode::NoError;
 	try {
 		MArgumentManager mngr(Argc, Args, Res);
 		auto method = mngr.getInteger<NA::ConversionMethod>(0);
@@ -262,14 +267,14 @@ LIBRARY_LINK_FUNCTION(convertMethodName) {
 		err = e.which();
 	}
 	catch (...) {
-		err = LLErrorCode::FunctionError;
+		err = ErrorCode::FunctionError;
 	}
 	return err;
 }
 
 // convert NumericArray
 LIBRARY_LINK_FUNCTION(convert) {
-	auto err = LLErrorCode::NoError;
+	auto err = ErrorCode::NoError;
 	try {
 		MArgumentManager mngr(Argc, Args, Res);
 		mngr.operateOnNumericArray(0, [&mngr](auto&& numArr) {
@@ -281,14 +286,14 @@ LIBRARY_LINK_FUNCTION(convert) {
 		err = e.which();
 	}
 	catch (...) {
-		err = LLErrorCode::FunctionError;
+		err = ErrorCode::FunctionError;
 	}
 	return err;
 }
 
 // convert generic NumericArray
 LIBRARY_LINK_FUNCTION(convertGeneric) {
-	auto err = LLErrorCode::NoError;
+	auto err = ErrorCode::NoError;
 	try {
 		MArgumentManager mngr(Argc, Args, Res);
 		auto numArr = mngr.getGenericNumericArray(0);
@@ -299,17 +304,17 @@ LIBRARY_LINK_FUNCTION(convertGeneric) {
 		err = e.which();
 	}
 	catch (...) {
-		err = LLErrorCode::FunctionError;
+		err = ErrorCode::FunctionError;
 	}
 	return err;
 }
 
 LIBRARY_LINK_FUNCTION(TestDimensions) {
-	auto err = LLErrorCode::NoError;
+	auto err = ErrorCode::NoError;
 	try {
 		MArgumentManager mngr(libData, Argc, Args, Res);
 		auto dims = mngr.getTensor<mint>(0);
-		NumericArray<float> na(0.0f, dims);
+		NumericArray<float> na(0.0, dims.asVector());
 		mngr.setNumericArray(na);
 	} catch (const LibraryLinkError &e) {
 		err = e.which();
@@ -319,7 +324,7 @@ LIBRARY_LINK_FUNCTION(TestDimensions) {
 
 
 LIBRARY_LINK_FUNCTION(TestDimensions2) {
-	auto err = LLErrorCode::NoError;
+	auto err = ErrorCode::NoError;
 	try {
 		MArgumentManager mngr(Argc, Args, Res);
 		LLU::DataList<LLU::MArgumentType::NumericArray> naList;
@@ -339,7 +344,7 @@ LIBRARY_LINK_FUNCTION(TestDimensions2) {
 		}
 		mngr.setDataList(naList);
 	} catch (const LibraryLinkError &e) {
-		err = LLErrorCode::FunctionError;
+		err = ErrorCode::FunctionError;
 	}
 	return err;
 }

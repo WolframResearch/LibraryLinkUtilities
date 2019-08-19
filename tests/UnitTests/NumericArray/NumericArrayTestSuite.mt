@@ -10,6 +10,32 @@ Catch @ TestExecute[
 ]
 
 (****************************NumericArray Operations****************************************)
+
+Test[
+	echoNumericArray[na]
+	,
+	NumericArray[{1, 2, 3, 4}, "UnsignedInteger8"]
+	,
+	TestID->"NumericArrayOperations-20150825-M7G1B2"
+]
+
+Test[
+	echoNumericArray[{{},{}}]
+	,
+	{{},{}}
+	,
+	TestID -> "NumericArrayTestSuite-20190731-L3E9L6"
+]
+
+Test[
+	num = NumericArray[N @ Range[0, 47]/47, "Real64"];
+	res = NumericArrayQ @ echoNumericArray[num]
+	,
+	True
+	,
+	TestID->"NumericArrayOperations-20150825-P4U4W5"
+]
+
 Test[
 	emptyVector[]
 	,
@@ -68,31 +94,6 @@ Test[
 	,
 	TestID->"NumericArrayTestSuite-20190729-I2O3D2"
 ];
-
-Test[
-	echoNumericArray[na]
-	,
-	NumericArray[{1, 2, 3, 4}, "UnsignedInteger8"]
-	,
-	TestID->"NumericArrayOperations-20150825-M7G1B2"
-]
-
-Test[
-	echoNumericArray[{{},{}}]
-	,
-	{{},{}}
-	,
-	TestID -> "NumericArrayTestSuite-20190731-L3E9L6"
-]
-
-Test[
-	num = NumericArray[N @ Range[0, 47]/47, "Real64"];
-	res = NumericArrayQ @ echoNumericArray[num]
-	,
-	True
-	,
-	TestID->"NumericArrayOperations-20150825-P4U4W5"
-]
 
 ExactTest[
 	getNALength[na]

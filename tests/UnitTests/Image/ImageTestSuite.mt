@@ -19,17 +19,23 @@ TestExecute[
 		options (* defined in TestConfig.wl *)
 	];
 
-	EchoImage1 = LibraryFunctionLoad[lib, "EchoImage1", { LibraryDataType[Image | Image3D] }, LibraryDataType[Image | Image3D] ];
-	EchoImage2 = LibraryFunctionLoad[lib, "EchoImage2", { LibraryDataType[Image | Image3D] }, LibraryDataType[Image | Image3D] ];
-	EchoImage3 = LibraryFunctionLoad[lib, "EchoImage3", { LibraryDataType[Image | Image3D] }, LibraryDataType[Image | Image3D] ];
-	ConvertImageToByte = LibraryFunctionLoad[lib, "ConvertImageToByte", { LibraryDataType[Image | Image3D] }, LibraryDataType[Image | Image3D] ];
-	UnifyImageTypes = LibraryFunctionLoad[lib, "UnifyImageTypes", { LibraryDataType[Image | Image3D], LibraryDataType[Image | Image3D] }, LibraryDataType[Image | Image3D]];
+	
+	Get[FileNameJoin[{$LLUSharedDir, "LibraryLinkUtilities.wl"}]];
+	RegisterPacletErrors[lib, <||>];
 
-	ImageNegate = LibraryFunctionLoad[lib, "ImageNegate", { LibraryDataType[Image | Image3D] }, LibraryDataType[Image | Image3D] ];
+	EchoImage1 = SafeLibraryFunction["EchoImage1", { LibraryDataType[Image | Image3D] }, LibraryDataType[Image | Image3D] ];
+	EchoImage2 = SafeLibraryFunction["EchoImage2", { LibraryDataType[Image | Image3D] }, LibraryDataType[Image | Image3D] ];
+	EchoImage3 = SafeLibraryFunction["EchoImage3", { LibraryDataType[Image | Image3D] }, LibraryDataType[Image | Image3D] ];
+	ConvertImageToByte = SafeLibraryFunction["ConvertImageToByte", { LibraryDataType[Image | Image3D] }, LibraryDataType[Image | Image3D] ];
+	UnifyImageTypes = SafeLibraryFunction["UnifyImageTypes", { LibraryDataType[Image | Image3D], LibraryDataType[Image | Image3D] }, LibraryDataType[Image | Image3D]];
+	CloneImage = SafeLibraryFunction["CloneImage", { LibraryDataType[Image | Image3D] }, LibraryDataType[Image | Image3D] ];
+	EmptyWrapper = SafeLibraryFunction["EmptyWrapper", {}, "Void" ];
 
-	ImageColumnCount = LibraryFunctionLoad[lib, "ImageColumnCount", { LibraryDataType[Image | Image3D] }, LibraryDataType[Integer] ];
-	ImageRowCount = LibraryFunctionLoad[lib, "ImageRowCount", { LibraryDataType[Image | Image3D] }, LibraryDataType[Integer] ];
-	ImageRank = LibraryFunctionLoad[lib, "ImageRank", {LibraryDataType[Image | Image3D] }, LibraryDataType[Integer] ];
+	ImageNegate = SafeLibraryFunction["ImageNegate", { LibraryDataType[Image | Image3D] }, LibraryDataType[Image | Image3D] ];
+
+	ImageColumnCount = SafeLibraryFunction["ImageColumnCount", { LibraryDataType[Image | Image3D] }, Integer ];
+	ImageRowCount = SafeLibraryFunction["ImageRowCount", { LibraryDataType[Image | Image3D] }, Integer ];
+	ImageRank = SafeLibraryFunction["ImageRank", {LibraryDataType[Image | Image3D] }, Integer ];
 ];
 
 
@@ -118,6 +124,35 @@ Test[
 	Image3D[testImage3D, "Byte"]
 	,
 	TestID -> "ImageBitOperations-20170904-O5V0V7"
+];
+
+Test[
+	CloneImage[testImage]
+	,
+	testImage
+	,
+	TestID -> "ImageBit16Operations-20190731-I9W1X5"
+];
+
+Test[
+	CloneImage[testImage3D]
+	,
+	testImage3D
+	,
+	TestID -> "ImageBit16Operations-20190731-O2B9I8"
+];
+
+TestMatch[
+	EmptyWrapper[]
+	,
+	Failure["CreateFromNullError", <|
+		"MessageTemplate" -> "Attempting to create a generic container from nullptr.",
+		"MessageParameters" -> <||>,
+		"ErrorCode" -> _?CppErrorCodeQ, 
+		"Parameters" -> {}|>
+	]
+	,
+	TestID -> "ImageTestSuite-20190819-G2I1N4"
 ];
 
 Test[

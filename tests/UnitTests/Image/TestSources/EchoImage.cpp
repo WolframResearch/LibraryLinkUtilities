@@ -10,9 +10,11 @@ LIBRARY_LINK_FUNCTION(EchoImage1) {
 	auto err = LLErrorCode::NoError;
 	try {
 		LLU::MArgumentManager mngr(libData, Argc, Args, Res);
-		mngr.operateOnImage(0, [&mngr](auto im1) {
+		mngr.operateOnImage(0, [&mngr](auto&& im1) {
+			using T = typename std::remove_reference_t<decltype(im1)>::value_type;
 			auto im2{std::move(im1)};  // test move constructor
-			auto im3 = std::move(im2);  // test move assignment
+			LLU::Image<T> im3;
+			im3 = std::move(im2);  // test move assignment
 			mngr.setImage(im3);
 		});
 	}
@@ -122,11 +124,28 @@ LIBRARY_LINK_FUNCTION(CloneImage) {
 	auto err = LLErrorCode::NoError;
 	try {
 		LLU::MArgumentManager mngr(libData, Argc, Args, Res);
-		mngr.operateOnImage(0, [&mngr](auto im1) {
-			auto im2 {im1};  // test copy constructor
-			auto im3 = im2;  // test copy assignment
+		mngr.operateOnImage(0, [&mngr](auto&& im1) {
+			using T = typename std::remove_reference_t<decltype(im1)>::value_type;
+			LLU::Image<T, LLU::Passing::Manual> im2 {im1};  // test copy constructor
+			LLU::Image<T> im3;
+			im3 = im2;  // test copy assignment
 			mngr.setImage(im3);
 		});
+	}
+	catch (const LLU::LibraryLinkError &e) {
+		err = e.which();
+	}
+	catch (...) {
+		err = LLErrorCode::FunctionError;
+	}
+	return err;
+}
+
+LIBRARY_LINK_FUNCTION(EmptyWrapper) {
+	auto err = LLErrorCode::NoError;
+	try {
+		LLU::MArgumentManager mngr(libData, Argc, Args, Res);
+		LLU::Image<std::uint8_t> im { nullptr }; // this should trigger an exception
 	}
 	catch (const LLU::LibraryLinkError &e) {
 		err = e.which();
