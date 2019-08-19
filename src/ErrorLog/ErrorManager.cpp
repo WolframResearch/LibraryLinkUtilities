@@ -61,6 +61,11 @@ namespace LLU {
 			{ErrorName::ImageSizeError,              "An error was caused by an incorrect Image size." },
 			{ErrorName::ImageIndexError,             "An error was caused by attempting to access a nonexistent Image element." },
 
+			// General container errors:
+			{ErrorName::CreateFromNullError,         "Attempting to create a generic container from nullptr."},
+			{ErrorName::MArrayElementIndexError,     "Attempting to access MArray element at invalid index."},
+			{ErrorName::MArrayElementIndexError,     "Attempting to access MArray dimension `d` which does not exist."},
+
 			// MathLink errors:
 			{ErrorName::MLNullMlinkError,        "Trying to create MLStream with NULL MLINK"},
 			{ErrorName::MLTestHeadError,             "MLTestHead failed (wrong head or number of arguments)." },

@@ -32,13 +32,13 @@ namespace LLU {
 	}
 
 	mint MArrayDimensions::getIndexChecked(const std::vector<mint>& indices) const {
-		if (indices.size() != dims.size()) {
-			indexError();
+		if (indices.size() > dims.size()) {
+			ErrorManager::throwException(ErrorName::MArrayDimensionIndexError, static_cast<mlint64>(indices.size()));
 		}
 		auto dimsIt = dims.cbegin();
 		for (auto idx : indices) {
 			if (idx < 0 || idx >= *dimsIt++) {
-				indexError();
+				indexError(idx);
 			}
 		}
 		return getIndex(indices);
@@ -46,7 +46,7 @@ namespace LLU {
 
 	mint MArrayDimensions::getIndexChecked(mint index) const {
 		if (index < 0 || index >= flatCount()) {
-			indexError();
+			indexError(index);
 		}
 		return index;
 	}
@@ -72,9 +72,8 @@ namespace LLU {
 		return std::accumulate(std::begin(dims), std::end(dims), static_cast<mint>(1), std::multiplies<>());
 	}
 
-	void MArrayDimensions::indexError() const {
-		// TODO throw better error
-		ErrorManager::throwException(ErrorName::DimensionsError);
+	void MArrayDimensions::indexError(mint index) const {
+		ErrorManager::throwException(ErrorName::MArrayElementIndexError, index);
 	}
 
 

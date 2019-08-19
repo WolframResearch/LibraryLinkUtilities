@@ -55,7 +55,7 @@ namespace LLU {
 		 *	@throws		LLErrorName::FunctionError - if any of Wolfram*Library structures was not initialized
 		 **/
 		template<typename T, typename = typename std::enable_if_t<std::is_integral<T>::value>>
-		MArrayDimensions(const std::vector<T>& dimensions);
+		/* implicit */ MArrayDimensions(const std::vector<T>& dimensions);
 
 		/**
 		 *
@@ -93,8 +93,9 @@ namespace LLU {
 		 *	@throws		indexError() - if \c dim is out-of-bounds
 		 **/
 		mint get(mint dim) const {
-			if (dim >= rank() || dim < 0)
-				indexError();
+			if (dim >= rank() || dim < 0) {
+				ErrorManager::throwException(ErrorName::MArrayDimensionIndexError, dim);
+			}
 			return dims[static_cast<decltype(dims)::size_type>(dim)];
 		}
 
@@ -141,7 +142,7 @@ namespace LLU {
 
 	private:
 
-		[[noreturn]] void indexError() const;
+		[[noreturn]] void indexError(mint index) const;
 
 		/**
 		 *	@brief 		Check if container size will fit into \b mint

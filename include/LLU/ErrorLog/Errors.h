@@ -78,6 +78,11 @@ namespace LLU {
 		extern const std::string ImageSizeError; 		///< wrong assumption about Image size
 		extern const std::string ImageIndexError; 		///< trying to access non-existing element
 
+		// General container errors:
+		extern const std::string CreateFromNullError;   		///< attempting to create a generic container from nullptr
+		extern const std::string MArrayElementIndexError;		///< attempting to access MArray element at invalid index
+		extern const std::string MArrayDimensionIndexError;     ///< attempting to access MArray dimension at invalid index
+
 		// MathLink errors:
 		extern const std::string MLNullMlinkError;      ///< Trying to create MLStream with NULL MLINK
 		extern const std::string MLTestHeadError; 		///< MLTestHead failed (wrong head or number of arguments)

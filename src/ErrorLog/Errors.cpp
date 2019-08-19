@@ -50,6 +50,10 @@ namespace LLU {
 		LLU_DEFINE_ERROR_NAME(ImageSizeError);
 		LLU_DEFINE_ERROR_NAME(ImageIndexError);
 
+		LLU_DEFINE_ERROR_NAME(CreateFromNullError);
+		LLU_DEFINE_ERROR_NAME(MArrayElementIndexError);
+		LLU_DEFINE_ERROR_NAME(MArrayDimensionIndexError);
+
 		LLU_DEFINE_ERROR_NAME(MLNullMlinkError);
 		LLU_DEFINE_ERROR_NAME(MLTestHeadError);
 		LLU_DEFINE_ERROR_NAME(MLPutSymbolError);
