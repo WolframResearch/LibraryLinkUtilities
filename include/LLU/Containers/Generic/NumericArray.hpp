@@ -22,6 +22,8 @@ namespace LLU {
 		using Base = MContainerBase<MArgumentType::NumericArray, PassingMode>;
 		using RawContainer = typename Base::Container;
 
+		using Base::Base;
+
 		MContainer(numericarray_data_t type, mint rank, const mint* dims) {
 			RawContainer tmp {};
 			if (LibraryData::NumericArrayAPI()->MNumericArray_new(type, rank, dims, &tmp)) {
@@ -29,9 +31,6 @@ namespace LLU {
 			}
 			this->setContainer(tmp);
 		}
-
-		/* implicit */ MContainer(RawContainer t) : Base(t) {
-		};
 
 		template<class P>
 		MContainer(const MContainer<MArgumentType::NumericArray, P>& mc) : Base(mc) {
@@ -47,10 +46,9 @@ namespace LLU {
 			return *this;
 		}
 
-		MContainer& operator=(MContainer&& mc) noexcept {
-			Base::operator=(std::move(mc));
-			return *this;
-		}
+		MContainer& operator=(const MContainer&) = default;
+
+		MContainer& operator=(MContainer&&) noexcept = default;
 
 		~MContainer() override {
 			this->cleanup();

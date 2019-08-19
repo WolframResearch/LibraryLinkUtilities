@@ -28,10 +28,6 @@ namespace LLU {
     public:
         using MArray<T>::MArray;
 
-        TypedTensor(const TypedTensor& other) : MArray<T>(static_cast<const MArray<T>&>(other)) {}
-
-		TypedTensor(TypedTensor&& other) noexcept : MArray<T>(static_cast<MArray<T>&&>(std::move(other))) {}
-
         /**
 		 *   @brief	Return matching type of MTensor
 		 **/
@@ -119,16 +115,21 @@ namespace LLU {
 		explicit Tensor(GenericTensor<PassingMode> t);
 
 		/**
+		 *
+		 */
+		Tensor() = default;
+
+		/**
 		 *   @brief        	Copy constructor
 		 *   @param[in]     other - const reference to a Tensor of matching type
 		 **/
-		Tensor(const Tensor& other) : TypedTensor<T>(other), GenericBase(other) {}
+		Tensor(const Tensor& other) = default;
 
 		/**
 		 *   @brief         Move constructor
 		 *   @param[in]     other - rvalue reference to a Tensor of matching type
 		 **/
-		Tensor(Tensor&& other) noexcept : TypedTensor<T>(std::move(other)), GenericBase(std::move(other)) {}
+		Tensor(Tensor&& other) noexcept = default;
 
 		/**
 		 *   @brief	Free internal MTensor if necessary
@@ -146,6 +147,17 @@ namespace LLU {
 		 *   @param[in]     other - const reference to a Tensor of matching type
 		 **/
 		Tensor& operator=(const Tensor& other) = default;
+
+		/**
+		 *   @brief         Copy-assignment operator
+		 *   @param[in]     other - const reference to a Tensor of matching type
+		 **/
+		template<class P>
+		Tensor& operator=(const Tensor<T, P>& other) {
+			TypedTensor<T>::operator=(other);
+			GenericBase::operator=(other);
+			return *this;
+		}
 
 	private:
 		using GenericBase = MContainer<MArgumentType::Tensor, PassingMode>;
@@ -189,7 +201,7 @@ namespace LLU {
 	}
 
 	template<typename T, class PassingMode>
-	Tensor<T, PassingMode>::Tensor(MTensor na) : Tensor(GenericBase{ na }) {}
+	Tensor<T, PassingMode>::Tensor(MTensor t) : Tensor(GenericBase{ t }) {}
 
 } /* namespace LLU */
 

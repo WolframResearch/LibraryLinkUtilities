@@ -21,15 +21,9 @@ namespace LLU {
 
 
 	template<typename T>
-	class TypedImage : public MArray<T> {
+	class 	TypedImage : public MArray<T> {
 	public:
 		using MArray<T>::MArray;
-
-		template<typename U>
-		explicit TypedImage(const TypedImage<U>& other) : MArray<T>(other) {}
-
-		template<typename U>
-		explicit TypedImage(TypedImage<U>&& other) : MArray<T>(std::move(other)) {}
 
 		/**
 		 *   @brief         Get channel value at specified position in 2D image
@@ -161,6 +155,8 @@ namespace LLU {
 		 **/
 		explicit Image(MImage mi);
 
+		Image() = default;
+
 		/**
 		 *   @brief         Copy constructor
 		 *   @param[in]     other - const reference to an Image
@@ -173,12 +169,18 @@ namespace LLU {
 		 **/
 		Image(Image&& other) noexcept = default;
 
+		Image& operator=(const Image&) = default;
+
+		Image& operator=(Image&&) noexcept = default;
+
+		~Image() override = default;
+
 		/**
 		 *   @brief         Copy an Image with different passing policy
 		 *   @param[in]     other - const reference to an Image
 		 **/
 		template<class P>
-		Image(const Image<T, P> &other) : TypedImage<T>(static_cast<const TypedImage<T>&>(other)), GenericImage<PassingMode>(other) {}
+		Image(const Image<T, P> &other) : TypedImage<T>(other), GenericImage<PassingMode>(other) {}
 
 		/**
 		 *   @brief         Copy constructor with type conversion
@@ -248,6 +250,9 @@ namespace LLU {
 	template<typename T, class PassingMode>
 	MArrayDimensions Image<T, PassingMode>::dimensionsFromGenericImage(const GenericBase &im) {
 		std::vector<mint> dims;
+		if (!im.getContainer()) {
+			return dims;
+		}
 		mint depth = im.getRank() + (im.channels() == 1 ? 0 : 1);
 		if (im.is3D()) {
 			dims = {im.slices(), im.rows(), im.columns()};

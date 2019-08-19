@@ -22,6 +22,8 @@ namespace LLU {
 		using Base = MContainerBase<MArgumentType::Image, PassingMode>;
 		using RawContainer = typename Base::Container;
 
+		using Base::Base;
+
 		MContainer(mint width, mint height, mint channels, imagedata_t type, colorspace_t colorSpace, mbool interleaving) :
 				MContainer(0, width, height, channels, type, colorSpace, interleaving) {
 		}
@@ -35,9 +37,6 @@ namespace LLU {
 			this->setContainer(tmp);
 		}
 
-		/* implicit */ MContainer(RawContainer i) : Base(i) {
-		}
-
 		template<class P>
 		MContainer(const MContainer<MArgumentType::Image, P>& mc) : Base(mc) {
 		}
@@ -46,14 +45,13 @@ namespace LLU {
 
 		MContainer(MContainer&& mc) noexcept = default;
 
+		MContainer &operator=(const MContainer &) = default;
+
+		MContainer &operator=(MContainer &&) noexcept = default;
+
 		template<class P>
 		MContainer& operator=(const MContainer<MArgumentType::Image, P>& mc) {
 			Base::operator=(mc);
-			return *this;
-		}
-
-		MContainer& operator=(MContainer&& mc) noexcept {
-			Base::operator=(std::move(mc));
 			return *this;
 		}
 

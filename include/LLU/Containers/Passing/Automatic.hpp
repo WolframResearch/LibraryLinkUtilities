@@ -25,7 +25,7 @@ namespace LLU {
 
 			Automatic& operator=(Automatic&&) noexcept = default;
 
-			~Automatic() = default;
+			~Automatic() override = default;
 
 			void cleanup() const noexcept override {
 				// Automatic never owns the container so no cleanup

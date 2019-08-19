@@ -25,6 +25,7 @@ namespace LLU {
 			Shared& operator=(const Shared&) = delete;
 
 			Shared& operator=(Shared&& other) noexcept {
+				cleanup();
 				setOwner(other.isOwner());
 				other.setOwner(false);
 				return *this;

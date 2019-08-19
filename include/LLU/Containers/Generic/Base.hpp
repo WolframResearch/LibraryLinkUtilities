@@ -29,11 +29,14 @@ namespace LLU {
 			static_assert(std::is_same<PassingMode, Passing::Manual>::value, "New MContainer can only be created with passing mode Manual.");
 		}
 
-		explicit MContainerBase(Container c) : container(c) {
+		/* implicit */ MContainerBase(Container c) : container(c) {
+			if (!c) {
+				ErrorManager::throwException(ErrorName::CreateFromNullError);
+			}
 		}
 
 		template<class P>
-		MContainerBase(const MContainerBase<Type, P>& mc) : PassingMode(mc), container(mc.clone()) {
+		explicit MContainerBase(const MContainerBase<Type, P>& mc) : PassingMode(mc), container(mc.clone()) {
 		}
 
 		MContainerBase(const MContainerBase& mc) : PassingMode(mc), container(mc.clone()) {
@@ -43,6 +46,19 @@ namespace LLU {
 			mc.container = nullptr;
 		}
 
+		MContainerBase& operator=(const MContainerBase& mc) {
+			PassingMode::operator=(mc);
+			setContainer(mc.clone());
+			return *this;
+		}
+
+		MContainerBase& operator=(MContainerBase &&mc) noexcept {
+			PassingMode::operator=(std::move(mc));
+			setContainer(mc.container);
+			mc.container = nullptr;
+			return *this;
+		}
+
 		template<class P>
 		MContainerBase& operator=(const MContainerBase<Type, P>& mc) {
 			PassingMode::operator=(mc);
@@ -50,18 +66,11 @@ namespace LLU {
 			return *this;
 		}
 
-		MContainerBase& operator=(MContainerBase&& mc) noexcept {
-			PassingMode::operator=(std::move(mc));
-			setContainer(mc.container);
-			mc.container = nullptr;
-			return *this;
-		}
-
 		~MContainerBase() override = default;
 
 		Container clone() const {
 			if (container == nullptr) {
-				// TODO
+				return nullptr;
 			}
 			return cloneImpl();
 		}

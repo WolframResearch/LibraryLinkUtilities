@@ -25,12 +25,20 @@ namespace LLU {
 				other.setOwner(false);
 			}
 
+			Manual& operator=(const Manual&) noexcept {
+				cleanup();
+				setOwner(true);
+				return *this;
+			};
+
 			Manual& operator=(const PassingPolicy&) noexcept override {
+				cleanup();
 				setOwner(true);
 				return *this;
 			};
 
 			Manual& operator=(Manual&& other) noexcept {
+				cleanup();
 				setOwner(other.isOwner());
 				other.setOwner(false);
 				return *this;

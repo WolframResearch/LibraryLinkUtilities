@@ -21,15 +21,14 @@ namespace LLU {
 		using Base = MContainerBase<MArgumentType::Tensor, PassingMode>;
 		using RawContainer = typename Base::Container;
 
+		using Base::Base;
+
 		MContainer(mint type, mint rank, const mint* dims) {
 			RawContainer tmp {};
 			if (LibraryData::API()->MTensor_new(type, rank, dims, &tmp)) {
 				ErrorManager::throwException(ErrorName::TensorNewError);
 			}
 			this->setContainer(tmp);
-		}
-
-		/* implicit */ MContainer(RawContainer t) : Base(t) {
 		}
 
 		template<class P>
@@ -40,16 +39,15 @@ namespace LLU {
 
 		MContainer(MContainer&& mc) noexcept = default;
 
+		MContainer& operator=(const MContainer&) = default;
+
 		template<class P>
 		MContainer& operator=(const MContainer<MArgumentType::Tensor, P>& mc) {
 			Base::operator=(mc);
 			return *this;
 		}
 
-		MContainer& operator=(MContainer&& mc) noexcept {
-			Base::operator=(std::move(mc));
-			return *this;
-		}
+		MContainer& operator=(MContainer&& mc) noexcept = default;
 
 		~MContainer() {
 			this->cleanup();

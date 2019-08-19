@@ -128,6 +128,11 @@ namespace LLU {
 		explicit NumericArray(const GenericNumericArray<P>& other, NA::ConversionMethod method = NA::ConversionMethod::ClipRound, double param = 0.0);
 
 		/**
+		 *
+		 */
+		 NumericArray() = default;
+
+		/**
 		 *   @brief        	Copy constructor
 		 *   @param[in]     other - const reference to a NumericArray of matching type
 		 **/
@@ -148,18 +153,24 @@ namespace LLU {
 		 *   @brief         Copy-assignment operator
 		 *   @param[in]     other - const reference to a NumericArray of matching type
 		 **/
+		NumericArray& operator=(const NumericArray&) = default;
+
+		/**
+		 *   @brief         Move-assignment operator
+		 *   @param[in]     other - rvalue reference to a NumericArray of matching type
+		 **/
+		NumericArray& operator=(NumericArray&&) noexcept = default;
+
+		/**
+		 *   @brief         Copy-assignment operator
+		 *   @param[in]     other - const reference to a NumericArray of matching type
+		 **/
         template<class P>
 		NumericArray& operator=(const NumericArray<T, P>& other) {
             TypedNumericArray<T>::operator=(other);
 			GenericBase::operator=(other);
             return *this;
 		}
-
-		/**
-		 *   @brief         Move-assignment operator
-		 *   @param[in]     other - rvalue reference to a NumericArray of matching type
-		 **/
-        NumericArray& operator=(NumericArray&& other) noexcept = default;
 
 	private:
 		using GenericBase = GenericNumericArray<PassingMode>;
