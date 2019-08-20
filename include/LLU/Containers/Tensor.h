@@ -95,7 +95,7 @@ namespace LLU {
 		 *   @param[in]		last - iterator past the end of range
 		 *   @param[in]     dims - container with Tensor dimensions
 		 *   @tparam		Container - any type of container that has member \b value_type and this type is convertible to mint
-		 *   @throws		LLErrorName::TensorNewError - if number of elements in \c v does not match total Tensor size indicated by \c dims
+		 *   @throws		ErrorName::TensorNewError - if number of elements in \c v does not match total Tensor size indicated by \c dims
 		 *   @throws		see Tensor<T>::createInternal() and MArray<T>::MArray(Container&&)
 		 **/
 		template<class InputIt, typename = enable_if_input_iterator<InputIt>>
@@ -108,9 +108,9 @@ namespace LLU {
 		explicit Tensor(MTensor t);
 
 		/**
-		 *   @brief
-		 *   @param[in]
-		 *   @throws		LLErrorName::TensorTypeError - if template parameter \b T does not match MTensor data type
+		 *   @brief     Create new Tensor from a GenericTensor
+		 *   @param[in] t - generic Tensor to be wrapped into Tensor class
+		 *   @throws	ErrorName::TensorTypeError - if the Tensor template type \b T does not match the actual data type of the generic Tensor
 		 **/
 		explicit Tensor(GenericTensor<PassingMode> t);
 
@@ -136,17 +136,11 @@ namespace LLU {
 		 **/
 		~Tensor() = default;
 
-		/**
-		 *   @brief         Move-assignment operator
-		 *   @param[in]     other - rvalue reference to a Tensor of matching type
-		 **/
-		Tensor& operator=(Tensor&& other) noexcept = default;
+		/// Default move-assignment operator
+		Tensor& operator=(Tensor&&) noexcept = default;
 
-		/**
-		 *   @brief         Copy-assignment operator
-		 *   @param[in]     other - const reference to a Tensor of matching type
-		 **/
-		Tensor& operator=(const Tensor& other) = default;
+		/// Default copy-assignment operator
+		Tensor& operator=(const Tensor&) = default;
 
 		/**
 		 *   @brief         Copy-assignment operator

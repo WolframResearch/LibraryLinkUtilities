@@ -1,10 +1,6 @@
 /**
- * @file	LibDataHolder.h
- * @author	Rafal Chojna <rafalc@wolfram.com>
- * @date	14/06/2018
- *
- * @brief	Implementation of the LibDataHolder class.
- *
+ * @file
+ * Implementation of the LibraryData class.
  */
 
 #include "LLU/LibraryData.h"

@@ -10,7 +10,7 @@
 
 namespace LLU {
 
-	ProgressMonitor::ProgressMonitor(Tensor<double, Passing::Shared> sharedIndicator, double step) : sharedIndicator(std::move(sharedIndicator)), step(step) {}
+	ProgressMonitor::ProgressMonitor(SharedTensor sharedIndicator, double step) : sharedIndicator(std::move(sharedIndicator)), step(step) {}
 
 	double ProgressMonitor::get() const {
 		return sharedIndicator[0];

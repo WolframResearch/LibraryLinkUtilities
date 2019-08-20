@@ -70,7 +70,7 @@ namespace LLU {
 		 *   @brief         Get MArgument of type \b mbool at position \c index
 		 *   @param[in]     index - position of desired MArgument in \c Args
 		 *   @returns       MArgument of type \b bool at position \c index
-		 *   @throws        LLErrorName::MArgumentIndexError - if \c index is out-of-bounds
+		 *   @throws        ErrorName::MArgumentIndexError - if \c index is out-of-bounds
 		 **/
 		bool getBoolean(unsigned int index) const;
 
@@ -78,7 +78,7 @@ namespace LLU {
 		 *   @brief         Get MArgument of type \b mreal at position \c index
 		 *   @param[in]     index - position of desired MArgument in \c Args
 		 *   @returns       MArgument of type \b double at position \c index
-		 *   @throws        LLErrorName::MArgumentIndexError - if \c index is out-of-bounds
+		 *   @throws        ErrorName::MArgumentIndexError - if \c index is out-of-bounds
 		 **/
 		double getReal(unsigned int index) const;
 
@@ -87,7 +87,7 @@ namespace LLU {
 		 *   @tparam		T - integral type to convert \b mint to
 		 *   @param[in]     index - position of desired MArgument in \c Args
 		 *   @returns       MArgument value at position \c index converted to \b T
-		 *   @throws        LLErrorName::MArgumentIndexError - if \c index is out-of-bounds
+		 *   @throws        ErrorName::MArgumentIndexError - if \c index is out-of-bounds
 		 **/
 		template<typename T>
 		T getInteger(unsigned int index) const;
@@ -96,7 +96,7 @@ namespace LLU {
 		 *   @brief         Get MArgument of type \b mcomplex at position \c index
 		 *   @param[in]     index - position of desired MArgument in \c Args
 		 *   @returns       MArgument value at position \c index converted to \b std::complex<double>
-		 *   @throws        LLErrorName::MArgumentIndexError - if \c index is out-of-bounds
+		 *   @throws        ErrorName::MArgumentIndexError - if \c index is out-of-bounds
 		 **/
 		std::complex<double> getComplex(unsigned int index) const;
 
@@ -123,7 +123,7 @@ namespace LLU {
 		 *   @tparam		T - type of data stored in NumericArray
 		 *   @param[in]     index - position of desired MArgument in \c Args
 		 *   @returns       NumericArray wrapper of MArgument at position \c index
-		 *   @throws        LLErrorName::MArgumentIndexError - if \c index is out-of-bounds
+		 *   @throws        ErrorName::MArgumentIndexError - if \c index is out-of-bounds
 		 *   @see			NumericArray<T>::NumericArray(const MNumericArray);
 		 **/
 		template<typename T, class PassingMode = Passing::Automatic>
@@ -143,7 +143,7 @@ namespace LLU {
 		 *   @warning       Use of this function is discouraged. Use getNumericArray instead, if possible.
 		 *   @param[in]     index - position of desired MArgument in \c Args
 		 *   @returns       MArgument at position \c index interpreted as MNumericArray
-		 *   @throws        LLErrorName::MArgumentIndexError - if \c index is out-of-bounds
+		 *   @throws        ErrorName::MArgumentIndexError - if \c index is out-of-bounds
 		 **/
 		MNumericArray getMNumericArray(unsigned int index) const;
 
@@ -152,7 +152,7 @@ namespace LLU {
 		 *   @tparam		T - type of data stored in Tensor
 		 *   @param[in]     index - position of desired MArgument in \c Args
 		 *   @returns       Tensor wrapper of MArgument at position \c index
-		 *   @throws        LLErrorName::MArgumentIndexError - if \c index is out-of-bounds
+		 *   @throws        ErrorName::MArgumentIndexError - if \c index is out-of-bounds
 		 *   @see			Tensor<T>::Tensor(const MTensor);
 		 **/
 		template<typename T, class PassingMode = Passing::Automatic>
@@ -172,7 +172,7 @@ namespace LLU {
 		 *   @warning       Use of this function is discouraged. Use getTensor instead, if possible.
 		 *   @param[in]     index - position of desired MArgument in \c Args
 		 *   @returns       MTensor of MArgument at position \c index
-		 *   @throws        LLErrorName::MArgumentIndexError - if \c index is out-of-bounds
+		 *   @throws        ErrorName::MArgumentIndexError - if \c index is out-of-bounds
 		 **/
 		MTensor getMTensor(unsigned int index) const;
 
@@ -181,7 +181,7 @@ namespace LLU {
 		 *   @tparam		T - type of data stored in Image
 		 *   @param[in]     index - position of desired MArgument in \c Args
 		 *   @returns       Image wrapper of MArgument at position \c index
-		 *   @throws        LLErrorName::MArgumentIndexError - if \c index is out-of-bounds
+		 *   @throws        ErrorName::MArgumentIndexError - if \c index is out-of-bounds
 		 *   @see			Image<T>::Image(const MImage ra);
 		 **/
 		template<typename T, class PassingMode = Passing::Automatic>
@@ -201,7 +201,7 @@ namespace LLU {
 		 *   @warning       Use of this function is discouraged. Use getImage instead, if possible.
 		 *   @param[in]     index - position of desired MArgument in \c Args
 		 *   @returns       MImage of MArgument at position \c index
-		 *   @throws        LLErrorName::MArgumentIndexError - if \c index is out-of-bounds
+		 *   @throws        ErrorName::MArgumentIndexError - if \c index is out-of-bounds
 		 **/
 		MImage getMImage(unsigned int index) const;
 
@@ -210,7 +210,7 @@ namespace LLU {
 		 *   @tparam		T - type of data stored in each node of DataStore, it T is MArgumentType::MArgument it will accept any node
 		 *   @param[in]     index - position of desired MArgument in \c Args
 		 *   @returns       DataList wrapper of MArgument at position \c index
-		 *   @throws        LLErrorName::MArgumentIndexError - if \c index is out-of-bounds
+		 *   @throws        ErrorName::MArgumentIndexError - if \c index is out-of-bounds
 		 *   @see			DataList<T>::DataList(DataStore ds);
 		 **/
 		template<MArgumentType T, class PassingMode = Passing::Automatic>
@@ -230,7 +230,7 @@ namespace LLU {
 		 *   @warning       Use of this function is discouraged. Use getDataList instead.
 		 *   @param[in]     index - position of desired MArgument in \c Args
 		 *   @returns       DataStore of MArgument at position \c index
-		 *   @throws        LLErrorName::MArgumentIndexError - if \c index is out-of-bounds
+		 *   @throws        ErrorName::MArgumentIndexError - if \c index is out-of-bounds
 		 **/
 		DataStore getDataStore(unsigned int index) const;
 
@@ -287,18 +287,18 @@ namespace LLU {
 		void setString(std::string&& str);
 
 		/**
-		 *   @brief         Set MNumericArray wrapped by \c ra as output MArgument
+		 *   @brief         Set MNumericArray wrapped by \c na as output MArgument
 		 *   @tparam		T - NumericArray data type
-		 *   @param[in]     ra - reference to NumericArray which should pass its internal MNumericArray to LibraryLink
+		 *   @param[in]     na - reference to NumericArray which should pass its internal MNumericArray to LibraryLink
 		 **/
 		template<typename T, class PassingMode >
-		void setNumericArray(const NumericArray<T, PassingMode>& ra);
+		void setNumericArray(const NumericArray<T, PassingMode>& na);
 
 		/**
 		 *   @brief         Set MNumericArray as output MArgument
-		 *   @param[in]     ra - MNumericArray to be passed to LibraryLink
+		 *   @param[in]     na - MNumericArray to be passed to LibraryLink
 		 **/
-		void setMNumericArray(MNumericArray ra);
+		void setMNumericArray(MNumericArray na);
 
 		/**
 		 *   @brief         Set MTensor wrapped by \c ten as output MArgument
@@ -315,12 +315,12 @@ namespace LLU {
 		void setMTensor(MTensor t);
 
 		/**
-		 *   @brief         Set MImage wrapped by \c mi as output MArgument
+		 *   @brief         Set MImage wrapped by \c im as output MArgument
 		 *   @tparam		T - Image data type
-		 *   @param[in]     mi - reference to Image which should pass its internal MImage to LibraryLink
+		 *   @param[in]     im - reference to Image which should pass its internal MImage to LibraryLink
 		 **/
 		template<typename T, class PassingMode>
-		void setImage(const Image<T, PassingMode>& mi);
+		void setImage(const Image<T, PassingMode>& im);
 
 		/**
 		 *   @brief         Set MImage as output MArgument
@@ -331,7 +331,7 @@ namespace LLU {
 		/**
 		 *   @brief         Set DataStore wrapped in DataList \c ds as output MArgument
 		 *   @tparam		T - type of data stored in each node of DataStore
-		 *   @param[in]     ten - const reference to DataList which should pass its internal DataStore to LibraryLink
+		 *   @param[in]     ds - const reference to DataList which should pass its internal DataStore to LibraryLink
 		 **/
 		template<MArgumentType T, class PassingMode>
 		void setDataList(const DataList<T, PassingMode>& ds);
@@ -370,9 +370,9 @@ namespace LLU {
 		void set(const NumericArray<T, PassingMode>& na) { setNumericArray(na); }
 
 		/**
-		 *
-		 * @tparam PassingMode
-		 * @param na
+		 *  Set MNumericArray wrapped by \c na as output MArgument
+		 *  @tparam     PassingMode - passing mode of the generic NumericArray
+		 *  @param[in]  na - reference to generic NumericArray which should pass its internal MNumericArray to LibraryLink
 		 */
 		template<class PassingMode>
 		void set(const GenericNumericArray<PassingMode>& na) { na.pass(res); }
@@ -382,9 +382,9 @@ namespace LLU {
 		void set(const Tensor<T, PassingMode>& ten) { setTensor(ten); }
 
 		/**
-		 *
-		 * @tparam PassingMode
-		 * @param na
+		 *  Set MTensor wrapped by \c t as output MArgument
+		 *  @tparam     PassingMode - passing mode of the generic Tensor
+		 *  @param[in]  t - reference to generic Tensor which should pass its internal MTensor to LibraryLink
 		 */
 		template<class PassingMode>
 		void set(const GenericTensor<PassingMode>& t) { t.pass(res); }
@@ -394,9 +394,9 @@ namespace LLU {
 		void set(const Image<T, PassingMode>& im) { setImage(im); }
 
 		/**
-		 *
-		 * @tparam PassingMode
-		 * @param na
+		 *  Set MImage wrapped by \c im as output MArgument
+		 *  @tparam     PassingMode - passing mode of the generic Image
+		 *  @param[in]  im - reference to generic Image which should pass its internal MImage to LibraryLink
 		 */
 		template<class PassingMode>
 		void set(const GenericImage<PassingMode>& im) { im.pass(res); }
@@ -406,9 +406,9 @@ namespace LLU {
 		void set(const DataList<T, PassingMode>& ds) { setDataList(ds); }
 
 		/**
-		 *
-		 * @tparam PassingMode
-		 * @param na
+		 *  Set DataStore wrapped by \c ds as output MArgument
+		 *  @tparam     PassingMode - passing mode of the generic DataStore
+		 *  @param[in]  ds - reference to generic DataStore which should pass its internal DataStore to LibraryLink
 		 */
 		template<class PassingMode>
 		void set(const GenericDataStore<PassingMode>& ds) { ds.pass(res); }
@@ -428,7 +428,7 @@ namespace LLU {
 		 *   @brief         Get type of MNumericArray at position \c index in \c Args
 		 *   @param[in]     index - position of desired MArgument in \c Args
 		 *   @returns       MNumericArray type
-		 *   @throws        LLErrorName::MArgumentIndexError - if \c index is out-of-bounds
+		 *   @throws        ErrorName::MArgumentIndexError - if \c index is out-of-bounds
 		 **/
 		numericarray_data_t getNumericArrayType(unsigned int index) const;
 
@@ -439,7 +439,7 @@ namespace LLU {
 		 *   @tparam		OpArgs... - types of arguments of \c operator() in class \c Operator
 		 *   @param[in]     index - position of MNumericArray in \c Args
 		 *   @param[in]     opArgs - arguments of Operator::operator()
-		 *   @throws        LLErrorName::MArgumentIndexError - if \c index is out-of-bounds
+		 *   @throws        ErrorName::MArgumentIndexError - if \c index is out-of-bounds
 		 *   @warning		Operator::operator() has to be a template that takes a const NumericArray<T>& as first argument
 		 **/
 		template<class Operator, class PassingMode, class ... OpArgs>
@@ -451,7 +451,7 @@ namespace LLU {
 		 *   @tparam		Operator - any callable class
 		 *   @param[in]     index - position of MNumericArray in \c Args
 		 *   @param[in]     op - callable object (possibly lambda) that takes only one argument - a NumericArray
-		 *   @throws        LLErrorName::MArgumentIndexError - if \c index is out-of-bounds
+		 *   @throws        ErrorName::MArgumentIndexError - if \c index is out-of-bounds
 		 **/
 		template<class Operator, class PassingMode = Passing::Automatic>
 		void operateOnNumericArray(unsigned int index, Operator &&op);
@@ -460,7 +460,7 @@ namespace LLU {
 		 *   @brief         Get type of MTensor at position \c index in \c Args
 		 *   @param[in]     index - position of desired MArgument in \c Args
 		 *   @returns       MTensor type
-		 *   @throws        LLErrorName::MArgumentIndexError - if \c index is out-of-bounds
+		 *   @throws        ErrorName::MArgumentIndexError - if \c index is out-of-bounds
 		 **/
 		unsigned char getTensorType(unsigned int index) const;
 
@@ -471,8 +471,8 @@ namespace LLU {
 		 *   @tparam		OpArgs... - types of arguments of \c operator() in class \c Operator
 		 *   @param[in]     index - position of MTensor in \c Args
 		 *   @param[in]     opArgs - arguments of Operator::operator()
-		 *   @throws        LLErrorName::MArgumentIndexError - if \c index is out-of-bounds
-		 *   @throws        LLErrorName::MArgumentTensorError - if MTensor argument has incorrect type
+		 *   @throws        ErrorName::MArgumentIndexError - if \c index is out-of-bounds
+		 *   @throws        ErrorName::MArgumentTensorError - if MTensor argument has incorrect type
 		 *   @warning		Operator::operator() has to be a template that takes a const Tensor<T>& as first argument
 		 **/
 		template<class Operator, class PassingMode, class ... Args>
@@ -484,8 +484,8 @@ namespace LLU {
 		 *   @tparam		Operator - any callable class
 		 *   @param[in]     index - position of MTensor in \c Args
 		 *   @param[in]     op - callable object (possibly lambda) that takes only one argument - a Tensor
-		 *   @throws        LLErrorName::MArgumentIndexError - if \c index is out-of-bounds
-		 *   @throws        LLErrorName::MArgumentTensorError - if MTensor argument has incorrect type
+		 *   @throws        ErrorName::MArgumentIndexError - if \c index is out-of-bounds
+		 *   @throws        ErrorName::MArgumentTensorError - if MTensor argument has incorrect type
 		 **/
 		template<class Operator, class PassingMode = Passing::Automatic>
 		void operateOnTensor(unsigned int index, Operator &&op);
@@ -494,7 +494,7 @@ namespace LLU {
 		 *   @brief         Get type of MImage at position \c index in \c Args
 		 *   @param[in]     index - position of desired MArgument in \c Args
 		 *   @returns       MImage type
-		 *   @throws        LLErrorName::MArgumentIndexError - if \c index is out-of-bounds
+		 *   @throws        ErrorName::MArgumentIndexError - if \c index is out-of-bounds
 		 **/
 		imagedata_t getImageType(unsigned int index) const;
 
@@ -505,8 +505,8 @@ namespace LLU {
 		 *   @tparam		OpArgs... - types of arguments of \c operator() in class \c Operator
 		 *   @param[in]     index - position of MImage in \c Args
 		 *   @param[in]     opArgs - arguments of Operator::operator()
-		 *   @throws        LLErrorName::MArgumentIndexError - if \c index is out-of-bounds
-		 *   @throws        LLErrorName::MArgumentImageError - if MImage argument has incorrect type
+		 *   @throws        ErrorName::MArgumentIndexError - if \c index is out-of-bounds
+		 *   @throws        ErrorName::MArgumentImageError - if MImage argument has incorrect type
 		 *   @warning		Operator::operator() has to be a template that takes a const Image<T>& as first argument
 		 **/
 		template<class Operator, class PassingMode, class ... Args>
@@ -518,8 +518,8 @@ namespace LLU {
 		 *   @tparam		Operator - any callable class
 		 *   @param[in]     index - position of MImage in \c Args
 		 *   @param[in]     op - callable object (possibly lambda) that takes only one argument - an Image
-		 *   @throws        LLErrorName::MArgumentIndexError - if \c index is out-of-bounds
-		 *   @throws        LLErrorName::MArgumentImageError - if MImage argument has incorrect type
+		 *   @throws        ErrorName::MArgumentIndexError - if \c index is out-of-bounds
+		 *   @throws        ErrorName::MArgumentImageError - if MImage argument has incorrect type
 		 **/
 		template<class Operator, class PassingMode = Passing::Automatic>
 		void operateOnImage(unsigned int index, Operator &&op);
@@ -532,7 +532,7 @@ namespace LLU {
 		/**
 		 *   @brief			Get MArgument at position \c index
 		 *   @param[in]		index - position of desired MArgument in \c Args
-		 *   @throws		LLErrorName::MArgumentIndexError - if \c index is out-of-bounds
+		 *   @throws		ErrorName::MArgumentIndexError - if \c index is out-of-bounds
 		 **/
 		MArgument getArgs(unsigned int index) const;
 
@@ -752,8 +752,8 @@ namespace LLU {
 	}
 
 	template<typename T, class PassingMode>
-	void MArgumentManager::setImage(const Image<T, PassingMode>& mi) {
-		mi.passAsResult(res);
+	void MArgumentManager::setImage(const Image<T, PassingMode>& im) {
+		im.passAsResult(res);
 	}
 
 	template<class Operator, class PassingMode, class... Args>

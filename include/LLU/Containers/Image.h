@@ -30,7 +30,7 @@ namespace LLU {
 		 *   @param[in]     row - pixel row (in Mathematica-style indexing - starting from 1)
 		 *   @param[in]     col - pixel column (in Mathematica-style indexing - starting from 1)
 		 *   @param[in]     channel - desired channel (in Mathematica-style indexing - starting from 1)
-		 *   @throws		LLErrorName::ImageIndexError - if the specified coordinates are out-of-bound
+		 *   @throws		ErrorName::ImageIndexError - if the specified coordinates are out-of-bound
 		 **/
 		T get(mint row, mint col, mint channel) const {
 			std::array<mint, 2> pos { { row, col } };
@@ -43,7 +43,7 @@ namespace LLU {
 		 *   @param[in]     row - pixel row (in Mathematica-style indexing - starting from 1)
 		 *   @param[in]     col - pixel column (in Mathematica-style indexing - starting from 1)
 		 *   @param[in]     channel - desired channel (in Mathematica-style indexing - starting from 1)
-		 *   @throws		LLErrorName::ImageIndexError - if the specified coordinates are out-of-bound
+		 *   @throws		ErrorName::ImageIndexError - if the specified coordinates are out-of-bound
 		 **/
 		T get(mint slice, mint row, mint col, mint channel) const {
 			std::array<mint, 3> pos { { slice, row, col } };
@@ -56,7 +56,7 @@ namespace LLU {
 		 *   @param[in]     col - pixel column (in Mathematica-style indexing - starting from 1)
 		 *   @param[in]     channel - desired channel (in Mathematica-style indexing - starting from 1)
 		 *   @param[in]		newValue - new channel value
-		 *   @throws		LLErrorName::ImageIndexError - if the specified coordinates are out-of-bound
+		 *   @throws		ErrorName::ImageIndexError - if the specified coordinates are out-of-bound
 		 **/
 		void set(mint row, mint col, mint channel, T newValue) {
 			std::array<mint, 2> pos { { row, col } };
@@ -70,7 +70,7 @@ namespace LLU {
 		 *   @param[in]     col - pixel column (in Mathematica-style indexing - starting from 1)
 		 *   @param[in]     channel - desired channel (in Mathematica-style indexing - starting from 1)
 		 *   @param[in]		newValue - new channel value
-		 *   @throws		LLErrorName::ImageIndexError - if the specified coordinates are out-of-bound
+		 *   @throws		ErrorName::ImageIndexError - if the specified coordinates are out-of-bound
 		 **/
 		void set(mint slice, mint row, mint col, mint channel, T newValue) {
 			std::array<mint, 3> pos { { slice, row, col } };
@@ -135,23 +135,23 @@ namespace LLU {
 		 *   @param[in]     channels - number of channels
 		 *   @param[in]     cs - color space
 		 *   @param[in]     interleavingQ - whether Image data should be interleaved
-		 *   @throws		LLErrorName::ImageNewError - if internal MImage creation failed
+		 *   @throws		ErrorName::ImageNewError - if internal MImage creation failed
 		 **/
 		Image(mint nFrames, mint w, mint h, mint channels, colorspace_t cs, bool interleavingQ);
 
 
 		/**
-		 *   @brief
-		 *   @param[in]
-		 *   @throws		LLErrorName::ImageTypeError - if template parameter \b T does not match MImage data type
+		 *   @brief         Create new Image from a GenericImage
+		 *   @param[in]     im - generic image to be wrapped into Image class
+		 *   @throws		ErrorName::ImageTypeError - if the Image template type \b T does not match the actual data type of the generic image
 		 **/
 		explicit Image(GenericImage<PassingMode> im);
 
 		/**
 		 *   @brief         Constructs Image based on MImage
 		 *   @param[in]     mi - LibraryLink structure to be wrapped
-		 *   @throws		LLErrorName::ImageTypeError - if template parameter \b T does not match MImage data type
-		 *   @throws		LLErrorName::ImageSizeError - if constructor failed to calculate image dimensions properly
+		 *   @throws		ErrorName::ImageTypeError - if template parameter \b T does not match MImage data type
+		 *   @throws		ErrorName::ImageSizeError - if constructor failed to calculate image dimensions properly
 		 **/
 		explicit Image(MImage mi);
 

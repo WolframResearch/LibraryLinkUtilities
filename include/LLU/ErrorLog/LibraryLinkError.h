@@ -110,7 +110,7 @@ namespace LLU {
 
 		/**
 		 * @brief	Set custom context for the Wolfram Language symbol that will hold the details of last thrown exception.
-		 * @param 	newSymbol - any valid WL context, it \b must end with a backtick (`)
+		 * @param 	newContext - any valid WL context, it \b must end with a backtick (`)
 		 */
 		static void setExceptionDetailsSymbolContext(std::string newContext);
 

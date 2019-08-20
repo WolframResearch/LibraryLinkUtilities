@@ -1,10 +1,6 @@
 /**
- * @file	LibDataHolder.h
- * @author	Rafal Chojna <rafalc@wolfram.com>
- * @date	14/06/2018
- *
- * @brief	Definition of the LibDataHolder class.
- *
+ * @file
+ * Definition of the LibraryData class.
  */
 #ifndef LLUTILS_LIBRARYDATA_H
 #define LLUTILS_LIBRARYDATA_H
@@ -20,7 +16,7 @@
 namespace LLU {
 
 	/**
-	 * @struct 	LibDataHolder
+	 * @struct 	LibraryData
 	 * @brief	This structure offers a static copy of WolframLibData accessible throughout the whole life of the DLL.
 	 */
 	struct LibraryData {

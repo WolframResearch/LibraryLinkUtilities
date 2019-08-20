@@ -144,7 +144,7 @@ namespace LLU {
 
         /**
          * @brief	Create DataList wrapping around an existing GenericDataStore with matching passing policy
-         * @param 	ds - DataStore
+         * @param 	gds - GenericDataStore
          */
         explicit DataList(GenericDataStore gds);
 

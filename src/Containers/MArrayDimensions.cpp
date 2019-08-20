@@ -1,10 +1,6 @@
 /**
- * @file	MArrayBase.cpp
- * @author	Rafal Chojna <rafalc@wolfram.com>
- * @date	4/09/2017
- *
- * @brief	Definitions of non-template member functions and static data members from MArrayBase class
- *
+ * @file
+ * Definitions of non-template member functions and static data members from MArrayDimensions class
  */
 
 #include "LLU/Containers/MArrayDimensions.h"

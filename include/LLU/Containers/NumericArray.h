@@ -100,7 +100,7 @@ namespace LLU {
 		 *   @param[in]		last - iterator past the end of range
 		 *   @param[in]     dims - container with NumericArray dimensions
 		 *   @tparam		Container - any type of container that has member \b value_type and this type is convertible to mint
-		 *   @throws		LLErrorName::NumericArrayNewError - if number of elements in \c v does not match total NumericArray size indicated by \c dims
+		 *   @throws		ErrorName::NumericArrayNewError - if number of elements in \c v does not match total NumericArray size indicated by \c dims
 		 *   @throws		see NumericArray<T>::createInternal() and MArray<T>::MArray(Container&&)
 		 **/
 		template<class InputIt, typename = enable_if_input_iterator<InputIt>>
@@ -113,9 +113,9 @@ namespace LLU {
 		explicit NumericArray(MNumericArray na);
 
 		/**
-		 *   @brief
-		 *   @param[in]     na -
-		 *   @throws		LLErrorName::NumericArrayTypeError - if template parameter \b T does not match MNumericArray data type
+		 *   @brief     Create new NumericArray from a GenericNumericArray
+		 *   @param[in] na - generic NumericArray to be wrapped into NumericArray class
+		 *   @throws	ErrorName::NumericArrayTypeError - if the NumericArray template type \b T does not match the actual data type of the generic NumericArray
 		 **/
 		explicit NumericArray(GenericNumericArray<PassingMode> na);
 
@@ -123,14 +123,15 @@ namespace LLU {
 		 *   @brief         Create NumericArray from generic NumericArray
 		 *   @param[in]     other - const reference to a generic NumericArray
 		 *   @param[in]		method - conversion method to be used
+		 *   @param[in]     param - conversion tolerance
 		 **/
 		template<class P>
 		explicit NumericArray(const GenericNumericArray<P>& other, NA::ConversionMethod method = NA::ConversionMethod::ClipRound, double param = 0.0);
 
 		/**
-		 *
+		 * Default constructor, creates a "hollow" NumericArray that does not have underlying MNumericArray
 		 */
-		 NumericArray() = default;
+		NumericArray() = default;
 
 		/**
 		 *   @brief        	Copy constructor
@@ -149,16 +150,10 @@ namespace LLU {
 		 **/
 		~NumericArray() = default;
 
-		/**
-		 *   @brief         Copy-assignment operator
-		 *   @param[in]     other - const reference to a NumericArray of matching type
-		 **/
+		/// Default copy-assignment operator
 		NumericArray& operator=(const NumericArray&) = default;
 
-		/**
-		 *   @brief         Move-assignment operator
-		 *   @param[in]     other - rvalue reference to a NumericArray of matching type
-		 **/
+		/// Default move-assignment operator
 		NumericArray& operator=(NumericArray&&) noexcept = default;
 
 		/**

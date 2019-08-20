@@ -32,8 +32,8 @@ namespace LLU {
 		/**
 		 * 	@brief		Constructs uninitialized container with given dimensions
 		 *	@param[in]	dims - list of MArray dimensions
-		 *	@throws		LLErrorName::DimensionsError - if \c dims are invalid
-		 *	@throws		LLErrorName::FunctionError - if any of Wolfram*Library structures was not initialized
+		 *	@throws		ErrorName::DimensionsError - if \c dims are invalid
+		 *	@throws		ErrorName::FunctionError - if any of Wolfram*Library structures was not initialized
 		 **/
 		MArrayDimensions(std::initializer_list<mint> dims);
 
@@ -41,8 +41,8 @@ namespace LLU {
 		 * 	@brief		Constructs uninitialized container with given dimensions
 		 *	@param[in]	dimensions - pointer to the memory where consecutive dimensions are stored
 		 *	@param[in]	rank - length of the \p dims array
-		 *	@throws		LLErrorName::DimensionsError - if \c dims are invalid
-		 *	@throws		LLErrorName::FunctionError - if any of Wolfram*Library structures was not initialized
+		 *	@throws		ErrorName::DimensionsError - if \c dims are invalid
+		 *	@throws		ErrorName::FunctionError - if any of Wolfram*Library structures was not initialized
 		 **/
 		template<typename T, typename = typename std::enable_if_t<std::is_integral<T>::value>>
 		MArrayDimensions(const T* dimensions, mint rank);
@@ -51,17 +51,17 @@ namespace LLU {
 		 * 	@brief		Constructs uninitialized container with given dimensions
 		 *	@param[in]	dimensions - container with MArray dimensions
 		 *	@tparam		Container - any type of container that has member \b value_type and this type is convertible to mint
-		 *	@throws		LLErrorName::DimensionsError - if \c dims are invalid
-		 *	@throws		LLErrorName::FunctionError - if any of Wolfram*Library structures was not initialized
+		 *	@throws		ErrorName::DimensionsError - if \c dims are invalid
+		 *	@throws		ErrorName::FunctionError - if any of Wolfram*Library structures was not initialized
 		 **/
 		template<typename T, typename = typename std::enable_if_t<std::is_integral<T>::value>>
 		/* implicit */ MArrayDimensions(const std::vector<T>& dimensions);
 
 		/**
-		 *
-		 * @tparam T
-		 * @param dims
-		 * @param rank
+		 * @brief   Create new dimensions from a range
+		 * @tparam  InputIter - any type that is an input iterator
+		 * @param   dimsBegin - range begin
+		 * @param   dimsEnd - range end
 		 */
 		template<typename InputIter, typename = enable_if_input_iterator<InputIter>>
 		MArrayDimensions(InputIter dimsBegin, InputIter dimsEnd);
@@ -113,15 +113,15 @@ namespace LLU {
 		mint getIndexChecked(const std::vector<mint> &indices) const;
 
 		/**
-		 *
-		 * @param indices
-		 * @return
+		 * @brief   Check if given index is valid i.e. it does not exceed container bounds
+		 * @param   index - index of the desired element
+		 * @return  index if it is valid, otherwise an exception is thrown
 		 */
 		mint getIndexChecked(mint index) const;
 
 		/**
-		 *
-		 * @return
+		 *  @brief  Get total number of elements
+		 * @return  flattened length of the container
 		 */
 		mint flatCount() const noexcept {
 			return flattenedLength;
@@ -147,7 +147,7 @@ namespace LLU {
 		/**
 		 *	@brief 		Check if container size will fit into \b mint
 		 *	@param[in]	s - container size
-		 *	@throws		LLErrorName::DimensionsError - if \c v is too big
+		 *	@throws		ErrorName::DimensionsError - if \c v is too big
 		 **/
 		template<typename T>
 		mint checkContainerSize(T s) const;
@@ -155,7 +155,7 @@ namespace LLU {
 		/**
 		 *	@brief 		Check if initializer list size will fit into \b mint
 		 *	@param[in]	v - an initializer list
-		 *	@throws		LLErrorName::DimensionsError - if \c v is too big
+		 *	@throws		ErrorName::DimensionsError - if \c v is too big
 		 **/
 		mint checkContainerSize(std::initializer_list<mint> v) const;
 

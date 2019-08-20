@@ -49,8 +49,8 @@ namespace LLU {
 			virtual ~PassingPolicy() = default;
 
 			/**
-			 * 	@brief		Set the ownership of the underlying data structure from WolframLibrary.
-			 * 	@param 		argumentOwnerQ - whether the object is now the owner of the underlying data structure from WolframLibrary
+			 * 	@brief		Set the ownership of the managed data structure
+			 * 	@param 		ownerQ - whether the object is now the owner of the underlying data structure from WolframLibrary
 			 */
 			void setOwner(bool ownerQ) const {
 				argumentOwnerQ = ownerQ;
