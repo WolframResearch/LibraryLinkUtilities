@@ -651,7 +651,19 @@ LIBRARY_LINK_FUNCTION(GetMyNumber) {
 ```
 In WL, wrappers over member functions can be conveniently loaded:
 ```mathematica
-getMyNumber = LibraryMemberFunction[A]["GetMyNumber", {} (* argument list *), Integer (* result type *)];
+`LLU`LoadMemberFunction[A][
+    getMyNumber (* fresh symbol for the member function *)
+    "GetMyNumber", (* function name in the library *)
+    {} (* argument list *), 
+    Integer (* result type *)
+];
+```
+The only thing left now is to create an MLE instance and call the member function on it:
+```mathematica
+myA = `LLU`NewManagedExpression[A][17];
+
+myA @ getMyNumber[]
+(* = 17 *)
 ```
 
 <a name="limitations"></a>
