@@ -491,6 +491,12 @@ End[]; (* `LLU`Logger` *)
 
 	But in this case, you are loosing the correct handling of filtered-out messages so it's only fine with the default "accept-all" filter.
 ***)
+
+
+(* ::SubSection:: *)
+(* Managed Expressions *)
+(* ------------------------------------------------------------------------- *)
+(* ------------------------------------------------------------------------- *)
 `LLU`Constructor;
 
 `LLU`NewManagedExpression[exprHead_][args___] :=

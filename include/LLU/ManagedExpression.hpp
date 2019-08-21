@@ -15,9 +15,31 @@
 #include <LLU/LibraryData.h>
 #include <LLU/Utilities.hpp>
 
+#define MANAGED_EXPRESSION_CLASS(ClassName) \
+	class ClassName; \
+	\
+	LLU::ManagedExpressionStore<ClassName> ClassName##Store; \
+	\
+	template<> void LLU::manageInstanceCallback<ClassName>(WolframLibraryData, mbool mode, mint id) {\
+		ClassName##Store.manageInstance(mode, id);\
+	}\
+	\
+	class ClassName
+
+#define MANAGED_EXPRESSION_STRUCT(StructName) \
+    struct StructName; \
+    \
+    LLU::ManagedExpressionStore<StructName> StructName##Store; \
+    \
+    template<> void LLU::manageInstanceCallback<StructName>(WolframLibraryData, mbool mode, mint id) {\
+        StructName##Store.manageInstance(mode, id);\
+    }\
+    \
+    struct StructName
+
 namespace LLU {
 	template<class T>
-	void ManageInstance(WolframLibraryData, mbool, mint) {
+	void manageInstanceCallback(WolframLibraryData, mbool, mint) {
 		static_assert(dependent_false_v<T>, "Use of unspecialized ManageInstance function.");
 	}
 
@@ -32,7 +54,7 @@ namespace LLU {
 		}
 
 		template<typename... Args>
-		T &createInstance(mint id, Args &&... args) {
+		T& createInstance(mint id, Args &&... args) {
 			checkID(id); // at this point instance must already exist in store
 			store[id] = std::make_shared<T>(std::forward<Args>(args)...);
 			return *store[id];
@@ -50,7 +72,7 @@ namespace LLU {
 
 		void registerType(std::string name, WolframLibraryData libData = LibraryData::API()) {
 			expressionName = std::move(name);
-			libData->registerLibraryExpressionManager(expressionName.c_str(), ManageInstance<T>);
+			libData->registerLibraryExpressionManager(expressionName.c_str(), manageInstanceCallback<T>);
 		}
 
 		void unregisterType(WolframLibraryData libData = LibraryData::API()) const {
