@@ -505,3 +505,16 @@ End[]; (* `LLU`Logger` *)
 		`LLU`Constructor[exprHead][ManagedLibraryExpressionID[res], args];
 		res
 	];
+
+`LLU`ManagedQ[exprHead_] := ManagedLibraryExpressionQ[exprHead[#], Symbol[exprHead]]&;
+
+`LLU`GetManagedID[instance_] := ManagedLibraryExpressionID[instance];
+
+SetAttributes[ClassMember, HoldAll];
+ClassMember[className_, f_] := Symbol[className <> "`" <> SymbolName[Unevaluated[f]]];
+
+`LLU`RegisterMethod[exprHead_][memberSymbol_, fname_String, fParams_, retType_, opts : OptionsPattern[SafeLibraryFunction]] :=
+	Block[{memberF},
+		exprHead /: exprHead[id_][memberSymbol[args___]] := ClassMember[SymbolName[exprHead], memberSymbol][exprHead[id], args];
+		Evaluate[ClassMember[SymbolName[exprHead], memberSymbol]] = LibraryMemberFunction[exprHead][fname, fParams, retType, opts];
+	];

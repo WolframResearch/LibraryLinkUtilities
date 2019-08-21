@@ -32,8 +32,12 @@ TestExecute[
 	an interface function "OpenManagedX" defined in the library. *)
 	`LLU`Constructor[MyExpression] = SafeLibraryFunction["OpenManagedMyExpression", {`LLU`Managed[MyExpression], String}, "Void"];
 
-	(* Load a library function that operates on MyExpression which is a registered Managed Expression *)
-	getText = LibraryMemberFunction[MyExpression]["GetText", {}, String];
+	(* Load library functions that wrap MyExpression member functions *)
+	`LLU`RegisterMethod[MyExpression][getText, "GetText", {}, String];
+	`LLU`RegisterMethod[MyExpression][setText, "SetText", {String}, "Void"];
+
+	(* Load other library functions *)
+	joinText = SafeLibraryFunction["JoinText", {`LLU`Managed[MyExpression], `LLU`Managed[MyExpression]}, String];
 
 	(* Create new instance of MyExpression *)
 	globalExpr = `LLU`NewManagedExpression[MyExpression]["I will live through all tests"];
@@ -43,7 +47,7 @@ Test[
 	LogSymbol
 	,
 	{
-		"[Debug] ManagedExprTest.cpp:15 (MyExpression): MyExpression[1] created."
+		"[Debug] ManagedExprTest.cpp:19 (MyExpression): MyExpression[1] created."
 	}
 	,
 	TestID -> "ManagedExpressionsTestSuite-20190718-I7S1K0"
@@ -55,8 +59,10 @@ TestExecute[
 
 Test[
 	Clear[LogSymbol];
-	e = `LLU`NewManagedExpression[MyExpression]["I will die when this test ends"];
-	getText[e]
+	Block[{e},
+		e = `LLU`NewManagedExpression[MyExpression]["I will die when this test ends"];
+		e @ getText[]
+	]
 	,
 	"I will die when this test ends"
 	,
@@ -67,15 +73,15 @@ Test[
 	LogSymbol
 	,
 	{
-		"[Debug] ManagedExprTest.cpp:15 (MyExpression): MyExpression[2] created.",
-		"[Debug] ManagedExprTest.cpp:18 (~MyExpression): MyExpression[2] is dying now."
+		"[Debug] ManagedExprTest.cpp:19 (MyExpression): MyExpression[2] created.",
+		"[Debug] ManagedExprTest.cpp:22 (~MyExpression): MyExpression[2] is dying now."
 	}
 	,
 	TestID->"ManagedExpressionsTestSuite-20190718-J5J8Q0"
 ];
 
 Test[
-	getText[globalExpr]
+	MyExpression`getText[globalExpr]
 	,
 	"I will live through all tests"
 	,
@@ -83,7 +89,31 @@ Test[
 ];
 
 Test[
-	Catch @ getText[MyExpression[500]]
+	MyExpression`setText[globalExpr, "New text for global expr."]
+	,
+	Null
+	,
+	TestID -> "ManagedExpressionsTestSuite-20190821-K9R3V7"
+];
+
+Test[
+	globalExpr @ getText[]
+	,
+	"New text for global expr."
+	,
+	TestID -> "ManagedExpressionsTestSuite-20190821-T2J8J8"
+];
+
+Test[
+	globalExpr @ setText["I will live through all tests"]
+	,
+	Null
+	,
+	TestID -> "ManagedExpressionsTestSuite-20190821-B3M7R5"
+];
+
+Test[
+	Catch @ MyExpression[500] @ getText[]
 	,
 	Failure["InvalidManagedExpressionID", 
 		<|
@@ -98,7 +128,7 @@ Test[
 ];
 
 Test[
-	Catch @ getText[NotMyExpression[1]]
+	Catch @ MyExpression`getText[NotMyExpression[1]]
 	,
 	Failure["UnexpectedManagedExpression", 
 		<|
@@ -110,4 +140,32 @@ Test[
 	]
 	,
 	TestID->"ManagedExpressionsTestSuite-20190718-E0M9X3"
+];
+
+Test[
+	NotMyExpression[1] @ getText[]
+	,
+	NotMyExpression[1] @ getText[]
+	,
+	TestID->"ManagedExpressionsTestSuite-20190821-Z2D6S7"
+];
+
+Test[
+	Clear[LogSymbol];
+	joinText[globalExpr, `LLU`NewManagedExpression[MyExpression]["I'm just a temporary"]]
+	,
+	"I will live through all testsI'm just a temporary"
+	,
+	TestID -> "ManagedExpressionsTestSuite-20190821-M2R9F3"
+];
+
+Test[
+	LogSymbol
+	,
+	{
+		"[Debug] ManagedExprTest.cpp:19 (MyExpression): MyExpression[3] created.",
+		"[Debug] ManagedExprTest.cpp:22 (~MyExpression): MyExpression[3] is dying now."
+	}
+	,
+	TestID->"ManagedExpressionsTestSuite-20190821-W5W6N0"
 ];
