@@ -33,8 +33,8 @@ TestExecute[
 	`LLU`Constructor[MyExpression] = SafeLibraryFunction["OpenManagedMyExpression", {`LLU`Managed[MyExpression], String}, "Void"];
 
 	(* Load library functions that wrap MyExpression member functions *)
-	`LLU`RegisterMethod[MyExpression][getText, "GetText", {}, String];
-	`LLU`RegisterMethod[MyExpression][setText, "SetText", {String}, "Void"];
+	`LLU`LoadMemberFunction[MyExpression][getText, "GetText", {}, String];
+	`LLU`LoadMemberFunction[MyExpression][setText, "SetText", {String}, "Void"];
 
 	(* Load other library functions *)
 	joinText = SafeLibraryFunction["JoinText", {`LLU`Managed[MyExpression], `LLU`Managed[MyExpression]}, String];

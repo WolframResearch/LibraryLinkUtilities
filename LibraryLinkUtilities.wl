@@ -513,7 +513,7 @@ End[]; (* `LLU`Logger` *)
 SetAttributes[ClassMember, HoldAll];
 ClassMember[className_, f_] := Symbol[className <> "`" <> SymbolName[Unevaluated[f]]];
 
-`LLU`RegisterMethod[exprHead_][memberSymbol_, fname_String, fParams_, retType_, opts : OptionsPattern[SafeLibraryFunction]] :=
+`LLU`LoadMemberFunction[exprHead_][memberSymbol_, fname_String, fParams_, retType_, opts : OptionsPattern[SafeLibraryFunction]] :=
 	Block[{memberF},
 		exprHead /: exprHead[id_][memberSymbol[args___]] := ClassMember[SymbolName[exprHead], memberSymbol][exprHead[id], args];
 		Evaluate[ClassMember[SymbolName[exprHead], memberSymbol]] = LibraryMemberFunction[exprHead][fname, fParams, retType, opts];
