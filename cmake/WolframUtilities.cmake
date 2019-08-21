@@ -282,12 +282,18 @@ endfunction()
 # ${LIBRARY_NAME}_VERSION
 # ${LIBRARY_NAME}_BUILD_PLATFORM
 function(find_and_parse_library_conf)
-	set(LIBRARY_CONF "${CMAKE_CURRENT_SOURCE_DIR}/scripts/library.conf")
+	if(ARGC GREATER_EQUAL 1)
+		set(LIBRARY_CONF "${ARGV0}")
+	else()
+		set(LIBRARY_CONF "${CMAKE_CURRENT_SOURCE_DIR}/scripts/library.conf")
+	endif()
 	if(NOT EXISTS ${LIBRARY_CONF})
 		message(FATAL_ERROR "Unable to find ${LIBRARY_CONF}")
 	endif()
 
 	file(STRINGS ${LIBRARY_CONF} _LIBRARY_CONF_STRINGS)
+	# lines beginning with '#' shall be ignored.
+	list(FILTER _LIBRARY_CONF_STRINGS EXCLUDE REGEX "^#")
 
 	set(_LIBRARY_CONF_LIBRARY_LIST ${_LIBRARY_CONF_STRINGS})
 	list(FILTER _LIBRARY_CONF_LIBRARY_LIST INCLUDE REGEX "\\[Library\\]")
@@ -315,9 +321,15 @@ function(find_and_parse_library_conf)
 		set(_LIBRARY_CONF_LIBRARY_STRING ${_LIBRARY_CONF_STRINGS})
 		list(FILTER _LIBRARY_CONF_LIBRARY_STRING INCLUDE REGEX "${${LIB_SYSTEMID}}[ \t]+${LIBRARY}")
 
+		if(NOT _LIBRARY_CONF_LIBRARY_STRING)
+			list(APPEND UNUSED_LIBRARIES ${LIBRARY})
+			message(STATUS "Skipping library ${LIBRARY}")
+			continue()
+		endif()
+
 		string(REGEX REPLACE
 			"${${LIB_SYSTEMID}}[ \t]+${LIBRARY}[ \t]+([0-9.]+)[ \t]+([A-Za-z0-9_\\-]+)" "\\1;\\2"
-			_LIB_VERSION_BUILD_PLATFORM ${_LIBRARY_CONF_LIBRARY_STRING}
+			_LIB_VERSION_BUILD_PLATFORM "${_LIBRARY_CONF_LIBRARY_STRING}"
 		)
 
 		list(GET _LIB_VERSION_BUILD_PLATFORM 0 _LIB_VERSION)
