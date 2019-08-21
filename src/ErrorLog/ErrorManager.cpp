@@ -102,6 +102,9 @@ namespace LLU {
 
 			// ProgressMonitor errors:
 			{ErrorName::Aborted,                     "Computation aborted by the user." },
+
+			// ManagedExpression errors:
+			{ErrorName::ManagedExprInvalidID,        "Given number is not an ID of any existing managed expression" },
 		});
 		return errMap;
 	}
