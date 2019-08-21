@@ -8,6 +8,7 @@
     * [Main features](#mathlink-features)
     * [Example](#mathlink-example)
 4. [Error handling](#error-handling)
+4. [Managed expressions](#managed-expressions)
 5. [Limitations](#limitations)
 6. [How to Use](#howToUse)
     * [Prerequisites](#howToUse-prerequisites)
@@ -544,6 +545,115 @@ The Wolfram Language part of the error-handling functionality of LLU is responsi
 
 Finally, you can take a look at [PacletTemplate](https://stash.wolfram.com/projects/IMEX/repos/paclettemplate) (both source code and the test notebook), which is a simple "model paclet" that uses LLU.
 
+<a name="managed-expressions"></a>
+# Managed expressions
+One of the features offered by LibraryLink is Managed Library Expressions (MLEs). The idea is to create C/C++ objects 
+that will be automatically deleted when they are no longer referenced in the Wolfram Language code. More information can 
+be found in the official LibraryLink [documentation](https://reference.wolfram.com/language/LibraryLink/tutorial/InteractionWithWolframLanguage.html#353220453).
+
+It is clear that this plays nicely with object-oriented programming paradigm and it is the recommended way of referencing
+C++ objects from Wolfram Language. Two most notable alternatives include
+* recreating C++ objects every time a library function is called
+or
+* maintaining some sort of global cache with referenced objects, where each object is added on first use and manually
+deleted at some point.
+
+The second alternative is in a way utilized in LLU to greatly facilitate using MLEs and decrease the amount of boilerplate
+code needed from developers. Namely, for each class that you register to be used as MLE, LLU will maintain a map, which
+associates managed C++ objects with IDs assigned to them by Wolfram Language.
+
+## Register a class as Managed Expression
+Imagine with have a class `A` whose objects we want to manage from WL. We need to define the class, of course:
+```cpp
+struct A {
+    A(int n) : myNumber{n} {}
+    int getMyNumber() const { return myNumber; }
+private:
+    int myNumber;    
+};
+```
+then we must create the corresponding Store and specialize a callback function for LibraryLink (this is a technicality 
+that just needs to be done):
+```cpp
+LLU::ManagedExpressionStore<ClassName> AStore;  //usually <class name>Store is a good name
+
+//specialize manageInstanceCallback, this should just call manageInstance function from your Store
+template<> 
+void LLU::manageInstanceCallback<A>(WolframLibraryData, mbool mode, mint id) {
+    AStore.manageInstance(mode, id); 
+}
+```
+The last step is to actually register and unregister your type when library gets loaded or unloaded, respectively.
+```cpp
+EXTERN_C DLLEXPORT int WolframLibrary_initialize(WolframLibraryData libData) {
+	LLU::LibraryData::setLibraryData(libData);
+	AStore.registerType("A");   // the string you pass is the name of a symbol that will be used in WL for managing 
+	return 0;                   // objects of your class, it is a good convention to just use the class name
+}
+
+EXTERN_C DLLEXPORT void WolframLibrary_uninitialize(WolframLibraryData libData) {
+	MyExpressionStore.unregisterType(libData);
+}
+```
+The good news is that you can omit the middle step if you use a special macro when defining the managed class:
+```cpp
+MANAGED_EXPRESSION_STRUCT(A) {  // use the macro in place of the struct keyword
+    A(int n) : myNumber{n} {}
+    int getMyNumber() const { return myNumber; }
+private:
+    int myNumber;    
+};
+```
+This will create the Store and the template specialization for you but you still need to register your class in 
+`WolframLibrary_initialize` and unregeister in `WolframLibrary_uninitialize`.
+
+One of the biggest limitations of MLEs in LibraryLink is that you cannot pass arguments for construction of managed expressions.
+This is addressed in LLU by letting the developer define a library function that LLU will call from Wolfram Language 
+when new instance of a managed expression is created. In other words, define a wrapper for constructor of your class. 
+Typically, it will look like this:
+```cpp
+EXTERN_C DLLEXPORT int OpenManagedA(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
+	auto err = LLU::ErrorCode::NoError;
+	try {
+		LLU::MArgumentManager mngr(libData, Argc, Args, Res);
+		auto id = mngr.getInteger<mint>(0);
+		auto arg1 = mngr.getXXXX(1);
+		auto arg2 = mngr.getYYYY(2);
+		... // read the rest of parameters for constructor of your managed class 
+		AStore.createInstance(id, arg1, arg2, ...);
+	} catch (const LLU::LibraryLinkError& e) {
+		err = e.which();
+	}
+	return err;
+}
+```
+
+The Wolfram Language part of registering an MLE is simpler. You only need to load your constructor wrapper:
+```mathematica
+`LLU`Constructor[A] = SafeLibraryFunction["OpenManagedA", {`LLU`Managed[A], Arg1Type, Arg2Type, ...}, "Void"];
+```
+
+## Using Managed Expressions with LLU
+After the registration is done, using MLEs is very simple. In C++ code, MLEs can be treated as another MArgument type,
+for example let's define a wrapper over `A::getMyNumber()`:
+```cpp
+LIBRARY_LINK_FUNCTION(GetMyNumber) {
+	auto err = LLU::ErrorCode::NoError;
+	try {
+		LLU::MArgumentManager mngr(Argc, Args, Res);
+		const A& myA = mngr.getManagedExpression(0, AStore);
+		mngr.set(myA.getmyNumber());
+	} catch (const LLU::LibraryLinkError &e) {
+		err = e.which();
+	}
+	return err;
+}
+```
+In WL, wrappers over member functions can be conveniently loaded:
+```mathematica
+getMyNumber = LibraryMemberFunction[A]["GetMyNumber", {} (* argument list *), Integer (* result type *)];
+```
+
 <a name="limitations"></a>
 # Limitations with respect to LibraryLink
 
@@ -551,7 +661,6 @@ There are some _LibraryLink_ features currently not covered by _LLU_, most notab
 
 - Sparse Arrays
 - Tensor subsetting: `MTensor_getTensor`
-- Managed Library Expressions
 - Callbacks
 - Wolfram IO Library (asynchronous tasks)
 
