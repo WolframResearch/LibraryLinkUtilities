@@ -234,7 +234,7 @@ namespace LLU {
 		DataStore getDataStore(unsigned int index) const;
 
 		template<class ManagedExpr>
-		ManagedExpr& getManagedExpression(unsigned int index, ManagedExpressionStore<ManagedExpr> &) const;
+		ManagedExpr& getManagedExpression(unsigned int index, ManagedExpressionStore<ManagedExpr>&) const;
 
 		/************************************ MArgument "setters" ************************************/
 
