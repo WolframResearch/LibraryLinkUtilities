@@ -403,3 +403,145 @@ function(find_cvs_dependency LIB_NAME)
 	set(${_LIB_NAME}_DIR ${LIB_LOCATION} PARENT_SCOPE)
 
 endfunction()
+
+
+# Sets SEARCH_OPTS depending on whether the variable PATH has a value.
+function(set_search_opts_from_path PATH SEARCH_OPTS)
+	if(${PATH})
+		set(${SEARCH_OPTS} NO_DEFAULT_PATH PARENT_SCOPE)
+	else()
+		set(${SEARCH_OPTS} PARENT_SCOPE)
+	endif()
+endfunction()
+
+
+# Detects whether a library is shared or static. Setting type in add_library() ensures target TYPE property will be available later.
+function(detect_library_type LIBRARY TYPE_VAR)
+	get_filename_component(_EXT ${LIBRARY} EXT)
+	if("${_EXT}" STREQUAL "${CMAKE_SHARED_LIBRARY_SUFFIX}")
+		set(${TYPE_VAR} SHARED PARENT_SCOPE)
+	elseif("${_EXT}" STREQUAL "${CMAKE_STATIC_LIBRARY_SUFFIX}")
+		set(${TYPE_VAR} STATIC PARENT_SCOPE)
+	else()
+		set(${TYPE_VAR} UNKNOWN PARENT_SCOPE)
+	endif()
+endfunction()
+
+
+# Copies dependency libraries into paclet layout if the library type is SHARED (always copies on Windows).
+# If the optional 3rd argument is not specified (the libraries to copy), defaults to main target file.
+function(install_dependency_files PACLET_NAME DEP_TARGET_NAME)
+	message(STATUS "argc: ARGC ${ARGC}")
+	get_target_property(_DEP_TYPE ${DEP_TARGET_NAME} TYPE)
+	if(MSVC OR "${_DEP_TYPE}" STREQUAL SHARED_LIBRARY)
+		if(ARGC GREATER_EQUAL 3)
+			set(DEP_LIBS ${ARGV2})
+		else()
+			set(DEP_LIBS $<TARGET_FILE:${DEP_TARGET_NAME}>)
+		endif()
+		string(REPLACE ".lib" ".dll" DEP_LIBS_DLL "${DEP_LIBS}")
+		detect_system_id(SYSTEMID)
+		install(FILES
+			${DEP_LIBS_DLL}
+			DESTINATION ${PACLET_NAME}/LibraryResources/${SYSTEMID}
+		)
+	endif()
+endfunction()
+
+
+# On MacOS, changes the loader path for a dependency library to point to the library's location in a Mathematica layout.
+# This is used when linking against a dependency already included in another paclet (for example, CURLLink's libcurl).
+function(change_loader_path_for_layout TARGETNAME DEP_TARGETNAME DEP_PACLETNAME)
+	if(APPLE)
+		add_custom_command(TARGET ${TARGETNAME} POST_BUILD
+			COMMAND "install_name_tool" ARGS
+				"-change"
+				"@loader_path/$<TARGET_FILE_NAME:${DEP_TARGETNAME}>"
+				"@executable_path/../SystemFiles/Links/${DEP_PACLETNAME}/LibraryResources/${SYSTEMID}/$<TARGET_FILE_NAME:${DEP_TARGETNAME}>"
+				"$<TARGET_FILE:${TARGETNAME}>"
+		)
+	endif()
+endfunction()
+
+
+# Forces static runtime on Windows. See https://gitlab.kitware.com/cmake/community/wikis/FAQ#dynamic-replace
+function(set_windows_static_runtime)
+	if(WIN32)
+		foreach(flag_var CMAKE_CXX_FLAGS CMAKE_CXX_FLAGS_DEBUG CMAKE_CXX_FLAGS_RELEASE CMAKE_CXX_FLAGS_MINSIZEREL CMAKE_CXX_FLAGS_RELWITHDEBINFO)
+			if(${flag_var} MATCHES "/MD")
+				string(REGEX REPLACE "/MD" "/MT" ${flag_var} "${${flag_var}}")
+			endif()
+		endforeach()
+	endif()
+endfunction()
+
+
+# Helper function for copying paclet to install location
+# CMAKE_INSTALL_PREFIX should be set appropriately before calling this.
+function(_copy_paclet_files TARGET_NAME PACLET_NAME)
+	if(ARGC GREATER_EQUAL 3)
+		set(PACLET_DIRECTORY ${ARGV2})
+	else()
+		# copy from default paclet location.
+		set(PACLET_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${PACLET_NAME})
+	endif()
+	#copy over the paclet directory - i.e. the main .m file, the Kernel directory, etc.
+	install(DIRECTORY ${PACLET_DIRECTORY}
+		DESTINATION ${CMAKE_INSTALL_PREFIX}
+		PATTERN ".DS_Store" EXCLUDE
+	)
+	#copy the library produced into LibraryResources/$SystemID
+	detect_system_id(SYSTEMID)
+	install(TARGETS ${TARGET_NAME}
+		LIBRARY DESTINATION ${PACLET_NAME}/LibraryResources/${SYSTEMID}
+		RUNTIME DESTINATION ${PACLET_NAME}/LibraryResources/${SYSTEMID}
+	)
+	#copy PacletInfo.m
+	install(FILES PacletInfo.m
+		DESTINATION "${PACLET_NAME}"
+	)
+endfunction()
+
+
+# Copy paclet files (except LLU files and dependency files) to install location. Optional 3rd arg is paclet location.
+function(copy_updateable_paclet_files TARGET_NAME PACLET_NAME)
+	_copy_paclet_files(${TARGET_NAME} ${PACLET_NAME} ${ARGN})
+	#copy PacletInfo.m
+	install(FILES ${PACLET_NAME}/PacletInfo.m
+		DESTINATION "${PACLET_NAME}"
+	)
+endfunction()
+
+
+# Copy paclet files (except LLU files and dependency files) to install location. Optional 3rd arg is paclet location.
+function(copy_oldstyle_paclet_files TARGET_NAME PACLET_NAME)
+	_copy_paclet_files(${TARGET_NAME} ${PACLET_NAME} ${ARGN})
+	#copy PacletInfo.m
+	install(FILES PacletInfo.m
+		DESTINATION "${PACLET_NAME}"
+	)
+endfunction()
+
+
+# Installs paclet into a Mathematica layout if requested.
+function(install_paclet_to_layout PACLET_NAME INSTALLQ)
+	if(${INSTALLQ})
+		if(EXISTS "${MATHEMATICA_INSTALL_DIR}")
+			install(DIRECTORY "${CMAKE_INSTALL_PREFIX}/${PACLET_NAME}"
+				DESTINATION "${MATHEMATICA_INSTALL_DIR}/SystemFiles/Links"
+			)
+		else()
+			message(WARNING "Failed to install paclet to layout: \"${MATHEMATICA_INSTALL_DIR}\" does not exist.")
+		endif()
+	endif()
+endfunction()
+
+
+# Creates a custom 'zip' target for a paclet.
+# CMAKE_INSTALL_PREFIX should be set appropriately before calling this.
+function(create_zip_target PACLET_NAME)
+	add_custom_target(zip
+		COMMAND ${CMAKE_COMMAND} -E tar "cfv" "${CMAKE_INSTALL_PREFIX}/${PACLET_NAME}.zip" --format=zip "${CMAKE_INSTALL_PREFIX}/${PACLET_NAME}"
+		COMMENT "Creating zip..."
+	)
+endfunction()
