@@ -470,12 +470,15 @@ function(set_windows_static_runtime)
 endfunction()
 
 # Helper function for copying paclet to install location
-# CMAKE_INSTALL_PREFIX should be set appropriately before calling this.
-function(_copy_paclet_files TARGET_NAME PACLET_NAME)
-	if(ARGC GREATER_EQUAL 3)
-		set(PACLET_DIRECTORY ${ARGV2})
+function(_copy_paclet_files OLDSTYLE_Q TARGET_NAME LLU_INSTALL_DIR)
+	if(ARGC GREATER_EQUAL 4)
+		set(PACLET_NAME ${ARGV3})
 	else()
-		# copy from default paclet location.
+		set(PACLET_NAME ${TARGET_NAME})
+	endif()
+	if(ARGC GREATER_EQUAL 5)
+		set(PACLET_DIRECTORY ${ARGV4})
+	else()
 		set(PACLET_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${PACLET_NAME})
 	endif()
 	#copy over the paclet directory - i.e. the main .m file, the Kernel directory, etc.
@@ -489,24 +492,34 @@ function(_copy_paclet_files TARGET_NAME PACLET_NAME)
 		LIBRARY DESTINATION ${PACLET_NAME}/LibraryResources/${SYSTEMID}
 		RUNTIME DESTINATION ${PACLET_NAME}/LibraryResources/${SYSTEMID}
 	)
-endfunction()
-
-# Copy paclet files (except LLU files and dependency files) to install location. Optional 3rd arg is paclet location.
-function(copy_updateable_paclet_files TARGET_NAME PACLET_NAME)
-	_copy_paclet_files(${TARGET_NAME} ${PACLET_NAME} ${ARGN})
+	# copy LLU top-level code
+	if(NOT "${LLU_INSTALL_DIR}" STREQUAL "")
+		install(FILES "${LLU_INSTALL_DIR}/share/LibraryLinkUtilities.wl"
+			DESTINATION "${PACLET_NAME}/LibraryResources"
+		)
+	else()
+		message(WARNING "*** Specified variable LLU_INSTALL_DIR is empty. This may be OK if the paclet is not using LLU. ***")
+	endif()
 	#copy PacletInfo.m
-	install(FILES ${PACLET_NAME}/PacletInfo.m
+	if(${OLDSTYLE_Q})
+		set(PACLET_INFO_M PacletInfo.m)
+	else()
+		set(PACLET_INFO_M ${PACLET_NAME}/PacletInfo.m)
+	endif()
+	install(FILES ${PACLET_INFO_M}
 		DESTINATION "${PACLET_NAME}"
 	)
 endfunction()
 
-# Copy paclet files (except LLU files and dependency files) to install location. Optional 3rd arg is paclet location.
-function(copy_oldstyle_paclet_files TARGET_NAME PACLET_NAME)
-	_copy_paclet_files(${TARGET_NAME} ${PACLET_NAME} ${ARGN})
-	#copy PacletInfo.m
-	install(FILES PacletInfo.m
-		DESTINATION "${PACLET_NAME}"
-	)
+# The following two functions copy paclet files (either updateable or oldstyle layout) to install location.
+# Optional 3rd arg is PacletName (defaults to TARGET_NAME). Optional 4th arg is paclet location (defaults to CMAKE_CURRENT_SOURCE_DIR/PacletName).
+# CMAKE_INSTALL_PREFIX should be set appropriately before calling this.
+function(copy_updateable_paclet_files TARGET_NAME LLU_INSTALL_DIR)
+	_copy_paclet_files(FALSE ${TARGET_NAME} "${LLU_INSTALL_DIR}" ${ARGN})
+endfunction()
+
+function(copy_oldstyle_paclet_files TARGET_NAME LLU_INSTALL_DIR)
+	_copy_paclet_files(TRUE ${TARGET_NAME} "${LLU_INSTALL_DIR}" ${ARGN})
 endfunction()
 
 # Installs paclet into a Mathematica layout if requested.
