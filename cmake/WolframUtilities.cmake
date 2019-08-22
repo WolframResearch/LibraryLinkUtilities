@@ -328,7 +328,7 @@ function(find_and_parse_library_conf)
 		endif()
 
 		string(REGEX REPLACE
-			"${${LIB_SYSTEMID}}[ \t]+${LIBRARY}[ \t]+([0-9.]+)[ \t]+([A-Za-z0-9_\\-]+)" "\\1;\\2"
+			"${${LIB_SYSTEMID}}[ \t]+${LIBRARY}[ \t]+([A-Za-z0-9.]+)[ \t]+([A-Za-z0-9_\\-]+)" "\\1;\\2"
 			_LIB_VERSION_BUILD_PLATFORM "${_LIBRARY_CONF_LIBRARY_STRING}"
 		)
 
@@ -428,7 +428,6 @@ endfunction()
 # Copies dependency libraries into paclet layout if the library type is SHARED (always copies on Windows).
 # If the optional 3rd argument is not specified (the libraries to copy), defaults to main target file.
 function(install_dependency_files PACLET_NAME DEP_TARGET_NAME)
-	message(STATUS "argc: ARGC ${ARGC}")
 	get_target_property(_DEP_TYPE ${DEP_TARGET_NAME} TYPE)
 	if(MSVC OR "${_DEP_TYPE}" STREQUAL SHARED_LIBRARY)
 		if(ARGC GREATER_EQUAL 3)
@@ -489,10 +488,6 @@ function(_copy_paclet_files TARGET_NAME PACLET_NAME)
 	install(TARGETS ${TARGET_NAME}
 		LIBRARY DESTINATION ${PACLET_NAME}/LibraryResources/${SYSTEMID}
 		RUNTIME DESTINATION ${PACLET_NAME}/LibraryResources/${SYSTEMID}
-	)
-	#copy PacletInfo.m
-	install(FILES PacletInfo.m
-		DESTINATION "${PACLET_NAME}"
 	)
 endfunction()
 
