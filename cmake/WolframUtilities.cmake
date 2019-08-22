@@ -404,7 +404,6 @@ function(find_cvs_dependency LIB_NAME)
 
 endfunction()
 
-
 # Sets SEARCH_OPTS depending on whether the variable PATH has a value.
 function(set_search_opts_from_path PATH SEARCH_OPTS)
 	if(${PATH})
@@ -413,7 +412,6 @@ function(set_search_opts_from_path PATH SEARCH_OPTS)
 		set(${SEARCH_OPTS} PARENT_SCOPE)
 	endif()
 endfunction()
-
 
 # Detects whether a library is shared or static. Setting type in add_library() ensures target TYPE property will be available later.
 function(detect_library_type LIBRARY TYPE_VAR)
@@ -426,7 +424,6 @@ function(detect_library_type LIBRARY TYPE_VAR)
 		set(${TYPE_VAR} UNKNOWN PARENT_SCOPE)
 	endif()
 endfunction()
-
 
 # Copies dependency libraries into paclet layout if the library type is SHARED (always copies on Windows).
 # If the optional 3rd argument is not specified (the libraries to copy), defaults to main target file.
@@ -448,7 +445,6 @@ function(install_dependency_files PACLET_NAME DEP_TARGET_NAME)
 	endif()
 endfunction()
 
-
 # On MacOS, changes the loader path for a dependency library to point to the library's location in a Mathematica layout.
 # This is used when linking against a dependency already included in another paclet (for example, CURLLink's libcurl).
 function(change_loader_path_for_layout TARGETNAME DEP_TARGETNAME DEP_PACLETNAME)
@@ -463,7 +459,6 @@ function(change_loader_path_for_layout TARGETNAME DEP_TARGETNAME DEP_PACLETNAME)
 	endif()
 endfunction()
 
-
 # Forces static runtime on Windows. See https://gitlab.kitware.com/cmake/community/wikis/FAQ#dynamic-replace
 function(set_windows_static_runtime)
 	if(WIN32)
@@ -474,7 +469,6 @@ function(set_windows_static_runtime)
 		endforeach()
 	endif()
 endfunction()
-
 
 # Helper function for copying paclet to install location
 # CMAKE_INSTALL_PREFIX should be set appropriately before calling this.
@@ -502,7 +496,6 @@ function(_copy_paclet_files TARGET_NAME PACLET_NAME)
 	)
 endfunction()
 
-
 # Copy paclet files (except LLU files and dependency files) to install location. Optional 3rd arg is paclet location.
 function(copy_updateable_paclet_files TARGET_NAME PACLET_NAME)
 	_copy_paclet_files(${TARGET_NAME} ${PACLET_NAME} ${ARGN})
@@ -512,7 +505,6 @@ function(copy_updateable_paclet_files TARGET_NAME PACLET_NAME)
 	)
 endfunction()
 
-
 # Copy paclet files (except LLU files and dependency files) to install location. Optional 3rd arg is paclet location.
 function(copy_oldstyle_paclet_files TARGET_NAME PACLET_NAME)
 	_copy_paclet_files(${TARGET_NAME} ${PACLET_NAME} ${ARGN})
@@ -521,7 +513,6 @@ function(copy_oldstyle_paclet_files TARGET_NAME PACLET_NAME)
 		DESTINATION "${PACLET_NAME}"
 	)
 endfunction()
-
 
 # Installs paclet into a Mathematica layout if requested.
 function(install_paclet_to_layout PACLET_NAME INSTALLQ)
@@ -536,7 +527,6 @@ function(install_paclet_to_layout PACLET_NAME INSTALLQ)
 	endif()
 endfunction()
 
-
 # Creates a custom 'zip' target for a paclet.
 # CMAKE_INSTALL_PREFIX should be set appropriately before calling this.
 function(create_zip_target PACLET_NAME)
@@ -545,3 +535,17 @@ function(create_zip_target PACLET_NAME)
 		COMMENT "Creating zip..."
 	)
 endfunction()
+
+# Append a cmake variable to a list of options
+macro(append_def OPTS VAR)
+	if(${VAR})
+		list(APPEND ${OPTS} "-D${VAR}=${${VAR}}")
+	endif()
+endmacro()
+
+# Append a cmake flag to a list of options
+macro(append_opt OPTS FLAG VAR)
+	if(${VAR})
+		list(APPEND ${OPTS} ${FLAG} "${${VAR}}")
+	endif()
+endmacro()
