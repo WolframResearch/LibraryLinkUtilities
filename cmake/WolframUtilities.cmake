@@ -552,6 +552,39 @@ macro(set_windows_static_runtime)
 	endif()
 endmacro()
 
+# Adds compile definitions to set minimum Windows version.
+# Macro values are described here: https://docs.microsoft.com/en-us/cpp/porting/modifying-winver-and-win32-winnt
+function(set_min_windows_version TARGET_NAME VER)
+	if(${VER} STREQUAL 7)
+		set(_VER 0x0601) # support at least Windows 7
+	elseif(${VER} STREQUAL 8)
+		set(_VER 0x0602) # support at least Windows 8
+	elseif(${VER} STREQUAL 8.1)
+		set(_VER 0x0603) # support at least Windows 8.1
+	elseif(${VER} STREQUAL 10)
+		set(_VER 0x0A00) # support at least Windows 10
+	elseif(${VER} MATCHES "0x[0-9A-Fa-f]+")
+		set(_VER ${VER})
+	else()
+		message(FATAL_ERROR "Unrecognized Windows version: ${VER}")
+	endif()
+	target_compile_definitions(${TARGET_NAME} PRIVATE
+		WINVER=${_VER}
+		_WIN32_WINNT=${_VER}
+	)
+endfunction()
+
+# Appends a list of frameworks to linker options and ensures headerpad_max_install_names is set.
+function(add_frameworks TARGET_NAME)
+	foreach(framework ${ARGN})
+		list(APPEND FRAMEWORKS "-framework ${framework}")
+	endforeach()
+	target_link_libraries(${TARGET_NAME} PRIVATE
+		${FRAMEWORKS}
+		"-headerpad_max_install_names"
+	)
+endfunction()
+
 # Helper function for copying paclet to install location
 function(_copy_paclet_files OLDSTYLE_Q TARGET_NAME LLU_INSTALL_DIR)
 	if(ARGC GREATER_EQUAL 4)
@@ -624,39 +657,6 @@ function(create_zip_target PACLET_NAME)
 	add_custom_target(zip
 		COMMAND ${CMAKE_COMMAND} -E tar "cfv" "${CMAKE_INSTALL_PREFIX}/${PACLET_NAME}.zip" --format=zip "${CMAKE_INSTALL_PREFIX}/${PACLET_NAME}"
 		COMMENT "Creating zip..."
-	)
-endfunction()
-
-# Adds compile definitions to set minimum Windows version.
-# Macro values are described here: https://docs.microsoft.com/en-us/cpp/porting/modifying-winver-and-win32-winnt
-function(set_min_windows_version TARGET_NAME VER)
-	if(${VER} STREQUAL 7)
-		set(_VER 0x0601) # support at least Windows 7
-	elseif(${VER} STREQUAL 8)
-		set(_VER 0x0602) # support at least Windows 8
-	elseif(${VER} STREQUAL 8.1)
-		set(_VER 0x0603) # support at least Windows 8.1
-	elseif(${VER} STREQUAL 10)
-		set(_VER 0x0A00) # support at least Windows 10
-	elseif(${VER} MATCHES "0x[0-9A-Fa-f]+")
-		set(_VER ${VER})
-	else()
-		message(FATAL_ERROR "Unrecognized Windows version: ${VER}")
-	endif()
-	target_compile_definitions(${TARGET_NAME} PRIVATE
-		WINVER=${_VER}
-		_WIN32_WINNT=${_VER}
-	)
-endfunction()
-
-# Appends a list of frameworks to linker options and ensures headerpad_max_install_names is set.
-function(add_frameworks TARGET_NAME)
-	foreach(framework ${ARGN})
-		list(APPEND FRAMEWORKS "-framework ${framework}")
-	endforeach()
-	target_link_libraries(${TARGET_NAME} PRIVATE
-		${FRAMEWORKS}
-		"-headerpad_max_install_names"
 	)
 endfunction()
 
