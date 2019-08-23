@@ -223,7 +223,7 @@ namespace LLU {
 		 * 	@return		MContainer wrapper of DataStore with given passing policy
 		 */
 		template<class PassingMode = Passing::Automatic>
-		GenericDataStore<PassingMode> getGenericDataStore(unsigned int index) const;
+		GenericDataList<PassingMode> getGenericDataList(unsigned int index) const;
 
 		/**
 		 *   @brief         Get MArgument of type DataStore at position \c index.
@@ -411,7 +411,7 @@ namespace LLU {
 		 *  @param[in]  ds - reference to generic DataStore which should pass its internal DataStore to LibraryLink
 		 */
 		template<class PassingMode>
-		void set(const GenericDataStore<PassingMode>& ds) { ds.pass(res); }
+		void set(const GenericDataList<PassingMode>& ds) { ds.pass(res); }
 
 		/************************************ utility functions ************************************/
 
@@ -830,7 +830,7 @@ namespace LLU {
 	}
 
 	template<class PassingMode>
-	GenericDataStore<PassingMode> MArgumentManager::getGenericDataStore(unsigned int index) const {
+	GenericDataList<PassingMode> MArgumentManager::getGenericDataList(unsigned int index) const {
 		return getDataStore(index);
 	}
 

@@ -10,9 +10,9 @@ LIBRARY_LINK_FUNCTION(EchoImage1) {
 	auto err = LLErrorCode::NoError;
 	try {
 		LLU::MArgumentManager mngr(libData, Argc, Args, Res);
-		mngr.operateOnImage(0, [&mngr](auto&& im1) {
+		mngr.operateOnImage(0, [&mngr](auto im1) {
 			using T = typename std::remove_reference_t<decltype(im1)>::value_type;
-			auto im2{std::move(im1)};  // test move constructor
+			auto im2 {std::move(im1)};  // test move constructor
 			LLU::Image<T> im3;
 			im3 = std::move(im2);  // test move assignment
 			mngr.setImage(im3);
@@ -103,9 +103,8 @@ LIBRARY_LINK_FUNCTION(UnifyImageTypes) {
 		LLU::MArgumentManager mngr(libData, Argc, Args, Res);
 		mngr.operateOnImage(0, [&mngr](auto&& in) {
 			using T = typename std::remove_reference_t<decltype(in)>::value_type;
-			T x = 0;
-			mngr.operateOnImage(1, [&mngr, x](auto&& in2) {
-				LLU::Image<decltype(x)> out(in2);
+			mngr.operateOnImage(1, [&mngr](auto&& in2) {
+				LLU::Image<T> out(in2);
 				mngr.setImage(out);
 			});
 

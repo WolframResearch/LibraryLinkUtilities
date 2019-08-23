@@ -11,9 +11,6 @@
 
 #include "mathlink.h"
 #include "WolframLibrary.h"
-#include "WolframNumericArrayLibrary.h"
-#include "WolframSparseLibrary.h"
-#include "WolframImageLibrary.h"
 #include "WolframIOLibraryFunctions.h"
 
 #include "LLU/LLU.h"
@@ -352,6 +349,20 @@ LIBRARY_LINK_FUNCTION(IntsToNumericArray) {
 
 		mngr.setNumericArray(ra);
 	} catch (const LLU::LibraryLinkError& e) {
+		err = e.which();
+	} catch (...) {
+		err = LLErrorCode::FunctionError;
+	}
+	return err;
+}
+
+LIBRARY_LINK_FUNCTION(GetLength) {
+	auto err = LLErrorCode::NoError;
+	try {
+		LLU::MArgumentManager mngr{Argc, Args, Res};
+		auto dsIn = mngr.getGenericDataList(0);
+		mngr.setInteger(dsIn.getLength());
+	} catch (const LLU::LibraryLinkError &e) {
 		err = e.which();
 	} catch (...) {
 		err = LLErrorCode::FunctionError;

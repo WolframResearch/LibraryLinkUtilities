@@ -15,7 +15,7 @@ namespace LLU {
 	class MContainer<MArgumentType::DataStore, PassingMode>;
 
 	template<class PassingMode>
-	using GenericDataStore = MContainer<MArgumentType::DataStore, PassingMode>;
+	using GenericDataList = MContainer<MArgumentType::DataStore, PassingMode>;
 
 
 	template<class PassingMode>
@@ -26,11 +26,7 @@ namespace LLU {
 		using Base = MContainerBase<MArgumentType::DataStore, PassingMode>;
 		using RawContainer = typename Base::Container;
 
-		MContainer() : MContainer(LibraryData::DataStoreAPI()->createDataStore()) {
-		}
-
-		/* implicit */ MContainer(RawContainer t) : Base(t) {
-		};
+		using Base::Base;
 
 		template<class P>
 		MContainer(const MContainer<MArgumentType::DataStore, P>& mc) : Base(mc) {
@@ -40,14 +36,13 @@ namespace LLU {
 
 		MContainer(MContainer&& mc) noexcept = default;
 
-		template<class P>
-		MContainer& operator=(const MContainer<MArgumentType::DataStore, P>& mc) {
-			Base::operator=(mc);
-			return *this;
-		}
+		MContainer& operator=(const MContainer& mc) = default;
 
-		MContainer& operator=(MContainer&& mc) noexcept {
-			Base::operator=(std::move(mc));
+		MContainer& operator=(MContainer&& mc) noexcept = default;
+
+		template<class P>
+		MContainer &operator=(const MContainer<MArgumentType::DataStore, P> &mc) {
+			Base::operator=(mc);
 			return *this;
 		}
 
@@ -55,8 +50,19 @@ namespace LLU {
 			this->cleanup();
 		};
 
-	private:
+		mint getLength() const {
+			return LibraryData::DataStoreAPI()->DataStore_getLength(this->getContainer());
+		}
 
+		DataStoreNode getFirstNode() {
+			return LibraryData::DataStoreAPI()->DataStore_getFirstNode(this->getContainer());
+		};
+
+		DataStoreNode getLastNode() {
+			return LibraryData::DataStoreAPI()->DataStore_getLastNode(this->getContainer());
+		};
+
+	private:
 		RawContainer cloneImpl() const override {
 			return LibraryData::DataStoreAPI()->copyDataStore(this->getContainer());
 		}

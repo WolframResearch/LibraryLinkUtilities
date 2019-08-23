@@ -58,6 +58,6 @@ LIBRARY_LINK_FUNCTION(CopyShared) {
 
 LIBRARY_LINK_FUNCTION(SharedDataStore) {
 	LLU::MArgumentManager mngr { libData, Argc, Args, Res };
-	auto ds = mngr.getGenericDataStore<Shared>(0);
+	auto ds = mngr.getGenericDataList<Shared>(0);
 	return 0;
 }
