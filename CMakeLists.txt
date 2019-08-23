@@ -36,8 +36,8 @@ set(MATHEMATICA_INSTALL_DIR ${_MATHEMATICA_INSTALL_DIR} CACHE PATH "Mathematica 
 
 # set default build type to Release
 if(NOT CMAKE_BUILD_TYPE)
-  set(CMAKE_BUILD_TYPE Release CACHE STRINGS "Choose the type of build, options are: None Debug Release RelWithDebInfo MinSizeRel." FORCE)
-	set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS ${CMAKE_CONFIGURATION_TYPES})
+  set(CMAKE_BUILD_TYPE Release CACHE STRING "Choose the type of build." FORCE)
+	set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "None" "Debug" "Release" "MinSizeRel" "RelWithDebInfo")
 endif()
 
 # verbose output - useful for debugging, but turned off by default
