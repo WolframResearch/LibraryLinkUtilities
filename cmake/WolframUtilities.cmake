@@ -432,10 +432,10 @@ function(install_dependency_files PACLET_NAME DEP_TARGET_NAME)
 	if(MSVC OR "${_DEP_TYPE}" STREQUAL SHARED_LIBRARY)
 		if(ARGC GREATER_EQUAL 3)
 			set(DEP_LIBS ${ARGV2})
+			string(REPLACE ".lib" ".dll" DEP_LIBS_DLL "${DEP_LIBS}")
 		else()
-			set(DEP_LIBS $<TARGET_FILE:${DEP_TARGET_NAME}>)
+			set(DEP_LIBS_DLL $<TARGET_FILE:${DEP_TARGET_NAME}>)
 		endif()
-		string(REPLACE ".lib" ".dll" DEP_LIBS_DLL "${DEP_LIBS}")
 		detect_system_id(SYSTEMID)
 		install(FILES
 			${DEP_LIBS_DLL}
@@ -446,20 +446,20 @@ endfunction()
 
 # On MacOS, changes the loader path for a dependency library to point to the library's location in a Mathematica layout.
 # This is used when linking against a dependency already included in another paclet (for example, CURLLink's libcurl).
-function(change_loader_path_for_layout TARGETNAME DEP_TARGETNAME DEP_PACLETNAME)
+function(change_loader_path_for_layout TARGET_NAME DEP_TARGET_NAME DEP_PACLET_NAME)
 	if(APPLE)
-		add_custom_command(TARGET ${TARGETNAME} POST_BUILD
+		add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
 			COMMAND "install_name_tool" ARGS
 				"-change"
-				"@loader_path/$<TARGET_FILE_NAME:${DEP_TARGETNAME}>"
-				"@executable_path/../SystemFiles/Links/${DEP_PACLETNAME}/LibraryResources/${SYSTEMID}/$<TARGET_FILE_NAME:${DEP_TARGETNAME}>"
-				"$<TARGET_FILE:${TARGETNAME}>"
+				"@loader_path/$<TARGET_FILE_NAME:${DEP_TARGET_NAME}>"
+				"@executable_path/../SystemFiles/Links/${DEP_PACLET_NAME}/LibraryResources/${SYSTEMID}/$<TARGET_FILE_NAME:${DEP_TARGET_NAME}>"
+				"$<TARGET_FILE:${TARGET_NAME}>"
 		)
 	endif()
 endfunction()
 
 # Forces static runtime on Windows. See https://gitlab.kitware.com/cmake/community/wikis/FAQ#dynamic-replace
-function(set_windows_static_runtime)
+macro(set_windows_static_runtime)
 	if(WIN32)
 		foreach(flag_var CMAKE_CXX_FLAGS CMAKE_CXX_FLAGS_DEBUG CMAKE_CXX_FLAGS_RELEASE CMAKE_CXX_FLAGS_MINSIZEREL CMAKE_CXX_FLAGS_RELWITHDEBINFO)
 			if(${flag_var} MATCHES "/MD")
@@ -467,7 +467,7 @@ function(set_windows_static_runtime)
 			endif()
 		endforeach()
 	endif()
-endfunction()
+endmacro()
 
 # Helper function for copying paclet to install location
 function(_copy_paclet_files OLDSTYLE_Q TARGET_NAME LLU_INSTALL_DIR)
@@ -544,16 +544,107 @@ function(create_zip_target PACLET_NAME)
 	)
 endfunction()
 
-# Append a cmake variable to a list of options
+# Adds compile definitions to set minimum Windows version.
+# Macro values are described here: https://docs.microsoft.com/en-us/cpp/porting/modifying-winver-and-win32-winnt
+function(set_min_windows_version TARGET_NAME VER)
+	if(${VER} STREQUAL 7)
+		set(_VER 0x0601) # support at least Windows 7
+	elseif(${VER} STREQUAL 8)
+		set(_VER 0x0602) # support at least Windows 8
+	elseif(${VER} STREQUAL 8.1)
+		set(_VER 0x0603) # support at least Windows 8.1
+	elseif(${VER} STREQUAL 10)
+		set(_VER 0x0A00) # support at least Windows 10
+	elseif(${VER} MATCHES "0x[0-9A-Fa-f]+")
+		set(_VER ${VER})
+	else()
+		message(FATAL_ERROR "Unrecognized Windows version: ${VER}")
+	endif()
+	target_compile_definitions(${TARGET_NAME} PRIVATE
+		WINVER=${_VER}
+		_WIN32_WINNT=${_VER}
+	)
+endfunction()
+
+# Appends a list of frameworks to linker options and ensures headerpad_max_install_names is set.
+function(add_frameworks TARGET_NAME)
+	foreach(framework ${ARGN})
+		list(APPEND FRAMEWORKS "-framework ${framework}")
+	endforeach()
+	target_link_libraries(${TARGET_NAME} PRIVATE
+		${FRAMEWORKS}
+		"-headerpad_max_install_names"
+	)
+endfunction()
+
+# Checks if variable VAR is set either as a regular or an environment variable, and if so, sets variable RES.
+function(set_from_env VAR RES)
+	if(${VAR})
+		set(${RES} "${${VAR}}" PARENT_SCOPE)
+	elseif(DEFINED ENV{${VAR}})
+		set(${RES} "$ENV{${VAR}}" PARENT_SCOPE)
+	endif()
+endfunction()
+
+# Sets location of library headers and binaries from system.
+function(set_system_library_search_paths_linuxarm LIBNAME)
+	detect_system_id(SYSTEMID)
+	if("${SYSTEMID}" STREQUAL "Linux-ARM")
+		set(${LIBNAME}_INC_SEARCH_DIR "/usr/include" PARENT_SCOPE)
+		set(${LIBNAME}_LIB_SEARCH_DIR "/usr/lib/arm-linux-gnueabihf" PARENT_SCOPE)
+	endif()
+endfunction()
+
+# Sets search paths for LIBNAME to pass to find_path and find_library.
+function(get_library_search_paths LIBNAME INC_PATH LIB_PATH)
+	# Check if LIBNAME_DIR is set as a regular or environment variable
+	set_from_env(${LIBNAME}_DIR _DEFAULT_SEARCH_DIR)
+	# Check if custom include path has been set to override LIBNAME_DIR
+	if(${LIBNAME}_INC_SEARCH_DIR)
+		set(${INC_PATH} ${${LIBNAME}_INC_SEARCH_DIR} PARENT_SCOPE)
+	elseif(_DEFAULT_SEARCH_DIR)
+		set(_${LIBNAME}_INC_DIR ${_DEFAULT_SEARCH_DIR} PARENT_SCOPE)
+	endif()
+	# Check if custom library path has been set to override LIBNAME_DIR
+	if(${LIBNAME}_LIB_SEARCH_DIR)
+		set(${LIB_PATH} ${${LIBNAME}_LIB_SEARCH_DIR} PARENT_SCOPE)
+	elseif(_DEFAULT_SEARCH_DIR)
+		set(_${LIBNAME}_LIB_DIR ${_DEFAULT_SEARCH_DIR} PARENT_SCOPE)
+	endif()
+endfunction()
+
+# Appends a cmake definition to a list of options.
 macro(append_def OPTS VAR)
 	if(${VAR})
 		list(APPEND ${OPTS} "-D${VAR}=${${VAR}}")
 	endif()
 endmacro()
 
-# Append a cmake flag to a list of options
+# Appends a cmake flag to a list of options.
 macro(append_opt OPTS FLAG VAR)
 	if(${VAR})
 		list(APPEND ${OPTS} ${FLAG} "${${VAR}}")
+	endif()
+endmacro()
+
+# Aborts cmake if the given variable is set to variable-NOTFOUND.
+macro(fail_if_notfound VAR)
+	if("${${VAR}}" STREQUAL "${VAR}-NOTFOUND")
+		if(ARGC GREATER 1)
+			message(FATAL_ERROR "${ARGV1}")
+		else()
+			message(FATAL_ERROR "${${VAR}}")
+		endif()
+	endif()
+endmacro()
+
+# Aborts cmake if the given path does not exist.
+macro(fail_if_dne FILE)
+	if(NOT EXISTS "${FILE}")
+		if(ARGC GREATER 1)
+			message(FATAL_ERROR "${ARGV1}")
+		else()
+			message(FATAL_ERROR "File or directory does not exist: ${FILE}")
+		endif()
 	endif()
 endmacro()
