@@ -38,6 +38,12 @@ namespace LLU {
 					disown();
 				}
 			}
+
+			void passAsResult(MArgument &res) const noexcept override {
+				// If the MTensor is shared between the library and the Wolfram Language,
+				// then automatic return does not change anything in the ownership of the MTensor.
+				pass(res);
+			}
 		};
 
 	}

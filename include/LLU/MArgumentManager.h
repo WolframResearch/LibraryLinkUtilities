@@ -275,15 +275,10 @@ namespace LLU {
 		 **/
 		void setString(const std::string& str);
 
-		/**
-		 *   @overload
-		 **/
+		///  @overload
 		void setString(const char* str);
 
-		/**
-		 *   @brief         Set \c str as output MArgument
-		 *   @param[in]     str - r-value reference to \b std::string to be returned to LibraryLink
-		 **/
+		///  @overload
 		void setString(std::string&& str);
 
 		/**

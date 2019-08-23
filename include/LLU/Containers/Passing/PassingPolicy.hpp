@@ -16,22 +16,20 @@ namespace LLU {
 		public:
 
 			/**
-			 *	@brief 		Pass the container as a result to LibraryLink via MArgument
-			 *	@param[out]	res - MArgument that will carry the internal container
-			 **/
-			void passAsResult(MArgument& res) const noexcept {
-				// If the MTensor is shared between the library and the Wolfram Language,
-				// then automatic return does not change anything in the ownership of the MTensor.
-				pass(res);
-				setOwner(false); // FIXME wrong for Shared
-			}
-
-			/**
 			 * 	@brief		Check whether this object owns the underlying data structure from WolframLibrary. If it does, it is responsible for freeing the resources.
 			 * 	@return		true if and only if the object owns the underlying data structure from WolframLibrary
 			 */
 			bool isOwner() const {
 				return argumentOwnerQ;
+			}
+
+			/**
+			 *	@brief 		Pass the container as a result to LibraryLink via MArgument
+			 *	@param[out]	res - MArgument that will carry the internal container
+			 **/
+			virtual void passAsResult(MArgument& res) const noexcept {
+				pass(res);
+				setOwner(false);
 			}
 
 			virtual void cleanup() const noexcept = 0;
