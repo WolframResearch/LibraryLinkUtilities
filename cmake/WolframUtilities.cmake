@@ -413,29 +413,112 @@ function(set_search_opts_from_path PATH SEARCH_OPTS)
 	endif()
 endfunction()
 
-# Detects whether a library is shared or static. Setting type in add_library() ensures target TYPE property will be available later.
+# Detects whether a library is shared or static.
+# This should be used to set the type in add_library() for dependency libraries.
 function(detect_library_type LIBRARY TYPE_VAR)
 	get_filename_component(_EXT ${LIBRARY} EXT)
 	if("${_EXT}" STREQUAL "${CMAKE_SHARED_LIBRARY_SUFFIX}")
 		set(${TYPE_VAR} SHARED PARENT_SCOPE)
 	elseif("${_EXT}" STREQUAL "${CMAKE_STATIC_LIBRARY_SUFFIX}")
-		set(${TYPE_VAR} STATIC PARENT_SCOPE)
+		if(MSVC)
+			# On Windows, the .lib is present for both static and shared libraries, so check whether it contains exported symbols.
+			# Failing that, check whether a similarly named .dll file exists in the same directory.
+			execute_process(
+				COMMAND dumpbin /exports ${LIBRARY}
+				COMMAND grep -w Exports
+				RESULT_VARIABLE _RESULT
+				OUTPUT_VARIABLE _OUTPUT
+			)
+			if(_RESULT EQUAL 0)
+				if("${_OUTPUT}" MATCHES "[ \t]*Exports[ \t\r\n]*")
+					set(${TYPE_VAR} SHARED PARENT_SCOPE)
+				else()
+					set(${TYPE_VAR} STATIC PARENT_SCOPE)
+				endif()
+			else()
+				get_filename_component(_PATH ${LIBRARY} DIRECTORY)
+				get_filename_component(_NAME ${LIBRARY} NAME_WE)
+				if(EXISTS ${_PATH}/${_NAME}.dll)
+					set(${TYPE_VAR} SHARED PARENT_SCOPE)
+				else()
+					set(${TYPE_VAR} STATIC PARENT_SCOPE)
+				endif()
+			endif()
+		else()
+			set(${TYPE_VAR} STATIC PARENT_SCOPE)
+		endif()
 	else()
 		set(${TYPE_VAR} UNKNOWN PARENT_SCOPE)
 	endif()
 endfunction()
 
+# Creates an imported target with the given name and main target library. Fails if the library does not exist.
+# The type of the target is detected from the library and used to correctly set IMPORTED_LOCATION and IMPORTED_IMPLIB.
+# Creating the target with the correct type allows useful target properties to be automatically set such as TYPE, RUNTIME_OUTPUT_NAME etc.
+# Optional 3rd arg is a variable to return the detected library type in.
+function(add_imported_target_detect_type TARGET_NAME LIBRARY)
+	fail_if_dne(${LIBRARY})
+	detect_library_type(${LIBRARY} LIBRARY_TYPE)
+	add_library(${TARGET_NAME} ${LIBRARY_TYPE} IMPORTED)
+	# IMPORTED_LOCATION is the .dll component for SHARED targets on Windows. See: https://cmake.org/cmake/help/latest/prop_tgt/IMPORTED_LOCATION.html
+	if(${LIBRARY_TYPE} STREQUAL SHARED)
+		string(REPLACE ".lib" ".dll" LIBRARY_DLL "${LIBRARY}")
+	else()
+		set(LIBRARY_DLL ${LIBRARY})
+	endif()
+	# IMPORTED_IMPLIB is the .lib component for imported targets on Windows. See: https://cmake.org/cmake/help/latest/prop_tgt/IMPORTED_IMPLIB.html
+	string(REPLACE ".dll" ".lib" LIBRARY_LIB "${LIBRARY}")
+	set_target_properties(${TARGET_NAME} PROPERTIES
+		IMPORTED_LOCATION "${LIBRARY_DLL}"
+		IMPORTED_IMPLIB "${LIBRARY_LIB}"
+	)
+	if(ARGC GREATER 2)
+		set(${ARGV2} ${LIBRARY_TYPE} PARENT_SCOPE)
+	endif()
+endfunction()
+
+function(set_imported_implib LIBRARY TYPE)
+endfunction()
+
 # Copies dependency libraries into paclet layout if the library type is SHARED (always copies on Windows).
-# If the optional 3rd argument is not specified (the libraries to copy), defaults to main target file.
+# Optional 3rd argument is the libraries to copy (defaults to main target file).
 function(install_dependency_files PACLET_NAME DEP_TARGET_NAME)
 	get_target_property(_DEP_TYPE ${DEP_TARGET_NAME} TYPE)
-	if(MSVC OR "${_DEP_TYPE}" STREQUAL SHARED_LIBRARY)
+	if("${_DEP_TYPE}" STREQUAL UNKNOWN_LIBRARY)
+		get_target_property(_DEP_LIBRARY ${DEP_TARGET_NAME} IMPORTED_LOCATION)
+		detect_library_type(${_DEP_LIBRARY} _DEP_TYPE)
+	endif()
+	if("${_DEP_TYPE}" MATCHES "SHARED*")
 		if(ARGC GREATER_EQUAL 3)
 			set(DEP_LIBS ${ARGV2})
 			string(REPLACE ".lib" ".dll" DEP_LIBS_DLL "${DEP_LIBS}")
 		else()
-			set(DEP_LIBS_DLL $<TARGET_FILE:${DEP_TARGET_NAME}>)
+			if(MSVC)
+				get_target_property(DEP_LIBS ${DEP_TARGET_NAME} IMPORTED_LOCATION)
+				string(REPLACE ".lib" ".dll" DEP_LIBS_DLL "${DEP_LIBS}")
+			else()
+				set(DEP_LIBS_DLL $<TARGET_FILE:${DEP_TARGET_NAME}>)
+			endif()
+			# Check if the target has dependencies of its own to copy over. This could recursively check dependencies of dependencies but there's currently no use-case.
+			get_target_property(_DEP_AUX_LIBS ${DEP_TARGET_NAME} IMPORTED_LINK_DEPENDENT_LIBRARIES)
+			if(_DEP_AUX_LIBS)
+				list(APPEND DEP_AUX_LIBS ${_DEP_AUX_LIBS})
+			endif()
+			get_target_property(_DEP_AUX_LIBS ${DEP_TARGET_NAME} INTERFACE_LINK_LIBRARIES)
+			if(_DEP_AUX_LIBS)
+				list(APPEND DEP_AUX_LIBS ${_DEP_AUX_LIBS})
+			endif()
+			if(DEP_AUX_LIBS)
+				list(REMOVE_DUPLICATES DEP_AUX_LIBS)
+			endif()
+			string(REPLACE "${CMAKE_STATIC_LIBRARY_SUFFIX}" "${CMAKE_SHARED_LIBRARY_SUFFIX}" DEP_AUX_LIBS_DLL "${DEP_AUX_LIBS}")
+			foreach(lib ${DEP_AUX_LIBS_DLL})
+				if(EXISTS ${lib})
+					list(APPEND DEP_LIBS_DLL ${lib})
+				endif()
+			endforeach()
 		endif()
+		# Copy over dependency libraries into LibraryResources/$SystemID
 		detect_system_id(SYSTEMID)
 		install(FILES
 			${DEP_LIBS_DLL}
@@ -586,7 +669,8 @@ function(set_from_env VAR RES)
 	endif()
 endfunction()
 
-# Sets location of library headers and binaries from system.
+# Sets search paths for library headers and binaries from system locations, for use in Find modules.
+# The paths are stored in LIBNAME_INC_SEARCH_DIR and LIBNAME_LIB_SEARCH_DIR, respectively.
 function(set_system_library_search_paths_linuxarm LIBNAME)
 	detect_system_id(SYSTEMID)
 	if("${SYSTEMID}" STREQUAL "Linux-ARM")
