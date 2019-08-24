@@ -269,7 +269,6 @@ function(get_library_from_cvs PACKAGE_NAME PACKAGE_VERSION PACKAGE_LOCATION)
 
 endfunction()
 
-
 # Splits comma delimited string STR and saves list to variable LIST
 function(split_string_to_list STR LIST)
 	string(REPLACE " " "" _STR ${STR})
@@ -340,7 +339,6 @@ function(find_and_parse_library_conf)
 		set(${LIB_BUILD_PLATFORM} ${_LIB_BUILD_PLATFORM} PARENT_SCOPE)
 	endforeach()
 endfunction()
-
 
 # Resolve full path to a CVS dependency, downloading if necessary
 # Prioritize ${LIB_NAME}_DIR, ${LIB_NAME}_LOCATION, CVS_COMPONENTS_DIR, then CVS download
@@ -477,9 +475,6 @@ function(add_imported_target_detect_type TARGET_NAME LIBRARY)
 	endif()
 endfunction()
 
-function(set_imported_implib LIBRARY TYPE)
-endfunction()
-
 # Copies dependency libraries into paclet layout if the library type is SHARED (always copies on Windows).
 # Optional 3rd argument is the libraries to copy (defaults to main target file).
 function(install_dependency_files PACLET_NAME DEP_TARGET_NAME)
@@ -552,7 +547,7 @@ macro(set_windows_static_runtime)
 	endif()
 endmacro()
 
-# Adds compile definitions to set minimum Windows version.
+# Adds compile definitions to the specified target to set minimum Windows version.
 # Macro values are described here: https://docs.microsoft.com/en-us/cpp/porting/modifying-winver-and-win32-winnt
 function(set_min_windows_version TARGET_NAME VER)
 	if(${VER} STREQUAL 7)
@@ -660,7 +655,7 @@ function(create_zip_target PACLET_NAME)
 	)
 endfunction()
 
-# Checks if variable VAR is set either as a regular or an environment variable, and if so, sets variable RES.
+# Checks if variable VAR is set either as a regular or an environment variable and if so, sets variable RES.
 function(set_from_env VAR RES)
 	if(${VAR})
 		set(${RES} "${${VAR}}" PARENT_SCOPE)
@@ -669,7 +664,7 @@ function(set_from_env VAR RES)
 	endif()
 endfunction()
 
-# Sets search paths for library headers and binaries from system locations, for use in Find modules.
+# Sets search paths for library headers and binaries from system locations for use in Find modules.
 # The paths are stored in LIBNAME_INC_SEARCH_DIR and LIBNAME_LIB_SEARCH_DIR, respectively.
 function(set_system_library_search_paths_linuxarm LIBNAME)
 	detect_system_id(SYSTEMID)
@@ -679,7 +674,8 @@ function(set_system_library_search_paths_linuxarm LIBNAME)
 	endif()
 endfunction()
 
-# Sets search paths for LIBNAME to pass to find_path and find_library.
+# Sets search paths for LIBNAME to pass to find_path and find_library based on the presence of variables
+# LIBNAME_DIR, LIBNAME_INC_SEARCH_DIR and LIBNAME_LIB_SEARCH_DIR (cf set_system_library_search_paths_linuxarm)
 function(get_library_search_paths LIBNAME INC_PATH LIB_PATH)
 	# Check if LIBNAME_DIR is set as a regular or environment variable
 	set_from_env(${LIBNAME}_DIR _DEFAULT_SEARCH_DIR)
@@ -687,48 +683,48 @@ function(get_library_search_paths LIBNAME INC_PATH LIB_PATH)
 	if(${LIBNAME}_INC_SEARCH_DIR)
 		set(${INC_PATH} ${${LIBNAME}_INC_SEARCH_DIR} PARENT_SCOPE)
 	elseif(_DEFAULT_SEARCH_DIR)
-		set(_${LIBNAME}_INC_DIR ${_DEFAULT_SEARCH_DIR} PARENT_SCOPE)
+		set(${INC_PATH} ${_DEFAULT_SEARCH_DIR} PARENT_SCOPE)
 	endif()
 	# Check if custom library path has been set to override LIBNAME_DIR
 	if(${LIBNAME}_LIB_SEARCH_DIR)
 		set(${LIB_PATH} ${${LIBNAME}_LIB_SEARCH_DIR} PARENT_SCOPE)
 	elseif(_DEFAULT_SEARCH_DIR)
-		set(_${LIBNAME}_LIB_DIR ${_DEFAULT_SEARCH_DIR} PARENT_SCOPE)
+		set(${LIB_PATH} ${_DEFAULT_SEARCH_DIR} PARENT_SCOPE)
 	endif()
 endfunction()
 
-# Appends a cmake definition to a list of options.
+# Appends a cmake definition to a list of options OPTS only if VAR is set.
 macro(append_def OPTS VAR)
 	if(${VAR})
 		list(APPEND ${OPTS} "-D${VAR}=${${VAR}}")
 	endif()
 endmacro()
 
-# Appends a cmake flag to a list of options.
+# Appends a cmake flag to a list of options OPTS only if VAR is set.
 macro(append_opt OPTS FLAG VAR)
 	if(${VAR})
 		list(APPEND ${OPTS} ${FLAG} "${${VAR}}")
 	endif()
 endmacro()
 
-# Aborts cmake if the given variable is set to variable-NOTFOUND.
+# Aborts cmake if variable VAR is set to VAR-NOTFOUND or string VAR ends in the suffix -NOTFOUND.
 macro(fail_if_notfound VAR)
-	if("${${VAR}}" STREQUAL "${VAR}-NOTFOUND")
-		if(ARGC GREATER 1)
+	if(${VAR} MATCHES ".*-NOTFOUND" OR "${${VAR}}" STREQUAL "${VAR}-NOTFOUND")
+		if(${ARGC} GREATER 1)
 			message(FATAL_ERROR "${ARGV1}")
 		else()
-			message(FATAL_ERROR "${${VAR}}")
+			message(FATAL_ERROR "Variable not found: ${VAR} (${${VAR}})")
 		endif()
 	endif()
 endmacro()
 
-# Aborts cmake if the given path does not exist.
-macro(fail_if_dne FILE)
-	if(NOT EXISTS "${FILE}")
-		if(ARGC GREATER 1)
+# Aborts cmake if the given variable|string FILE does not exist.
+macro(fail_if_dne FILE_OR_DIR)
+	if(NOT EXISTS "${FILE_OR_DIR}" AND NOT EXISTS "${${FILE_OR_DIR}}")
+		if(${ARGC} GREATER 1)
 			message(FATAL_ERROR "${ARGV1}")
 		else()
-			message(FATAL_ERROR "File or directory does not exist: ${FILE}")
+			message(FATAL_ERROR "File or directory does not exist: ${FILE_OR_DIR} (${${FILE_OR_DIR}})")
 		endif()
 	endif()
 endmacro()

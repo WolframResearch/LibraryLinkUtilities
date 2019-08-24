@@ -40,7 +40,6 @@ find_library(WolframRTLStaticMinimal_LIBRARY
 )
 fail_if_notfound(WolframRTLStaticMinimal_LIBRARY "Failed to find WolframRTLStaticMinimal library.")
 
-
 # Include directories for os-thread.h and types.h (required by os-thread.h)
 if(KERNEL_BANK_DIR)
 	set(_WRTL_INCLUDE_DIR ${KERNEL_BANK_DIR}/WolframRTL/Includes)
@@ -77,12 +76,10 @@ find_path(EXPORTS_INCLUDE_DIR
 )
 fail_if_notfound(EXPORTS_INCLUDE_DIR "Failed to find CMake/SystemConfiguration/Exports/types.h.")
 
-
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(WolframRTLStaticMinimal
 	REQUIRED_VARS WolframRTLStaticMinimal_LIBRARY WRTL_INCLUDE_DIR EXPORTS_INCLUDE_DIR
 )
-
 
 if(WolframRTLStaticMinimal_FOUND AND ${WolframRTLStaticMinimal_FOUND})
 	if(NOT TARGET WolframRTLStaticMinimal::WolframRTLStaticMinimal)
