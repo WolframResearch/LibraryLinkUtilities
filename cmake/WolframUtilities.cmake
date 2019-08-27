@@ -483,17 +483,14 @@ function(install_dependency_files PACLET_NAME DEP_TARGET_NAME)
 		get_target_property(_DEP_LIBRARY ${DEP_TARGET_NAME} IMPORTED_LOCATION)
 		detect_library_type(${_DEP_LIBRARY} _DEP_TYPE)
 	endif()
-	if("${_DEP_TYPE}" MATCHES "SHARED*")
+	if("${_DEP_TYPE}" MATCHES "SHARED(_LIBRARY)?")
 		if(ARGC GREATER_EQUAL 3)
 			set(DEP_LIBS ${ARGN})
 			string(REPLACE ".lib" ".dll" DEP_LIBS_DLL "${DEP_LIBS}")
 		else()
-			if(MSVC)
-				get_target_property(DEP_LIBS ${DEP_TARGET_NAME} IMPORTED_LOCATION)
-				string(REPLACE ".lib" ".dll" DEP_LIBS_DLL "${DEP_LIBS}")
-			else()
-				set(DEP_LIBS_DLL $<TARGET_FILE:${DEP_TARGET_NAME}>)
-			endif()
+			get_target_property(DEP_LIBS ${DEP_TARGET_NAME} IMPORTED_LOCATION)
+			# this should already be correct if IMPORTED_LOCATION was set properly, but just in case...
+			string(REPLACE ".lib" ".dll" DEP_LIBS_DLL "${DEP_LIBS}")
 			# Check if the target has dependencies of its own to copy over. This could recursively check dependencies of dependencies but there's currently no use-case.
 			get_target_property(_DEP_AUX_LIBS ${DEP_TARGET_NAME} IMPORTED_LINK_DEPENDENT_LIBRARIES)
 			if(_DEP_AUX_LIBS)
@@ -580,15 +577,17 @@ function(add_frameworks TARGET_NAME)
 	)
 endfunction()
 
-# Helper function for copying paclet to install location
-function(_copy_paclet_files OLDSTYLE_Q TARGET_NAME LLU_INSTALL_DIR)
-	if(ARGC GREATER_EQUAL 4)
-		set(PACLET_NAME ${ARGV3})
+# Copies paclet files to install location (CMAKE_INSTALL_PREFIX should be set appropriately before calling this).
+# Optional 3rd arg is PacletName (defaults to TARGET_NAME). Optional 4th arg is paclet location (defaults to CMAKE_CURRENT_SOURCE_DIR/PacletName).
+# "Old-style" (non-updateable) paclet layout (with PacletInfo.m in git root directory) is not supported.
+function(install_paclet_files TARGET_NAME LLU_INSTALL_DIR)
+	if(ARGC GREATER_EQUAL 3)
+		set(PACLET_NAME ${ARGV2})
 	else()
 		set(PACLET_NAME ${TARGET_NAME})
 	endif()
-	if(ARGC GREATER_EQUAL 5)
-		set(PACLET_DIRECTORY ${ARGV4})
+	if(ARGC GREATER_EQUAL 4)
+		set(PACLET_DIRECTORY ${ARGV3})
 	else()
 		set(PACLET_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${PACLET_NAME})
 	endif()
@@ -612,25 +611,9 @@ function(_copy_paclet_files OLDSTYLE_Q TARGET_NAME LLU_INSTALL_DIR)
 		message(WARNING "*** Specified variable LLU_INSTALL_DIR is empty. This may be OK if the paclet is not using LLU. ***")
 	endif()
 	#copy PacletInfo.m
-	if(${OLDSTYLE_Q})
-		set(PACLET_INFO_M PacletInfo.m)
-	else()
-		set(PACLET_INFO_M ${PACLET_NAME}/PacletInfo.m)
-	endif()
-	install(FILES ${PACLET_INFO_M}
+	install(FILES ${PACLET_NAME}/PacletInfo.m
 		DESTINATION "${PACLET_NAME}"
 	)
-endfunction()
-
-# The following two functions copy paclet files (either updateable or oldstyle layout) to install location.
-# Optional 3rd arg is PacletName (defaults to TARGET_NAME). Optional 4th arg is paclet location (defaults to CMAKE_CURRENT_SOURCE_DIR/PacletName).
-# CMAKE_INSTALL_PREFIX should be set appropriately before calling this.
-function(copy_updateable_paclet_files TARGET_NAME LLU_INSTALL_DIR)
-	_copy_paclet_files(FALSE ${TARGET_NAME} "${LLU_INSTALL_DIR}" ${ARGN})
-endfunction()
-
-function(copy_oldstyle_paclet_files TARGET_NAME LLU_INSTALL_DIR)
-	_copy_paclet_files(TRUE ${TARGET_NAME} "${LLU_INSTALL_DIR}" ${ARGN})
 endfunction()
 
 # Installs paclet into a Mathematica layout if requested.
