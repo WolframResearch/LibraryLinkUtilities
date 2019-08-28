@@ -17,10 +17,6 @@ namespace LLU {
 
 	template<MArgumentType Type, class PassingMode>
 	class MContainerBase : public PassingMode {
-
-		template<MArgumentType, class>
-		friend class MContainerBase;
-
 	public:
 		using Container = MType_t<Type>;
 
