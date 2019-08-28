@@ -402,6 +402,34 @@ function(find_cvs_dependency LIB_NAME)
 
 endfunction()
 
+# Sets default paclet compile options for warning and debugging/optimization.
+# On Windows, this also sets /EHsc.
+# Optional argument is optimization level; defaults to "O2".
+function(set_default_compile_options TARGET_NAME)
+	if(ARGC GREATER 1)
+		string(REGEX REPLACE "[/-]?(.+)" "\\1" _OPTIMIZATION_LVL "${ARGV1}")
+	else()
+		set(_OPTIMIZATION_LVL "02")
+	endif()
+	if(MSVC)
+		target_compile_options(${TARGET_NAME} PRIVATE
+			"/W4"
+			"$<$<CONFIG:Debug>:/Zi>"
+			"$<$<NOT:$<CONFIG:Debug>>:/${_OPTIMIZATION_LVL}>"
+			"/EHsc"
+		)
+	else()
+		target_compile_options(${TARGET_NAME} PRIVATE
+			"-Wall"
+			"-Wextra"
+			"-Wfatal-errors"
+			"-pedantic"
+			"-Werror-implicit-function-declaration"
+			"$<$<NOT:$<CONFIG:Debug>>:-${_OPTIMIZATION_LVL}>"
+		)
+	endif()
+endfunction()
+
 # Sets SEARCH_OPTS depending on whether the variable PATH has a value.
 function(set_search_opts_from_path PATH SEARCH_OPTS)
 	if(${PATH})
