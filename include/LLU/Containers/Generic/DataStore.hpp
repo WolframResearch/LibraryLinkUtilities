@@ -28,6 +28,11 @@ namespace LLU {
 
 		using Base::Base;
 
+		/**
+		 * @brief   Default constructor, the MContainer does not manage any instance of DataStore.
+		 */
+		MContainer() = default;
+
 		template<class P>
 		MContainer(const MContainer<MArgumentType::DataStore, P>& mc) : Base(mc) {
 		}

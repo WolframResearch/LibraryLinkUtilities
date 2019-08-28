@@ -16,7 +16,7 @@ TestExecute[
 	lib = CCompilerDriver`CreateLibrary[
 		FileNameJoin[{currentDirectory, "TestSources", #}]& /@ {"Basic.cpp", "ScalarOperations.cpp", "SharedData.cpp"},
 		"TensorTest",
-		options, "Debug" -> True (* defined in TestConfig.wl *)
+		options (* defined in TestConfig.wl *)
 	];
 ];
 

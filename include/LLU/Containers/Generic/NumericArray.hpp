@@ -24,6 +24,11 @@ namespace LLU {
 
 		using Base::Base;
 
+		/**
+		 * @brief   Default constructor, the MContainer does not manage any instance of MNumericArray.
+		 */
+		MContainer() = default;
+
 		MContainer(numericarray_data_t type, mint rank, const mint* dims) {
 			RawContainer tmp {};
 			if (LibraryData::NumericArrayAPI()->MNumericArray_new(type, rank, dims, &tmp)) {

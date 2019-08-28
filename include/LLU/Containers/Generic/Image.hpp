@@ -24,6 +24,11 @@ namespace LLU {
 
 		using Base::Base;
 
+		/**
+		 * @brief   Default constructor, the MContainer does not manage any instance of MImage.
+		 */
+		MContainer() = default;
+
 		MContainer(mint width, mint height, mint channels, imagedata_t type, colorspace_t colorSpace, mbool interleaving) :
 				MContainer(0, width, height, channels, type, colorSpace, interleaving) {
 		}
