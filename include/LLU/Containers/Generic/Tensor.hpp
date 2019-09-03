@@ -70,11 +70,20 @@ namespace LLU {
 		}
 
 	private:
-
+		/**
+		 *
+		 * @return
+		 * @see 	<http://reference.wolfram.com/language/LibraryLink/ref/callback/MTensor_shareCount.html>
+		 */
 		mint shareCountImpl() const noexcept override {
 			return LibraryData::API()->MTensor_shareCount(this->getContainer());
 		}
 
+		/**
+		 *   @brief 	Disown internal MTensor that is shared with Mathematica.
+		 *
+		 *   @see 		<http://reference.wolfram.com/language/LibraryLink/ref/callback/MTensor_disown.html>
+		 **/
 		void disownImpl() const noexcept override {
 			LibraryData::API()->MTensor_disown(this->getContainer());
 		}

@@ -1,6 +1,6 @@
 /**
  * @file	Base.hpp
- * @brief
+ * @brief   Definitions of MContainerBase and MContainer class templates.
  */
 
 #ifndef LLU_CONTAINERS_GENERIC_BASE_HPP
@@ -15,39 +15,79 @@
 
 namespace LLU {
 
+	/**
+	 * @brief Template of the base class for all generic containers.
+	 * MContainerBase stores the raw LibrayLink container and defines a common interface for all generic containers.
+	 *
+	 * @tparam Type - container type
+	 * @tparam PassingMode - passing mode (Automatic, Manual, etc.)
+	 */
 	template<MArgumentType Type, class PassingMode>
 	class MContainerBase : public PassingMode {
 	public:
 		using Container = MType_t<Type>;
 
 	public:
+		/**
+		 * @brief Default constructor.
+		 * @details Triggers compile-time error unless PassingMode is Manual. Wrappers with all other passing modes can only be constructed given existing
+		 * raw containers, so they cannot be empty.
+		 */
 		MContainerBase() {
 			static_assert(std::is_same<PassingMode, Passing::Manual>::value, "New MContainer can only be created with passing mode Manual.");
 		}
 
+		/**
+		 * @brief Create MContainerBase from a raw container
+		 * @param c - raw LibraryLink container (MTensor, MNumericArray, etc.), passing a nullptr will trigger an exception
+		 */
 		/* implicit */ MContainerBase(Container c) : container(c) {
 			if (!c) {
 				ErrorManager::throwException(ErrorName::CreateFromNullError);
 			}
 		}
 
+		/**
+		 * @brief Create MContainerBase from an MContainerBase of the same \c Type but different passing policy.
+		 * This will perform a deep copy of the underlying raw container.
+		 * @tparam P - passing policy
+		 * @param mc - MContainerBase that will be copied
+		 */
 		template<class P>
 		explicit MContainerBase(const MContainerBase<Type, P>& mc) : PassingMode(mc), container(mc.clone()) {
 		}
 
+		/**
+		 * @brief Copy-constructor, performs a deep copy of the raw container.
+		 * @param mc - MContainerBase to be copied
+		 */
 		MContainerBase(const MContainerBase& mc) : PassingMode(mc), container(mc.clone()) {
 		}
 
+		/**
+		 * @brief Move-constructor
+		 * @param mc - MContainerBase to be moved-from, it's internal container becomes nullptr
+		 */
 		MContainerBase(MContainerBase&& mc) noexcept : PassingMode(std::move(mc)), container(mc.container) {
 			mc.container = nullptr;
 		}
 
+		/**
+		 * @brief Copy-assignment operator, performs a deep copy of the raw container.
+		 * @param mc - MContainerBase to be copied
+		 * @return reference to this object
+		 */
 		MContainerBase& operator=(const MContainerBase& mc) {
 			PassingMode::operator=(mc);
 			setContainer(mc.clone());
 			return *this;
 		}
 
+		/**
+		 * @brief Move-assignment operator
+		 * @param mc - MContainerBase to be moved-from, it's internal container becomes nullptr
+		 * @return reference to this object
+		 */
 		MContainerBase& operator=(MContainerBase &&mc) noexcept {
 			PassingMode::operator=(std::move(mc));
 			setContainer(mc.container);
@@ -55,6 +95,12 @@ namespace LLU {
 			return *this;
 		}
 
+		/**
+		 * @brief Copy-assignment with passing mode conversion
+		 * @tparam P - passing mode of the MContainerBase to be copied
+		 * @param mc - MContainerBase to be copied
+		 * @return reference to this object which is now a deep copy of the input MContainerBase
+		 */
 		template<class P>
 		MContainerBase& operator=(const MContainerBase<Type, P>& mc) {
 			PassingMode::operator=(mc);
@@ -62,8 +108,13 @@ namespace LLU {
 			return *this;
 		}
 
+		/// Default destructor
 		~MContainerBase() override = default;
 
+		/**
+		 * @brief Clone the raw container, if it's present
+		 * @return cloned container or nullptr if there is no internal container
+		 */
 		Container clone() const {
 			if (container == nullptr) {
 				return nullptr;
@@ -71,23 +122,27 @@ namespace LLU {
 			return cloneImpl();
 		}
 
-
+		/**
+		 * @brief Get internal container
+		 * @return a handle to the internal container
+		 */
 		Container getContainer() const noexcept {
 			return container;
 		}
 
+		/**
+		 * @brief Give a handle to internal container and stop owning it.
+		 * Should be used with caution as it may potentially result with resource leak.
+		 *
+		 * @return a handle to the internal container
+		 */
 		Container abandonContainer() const noexcept {
 			this->setOwner(false);
 			return container;
 		}
 
 		/**
-		 *   @brief 	Return share count of internal MTensor.
-		 *   Use this to manually manage shared MTensors.
-		 *
-		 *   @see 		<http://reference.wolfram.com/language/LibraryLink/ref/callback/MTensor_shareCount.html>
-		 *   @note		LibraryLink does not provide any way to check whether MTensor was passed or will be returned as "Shared".
-		 *   Therefore passing or returning MTensors as "Shared" is discouraged and if you do that you are responsible for managing MTensor memory.
+		 *   @brief 	Return share count of internal container.
 		 **/
 		mint shareCount() const noexcept {
 			if (container) {
@@ -96,6 +151,10 @@ namespace LLU {
 			return 0;
 		}
 
+		/**
+		 * Pass the internal container as result of a LibraryLink function.
+		 * @param res - MArgument which will hold internal container of this MContainerBase
+		 */
 		void pass(MArgument& res) const override {
 			if (container) {
 				passImpl(res);
@@ -103,14 +162,7 @@ namespace LLU {
 		}
 
 	protected:
-		/**
-		 *   @brief 	Disown internal MTensor that is shared with Mathematica.
-		 *   Use this to manually manage shared MTensors.
-		 *
-		 *   @see 		<http://reference.wolfram.com/language/LibraryLink/ref/callback/MTensor_disown.html>
-		 *   @note		LibraryLink does not provide any way to check whether MTensor was passed or will be returned as "Shared".
-		 *   Therefore passing or returning MTensors as "Shared" is discouraged and if you do that you are responsible for managing MTensor memory.
-		 **/
+
 		void disown() const noexcept override {
 			if (container) {
 				disownImpl();
