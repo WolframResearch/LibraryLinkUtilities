@@ -120,17 +120,34 @@ MyExpression& getFromMathLink(LLU::MLStream<EIn, EOut> &ml) {
 
 /// Get two managed MyExpressions via MathLink and swap texts in them
 LIBRARY_MATHLINK_FUNCTION(SwapText) {
-	using namespace LLU::ML;
+	namespace ML = LLU::ML;
 	auto err = LLU::ErrorCode::NoError;
 	try {
-		LLU::MLStream<Encoding::UTF8> ml(mlp, 2);
+		LLU::MLStream<ML::Encoding::UTF8> ml(mlp, 2);
 		std::shared_ptr<MyExpression> firstExpr;
 		ml >> firstExpr;
 		auto& secondExpr = getFromMathLink(ml);
 		auto tempText = firstExpr->getText();
 		firstExpr->setText(secondExpr.getText());
 		secondExpr.setText(std::move(tempText));
-		ml << Null << EndPacket;
+		ml << ML::Null << ML::EndPacket;
+	}
+	catch (const LLU::LibraryLinkError &e) {
+		err = e.which();
+	}
+	return err;
+}
+
+LIBRARY_MATHLINK_FUNCTION(SetTextML) {
+	namespace ML = LLU::ML;
+	auto err = LLU::ErrorCode::NoError;
+	try {
+		LLU::MLStream<ML::Encoding::UTF8> ml(mlp, 2);
+		auto& myExpr = getFromMathLink(ml);
+		std::string newText;
+		ml >> newText;
+		myExpr.setText(std::move(newText));
+		ml << ML::Null << ML::EndPacket;
 	}
 	catch (const LLU::LibraryLinkError &e) {
 		err = e.which();

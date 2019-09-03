@@ -35,6 +35,7 @@ TestExecute[
 	(* Load library functions that wrap MyExpression member functions *)
 	`LLU`LoadMemberFunction[MyExpression][getText, "GetText", {}, String];
 	`LLU`LoadMemberFunction[MyExpression][setText, "SetText", {String}, "Void"];
+	`LLU`LoadMathLinkMemberFunction[MyExpression][setTextML, "SetTextML"];
 
 	(* Load other library functions *)
 	joinText = SafeLibraryFunction["JoinText", {`LLU`Managed[MyExpression], `LLU`Managed[MyExpression]}, String];
@@ -180,4 +181,13 @@ Test[
 	{"World", "Hello"}
 	,
 	TestID -> "ManagedExpressionsTestSuite-20190903-A5G8P0"
+];
+
+Test[
+	expr1 @ setTextML["My new text"];
+	expr1 @ getText[]
+	,
+	"My new text"
+	,
+	TestID -> "ManagedExpressionsTestSuite-20190903-J6R4H9"
 ];

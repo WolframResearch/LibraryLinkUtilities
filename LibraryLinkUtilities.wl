@@ -178,7 +178,11 @@ SafeMathLinkFunction[fname_String, opts : OptionsPattern[SafeLibraryFunction]] :
 	SafeLibraryFunction[fname, LinkObject, LinkObject, opts];
 
 LibraryMemberFunction[exprHead_][fname_String, fParams_, retType_, opts : OptionsPattern[SafeLibraryFunction]] :=
-	SafeLibraryFunction[fname, Prepend[fParams, `LLU`Managed[exprHead]], retType, opts];
+    If[fParams === LinkObject && retType === LinkObject,
+	    SafeMathLinkFunction[fname, opts]
+	    ,
+		SafeLibraryFunction[fname, Prepend[fParams, `LLU`Managed[exprHead]], retType, opts]
+    ];
 
 (* ::SubSection:: *)
 (* RegisterPacletErrors *)
@@ -518,3 +522,6 @@ ClassMember[className_, f_] := Symbol[className <> "`" <> SymbolName[Unevaluated
 		exprHead /: exprHead[id_][memberSymbol[args___]] := ClassMember[SymbolName[exprHead], memberSymbol][exprHead[id], args];
 		Evaluate[ClassMember[SymbolName[exprHead], memberSymbol]] = LibraryMemberFunction[exprHead][fname, fParams, retType, opts];
 	];
+
+`LLU`LoadMathLinkMemberFunction[exprHead_][memberSymbol_, fname_String, opts : OptionsPattern[SafeLibraryFunction]] :=
+	`LLU`LoadMemberFunction[exprHead][memberSymbol, fname, LinkObject, LinkObject, opts];
