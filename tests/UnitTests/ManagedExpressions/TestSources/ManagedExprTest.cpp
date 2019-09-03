@@ -94,3 +94,46 @@ LIBRARY_LINK_FUNCTION(JoinText) {
 	}
 	return err;
 }
+
+/**
+ * Read managed MyExpression via MathLink to a shared pointer.
+ */
+template<LLU::ML::Encoding EIn, LLU::ML::Encoding EOut>
+LLU::MLStream<EIn, EOut>& operator>>(LLU::MLStream<EIn, EOut>& ml, std::shared_ptr<MyExpression>& myExp) {
+	ml >> LLU::ML::Function("MyExpression", 1);
+	mint myExprID {};
+	ml >> myExprID;
+	myExp = MyExpressionStore.getInstancePointer(myExprID);
+	return ml;
+}
+
+/**
+ * Get a reference to a managed MyExpression passed via MathLink
+ */
+template<LLU::ML::Encoding EIn, LLU::ML::Encoding EOut>
+MyExpression& getFromMathLink(LLU::MLStream<EIn, EOut> &ml) {
+	ml >> LLU::ML::Function("MyExpression", 1);
+	mint myExprID{};
+	ml >> myExprID;
+	return MyExpressionStore.getInstance(myExprID);
+}
+
+/// Get two managed MyExpressions via MathLink and swap texts in them
+LIBRARY_MATHLINK_FUNCTION(SwapText) {
+	using namespace LLU::ML;
+	auto err = LLU::ErrorCode::NoError;
+	try {
+		LLU::MLStream<Encoding::UTF8> ml(mlp, 2);
+		std::shared_ptr<MyExpression> firstExpr;
+		ml >> firstExpr;
+		auto& secondExpr = getFromMathLink(ml);
+		auto tempText = firstExpr->getText();
+		firstExpr->setText(secondExpr.getText());
+		secondExpr.setText(std::move(tempText));
+		ml << Null << EndPacket;
+	}
+	catch (const LLU::LibraryLinkError &e) {
+		err = e.which();
+	}
+	return err;
+}

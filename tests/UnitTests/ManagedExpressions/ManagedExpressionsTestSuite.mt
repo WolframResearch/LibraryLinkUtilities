@@ -38,6 +38,7 @@ TestExecute[
 
 	(* Load other library functions *)
 	joinText = SafeLibraryFunction["JoinText", {`LLU`Managed[MyExpression], `LLU`Managed[MyExpression]}, String];
+	swapText = SafeMathLinkFunction["SwapText"];
 
 	(* Create new instance of MyExpression *)
 	globalExpr = `LLU`NewManagedExpression[MyExpression]["I will live through all tests"];
@@ -168,4 +169,15 @@ Test[
 	}
 	,
 	TestID->"ManagedExpressionsTestSuite-20190821-W5W6N0"
+];
+
+Test[
+	expr1 = `LLU`NewManagedExpression[MyExpression]["Hello"];
+	expr2 = `LLU`NewManagedExpression[MyExpression]["World"];
+	swapText[expr1, expr2];
+	{expr1 @ getText[], expr2 @ getText[]}
+	,
+	{"World", "Hello"}
+	,
+	TestID -> "ManagedExpressionsTestSuite-20190903-A5G8P0"
 ];
