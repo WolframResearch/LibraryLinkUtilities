@@ -152,6 +152,17 @@ function(additional_paclet_dependencies SYSTEM_ID EXTRA_LIBS)
 	endif ()
 endfunction()
 
+# On linux, set the linker flags to use the nonshared version of stdc++ if found.
+# This supports old runtimes lacking new c++ language features.
+function(add_cpp_nonshared_library TARGET_NAME)
+	if(UNIX)
+		find_library(NON_SHARED_CXX_LIB NAMES "stdc++_nonshared")
+		if(NON_SHARED_CXX_LIB)
+			target_link_libraries(${TARGET_NAME} PRIVATE "stdc++_nonshared")
+		endif()
+	endif()
+endfunction()
+
 # set machine bitness flags for given target
 function(set_machine_flags TARGET_NAME)
 	detect_system_id(SYSTEM_ID)
@@ -190,6 +201,24 @@ function(set_rpath TARGET_NAME NEW_RPATH)
 		endif()
 	endif ()
 	set_target_properties(${TARGET_NAME} PROPERTIES INSTALL_RPATH ${NEW_RPATH})
+endfunction()
+
+# On MacOS, enables rpath search mechanism for dependency library in SystemFiles/Links.
+# Note, rpath on MacOS has lower precedence than DYLD_LIBRARY_PATH. see: https://gitlab.kitware.com/cmake/community/wikis/doc/cmake/RPATH-handling
+function(change_loader_path_for_layout TARGET_NAME DEP_TARGET_NAME DEP_PACLET_NAME)
+	if(APPLE)
+		detect_system_id(SYSTEMID)
+		set(DEP_FILE_NAME "$<TARGET_FILE_NAME:${DEP_TARGET_NAME}>")
+		add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
+			COMMAND "install_name_tool" ARGS
+				"-change"
+				"@loader_path/${DEP_FILE_NAME}"
+				"@rpath/${DEP_FILE_NAME}"
+				"$<TARGET_FILE:${TARGET_NAME}>"
+		)
+		#can't append to INSTALL_RPATH since it doesn't accept generator expressions
+		add_link_flags(${TARGET_NAME} PRIVATE "-Wl,-rpath,@executable_path/../SystemFiles/Links/${DEP_PACLET_NAME}/LibraryResources/${SYSTEMID}/${DEP_FILE_NAME}")
+	endif()
 endfunction()
 
 # helper function for get_library_from_cvs
@@ -402,30 +431,31 @@ function(find_cvs_dependency LIB_NAME)
 
 endfunction()
 
-# Sets default paclet compile options for warning and debugging/optimization.
-# On Windows, this also sets /EHsc.
-# Optional argument is optimization level; defaults to "O2".
+# Sets default paclet compile options for warning and debugging/optimization. On Windows, also sets /EHsc.
+# Optional argument is optimization level (defaults to "O2").
 function(set_default_compile_options TARGET_NAME)
 	if(ARGC GREATER 1)
-		string(REGEX REPLACE "[/-]?(.+)" "\\1" _OPTIMIZATION_LVL "${ARGV1}")
+		string(REGEX REPLACE "[/-]?(.+)" "\\1" OPTIMIZATION_LEVEL "${ARGV1}")
 	else()
-		set(_OPTIMIZATION_LVL "02")
+		set(OPTIMIZATION_LEVEL "02")
+	endif()
+	# Force optimization level if build type is Release.
+	if("${CMAKE_BUILD_TYPE}" STREQUAL "Release")
+		set_optimization_level(${OPTIMIZATION_LEVEL})
 	endif()
 	if(MSVC)
 		target_compile_options(${TARGET_NAME} PRIVATE
 			"/W4"
 			"$<$<CONFIG:Debug>:/Zi>"
-			"$<$<NOT:$<CONFIG:Debug>>:/${_OPTIMIZATION_LVL}>"
+			"$<$<CONFIG:Release>:/${OPTIMIZATION_LEVEL}>"
 			"/EHsc"
 		)
 	else()
 		target_compile_options(${TARGET_NAME} PRIVATE
 			"-Wall"
 			"-Wextra"
-			"-Wfatal-errors"
 			"-pedantic"
-			"-Werror-implicit-function-declaration"
-			"$<$<NOT:$<CONFIG:Debug>>:-${_OPTIMIZATION_LVL}>"
+			"$<$<CONFIG:Release>:-${OPTIMIZATION_LEVEL}>"
 		)
 	endif()
 endfunction()
@@ -547,28 +577,32 @@ function(install_dependency_files PACLET_NAME DEP_TARGET_NAME)
 	endif()
 endfunction()
 
-# On MacOS, changes the loader path for a dependency library to point to the library's location in a Mathematica layout.
-# This is used when linking against a dependency already included in another paclet (for example, CURLLink's libcurl).
-function(change_loader_path_for_layout TARGET_NAME DEP_TARGET_NAME DEP_PACLET_NAME)
-	if(APPLE)
-		add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
-			COMMAND "install_name_tool" ARGS
-				"-change"
-				"@loader_path/$<TARGET_FILE_NAME:${DEP_TARGET_NAME}>"
-				"@executable_path/../SystemFiles/Links/${DEP_PACLET_NAME}/LibraryResources/${SYSTEMID}/$<TARGET_FILE_NAME:${DEP_TARGET_NAME}>"
-				"$<TARGET_FILE:${TARGET_NAME}>"
-		)
-	endif()
-endfunction()
+# Helper function to replace default option in CMAKE_CXX_* variables. The first argument can be a regular expression.
+macro(_cxx_dynamic_replace WHAT WITH)
+	message("Build type: ${CMAKE_BUILD_TYPE}")
+	foreach(flag_var CMAKE_CXX_FLAGS CMAKE_CXX_FLAGS_DEBUG CMAKE_CXX_FLAGS_RELEASE CMAKE_CXX_FLAGS_MINSIZEREL CMAKE_CXX_FLAGS_RELWITHDEBINFO)
+		message("${flag_var}: \"${${flag_var}}\"")
+		if(${flag_var} MATCHES "\${WHAT}")
+			string(REGEX REPLACE "\${WHAT}" "\${WITH}" ${flag_var} "${${flag_var}}")
+			message("Match! After replace: \"${${flag_var}}\"")
+			set(${flag_var} ${${flag_var}} PARENT_SCOPE)
+		endif()
+	endforeach()
+endmacro()
 
 # Forces static runtime on Windows. See https://gitlab.kitware.com/cmake/community/wikis/FAQ#dynamic-replace
 macro(set_windows_static_runtime)
 	if(WIN32)
-		foreach(flag_var CMAKE_CXX_FLAGS CMAKE_CXX_FLAGS_DEBUG CMAKE_CXX_FLAGS_RELEASE CMAKE_CXX_FLAGS_MINSIZEREL CMAKE_CXX_FLAGS_RELWITHDEBINFO)
-			if(${flag_var} MATCHES "/MD")
-				string(REGEX REPLACE "/MD" "/MT" ${flag_var} "${${flag_var}}")
-			endif()
-		endforeach()
+		_cxx_dynamic_replace("/MD" "/MT")
+	endif()
+endmacro()
+
+# Forces a particular optimization level on all build types
+macro(set_optimization_level LEVEL)
+	if(WIN32)
+		_cxx_dynamic_replace("/O[0-9A-Za-z]+" "/${LEVEL}")
+	else()
+		_cxx_dynamic_replace("-O[0-9A-Za-z]+" "-${LEVEL}")
 	endif()
 endmacro()
 
@@ -603,6 +637,36 @@ function(add_frameworks TARGET_NAME)
 		${FRAMEWORKS}
 		"-headerpad_max_install_names"
 	)
+endfunction()
+
+# Appends linker flag(s) for given target with the given scope.
+function(add_link_flags TARGET_NAME SCOPE)
+	if(ARGC LESS 3)
+		message(WARNING "add_link_flags() called for target ${TARGET_NAME} with no flags specified.")
+		return()
+	endif()
+	# target_link_options() / LINK_OPTIONS is only available in cmake >= 3.13.
+	if(${CMAKE_VERSION} VERSION_LESS "3.13")
+		# LINK_FLAGS does not accept generator expressions so use target_link_libraries() in that case.
+		if("${ARGN}" MATCHES ".*\\$<.+>.*")
+			target_link_libraries(${TARGET_NAME} ${SCOPE} ${ARGN})
+		else()
+			get_target_property(ORIG_LINK_FLAGS ${TARGET_NAME} LINK_FLAGS)
+			list(JOIN ARGN " " _LINK_FLAGS)
+			set_target_properties(${TARGET_NAME} PROPERTIES LINK_FLAGS "${ORIG_LINK_FLAGS} ${_LINK_FLAGS}")
+		endif()
+	else()
+		# retrieve any previously set LINK_FLAGS since LINK_OPTIONS will be used in preference.
+		get_target_property(ORIG_LINK_FLAGS ${TARGET_NAME} LINK_FLAGS)
+		if(ORIG_LINK_FLAGS)
+			string(REPLACE " " ";" _LINK_OPTS ${ORIG_LINK_FLAGS})
+			list(APPEND _LINK_OPTS ${ARGN})
+			set_target_properties(${TARGET_NAME} PROPERTIES LINK_FLAGS "")
+		else()
+			set(_LINK_OPTS ${ARGN})
+		endif()
+		target_link_options(${TARGET_NAME} ${SCOPE} ${_LINK_OPTS})
+	endif()
 endfunction()
 
 # Copies paclet files to install location (CMAKE_INSTALL_PREFIX should be set appropriately before calling this).
@@ -716,52 +780,6 @@ endmacro()
 macro(append_opt OPTS FLAG VAR)
 	if(${VAR})
 		list(APPEND ${OPTS} ${FLAG} "${${VAR}}")
-	endif()
-endmacro()
-
-# Adds linker flag(s) to target.
-function(add_link_flags TARGET_NAME)
-	if(ARGC LESS 2)
-		message(WARNING "add_link_flags called for target ${TARGET_NAME} with no flags specified.")
-		return()
-	endif()
-	# target_link_options() is available in cmake 3.13 and greater.
-	# note: LINK_OPTIONS  must be used in preference to LINK_FLAGS property.
-	# note: LINK_FLAGS is a string whilst LINK_OPTIONS is a semicolon-separated list.
-	get_target_property(ORIG_LINK_FLAGS ${TARGET_NAME} LINK_FLAGS)
-	if(${CMAKE_VERSION} VERSION_LESS "3.13")
-		list(JOIN ARGN " " _LINK_FLAGS)
-		set_target_properties(${TARGET_NAME} PROPERTIES LINK_FLAGS "${ORIG_LINK_FLAGS} ${_LINK_FLAGS}")
-	else()
-		if(ORIG_LINK_FLAGS)
-			string(REPLACE " " ";" _LINK_OPTS ${ORIG_LINK_FLAGS})
-			list(APPEND _LINK_OPTS ${ARGN})
-			set_target_properties(${TARGET_NAME} PROPERTIES LINK_FLAGS "")
-		else()
-			set(_LINK_OPTS ${ARGN})
-		endif()
-		target_link_options(${TARGET_NAME} PRIVATE ${_LINK_OPTS})
-	endif()
-endfunction()
-
-# Aborts cmake if variable VAR is set to VAR-NOTFOUND or string VAR ends in the suffix -NOTFOUND.
-macro(fail_if_notfound VAR)
-	if(DEFINED ${VAR})
-		if("${${VAR}}" STREQUAL "${VAR}-NOTFOUND")
-			if(${ARGC} GREATER 1)
-				message(FATAL_ERROR "${ARGV1}")
-			else()
-				message(FATAL_ERROR "Variable not found: ${${VAR}}")
-			endif()
-		endif()
-	else()
-		if(${VAR} MATCHES ".*-NOTFOUND")
-			if(${ARGC} GREATER 1)
-				message(FATAL_ERROR "${ARGV1}")
-			else()
-				message(FATAL_ERROR "Variable not found: ${VAR}")
-			endif()
-		endif()
 	endif()
 endmacro()
 
