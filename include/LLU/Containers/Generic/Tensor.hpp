@@ -23,6 +23,11 @@ namespace LLU {
 
 		using Base::Base;
 
+		/**
+		 * @brief   Default constructor, the MContainer does not manage any instance of MTensor.
+		 */
+		MContainer() = default;
+
 		MContainer(mint type, mint rank, const mint* dims) {
 			RawContainer tmp {};
 			if (LibraryData::API()->MTensor_new(type, rank, dims, &tmp)) {
