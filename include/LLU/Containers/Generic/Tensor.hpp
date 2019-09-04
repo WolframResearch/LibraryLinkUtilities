@@ -18,10 +18,8 @@ namespace LLU {
 	template<class PassingMode>
 	class MContainer<MArgumentType::Tensor, PassingMode> : public MContainerBase<MArgumentType::Tensor, PassingMode> {
 	public:
-		using Base = MContainerBase<MArgumentType::Tensor, PassingMode>;
-		using RawContainer = typename Base::Container;
-
-		using Base::Base;
+		/// Inherit constructors from MContainerBase
+		using MContainerBase<MArgumentType::Tensor, PassingMode>::MContainerBase;
 
 		/**
 		 * @brief   Default constructor, the MContainer does not manage any instance of MTensor.
@@ -75,6 +73,9 @@ namespace LLU {
 		}
 
 	private:
+		using Base = MContainerBase<MArgumentType::Tensor, PassingMode>;
+		using RawContainer = typename Base::Container;
+
 		/**
 		 *
 		 * @return

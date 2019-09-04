@@ -19,10 +19,8 @@ namespace LLU {
 	template<class PassingMode>
 	class MContainer<MArgumentType::Image, PassingMode> : public MContainerBase<MArgumentType::Image, PassingMode> {
 	public:
-		using Base = MContainerBase<MArgumentType::Image, PassingMode>;
-		using RawContainer = typename Base::Container;
-
-		using Base::Base;
+		/// Inherit constructors from MContainerBase
+		using MContainerBase<MArgumentType::Image, PassingMode>::MContainerBase;
 
 		/**
 		 * @brief   Default constructor, the MContainer does not manage any instance of MImage.
@@ -156,6 +154,8 @@ namespace LLU {
 		}
 
 	private:
+		using Base = MContainerBase<MArgumentType::Image, PassingMode>;
+		using RawContainer = typename Base::Container;
 
 		RawContainer cloneImpl() const override {
 			RawContainer tmp {};

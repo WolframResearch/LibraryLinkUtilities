@@ -163,18 +163,24 @@ namespace LLU {
 
 	protected:
 
+		/// Disown internal container if present
 		void disown() const noexcept override {
 			if (container) {
 				disownImpl();
 			}
 		}
 
+		/// Free internal container if present
 		void free() const noexcept override {
 			if (container) {
 				freeImpl();
 			}
 		}
 
+		/**
+		 * @brief   Set new internal container. The ownership state of this wrapper is not changed
+		 * @param   newCont - new internal container
+		 */
 		void setContainer(Container newCont) noexcept {
 			container = newCont;
 		}
@@ -190,9 +196,15 @@ namespace LLU {
 
 		virtual void passImpl(MArgument& res) const = 0;
 
+		/// Raw LibraryLink container (MTensor, MImage, DataStore, etc.)
 		Container container {};
 	};
 
+	/**
+	 * MContainer is an abstract class template for generic containers. Only specializations shall be used.
+	 * @tparam Type - container type (see MArgumentType definition)
+	 * @tparam PassingMode - passing policy (Shared, Manual, etc.)
+	 */
 	template<MArgumentType Type, class PassingMode>
 #ifdef _WIN32
 	class MContainer; // On Windows we cannot provide a body with static_assert because of ridiculous MSVC compiler errors (probably a bug).

@@ -19,10 +19,8 @@ namespace LLU {
 	template<class PassingMode>
 	class MContainer<MArgumentType::NumericArray, PassingMode> : public MContainerBase<MArgumentType::NumericArray, PassingMode> {
 	public:
-		using Base = MContainerBase<MArgumentType::NumericArray, PassingMode>;
-		using RawContainer = typename Base::Container;
-
-		using Base::Base;
+		/// Inherit constructors from MContainerBase
+		using MContainerBase<MArgumentType::NumericArray, PassingMode>::MContainerBase;
 
 		/**
 		 * @brief   Default constructor, the MContainer does not manage any instance of MNumericArray.
@@ -88,6 +86,8 @@ namespace LLU {
 		}
 
 	private:
+		using Base = MContainerBase<MArgumentType::NumericArray, PassingMode>;
+		using RawContainer = typename Base::Container;
 
 		RawContainer cloneImpl() const override {
 			RawContainer tmp {};
