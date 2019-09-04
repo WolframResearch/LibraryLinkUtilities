@@ -95,6 +95,17 @@ LIBRARY_LINK_FUNCTION(JoinText) {
 	return err;
 }
 
+LIBRARY_LINK_FUNCTION(GetMyExpressionStoreName) {
+	auto err = LLU::ErrorCode::NoError;
+	try {
+		LLU::MArgumentManager mngr(Argc, Args, Res);
+		mngr.set(MyExpressionStore.getExpressionName());
+	} catch (const LLU::LibraryLinkError& e) {
+		err = e.which();
+	}
+	return err;
+}
+
 /**
  * Read managed MyExpression via MathLink to a shared pointer.
  */
@@ -112,8 +123,8 @@ LLU::MLStream<EIn, EOut>& operator>>(LLU::MLStream<EIn, EOut>& ml, std::shared_p
  */
 template<LLU::ML::Encoding EIn, LLU::ML::Encoding EOut>
 MyExpression& getFromMathLink(LLU::MLStream<EIn, EOut> &ml) {
-	ml >> LLU::ML::Function("MyExpression", 1);
-	mint myExprID{};
+	ml >> LLU::ML::Function("MyExpression", 1);		// Watch out for context here!
+	mint myExprID{};								// In paclets the function head will usually be XXXTools`Private`MyExpression
 	ml >> myExprID;
 	return MyExpressionStore.getInstance(myExprID);
 }

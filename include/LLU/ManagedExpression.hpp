@@ -116,6 +116,14 @@ namespace LLU {
 		}
 
 		/**
+		 * Get symbol name that is used in the WL to represent Managed Expressions stored in this Store
+		 * @return symbol name
+		 */
+		const std::string& getExpressionName() const {
+			return expressionName;
+		}
+
+		/**
 		 * Register class T as managed expression under given \p name.
 		 * @param name - name of the Wolfram Language symbol that will be used to manage class T
 		 * @param libData - optionally specify WolframLibraryData instance
