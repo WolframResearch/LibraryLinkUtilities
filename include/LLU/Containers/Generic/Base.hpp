@@ -142,7 +142,7 @@ namespace LLU {
 		}
 
 		/**
-		 *   @brief 	Return share count of internal container.
+		 *   @brief Return share count of internal container.
 		 **/
 		mint shareCount() const noexcept {
 			if (container) {
@@ -152,8 +152,8 @@ namespace LLU {
 		}
 
 		/**
-		 * Pass the internal container as result of a LibraryLink function.
-		 * @param res - MArgument which will hold internal container of this MContainerBase
+		 * @brief   Pass the internal container as result of a LibraryLink function.
+		 * @param   res - MArgument which will hold internal container of this MContainerBase
 		 */
 		void pass(MArgument& res) const override {
 			if (container) {
@@ -201,9 +201,10 @@ namespace LLU {
 	};
 
 	/**
-	 * MContainer is an abstract class template for generic containers. Only specializations shall be used.
-	 * @tparam Type - container type (see MArgumentType definition)
-	 * @tparam PassingMode - passing policy (Shared, Manual, etc.)
+	 * @class   MContainer
+	 * @brief   MContainer is an abstract class template for generic containers. Only specializations shall be used.
+	 * @tparam  Type - container type (see MArgumentType definition)
+	 * @tparam  PassingMode - passing policy (Shared, Manual, etc.)
 	 */
 	template<MArgumentType Type, class PassingMode>
 #ifdef _WIN32

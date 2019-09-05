@@ -23,22 +23,27 @@
 
 namespace LLU {
 
+	/**
+	 *  @brief  Typed interface for Tensor.
+	 *
+	 *  Provides iterators, data access and info about dimensions.
+	 *  @tparam T - type of data in Tensor
+	 */
     template<typename T>
     class TypedTensor : public MArray<T> {
     public:
         using MArray<T>::MArray;
 
-        /**
-		 *   @brief	Return matching type of MTensor
-		 **/
+        /// Return matching type of MTensor
         static mint getType() noexcept {
             return type;
         }
 
     private:
-
+		/// @copydoc MArray<T>::getData()
         T* getData() const noexcept override;
 
+        /// Get the raw MTensor, must be implemented in subclasses.
         virtual MTensor getInternal() const = 0;
 
         /// Tensor data type matching template parameter T
@@ -83,9 +88,7 @@ namespace LLU {
 		/**
 		 *   @brief         Constructs the Tensor of given shape with all elements initialized to given value
 		 *   @param[in]     init - value of type \b T to initialize all elements of the Tensor
-		 *   @param[in]     dims - container with Tensor dimensions
-		 *   @tparam		Container - any type of container that has member \b value_type and this type is integral
-		 *   @throws		see Tensor<T>::createInternal() and MArray<T>::MArray(Container&&)
+		 *   @param[in]     dims - MArrayDimensions object with Tensor dimensions
 		 **/
 		Tensor(T init, MArrayDimensions dims);
 
@@ -94,16 +97,15 @@ namespace LLU {
 		 *   @param[in]     first - iterator to the beginning of range
 		 *   @param[in]		last - iterator past the end of range
 		 *   @param[in]     dims - container with Tensor dimensions
-		 *   @tparam		Container - any type of container that has member \b value_type and this type is convertible to mint
+		 *   @tparam		InputIt - any iterator conforming to InputIterator concept
 		 *   @throws		ErrorName::TensorNewError - if number of elements in \c v does not match total Tensor size indicated by \c dims
-		 *   @throws		see Tensor<T>::createInternal() and MArray<T>::MArray(Container&&)
 		 **/
 		template<class InputIt, typename = enable_if_input_iterator<InputIt>>
 		Tensor(InputIt first, InputIt last, MArrayDimensions dims);
 
 		/**
-		 *
-		 * @param t
+		 *  @brief  Create new Tensor from MTensor
+		 *  @param  t - MTensor
 		 */
 		explicit Tensor(MTensor t);
 
@@ -115,7 +117,7 @@ namespace LLU {
 		explicit Tensor(GenericTensor<PassingMode> t);
 
 		/**
-		 *
+		 *  @brief  Default constructor, creates a Tensor that does not wrap over any raw MTensor
 		 */
 		Tensor() = default;
 
@@ -156,6 +158,7 @@ namespace LLU {
 	private:
 		using GenericBase = MContainer<MArgumentType::Tensor, PassingMode>;
 
+		/// @copydoc MContainerBase::getContainer()
         MTensor getInternal() const noexcept override {
             return this->getContainer();
         }

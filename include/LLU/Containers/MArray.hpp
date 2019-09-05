@@ -55,8 +55,8 @@ namespace LLU {
 		MArray() = default;
 
 		/**
-		 *
-		 * @param d
+		 *  @brief  Create new MArray given the dimensions object
+		 *  @param  d - dimensions for the new MArray
 		 */
 		explicit MArray(MArrayDimensions d) : dims(std::move(d)) {}
 
@@ -104,16 +104,14 @@ namespace LLU {
 		}
 
 		/**
-		 *
-		 * @return
+		 *  @brief  Get dimension value at position \p index
 		 */
 		mint dimension(mint index) {
 			return dims.get(index);
 		}
 
 		/**
-		 *
-		 * @return
+		 *  @brief  Get a const reference to dimensions object
 		 */
 		const MArrayDimensions& dimensions() {
 			return dims;
