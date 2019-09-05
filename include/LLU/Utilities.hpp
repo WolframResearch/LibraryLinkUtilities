@@ -82,6 +82,7 @@ namespace LLU {
 	template<numericarray_data_t>
 	struct NumericArrayFromEnum;
 
+	/// @cond
 	template<> struct NumericArrayFromEnum<MNumericArray_Type_Bit8> {
 		using type = std::int8_t;
 	};
@@ -118,7 +119,9 @@ namespace LLU {
 	template<> struct NumericArrayFromEnum<MNumericArray_Type_Complex_Real64> {
 		using type = std::complex<double>;
 	};
+	/// @endcond
 
+	/// Simple type alias to easily extract type from NumericArrayFromEnum
 	template<numericarray_data_t rat>
 	using NumericArrayTypeFromEnum = typename NumericArrayFromEnum<rat>::type;
 
@@ -173,6 +176,7 @@ namespace LLU {
 		}
 	}
 
+	/// Small namespace for NumericArray related utilities
 	namespace NA {
 		/**
 		 * @brief Possible methods of handling out-of-range data when converting a NumericArray to different type.

@@ -12,7 +12,7 @@
 #include <cstdint>
 
 namespace LLU {
-
+/// @cond
 	//
 	//	Template specializations for Bit images
 	//
@@ -127,6 +127,6 @@ namespace LLU {
 			this->indexError();
 		}
 	}
-
+/// @endcond
 } /* namespace LLU */
 

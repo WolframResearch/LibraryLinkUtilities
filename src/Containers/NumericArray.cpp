@@ -12,7 +12,7 @@
 #include <cstdint>
 
 namespace LLU {
-
+/// @cond
 	template<>
 	const numericarray_data_t TypedNumericArray<uint8_t>::type = MNumericArray_Type_UBit8;
 
@@ -48,5 +48,5 @@ namespace LLU {
 
 	template<>
 	const numericarray_data_t TypedNumericArray<std::complex<double>>::type = MNumericArray_Type_Complex_Real64;
-
+/// @endcond
 } /* namespace LLU */

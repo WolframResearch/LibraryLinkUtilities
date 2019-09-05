@@ -44,6 +44,7 @@ namespace LLU {
 	template<MArgumentType T>
 	struct MType;
 
+	/// @cond
 	template<> struct MType<MArgumentType::MArgument>   { using type = MArgument; const std::string name = "MArgument"; };
 	template<> struct MType<MArgumentType::Boolean>     { using type = mbool; const std::string name = "Boolean"; };
 	template<> struct MType<MArgumentType::Integer>     { using type = mint; const std::string name = "Integer"; };
@@ -55,6 +56,7 @@ namespace LLU {
 	template<> struct MType<MArgumentType::NumericArray> { using type = MNumericArray; const std::string name = "NumericArray"; };
 	template<> struct MType<MArgumentType::Image>       { using type = MImage; const std::string name = "Image"; };
 	template<> struct MType<MArgumentType::UTF8String>  { using type = char*; const std::string name = "UTF8String"; };
+	/// @endcond
 
 	/// Type alias for convenience
 	template<MArgumentType T>

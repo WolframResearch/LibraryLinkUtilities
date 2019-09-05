@@ -1,4 +1,4 @@
-/** 
+/**
  * @file	Tensor.cpp
  * @author	Rafal Chojna <rafalc@wolfram.com>
  * @date	18/04/2017
@@ -12,6 +12,7 @@
 #include <complex>
 
 namespace LLU {
+	/// @cond
 	template<>
 	const mint TypedTensor<mint>::type = MType_Integer;
 	template<>
@@ -33,4 +34,5 @@ namespace LLU {
 	std::complex<double>* TypedTensor<std::complex<double>>::getData() const noexcept {
 		return reinterpret_cast<std::complex<double>*>(LibraryData::API()->MTensor_getComplexData(this->getInternal()));
 	}
+	/// @endcond
 } /* namespace LLU */
