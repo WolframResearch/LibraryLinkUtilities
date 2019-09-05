@@ -35,8 +35,6 @@ namespace LLU {
 	 *
 	 * MArgumentManager provides a safe way to access MArguments received from LibraryLink and takes care of memory management both for in- and out- arguments.
 	 * Using MArgumentManager one can perform generic operations on NumericArrays, Tensors and Images independent of their data type.
-	 *
-	 * @todo	Make sure all MArgument passing modes ("Constant", "Shared", etc.) are correctly handled
 	 **/
 	class MArgumentManager {
 	public:
