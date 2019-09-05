@@ -10,8 +10,10 @@
 #include "WolframLibrary.h"
 
 namespace LLU {
+	/// Namespace containing classes representing different passing modes that exist in LibraryLink
 	namespace Passing {
 
+		/// Abstract class defining common interface and behavior for all predefined     passing policies
 		class PassingPolicy {
 		public:
 

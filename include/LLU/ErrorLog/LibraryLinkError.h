@@ -14,7 +14,7 @@
 #include "LLU/ML/MLStream.hpp"
 
 /**
- * @namespace LibraryLinkUtils
+ * @namespace LLU
  * @brief Main namespace of LibraryLinkUtilities
  */
 namespace LLU {
