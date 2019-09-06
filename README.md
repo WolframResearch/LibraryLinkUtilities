@@ -592,20 +592,16 @@ EXTERN_C DLLEXPORT int WolframLibrary_initialize(WolframLibraryData libData) {
 }
 
 EXTERN_C DLLEXPORT void WolframLibrary_uninitialize(WolframLibraryData libData) {
-	MyExpressionStore.unregisterType(libData);
+	AStore.unregisterType(libData);
 }
 ```
-The good news is that you can omit the middle step if you use a special macro when defining the managed class:
+The good news is that you can omit the middle step thanks to a special macro:
 ```cpp
-MANAGED_EXPRESSION_STRUCT(A) {  // use the macro in place of the struct keyword
-    A(int n) : myNumber{n} {}
-    int getMyNumber() const { return myNumber; }
-private:
-    int myNumber;    
-};
+DEFINE_MANAGED_STORE_AND_SPECIALIZATION(A)
 ```
-This will create the Store and the template specialization for you but you still need to register your class in 
-`WolframLibrary_initialize` and unregeister in `WolframLibrary_uninitialize`.
+This will define the Store variable and the template specialization for you but you still need to register your class in 
+`WolframLibrary_initialize` and unregeister in `WolframLibrary_uninitialize`. The macro must be called in a scope where
+ structure `A` is defined.
 
 One of the biggest limitations of MLEs in LibraryLink is that you cannot pass arguments for construction of managed expressions.
 This is addressed in LLU by letting the developer define a library function that LLU will call from Wolfram Language 
@@ -616,7 +612,7 @@ EXTERN_C DLLEXPORT int OpenManagedA(WolframLibraryData libData, mint Argc, MArgu
 	auto err = LLU::ErrorCode::NoError;
 	try {
 		LLU::MArgumentManager mngr(libData, Argc, Args, Res);
-		auto id = mngr.getInteger<mint>(0);
+		auto id = mngr.getInteger<mint>(0); // id of the object to be created
 		auto arg1 = mngr.getXXXX(1);
 		auto arg2 = mngr.getYYYY(2);
 		... // read the rest of parameters for constructor of your managed class 

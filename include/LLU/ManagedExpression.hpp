@@ -16,32 +16,16 @@
 #include <LLU/Utilities.hpp>
 
 /**
- * Use this macro in place of the \b class keyword when defining a "managed" class.
- * It will declare the class, define an instance of ManagedExpressionStore corresponding to your class
- * and it will define a template specialization of manageInstanceCallback for your class.
+ * Use this macro to define an instance of ManagedExpressionStore corresponding to your class
+ * and a template specialization of manageInstanceCallback for the managed class.
  */
-#define MANAGED_EXPRESSION_CLASS(ClassName) \
-	class ClassName; \
-	\
+#define DEFINE_MANAGED_STORE_AND_SPECIALIZATION(ClassName) \
 	LLU::ManagedExpressionStore<ClassName> ClassName##Store; \
 	\
-	template<> void LLU::manageInstanceCallback<ClassName>(WolframLibraryData, mbool mode, mint id) {\
+	template<> inline void LLU::manageInstanceCallback<ClassName>(WolframLibraryData, mbool mode, mint id) {\
 		ClassName##Store.manageInstance(mode, id);\
-	}\
-	\
-	class ClassName
+	}
 
-/// Same as \c MANAGED_EXPRESSION_CLASS only for structures
-#define MANAGED_EXPRESSION_STRUCT(StructName) \
-    struct StructName; \
-    \
-    LLU::ManagedExpressionStore<StructName> StructName##Store; \
-    \
-    template<> void LLU::manageInstanceCallback<StructName>(WolframLibraryData, mbool mode, mint id) {\
-        StructName##Store.manageInstance(mode, id);\
-    }\
-    \
-    struct StructName
 
 namespace LLU {
 

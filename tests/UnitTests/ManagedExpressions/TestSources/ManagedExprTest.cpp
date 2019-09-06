@@ -13,7 +13,7 @@
  * Sample class to be "managed" by WL.
  * The only requirement is for the class to have a public constructor.
  */
-MANAGED_EXPRESSION_CLASS(MyExpression) {
+class MyExpression {
 public:
 	MyExpression(mint myID, std::string text) : id {myID}, text {std::move(text)} {
 		LLU_DEBUG("MyExpression[", id, "] created.");
@@ -33,6 +33,8 @@ private:
 	mint id;
 	std::string text;
 };
+
+DEFINE_MANAGED_STORE_AND_SPECIALIZATION(MyExpression)
 
 EXTERN_C DLLEXPORT int WolframLibrary_initialize(WolframLibraryData libData) {
 	LLU::LibraryData::setLibraryData(libData);
