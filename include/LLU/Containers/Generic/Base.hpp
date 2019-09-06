@@ -26,7 +26,7 @@ namespace LLU {
 	class MContainerBase : public PassingMode {
 	public:
 		using Container = MType_t<Type>;
-
+		using Passing = PassingMode;
 	public:
 		/**
 		 * @brief Default constructor.

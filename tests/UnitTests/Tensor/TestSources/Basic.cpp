@@ -50,7 +50,7 @@ LIBRARY_LINK_FUNCTION(CloneTensor) {
 	auto err = ErrorCode::NoError;
 	try {
 		MArgumentManager mngr(libData, Argc, Args, Res);
-		mngr.operateOnTensor(0, [&mngr](auto t1) {
+		mngr.operateOnTensor(0, [&mngr](auto&& t1) {
 			using T = typename std::decay_t<decltype(t1)>::value_type;
 			Tensor<T, LLU::Passing::Manual> t2{t1};  // test copy constructor
 			Tensor<T> t3;
@@ -196,5 +196,15 @@ EXTERN_C DLLEXPORT int MeanValue(WolframLibraryData libData, mint Argc, MArgumen
 
 	auto result = total / t.size();
 	mngr.setReal(result);
-	return LIBRARY_NO_ERROR;
+	return ErrorCode::NoError;
+}
+
+LIBRARY_LINK_FUNCTION(FromVector) {
+	MArgumentManager mngr(libData, Argc, Args, Res);
+
+	std::vector<mint> v { 3, 5, 7, 9 };
+	Tensor<mint> t {std::begin(v), std::end(v), {2, 2}};
+	mngr.set(t);
+
+	return ErrorCode::NoError;
 }

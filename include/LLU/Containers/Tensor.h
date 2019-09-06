@@ -184,9 +184,9 @@ namespace LLU {
 
 	template<typename T, class PassingMode>
 	template<class InputIt, typename>
-	Tensor<T, PassingMode>::Tensor(InputIt first, InputIt last, MArrayDimensions dims) : TypedTensor<T>(std::move(dims),
-	        GenericBase(TypedTensor<T>::getType(), this->rank(), this->dims.data())) {
-		if (std::distance(first, last) != this->flattenedLength)
+	Tensor<T, PassingMode>::Tensor(InputIt first, InputIt last, MArrayDimensions dims) : TypedTensor<T>(std::move(dims)),
+	        GenericBase(TypedTensor<T>::getType(), this->rank(), this->dims.data()) {
+		if (std::distance(first, last) != this->getFlattenedLength())
 			ErrorManager::throwException(ErrorName::TensorNewError, "Length of data range does not match specified dimensions");
 		std::copy(first, last, this->begin());
 	}

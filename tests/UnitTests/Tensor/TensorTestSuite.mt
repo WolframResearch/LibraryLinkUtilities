@@ -36,6 +36,7 @@ TestExecute[
 	CloneTensor = LibraryFunctionLoad[lib, "CloneTensor", {{_, _, "Constant"}}, {_, _}];
 	TestDimensions = LibraryFunctionLoad[lib, "TestDimensions", {{Integer, 1, "Manual"}}, {Real, _}];
 	TestDimensions2 = LibraryFunctionLoad[lib, "TestDimensions2", {}, "DataStore"];
+	FromVector = LibraryFunctionLoad[lib, "FromVector", {}, {Integer, 2}];
 
 	MeanValue = LibraryFunctionLoad[lib, "MeanValue", {{Real, 1}}, Real];
 
@@ -327,7 +328,7 @@ Test[
 	oldT + 1.
 	,
 	TestID->"TensorOperations-20150831-LGONV3"
-]   ;
+];
 
 Test[
 	copyShared[RandomReal[1., {3, 5}]]
@@ -335,6 +336,14 @@ Test[
 	110
 	,
 	TestID->"TensorOperations-20150831-L0U3V3"
+];
+
+Test[
+	FromVector[]
+	,
+	{{3, 5}, {7, 9}}
+	,
+	TestID->"TensorTestSuite-20190906-N0T6L8"
 ];
 
 EndRequirement[];

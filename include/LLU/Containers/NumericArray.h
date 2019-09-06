@@ -89,8 +89,6 @@ namespace LLU {
 		 *   @brief         Constructs the NumericArray of given shape with all elements initialized to given value
 		 *   @param[in]     init - value of type \b T to initialize all elements of the NumericArray
 		 *   @param[in]     dims - container with NumericArray dimensions
-		 *   @tparam		Container - any type of container that has member \b value_type and this type is convertible to mint
-		 *   @throws		see NumericArray<T>::createInternal() and MArray<T>::MArray(Container&&)
 		 **/
 		NumericArray(T init, MArrayDimensions dims);
 
@@ -137,13 +135,13 @@ namespace LLU {
 		 *   @brief        	Copy constructor
 		 *   @param[in]     other - const reference to a NumericArray of matching type
 		 **/
-		NumericArray(const NumericArray& other) : TypedNumericArray<T>(static_cast<const TypedNumericArray<T> &>(other)), GenericBase(other) {}
+		NumericArray(const NumericArray& other) = default;
 
 		/**
 		 *   @brief         Move constructor
 		 *   @param[in]     other - rvalue reference to a NumericArray of matching type
 		 **/
-		NumericArray(NumericArray &&other) noexcept : TypedNumericArray<T>(static_cast<TypedNumericArray<T> &&>(other)), GenericBase(std::move(other)) {}
+		NumericArray(NumericArray &&other) noexcept = default;
 
 		/**
 		 *    @brief	Free internal MNumericArray if necessary
