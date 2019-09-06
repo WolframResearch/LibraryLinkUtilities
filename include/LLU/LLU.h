@@ -2,8 +2,8 @@
  * @file	LLU.h
  * @brief	Header file which includes all major parts of LLU.
  *
- * It's often convenient to use a single include file but bare in mind that if you only need a small subset of LLU i your project
- * you may get faster compilation times by including only what you actually use.
+ * It's often convenient to use a single include file but bear in mind that if you only need a small subset of LLU in your project
+ * you may get shorter compilation times by including only what you actually use.
  */
 
 #ifndef LLUTILS_LLU_H_
