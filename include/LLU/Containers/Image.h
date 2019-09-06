@@ -19,7 +19,12 @@
 
 namespace LLU {
 
-
+	/**
+	 *  @brief  Typed interface for Image.
+	 *
+	 *  Provides iterators, data access and info about dimensions.
+	 *  @tparam T - type of data in Image
+	 */
 	template<typename T>
 	class 	TypedImage : public MArray<T> {
 	public:
@@ -77,27 +82,42 @@ namespace LLU {
 			setValueAt(pos.data(), channel, newValue);
 		}
 
+		/// Return matching type of MImage
 		static imagedata_t getType() noexcept {
 			return type;
 		}
 
 	private:
-
+		/**
+		 * @copydoc MArray<T>::getData()
+		 * @see     <http://reference.wolfram.com/language/LibraryLink/ref/callback/MImage_getRawData.html>
+		 */
 		T* getData() const noexcept override {
 			return static_cast<T*>(LibraryData::ImageAPI()->MImage_getRawData(this->getInternal()));
 		}
 
+		/// Get the raw MImage, must be implemented in subclasses.
 		virtual MImage getInternal() const = 0;
 
-		/**
-		 *
-		 */
-		void indexError() const {
+		/// Throw Image-specific error for accessing data under invalid index
+		[[noreturn]] void indexError() const {
 			ErrorManager::throwException(ErrorName::ImageIndexError);
 		}
 
+		/**
+		 * @brief   Get specified pixel value
+		 * @param   pos - coordinates of the pixel in the image
+		 * @param   channel - index of the desired value within the pixel
+		 * @return  value of the given channel of specified pixel
+		 */
 		T getValueAt(mint* pos, mint channel) const;
 
+		/**
+		 * @brief   Set new channel value for specific pixel in the image
+		 * @param   pos - coordinates of the pixel in the image
+		 * @param   channel - index of the desired value within the pixel
+		 * @param   newValue - new value for the specified channel
+		 */
 		void setValueAt(mint* pos, mint channel, T newValue);
 
 		/// Image data type matching template parameter T
@@ -123,7 +143,6 @@ namespace LLU {
 		 *   @param[in]     channels - number of channels
 		 *   @param[in]     cs - color space
 		 *   @param[in]		interleavingQ - whether Image data should be interleaved
-		 *   @throws		see Image<T>::Image(mint nFrames, mint w, mint h, mint channels, colorspace_t cs, bool interleavingQ)
 		 **/
 		Image(mint w, mint h, mint channels, colorspace_t cs, bool interleavingQ);
 
@@ -180,39 +199,43 @@ namespace LLU {
 		 *   @param[in]     other - const reference to an Image
 		 **/
 		template<class P>
-		Image(const Image<T, P> &other) : TypedImage<T>(other), GenericImage<PassingMode>(other) {}
+		explicit Image(const Image<T, P> &other) : TypedImage<T>(other), GenericImage<PassingMode>(other) {}
 
 		/**
 		 *   @brief         Copy constructor with type conversion
 		 *   @tparam		U - any type that Image supports
-		 *   @param[in]     t2 - const reference to an Image
+		 *   @param[in]     i2 - const reference to an Image
 		 **/
 		template<typename U, class P>
-		Image(const Image<U, P>& t2);
+		explicit Image(const Image<U, P>& i2);
 
 		/**
 		 *   @brief         Copy constructor with type conversion and explicitly specified interleaving
 		 *   @tparam		U - any type that Image supports
-		 *   @param[in]     t2 - const reference to an Image
+		 *   @param[in]     i2 - const reference to an Image
 		 *   @param[in]		interleavedQ - whether the newly created Image should be interleaved
 		 **/
 		template<typename U, class P>
-		Image(const Image<U, P>& t2, bool interleavedQ);
+		Image(const Image<U, P>& i2, bool interleavedQ);
 
 	private:
 		using GenericBase = MContainer<MArgumentType::Image, PassingMode>;
 
+		/// @copydoc MContainerBase::getContainer()
 		MImage getInternal() const noexcept override {
 			return this->getContainer();
 		}
 
-		/**
-		 *
-		 */
+		/// Throw Image-specific exception for size-related errors
 		[[noreturn]] static void sizeError() {
 			ErrorManager::throwException(ErrorName::ImageSizeError);
 		}
 
+		/**
+		 * @brief   Helper function that extracts dimension information from GenericImage
+		 * @param   im - generic image
+		 * @return  MArrayDimensions object with dimensions extracted from the input GenericImage
+		 */
 		static MArrayDimensions dimensionsFromGenericImage(const GenericBase& im);
 	};
 
