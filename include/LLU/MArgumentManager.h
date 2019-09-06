@@ -368,7 +368,7 @@ namespace LLU {
 		 *  @param[in]  na - reference to generic NumericArray which should pass its internal MNumericArray to LibraryLink
 		 */
 		template<class PassingMode>
-		void set(const GenericNumericArray<PassingMode>& na) { na.pass(res); }
+		void set(const GenericNumericArray<PassingMode>& na) { na.passAsResult(res); }
 
 		/// @copydoc setTensor
 		template<typename T, class PassingMode>
@@ -380,7 +380,7 @@ namespace LLU {
 		 *  @param[in]  t - reference to generic Tensor which should pass its internal MTensor to LibraryLink
 		 */
 		template<class PassingMode>
-		void set(const GenericTensor<PassingMode>& t) { t.pass(res); }
+		void set(const GenericTensor<PassingMode>& t) { t.passAsResult(res); }
 
 		/// @copydoc setImage
 		template<typename T, class PassingMode>
@@ -392,7 +392,7 @@ namespace LLU {
 		 *  @param[in]  im - reference to generic Image which should pass its internal MImage to LibraryLink
 		 */
 		template<class PassingMode>
-		void set(const GenericImage<PassingMode>& im) { im.pass(res); }
+		void set(const GenericImage<PassingMode>& im) { im.passAsResult(res); }
 
 		/// @copydoc setDataList
 		template<MArgumentType T, class PassingMode>
@@ -404,7 +404,7 @@ namespace LLU {
 		 *  @param[in]  ds - reference to generic DataStore which should pass its internal DataStore to LibraryLink
 		 */
 		template<class PassingMode>
-		void set(const GenericDataList<PassingMode>& ds) { ds.pass(res); }
+		void set(const GenericDataList<PassingMode>& ds) { ds.passAsResult(res); }
 
 		/************************************ utility functions ************************************/
 
@@ -598,8 +598,8 @@ namespace LLU {
 	}
 
 	template<typename T, class PassingMode>
-	void MArgumentManager::setNumericArray(const NumericArray<T, PassingMode>& ra) {
-		ra.passAsResult(res);
+	void MArgumentManager::setNumericArray(const NumericArray<T, PassingMode>& na) {
+		na.passAsResult(res);
 	}
 
 	template<class Operator, class PassingMode, class ... Args>

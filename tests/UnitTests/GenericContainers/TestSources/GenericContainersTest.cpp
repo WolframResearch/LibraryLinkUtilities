@@ -65,26 +65,34 @@ LIBRARY_LINK_FUNCTION(CloneShared) {
 LIBRARY_LINK_FUNCTION(MoveAutomatic) {
 	LLU::MArgumentManager mngr{libData, Argc, Args, Res};
 	auto img = mngr.getGenericImage(0);
-	LLU::GenericImage<Manual> clone = std::move(img); // this will not actually move, a copy will be made
+	LLU_DEBUG("Automatic arg is owner: ", img.isOwner());
+	LLU::GenericImage<Automatic> clone = std::move(img); // we can create Automatic container if we move from another Automatic
+	LLU_DEBUG("Automatic arg is owner: ", img.isOwner(), ", clone is owner: ", clone.isOwner());
 	mngr.set(clone);
+	LLU_DEBUG("Automatic arg is owner: ", img.isOwner(), ", clone is owner: ", clone.isOwner());
 	return (!img.isOwner() && !clone.isOwner()) ? NoError : MemoryError;
 }
 
 LIBRARY_LINK_FUNCTION(MoveManual) {
 	LLU::MArgumentManager mngr{libData, Argc, Args, Res};
 	auto t = mngr.getGenericTensor<Manual>(0);
+	LLU_DEBUG("Manual arg is owner: ", t.isOwner());
 	LLU::Tensor<mint> tensor{std::move(t)};
 	tensor[0] = -324;
 	LLU::GenericTensor<Manual> clone = std::move(tensor);
+	LLU_DEBUG("Manual arg is owner: ", t.isOwner(), ", clone is owner: ", clone.isOwner());
 	mngr.set(clone);
+	LLU_DEBUG("Manual arg is owner: ", t.isOwner(), ", clone is owner: ", clone.isOwner());
 	return (!t.isOwner() && !tensor.isOwner() && !clone.isOwner()) ? NoError : MemoryError;
 }
 
 LIBRARY_LINK_FUNCTION(MoveShared) {
 	LLU::MArgumentManager mngr{libData, Argc, Args, Res};
 	auto na = mngr.getGenericNumericArray<Shared>(0);
-	LLU::GenericNumericArray<Manual> clone = std::move(na); // this will not actually move, a copy will be made
+	LLU_DEBUG("Shared arg is owner: ", na.isOwner());
+	LLU::GenericNumericArray<Shared> clone = std::move(na);
+	LLU_DEBUG("Shared arg is owner: ", na.isOwner(), ", clone is owner: ", clone.isOwner());
 	mngr.set(clone);
-	LLU_DEBUG("Input arg is owner: ", na.isOwner(), ", clone is owner: ", clone.isOwner());
-	return (na.isOwner() && !clone.isOwner()) ? NoError : MemoryError;
+	LLU_DEBUG("Shared arg is owner: ", na.isOwner(), ", clone is owner: ", clone.isOwner());
+	return (!na.isOwner() && clone.isOwner()) ? NoError : MemoryError;
 }

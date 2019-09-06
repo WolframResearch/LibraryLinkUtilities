@@ -10,10 +10,6 @@
 
 namespace LLU {
 
-	/**
-	 *  @brief  MContainer specialization for MTensor
-	 *  @tparam PassingMode - passing policy
-	 */
 	template<class PassingMode>
 	class MContainer<MArgumentType::Tensor, PassingMode>;
 
@@ -21,6 +17,10 @@ namespace LLU {
 	template<class PassingMode>
 	using GenericTensor = MContainer<MArgumentType::Tensor, PassingMode>;
 
+	/**
+	 *  @brief  MContainer specialization for MTensor
+	 *  @tparam PassingMode - passing policy
+	 */
 	template<class PassingMode>
 	class MContainer<MArgumentType::Tensor, PassingMode> : public MContainerBase<MArgumentType::Tensor, PassingMode> {
 	public:
@@ -147,7 +147,7 @@ namespace LLU {
 		 *   @copydoc   MContainerBase::pass
 		 **/
 		void passImpl(MArgument& res) const noexcept override {
-			MArgument_setMTensor(res, this->abandonContainer());
+			MArgument_setMTensor(res, this->getContainer());
 		}
 
 		/**

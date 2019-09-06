@@ -36,7 +36,7 @@ namespace LLU {
 		}
 
 		template<class P>
-		MContainer(const MContainer<MArgumentType::NumericArray, P>& mc) : Base(mc) {
+		explicit MContainer(const MContainer<MArgumentType::NumericArray, P>& mc) : Base(mc) {
 		}
 
 		MContainer(const MContainer& mc) = default;
@@ -110,7 +110,7 @@ namespace LLU {
 		}
 
 		void passImpl(MArgument& res) const noexcept override {
-			MArgument_setMNumericArray(res, this->abandonContainer());
+			MArgument_setMNumericArray(res, this->getContainer());
 		}
 	};
 

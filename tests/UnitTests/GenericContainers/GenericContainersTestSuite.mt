@@ -42,6 +42,10 @@ TestExecute[
 	tensor = {1, 2, 3, 4, 5};
 	na = NumericArray[{5, 4, 3, 2, 1}, "UnsignedInteger16"];
 	ds = Developer`DataStore["x" -> img, "y" -> 3];
+
+	`LLU`Logger`PrintLogFunctionSelector := Block[{`LLU`Logger`FormattedLog = `LLU`Logger`LogToShortString},
+		`LLU`Logger`PrintLogToSymbol[TestLogSymbol][##]
+	]&;
 ];
 
 
@@ -126,4 +130,22 @@ Test[
 	na
 	,
 	TestID->"GenericContainersTestSuite-20190724-E4T3F7"
+];
+
+Test[
+	TestLogSymbol
+	,
+	{
+		"[Debug] GenericContainersTest.cpp:68 (MoveAutomatic): Automatic arg is owner: False", 
+		"[Debug] GenericContainersTest.cpp:70 (MoveAutomatic): Automatic arg is owner: False, clone is owner: False", 
+		"[Debug] GenericContainersTest.cpp:72 (MoveAutomatic): Automatic arg is owner: False, clone is owner: False", 
+		"[Debug] GenericContainersTest.cpp:79 (MoveManual): Manual arg is owner: True", 
+		"[Debug] GenericContainersTest.cpp:83 (MoveManual): Manual arg is owner: False, clone is owner: True", 
+		"[Debug] GenericContainersTest.cpp:85 (MoveManual): Manual arg is owner: False, clone is owner: False", 
+		"[Debug] GenericContainersTest.cpp:92 (MoveShared): Shared arg is owner: True", 
+		"[Debug] GenericContainersTest.cpp:94 (MoveShared): Shared arg is owner: False, clone is owner: True", 
+		"[Debug] GenericContainersTest.cpp:96 (MoveShared): Shared arg is owner: False, clone is owner: True"
+	}
+	,
+	TestID -> "GenericContainersTestSuite-20190906-W5T3O4"
 ];

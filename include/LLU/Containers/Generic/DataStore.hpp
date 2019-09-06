@@ -12,15 +12,15 @@
 namespace LLU {
 
 	/**
-	 *
-	 * @tparam PassingMode - passing policy
+	 *  @brief  MContainer specialization for DataStore
+	 *  @tparam PassingMode - passing policy
 	 */
 	template<class PassingMode>
 	class MContainer<MArgumentType::DataStore, PassingMode>;
 
+	/// MContainer specialization for DataStore is called GenericDataList
 	template<class PassingMode>
 	using GenericDataList = MContainer<MArgumentType::DataStore, PassingMode>;
-
 
 	template<class PassingMode>
 	class MContainer<MArgumentType::DataStore, PassingMode> : public MContainerBase<MArgumentType::DataStore, PassingMode> {
@@ -127,7 +127,7 @@ namespace LLU {
 		 * @param   res - MArgument that will store the result of library function
 		 */
 		void passImpl(MArgument& res) const noexcept override {
-			MArgument_setDataStore(res, this->abandonContainer());
+			MArgument_setDataStore(res, this->getContainer());
 		}
 	};
 

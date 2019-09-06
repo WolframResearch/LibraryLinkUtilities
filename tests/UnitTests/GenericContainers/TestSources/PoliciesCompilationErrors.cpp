@@ -61,3 +61,17 @@ LIBRARY_LINK_FUNCTION(SharedDataStore) {
 	auto ds = mngr.getGenericDataList<Shared>(0);
 	return 0;
 }
+
+LIBRARY_LINK_FUNCTION(MoveAutomatic) {
+	LLU::MArgumentManager mngr{libData, Argc, Args, Res};
+	auto img = mngr.getGenericImage(0);
+	LLU::GenericImage<Manual> clone = std::move(img); // cannot move Automatic to Manual
+	return 0;
+}
+
+LIBRARY_LINK_FUNCTION(MoveShared) {
+	LLU::MArgumentManager mngr{libData, Argc, Args, Res};
+	auto na = mngr.getGenericNumericArray<Shared>(0);
+	LLU::GenericNumericArray<Automatic> clone = std::move(na); // cannot move Shared to Automatic
+	return 0;
+}
