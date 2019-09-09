@@ -117,6 +117,13 @@ namespace LLU {
 		explicit Tensor(GenericTensor<PassingMode> t);
 
 		/**
+		 *   @brief         Create new Tensor from Tensor of different passing policy by making a copy
+		 *   @param[in]     other - const reference to a generic Tensor
+		 **/
+		template<class P>
+		explicit Tensor(const Tensor<T, P>& other);
+		
+		/**
 		 *  @brief  Default constructor, creates a Tensor that does not wrap over any raw MTensor
 		 */
 		Tensor() = default;
@@ -195,6 +202,11 @@ namespace LLU {
 	Tensor<T, PassingMode>::Tensor(GenericBase t) : TypedTensor<T>({t.getDimensions(), t.getRank()}), GenericBase(std::move(t)) {
 		if (TypedTensor<T>::getType() != GenericBase::type())
 			ErrorManager::throwException(ErrorName::TensorTypeError);
+	}
+
+	template<typename T, class PassingMode>
+	template<class P>
+	Tensor<T, PassingMode>::Tensor(const Tensor<T, P>& other) : TypedTensor<T>(other), GenericBase(other) {
 	}
 
 	template<typename T, class PassingMode>

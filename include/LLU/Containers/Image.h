@@ -218,6 +218,16 @@ namespace LLU {
 		template<typename U, class P>
 		Image(const Image<U, P>& i2, bool interleavedQ);
 
+		/**
+		 *   @brief         Copy-assignment operator with passing mode change
+		 *   @param[in]     other - const reference to an Image of matching type
+		 **/
+		template<class P>
+		Image& operator=(const Image <T, P>& other) {
+			TypedImage<T>::operator=(other);
+			GenericBase::operator=(other);
+			return *this;
+		}
 	private:
 		using GenericBase = MContainer<MArgumentType::Image, PassingMode>;
 

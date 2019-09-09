@@ -91,8 +91,8 @@ namespace LLU {
 
 	private:
 		std::string name;
-		MArgument nodeArg;
-		DataStoreNode rawNode;
+		MArgument nodeArg {};
+		DataStoreNode rawNode {};
 	};
 
 
@@ -166,7 +166,7 @@ namespace LLU {
 		 * @param 	other - a DataList with matching node type
 		 */
 		template<class P>
-		DataList(const DataList<T, P>& other);
+		explicit DataList(const DataList<T, P>& other);
 
 		/**
 		 * @brief 	Copy constructor is deleted because it doesn't make sense for some passing policies.
@@ -191,6 +191,17 @@ namespace LLU {
 		 * @return	*this
 		 */
 		DataList& operator=(DataList&& other) noexcept;
+
+		/**
+		 *   @brief         Copy-assignment operator with passing mode change
+		 *   @param[in]     other - const reference to a DataList of matching type
+		 **/
+		template<class P>
+		DataList& operator=(const DataList<T, P>& other) {
+			GenericDataStore::operator=(other);
+			proxyList = std::move(other.proxyList);
+			return *this;
+		}
 
 		/**
 		 * @brief	Perform a deep copy of the DataList returning a new DataList with Manual passing policy

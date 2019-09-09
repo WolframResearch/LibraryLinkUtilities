@@ -155,7 +155,7 @@ namespace LLU {
 		NumericArray& operator=(NumericArray&&) noexcept = default;
 
 		/**
-		 *   @brief         Copy-assignment operator
+		 *   @brief         Copy-assignment operator with passing mode change
 		 *   @param[in]     other - const reference to a NumericArray of matching type
 		 **/
         template<class P>
