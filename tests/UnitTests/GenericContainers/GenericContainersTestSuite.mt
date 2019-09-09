@@ -43,6 +43,7 @@ TestExecute[
 	na = NumericArray[{5, 4, 3, 2, 1}, "UnsignedInteger16"];
 	ds = Developer`DataStore["x" -> img, "y" -> 3];
 
+	ClearAll[TestLogSymbol];
 	`LLU`Logger`PrintLogFunctionSelector := Block[{`LLU`Logger`FormattedLog = `LLU`Logger`LogToShortString},
 		`LLU`Logger`PrintLogToSymbol[TestLogSymbol][##]
 	]&;

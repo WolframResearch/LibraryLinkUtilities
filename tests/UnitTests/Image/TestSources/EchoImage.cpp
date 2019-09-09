@@ -13,7 +13,7 @@ LIBRARY_LINK_FUNCTION(EchoImage1) {
 		mngr.operateOnImage(0, [&mngr](auto im1) {
 			using T = typename std::remove_reference_t<decltype(im1)>::value_type;
 			auto im2 {std::move(im1)};  // test move constructor
-			LLU::Image<T> im3;
+			LLU::Image<T, LLU::Passing::Manual> im3;
 			im3 = std::move(im2);  // test move assignment
 			mngr.setImage(im3);
 		});

@@ -27,12 +27,12 @@ struct ImageNegator {
 	}
 
 	template<class P>
-	void operator()(LLU::Image<float, P> in, LLU::MArgumentManager& mngr) {
+	void operator()(LLU::Image<float, P>, LLU::MArgumentManager&) {
 		throw std::runtime_error("Cannot negate Real32 image");
 	}
 
 	template<class P>
-	void operator()(LLU::Image<double, P> in, LLU::MArgumentManager& mngr) {
+	void operator()(LLU::Image<double, P>, LLU::MArgumentManager&) {
 		throw std::runtime_error("Cannot negate Real image");
 	}
 };

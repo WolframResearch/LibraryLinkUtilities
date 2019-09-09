@@ -12,28 +12,20 @@ Catch @ TestExecute[
 (****************************NumericArray Operations****************************************)
 
 Test[
-	echoNumericArray[na]
+	echoNumericArrays[na, na, na]
 	,
-	NumericArray[{1, 2, 3, 4}, "UnsignedInteger8"]
+	Developer`DataStore @@ Table[NumericArray[{1, 2, 3, 4}, "UnsignedInteger8"], 3]
 	,
 	TestID->"NumericArrayOperations-20150825-M7G1B2"
 ]
 
 Test[
-	echoNumericArray[{{},{}}]
+	num = NumericArray[N @ Range[0, 47] / 47, "Real64"];
+	echoNumericArrays[{{},{}}, na,  num]
 	,
-	{{},{}}
+	Developer`DataStore[{{},{}}, na, num]
 	,
 	TestID -> "NumericArrayTestSuite-20190731-L3E9L6"
-]
-
-Test[
-	num = NumericArray[N @ Range[0, 47]/47, "Real64"];
-	res = NumericArrayQ @ echoNumericArray[num]
-	,
-	True
-	,
-	TestID->"NumericArrayOperations-20150825-P4U4W5"
 ]
 
 Test[
@@ -120,19 +112,11 @@ Test[
 ]
 
 Test[
-	cloneNA[na]
+	cloneNA[NumericArray[{}, "UnsignedInteger8"], {{}, {}}, na]
 	,
-	na
+	Developer`DataStore[{}, {{}, {}}, na]
 	,
 	TestID->"NumericArrayOperations-20150827-I0C3X0"
-]
-
-Test[
-	cloneNA[NumericArray[{}, "UnsignedInteger8"]]
-	,
-	NumericArray[{}, "UnsignedInteger8"]
-	,
-	TestID -> "NumericArrayTestSuite-20190729-V6U8K6"
 ]
 
 Test[(*check NumericArray shared APi's*)

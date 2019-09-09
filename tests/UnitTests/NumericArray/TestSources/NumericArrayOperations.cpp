@@ -45,17 +45,31 @@ LIBRARY_LINK_FUNCTION(CreateEmptyMatrix) {
 	return ErrorCode::NoError;
 }
 
-LIBRARY_LINK_FUNCTION(echoNumericArray) {
+struct MoveTester {
+	LLU::DataList<LLU::MArgumentType::NumericArray, LLU::Passing::Manual>& result;
+
+	template<typename T, typename P>
+	void operator()(NumericArray<T, P> na) {
+		auto na2{std::move(na)};  // test move constructor
+		NumericArray<T> na3;
+		na3 = std::move(na2);  // test move assignment, but this will only move when P is Passing::Manual, otherwise it has to make a copy
+		result.push_back(na3);
+	}
+};
+
+LIBRARY_LINK_FUNCTION(echoNumericArrays) {
 	auto err = ErrorCode::NoError;
 	try {
 		MArgumentManager mngr(Argc, Args, Res);
-		mngr.operateOnNumericArray(0, [&mngr](auto&& rarray1) {
-			using T = typename std::decay_t<decltype(rarray1)>::value_type;
-			auto  rarray2 {std::move(rarray1)};  // test move constructor
-			NumericArray<T> rarray3;
-			rarray3 = std::move(rarray2);  // test move assignment
-			mngr.setNumericArray(rarray3);
-		});
+		LLU::DataList<LLU::MArgumentType::NumericArray, LLU::Passing::Manual> result;
+
+		MoveTester mt {result};
+
+		mngr.operateOnNumericArray(0, mt);
+		mngr.operateOnNumericArray<LLU::Passing::Manual>(1, mt);
+		mngr.operateOnNumericArray<LLU::Passing::Shared>(2, mt);
+
+		mngr.set(result);
 	}
 	catch (const LibraryLinkError& e) {
 		err = e.which();
@@ -121,18 +135,32 @@ LIBRARY_LINK_FUNCTION(newNumericArray) {
 	return err;
 }
 
+struct CopyTester {
+	LLU::DataList<LLU::MArgumentType::NumericArray, LLU::Passing::Manual> &result;
+
+	template<typename T, typename P>
+	void operator()(NumericArray<T, P> na) {
+		NumericArray<T, LLU::Passing::Manual> na2{na};  // test copy constructor
+		NumericArray<T> na3;
+		na3 = na2;  // test copy assignment
+		result.push_back(na3);
+	}
+};
+
 //clone NumericArray
-LIBRARY_LINK_FUNCTION(cloneNumericArray) {
+LIBRARY_LINK_FUNCTION(cloneNumericArrays) {
 	auto err = ErrorCode::NoError;
 	try {
 		MArgumentManager mngr(Argc, Args, Res);
-		mngr.operateOnNumericArray(0, [&mngr](auto&& rarray1) {
-			using T = typename std::decay_t<decltype(rarray1)>::value_type;
-			NumericArray<T, LLU::Passing::Manual> rarray2 {rarray1};  // test copy constructor
-			NumericArray<T> rarray3;
-			rarray3 = rarray2;  // test copy assignment
-			mngr.setNumericArray(rarray3);
-		});
+		LLU::DataList<LLU::MArgumentType::NumericArray, LLU::Passing::Manual> result;
+
+		CopyTester mt{result};
+
+		mngr.operateOnNumericArray(0, mt);
+		mngr.operateOnNumericArray<LLU::Passing::Manual>(1, mt);
+		mngr.operateOnNumericArray<LLU::Passing::Shared>(2, mt);
+
+		mngr.set(result);
 	}
 	catch (const LibraryLinkError& e) {
 		err = e.which();
@@ -194,7 +222,7 @@ EXTERN_C DLLEXPORT int numericZeroData(WolframLibraryData libData, mint Argc, MA
 	auto err = ErrorCode::NoError;
 	try {
 		MArgumentManager mngr(Argc, Args, Res);
-		mngr.operateOnNumericArray<ZeroReal64, LLU::Passing::Automatic>(0, mngr);
+		mngr.operateOnNumericArray<LLU::Passing::Automatic, ZeroReal64>(0, mngr);
 	}
 	catch (const LibraryLinkError& e) {
 		err = e.which();
@@ -223,7 +251,7 @@ EXTERN_C DLLEXPORT int accumulateIntegers(WolframLibraryData libData, mint Argc,
 	auto err = ErrorCode::NoError;
 	try {
 		MArgumentManager mngr(Argc, Args, Res);
-		mngr.operateOnNumericArray<AccumulateIntegers, LLU::Passing::Constant>(0, mngr);
+		mngr.operateOnNumericArray<LLU::Passing::Constant, AccumulateIntegers>(0, mngr);
 	}
 	catch (const LibraryLinkError& e) {
 		err = e.which();

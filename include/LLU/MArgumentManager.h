@@ -435,7 +435,7 @@ namespace LLU {
 		 *   @throws        ErrorName::MArgumentIndexError - if \c index is out-of-bounds
 		 *   @warning		Operator::operator() has to be a template that takes a const NumericArray<T>& as first argument
 		 **/
-		template<class Operator, class PassingMode, class ... OpArgs>
+		template<class PassingMode, class Operator, class ... OpArgs>
 		void operateOnNumericArray(unsigned int index, OpArgs &&... opArgs);
 
 		/**
@@ -446,7 +446,7 @@ namespace LLU {
 		 *   @param[in]     op - callable object (possibly lambda) that takes only one argument - a NumericArray
 		 *   @throws        ErrorName::MArgumentIndexError - if \c index is out-of-bounds
 		 **/
-		template<class Operator, class PassingMode = Passing::Automatic>
+		template<class PassingMode = Passing::Automatic, class Operator>
 		void operateOnNumericArray(unsigned int index, Operator &&op);
 
 		/**
@@ -468,7 +468,7 @@ namespace LLU {
 		 *   @throws        ErrorName::MArgumentTensorError - if MTensor argument has incorrect type
 		 *   @warning		Operator::operator() has to be a template that takes a const Tensor<T>& as first argument
 		 **/
-		template<class Operator, class PassingMode, class ... Args>
+		template<class PassingMode, class Operator, class ... Args>
 		void operateOnTensor(unsigned int index, Args &&... opArgs);
 
 		/**
@@ -480,7 +480,7 @@ namespace LLU {
 		 *   @throws        ErrorName::MArgumentIndexError - if \c index is out-of-bounds
 		 *   @throws        ErrorName::MArgumentTensorError - if MTensor argument has incorrect type
 		 **/
-		template<class Operator, class PassingMode = Passing::Automatic>
+		template<class PassingMode = Passing::Automatic, class Operator>
 		void operateOnTensor(unsigned int index, Operator &&op);
 
 		/**
@@ -502,7 +502,7 @@ namespace LLU {
 		 *   @throws        ErrorName::MArgumentImageError - if MImage argument has incorrect type
 		 *   @warning		Operator::operator() has to be a template that takes a const Image<T>& as first argument
 		 **/
-		template<class Operator, class PassingMode, class ... Args>
+		template<class PassingMode, class Operator, class ... Args>
 		void operateOnImage(unsigned int index, Args &&... opArgs);
 
 		/**
@@ -514,7 +514,7 @@ namespace LLU {
 		 *   @throws        ErrorName::MArgumentIndexError - if \c index is out-of-bounds
 		 *   @throws        ErrorName::MArgumentImageError - if MImage argument has incorrect type
 		 **/
-		template<class Operator, class PassingMode = Passing::Automatic>
+		template<class PassingMode = Passing::Automatic, class Operator>
 		void operateOnImage(unsigned int index, Operator &&op);
 
 	private:
@@ -602,7 +602,7 @@ namespace LLU {
 		na.passAsResult(res);
 	}
 
-	template<class Operator, class PassingMode, class ... Args>
+	template<class PassingMode, class Operator, class ... Args>
 	void MArgumentManager::operateOnNumericArray(unsigned int index,  Args&&... opArgs) {
 		Operator op;
 		switch (getNumericArrayType(index)) {
@@ -647,7 +647,7 @@ namespace LLU {
 		}
 	}
 
-	template<class Operator, class PassingMode>
+	template<class PassingMode, class Operator>
 	void MArgumentManager::operateOnNumericArray(unsigned int index, Operator&& op) {
 		switch (getNumericArrayType(index)) {
 			case MNumericArray_Type_Bit8:
@@ -702,7 +702,7 @@ namespace LLU {
 	}
 
 
-	template<class Operator, class PassingMode, class... Args>
+	template<class PassingMode, class Operator, class... Args>
 	void MArgumentManager::operateOnTensor(unsigned int index, Args&&... opArgs) {
 		Operator op;
 		switch (getTensorType(index)) {
@@ -721,7 +721,7 @@ namespace LLU {
 	}
 
 
-	template<class Operator, class PassingMode>
+	template<class PassingMode, class Operator>
 	void MArgumentManager::operateOnTensor(unsigned int index, Operator&& op) {
 		switch (getTensorType(index)) {
 			case MType_Integer:
@@ -749,7 +749,7 @@ namespace LLU {
 		im.passAsResult(res);
 	}
 
-	template<class Operator, class PassingMode, class... Args>
+	template<class PassingMode, class Operator, class... Args>
 	void MArgumentManager::operateOnImage(unsigned int index, Args&&... opArgs) {
 		Operator op;
 		switch (getImageType(index)) {
@@ -773,7 +773,7 @@ namespace LLU {
 		}
 	}
 
-	template<class Operator, class PassingMode>
+	template<class PassingMode, class Operator>
 	void MArgumentManager::operateOnImage(unsigned int index, Operator&& op) {
 		switch (getImageType(index)) {
 			case MImage_Type_Bit:
