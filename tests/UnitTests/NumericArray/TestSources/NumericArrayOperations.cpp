@@ -5,6 +5,7 @@
 
 #include "LLU/LLU.h"
 #include "LLU/LibraryLinkFunctionMacro.h"
+#include "LLU/ErrorLog/Logger.h"
 
 namespace NA = LLU::NA;
 namespace ErrorCode = LLU::ErrorCode;
@@ -350,7 +351,6 @@ LIBRARY_LINK_FUNCTION(TestDimensions) {
 	return err;
 }
 
-
 LIBRARY_LINK_FUNCTION(TestDimensions2) {
 	auto err = ErrorCode::NoError;
 	try {
@@ -373,6 +373,36 @@ LIBRARY_LINK_FUNCTION(TestDimensions2) {
 		mngr.setDataList(naList);
 	} catch (const LibraryLinkError &e) {
 		err = ErrorCode::FunctionError;
+	}
+	return err;
+}
+
+LIBRARY_LINK_FUNCTION(FlattenThroughList) {
+	auto err = ErrorCode::NoError;
+	try {
+		MArgumentManager mngr(libData, Argc, Args, Res);
+		LLU_DEBUG("NumericArray type is ", NA::typeToString(mngr.getNumericArrayType(0)));
+		auto na = mngr.getNumericArray<std::int32_t>(0);
+		std::list<std::int32_t> l {na.begin(), na.end()};
+		NumericArray<std::int32_t> na2 {l};
+		mngr.set(na2);
+	} catch (const LibraryLinkError &e) {
+		err = e.which();
+	}
+	return err;
+}
+
+LIBRARY_LINK_FUNCTION(CopyThroughTensor) {
+	auto err = ErrorCode::NoError;
+	try {
+		MArgumentManager mngr(libData, Argc, Args, Res);
+		LLU_DEBUG("NumericArray type is ", NA::typeToString(mngr.getNumericArrayType(0)));
+		auto na = mngr.getNumericArray<double>(0);
+		LLU::Tensor<double> t{na, na.dimensions()};
+		NumericArray<double> na2{t, t.dimensions()};
+		mngr.set(na2);
+	} catch (const LibraryLinkError &e) {
+		err = e.which();
 	}
 	return err;
 }

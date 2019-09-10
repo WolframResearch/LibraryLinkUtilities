@@ -1,5 +1,5 @@
 Needs["CCompilerDriver`"]
-lib = CreateLibrary[{"NumericArrayOperations.cpp"}, "NumericArrayOperations", options];
+lib = CreateLibrary[{"NumericArrayOperations.cpp"}, "NumericArrayOperations", options, "Defines" -> {"LLU_LOG_DEBUG"}];
 Get[FileNameJoin[{$LLUSharedDir, "LibraryLinkUtilities.wl"}]];
 RegisterPacletErrors[lib, <||>];
 
@@ -18,3 +18,5 @@ convert = SafeLibraryFunction["convert", {{NumericArray, "Constant"}, Integer, R
 convertGeneric = SafeLibraryFunction["convertGeneric", {{NumericArray, "Constant"}, Integer, Real}, NumericArray];
 testDimensions = SafeLibraryFunction["TestDimensions", {{Integer, 1, "Constant"}}, NumericArray];
 testDimensions2 = SafeLibraryFunction["TestDimensions2", {}, "DataStore"];
+FlattenThroughList = SafeLibraryFunction["FlattenThroughList", {NumericArray}, NumericArray];
+CopyThroughTensor = SafeLibraryFunction["CopyThroughTensor", {NumericArray}, NumericArray];

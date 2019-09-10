@@ -42,7 +42,7 @@ LIBRARY_LINK_FUNCTION(ImageNegate) {
 	auto err = LLU::ErrorCode::NoError;
 	try {
 		LLU::MArgumentManager mngr(libData, Argc, Args, Res);
-		mngr.operateOnImage<ImageNegator, LLU::Passing::Automatic>(0, mngr);
+		mngr.operateOnImage<LLU::Passing::Automatic, ImageNegator>(0, mngr);
 	}
 	catch (const LLU::LibraryLinkError& e) {
 		err = e.which();

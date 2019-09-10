@@ -73,6 +73,23 @@ namespace LLU {
 		NumericArray(std::initializer_list<T> v);
 
 		/**
+		 * @brief   Constructs flat NumericArray with contents copied from a given collection of data
+		 * @tparam  Container - any iterable (begin(), end()) collection of data that has a \c value_type alias member and a size() member function
+		 * @param   c - const reference to a collection from which data will be copied to the NumericArray
+		 */
+		template<class Container, typename = std::enable_if_t<is_iterable_container_with_matching_type_v<Container, T> && has_size_v<Container>>>
+		explicit NumericArray(const Container &c) : NumericArray(c, {static_cast<mint>(c.size())}) {}
+
+		/**
+		 * @brief   Constructs a NumericArray with contents copied from a given collection of data and dimensions passed as parameter
+		 * @tparam  Container  - any iterable (begin(), end()) collection of data that has a \c value_type alias member
+		 * @param   c - const reference to a collection from which data will be copied to the NumericArray
+		 * @param   dims - dimensions of the NumericArray
+		 */
+		template<class Container, typename = std::enable_if_t<is_iterable_container_with_matching_type_v<Container, T>>>
+		NumericArray(const Container &c, MArrayDimensions dims) : NumericArray(std::begin(c), std::end(c), std::move(dims)) {}
+		
+		/**
 		 *   @brief         Constructs flat NumericArray with elements from range [first, last)
 		 *   @param[in]     first - iterator to the beginning of range
 		 *   @param[in]		last - iterator past the end of range

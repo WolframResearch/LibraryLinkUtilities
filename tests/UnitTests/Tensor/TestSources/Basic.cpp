@@ -208,3 +208,25 @@ LIBRARY_LINK_FUNCTION(FromVector) {
 
 	return ErrorCode::NoError;
 }
+
+LIBRARY_LINK_FUNCTION(FlattenThroughVector) {
+	MArgumentManager mngr(libData, Argc, Args, Res);
+	auto t = mngr.getTensor<mint>(0);
+	auto v = t.asVector();
+
+	Tensor<mint> t2 {v};
+	mngr.set(t2);
+
+	return ErrorCode::NoError;
+}
+
+LIBRARY_LINK_FUNCTION(CopyThroughNumericArray) {
+	MArgumentManager mngr(libData, Argc, Args, Res);
+	auto t = mngr.getTensor<mint>(0);
+	NumericArray<mint> na {std::begin(t), std::end(t), t.dimensions()};
+
+	Tensor<mint> t2{na, na.dimensions()};
+	mngr.set(t2);
+
+	return ErrorCode::NoError;
+}

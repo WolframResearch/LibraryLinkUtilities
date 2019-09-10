@@ -37,6 +37,8 @@ TestExecute[
 	TestDimensions = LibraryFunctionLoad[lib, "TestDimensions", {{Integer, 1, "Manual"}}, {Real, _}];
 	TestDimensions2 = LibraryFunctionLoad[lib, "TestDimensions2", {}, "DataStore"];
 	FromVector = LibraryFunctionLoad[lib, "FromVector", {}, {Integer, 2}];
+	FlattenThroughVector = LibraryFunctionLoad[lib, "FlattenThroughVector", {{Integer, _}}, {Integer, 1}];
+	CopyThroughNumericArray = LibraryFunctionLoad[lib, "CopyThroughNumericArray", {{Integer, _}}, {Integer, _}];
 
 	MeanValue = LibraryFunctionLoad[lib, "MeanValue", {{Real, 1}}, Real];
 
@@ -344,6 +346,38 @@ Test[
 	{{3, 5}, {7, 9}}
 	,
 	TestID->"TensorTestSuite-20190906-N0T6L8"
+];
+
+Test[
+	FlattenThroughVector[{{}, {}}]
+	,
+	{}
+	,
+	TestID -> "TensorTestSuite-20190910-R5I6P2"
+];
+
+Test[
+	FlattenThroughVector[{{1,2}, {3,4}}]
+	,
+	{1, 2, 3, 4}
+	,
+	TestID -> "TensorTestSuite-20190910-P1O3G2"
+];
+
+Test[
+	CopyThroughNumericArray[{{}, {}}]
+	,
+	{{}, {}}
+	,
+	TestID -> "TensorTestSuite-20190910-V9V4H1"
+];
+
+Test[
+	CopyThroughNumericArray[{{1, 2}, {3, 4}}]
+	,
+	{{1, 2}, {3, 4}}
+	,
+	TestID -> "TensorTestSuite-20190910-Z7H8M8"
 ];
 
 EndRequirement[];
