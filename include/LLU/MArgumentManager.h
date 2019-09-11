@@ -233,8 +233,11 @@ namespace LLU {
 		 **/
 		DataStore getDataStore(unsigned int index) const;
 
-		template<class ManagedExpr>
-		ManagedExpr& getManagedExpression(unsigned int index, ManagedExpressionStore<ManagedExpr>&) const;
+		template<class ManagedExpr, class DynamicType = ManagedExpr>
+		DynamicType& getManagedExpression(unsigned int index, ManagedExpressionStore<ManagedExpr>&) const;
+
+		template<class ManagedExpr, class DynamicType = ManagedExpr>
+		std::shared_ptr<DynamicType> getManagedExpressionPtr(unsigned int index, ManagedExpressionStore<ManagedExpr> &store) const;
 
 		/************************************ MArgument "setters" ************************************/
 
@@ -831,10 +834,21 @@ namespace LLU {
 		return getDataStore(index);
 	}
 
-	template<class ManagedExpr>
-	ManagedExpr& MArgumentManager::getManagedExpression(unsigned int index, ManagedExpressionStore<ManagedExpr>& store) const {
+	template<class ManagedExpr, class DynamicType>
+	DynamicType& MArgumentManager::getManagedExpression(unsigned int index, ManagedExpressionStore<ManagedExpr>& store) const {
+		auto ptr = getManagedExpressionPtr<ManagedExpr, DynamicType>(index, store);
+		if (!ptr) {
+			//FIXME: better error
+			ErrorManager::throwException(ErrorName::FunctionError);
+		}
+		return *ptr;
+	}
+
+	template<class ManagedExpr, class DynamicType>
+	std::shared_ptr<DynamicType> MArgumentManager::getManagedExpressionPtr(unsigned int index, ManagedExpressionStore<ManagedExpr> &store) const {
 		auto exprID = getInteger<mint>(index);
-		return store.getInstance(exprID);
+		auto baseClassPtr = store.getInstancePointer(exprID);
+		return std::dynamic_pointer_cast<DynamicType>(baseClassPtr);
 	}
 
 } /* namespace LLU */

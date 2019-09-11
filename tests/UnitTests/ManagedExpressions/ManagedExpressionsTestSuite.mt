@@ -28,14 +28,22 @@ TestExecute[
 		`LLU`Logger`PrintLogToSymbol[LogSymbol][##]
 	]&;
 
+
+	$CreateNewMyExpression = SafeLibraryFunction["OpenManagedMyExpression", {`LLU`Managed[MyExpression], String}, "Void"];
+	$CreateNewMyChildExpression = SafeLibraryFunction["OpenManagedMyChildExpression", {`LLU`Managed[MyExpression], String}, "Void"];
+
 	(* Register a constructor for new Managed Expression. This step could be more automated if we agree that for each class X that shall be managed there is
-	an interface function "OpenManagedX" defined in the library. *)
-	`LLU`Constructor[MyExpression] = SafeLibraryFunction["OpenManagedMyExpression", {`LLU`Managed[MyExpression], String}, "Void"];
+	 * an interface function "OpenManagedX" defined in the library.
+	 * It gets more complicated if you want to use a class hierarchy as MLE as you need to decide which class will be instantiated at WL level.
+	 *)       
+	CreateMyExpression[instance_, text_?StringQ, createChildQ_ : False] := If[createChildQ, $CreateNewMyChildExpression, $CreateNewMyExpression][instance, text];
+	`LLU`Constructor[MyExpression] = CreateMyExpression;
 
 	(* Load library functions that wrap MyExpression member functions *)
 	`LLU`LoadMemberFunction[MyExpression][getText, "GetText", {}, String];
 	`LLU`LoadMemberFunction[MyExpression][setText, "SetText", {String}, "Void"];
 	`LLU`LoadMathLinkMemberFunction[MyExpression][setTextML, "SetTextML"];
+	`LLU`LoadMemberFunction[MyExpression][getCounter, "GetCounter", {}, Integer]; (* this member only works with MLEs that are of type MyChildExpression in C++ *)
 
 	(* Load other library functions *)
 	joinText = SafeLibraryFunction["JoinText", {`LLU`Managed[MyExpression], `LLU`Managed[MyExpression]}, String];
@@ -199,4 +207,43 @@ Test[
 	ToString @ Head @ globalExpr
 	,
 	TestID -> "ManagedExpressionsTestSuite-20190904-E2I7L4"
+];
+
+TestExecute[
+	Clear[LogSymbol];
+	`LLU`NewManagedExpression[MyExpression]["Hello, I'm a subclass of MyExpression", True];
+];
+
+Test[
+	LogSymbol
+	,
+	{
+		"[Debug] ManagedExprTest.cpp:19 (MyExpression): MyExpression[6] created.", 
+		"[Debug] ManagedExprTest.cpp:182 (MyChildExpression): MyChildExpression[6] created.", 
+		"[Debug] ManagedExprTest.cpp:186 (~MyChildExpression): MyChildExpression[6] is dying now.", 
+		"[Debug] ManagedExprTest.cpp:22 (~MyExpression): MyExpression[6] is dying now."
+	}
+	,
+	TestID->"ManagedExpressionsTestSuite-20190911-U4H9A5"
+];
+
+Test[
+	subclassExpr = `LLU`NewManagedExpression[MyExpression]["I'm a MyChildExpression", True];
+	subclassExpr @ getCounter[];
+	subclassExpr @ getCounter[]
+	,
+	2
+	,
+	TestID -> "ManagedExpressionsTestSuite-20190911-R0A1T3"
+];
+
+Test[
+	Block[{e},
+		e = `LLU`NewManagedExpression[MyExpression]["I will die when this test ends", True];
+		e @ getText[]
+	]
+	,
+	"I'm a subclass! Here is your text: I will die when this test ends"
+	,
+	TestID->"ManagedExpressionsTestSuite-20190911-R3Z8U9"
 ];

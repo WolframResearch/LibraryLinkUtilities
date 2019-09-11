@@ -18,7 +18,7 @@ public:
 	MyExpression(mint myID, std::string text) : id {myID}, text {std::move(text)} {
 		LLU_DEBUG("MyExpression[", id, "] created.");
 	}
-	~MyExpression() {
+	virtual ~MyExpression() {
 		LLU_DEBUG("MyExpression[", id, "] is dying now.");
 	}
 
@@ -26,11 +26,14 @@ public:
 		return text;
 	}
 
-	void setText(std::string newText) {
+	virtual void setText(std::string newText) {
 		text = std::move(newText);
 	}
-private:
+
+protected:
 	mint id;
+
+private:
 	std::string text;
 };
 
@@ -163,6 +166,57 @@ LIBRARY_MATHLINK_FUNCTION(SetTextML) {
 		ml << ML::Null << ML::EndPacket;
 	}
 	catch (const LLU::LibraryLinkError &e) {
+		err = e.which();
+	}
+	return err;
+}
+
+
+// Create a subclass of MyExpression and use it as Managed Expression with the same Store
+// All previously defined Get/Set functions should work on MLEs that are actually MyChildExpressions
+
+class MyChildExpression : public MyExpression {
+public:
+	MyChildExpression(mint myID, std::string text) : MyExpression(myID, "") {
+		setText(std::move(text));
+		LLU_DEBUG("MyChildExpression[", id, "] created.");
+	}
+
+	~MyChildExpression() override {
+		LLU_DEBUG("MyChildExpression[", id, "] is dying now.");
+	}
+
+	mint getCounter() {
+		return ++counter;
+	}
+
+	void setText(std::string newText) override {
+		MyExpression::setText(std::string {"I'm a subclass! Here is your text: "} + std::move(newText));
+	}
+private:
+	mint counter = 0;
+};
+
+LIBRARY_LINK_FUNCTION(OpenManagedMyChildExpression) {
+	auto err = LLU::ErrorCode::NoError;
+	try {
+		LLU::MArgumentManager mngr(Argc, Args, Res);
+		auto id = mngr.getInteger<mint>(0);
+		auto text = mngr.getString(1);
+		MyExpressionStore.createInstance<MyChildExpression>(id, id, text);
+	} catch (const LLU::LibraryLinkError &e) {
+		err = e.which();
+	}
+	return err;
+}
+
+LIBRARY_LINK_FUNCTION(GetCounter) {
+	auto err = LLU::ErrorCode::NoError;
+	try {
+		LLU::MArgumentManager mngr(Argc, Args, Res);
+		MyChildExpression& myExpr = mngr.getManagedExpression<MyExpression, MyChildExpression>(0, MyExpressionStore);
+		mngr.set(myExpr.getCounter());
+	} catch (const LLU::LibraryLinkError &e) {
 		err = e.which();
 	}
 	return err;

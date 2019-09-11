@@ -67,15 +67,16 @@ namespace LLU {
 
 		/**
 		 * Create new object of class T that will be managed from Wolfram Language and place it in the map of managed objects
-		 * @tparam Args - constructor arguments types
-		 * @param id - id of the newly created managed object
-		 * @param args - constructor arguments
-		 * @return reference to the newly created object
+		 * @tparam  DynamicType - actual type of the constructed object, it allows Store to keep objects of subclasses of T
+		 * @tparam  Args - constructor arguments types
+		 * @param   id - id of the newly created managed object
+		 * @param   args - constructor arguments
+		 * @return  reference to the newly created object
 		 */
-		template<typename... Args>
+		template<class DynamicType = T, typename... Args>
 		T& createInstance(mint id, Args&&... args) {
 			checkID(id); // at this point instance must already exist in store
-			store[id] = std::make_shared<T>(std::forward<Args>(args)...);
+			store[id] = std::make_shared<DynamicType>(std::forward<Args>(args)...);
 			return *store[id];
 		}
 
