@@ -13,7 +13,7 @@ namespace LLU {
 	/// Namespace containing classes representing different passing modes that exist in LibraryLink
 	namespace Passing {
 
-		/// Abstract class defining common interface and behavior for all predefined     passing policies
+		/// Abstract class defining common interface and behavior for all predefined passing policies
 		class PassingPolicy {
 		public:
 
@@ -26,7 +26,7 @@ namespace LLU {
 			}
 
 			/**
-			 *	@brief 		Pass the container as a result to LibraryLink via MArgument
+			 *	@brief 		Pass the container as result to LibraryLink function via MArgument
 			 *	@param[out]	res - MArgument that will carry the internal container
 			 **/
 			virtual void passAsResult(MArgument& res) const noexcept {
@@ -34,10 +34,15 @@ namespace LLU {
 				setOwner(false);
 			}
 
+			/// Perform necessary cleanup action. Purely virtual as only subclasses may actually know what to do.
 			virtual void cleanup() const noexcept = 0;
 
 		protected:
 
+			/**
+			 * @brief   Create new PassingPolicy with starting ownership status
+			 * @param   ownerQ - ownership information
+			 */
 			explicit PassingPolicy(bool ownerQ) : argumentOwnerQ(ownerQ) {}
 
 			PassingPolicy() = default;
@@ -49,22 +54,29 @@ namespace LLU {
 			virtual ~PassingPolicy() = default;
 
 			/**
-			 * 	@brief		Set the ownership of the managed data structure
-			 * 	@param 		ownerQ - whether the object is now the owner of the underlying data structure from WolframLibrary
+			 * 	@brief		Set ownership of the managed data structure
+			 * 	@param 		ownerQ - whether the object is now the owner of the underlying container
 			 */
 			void setOwner(bool ownerQ) const {
 				argumentOwnerQ = ownerQ;
 			}
 
         protected:
+			/// Free internal container
             virtual void free() const noexcept = 0;
 
+			/**
+			 *
+			 * @brief   Pass internal container to MArgument
+			 * @param   res - MArgument which will take the internal container
+			 */
 			virtual void pass(MArgument& res) const = 0;
 
+			/// Disown the internal container
             virtual void disown() const noexcept = 0;
 
         private:
-			/// Determines if MArray should free the underlying container
+			/// Determines if this object owns the underlying data structure
 			mutable bool argumentOwnerQ = false;
 		};
 	}

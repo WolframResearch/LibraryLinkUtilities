@@ -24,6 +24,12 @@
 
 namespace LLU {
 
+	/**
+	 *  @brief  Typed interface for NumericArray.
+	 *
+	 *  Provides iterators, data access and info about dimensions.
+	 *  @tparam T - type of data in NumericArray
+	 */
     template<typename T>
     class TypedNumericArray : public MArray<T> {
     public:

@@ -11,10 +11,7 @@
 
 namespace LLU {
 
-	/**
-	 *  @brief  MContainer specialization for DataStore
-	 *  @tparam PassingMode - passing policy
-	 */
+
 	template<class PassingMode>
 	class MContainer<MArgumentType::DataStore, PassingMode>;
 
@@ -22,6 +19,10 @@ namespace LLU {
 	template<class PassingMode>
 	using GenericDataList = MContainer<MArgumentType::DataStore, PassingMode>;
 
+	/**
+	 *  @brief  MContainer specialization for DataStore
+	 *  @tparam PassingMode - passing policy
+	 */
 	template<class PassingMode>
 	class MContainer<MArgumentType::DataStore, PassingMode> : public MContainerBase<MArgumentType::DataStore, PassingMode> {
 		static_assert(!std::is_same<PassingMode, Passing::Shared>::value, "DataStore cannot be Shared.");
