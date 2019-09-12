@@ -27,31 +27,19 @@ namespace LLU {
 	}
 
 	const st_WolframNumericArrayLibrary_Functions * LibraryData::NumericArrayAPI() {
-		if (!libData) {
-			ErrorManager::throwException(ErrorName::LibDataError);
-		}
-		return libData->numericarrayLibraryFunctions;
+		return API()->numericarrayLibraryFunctions;
 	}
 
 	const st_WolframSparseLibrary_Functions * LibraryData::SparseArrayAPI() {
-		if (!libData) {
-			ErrorManager::throwException(ErrorName::LibDataError);
-		}
-		return libData->sparseLibraryFunctions;
+		return API()->sparseLibraryFunctions;
 	}
 
 	const st_WolframImageLibrary_Functions * LibraryData::ImageAPI() {
-		if (!libData) {
-			ErrorManager::throwException(ErrorName::LibDataError);
-		}
-		return libData->imageLibraryFunctions;
+		return API()->imageLibraryFunctions;
 	}
 
 	const st_WolframIOLibrary_Functions * LibraryData::DataStoreAPI() {
-		if (!libData) {
-			ErrorManager::throwException(ErrorName::LibDataError);
-		}
-		return libData->ioLibraryFunctions;
+		return API()->ioLibraryFunctions;
 	}
 
 }
