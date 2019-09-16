@@ -4,8 +4,6 @@
 #include <type_traits>
 #include <cstdint>
 
-namespace LLErrorCode = LLU::ErrorCode;
-
 LLU_LIBRARY_FUNCTION(EchoImage1) {
 	mngr.operateOnImage(0, [&mngr](auto im1) {
 		using T = typename std::remove_reference_t<decltype(im1)>::value_type;
@@ -77,5 +75,6 @@ LLU_LIBRARY_FUNCTION(CloneImage) {
 }
 
 LLU_LIBRARY_FUNCTION(EmptyWrapper) {
+	LLU::Unused(mngr);
 	LLU::Image<std::uint8_t> im { nullptr }; // this should trigger an exception
 }
