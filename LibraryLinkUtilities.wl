@@ -106,8 +106,14 @@ Options[SafeLibraryFunctionLoad] = {
 SafeLibraryFunctionLoad[fname_?StringQ, fParams_, retType_, opts : OptionsPattern[SafeLibraryFunctionLoad]] :=
 	Quiet[
 		Check[
+			(* There are 2 categories of function arguments:
+			 * - regular - supported by LibraryLink (String, Integer, NumericArray, etc.)
+			 * - special - extensions added by LLU that need extra parsing before they can be passed to LibraryLink, for example Managed Expressions
+			 *)
 			Block[{specialArgs = argumentCategorizer[fParams]},
 				If[Length @ specialArgs > 0,
+					(* If the function that we are registering takes special arguments, we need to compose it with argumentParser function,
+					 * which will parse input arguments before every call, so that they are accepted by LibraryLink.*)
 					LibraryFunctionLoad[$PacletLibrary, fname, normalizeArgTypes @ fParams, retType] @* argumentParser[specialArgs]
 					,
 					LibraryFunctionLoad[$PacletLibrary, fname, fParams, retType]
@@ -127,14 +133,22 @@ Options[SafeLibraryFunction] = {
 	"Throws" -> False
 };
 
+(* Decide whether given input argument to a LibraryFunction needs special treatment.
+ * Currently only Managed Expressions do but this may change in the future.
+ *)
 specialArgQ[a_`LLU`Managed] := True;
 specialArgQ[_] := False;
 
-argumentCategorizer[argTypes_List] := Association @ MapIndexed[If[specialArgQ[#1], First[#2] -> #1, Nothing]&, argTypes];
+(* Simple function expected to select all "special" arguments from a list of argument types for a LibraryFunction. *)
+argumentCategorizer[argTypes_List] := Select[AssociationThread[Range[Length[#]], #]& @ argTypes, specialArgQ];
 argumentCategorizer[LinkObject] = {};
 
-normalizeArgTypes[argTypes_List] := argTypes /. {`LLU`Managed[h_] :> Integer};
+(* Replace special argument types with corresponding regular types that are be accepted by LibraryLink *)
+normalizeArgTypes[argTypes_List] := Replace[argTypes, `LLU`Managed[h_] :> Integer, 1];
 
+(* Parse ManagedExpression before it is passed to a LibraryFunction. First argument is expected ManagedExpression type and the second is actual instance
+ * of a MangedExpression. If the instance type does not match the expected type a paclet Failure will be thrown.
+ *)
 parseManaged[`LLU`Managed[expectedHead_], expectedHead_[id_Integer]] :=
     If[ManagedLibraryExpressionQ[expectedHead[id]],
 	    id
@@ -145,7 +159,13 @@ parseManaged[`LLU`Managed[expectedHead_], differentHead_[id_Integer]] :=
 	Throw @ CreatePacletFailure["UnexpectedManagedExpression", "MessageParameters" -> <|"expected" -> expectedHead, "actual" -> differentHead[id]|>];
 parseManaged[_, arg_] := arg;
 
+(* Parse special arguments before they are passed to a LibraryFunction. Currently the only implemented type of special arguments are ManagedExpressions, so
+ * just call parseManaged directly but in the future this implementation might need to be generalised.
+ *
+ * NOTE: This function is invoked before every call to a LibraryFunction so efficiency is top concern here!
+ *)
 argumentParser[specialArgs_?AssociationQ] := Sequence @@ MapIndexed[parseManaged[specialArgs[First @ #2], #1]&, {##}]&;
+
 
 holdSet[Hold[sym_], rhs_] := sym = rhs;
 

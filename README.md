@@ -600,7 +600,7 @@ The good news is that you can omit the middle step thanks to a special macro:
 DEFINE_MANAGED_STORE_AND_SPECIALIZATION(A)
 ```
 This will define the Store variable and the template specialization for you but you still need to register your class in 
-`WolframLibrary_initialize` and unregeister in `WolframLibrary_uninitialize`. The macro must be called in a scope where
+`WolframLibrary_initialize` and unregister in `WolframLibrary_uninitialize`. The macro must be called in a scope where
  structure `A` is defined.
 
 One of the biggest limitations of MLEs in LibraryLink is that you cannot pass arguments for construction of managed expressions.
