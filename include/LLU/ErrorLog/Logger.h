@@ -54,7 +54,10 @@
 
 namespace LLU {
 
-
+	/**
+	 * Logger class is responsible for sending log messages via MathLink to Mathematica.
+	 * It may be more convenient to use one of the LLU_DEBUG/WARNING/ERROR macros instead of calling Logger methods directly.
+	 */
 	class Logger {
 	public:
 
