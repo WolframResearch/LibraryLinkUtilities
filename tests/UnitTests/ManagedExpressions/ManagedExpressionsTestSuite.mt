@@ -50,6 +50,9 @@ TestExecute[
 	getMyExpressionStoreName = SafeLibraryFunction["GetMyExpressionStoreName", {}, String];
 	swapText = SafeMathLinkFunction["SwapText"];
 
+	ManagedMyExprQ = `LLU`ManagedQ[MyExpression];
+	ManagedMyExprIDQ = `LLU`ManagedIDQ[MyExpression];
+
 	(* Create new instance of MyExpression *)
 	globalExpr = `LLU`NewManagedExpression[MyExpression]["I will live through all tests"];
 ];
@@ -66,6 +69,38 @@ Test[
 
 TestExecute[
 	Clear[LogSymbol];
+];
+
+Test[
+	ManagedMyExprQ[globalExpr]
+	,
+	True
+	,
+	TestID -> "ManagedExpressionsTestSuite-20190916-R3H6L8"
+];
+
+Test[
+	`LLU`ManagedQ[x][globalExpr]
+	,
+	False
+	,
+	TestID -> "ManagedExpressionsTestSuite-20190916-L9C5S2"
+];
+
+Test[
+	ManagedMyExprIDQ[`LLU`GetManagedID[globalExpr]]
+	,
+	True
+	,
+	TestID -> "ManagedExpressionsTestSuite-20190916-A0B2P8"
+];
+
+Test[
+	ManagedMyExprIDQ[150]
+	,
+	False
+	,
+	TestID -> "ManagedExpressionsTestSuite-20190916-X6Z9M9"
 ];
 
 Test[

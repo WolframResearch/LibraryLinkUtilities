@@ -530,7 +530,8 @@ End[]; (* `LLU`Logger` *)
 		res
 	];
 
-`LLU`ManagedQ[exprHead_] := ManagedLibraryExpressionQ[exprHead[#], Symbol[exprHead]]&;
+`LLU`ManagedQ[exprHead_] := ManagedLibraryExpressionQ[#, SymbolName[exprHead]]&;
+`LLU`ManagedIDQ[exprHead_] := ManagedLibraryExpressionQ[exprHead[#], SymbolName[exprHead]]&;
 
 `LLU`GetManagedID[instance_] := ManagedLibraryExpressionID[instance];
 
