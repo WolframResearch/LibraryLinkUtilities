@@ -431,18 +431,8 @@ function(find_cvs_dependency LIB_NAME)
 
 endfunction()
 
-# Sets default paclet compile options for warning and debugging/optimization. On Windows, also sets /EHsc.
-# Optional argument is optimization level (defaults to "O2").
+# Sets default paclet compile options for warning and debugging. On Windows, also sets /EHsc.
 function(set_default_compile_options TARGET_NAME)
-	if(ARGC GREATER 1)
-		string(REGEX REPLACE "[/-]?(.+)" "\\1" OPTIMIZATION_LEVEL "${ARGV1}")
-	else()
-		set(OPTIMIZATION_LEVEL "02")
-	endif()
-	# Force optimization level if build type is Release.
-	if("${CMAKE_BUILD_TYPE}" STREQUAL "Release")
-		set_optimization_level(${OPTIMIZATION_LEVEL})
-	endif()
 	if(MSVC)
 		target_compile_options(${TARGET_NAME} PRIVATE
 			"/W4"
@@ -581,8 +571,8 @@ endfunction()
 macro(_cxx_dynamic_replace WHAT WITH)
 	foreach(flag_var CMAKE_CXX_FLAGS CMAKE_CXX_FLAGS_DEBUG CMAKE_CXX_FLAGS_RELEASE CMAKE_CXX_FLAGS_MINSIZEREL CMAKE_CXX_FLAGS_RELWITHDEBINFO)
 		if(${flag_var} MATCHES "\${WHAT}")
-			string(REGEX REPLACE "\${WHAT}" "\${WITH}" ${flag_var} "${${flag_var}}")
-			set(${flag_var} ${${flag_var}} PARENT_SCOPE)
+			string(REGEX REPLACE "\${WHAT}" "\${WITH}" flag_var_new "${${flag_var}}")
+			set(${flag_var} ${flag_var_new})
 		endif()
 	endforeach()
 endmacro()
@@ -595,11 +585,14 @@ macro(set_windows_static_runtime)
 endmacro()
 
 # Forces a particular optimization level on all build types
-macro(set_optimization_level LEVEL)
-	if(WIN32)
-		_cxx_dynamic_replace("/O[0-9A-Za-z]+" "/${LEVEL}")
-	else()
-		_cxx_dynamic_replace("-O[0-9A-Za-z]+" "-${LEVEL}")
+macro(set_optimization_level OPTIMIZATION_LEVEL BUILDTYPE)
+	if("${CMAKE_BUILD_TYPE}" STREQUAL "${BUILDTYPE}")
+		string(REGEX REPLACE "[/-]?(.+)" "\\1" LEVEL "${OPTIMIZATION_LEVEL}")
+		if(WIN32)
+			_cxx_dynamic_replace("/O[0-9]" "/${LEVEL}")
+		else()
+			_cxx_dynamic_replace("-O[0-9]" "-${LEVEL}")
+		endif()
 	endif()
 endmacro()
 
