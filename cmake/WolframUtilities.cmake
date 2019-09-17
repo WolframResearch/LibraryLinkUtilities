@@ -579,12 +579,9 @@ endfunction()
 
 # Helper function to replace default option in CMAKE_CXX_* variables. The first argument can be a regular expression.
 macro(_cxx_dynamic_replace WHAT WITH)
-	message("Build type: ${CMAKE_BUILD_TYPE}")
 	foreach(flag_var CMAKE_CXX_FLAGS CMAKE_CXX_FLAGS_DEBUG CMAKE_CXX_FLAGS_RELEASE CMAKE_CXX_FLAGS_MINSIZEREL CMAKE_CXX_FLAGS_RELWITHDEBINFO)
-		message("${flag_var}: \"${${flag_var}}\"")
 		if(${flag_var} MATCHES "\${WHAT}")
 			string(REGEX REPLACE "\${WHAT}" "\${WITH}" ${flag_var} "${${flag_var}}")
-			message("Match! After replace: \"${${flag_var}}\"")
 			set(${flag_var} ${${flag_var}} PARENT_SCOPE)
 		endif()
 	endforeach()
