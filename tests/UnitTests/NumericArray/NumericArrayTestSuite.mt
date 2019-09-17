@@ -1,11 +1,11 @@
 (* Wolfram Language Test file *)
 TestRequirement[$VersionNumber > 12.0]
-TestExecute[
+Catch @ TestExecute[
 	currentDirectory = DirectoryName[$CurrentFile];
 	Get[FileNameJoin[{ParentDirectory[currentDirectory], "TestConfig.wl"}]];
 	sourceDirectory = FileNameJoin[{currentDirectory, "TestSources"}];
 	Get[FileNameJoin[{sourceDirectory, "NumericArrayOperations.wl"}]];
-	
+
 	na = NumericArray[{1, 2, 3, 4}];
 ]
 
@@ -30,9 +30,9 @@ Test[
 	testDimensions[{}]
 	,
 	Failure["DimensionsError", <|
-		"MessageTemplate" -> "An error caused by inconsistent dimensions or by exceeding array bounds.", 
-		"MessageParameters" -> <||>, 
-		"ErrorCode" -> 3, 
+		"MessageTemplate" -> "An error caused by inconsistent dimensions or by exceeding array bounds.",
+		"MessageParameters" -> <||>,
+		"ErrorCode" -> 3,
 		"Parameters" -> {}|>
 	]
 	,
@@ -43,11 +43,11 @@ Test[
 	Normal @* testDimensions /@ {{0}, {3}, {3, 0}, {3, 2}, {3, 2, 0}, {3, 2, 4}}
 	,
 	{
-		{}, 
-		{0., 0., 0.}, 
-		{{}, {}, {}}, 
-		{{0., 0.}, {0., 0.}, {0., 0.}}, 
-		{{{}, {}}, {{}, {}}, {{}, {}}}, 
+		{},
+		{0., 0., 0.},
+		{{}, {}, {}},
+		{{0., 0.}, {0., 0.}, {0., 0.}},
+		{{{}, {}}, {{}, {}}, {{}, {}}},
 		{{{0., 0., 0., 0.}, {0., 0., 0., 0.}}, {{0., 0., 0., 0.}, {0., 0., 0., 0.}}, {{0., 0., 0., 0.}, {0., 0., 0., 0.}}}
 	}
 	,
@@ -58,11 +58,11 @@ Test[
 	Normal /@ List @@ testDimensions2[]
 	,
 	{
-		{}, 
-		{0., 0., 0.}, 
-		{{}, {}, {}}, 
-		{{0., 0.}, {0., 0.}, {0., 0.}}, 
-		{{{}, {}}, {{}, {}}, {{}, {}}}, 
+		{},
+		{0., 0., 0.},
+		{{}, {}, {}},
+		{{0., 0.}, {0., 0.}, {0., 0.}},
+		{{{}, {}}, {{}, {}}, {{}, {}}},
 		{{{0., 0., 0., 0.}, {0., 0., 0., 0.}}, {{0., 0., 0., 0.}, {0., 0., 0., 0.}}, {{0., 0., 0., 0.}, {0., 0., 0., 0.}}}
 	}
 	,
@@ -75,6 +75,14 @@ Test[
 	NumericArray[{1, 2, 3, 4}, "UnsignedInteger8"]
 	,
 	TestID->"NumericArrayOperations-20150825-M7G1B2"
+]
+
+Test[
+	echoNumericArray[{{},{}}]
+	,
+	{{},{}}
+	,
+	TestID -> "NumericArrayTestSuite-20190731-L3E9L6"
 ]
 
 Test[
@@ -169,9 +177,10 @@ TestMatch[
 ]
 
 Test[
-	convert[NumericArray[{3.5}], 5 (* Round *), 0]
+	na = NumericArray[{3.5}];
+	convert[na, 5 (* Round *), 0]
 	,
-	NumericArray[NumericArray[{3.5}], "UnsignedInteger16", "Round"]
+	NumericArray[NumericArray[{3.5}], "UnsignedInteger16", "Round", Tolerance -> 0]
 	,
 	TestID->"NumericArrayTestSuite-20181105-I0C6A3"
 ]
@@ -192,7 +201,7 @@ TestMatch[
 Test[
 	convert[NumericArray[Range[10]], 8 (* ClipAndScale *), 1]
 	,
-	NumericArray[NumericArray[Range[10]], "UnsignedInteger16", "ClipAndScale"]
+	NumericArray[NumericArray[Range[10]], "UnsignedInteger16", "ClipAndScale", Tolerance -> 1]
 	,
 	TestID->"NumericArrayTestSuite-20181105-W8Z5G6"
 ]

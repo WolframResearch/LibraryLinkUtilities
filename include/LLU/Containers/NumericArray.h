@@ -397,7 +397,7 @@ namespace LibraryLinkUtils {
 
 	template<typename T>
 	NumericArray<T>::NumericArray(NumericArray<T>&& other) :
-			MArray<T>(std::move(other)) {
+			MArray<T>(static_cast<MArray<T>&&>(other)) {
 		this->internalNA = other.internalNA;
 		other.internalNA = nullptr;
 		other.setOwner(false);

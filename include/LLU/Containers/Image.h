@@ -382,7 +382,7 @@ namespace LibraryLinkUtils {
 	}
 
 	template<typename T>
-	Image<T>::Image(Image<T>&& i2) : MArray<T>(std::move(i2)) {
+	Image<T>::Image(Image<T>&& i2) : MArray<T>(static_cast<MArray<T>&&>(i2)) {
 		allowSlices = i2.allowSlices;
 		this->internalMI = i2.internalMI;
 		i2.internalMI = nullptr;

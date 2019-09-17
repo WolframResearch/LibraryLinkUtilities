@@ -9,8 +9,8 @@
 cmake_minimum_required(VERSION 3.8.0)
 
 #set minimum MacOS target version if not defined as environment variable
-if(NOT DEFINED ENV{MACOSX_DEPLOYMENT_TARGET})
-	set(CMAKE_OSX_DEPLOYMENT_TARGET "10.10" CACHE STRING "Minimum OS X deployment version")
+if(APPLE AND NOT DEFINED ENV{MACOSX_DEPLOYMENT_TARGET})
+	set(CMAKE_OSX_DEPLOYMENT_TARGET "10.12" CACHE STRING "Minimum OS X deployment version")
 endif()
 
 project(LLU VERSION 1.0.0 LANGUAGES CXX)

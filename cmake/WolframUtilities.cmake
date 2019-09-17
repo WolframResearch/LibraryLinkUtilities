@@ -24,38 +24,40 @@ function(get_default_mathematica_dir MATHEMATICA_VERSION DEFAULT_MATHEMATICA_INS
 endfunction()
 
 function(detect_system_id DETECTED_SYSTEM_ID)
-	#set system id and build platform
-	set(BITNESS 32)
-	if(CMAKE_SIZEOF_VOID_P EQUAL 8)
-		set(BITNESS 64)
+	if(NOT ${DETECTED_SYSTEM_ID})
+		#set system id and build platform
+		set(BITNESS 32)
+		if(CMAKE_SIZEOF_VOID_P EQUAL 8)
+			set(BITNESS 64)
+		endif()
+
+		set(INITIAL_SYSTEMID NOTFOUND)
+
+		# Determine the current machine's systemid.
+		if(CMAKE_C_COMPILER MATCHES "androideabi")
+			set(INITIAL_SYSTEMID Android)
+		elseif(CMAKE_SYSTEM_PROCESSOR MATCHES "arm*")
+			set(INITIAL_SYSTEMID Linux-ARM)
+		elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux" AND BITNESS EQUAL 64)
+			set(INITIAL_SYSTEMID Linux-x86-64)
+		elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux" AND BITNESS EQUAL 32)
+			set(INITIAL_SYSTEMID Linux)
+		elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows" AND BITNESS EQUAL 64)
+			set(INITIAL_SYSTEMID Windows-x86-64)
+		elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows" AND BITNESS EQUAL 32)
+			set(INITIAL_SYSTEMID Windows)
+		elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin" AND BITNESS EQUAL 64)
+			set(INITIAL_SYSTEMID MacOSX-x86-64)
+		elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin" AND BITNESS EQUAL 32)
+			set(INITIAL_SYSTEMID MacOSX-x86)
+		endif()
+
+		if(NOT INITIAL_SYSTEMID)
+			message(FATAL_ERROR "Unable to determine System ID.")
+		endif()
+
+		set(${DETECTED_SYSTEM_ID} "${INITIAL_SYSTEMID}" PARENT_SCOPE)
 	endif()
-
-	set(INITIAL_SYSTEMID NOTFOUND)
-
-	# Determine the current machine's systemid.
-	if(CMAKE_C_COMPILER MATCHES "androideabi")
-		set(INITIAL_SYSTEMID Android)
-	elseif(CMAKE_SYSTEM_PROCESSOR MATCHES "arm*")
-		set(INITIAL_SYSTEMID Linux-ARM)
-	elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux" AND BITNESS EQUAL 64)
-		set(INITIAL_SYSTEMID Linux-x86-64)
-	elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux" AND BITNESS EQUAL 32)
-		set(INITIAL_SYSTEMID Linux)
-	elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows" AND BITNESS EQUAL 64)
-		set(INITIAL_SYSTEMID Windows-x86-64)
-	elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows" AND BITNESS EQUAL 32)
-		set(INITIAL_SYSTEMID Windows)
-	elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin" AND BITNESS EQUAL 64)
-		set(INITIAL_SYSTEMID MacOSX-x86-64)
-	elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin" AND BITNESS EQUAL 32)
-		set(INITIAL_SYSTEMID MacOSX-x86)
-	endif()
-
-	if(NOT INITIAL_SYSTEMID)
-		message(FATAL_ERROR "Unable to determine System ID.")
-	endif()
-
-	set(${DETECTED_SYSTEM_ID} "${INITIAL_SYSTEMID}" PARENT_SCOPE)
 endfunction()
 
 function(detect_build_platform DETECTED_BUILD_PLATFORM)
@@ -190,27 +192,202 @@ function(set_rpath TARGET_NAME NEW_RPATH)
 	set_target_properties(${TARGET_NAME} PROPERTIES INSTALL_RPATH ${NEW_RPATH})
 endfunction()
 
-# Download a library from Wolfram's CVS repository.
+# helper function for get_library_from_cvs
+function(_set_package_args PACKAGE_SYSTEM_ID PACKAGE_BUILD_PLATFORM TAG VALUE)
+	if(${TAG} STREQUAL SYSTEM_ID)
+		set(${PACKAGE_SYSTEM_ID} ${VALUE} PARENT_SCOPE)
+	elseif(${TAG} STREQUAL BUILD_PLATFORM)
+		set(${PACKAGE_BUILD_PLATFORM} ${VALUE} PARENT_SCOPE)
+	endif()
+endfunction()
+
+# Download a library from Wolfram's CVS repository and set PACKAGE_LOCATION to the download location.
+# SystemId and BuildPlatform can be provided as optional arguments to only download a specific instance of the library.
+# If a Source directory exists in the component root directory, it will be downloaded.
 function(get_library_from_cvs PACKAGE_NAME PACKAGE_VERSION PACKAGE_LOCATION)
 
 	message(STATUS "Looking for CVS library: ${PACKAGE_NAME} version ${PACKAGE_VERSION}")
 
+	# Check optional system id and build platform
+	if(ARGC GREATER_EQUAL 5)
+		_set_package_args(PACKAGE_SYSTEM_ID PACKAGE_BUILD_PLATFORM ${ARGV3} ${ARGV4})
+		if(ARGC GREATER_EQUAL 7)
+			_set_package_args(PACKAGE_SYSTEM_ID PACKAGE_BUILD_PLATFORM ${ARGV5} ${ARGV6})
+		endif()
+	endif()
+
+	set(_PACKAGE_PATH_SUFFIX ${PACKAGE_VERSION})
+	if(PACKAGE_SYSTEM_ID)
+		set(_PACKAGE_PATH_SUFFIX ${_PACKAGE_PATH_SUFFIX}/${PACKAGE_SYSTEM_ID})
+		if(PACKAGE_BUILD_PLATFORM)
+			set(_PACKAGE_PATH_SUFFIX ${_PACKAGE_PATH_SUFFIX}/${PACKAGE_BUILD_PLATFORM})
+		endif()
+	endif()
+
+	# Download component library
 	include(FetchContent)
 	FetchContent_declare(
 		${PACKAGE_NAME}
-		SOURCE_DIR ${PACKAGE_LOCATION}
+		SOURCE_DIR ${${PACKAGE_LOCATION}}/${_PACKAGE_PATH_SUFFIX}
 		CVS_REPOSITORY $ENV{CVSROOT}
-		CVS_MODULE "Components/${PACKAGE_NAME}/${PACKAGE_VERSION}"
+		CVS_MODULE "Components/${PACKAGE_NAME}/${_PACKAGE_PATH_SUFFIX}"
 	)
 
+	string(TOLOWER ${PACKAGE_NAME} lc_package_name)
 	FetchContent_getproperties(${PACKAGE_NAME})
-	if (NOT ${PACKAGE_NAME}_POPULATED)
+	if (NOT ${lc_package_name}_POPULATED)
 		message(STATUS "Downloading CVS library: ${PACKAGE_NAME}")
 		FetchContent_populate(${PACKAGE_NAME})
 	endif ()
 
-	set(${PACKAGE_LOCATION} ${${PACKAGE_NAME}_SOURCE_DIR} PARENT_SCOPE)
+	# Check if a Source directory exists
+	execute_process(
+		COMMAND cvs -d $ENV{CVSROOT} rdiff -r HEAD Components/${PACKAGE_NAME}/${PACKAGE_VERSION}/Source
+		WORKING_DIRECTORY ${${PACKAGE_LOCATION}}
+		RESULT_VARIABLE RES
+		OUTPUT_QUIET ERROR_QUIET
+	)
+	if("${RES}" STREQUAL "0")
+		# Download component source
+		FetchContent_declare(
+			${PACKAGE_NAME}_SOURCE
+			SOURCE_DIR ${${PACKAGE_LOCATION}}/${PACKAGE_VERSION}/Source
+			CVS_REPOSITORY $ENV{CVSROOT}
+			CVS_MODULE "Components/${PACKAGE_NAME}/${PACKAGE_VERSION}/Source"
+		)
 
-	message(STATUS "${PACKAGE_NAME} downloaded to ${PACKAGE_LOCATION}")
+		FetchContent_getproperties(${PACKAGE_NAME}_SOURCE)
+		if (NOT ${lc_package_name}_source_POPULATED)
+			message(STATUS "Downloading CVS source: ${PACKAGE_NAME}/${PACKAGE_VERSION}/Source")
+			FetchContent_populate(${PACKAGE_NAME}_SOURCE)
+		endif ()
+	endif()
+
+	set(${PACKAGE_LOCATION} ${${lc_package_name}_SOURCE_DIR} PARENT_SCOPE)
+
+	message(STATUS "${PACKAGE_NAME} downloaded to ${${PACKAGE_LOCATION}}/${_PACKAGE_PATH_SUFFIX}")
+
+endfunction()
+
+
+# Splits comma delimited string STR and saves list to variable LIST
+function(split_string_to_list STR LIST)
+	string(REPLACE " " "" _STR ${STR})
+	string(REPLACE "," ";" _STR ${_STR})
+	set(${LIST} ${_STR} PARENT_SCOPE)
+endfunction()
+
+# Finds library.conf and for each library therein sets:
+# ${LIBRARY_NAME}_SYSTEMID
+# ${LIBRARY_NAME}_VERSION
+# ${LIBRARY_NAME}_BUILD_PLATFORM
+function(find_and_parse_library_conf)
+	set(LIBRARY_CONF "${CMAKE_CURRENT_SOURCE_DIR}/scripts/library.conf")
+	if(NOT EXISTS ${LIBRARY_CONF})
+		message(FATAL_ERROR "Unable to find ${LIBRARY_CONF}")
+	endif()
+
+	file(STRINGS ${LIBRARY_CONF} _LIBRARY_CONF_STRINGS)
+
+	set(_LIBRARY_CONF_LIBRARY_LIST ${_LIBRARY_CONF_STRINGS})
+	list(FILTER _LIBRARY_CONF_LIBRARY_LIST INCLUDE REGEX "\\[Library\\]")
+
+	string(REGEX REPLACE
+		"\\[Library\\][ \t]+(.*)" "\\1" 
+		_LIBRARY_CONF_LIBRARY_LIST "${_LIBRARY_CONF_LIBRARY_LIST}"
+	)
+	split_string_to_list(${_LIBRARY_CONF_LIBRARY_LIST} _LIBRARY_CONF_LIBRARY_LIST)
+
+	detect_system_id(SYSTEMID)
+
+	foreach(LIBRARY ${_LIBRARY_CONF_LIBRARY_LIST})
+		string(TOUPPER ${LIBRARY} _LIBRARY)
+
+		set(LIB_SYSTEMID ${_LIBRARY}_SYSTEMID)
+		set(LIB_VERSION ${_LIBRARY}_VERSION)
+		set(LIB_BUILD_PLATFORM ${_LIBRARY}_BUILD_PLATFORM)
+
+		if(NOT ${LIB_SYSTEMID})
+			set(${LIB_SYSTEMID} ${SYSTEMID})
+			set(${LIB_SYSTEMID} ${SYSTEMID} PARENT_SCOPE)
+		endif()
+
+		set(_LIBRARY_CONF_LIBRARY_STRING ${_LIBRARY_CONF_STRINGS})
+		list(FILTER _LIBRARY_CONF_LIBRARY_STRING INCLUDE REGEX "${${LIB_SYSTEMID}}[ \t]+${LIBRARY}")
+
+		string(REGEX REPLACE
+			"${${LIB_SYSTEMID}}[ \t]+${LIBRARY}[ \t]+([0-9.]+)[ \t]+([A-Za-z0-9_\\-]+)" "\\1;\\2"
+			_LIB_VERSION_BUILD_PLATFORM ${_LIBRARY_CONF_LIBRARY_STRING}
+		)
+
+		list(GET _LIB_VERSION_BUILD_PLATFORM 0 _LIB_VERSION)
+		list(GET _LIB_VERSION_BUILD_PLATFORM 1 _LIB_BUILD_PLATFORM)
+
+		set(${LIB_VERSION} ${_LIB_VERSION} PARENT_SCOPE)
+
+		set(${LIB_BUILD_PLATFORM} ${_LIB_BUILD_PLATFORM} PARENT_SCOPE)
+	endforeach()
+endfunction()
+
+
+# Resolve full path to a CVS dependency, downloading if necessary
+# Prioritize ${LIB_NAME}_DIR, ${LIB_NAME}_LOCATION, CVS_COMPONENTS_DIR, then CVS download
+# Do not download if ${LIB_NAME}_DIR or ${LIB_NAME}_LOCATION are set
+# ${LIB_NAME}_VERSION|SYSTEMID|BUILD_PLATFORM are expected to be previously set
+function(find_cvs_dependency LIB_NAME)
+
+	# helper variables
+	string(TOUPPER ${LIB_NAME} _LIB_NAME)
+	set(LIB_DIR "${${_LIB_NAME}_DIR}")
+	set(LIB_LOCATION "${${_LIB_NAME}_LOCATION}")
+	set(LIB_VERSION ${${_LIB_NAME}_VERSION})
+	set(LIB_SYSTEMID ${${_LIB_NAME}_SYSTEMID})
+	set(LIB_BUILD_PLATFORM ${${_LIB_NAME}_BUILD_PLATFORM})
+	set(_LIB_DIR_SUFFIX ${LIB_VERSION}/${LIB_SYSTEMID}/${LIB_BUILD_PLATFORM})
+
+	# Check if there is a full path to the dependency with version, system id and build platform.
+	if(NOT ${LIB_DIR} STREQUAL "")
+		if(NOT EXISTS ${LIB_DIR})
+			message(FATAL_ERROR "Specified full path to Lib does not exist: ${LIB_DIR}")
+		endif()
+		return()
+	endif()
+
+	# Check if there is a path to the Lib component
+	if(NOT ${LIB_LOCATION} STREQUAL "")
+		if(NOT EXISTS ${LIB_LOCATION})
+			message(FATAL_ERROR "Specified location of Lib does not exist: ${LIB_LOCATION}")
+		elseif(EXISTS ${LIB_LOCATION}/${_LIB_DIR_SUFFIX})
+			set(${_LIB_NAME}_DIR ${LIB_LOCATION}/${_LIB_DIR_SUFFIX} PARENT_SCOPE)
+			return()
+		endif()
+	endif()
+
+	# Check if there is a path to CVS modules
+	if(CVS_COMPONENTS_DIR)
+		set(_CVS_COMPONENTS_DIR ${CVS_COMPONENTS_DIR})
+	elseif(DEFINED ENV{CVS_COMPONENTS_DIR})
+		set(_CVS_COMPONENTS_DIR $ENV{CVS_COMPONENTS_DIR})
+	endif()
+
+	if(_CVS_COMPONENTS_DIR)
+		if(NOT EXISTS ${_CVS_COMPONENTS_DIR})
+			message(FATAL_ERROR "Specified location of CVS components does not exist: ${_CVS_COMPONENTS_DIR}")
+		elseif(EXISTS ${_CVS_COMPONENTS_DIR}/${LIB_NAME}/${_LIB_DIR_SUFFIX})
+			set(${_LIB_NAME}_DIR ${_CVS_COMPONENTS_DIR}/${LIB_NAME}/${_LIB_DIR_SUFFIX} PARENT_SCOPE)
+			return()
+		endif()
+	endif()
+
+	# Finally download component from cvs
+	# Set location of library sources checked out from cvs
+	set(LIB_LOCATION "${CMAKE_BINARY_DIR}/Components/${LIB_NAME}")
+	set(${_LIB_NAME}_LOCATION ${LIB_LOCATION} CACHE PATH "Location of ${LIB_NAME} root directory.")
+
+	get_library_from_cvs(${LIB_NAME} ${LIB_VERSION} LIB_LOCATION
+		SYSTEM_ID ${LIB_SYSTEMID}
+		BUILD_PLATFORM ${LIB_BUILD_PLATFORM}
+	)
+	set(${_LIB_NAME}_DIR ${LIB_LOCATION} PARENT_SCOPE)
 
 endfunction()

@@ -4,12 +4,18 @@
 using namespace LibraryLinkUtils;
 
 LIBRARY_LINK_FUNCTION(EchoTensor) {
-	MArgumentManager mngr(libData, Argc, Args, Res);
-
-	mngr.operateOnTensor(0, [&mngr](auto&& t) {
-		mngr.setTensor(t);
-	});
-	return LIBRARY_NO_ERROR;
+	auto err = LLErrorCode::NoError;
+	try {
+		MArgumentManager mngr(libData, Argc, Args, Res);
+		mngr.operateOnTensor(0, [&mngr](auto t1) {
+			auto t2{std::move(t1)};  // test move constructor
+			auto t3 = std::move(t2);  // test move assignment
+			mngr.setTensor(t3);
+		});
+	} catch (const LibraryLinkError &e) {
+		err = e.which();
+	}
+	return err;
 }
 
 LIBRARY_LINK_FUNCTION(EchoFirst) {

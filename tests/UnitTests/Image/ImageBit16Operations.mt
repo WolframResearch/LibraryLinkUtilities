@@ -29,6 +29,23 @@ Test[
 ]
 
 Test[
+	CloneImage[testImage]
+	,
+	testImage
+	,
+	TestID -> "ImageBit16Operations-20190731-I9W1X5"
+]
+
+
+Test[
+	CloneImage[testImage3D]
+	,
+	testImage3D
+	,
+	TestID -> "ImageBit16Operations-20190731-O2B9I8"
+]
+
+Test[
 	res = EchoImage2[testImage];	
 	And[SameQ[ImageType[testImage],ImageType[res]],
 		SameQ[ImageData[testImage,"Bit16"],ImageData[res,"Bit16"]],
