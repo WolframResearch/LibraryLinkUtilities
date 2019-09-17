@@ -19,7 +19,7 @@
 <a name="introduction"></a>
 # Introduction
 
-_LibraryLink Utilities_ (abbr. LLU) is a set of modern C++ wrappers for most elements of standard LibraryLink C interface. 
+_LibraryLink Utilities_ (abbr. LLU) is a set of modern C++ wrappers for most elements of standard _LibraryLink_ C interface. 
 Containers like MImage or MTensor are wrapped in templated classes. Managing MArguments (both input and output) is also 
 delegated to a separate class.
 
@@ -37,7 +37,7 @@ Most significant features missing in _LibraryLink_ are:
 * Automatic resource management
 * Exception handling
 * Container iterators
-* Class-like interface for LibraryLink data structures, for example `rank()` as member function of Tensor class instead of separate function 
+* Class-like interface for _LibraryLink_ data structures, for example `rank()` as member function of Tensor class instead of separate function 
 `mint (*MTensor_getRank)(MTensor)`, or a copy constructor instead of `int (*MTensor_clone)(MTensor, MTensor*)`
 * Type safety
 
@@ -178,14 +178,110 @@ EXTERN_C DLLEXPORT int repeatCharactersNew(WolframLibraryData libData, mint Argc
 <a name="containers"></a>
 # Containers
 
+Raw _LibraryLink_ containers like MTensor or MNumericArray store their element type as a regular field in the stucture 
+meaning that the type cannot be used in compile-time context, which makes writing generic code that does something with 
+the underlying data very difficult (lots of switches and code repetition).
+
+On the other hand, having element type as template parameter, like in STL containers, is often inconvenient and requires 
+some template magic for simple things like passing forward the container or reading metadata when the data type is not 
+known a priori.
+
+To get the best of two worlds at cost of a bit more complicated interface LLU provides the following hierarchy of container 
+classes:
+
+#### Level 0:
+
+* MTensor
+* MNumericArray
+* MImage
+* DataStore
+
+These are just raw _LibraryLink_ containers. If someone wants to use them directly, they probably don't need LLU at all, but it's possible to use them within LLU as well.
+
+#### Level 1A:
+
+* [GenericTensor\<PassingMode\>](http://algorithms.wolfram.com:8080/documentation/LLU2_0_0/classLLU_1_1MContainer_3_01MArgumentType_1_1Tensor_00_01PassingMode_01_4.html)
+* [GenericNumericArray\<PassingMode\>](http://algorithms.wolfram.com:8080/documentation/LLU2_0_0/classLLU_1_1MContainer_3_01MArgumentType_1_1NumericArray_00_01PassingMode_01_4.html)
+* [GenericImage\<PassingMode\>](http://algorithms.wolfram.com:8080/documentation/LLU2_0_0/classLLU_1_1MContainer_3_01MArgumentType_1_1Image_00_01PassingMode_01_4.html)
+* [GenericDataList\<PassingMode\>](http://algorithms.wolfram.com:8080/documentation/LLU2_0_0/classLLU_1_1MContainer_3_01MArgumentType_1_1DataStore_00_01PassingMode_01_4.html)
+
+These are type-unaware wrappers, offer automatic memory management and basic interface like access to metadata (dimensions, rank, etc). No direct access to underlying data.
+
+#### Level 1B:
+- Type-aware interface to [Tensor](http://algorithms.wolfram.com:8080/documentation/LLU2_0_0/classLLU_1_1TypedTensor.html)
+- Type-aware interface to [NumericArray](http://algorithms.wolfram.com:8080/documentation/LLU2_0_0/classLLU_1_1TypedNumericArray.html)
+- Type-aware interface to [Image](http://algorithms.wolfram.com:8080/documentation/LLU2_0_0/classLLU_1_1TypedImage.html)
+
+These template classes offer iterators and data access functions for each container. They shouldn't be used directly, 
+as they don't hold any data. Instead, use containers from level 2 which inherits from level 1B containers.
+
+#### Level 2:
+- [Tensor<T, PassingMode>](http://algorithms.wolfram.com:8080/documentation/LLU2_0_0/classLLU_1_1Tensor.html)
+- [NumericArray<T, PassingMode>](http://algorithms.wolfram.com:8080/documentation/LLU2_0_0/classLLU_1_1NumericArray.html)
+- [Image<T, PassingMode>](http://algorithms.wolfram.com:8080/documentation/LLU2_0_0/classLLU_1_1Image.html)
+- [DataList<T, PassingMode>](http://algorithms.wolfram.com:8080/documentation/LLU2_0_0/classLLU_1_1DataList.html)
+
+Full-fledged wrappers with automatic memory management (via Passing policies, see section below), type-safe data access, iterators, etc. 
+
+The following table summarizes current status of _LibraryLink_ containers and their LLU wrappers:
+
 | LibraryLink element |    Generic wrapper     |   Typed wrapper    |
 |:-------------------:|:----------------------:|:------------------:|
 |       MTensor       |    GenericTensor\<P\>    |    Tensor<T, P>    |
 |    MNumericArray    | GenericNumericArray\<P\> | NumericArray<T, P> |
 |       MImage        |    GenericImage\<P\>     |    Image<T, P>     |
 |      DataStore      |   GenericDataList\<P\>   |   DataList<T, P>   |
-|      MArgument      |           -            |  MArgumentManager  |
-|     LinkObject      |           -            |      MLStream      |
+
+## Passing policies
+When passing a container from WL to a C++ library you have to choose one of the 4 available passing modes:
+
+* Automatic
+* Constant
+* Manual
+* Shared
+
+With exception of DataStore, which cannot be Shared.
+
+All of the above are described in the [LibraryLink documentation](https://reference.wolfram.com/language/LibraryLink/tutorial/InteractionWithWolframLanguage.html#97446640).
+
+In plain _LibraryLink_, the choice you make is reflected only in the WL code where you call `LibraryFunctionLoad` and specify 
+the list of parameters for the library function. There is no way to query the WolframLibraryData or MArgument about 
+the passing modes of function arguments from within C++ code. Therefore, the programmer must remember the passing mode 
+for each argument and then ensure the correct action is taken (releasing/not releasing memory depending 
+on the combination of passing mode and whether the container has been returned from the library function as result to WL). 
+This design is far from perfect because manual resource management often leads to bugs and leaks.
+
+As a remedy for this flaw of _LibraryLink_, LLU encodes the passing mode in a form of template parameter for each 
+container wrapper. It makes sense because passing mode is known at compile time and cannot be changed throughout 
+the life of container.
+
+LLU defines 3 classes representing passing policies:
+
+* Passing::Automatic
+* Passing::Manual
+* Passing::Shared
+
+They serve as base classes to containers and they store and update the information whether the underlying raw container 
+should be freed when the wrapper ends its life.
+
+There is also `Passing::Constant` which is just an alias for Passing::Automatic because from the memory management 
+point of view these two policies are equivalent.
+
+Some examples:
+```cpp
+Tensor<mint, Passing::Manual> t { 1, 2,  3, 4, 5 };    // fine, new MTensor is allocated and it will be freed when t goes out of scope
+
+Tensor<mint, Passing::Automatic> s { 1, 2,  3, 4, 5 };     // compile-time error, you cannot create a container with Automatic mode 
+                                                           // because LibraryLink doesn't know about it and will not free it automatically
+
+auto t = mngr.getGenericImage<Shared>(0);   // OK
+
+auto copy = t;    // compile-time error, you cannot copy a Shared container because the copy will not be shared
+
+LLU::GenericImage<Manual> clone {t};   // but this is fine, we make a deep copy which is no longer Shared
+```
+
+More examples can be found in unit tests.
 
 <a name="mathlink"></a>
 # MathLink support
@@ -383,11 +479,11 @@ ms << ML::EndPacket << ML::Flush;
 ```
 <a name="error-handling"></a>
 # Error handling
-Every LibraryLink function in C code has a fixed signature `int f (WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res)`. The actual result of computations should be returned via the
+Every _LibraryLink_ function in C code has a fixed signature `int f (WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res)`. The actual result of computations should be returned via the
 "out-parameter" `Res`. The value of `Res` is only considered in top-level if the actual return value of `f` (the `int`) was equal to `LIBRARY_NO_ERROR` (with LLU use `ErrorCode::NoError`!).
 
 That means, that the only information about an error which occurred in the library that makes it to the top-level is a single integer. In C++ exceptions are the preferred way of error handling, so LLU
-offers a special class of exceptions that can be easily translated to error codes, returned to LibraryLink and then translated to descriptive `Failure` objects in Wolfram Language.
+offers a special class of exceptions that can be easily translated to error codes, returned to _LibraryLink_ and then translated to descriptive `Failure` objects in Wolfram Language.
 
 Such exceptions are identified in the C++ code by name - a short string. For example, imagine you have a function that reads data from a source. If the source does not exist or is empty, you want to throw
 exceptions, let's call them "NoSourceError" and "EmptySourceError", respectively. First, you **must** register all your exceptions inside `WolframLibrary_initialize` function:
@@ -397,7 +493,7 @@ EXTERN_C DLLEXPORT int WolframLibrary_initialize(WolframLibraryData libData) {
     try {
         ErrorManager::registerPacletErrors({
             {"NoSourceError", "Requested data source does not exist."},
-            {"EmptySourceError", "Requested data source is empty."}
+            {"EmptySourceError", "Requested data source has `1` elements, but required at least `2`."}
         });
     } catch(...) {
         return LLErrorCode::FunctionError;
@@ -406,7 +502,8 @@ EXTERN_C DLLEXPORT int WolframLibrary_initialize(WolframLibraryData libData) {
 }
 ```
 
-In the code above, the second element of each pair is a textual description of the error which will be visible in the `Failure` object. Unfortunately, for now this text has to be static.
+In the code above, the second element of each pair is a textual description of the error which will be visible in the `Failure` object.
+This text may contain "slots" denoted as \`1\`, \`2\`, etc. that work like [TemplateSlots](https://reference.wolfram.com/language/ref/TemplateSlot.html) in Wolfram Language.
 Notice that there is no way to assign specific error codes to your custom exceptions, this is handled internally by LLU.
 
 Now, in the function that reads data:
@@ -417,14 +514,16 @@ void readData(std::shared_ptr<DataSource> source) {
     if (!source) {
         ErrorManager::throwException("NoSourceError");
     }
-    if (source->empty()) {
-        ErrorManager::throwException("EmptySourceError");
+    if (source->elemCount() < 3) {
+        ErrorManager::throwException("EmptySourceError", source->elemCount(), 3);
     }
     //...
 }
 ```
 
-Each call to `ErrorManager::throwException` causes an exception of class `LibraryLinkError` with predefined name and error code to be thrown. The only thing left do now is to catch such exception. 
+Each call to `ErrorManager::throwException` causes an exception of class `LibraryLinkError` with predefined name and error code to be thrown. 
+All parameters in `ErrorManager::throwException` call after the first one are used to populate consecutive template slots in the error message.
+The only thing left do now is to catch the exception. 
 Usually, you will catch only in the interface functions (the ones with `EXTERN_C DLLEXPORT`), extract the error code from exception and return it:
 
 ```cpp
@@ -448,19 +547,13 @@ Finally, you can take a look at [PacletTemplate](https://stash.wolfram.com/proje
 <a name="limitations"></a>
 # Limitations with respect to LibraryLink
 
-There are some LibraryLink features currently not covered by _LLU_, most notably:
+There are some _LibraryLink_ features currently not covered by _LLU_, most notably:
 
 - Sparse Arrays
 - Tensor subsetting: `MTensor_getTensor`
 - Managed Library Expressions
 - Callbacks
 - Wolfram IO Library (asynchronous tasks)
-
-For now LibraryLink does not allow to write generic code that would clean up memory after Tensors, NumericArrays, etc. independently of passing mode used ("Automatic", "Shared", ...).
-See [this suggestion](http://bugs.wolfram.com/show?number=337331) for more details. In consequence, _LLU_ guarantees to correctly handle only those data structures 
-that were created with _LLU_. Structures received as MArguments will not be automatically freed, therefore you may want to use passing modes that do not require clean-up 
-(like "Constant" or Automatic). In case of "Shared" passing, the only guarantee is that `disown()` will be called on destruction of each object that has positive `shareCount()`. 
-Please consult [LibraryLink tutorial](https://reference.wolfram.com/language/LibraryLink/tutorial/InteractionWithMathematica.html#97446640) for more details.
 
 <a name="howToUse"></a>
 # How to use _LibraryLink Utilities_?
