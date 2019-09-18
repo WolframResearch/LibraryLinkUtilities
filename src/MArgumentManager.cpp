@@ -11,9 +11,11 @@
 
 #include <algorithm>
 
+#include "LLU/LibraryData.h"
 #include "LLU/Containers/MArray.hpp"
+#include "LLU/Containers/Passing/Shared.hpp"
 
-namespace LibraryLinkUtils {
+namespace LLU {
 
 	/* Static data members */
 
@@ -23,14 +25,12 @@ namespace LibraryLinkUtils {
 
 	MArgumentManager::MArgumentManager(mint Argc, MArgument* Args, MArgument& Res) :
 			argc(Argc), args(Args), res(Res) {
-		if (!libData)
-			ErrorManager::throwException(LLErrorName::MArgumentLibDataError);
 		initStringArgs();
 	}
 
 	MArgumentManager::MArgumentManager(WolframLibraryData ld, mint Argc, MArgument* Args, MArgument& Res) :
 			argc(Argc), args(Args), res(Res) {
-		setLibraryData(ld);
+		LibraryData::setLibraryData(ld);
 		initStringArgs();
 	}
 
@@ -44,19 +44,19 @@ namespace LibraryLinkUtils {
 		return static_cast<double>(MArgument_getReal(getArgs(index)));
 	}
 
-	void MArgumentManager::acquireUTF8String(unsigned int index) {
+	void MArgumentManager::acquireUTF8String(unsigned int index) const {
 		if (!stringArgs.at(index)) {
 			char* strArg = MArgument_getUTF8String(getArgs(index));
 			stringArgs[index].reset(strArg);
 		}
 	}
 
-	char* MArgumentManager::getCString(unsigned int index) {
+	char* MArgumentManager::getCString(unsigned int index) const {
 		acquireUTF8String(index);
 		return stringArgs[index].get();
 	}
 
-	std::string MArgumentManager::getString(unsigned int index) {
+	std::string MArgumentManager::getString(unsigned int index) const {
 		acquireUTF8String(index);
 		return stringArgs[index].get();
 	}
@@ -102,53 +102,69 @@ namespace LibraryLinkUtils {
 		return MArgument_getMNumericArray(getArgs(index));
 	}
 
-	void MArgumentManager::setMNumericArray(MNumericArray ra) {
-		MArgument_setMNumericArray(res, ra);
-	}	
-
 	MTensor MArgumentManager::getMTensor(unsigned int index) const {
 		return MArgument_getMTensor(getArgs(index));
+	}
+
+	MImage MArgumentManager::getMImage(unsigned int index) const {
+		return MArgument_getMImage(getArgs(index));
+	}
+
+	DataStore MArgumentManager::getDataStore(unsigned int index) const {
+		return MArgument_getDataStore(getArgs(index));
+	}
+
+	void MArgumentManager::setMNumericArray(MNumericArray ra) {
+		MArgument_setMNumericArray(res, ra);
 	}
 
 	void MArgumentManager::setMTensor(MTensor t) {
 		MArgument_setMTensor(res, t);
 	}
 
+	void MArgumentManager::setMImage(MImage mi) {
+		MArgument_setMImage(res, mi);
+	}
+
+	void MArgumentManager::setDataStore(DataStore ds){
+		MArgument_setDataStore(res, ds);
+	}
+
 	numericarray_data_t MArgumentManager::getNumericArrayType(unsigned int index) const {
 		MNumericArray tmp = MArgument_getMNumericArray(getArgs(index));
-		return libData->numericarrayLibraryFunctions->MNumericArray_getType(tmp);
+		return LibraryData::NumericArrayAPI()->MNumericArray_getType(tmp);
 	}
 
 	unsigned char MArgumentManager::getTensorType(unsigned int index) const {
 		MTensor tmp = MArgument_getMTensor(getArgs(index));
-		return static_cast<unsigned char>(libData->MTensor_getType(tmp));
+		return static_cast<unsigned char>(LibraryData::API()->MTensor_getType(tmp));
 	}
 
 	imagedata_t MArgumentManager::getImageType(unsigned int index) const {
 		MImage tmp = MArgument_getMImage(getArgs(index));
-		return libData->imageLibraryFunctions->MImage_getDataType(tmp);
+		return LibraryData::ImageAPI()->MImage_getDataType(tmp);
 	}
 
 	MArgument MArgumentManager::getArgs(unsigned int index) const {
 		if (index >= argc)
-			ErrorManager::throwExceptionWithDebugInfo(LLErrorName::MArgumentIndexError, "Index " + std::to_string(index) + " out-of-bound when accessing LibraryLink argument");
+			ErrorManager::throwExceptionWithDebugInfo(ErrorName::MArgumentIndexError, "Index " + std::to_string(index) + " out-of-bound when accessing LibraryLink argument");
 		return args[index];
 	}
 
 	void MArgumentManager::initStringArgs() {
 		stringArgs.reserve(argc);
 		for (int i = 0; i < argc; ++i) {
-			stringArgs.emplace_back(nullptr, libData->UTF8String_disown);
+			stringArgs.emplace_back(nullptr, LibraryData::API()->UTF8String_disown);
 		}
 	}
 
 	ProgressMonitor MArgumentManager::getProgressMonitor(double step) const {
 		if (argc < 1) {
-			ErrorManager::throwExceptionWithDebugInfo(LLErrorName::MArgumentIndexError, "Index too small when accessing ProgressMonitor.");
+			ErrorManager::throwExceptionWithDebugInfo(ErrorName::MArgumentIndexError, "Index too small when accessing ProgressMonitor.");
 		}
 		auto pmIndex = static_cast<unsigned>(argc - 1); // shared Tensor will be passed as the last argument
-		Tensor<double> sharedIndicator = getTensor<double>(pmIndex);
+		auto sharedIndicator = getTensor<double, Passing::Shared>(pmIndex);
 		return ProgressMonitor { std::move(sharedIndicator), step };
 	}
 
-} /* namespace LibraryLinkUtils */
+} /* namespace LLU */

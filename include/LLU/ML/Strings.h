@@ -16,7 +16,7 @@
 #include "LLU/ML/EncodingTraits.hpp"
 #include "LLU/Utilities.hpp"
 
-namespace LibraryLinkUtils {
+namespace LLU {
 
 	namespace ML {
 
@@ -66,13 +66,13 @@ namespace LibraryLinkUtils {
 			static void put(MLINK m, const T* string, int len) {
 				static_assert(CharacterTypesCompatible<E, T>, "Character type does not match the encoding in ML::String<E>::put");
 				auto* expectedStr = reinterpret_cast<const CharT*>(string);
-				checkError(m, Put(m, expectedStr, len), LLErrorName::MLPutStringError, PutFName);
+				checkError(m, Put(m, expectedStr, len), ErrorName::MLPutStringError, PutFName);
 			}
 
 			static StringData<E> get(MLINK m) {
 				const CharT* rawResult;
 				int bytes, characters;
-				checkError(m, Get(m, &rawResult, &bytes, &characters), LLErrorName::MLGetStringError, GetFName);
+				checkError(m, Get(m, &rawResult, &bytes, &characters), ErrorName::MLGetStringError, GetFName);
 				return {rawResult, ReleaseString<E> {m, bytes , characters}};
 			}
 
@@ -266,6 +266,6 @@ namespace LibraryLinkUtils {
 
 	} /* namespace ML */
 
-} /* namespace LibraryLinkUtils */
+} /* namespace LLU */
 
 #endif /* LLUTILS_ML_STRINGS_H_ */

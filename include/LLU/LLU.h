@@ -1,49 +1,28 @@
 /** 
  * @file	LLU.h
- * @author	Rafal Chojna <rafalc@wolfram.com>
- * @date	3/10/2017
- * @brief	Header file with common includes and definitions that will be used in most paclets.
+ * @brief	Header file which includes all major parts of LLU.
+ *
+ * It's often convenient to use a single include file but bear in mind that if you only need a small subset of LLU in your project
+ * you may get shorter compilation times by including only what you actually use.
  */
 
 #ifndef LLUTILS_LLU_H_
 #define LLUTILS_LLU_H_
 
-#include "LLU/ErrorLog/Errors.h"
-#include "LLU/ErrorLog/ErrorManager.h"
-#include "MArgumentManager.h"
-
+#include "LLU/Containers/DataList.h"
+#include "LLU/Containers/Image.h"
 #include "LLU/Containers/NumericArray.h"
 #include "LLU/Containers/Tensor.h"
-#include "LLU/Containers/Image.h"
 
+#include "LLU/Containers/Passing/Automatic.hpp"
+#include "LLU/Containers/Passing/Manual.hpp"
+#include "LLU/Containers/Passing/Shared.hpp"
 
-// Import some of the LibraryLinkUtils symbols into the global namespace.
-// You definitely should not include this in your .h files but it may save you some typing in .cpp files.
+#include "LLU/ErrorLog/Errors.h"
+#include "LLU/ErrorLog/ErrorManager.h"
 
-// MArgumentManager
-using MArgumentManager = LibraryLinkUtils::MArgumentManager;
-using LibraryLinkUtils::MArgumentType;
+#include "LLU/ML/MLStream.hpp"
 
-// Error-related
-using LibraryLinkError = LibraryLinkUtils::LibraryLinkError;
-using ErrorManager = LibraryLinkUtils::ErrorManager;
-namespace LLErrorCode = LibraryLinkUtils::LLErrorCode;
-namespace LLErrorName = LibraryLinkUtils::LLErrorName;
-
-// Containers
-namespace Passing = LibraryLinkUtils::Passing;
-
-template<typename T>
-using NumericArray = LibraryLinkUtils::NumericArray<T>;
-
-template<typename T>
-using Tensor = LibraryLinkUtils::Tensor<T>;
-
-template<typename T>
-using Image = LibraryLinkUtils::Image<T>;
-
-template<LibraryLinkUtils::MArgumentType T, template<typename> class PassingMode = Passing::Manual>
-using DataList = LibraryLinkUtils::DataList<T, PassingMode>;
-
+#include "MArgumentManager.h"
 
 #endif /* LLUTILS_LLU_H_ */

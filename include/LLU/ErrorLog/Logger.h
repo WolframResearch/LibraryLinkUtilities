@@ -10,7 +10,7 @@
 #include <mutex>
 #include <string>
 
-#include "LLU/Containers/LibDataHolder.h"
+#include "LLU/LibraryData.h"
 #include "LLU/ML/MLStream.hpp"
 
 // "Public" macros:
@@ -35,26 +35,29 @@
 // "Private" macros:
 
 #ifdef LLU_LOG_LEVEL_DEBUG
-#define LLU_DEBUG(...) LibraryLinkUtils::Logger::log<LibraryLinkUtils::Logger::Level::Debug>(__LINE__, __FILE__, __func__, __VA_ARGS__)
+#define LLU_DEBUG(...) LLU::Logger::log<LLU::Logger::Level::Debug>(__LINE__, __FILE__, __func__, __VA_ARGS__)
 #else
 #define LLU_DEBUG(...) ((void)0)
 #endif
 
 #ifdef LLU_LOG_LEVEL_WARNING
-#define LLU_WARNING(...) LibraryLinkUtils::Logger::log<LibraryLinkUtils::Logger::Level::Warning>(__LINE__, __FILE__, __func__, __VA_ARGS__)
+#define LLU_WARNING(...) LLU::Logger::log<LLU::Logger::Level::Warning>(__LINE__, __FILE__, __func__, __VA_ARGS__)
 #else
 #define LLU_WARNING(...) ((void)0)
 #endif
 
 #ifdef LLU_LOG_LEVEL_ERROR
-#define LLU_ERROR(...) LibraryLinkUtils::Logger::log<LibraryLinkUtils::Logger::Level::Error>(__LINE__, __FILE__, __func__, __VA_ARGS__)
+#define LLU_ERROR(...) LLU::Logger::log<LLU::Logger::Level::Error>(__LINE__, __FILE__, __func__, __VA_ARGS__)
 #else
 #define LLU_ERROR(...) ((void)0)
 #endif
 
-namespace LibraryLinkUtils {
+namespace LLU {
 
-
+	/**
+	 * Logger class is responsible for sending log messages via MathLink to Mathematica.
+	 * It may be more convenient to use one of the LLU_DEBUG/WARNING/ERROR macros instead of calling Logger methods directly.
+	 */
 	class Logger {
 	public:
 
@@ -159,7 +162,7 @@ namespace LibraryLinkUtils {
 
 	template<Logger::Level L, typename... T>
 	void Logger::log(int line, const std::string& fileName, const std::string& function, T&&... args) {
-		log<L>(LibDataHolder::getLibraryData(), line, fileName, function, std::forward<T>(args)...);
+		log<L>(LibraryData::API(), line, fileName, function, std::forward<T>(args)...);
 	}
 
 }

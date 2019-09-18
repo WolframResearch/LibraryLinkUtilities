@@ -11,7 +11,7 @@
 #include <string>
 #include <type_traits>
 
-namespace LibraryLinkUtils {
+namespace LLU {
 
 	namespace ML {
 
@@ -223,6 +223,6 @@ namespace LibraryLinkUtils {
 		}
 	} /* namespace ML */
 
-} /* namespace LibraryLinkUtils */
+} /* namespace LLU */
 
 #endif /* LLUTILS_ML_ENCODINGTRAITS_HPP_ */

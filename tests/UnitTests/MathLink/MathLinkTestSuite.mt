@@ -13,7 +13,7 @@ TestExecute[
 	Get[FileNameJoin[{ParentDirectory[currentDirectory], "TestConfig.wl"}]];
 
 	(* Compile the test library *)
-	lib = CCompilerDriver`CreateLibrary[FileNameJoin[{currentDirectory, #}]& /@ {"MLTest.cpp", "MLEncodings.cpp"}, "MLTest", options];
+	lib = CCompilerDriver`CreateLibrary[FileNameJoin[{currentDirectory, "TestSources", #}]& /@ {"MLTest.cpp", "MLEncodings.cpp"}, "MLTest", options];
 	
 	Get[FileNameJoin[{$LLUSharedDir, "LibraryLinkUtilities.wl"}]];
 	
@@ -30,7 +30,7 @@ TestExecute[
 
 (* Compile-time errors *)
 Test[
-	CCompilerDriver`CreateLibrary[{FileNameJoin[{currentDirectory, "MLTestCompilationErrors.cpp"}]}, "MLTestErrors", options]
+	CCompilerDriver`CreateLibrary[{FileNameJoin[{currentDirectory, "TestSources", "MLTestCompilationErrors.cpp"}]}, "MLTestErrors", options]
 	,
 	$Failed
 	,

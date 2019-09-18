@@ -15,7 +15,7 @@
 #include "LLU/ErrorLog/Errors.h"
 #include "EncodingTraits.hpp"
 
-namespace LibraryLinkUtils {
+namespace LLU {
 
 	template<ML::Encoding, ML::Encoding>
 	class MLStream;
@@ -157,10 +157,10 @@ namespace LibraryLinkUtils {
 		template<ML::Encoding EIn, ML::Encoding EOut>
 		MLStream<EIn, EOut>& NewPacket(MLStream<EIn, EOut>& ms) {
 			checkError(
-				ms.get(),
-				MLNewPacket(ms.get()),
-				LLErrorName::MLPacketHandleError,
-				"Error in MLNewPacket"
+					ms.get(),
+					MLNewPacket(ms.get()),
+					ErrorName::MLPacketHandleError,
+					"Error in MLNewPacket"
 			);
 			return ms;
 		}
@@ -168,10 +168,10 @@ namespace LibraryLinkUtils {
 		template<ML::Encoding EIn, ML::Encoding EOut>
 		MLStream<EIn, EOut>& EndPacket(MLStream<EIn, EOut>& ms) {
 			checkError(
-				ms.get(),
-				MLEndPacket(ms.get()),
-				LLErrorName::MLPacketHandleError,
-				"Error in MLEndPacket"
+					ms.get(),
+					MLEndPacket(ms.get()),
+					ErrorName::MLPacketHandleError,
+					"Error in MLEndPacket"
 			);
 			return ms;
 		}
@@ -179,10 +179,10 @@ namespace LibraryLinkUtils {
 		template<ML::Encoding EIn, ML::Encoding EOut>
 		MLStream<EIn, EOut>& Flush(MLStream<EIn, EOut>& ms) {
 			checkError(
-				ms.get(),
-				MLFlush(ms.get()),
-				LLErrorName::MLFlowControlError,
-				"Error in MLFlush"
+					ms.get(),
+					MLFlush(ms.get()),
+					ErrorName::MLFlowControlError,
+					"Error in MLFlush"
 			);
 			return ms;
 		}

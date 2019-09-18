@@ -8,7 +8,7 @@
 
 #include "../../include/LLU/ML/Release.h"
 
-namespace LibraryLinkUtils {
+namespace LLU {
 
 	namespace ML {
 
@@ -53,6 +53,6 @@ namespace LibraryLinkUtils {
 
 	}
 
-} /* namespace LibraryLinkUtils */
+} /* namespace LLU */
 
 #endif

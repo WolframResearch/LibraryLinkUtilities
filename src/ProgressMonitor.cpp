@@ -5,16 +5,12 @@
  */
 #include "LLU/ProgressMonitor.h"
 
-#include "LLU/Containers/LibDataHolder.h"
+#include "LLU/LibraryData.h"
 #include "LLU/ErrorLog/ErrorManager.h"
 
-namespace LibraryLinkUtils {
+namespace LLU {
 
-	ProgressMonitor::ProgressMonitor(Tensor<double> sharedIndicator, double step) : sharedIndicator(std::move(sharedIndicator)), step(step) {}
-
-	ProgressMonitor::~ProgressMonitor() {
-		sharedIndicator.disown();
-	}
+	ProgressMonitor::ProgressMonitor(SharedTensor sharedIndicator, double step) : sharedIndicator(std::move(sharedIndicator)), step(step) {}
 
 	double ProgressMonitor::get() const {
 		return sharedIndicator[0];
@@ -35,12 +31,8 @@ namespace LibraryLinkUtils {
 	}
 
 	void ProgressMonitor::checkAbort() {
-		auto libData = LibDataHolder::getLibraryData();
-		if (!libData) {
-			ErrorManager::throwException(LLErrorName::MArgumentLibDataError);
-		}
-		if(libData->AbortQ()) {
-			ErrorManager::throwException(LLErrorName::Aborted);
+		if(LibraryData::API()->AbortQ()) {
+			ErrorManager::throwException(ErrorName::Aborted);
 		}
 	}
 

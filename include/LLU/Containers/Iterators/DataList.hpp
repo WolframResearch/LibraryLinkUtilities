@@ -14,7 +14,7 @@
 #include "LLU/MArgument.h"
 #include "LLU/Containers/DataList.h"
 
-namespace LibraryLinkUtils {
+namespace LLU {
 
 	/**
 	 * @class	SpecialIterator
@@ -239,6 +239,6 @@ namespace LibraryLinkUtils {
 	template<MArgumentType T>
 	using ReverseValueIterator = NodeValueIterator<T, typename std::list<DataNode<T>>::reverse_iterator>;
 
-} // namespace LibraryLinkUtils
+} // namespace LLU
 
 #endif //LLU_ITERATORS_DATALIST_HPP

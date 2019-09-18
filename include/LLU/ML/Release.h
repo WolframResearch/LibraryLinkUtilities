@@ -13,7 +13,7 @@
 #include "LLU/Utilities.hpp"
 
 
-namespace LibraryLinkUtils {
+namespace LLU {
 
 	namespace ML {
 
@@ -132,6 +132,6 @@ namespace LibraryLinkUtils {
 #endif
 	} /* namespace ML */
 
-} /* namespace LibraryLinkUtils */
+} /* namespace LLU */
 
 #endif /* LLUTILS_ML_MLRELEASE_H_ */

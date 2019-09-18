@@ -8,7 +8,7 @@
 #include "LLU/LLU.h"
 #include "LLU/LibraryLinkFunctionMacro.h"
 
-namespace LibraryLinkUtils {
+namespace LLU {
 
 	std::string Logger::logSymbolContext;
 
@@ -27,7 +27,7 @@ namespace LibraryLinkUtils {
 
 
 	LIBRARY_LINK_FUNCTION(setLoggerContext) {
-		auto err = LLErrorCode::NoError;
+		auto err = ErrorCode::NoError;
 		try {
 			MArgumentManager mngr {libData, Argc, Args, Res};
 			auto newContext = mngr.getString(0);
@@ -38,7 +38,7 @@ namespace LibraryLinkUtils {
 			err = e.which();
 		}
 		catch (...) {
-			err = LLErrorCode::FunctionError;
+			err = ErrorCode::FunctionError;
 		}
 		return err;
 	}

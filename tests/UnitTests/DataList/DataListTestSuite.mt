@@ -13,7 +13,7 @@ TestExecute[
 	Get[FileNameJoin[{ParentDirectory[currentDirectory], "TestConfig.wl"}]];
 
 	(* Compile the test library *)
-	lib = CCompilerDriver`CreateLibrary[FileNameJoin[{currentDirectory, #}]& /@ {"DataListTest.cpp"}, "DataListTest", options];
+	lib = CCompilerDriver`CreateLibrary[FileNameJoin[{currentDirectory, "TestSources", #}]& /@ {"DataListTest.cpp"}, "DataListTest", options];
 	
 	Get[FileNameJoin[{$LLUSharedDir, "LibraryLinkUtilities.wl"}]];
 	
@@ -31,6 +31,7 @@ TestExecute[
 	FrameDims = SafeLibraryFunction["FrameDims", {"DataStore"}, NumericArray];
 	StringsThroughVectorReversed = SafeLibraryFunction["StringsThroughVectorReversed", {"DataStore"}, "DataStore"];
 	IntsToNumericArray = SafeLibraryFunction["IntsToNumericArray", {"DataStore"}, NumericArray];
+	GetLength = SafeLibraryFunction["GetLength", {"DataStore"}, Integer];
 
 	(* Test data used across multiple tests *)
 	bool = True;
@@ -51,7 +52,7 @@ TestExecute[
 
 (* Compile-time errors *)
 Test[
-	CCompilerDriver`CreateLibrary[{FileNameJoin[{currentDirectory, "DataListCompilationErrors.cpp"}]}, "DataListErrors", options]
+	CCompilerDriver`CreateLibrary[{FileNameJoin[{currentDirectory, "TestSources", "DataListCompilationErrors.cpp"}]}, "DataListErrors", options]
 	,
 	$Failed
 	,
@@ -389,6 +390,22 @@ Test[
 	NumericArray[ints, If[Developer`$MaxMachineInteger > 2^32, "Integer64", "Integer32"]]
 	,
 	TestID->"DataListTestSuite-20180910-P0I5K7"
+];
+
+Test[
+	GetLength[Developer`DataStore[]]
+	,
+	0
+	,
+	TestID -> "DataListTestSuite-20190823-P9W5H6"
+];
+
+Test[
+	GetLength[Developer`DataStore["x" -> 2, 3, 4, "y" -> Developer`DataStore[]]]
+	,
+	4
+	,
+	TestID -> "DataListTestSuite-20190823-L2D8R7"
 ];
 
 (* Timing tests *)

@@ -10,12 +10,30 @@ Catch @ TestExecute[
 ]
 
 (****************************NumericArray Operations****************************************)
+
+Test[
+	echoNumericArrays[na, na, na]
+	,
+	Developer`DataStore @@ Table[NumericArray[{1, 2, 3, 4}, "UnsignedInteger8"], 3]
+	,
+	TestID->"NumericArrayTestSuite-20190910-D6E1E5"
+]
+
+Test[
+	num = NumericArray[N @ Range[0, 47] / 47, "Real64"];
+	echoNumericArrays[{{},{}}, na,  num]
+	,
+	Developer`DataStore[{{},{}}, na, num]
+	,
+	TestID -> "NumericArrayTestSuite-20190910-N9N5N6"
+]
+
 Test[
 	emptyVector[]
 	,
 	{}
 	,
-	TestID->"NumericArrayTestSuite-20190726-G2E3E0"
+	TestID->"NumericArrayTestSuite-20190910-L4P0L7"
 ];
 
 Test[
@@ -23,7 +41,7 @@ Test[
 	,
 	{3, 5, 0}
 	,
-	TestID->"NumericArrayTestSuite-20190726-M2J7A2"
+	TestID->"NumericArrayTestSuite-20190910-C1R3B0"
 ];
 
 Test[
@@ -36,7 +54,7 @@ Test[
 		"Parameters" -> {}|>
 	]
 	,
-	TestID->"NumericArrayTestSuite-20190729-X1X5Q8"
+	TestID->"NumericArrayTestSuite-20190910-S4B6X0"
 ];
 
 Test[
@@ -51,7 +69,7 @@ Test[
 		{{{0., 0., 0., 0.}, {0., 0., 0., 0.}}, {{0., 0., 0., 0.}, {0., 0., 0., 0.}}, {{0., 0., 0., 0.}, {0., 0., 0., 0.}}}
 	}
 	,
-	TestID->"NumericArrayTestSuite-20190729-R3O9K3"
+	TestID->"NumericArrayTestSuite-20190910-N6W9L8"
 ];
 
 Test[
@@ -66,40 +84,15 @@ Test[
 		{{{0., 0., 0., 0.}, {0., 0., 0., 0.}}, {{0., 0., 0., 0.}, {0., 0., 0., 0.}}, {{0., 0., 0., 0.}, {0., 0., 0., 0.}}}
 	}
 	,
-	TestID->"NumericArrayTestSuite-20190729-I2O3D2"
+	TestID->"NumericArrayTestSuite-20190910-E1T0G1"
 ];
-
-Test[
-	echoNumericArray[na]
-	,
-	NumericArray[{1, 2, 3, 4}, "UnsignedInteger8"]
-	,
-	TestID->"NumericArrayOperations-20150825-M7G1B2"
-]
-
-Test[
-	echoNumericArray[{{},{}}]
-	,
-	{{},{}}
-	,
-	TestID -> "NumericArrayTestSuite-20190731-L3E9L6"
-]
-
-Test[
-	num = NumericArray[N @ Range[0, 47]/47, "Real64"];
-	res = NumericArrayQ @ echoNumericArray[num]
-	,
-	True
-	,
-	TestID->"NumericArrayOperations-20150825-P4U4W5"
-]
 
 ExactTest[
 	getNALength[na]
 	,
 	4
 	,
-	TestID->"NumericArrayOperations-20150827-V6M5C7"
+	TestID->"NumericArrayTestSuite-20190910-I0L8K4"
 ]
 
 ExactTest[
@@ -107,7 +100,7 @@ ExactTest[
 	,
 	1
 	,
-	TestID->"NumericArrayOperations-20150827-A7Q6J1"
+	TestID->"NumericArrayTestSuite-20190910-G8Y0D3"
 ]
 
 Test[
@@ -115,23 +108,15 @@ Test[
 	,
 	True
 	,
-	TestID->"NumericArrayOperations-20150827-B3Y1C2"
+	TestID->"NumericArrayTestSuite-20190910-E2L8V6"
 ]
 
 Test[
-	cloneNA[na]
+	cloneNA[NumericArray[{}, "UnsignedInteger8"], {{}, {}}, na]
 	,
-	na
+	Developer`DataStore[{}, {{}, {}}, na]
 	,
-	TestID->"NumericArrayOperations-20150827-I0C3X0"
-]
-
-Test[
-	cloneNA[NumericArray[{}, "UnsignedInteger8"]]
-	,
-	NumericArray[{}, "UnsignedInteger8"]
-	,
-	TestID -> "NumericArrayTestSuite-20190729-V6U8K6"
+	TestID->"NumericArrayTestSuite-20190910-Z1A9U0"
 ]
 
 Test[(*check NumericArray shared APi's*)
@@ -141,7 +126,7 @@ Test[(*check NumericArray shared APi's*)
 	,
 	True
 	,
-	TestID->"NumericArrayOperations-20150827-O5S8C2"
+	TestID->"NumericArrayTestSuite-20190910-R4C9R1"
 ]
 
 Test[
@@ -149,7 +134,7 @@ Test[
 	,
 	Total @ Range[10]
 	,
-	TestID->"NumericArrayTestSuite-20181030-U5E5U6"
+	TestID->"NumericArrayTestSuite-20190910-P0Q4I7"
 ]
 
 Test[
@@ -157,7 +142,7 @@ Test[
 	,
 	Failure["FunctionError", <|"MessageTemplate" -> "An error occurred in the library function.", "MessageParameters" -> <||>, "ErrorCode" -> 6, "Parameters" -> {}|>]
 	,
-	TestID->"NumericArrayTestSuite-20181030-P4G8W4"
+	TestID->"NumericArrayTestSuite-20190910-L8X7U3"
 ]
 
 Test[
@@ -165,7 +150,7 @@ Test[
 	,
 	{"Check", "ClipCheck", "Coerce", "ClipCoerce", "Round", "ClipRound", "Scale", "ClipScale"}
 	,
-	TestID->"NumericArrayTestSuite-20190328-S2I8Q2"
+	TestID->"NumericArrayTestSuite-20190910-Y7M9C9"
 ]
 
 TestMatch[
@@ -173,7 +158,7 @@ TestMatch[
 	,
 	_Failure
 	,
-	TestID->"NumericArrayTestSuite-20190328-R8Y1F1"
+	TestID->"NumericArrayTestSuite-20190910-S9G5N5"
 ]
 
 Test[
@@ -182,7 +167,7 @@ Test[
 	,
 	NumericArray[NumericArray[{3.5}], "UnsignedInteger16", "Round", Tolerance -> 0]
 	,
-	TestID->"NumericArrayTestSuite-20181105-I0C6A3"
+	TestID->"NumericArrayTestSuite-20190910-J2Y2X5"
 ]
 
 TestMatch[
@@ -195,7 +180,7 @@ TestMatch[
 		"Parameters" -> {}|>
 	]
 	,
-	TestID->"NumericArrayTestSuite-20181105-P7M0S7"
+	TestID->"NumericArrayTestSuite-20190910-D8W3R2"
 ]
 
 Test[
@@ -203,8 +188,57 @@ Test[
 	,
 	NumericArray[NumericArray[Range[10]], "UnsignedInteger16", "ClipAndScale", Tolerance -> 1]
 	,
-	TestID->"NumericArrayTestSuite-20181105-W8Z5G6"
+	TestID->"NumericArrayTestSuite-20190910-P4Z3Z8"
 ]
 
+Test[
+	na = NumericArray[{3.5}];
+	convertGeneric[na, 5, 0]
+	,
+	NumericArray[NumericArray[{3.5}], "UnsignedInteger16", "Round", Tolerance -> 0]
+	,
+	TestID -> "NumericArrayTestSuite-20190910-Q6K1B9"
+]
+
+Test[
+	convertGeneric[NumericArray[Range[10]], 8, 1]
+	,
+	NumericArray[NumericArray[Range[10]], "UnsignedInteger16", "ClipAndScale", Tolerance -> 1]
+	,
+	TestID -> "NumericArrayTestSuite-20190910-D3E3K8"
+]
+
+Test[
+	FlattenThroughList[NumericArray[{{}, {}},"Integer32"]]
+	,
+	{}
+	,
+	
+	TestID->"NumericArrayTestSuite-20190910-P4K7R7"
+];
+
+Test[
+	FlattenThroughList[NumericArray[{{1, 2}, {3, 4}}, "Integer32"]]
+	,
+	NumericArray[{1, 2, 3, 4}, "Integer32"]
+	,
+	TestID->"NumericArrayTestSuite-20190910-W1P5E0"
+];
+
+Test[
+	CopyThroughTensor[NumericArray[{{}, {}}, "Real64"]]
+	,
+	{{}, {}}
+	,
+	TestID->"NumericArrayTestSuite-20190910-G1X3J3"
+];
+
+Test[
+	CopyThroughTensor[NumericArray[{{1.9, 2.8}, {3.7, 4.6}}, "Real64"]]
+	,
+	NumericArray[{{1.9, 2.8}, {3.7, 4.6}}, "Real64"]
+	,
+	TestID->"NumericArrayTestSuite-20190910-I3D6Q7"
+];
 
 EndRequirement[]
