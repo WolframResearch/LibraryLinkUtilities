@@ -431,25 +431,6 @@ function(find_cvs_dependency LIB_NAME)
 
 endfunction()
 
-# Sets default paclet compile options for warning and debugging. On Windows, also sets /EHsc.
-function(set_default_compile_options TARGET_NAME)
-	if(MSVC)
-		target_compile_options(${TARGET_NAME} PRIVATE
-			"/W4"
-			"$<$<CONFIG:Debug>:/Zi>"
-			"$<$<CONFIG:Release>:/${OPTIMIZATION_LEVEL}>"
-			"/EHsc"
-		)
-	else()
-		target_compile_options(${TARGET_NAME} PRIVATE
-			"-Wall"
-			"-Wextra"
-			"-pedantic"
-			"$<$<CONFIG:Release>:-${OPTIMIZATION_LEVEL}>"
-		)
-	endif()
-endfunction()
-
 # Sets SEARCH_OPTS depending on whether the variable PATH has a value.
 function(set_search_opts_from_path PATH SEARCH_OPTS)
 	if(${PATH})
@@ -567,32 +548,45 @@ function(install_dependency_files PACLET_NAME DEP_TARGET_NAME)
 	endif()
 endfunction()
 
-# Helper function to replace default option in CMAKE_CXX_* variables. The first argument can be a regular expression.
-macro(_cxx_dynamic_replace WHAT WITH)
-	foreach(flag_var CMAKE_CXX_FLAGS CMAKE_CXX_FLAGS_DEBUG CMAKE_CXX_FLAGS_RELEASE CMAKE_CXX_FLAGS_MINSIZEREL CMAKE_CXX_FLAGS_RELWITHDEBINFO)
-		if(${flag_var} MATCHES "\${WHAT}")
-			string(REGEX REPLACE "\${WHAT}" "\${WITH}" flag_var_new "${${flag_var}}")
-			set(${flag_var} ${flag_var_new})
-		endif()
-	endforeach()
-endmacro()
+# Sets default CXX properties and ensures stdc++_nonshared is linked on Linux (needed for RH if using >= c++11).
+function(set_default_cxx_properties TARGET_NAME CXX_STD)
+	set_target_properties(${TARGET_NAME} PROPERTIES
+		CXX_STANDARD ${CXX_STD}
+		CXX_STANDARD_REQUIRED YES
+		CXX_EXTENSIONS NO
+		CXX_VISIBILITY_PRESET hidden
+	)
+	add_cpp_nonshared_library(${TARGET_NAME})
+endfunction()
+
+# Sets default paclet compile options for warning and debugging/optimization. On Windows, also sets /EHsc.
+function(set_default_compile_options TARGET_NAME OPTIMIZATION_LEVEL)
+	string(REGEX REPLACE "[/-]?(.+)" "\\1" _OPTIMIZATION_LEVEL "${OPTIMIZATION_LEVEL}")
+	if(MSVC)
+		target_compile_options(${TARGET_NAME} PRIVATE
+			"/W4"
+			"$<$<CONFIG:Debug>:/Zi>"
+			"$<$<CONFIG:Release>:/${_OPTIMIZATION_LEVEL}>"
+			"/EHsc"
+		)
+	else()
+		target_compile_options(${TARGET_NAME} PRIVATE
+			"-Wall"
+			"-Wextra"
+			"-pedantic"
+			"$<$<CONFIG:Release>:-${_OPTIMIZATION_LEVEL}>"
+		)
+	endif()
+endfunction()
 
 # Forces static runtime on Windows. See https://gitlab.kitware.com/cmake/community/wikis/FAQ#dynamic-replace
 macro(set_windows_static_runtime)
 	if(WIN32)
-		_cxx_dynamic_replace("/MD" "/MT")
-	endif()
-endmacro()
-
-# Forces a particular optimization level on all build types
-macro(set_optimization_level OPTIMIZATION_LEVEL BUILDTYPE)
-	if("${CMAKE_BUILD_TYPE}" STREQUAL "${BUILDTYPE}")
-		string(REGEX REPLACE "[/-]?(.+)" "\\1" LEVEL "${OPTIMIZATION_LEVEL}")
-		if(WIN32)
-			_cxx_dynamic_replace("/O[0-9]" "/${LEVEL}")
-		else()
-			_cxx_dynamic_replace("-O[0-9]" "-${LEVEL}")
-		endif()
+		foreach(flag_var CMAKE_CXX_FLAGS CMAKE_CXX_FLAGS_DEBUG CMAKE_CXX_FLAGS_RELEASE CMAKE_CXX_FLAGS_MINSIZEREL CMAKE_CXX_FLAGS_RELWITHDEBINFO)
+			if(${flag_var} MATCHES "/MD")
+				string(REGEX REPLACE "/MD" "/MT" ${flag_var} "${${flag_var}}")
+			endif()
+		endforeach()
 	endif()
 endmacro()
 
@@ -629,7 +623,7 @@ function(add_frameworks TARGET_NAME)
 	)
 endfunction()
 
-# Appends linker flag(s) for given target with the given scope.
+# Appends linker flag(s) for given target with given scope without overwriting previous flags.
 function(add_link_flags TARGET_NAME SCOPE)
 	if(ARGC LESS 3)
 		message(WARNING "add_link_flags() called for target ${TARGET_NAME} with no flags specified.")
