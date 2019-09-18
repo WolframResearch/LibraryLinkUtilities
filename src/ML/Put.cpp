@@ -13,7 +13,7 @@
 
 #include "../../include/LLU/Utilities.hpp"
 
-namespace LibraryLinkUtils::ML {
+namespace LLU::ML {
 
     /* ***************************************************************** */
     /* ********* Template specializations for  unsigned char  ********** */
@@ -189,6 +189,6 @@ namespace LibraryLinkUtils::ML {
     const std::string PutScalar<double>::ScalarFName = "MLPutReal64";
 
 
-} /* namespace LibraryLinkUtils::ML */
+} /* namespace LLU::ML */
 
 #endif

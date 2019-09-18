@@ -10,7 +10,7 @@
 
 #include "LLU/ML/Strings.h"
 
-namespace LibraryLinkUtils::ML {
+namespace LLU::ML {
 
     /// Definitions of configuration parameters, see header file for detailed description
     namespace EncodingConfig {
@@ -112,4 +112,4 @@ namespace LibraryLinkUtils::ML {
     const std::string String<Encoding::UTF32>::PutFName = "MLPutUTF32String";
 #endif
 
-} /* namespace LibraryLinkUtils::ML */
+} /* namespace LLU::ML */

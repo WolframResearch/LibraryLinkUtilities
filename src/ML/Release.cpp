@@ -8,7 +8,7 @@
 
 #include "../../include/LLU/ML/Release.h"
 
-namespace LibraryLinkUtils::ML {
+namespace LLU::ML {
 
     template<>
     ReleaseArray<unsigned char>::Func ReleaseArray<unsigned char>::Release = MLReleaseInteger8Array;
@@ -49,6 +49,6 @@ namespace LibraryLinkUtils::ML {
     template<>
     ReleaseList<double>::Func ReleaseList<double>::Release = MLReleaseReal64List;
 
-} /* namespace LibraryLinkUtils::ML */
+} /* namespace LLU::ML */
 
 #endif

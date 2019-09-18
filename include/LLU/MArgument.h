@@ -10,12 +10,9 @@
 
 #include <string>
 
-#include "WolframLibrary.h"
-#include "WolframIOLibraryFunctions.h"
+#include "LLU/LibraryData.h"
 
-#include "LLU/Containers/LibDataHolder.h"
-
-namespace LibraryLinkUtils {
+namespace LLU {
 
 	/**
 	 * @brief Strongly type enum with possible types of data stored in MArgument.
@@ -47,6 +44,7 @@ namespace LibraryLinkUtils {
 	template<MArgumentType T>
 	struct MType;
 
+	/// @cond
 	template<> struct MType<MArgumentType::MArgument>   { using type = MArgument; const std::string name = "MArgument"; };
 	template<> struct MType<MArgumentType::Boolean>     { using type = mbool; const std::string name = "Boolean"; };
 	template<> struct MType<MArgumentType::Integer>     { using type = mint; const std::string name = "Integer"; };
@@ -58,6 +56,7 @@ namespace LibraryLinkUtils {
 	template<> struct MType<MArgumentType::NumericArray> { using type = MNumericArray; const std::string name = "NumericArray"; };
 	template<> struct MType<MArgumentType::Image>       { using type = MImage; const std::string name = "Image"; };
 	template<> struct MType<MArgumentType::UTF8String>  { using type = char*; const std::string name = "UTF8String"; };
+	/// @endcond
 
 	/// Type alias for convenience
 	template<MArgumentType T>
@@ -69,7 +68,7 @@ namespace LibraryLinkUtils {
 	 * @tparam 	T - any value of type MArgumentType
 	 */
 	template<MArgumentType T>
-	class Argument : public LibDataHolder {
+	class Argument {
 	public:
 		/// This is the actual type of data stored in \c arg
 		using value_type = MType_t<T>;
@@ -160,6 +159,6 @@ namespace LibraryLinkUtils {
 
 #undef ARGUMENT_DEFINE_SPECIALIZATIONS_OF_MEMBER_FUNCTIONS
 
-} // namespace LibraryLinkUtils
+} // namespace LLU
 
 #endif //LLUTILS_MARGUMENT_H

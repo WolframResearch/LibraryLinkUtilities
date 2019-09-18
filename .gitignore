@@ -6,8 +6,8 @@
 CMakeSettings.json
 .idea/
 **/build-local.properties
-docs/html
-docs/latex
+docs/
+!docs/LibraryLinkUtilities.doxyfile
 tests/Demo/bin
 Debug/
 lib/

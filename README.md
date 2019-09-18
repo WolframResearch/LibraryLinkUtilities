@@ -1,40 +1,34 @@
 # Table of contents
 
 1. [Introduction](#introduction)
-2. [Motivation](#motivation)
-3. [Code Example](#example)
-4. [MathLink support](#mathlink)
+   * [Motivation](#motivation)
+   * [Code Example](#example)
+2. [Containers](#containers)
+3. [MathLink support](#mathlink)
     * [Main features](#mathlink-features)
     * [Example](#mathlink-example)
-5. [Error handling](#error-handling)
-6. [Limitations](#limitations)
-7. [How to Use](#howToUse)
+4. [Error handling](#error-handling)
+5. [Limitations](#limitations)
+6. [How to Use](#howToUse)
     * [Prerequisites](#howToUse-prerequisites)
     * [Step-by-Step](#howToUse-stepbystep)
     * [Note for I/E developers](#howToUse-note)
-8. [API reference](#APIreference)
-9. [Contributors](#contributors)
+7. [API reference](#APIreference)
+8. [Contributors](#contributors)
 
 <a name="introduction"></a>
 # Introduction
 
-_LibraryLink Utilities_ (abbr. LLU) is a set of modern C++ wrappers for most elements of standard LibraryLink C interface. 
-Containers like MImage and MTensor are wrapped in templated classes. Managing MArguments (both input and output) is also delegated to a separate class:
-
-| LibraryLink element 	|    LLU wrapper   	|
-|:-------------------:	|:----------------:	|
-| MTensor             	| Tensor<T>        	|
-| MNumericArray         | NumericArray<T>   |
-| MImage              	| Image<T>         	|
-| MArgument           	| MArgumentManager 	|
-| LinkObject			| MLStream			|
+_LibraryLink Utilities_ (abbr. LLU) is a set of modern C++ wrappers for most elements of standard _LibraryLink_ C interface. 
+Containers like MImage or MTensor are wrapped in templated classes. Managing MArguments (both input and output) is also 
+delegated to a separate class.
 
 For more details about each class see [the documentation](http://algorithms.wolfram.com:8080/documentation/LibraryLinkUtilities).
 
 __Please send all suggestions, feature requests and bug reports to <rafalc@wolfram.com>__
 
 <a name="motivation"></a>
-# Motivation
+## Motivation
 
 _LibraryLink_ is a great tool for connecting Wolfram Language with external libraries and programs written in C and it is widely used internally for developing paclets.
 But as more and more paclets are now being developed in modern C++ the integration with _LibraryLink_, although still possible, becomes cumbersome and inelegant. 
@@ -42,15 +36,15 @@ Most significant features missing in _LibraryLink_ are:
 
 * Automatic resource management
 * Exception handling
-* Iterators for MTensor and MNumericArray
-* Class-like interface for LibraryLink data structures, for example `rank()` as member function of Tensor class instead of separate function 
+* Container iterators
+* Class-like interface for _LibraryLink_ data structures, for example `rank()` as member function of Tensor class instead of separate function 
 `mint (*MTensor_getRank)(MTensor)`, or a copy constructor instead of `int (*MTensor_clone)(MTensor, MTensor*)`
 * Type safety
 
 The motivation behind _LibraryLink Utilities_ is to provide the aforementioned features without touching _LibraryLink_ sources.
 
 <a name="example"></a>
-# Code Example
+## Code Example
 
 Probably the best way to see how to use LLU and what advantages it has over classic _LibraryLink_ is by comparing the same function written in two different styles. 
 Below we will implement a simple function `repeatCharacters` that takes a string `s` and a tensor `t` and returns a new string `s2` that consists of each 
@@ -64,123 +58,231 @@ gives
 C - style implementation:
 ```c
 
-	// global variable which is the buffer for strings returned to LibraryLink
-	char* outString = NULL;
-	
-	EXTERN_C DLLEXPORT int repeatCharacters(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
-		char* string = NULL;
-		MNumericArray counts;
-		uint8_t* countsData = NULL;
-		size_t outStringIndex = 0;
-		size_t len, j;
-		mint sum = 0;
-		mint c;
-		
-		string = MArgument_getUTF8String(Args[0]);
-		counts = MArgument_getMNumericArray(Args[1]);
-	
-		// check NumericArray type
-		if (libData->numericarrayLibraryFunctions->MNumericArray_getType(counts) != MNumericArray_Type_UBit8) {
-			libData->UTF8String_disown(string);
-			return LIBRARY_TYPE_ERROR;
-		}
-	
-		// check NumericArray rank
-		if (libData->numericarrayLibraryFunctions->MNumericArray_getRank(counts) != 1) {
-			libData->UTF8String_disown(string);
-			return LIBRARY_RANK_ERROR;
-		}
-	
-		// check if NumericArray length is equal to input string length
-		len = strlen(string);
-		if (libData->numericarrayLibraryFunctions->MNumericArray_getFlattenedLength(counts) != len) {
-			libData->UTF8String_disown(string);
-			return LIBRARY_DIMENSION_ERROR;
-		}
-	
-		// before we allocate memory for the output string, we have to sum all NumericArray elements to see how many bytes are needed
-		countsData = (uint8_t*) libData->numericarrayLibraryFunctions->MNumericArray_getData(counts);
-		for (j = 0; j < len; j++) {
-			sum += countsData[j];
-		}
-	
-		// free memory owned by global buffer
-		free(outString);
-		outString = NULL;
-	
-		// allocate memory for output string, outString has to be a global variable, because it will be returned to LibraryLink
-		outString = (char*) malloc(sum + 1);
-		if (!outString) {
-			libData->UTF8String_disown(string);
-			return LIBRARY_FUNCTION_ERROR;
-		}
-	
-		// populate output string
-		for (j = 0; j < len; j++) {
-			for (c = 0; c < countsData[j]; c++) {
-				outString[outStringIndex++] = string[j];
-			}
-		}
-	
-		// add null terminator
-		outString[sum] = '\0';
-	
-		// clean up and set result
-		libData->UTF8String_disown(string);
-		MArgument_setUTF8String(Res, outString);
-	
-		return LIBRARY_NO_ERROR;
-	}
+// global variable which is the buffer for strings returned to LibraryLink
+char* outString = NULL;
+
+EXTERN_C DLLEXPORT int repeatCharacters(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
+    char* string = NULL;
+    MNumericArray counts;
+    uint8_t* countsData = NULL;
+    size_t outStringIndex = 0;
+    size_t len, j;
+    mint sum = 0;
+    mint c;
+    
+    string = MArgument_getUTF8String(Args[0]);
+    counts = MArgument_getMNumericArray(Args[1]);
+
+    // check NumericArray type
+    if (libData->numericarrayLibraryFunctions->MNumericArray_getType(counts) != MNumericArray_Type_UBit8) {
+        libData->UTF8String_disown(string);
+        return LIBRARY_TYPE_ERROR;
+    }
+
+    // check NumericArray rank
+    if (libData->numericarrayLibraryFunctions->MNumericArray_getRank(counts) != 1) {
+        libData->UTF8String_disown(string);
+        return LIBRARY_RANK_ERROR;
+    }
+
+    // check if NumericArray length is equal to input string length
+    len = strlen(string);
+    if (libData->numericarrayLibraryFunctions->MNumericArray_getFlattenedLength(counts) != len) {
+        libData->UTF8String_disown(string);
+        return LIBRARY_DIMENSION_ERROR;
+    }
+
+    // before we allocate memory for the output string, we have to sum all NumericArray elements to see how many bytes are needed
+    countsData = (uint8_t*) libData->numericarrayLibraryFunctions->MNumericArray_getData(counts);
+    for (j = 0; j < len; j++) {
+        sum += countsData[j];
+    }
+
+    // free memory owned by global buffer
+    free(outString);
+    outString = NULL;
+
+    // allocate memory for output string, outString has to be a global variable, because it will be returned to LibraryLink
+    outString = (char*) malloc(sum + 1);
+    if (!outString) {
+        libData->UTF8String_disown(string);
+        return LIBRARY_FUNCTION_ERROR;
+    }
+
+    // populate output string
+    for (j = 0; j < len; j++) {
+        for (c = 0; c < countsData[j]; c++) {
+            outString[outStringIndex++] = string[j];
+        }
+    }
+
+    // add null terminator
+    outString[sum] = '\0';
+
+    // clean up and set result
+    libData->UTF8String_disown(string);
+    MArgument_setUTF8String(Res, outString);
+
+    return LIBRARY_NO_ERROR;
+}
 ```
 
 and C++ version with _LibraryLink Utilities_:
 
 ```cpp
 
-	EXTERN_C DLLEXPORT int repeatCharactersNew(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
-		auto err = LLErrorCode::NoError;
-		try {
-			// Create manager object
-			MArgumentManager mngr(libData, Argc, Args, Res);
-	
-			// Read string and NumericArray arguments
-			auto& string = mngr.getString(0);
-			auto counts = mngr.getNumericArray<std::uint8_t>(1);
-	
-			// check NumericArray rank
-			if (counts.rank() != 1) {
-				ErrorManager::throwException(LLErrorName::RankError);
-			}
-	
-			// check if NumericArray length is equal to input string length
-			if (counts.size() != string.size()) {
-				ErrorManager::throwException(LLErrorName::DimensionsError);
-			}
-	
-			// before we allocate memory for the output string, we have to sum all NumericArray elements to see how many bytes are needed
-			auto sum = std::accumulate(counts.begin(), counts.end(), static_cast<size_t>(0));
-	
-			// allocate memory for output string
-			std::string outString;
-			outString.reserve(sum);
-	
-			// populate output string
-			for (mint i = 0; i < counts.size(); i++) {
-				outString.append(std::string(counts[i], string[i]));
-			}
-	
-			// clean up and set result
-			mngr.setString(std::move(outString));
-		}
-		catch (LibraryLinkError& e) {
-			err = e.id();
-		}
-		catch (std::exception&) {
-			err = LLErrorCode::FunctionError;
-		}
-		return err;
-	}
+EXTERN_C DLLEXPORT int repeatCharactersNew(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
+    auto err = ErrorCode::NoError;
+    try {
+        // Create manager object
+        MArgumentManager mngr(libData, Argc, Args, Res);
+
+        // Read string and NumericArray arguments
+        auto string = mngr.getString(0);
+        auto counts = mngr.getNumericArray<std::uint8_t>(1);
+
+        // check NumericArray rank
+        if (counts.rank() != 1) {
+            ErrorManager::throwException(ErrorName::RankError);
+        }
+
+        // check if NumericArray length is equal to input string length
+        if (counts.size() != string.size()) {
+            ErrorManager::throwException(ErrorName::DimensionsError);
+        }
+
+        // before we allocate memory for the output string, we have to sum all NumericArray elements to see how many bytes are needed
+        auto sum = std::accumulate(counts.begin(), counts.end(), static_cast<size_t>(0));
+
+        // allocate memory for output string
+        std::string outString;
+        outString.reserve(sum);
+
+        // populate output string
+        for (mint i = 0; i < counts.size(); i++) {
+            outString.append(std::string(counts[i], string[i]));
+        }
+
+        // clean up and set result
+        mngr.set(std::move(outString));
+    }
+    catch (const LibraryLinkError& e) {
+        err = e.id();
+    }
+    catch (const std::exception&) {
+        err = ErrorCode::FunctionError;
+    }
+    return err;
+}
 ```
+<a name="containers"></a>
+# Containers
+
+Raw _LibraryLink_ containers like MTensor or MNumericArray store their element type as a regular field in the stucture 
+meaning that the type cannot be used in compile-time context, which makes writing generic code that does something with 
+the underlying data very difficult (lots of switches and code repetition).
+
+On the other hand, having element type as template parameter, like in STL containers, is often inconvenient and requires 
+some template magic for simple things like passing forward the container or reading metadata when the data type is not 
+known a priori.
+
+To get the best of two worlds at cost of a bit more complicated interface LLU provides the following hierarchy of container 
+classes:
+
+#### Level 0:
+
+* MTensor
+* MNumericArray
+* MImage
+* DataStore
+
+These are just raw _LibraryLink_ containers. If someone wants to use them directly, they probably don't need LLU at all, but it's possible to use them within LLU as well.
+
+#### Level 1A:
+
+* [GenericTensor\<PassingMode\>](http://algorithms.wolfram.com:8080/documentation/LLU2_0_0/classLLU_1_1MContainer_3_01MArgumentType_1_1Tensor_00_01PassingMode_01_4.html)
+* [GenericNumericArray\<PassingMode\>](http://algorithms.wolfram.com:8080/documentation/LLU2_0_0/classLLU_1_1MContainer_3_01MArgumentType_1_1NumericArray_00_01PassingMode_01_4.html)
+* [GenericImage\<PassingMode\>](http://algorithms.wolfram.com:8080/documentation/LLU2_0_0/classLLU_1_1MContainer_3_01MArgumentType_1_1Image_00_01PassingMode_01_4.html)
+* [GenericDataList\<PassingMode\>](http://algorithms.wolfram.com:8080/documentation/LLU2_0_0/classLLU_1_1MContainer_3_01MArgumentType_1_1DataStore_00_01PassingMode_01_4.html)
+
+These are type-unaware wrappers, offer automatic memory management and basic interface like access to metadata (dimensions, rank, etc). No direct access to underlying data.
+
+#### Level 1B:
+- Type-aware interface to [Tensor](http://algorithms.wolfram.com:8080/documentation/LLU2_0_0/classLLU_1_1TypedTensor.html)
+- Type-aware interface to [NumericArray](http://algorithms.wolfram.com:8080/documentation/LLU2_0_0/classLLU_1_1TypedNumericArray.html)
+- Type-aware interface to [Image](http://algorithms.wolfram.com:8080/documentation/LLU2_0_0/classLLU_1_1TypedImage.html)
+
+These template classes offer iterators and data access functions for each container. They shouldn't be used directly, 
+as they don't hold any data. Instead, use containers from level 2 which inherits from level 1B containers.
+
+#### Level 2:
+- [Tensor<T, PassingMode>](http://algorithms.wolfram.com:8080/documentation/LLU2_0_0/classLLU_1_1Tensor.html)
+- [NumericArray<T, PassingMode>](http://algorithms.wolfram.com:8080/documentation/LLU2_0_0/classLLU_1_1NumericArray.html)
+- [Image<T, PassingMode>](http://algorithms.wolfram.com:8080/documentation/LLU2_0_0/classLLU_1_1Image.html)
+- [DataList<T, PassingMode>](http://algorithms.wolfram.com:8080/documentation/LLU2_0_0/classLLU_1_1DataList.html)
+
+Full-fledged wrappers with automatic memory management (via Passing policies, see section below), type-safe data access, iterators, etc. 
+
+The following table summarizes current status of _LibraryLink_ containers and their LLU wrappers:
+
+| LibraryLink element |    Generic wrapper     |   Typed wrapper    |
+|:-------------------:|:----------------------:|:------------------:|
+|       MTensor       |    GenericTensor\<P\>    |    Tensor<T, P>    |
+|    MNumericArray    | GenericNumericArray\<P\> | NumericArray<T, P> |
+|       MImage        |    GenericImage\<P\>     |    Image<T, P>     |
+|      DataStore      |   GenericDataList\<P\>   |   DataList<T, P>   |
+
+## Passing policies
+When passing a container from WL to a C++ library you have to choose one of the 4 available passing modes:
+
+* Automatic
+* Constant
+* Manual
+* Shared
+
+With exception of DataStore, which cannot be Shared.
+
+All of the above are described in the [LibraryLink documentation](https://reference.wolfram.com/language/LibraryLink/tutorial/InteractionWithWolframLanguage.html#97446640).
+
+In plain _LibraryLink_, the choice you make is reflected only in the WL code where you call `LibraryFunctionLoad` and specify 
+the list of parameters for the library function. There is no way to query the WolframLibraryData or MArgument about 
+the passing modes of function arguments from within C++ code. Therefore, the programmer must remember the passing mode 
+for each argument and then ensure the correct action is taken (releasing/not releasing memory depending 
+on the combination of passing mode and whether the container has been returned from the library function as result to WL). 
+This design is far from perfect because manual resource management often leads to bugs and leaks.
+
+As a remedy for this flaw of _LibraryLink_, LLU encodes the passing mode in a form of template parameter for each 
+container wrapper. It makes sense because passing mode is known at compile time and cannot be changed throughout 
+the life of container.
+
+LLU defines 3 classes representing passing policies:
+
+* Passing::Automatic
+* Passing::Manual
+* Passing::Shared
+
+They serve as base classes to containers and they store and update the information whether the underlying raw container 
+should be freed when the wrapper ends its life.
+
+There is also `Passing::Constant` which is just an alias for Passing::Automatic because from the memory management 
+point of view these two policies are equivalent.
+
+Some examples:
+```cpp
+Tensor<mint, Passing::Manual> t { 1, 2,  3, 4, 5 };    // fine, new MTensor is allocated and it will be freed when t goes out of scope
+
+Tensor<mint, Passing::Automatic> s { 1, 2,  3, 4, 5 };     // compile-time error, you cannot create a container with Automatic mode 
+                                                           // because LibraryLink doesn't know about it and will not free it automatically
+
+auto t = mngr.getGenericImage<Shared>(0);   // OK
+
+auto copy = t;    // compile-time error, you cannot copy a Shared container because the copy will not be shared
+
+LLU::GenericImage<Manual> clone {t};   // but this is fine, we make a deep copy which is no longer Shared
+```
+
+More examples can be found in unit tests.
+
 <a name="mathlink"></a>
 # MathLink support
 
@@ -377,11 +479,11 @@ ms << ML::EndPacket << ML::Flush;
 ```
 <a name="error-handling"></a>
 # Error handling
-Every LibraryLink function in C code has a fixed signature `int f (WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res)`. The actual result of computations should be returned via the
-"out-parameter" `Res`. The value of `Res` is only considered in top-level if the actual return value of `f` (the `int`) was equal to `LIBRARY_NO_ERROR` (with LLU use `LLErrorCode::NoError`!).
+Every _LibraryLink_ function in C code has a fixed signature `int f (WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res)`. The actual result of computations should be returned via the
+"out-parameter" `Res`. The value of `Res` is only considered in top-level if the actual return value of `f` (the `int`) was equal to `LIBRARY_NO_ERROR` (with LLU use `ErrorCode::NoError`!).
 
 That means, that the only information about an error which occurred in the library that makes it to the top-level is a single integer. In C++ exceptions are the preferred way of error handling, so LLU
-offers a special class of exceptions that can be easily translated to error codes, returned to LibraryLink and then translated to descriptive `Failure` objects in Wolfram Language.
+offers a special class of exceptions that can be easily translated to error codes, returned to _LibraryLink_ and then translated to descriptive `Failure` objects in Wolfram Language.
 
 Such exceptions are identified in the C++ code by name - a short string. For example, imagine you have a function that reads data from a source. If the source does not exist or is empty, you want to throw
 exceptions, let's call them "NoSourceError" and "EmptySourceError", respectively. First, you **must** register all your exceptions inside `WolframLibrary_initialize` function:
@@ -391,7 +493,7 @@ EXTERN_C DLLEXPORT int WolframLibrary_initialize(WolframLibraryData libData) {
     try {
         ErrorManager::registerPacletErrors({
             {"NoSourceError", "Requested data source does not exist."},
-            {"EmptySourceError", "Requested data source is empty."}
+            {"EmptySourceError", "Requested data source has `1` elements, but required at least `2`."}
         });
     } catch(...) {
         return LLErrorCode::FunctionError;
@@ -400,7 +502,8 @@ EXTERN_C DLLEXPORT int WolframLibrary_initialize(WolframLibraryData libData) {
 }
 ```
 
-In the code above, the second element of each pair is a textual description of the error which will be visible in the `Failure` object. Unfortunately, for now this text has to be static.
+In the code above, the second element of each pair is a textual description of the error which will be visible in the `Failure` object.
+This text may contain "slots" denoted as \`1\`, \`2\`, etc. that work like [TemplateSlots](https://reference.wolfram.com/language/ref/TemplateSlot.html) in Wolfram Language.
 Notice that there is no way to assign specific error codes to your custom exceptions, this is handled internally by LLU.
 
 Now, in the function that reads data:
@@ -411,14 +514,16 @@ void readData(std::shared_ptr<DataSource> source) {
     if (!source) {
         ErrorManager::throwException("NoSourceError");
     }
-    if (source->empty()) {
-        ErrorManager::throwException("EmptySourceError");
+    if (source->elemCount() < 3) {
+        ErrorManager::throwException("EmptySourceError", source->elemCount(), 3);
     }
     //...
 }
 ```
 
-Each call to `ErrorManager::throwException` causes an exception of class `LibraryLinkError` with predefined name and error code to be thrown. The only thing left do now is to catch such exception. 
+Each call to `ErrorManager::throwException` causes an exception of class `LibraryLinkError` with predefined name and error code to be thrown. 
+All parameters in `ErrorManager::throwException` call after the first one are used to populate consecutive template slots in the error message.
+The only thing left do now is to catch the exception. 
 Usually, you will catch only in the interface functions (the ones with `EXTERN_C DLLEXPORT`), extract the error code from exception and return it:
 
 ```cpp
@@ -442,19 +547,13 @@ Finally, you can take a look at [PacletTemplate](https://stash.wolfram.com/proje
 <a name="limitations"></a>
 # Limitations with respect to LibraryLink
 
-There are some LibraryLink features currently not covered by _LLU_, most notably:
+There are some _LibraryLink_ features currently not covered by _LLU_, most notably:
 
 - Sparse Arrays
 - Tensor subsetting: `MTensor_getTensor`
 - Managed Library Expressions
 - Callbacks
-- Wolfram IO Library (asynchronous tasks and Data Store)
-
-For now LibraryLink does not allow to write generic code that would clean up memory after Tensors, NumericArrays, etc. independently of passing mode used ("Automatic", "Shared", ...).
-See [this suggestion](http://bugs.wolfram.com/show?number=337331) for more details. In consequence, _LLU_ guarantees to correctly handle only those data structures 
-that were created with _LLU_. Structures received as MArguments will not be automatically freed, therefore you may want to use passing modes that do not require clean-up 
-(like "Constant" or Automatic). In case of "Shared" passing, the only guarantee is that `disown()` will be called on destruction of each object that has positive `shareCount()`. 
-Please consult [LibraryLink tutorial](https://reference.wolfram.com/language/LibraryLink/tutorial/InteractionWithMathematica.html#97446640) for more details.
+- Wolfram IO Library (asynchronous tasks)
 
 <a name="howToUse"></a>
 # How to use _LibraryLink Utilities_?
@@ -470,7 +569,7 @@ Since the source code uses C++14 features, you have to make sure your compiler s
 Plus: 
  * **CMake** >= 3.8.0
  * **MathLink** interface version 4
- * **WolframLibrary** >= 4
+ * **WolframLibrary** >= 5
  
  
 MathLink library and WolframLibrary header files can be found in any Mathematica installation. For testing `wolframscript` must be available on the system.
@@ -494,10 +593,10 @@ Below is a quick overview of CMake variables which you can use to customize buil
 
 1. __Use MathLink and WolframLibrary from Mathematica installation__
 
-    If you have Mathematica __12.0__ installed in a default location, you don't have to set any variables and the build configuration step should succeed out of the box.
+    If you have Mathematica __12.1__ installed in a default location, you don't have to set any variables and the build configuration step should succeed out of the box.
     If you have other version of Mathematica installed in a default location you only need to specify `MATHEMATICA_VERSION`, for example:
     ```bash
-    cmake .. -DMATHEMATICA_VERSION=11.3
+    cmake .. -DMATHEMATICA_VERSION=12.0
     ```
 	If you installed Mathematica in nonstandard location, you have to provide the path to Mathematica installation
 	(you don't need to specify `MATHEMATICA_VERSION`), for example if you want to link to WolframLibrary and MathLink from the XKernel:
@@ -523,10 +622,14 @@ Other useful cmake variables used by _LLU_ include:
 ### 3. Build, Install and (optionally) Test
 After successful configuration you are just one `make && make install` away from the end.
 
-When you have the library installed you may want to run unit test to confirm that everything went well. Currently there are 6 test modules defined:
+When you have the library installed you may want to run unit test to confirm that everything went well. Currently there are 10 test modules defined:
+- DataList
+- ErrorReporting
+- GenericContainers
 - Image
 - MathLink
 - NumericArray
+- ProgressMonitor
 - Scalar
 - String
 - Tensor
@@ -619,4 +722,5 @@ Doxygen is used to generate documentation for _LibraryLink Utilities_ API. You c
 # Contributors
 
 * Rafał Chojna (<rafalc@wolfram.com>) - main developer
-* Sean Cheren  (<scheren@wolfram.com>) - top-level code for error handling
+* Sean Cheren  (<scheren@wolfram.com>) - top-level code for error handling, CMake improvements
+* Rebecca Frederick (<rebeccaf@wolfram.com> - CMake improvements

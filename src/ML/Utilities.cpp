@@ -13,7 +13,7 @@
 
 #include <LLU/ErrorLog/ErrorManager.h>
 
-namespace LibraryLinkUtils::ML {
+namespace LLU::ML {
 
     const std::string& Symbol::getHead() const {
         return head;
@@ -55,7 +55,7 @@ namespace LibraryLinkUtils::ML {
         int err = 0;
         auto loopback = MLLoopbackOpen(MLLinkEnvironment(m), &err);
         if (loopback == static_cast<MLINK>(0) || err != MLEOK) {
-            ErrorManager::throwExceptionWithDebugInfo(LLErrorName::MLCreateLoopbackError, "Error code: " + std::to_string(err));
+            ErrorManager::throwExceptionWithDebugInfo(ErrorName::MLCreateLoopbackError, "Error code: " + std::to_string(err));
         }
         return loopback;
     }

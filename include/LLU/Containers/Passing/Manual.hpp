@@ -10,36 +10,72 @@
 
 #include "PassingPolicy.hpp"
 
-namespace LibraryLinkUtils {
+namespace LLU {
 	namespace Passing {
 
-		template<typename LLContainer>
-		class Manual : public PassingPolicy<LLContainer> {
+		/**
+		 * @brief   Class representing Manual passing policy, owns the underlying container until passed as result of library function
+		 * @see     <https://reference.wolfram.com/language/LibraryLink/tutorial/InteractionWithWolframLanguage.html#97446640>
+		 */
+		class Manual : public PassingPolicy {
 		public:
-			using Super = PassingPolicy<LLContainer>;
-		public:
-			explicit Manual(LLContainer newCont) : Super(newCont, true) {}
+			/// Default constructor, owns from beginning.
+			Manual() : PassingPolicy(true) {}
 
-			Manual(const Manual& other) : Super(other.cloneInternal(), true) {};
+			/// Create Manual object from any other passing policy
+			explicit Manual(const PassingPolicy &) : PassingPolicy(true) {};
 
-			Manual(Manual&&) noexcept = default;
+			/// Copy constructor. Deep copy of the resource will be created so we own it.
+			Manual(const Manual&) : PassingPolicy(true) {};
 
-			Manual& operator=(const Manual&) {
-				this->setOwner(true);
+			/**
+			 * @brief   Move constructor. Moved-from object no longer owns the container.
+			 * @param   other - rvalue reference to Manual object
+			 */
+			Manual(Manual&& other) noexcept : PassingPolicy(true) {
+				other.setOwner(false);
+			}
+
+			/**
+			 * @brief   Copy-assignment operator, assigns another Manual object cleaning up first
+			 * @return  this
+			 */
+			Manual& operator=(const Manual&) noexcept {
+				cleanup();
+				setOwner(true);
 				return *this;
 			};
 
-			Manual& operator=(Manual&&) noexcept = default;
+			/**
+			 * @brief   Copy-assignment operator, assigns object of any PassingPolicy cleaning up first
+			 * @return  this
+			 */
+			Manual& operator=(const PassingPolicy&) noexcept override {
+				cleanup();
+				setOwner(true);
+				return *this;
+			};
 
-			~Manual() {
-				if (this->isOwner()) {
-					this->freeInternal();
-				}
+			/**
+			 * @brief   Move-assignment operator, assigns another Manual object cleaning up first
+			 * @param   other - another Manual object
+			 * @return  this
+			 */
+			Manual& operator=(Manual&& other) noexcept {
+				cleanup();
+				setOwner(other.isOwner());
+				other.setOwner(false);
+				return *this;
 			}
 
-			void passAsResult(MArgument& res) const noexcept override {
-				this->passInternal(res);
-				this->setOwner(false);
+			/// Default destructor
+			~Manual() override = default;
+
+			/// For Manual containers cleanup means freeing the container
+			void cleanup() const noexcept override {
+                if (isOwner()) {
+					free();
+				}
 			}
 		};
 	}

@@ -16,9 +16,9 @@ template<>
 uint16_t negator<uint16_t> = 0xFFFF;
 
 struct ImageNegator {
-	template<typename T>
-	void operator()(Image<T> in, MArgumentManager& mngr) {
-		Image<T> out(in.is3D()? in.slices() : 0, in.columns(), in.rows(), in.channels(), in.colorspace(), in.interleavedQ());
+	template<typename T, class P>
+	void operator()(LLU::Image<T, P> in, LLU::MArgumentManager& mngr) {
+		LLU::Image<T> out(in.is3D()? in.slices() : 0, in.columns(), in.rows(), in.channels(), in.colorspace(), in.interleavedQ());
 
 		std::transform(std::cbegin(in), std::cend(in), std::begin(out), [](T inElem) {
 			return negator<T> & ~inElem;
@@ -26,27 +26,29 @@ struct ImageNegator {
 		mngr.setImage(out);
 	}
 
-	void operator()(Image<float> in, MArgumentManager& mngr) {
+	template<class P>
+	void operator()(LLU::Image<float, P>, LLU::MArgumentManager&) {
 		throw std::runtime_error("Cannot negate Real32 image");
 	}
 
-	void operator()(Image<double> in, MArgumentManager& mngr) {
+	template<class P>
+	void operator()(LLU::Image<double, P>, LLU::MArgumentManager&) {
 		throw std::runtime_error("Cannot negate Real image");
 	}
 };
 
 
 LIBRARY_LINK_FUNCTION(ImageNegate) {
-	auto err = LLErrorCode::NoError;
+	auto err = LLU::ErrorCode::NoError;
 	try {
-		MArgumentManager mngr(libData, Argc, Args, Res);
-		mngr.operateOnImage<ImageNegator>(0, mngr);
+		LLU::MArgumentManager mngr(libData, Argc, Args, Res);
+		mngr.operateOnImage<LLU::Passing::Automatic, ImageNegator>(0, mngr);
 	}
-	catch (const LibraryLinkError& e) {
+	catch (const LLU::LibraryLinkError& e) {
 		err = e.which();
 	}
 	catch (...) {
-		err = LLErrorCode::FunctionError;
+		err = LLU::ErrorCode::FunctionError;
 	}
 	return err;
 }

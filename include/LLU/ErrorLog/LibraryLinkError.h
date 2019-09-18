@@ -14,10 +14,10 @@
 #include "LLU/ML/MLStream.hpp"
 
 /**
- * @namespace LibraryLinkUtils
+ * @namespace LLU
  * @brief Main namespace of LibraryLinkUtilities
  */
-namespace LibraryLinkUtils {
+namespace LLU {
 
 	/**
 	 * @class	LibraryLinkError
@@ -110,7 +110,7 @@ namespace LibraryLinkUtils {
 
 		/**
 		 * @brief	Set custom context for the Wolfram Language symbol that will hold the details of last thrown exception.
-		 * @param 	newSymbol - any valid WL context, it \b must end with a backtick (`)
+		 * @param 	newContext - any valid WL context, it \b must end with a backtick (`)
 		 */
 		static void setExceptionDetailsSymbolContext(std::string newContext);
 
@@ -165,6 +165,6 @@ namespace LibraryLinkUtils {
 		loopback << ML::List(static_cast<int>(messageParamsCount));
 		static_cast<void>(std::initializer_list<int> { (loopback << params, 0)... });
 	}
-} /* namespace LibraryLinkUtils */
+} /* namespace LLU */
 
 #endif /* LLUTILS_LIBRARYLINKERROR_H_ */

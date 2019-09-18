@@ -10,7 +10,7 @@
 
 #include "mathlink.h"
 
-namespace LibraryLinkUtils::ML {
+namespace LLU::ML {
 
 
     /* ***************************************************************** */
@@ -186,6 +186,6 @@ namespace LibraryLinkUtils::ML {
     template<>
     const std::string GetScalar<double>::ScalarFName = "MLGetReal64";
 
-} /* namespace LibraryLinkUtils::ML */
+} /* namespace LLU::ML */
 
 #endif

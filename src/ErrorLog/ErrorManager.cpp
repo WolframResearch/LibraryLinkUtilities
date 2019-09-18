@@ -6,98 +6,102 @@
  */
 #include "LLU/ErrorLog/ErrorManager.h"
 
-#include "LLU/Containers/LibDataHolder.h"
+#include "LLU/LibraryData.h"
 #include "LLU/Utilities.hpp"
 #include "LLU/ML/MLStream.hpp"
 #include "LLU/ML/Utilities.h"
 
-namespace LibraryLinkUtils {
+namespace LLU {
 
 	auto ErrorManager::errors() -> ErrorManager::ErrorMap& {
 		static ErrorMap errMap = registerLLUErrors({
 			// Original LibraryLink error codes:
-			{ LLErrorName::VersionError,	"An error was caused by an incompatible function call. The library was compiled with a previous WolframLibrary version." },
-			{ LLErrorName::FunctionError,	"An error occurred in the library function." },
-			{ LLErrorName::MemoryError,		"An error was caused by failed memory allocation or insufficient memory." },
-			{ LLErrorName::NumericalError,	"A numerical error was encountered." },
-			{ LLErrorName::DimensionsError,	"An error caused by inconsistent dimensions or by exceeding array bounds." },
-			{ LLErrorName::RankError,		"An error was caused by a tensor with an inconsistent rank." },
-			{ LLErrorName::TypeError,		"An error caused by inconsistent types was encountered." },
-			{ LLErrorName::NoError,			"No errors occurred." },
+			{ErrorName::VersionError,                "An error was caused by an incompatible function call. The library was compiled with a previous LibraryData version." },
+			{ErrorName::FunctionError,               "An error occurred in the library function." },
+			{ErrorName::MemoryError,                 "An error was caused by failed memory allocation or insufficient memory." },
+			{ErrorName::NumericalError,              "A numerical error was encountered." },
+			{ErrorName::DimensionsError,             "An error caused by inconsistent dimensions or by exceeding array bounds." },
+			{ErrorName::RankError,                   "An error was caused by a tensor with an inconsistent rank." },
+			{ErrorName::TypeError,                   "An error caused by inconsistent types was encountered." },
+			{ErrorName::NoError,                     "No errors occurred." },
+
+			// LibraryData errors:
+			{ErrorName::LibDataError,                "WolframLibraryData is not set. Make sure to call LibraryData::setLibraryData in WolframLibrary_initialize."},
 
 			// MArgument errors:
-			{ LLErrorName::MArgumentLibDataError,		"WolframLibraryData is not set." },
-			{ LLErrorName::MArgumentIndexError,		"An error was caused by an incorrect argument index." },
-			{ LLErrorName::MArgumentNumericArrayError,	"An error was caused by a NumericArray argument." },
-			{ LLErrorName::MArgumentTensorError,	"An error was caused by a Tensor argument." },
-			{ LLErrorName::MArgumentImageError,		"An error was caused by an Image argument." },
+			{ErrorName::MArgumentIndexError,         "An error was caused by an incorrect argument index." },
+			{ErrorName::MArgumentNumericArrayError,  "An error was caused by a NumericArray argument." },
+			{ErrorName::MArgumentTensorError,        "An error was caused by a Tensor argument." },
+			{ErrorName::MArgumentImageError,         "An error was caused by an Image argument." },
 
 			// ErrorManager errors:
-			{ LLErrorName::ErrorManagerThrowIdError,	"An exception was thrown with a non-existent id." },
-			{ LLErrorName::ErrorManagerThrowNameError,	"An exception was thrown with a non-existent name." },
-			{ LLErrorName::ErrorManagerCreateNameError,	"An exception was registered with a name that already exists." },
+			{ErrorName::ErrorManagerThrowIdError,    "An exception was thrown with a non-existent id." },
+			{ErrorName::ErrorManagerThrowNameError,  "An exception was thrown with a non-existent name." },
+			{ErrorName::ErrorManagerCreateNameError, "An exception was registered with a name that already exists." },
 
 			// NumericArray errors:
-			{ LLErrorName::NumericArrayInitError,	"Failed to construct NumericArray." },
-			{ LLErrorName::NumericArrayNewError,	"Failed to create a new NumericArray." },
-			{ LLErrorName::NumericArrayCloneError,	"Failed to clone NumericArray." },
-			{ LLErrorName::NumericArrayTypeError,	"An error was caused by an NumericArray type mismatch." },
-			{ LLErrorName::NumericArraySizeError,	"An error was caused by an incorrect NumericArray size." },
-			{ LLErrorName::NumericArrayIndexError,	"An error was caused by attempting to access a nonexistent NumericArray element." },
-			{ LLErrorName::NumericArrayConversionError, "Failed to convert NumericArray from different type."},
+			{ErrorName::NumericArrayNewError,        "Failed to create a new NumericArray." },
+			{ErrorName::NumericArrayCloneError,      "Failed to clone NumericArray." },
+			{ErrorName::NumericArrayTypeError,       "An error was caused by an NumericArray type mismatch." },
+			{ErrorName::NumericArraySizeError,       "An error was caused by an incorrect NumericArray size." },
+			{ErrorName::NumericArrayIndexError,      "An error was caused by attempting to access a nonexistent NumericArray element." },
+			{ErrorName::NumericArrayConversionError, "Failed to convert NumericArray from different type."},
 
 			// MTensor errors:
-			{ LLErrorName::TensorInitError,		"Failed to construct Tensor." },
-			{ LLErrorName::TensorNewError,		"Failed to create a new MTensor." },
-			{ LLErrorName::TensorCloneError,	"Failed to clone MTensor." },
-			{ LLErrorName::TensorTypeError,		"An error was caused by an MTensor type mismatch." },
-			{ LLErrorName::TensorSizeError,		"An error was caused by an incorrect Tensor size." },
-			{ LLErrorName::TensorIndexError,	"An error was caused by attempting to access a nonexistent Tensor element." },
+			{ErrorName::TensorNewError,              "Failed to create a new MTensor." },
+			{ErrorName::TensorCloneError,            "Failed to clone MTensor." },
+			{ErrorName::TensorTypeError,             "An error was caused by an MTensor type mismatch." },
+			{ErrorName::TensorSizeError,             "An error was caused by an incorrect Tensor size." },
+			{ErrorName::TensorIndexError,            "An error was caused by attempting to access a nonexistent Tensor element." },
 
 			// MImage errors:
-			{ LLErrorName::ImageInitError,	"Failed to construct Image." },
-			{ LLErrorName::ImageNewError,	"Failed to create a new MImage." },
-			{ LLErrorName::ImageCloneError,	"Failed to clone MImage." },
-			{ LLErrorName::ImageTypeError,	"An error was caused by an MImage type mismatch." },
-			{ LLErrorName::ImageSizeError,	"An error was caused by an incorrect Image size." },
-			{ LLErrorName::ImageIndexError,	"An error was caused by attempting to access a nonexistent Image element." },
+			{ErrorName::ImageNewError,               "Failed to create a new MImage." },
+			{ErrorName::ImageCloneError,             "Failed to clone MImage." },
+			{ErrorName::ImageTypeError,              "An error was caused by an MImage type mismatch." },
+			{ErrorName::ImageSizeError,              "An error was caused by an incorrect Image size." },
+			{ErrorName::ImageIndexError,             "An error was caused by attempting to access a nonexistent Image element." },
+
+			// General container errors:
+			{ErrorName::CreateFromNullError,         "Attempting to create a generic container from nullptr."},
+			{ErrorName::MArrayElementIndexError,     "Attempting to access MArray element at invalid index."},
+			{ErrorName::MArrayElementIndexError,     "Attempting to access MArray dimension `d` which does not exist."},
 
 			// MathLink errors:
-			{ LLErrorName::MLNullMlinkError,        "Trying to create MLStream with NULL MLINK"},
-			{ LLErrorName::MLTestHeadError,			"MLTestHead failed (wrong head or number of arguments)." },
-			{ LLErrorName::MLPutSymbolError,		"MLPutSymbol failed." },
-			{ LLErrorName::MLPutFunctionError,		"MLPutFunction failed." },
-			{ LLErrorName::MLTestSymbolError,		"MLTestSymbol failed (different symbol on the link than expected)." },
-			{ LLErrorName::MLWrongSymbolForBool,    R"(Tried to read something else than "True" or "False" as boolean.)" },
-			{ LLErrorName::MLGetListError,			"Could not get list from MathLink." },
-			{ LLErrorName::MLGetScalarError,		"Could not get scalar from MathLink." },
-			{ LLErrorName::MLGetStringError,		"Could not get string from MathLink." },
-			{ LLErrorName::MLGetArrayError,			"Could not get array from MathLink." },
-			{ LLErrorName::MLPutListError,			"Could not send list via MathLink." },
-			{ LLErrorName::MLPutScalarError,		"Could not send scalar via MathLink." },
-			{ LLErrorName::MLPutStringError,		"Could not send string via MathLink." },
-			{ LLErrorName::MLPutArrayError,			"Could not send array via MathLink." },
-			{ LLErrorName::MLGetSymbolError,		"MLGetSymbol failed." },
-			{ LLErrorName::MLGetFunctionError,		"MLGetFunction failed." },
-			{ LLErrorName::MLPacketHandleError,		"One of the packet handling functions failed." },
-			{ LLErrorName::MLFlowControlError,			"One of the flow control functions failed." },
-			{ LLErrorName::MLTransferToLoopbackError,	"Something went wrong when transferring expressions from loopback link." },
-			{ LLErrorName::MLCreateLoopbackError,		"Could not create a new loopback link." },
-			{ LLErrorName::MLLoopbackStackSizeError,	"Loopback stack size too small to perform desired action." },
+			{ErrorName::MLNullMlinkError,        "Trying to create MLStream with NULL MLINK"},
+			{ErrorName::MLTestHeadError,             "MLTestHead failed (wrong head or number of arguments)." },
+			{ErrorName::MLPutSymbolError,            "MLPutSymbol failed." },
+			{ErrorName::MLPutFunctionError,          "MLPutFunction failed." },
+			{ErrorName::MLTestSymbolError,           "MLTestSymbol failed (different symbol on the link than expected)." },
+			{ErrorName::MLWrongSymbolForBool,        R"(Tried to read something else than "True" or "False" as boolean.)" },
+			{ErrorName::MLGetListError,              "Could not get list from MathLink." },
+			{ErrorName::MLGetScalarError,            "Could not get scalar from MathLink." },
+			{ErrorName::MLGetStringError,            "Could not get string from MathLink." },
+			{ErrorName::MLGetArrayError,             "Could not get array from MathLink." },
+			{ErrorName::MLPutListError,              "Could not send list via MathLink." },
+			{ErrorName::MLPutScalarError,            "Could not send scalar via MathLink." },
+			{ErrorName::MLPutStringError,            "Could not send string via MathLink." },
+			{ErrorName::MLPutArrayError,             "Could not send array via MathLink." },
+			{ErrorName::MLGetSymbolError,            "MLGetSymbol failed." },
+			{ErrorName::MLGetFunctionError,          "MLGetFunction failed." },
+			{ErrorName::MLPacketHandleError,         "One of the packet handling functions failed." },
+			{ErrorName::MLFlowControlError,          "One of the flow control functions failed." },
+			{ErrorName::MLTransferToLoopbackError,   "Something went wrong when transferring expressions from loopback link." },
+			{ErrorName::MLCreateLoopbackError,       "Could not create a new loopback link." },
+			{ErrorName::MLLoopbackStackSizeError,    "Loopback stack size too small to perform desired action." },
 
 			// DataList errors:
-			{ LLErrorName::DLNullRawNode,			"DataStoreNode passed to Node wrapper was null" },
-			{ LLErrorName::DLInvalidNodeType,		"DataStoreNode passed to Node wrapper carries data of invalid type" },
-			{ LLErrorName::DLGetNodeDataError,	    "DataStoreNode_getData failed" },
-			{ LLErrorName::DLNullRawDataStore,       "DataStore passed to DataList was null" },
-			{ LLErrorName::DLPushBackTypeError,      "Element to be added to the DataList has incorrect type" },
+			{ErrorName::DLNullRawNode,               "DataStoreNode passed to Node wrapper was null" },
+			{ErrorName::DLInvalidNodeType,           "DataStoreNode passed to Node wrapper carries data of invalid type" },
+			{ErrorName::DLGetNodeDataError,          "DataStoreNode_getData failed" },
+			{ErrorName::DLNullRawDataStore,          "DataStore passed to DataList was null" },
+			{ErrorName::DLPushBackTypeError,         "Element to be added to the DataList has incorrect type" },
 
 			// MArgument errors:
-			{ LLErrorName::ArgumentCreateNull,       "Trying to create Argument object from nullptr" },
-			{ LLErrorName::ArgumentAddNodeMArgument, "Trying to add DataStore Node of type MArgument (aka MType_Undef)" },
+			{ErrorName::ArgumentCreateNull,          "Trying to create Argument object from nullptr" },
+			{ErrorName::ArgumentAddNodeMArgument,    "Trying to add DataStore Node of type MArgument (aka MType_Undef)" },
 
 			// ProgressMonitor errors:
-			{ LLErrorName::Aborted, "Computation aborted by the user." },
+			{ErrorName::Aborted,                     "Computation aborted by the user." },
 		});
 		return errMap;
 	}
@@ -105,7 +109,7 @@ namespace LibraryLinkUtils {
 	bool ErrorManager::sendParametersImmediately = true;
 
 	int& ErrorManager::nextErrorId() {
-		static int id = LLErrorCode::VersionError;
+		static int id = ErrorCode::VersionError;
 		return id;
 	}
 
@@ -166,7 +170,7 @@ namespace LibraryLinkUtils {
 	}
 
 	EXTERN_C DLLEXPORT int sendRegisteredErrors([[maybe_unused]] WolframLibraryData libData, MLINK mlp) {
-		auto err = LLErrorCode::NoError;
+		auto err = ErrorCode::NoError;
 		try {
 			ErrorManager::sendRegisteredErrorsViaMathlink(mlp);
 		}
@@ -174,7 +178,7 @@ namespace LibraryLinkUtils {
 			err = e.which();
 		}
 		catch (...) {
-			err = LLErrorCode::FunctionError;
+			err = ErrorCode::FunctionError;
 		}
 		return err;
 	}

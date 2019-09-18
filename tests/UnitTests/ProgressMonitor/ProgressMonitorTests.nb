@@ -10,10 +10,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       158,          7]
-NotebookDataLength[     30139,        723]
-NotebookOptionsPosition[     23955,        632]
-NotebookOutlinePosition[     24295,        647]
-CellTagsIndexPosition[     24252,        644]
+NotebookDataLength[     30188,        726]
+NotebookOptionsPosition[     24007,        635]
+NotebookOutlinePosition[     24344,        650]
+CellTagsIndexPosition[     24301,        647]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -594,11 +594,11 @@ Cell[BoxData[{
      RowBox[{"{", 
       RowBox[{
        RowBox[{"ParentDirectory", "[", "currentDirectory", "]"}], ",", 
-       "\"\<TestConfig.wl\>\""}], "}"}], "]"}], "]"}], ";"}], "\n", 
-  "\[IndentingNewLine]", 
+       "\"\<TestConfig.wl\>\""}], "}"}], "]"}], "]"}], ";"}], 
+  "\[IndentingNewLine]", "\[IndentingNewLine]", 
   RowBox[{"(*", 
    RowBox[{"Compile", " ", "the", " ", "test", " ", "library"}], 
-   "*)"}]}], "\[IndentingNewLine]", 
+   "*)"}]}], "\n", 
  RowBox[{
   RowBox[{"lib", "=", 
    RowBox[{"CCompilerDriver`CreateLibrary", "[", 
@@ -606,8 +606,10 @@ Cell[BoxData[{
      RowBox[{"{", 
       RowBox[{"FileNameJoin", "[", 
        RowBox[{"{", 
-        RowBox[{"currentDirectory", ",", "\"\<ProgressTest.cpp\>\""}], "}"}], 
-       "]"}], "}"}], ",", "\"\<ProgressTest\>\"", ",", "options"}], "]"}]}], 
+        RowBox[{
+        "currentDirectory", ",", "\"\<TestSources\>\"", ",", 
+         "\"\<ProgressTest.cpp\>\""}], "}"}], "]"}], "}"}], ",", 
+     "\"\<ProgressTest\>\"", ",", "options"}], "]"}]}], 
   ";"}], "\[IndentingNewLine]", 
  RowBox[{
   RowBox[{"Get", "[", 
@@ -623,8 +625,9 @@ Cell[BoxData[{
    3.7513697816158247`*^9, 3.751369841488006*^9}, {3.751370020756031*^9, 
    3.751370036832384*^9}, 3.751370150685916*^9, {3.7513701842758837`*^9, 
    3.7513701858106623`*^9}, 3.751372601022505*^9, {3.751695427410557*^9, 
-   3.751695428177534*^9}, {3.751695573939899*^9, 3.751695574305032*^9}},
- CellLabel->"In[8]:=",ExpressionUUID->"8d8ffc89-fa90-48f9-b2fe-5e1f44fede66"]
+   3.751695428177534*^9}, {3.751695573939899*^9, 3.751695574305032*^9}, 
+   3.7694996846547203`*^9},ExpressionUUID->"8d8ffc89-fa90-48f9-b2fe-\
+5e1f44fede66"]
 }, Open  ]]
 }, Open  ]]
 }, Open  ]]
@@ -632,7 +635,7 @@ Cell[BoxData[{
 },
 WindowSize->{1305, 1004},
 WindowMargins->{{Automatic, 113}, {0, Automatic}},
-FrontEndVersion->"12.0 for Linux x86 (64-bit) (November 28, 2018)",
+FrontEndVersion->"12.0 for Linux x86 (64-bit) (April 17, 2019)",
 StyleDefinitions->"Default.nb"
 ]
 (* End of Notebook Content *)
@@ -719,7 +722,7 @@ Cell[21327, 558, 196, 4, 55, "Subsection",ExpressionUUID->"6a610cff-6e3f-4b13-a8
 Cell[CellGroupData[{
 Cell[21548, 566, 200, 4, 46, "Subsubsection",ExpressionUUID->"759be7e2-4a81-453b-b8cb-53eefb74aa28",
  InitializationCell->True],
-Cell[21751, 572, 2152, 54, 255, "Input",ExpressionUUID->"8d8ffc89-fa90-48f9-b2fe-5e1f44fede66",
+Cell[21751, 572, 2204, 57, 255, "Input",ExpressionUUID->"8d8ffc89-fa90-48f9-b2fe-5e1f44fede66",
  InitializationCell->True]
 }, Open  ]]
 }, Open  ]]

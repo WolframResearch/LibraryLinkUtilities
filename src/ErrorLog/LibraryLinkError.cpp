@@ -12,7 +12,7 @@
 #include "LLU/ML/MLStream.hpp"
 
 
-namespace LibraryLinkUtils {
+namespace LLU {
 
 	std::string LibraryLinkError::exceptionDetailsSymbolContext;
 
@@ -65,7 +65,7 @@ namespace LibraryLinkUtils {
 				mls << ML::Function("Set", 2);
 				mls << ML::Symbol(WLSymbol);
 				if (!MLTransferToEndOfLoopbackLink(mls.get(), messageParams)) {
-					return LLErrorCode::FunctionError;
+					return ErrorCode::FunctionError;
 				}
 				libData->processWSLINK(mls.get());
 				auto pkt = MLNextPacket(mls.get());
@@ -76,13 +76,13 @@ namespace LibraryLinkUtils {
 		} catch (const LibraryLinkError& e) {
 			return e.which();
 		} catch (...) {
-			return LLErrorCode::FunctionError;
+			return ErrorCode::FunctionError;
 		}
-		return LLErrorCode::NoError;
+		return ErrorCode::NoError;
 	}
 
 	LIBRARY_LINK_FUNCTION(setExceptionDetailsContext) {
-		auto err = LLErrorCode::NoError;
+		auto err = ErrorCode::NoError;
 		try {
 			MArgumentManager mngr {libData, Argc, Args, Res};
 			auto newContext = mngr.getString(0);
@@ -93,9 +93,9 @@ namespace LibraryLinkUtils {
 			err = e.which();
 		}
 		catch (...) {
-			err = LLErrorCode::FunctionError;
+			err = ErrorCode::FunctionError;
 		}
 		return err;
 	}
-} /* namespace LibraryLinkUtils */
+} /* namespace LLU */
 

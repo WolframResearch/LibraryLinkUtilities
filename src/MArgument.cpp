@@ -9,7 +9,7 @@
 
 #include "LLU/ErrorLog/ErrorManager.h"
 
-namespace LibraryLinkUtils {
+namespace LLU {
 
 #define ARGUMENT_DEFINE_SPECIALIZATIONS_OF_MEMBER_FUNCTIONS(ArgType, MArgGetPrefix, MArgSetPrefix, DSAdd) \
 	template<> auto Argument<MArgumentType::ArgType>::get() -> typename Argument::value_type& {\
@@ -19,7 +19,7 @@ namespace LibraryLinkUtils {
 		return MArgGetPrefix##ArgType(arg);\
 	}\
 	template<> void Argument<MArgumentType::ArgType>::addDataStoreNode(DataStore ds, const std::string& name, const value_type& val) {\
-		ioFuns->DataStore_##DSAdd(ds, const_cast<char*>(name.c_str()), val);\
+        LibraryData::DataStoreAPI()->DataStore_##DSAdd(ds, const_cast<char*>(name.c_str()), val);\
 	}\
 	template<> auto Argument<MArgumentType::ArgType>::getAddress() const -> typename Argument::value_type* {\
 		return MArgGetPrefix##ArgType##Address(arg);\
@@ -57,7 +57,7 @@ namespace LibraryLinkUtils {
 	template<> void Argument<MArgumentType::MArgument>::addToDataStore(DataStore ds, const std::string& name, MArgumentType T) const {
 		switch(T) {
 			case MArgumentType::MArgument:
-				ErrorManager::throwException(LLErrorName::ArgumentAddNodeMArgument);
+				ErrorManager::throwException(ErrorName::ArgumentAddNodeMArgument);
 			case MArgumentType::Boolean:
 				Argument<MArgumentType::Boolean>(arg).addToDataStore(ds, name);
 				break;
