@@ -233,9 +233,25 @@ namespace LLU {
 		 **/
 		DataStore getDataStore(unsigned int index) const;
 
+		/**
+		 * @brief   Get a reference to an instance of Managed Expression that was sent from Wolfram Language as argument to a library function
+		 * @tparam  ManagedExpr - registered Managed Expression class
+		 * @tparam  DynamicType - actual type of Managed Expression, this must be ManagedExpr or its subclass
+		 * @param   index - position of desired argument in \c Args
+		 * @param   store - Managed Expression store that manages expressions of type ManagedExpr
+		 * @return  a reference to the Managed Expression
+		 */
 		template<class ManagedExpr, class DynamicType = ManagedExpr>
-		DynamicType& getManagedExpression(unsigned int index, ManagedExpressionStore<ManagedExpr>&) const;
+		DynamicType& getManagedExpression(unsigned int index, ManagedExpressionStore<ManagedExpr>& store) const;
 
+		/**
+		 * @brief   Get a shared pointer to an instance of Managed Expression that was sent from Wolfram Language as argument to a library function
+		 * @tparam  ManagedExpr - registered Managed Expression class
+		 * @tparam  DynamicType - actual type of Managed Expression, this must be ManagedExpr or its subclass
+		 * @param   index - position of desired argument in \c Args
+		 * @param   store - Managed Expression store that manages expressions of type ManagedExpr
+		 * @return  a shared pointer to the Managed Expression
+		 */
 		template<class ManagedExpr, class DynamicType = ManagedExpr>
 		std::shared_ptr<DynamicType> getManagedExpressionPtr(unsigned int index, ManagedExpressionStore<ManagedExpr> &store) const;
 
@@ -838,8 +854,7 @@ namespace LLU {
 	DynamicType& MArgumentManager::getManagedExpression(unsigned int index, ManagedExpressionStore<ManagedExpr>& store) const {
 		auto ptr = getManagedExpressionPtr<ManagedExpr, DynamicType>(index, store);
 		if (!ptr) {
-			//FIXME: better error
-			ErrorManager::throwException(ErrorName::FunctionError);
+			ErrorManager::throwException(ErrorName::MLEDynamicTypeError);
 		}
 		return *ptr;
 	}
