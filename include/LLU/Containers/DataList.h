@@ -323,13 +323,17 @@ namespace LLU {
 
 
 		template<MArgumentType MArgT, class P>
-		ValidNodeType<MArgT> push_back(const MContainer<MArgT, P> &nodeData) {
+		void push_back(const MContainer<MArgT, P> &nodeData) {
 			push_back("", nodeData);
 		}
 
 		template<MArgumentType MArgT, class P>
-		ValidNodeType<MArgT> push_back(const std::string &name, const MContainer<MArgT, P> &nodeData) {
-			push_back(name, nodeData.abandonContainer());
+		void push_back(const std::string &name, const MContainer<MArgT, P> &nodeData) {
+			if constexpr (ValidNodeTypeQ<MArgT>) {
+				push_back(name, nodeData.abandonContainer());
+			} else {
+				static_assert(alwaysFalse<MArgT>, "Trying to add DataList node of incorrect type.");
+			}
 		}
 
 		/**

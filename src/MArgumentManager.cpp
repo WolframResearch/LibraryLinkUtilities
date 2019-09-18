@@ -130,6 +130,10 @@ namespace LLU {
 		MArgument_setDataStore(res, ds);
 	}
 
+	void MArgumentManager::setSparseArray(MSparseArray sa) {
+		MArgument_setMSparseArray(res, sa);
+	}
+
 	numericarray_data_t MArgumentManager::getNumericArrayType(unsigned int index) const {
 		MNumericArray tmp = MArgument_getMNumericArray(getArgs(index));
 		return LibraryData::NumericArrayAPI()->MNumericArray_getType(tmp);
@@ -167,11 +171,4 @@ namespace LLU {
 		return ProgressMonitor { std::move(sharedIndicator), step };
 	}
 
-	void MArgumentManager::setDataStore(DataStore ds) {
-		MArgument_setDataStore(res, ds);
-	}
-
-	void MArgumentManager::setSparseArray(MSparseArray sa) {
-		MArgument_setMSparseArray(res, sa);
-	}
 } /* namespace LLU */

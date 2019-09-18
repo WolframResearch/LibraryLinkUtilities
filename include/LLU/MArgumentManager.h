@@ -335,6 +335,12 @@ namespace LLU {
 		 **/
 		void setDataStore(DataStore ds);
 
+		/**
+		 *   @brief         Set MSparseArray as output MArgument
+		 *   @param[in]     sa - MSparseArray to be passed to LibraryLink
+		 **/
+		void setSparseArray(MSparseArray sa);
+
 		/************************************ generic setters ************************************/
 
 		/// @copydoc setBoolean
