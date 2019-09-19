@@ -559,7 +559,7 @@ function(install_dependency_files PACLET_NAME DEP_TARGET_NAME)
 	endif()
 endfunction()
 
-# Sets default CXX properties and ensures stdc++_nonshared is linked on Linux (needed for RH if using >= c++11).
+# Sets default CXX properties and ensures stdc++_nonshared is linked on Linux (needed for RedHat if using >= c++11).
 function(set_default_cxx_properties TARGET_NAME CXX_STD)
 	set_target_properties(${TARGET_NAME} PROPERTIES
 		CXX_STANDARD ${CXX_STD}
