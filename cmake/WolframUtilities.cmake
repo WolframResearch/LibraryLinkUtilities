@@ -232,7 +232,8 @@ endfunction()
 
 # Download a library from Wolfram's CVS repository and set PACKAGE_LOCATION to the download location.
 # SystemId and BuildPlatform can be provided as optional arguments to only download a specific instance of the library.
-# If a Source directory exists in the component root directory, it will be downloaded.
+# If a Source directory exists in the component root directory and DOWNLOAD_CVS_SOURCE is ON, it will be downloaded.
+# DOWNLOAD_CVS_SOURCE can be set to OFF to disable Source download (default is OFF for Release, ON for other configs).
 function(get_library_from_cvs PACKAGE_NAME PACKAGE_VERSION PACKAGE_LOCATION)
 
 	message(STATUS "Looking for CVS library: ${PACKAGE_NAME} version ${PACKAGE_VERSION}")
@@ -269,27 +270,35 @@ function(get_library_from_cvs PACKAGE_NAME PACKAGE_VERSION PACKAGE_LOCATION)
 		FetchContent_populate(${PACKAGE_NAME})
 	endif ()
 
-	# Check if a Source directory exists
-	execute_process(
-		COMMAND cvs -d $ENV{CVSROOT} rdiff -r HEAD Components/${PACKAGE_NAME}/${PACKAGE_VERSION}/Source
-		WORKING_DIRECTORY ${${PACKAGE_LOCATION}}
-		RESULT_VARIABLE RES
-		OUTPUT_QUIET ERROR_QUIET
-	)
-	if("${RES}" STREQUAL "0")
-		# Download component source
-		FetchContent_declare(
-			${PACKAGE_NAME}_SOURCE
-			SOURCE_DIR ${${PACKAGE_LOCATION}}/${PACKAGE_VERSION}/Source
-			CVS_REPOSITORY $ENV{CVSROOT}
-			CVS_MODULE "Components/${PACKAGE_NAME}/${PACKAGE_VERSION}/Source"
+	if(NOT DOWNLOAD_CVS_SOURCE)
+		if("${CMAKE_BUILD_TYPE}" STREQUAL Release)
+			set(DOWNLOAD_CVS_SOURCE OFF CACHE BOOL "Download CVS Source directory for all dependencies if it exists.")
+		else()
+			set(DOWNLOAD_CVS_SOURCE ON CACHE BOOL "Download CVS Source directory for all dependencies if it exists.")
+		endif()
+	endif()
+	if(DOWNLOAD_CVS_SOURCE)
+		# Check if a Source directory exists
+		execute_process(
+			COMMAND cvs -d $ENV{CVSROOT} rdiff -r HEAD Components/${PACKAGE_NAME}/${PACKAGE_VERSION}/Source
+			WORKING_DIRECTORY ${${PACKAGE_LOCATION}}
+			RESULT_VARIABLE RES
+			OUTPUT_QUIET ERROR_QUIET
 		)
-
-		FetchContent_getproperties(${PACKAGE_NAME}_SOURCE)
-		if (NOT ${lc_package_name}_source_POPULATED)
-			message(STATUS "Downloading CVS source: ${PACKAGE_NAME}/${PACKAGE_VERSION}/Source")
-			FetchContent_populate(${PACKAGE_NAME}_SOURCE)
-		endif ()
+		if("${RES}" STREQUAL "0")
+			# Download component source
+			FetchContent_declare(
+				${PACKAGE_NAME}_SOURCE
+				SOURCE_DIR ${${PACKAGE_LOCATION}}/${PACKAGE_VERSION}/Source
+				CVS_REPOSITORY $ENV{CVSROOT}
+				CVS_MODULE "Components/${PACKAGE_NAME}/${PACKAGE_VERSION}/Source"
+			)
+			FetchContent_getproperties(${PACKAGE_NAME}_SOURCE)
+			if (NOT ${lc_package_name}_source_POPULATED)
+				message(STATUS "Downloading CVS source: ${PACKAGE_NAME}/${PACKAGE_VERSION}/Source")
+				FetchContent_populate(${PACKAGE_NAME}_SOURCE)
+			endif ()
+		endif()
 	endif()
 
 	set(${PACKAGE_LOCATION} ${${lc_package_name}_SOURCE_DIR} PARENT_SCOPE)
@@ -593,23 +602,25 @@ endmacro()
 # Adds compile definitions to the specified target to set minimum Windows version.
 # Macro values are described here: https://docs.microsoft.com/en-us/cpp/porting/modifying-winver-and-win32-winnt
 function(set_min_windows_version TARGET_NAME VER)
-	if(${VER} STREQUAL 7)
-		set(_VER 0x0601) # support at least Windows 7
-	elseif(${VER} STREQUAL 8)
-		set(_VER 0x0602) # support at least Windows 8
-	elseif(${VER} STREQUAL 8.1)
-		set(_VER 0x0603) # support at least Windows 8.1
-	elseif(${VER} STREQUAL 10)
-		set(_VER 0x0A00) # support at least Windows 10
-	elseif(${VER} MATCHES "0x[0-9A-Fa-f]+")
-		set(_VER ${VER})
-	else()
-		message(FATAL_ERROR "Unrecognized Windows version: ${VER}")
+	if(WIN32)
+		if(${VER} STREQUAL 7)
+			set(_VER 0x0601) # support at least Windows 7
+		elseif(${VER} STREQUAL 8)
+			set(_VER 0x0602) # support at least Windows 8
+		elseif(${VER} STREQUAL 8.1)
+			set(_VER 0x0603) # support at least Windows 8.1
+		elseif(${VER} STREQUAL 10)
+			set(_VER 0x0A00) # support at least Windows 10
+		elseif(${VER} MATCHES "0x[0-9A-Fa-f]+")
+			set(_VER ${VER})
+		else()
+			message(FATAL_ERROR "Unrecognized Windows version: ${VER}")
+		endif()
+		target_compile_definitions(${TARGET_NAME} PRIVATE
+			WINVER=${_VER}
+			_WIN32_WINNT=${_VER}
+		)
 	endif()
-	target_compile_definitions(${TARGET_NAME} PRIVATE
-		WINVER=${_VER}
-		_WIN32_WINNT=${_VER}
-	)
 endfunction()
 
 # Appends a list of frameworks to linker options and ensures headerpad_max_install_names is set.
