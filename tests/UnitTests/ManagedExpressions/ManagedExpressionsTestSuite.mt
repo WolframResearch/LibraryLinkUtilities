@@ -60,9 +60,9 @@ TestExecute[
 Test[
 	LogSymbol
 	,
-	{
-		"[Debug] ManagedExprTest.cpp:19 (MyExpression): MyExpression[1] created."
-	}
+	{ "MyExpression[1] created." }
+	,
+	SameTest -> LoggerStringTest
 	,
 	TestID -> "ManagedExpressionsTestSuite-20190718-I7S1K0"
 ];
@@ -119,9 +119,11 @@ Test[
 	LogSymbol
 	,
 	{
-		"[Debug] ManagedExprTest.cpp:19 (MyExpression): MyExpression[2] created.",
-		"[Debug] ManagedExprTest.cpp:22 (~MyExpression): MyExpression[2] is dying now."
+		"MyExpression[2] created.",
+		"MyExpression[2] is dying now."
 	}
+	,
+	SameTest -> LoggerStringTest
 	,
 	TestID->"ManagedExpressionsTestSuite-20190718-J5J8Q0"
 ];
@@ -209,9 +211,11 @@ Test[
 	LogSymbol
 	,
 	{
-		"[Debug] ManagedExprTest.cpp:19 (MyExpression): MyExpression[3] created.",
-		"[Debug] ManagedExprTest.cpp:22 (~MyExpression): MyExpression[3] is dying now."
+		"MyExpression[3] created.",
+		"MyExpression[3] is dying now."
 	}
+	,
+	SameTest -> LoggerStringTest
 	,
 	TestID->"ManagedExpressionsTestSuite-20190821-W5W6N0"
 ];
@@ -253,11 +257,13 @@ Test[
 	LogSymbol
 	,
 	{
-		"[Debug] ManagedExprTest.cpp:19 (MyExpression): MyExpression[6] created.", 
-		"[Debug] ManagedExprTest.cpp:182 (MyChildExpression): MyChildExpression[6] created.", 
-		"[Debug] ManagedExprTest.cpp:186 (~MyChildExpression): MyChildExpression[6] is dying now.", 
-		"[Debug] ManagedExprTest.cpp:22 (~MyExpression): MyExpression[6] is dying now."
+		"MyExpression[6] created.",
+		"MyChildExpression[6] created.",
+		"MyChildExpression[6] is dying now.",
+		"MyExpression[6] is dying now."
 	}
+	,
+	SameTest -> LoggerStringTest
 	,
 	TestID->"ManagedExpressionsTestSuite-20190911-U4H9A5"
 ];

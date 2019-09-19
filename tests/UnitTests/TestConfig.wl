@@ -40,6 +40,8 @@ LLErrorCodeQ[_] := False;
 CppErrorCodeQ[c_Integer] := c < 0;
 CppErrorCodeQ[_] := False;
 
+LoggerStringTest = (AllTrue[MapThread[StringEndsQ, {##}], TrueQ]&);
+
 (* Memory leak test *)
 ClearAll[MemoryLeakTest];
 SetAttributes[MemoryLeakTest, HoldAll];
