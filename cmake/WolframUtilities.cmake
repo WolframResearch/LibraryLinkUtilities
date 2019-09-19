@@ -205,6 +205,7 @@ endfunction()
 
 # On MacOS, enables rpath search mechanism for dependency library in SystemFiles/Links.
 # Note, rpath on MacOS has lower precedence than DYLD_LIBRARY_PATH. see: https://gitlab.kitware.com/cmake/community/wikis/doc/cmake/RPATH-handling
+# CMake >= 3.13 is required for target_link_options().
 function(change_loader_path_for_layout TARGET_NAME DEP_TARGET_NAME DEP_PACLET_NAME)
 	if(APPLE)
 		detect_system_id(SYSTEMID)
@@ -217,7 +218,7 @@ function(change_loader_path_for_layout TARGET_NAME DEP_TARGET_NAME DEP_PACLET_NA
 				"$<TARGET_FILE:${TARGET_NAME}>"
 		)
 		#can't append to INSTALL_RPATH since it doesn't accept generator expressions
-		add_link_flags(${TARGET_NAME} PRIVATE "-Wl,-rpath,@executable_path/../SystemFiles/Links/${DEP_PACLET_NAME}/LibraryResources/${SYSTEMID}/${DEP_FILE_NAME}")
+		target_link_options(${TARGET_NAME} PRIVATE "-Wl,-rpath,@executable_path/../SystemFiles/Links/${DEP_PACLET_NAME}/LibraryResources/${SYSTEMID}/${DEP_FILE_NAME}")
 	endif()
 endfunction()
 
@@ -634,36 +635,6 @@ function(add_frameworks TARGET_NAME)
 		${FRAMEWORKS}
 		"-headerpad_max_install_names"
 	)
-endfunction()
-
-# Appends linker flag(s) for given target with given scope without overwriting previous flags.
-function(add_link_flags TARGET_NAME SCOPE)
-	if(ARGC LESS 3)
-		message(WARNING "add_link_flags() called for target ${TARGET_NAME} with no flags specified.")
-		return()
-	endif()
-	# target_link_options() / LINK_OPTIONS is only available in cmake >= 3.13.
-	if(${CMAKE_VERSION} VERSION_LESS "3.13")
-		# LINK_FLAGS does not accept generator expressions so use target_link_libraries() in that case.
-		if("${ARGN}" MATCHES ".*\\$<.+>.*")
-			target_link_libraries(${TARGET_NAME} ${SCOPE} ${ARGN})
-		else()
-			get_target_property(ORIG_LINK_FLAGS ${TARGET_NAME} LINK_FLAGS)
-			list(JOIN ARGN " " _LINK_FLAGS)
-			set_target_properties(${TARGET_NAME} PROPERTIES LINK_FLAGS "${ORIG_LINK_FLAGS} ${_LINK_FLAGS}")
-		endif()
-	else()
-		# retrieve any previously set LINK_FLAGS since LINK_OPTIONS will be used in preference.
-		get_target_property(ORIG_LINK_FLAGS ${TARGET_NAME} LINK_FLAGS)
-		if(ORIG_LINK_FLAGS)
-			string(REPLACE " " ";" _LINK_OPTS ${ORIG_LINK_FLAGS})
-			list(APPEND _LINK_OPTS ${ARGN})
-			set_target_properties(${TARGET_NAME} PROPERTIES LINK_FLAGS "")
-		else()
-			set(_LINK_OPTS ${ARGN})
-		endif()
-		target_link_options(${TARGET_NAME} ${SCOPE} ${_LINK_OPTS})
-	endif()
 endfunction()
 
 # Copies paclet files to install location (CMAKE_INSTALL_PREFIX should be set appropriately before calling this).
