@@ -63,6 +63,18 @@ namespace LLU {
 
 		MContainer& operator=(MContainer&&) noexcept = default;
 
+		/**
+		 * @brief   Assign a GenericNumericArray with different passing mode.
+		 * @tparam  P - some passing mode
+		 * @param   mc - different GenericNumericArray
+		 * @return  this
+		 */
+		template<class P>
+		MContainer& operator=(const MContainer<MArgumentType::NumericArray, P>& mc) {
+			Base::operator=(mc);
+			return *this;
+		}
+
 		/// Destructor which triggers the appropriate cleanup action which depends on the PassingMode
 		~MContainer() override {
 			this->cleanup();
@@ -86,18 +98,6 @@ namespace LLU {
 				ErrorManager::throwException(ErrorName::NumericArrayConversionError, "Conversion to type " + std::to_string(static_cast<int>(t)) + " failed.");
 			}
 			return newNA;
-		}
-
-		/**
-		 * @brief   Assign a GenericNumericArray with different passing mode.
-		 * @tparam  P - some passing mode
-		 * @param   mc - different GenericNumericArray
-		 * @return  this
-		 */
-		template<class P>
-		MContainer& operator=(const MContainer<MArgumentType::NumericArray, P> &mc) {
-			Base::operator=(mc);
-			return *this;
 		}
 
 		/**
