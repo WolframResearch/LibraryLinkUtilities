@@ -233,7 +233,6 @@ endfunction()
 # Download a library from Wolfram's CVS repository and set PACKAGE_LOCATION to the download location.
 # SystemId and BuildPlatform can be provided as optional arguments to only download a specific instance of the library.
 # If a Source directory exists in the component root directory and DOWNLOAD_CVS_SOURCE is ON, it will be downloaded.
-# DOWNLOAD_CVS_SOURCE can be set to OFF to disable Source download (default is OFF for Release, ON for other configs).
 function(get_library_from_cvs PACKAGE_NAME PACKAGE_VERSION PACKAGE_LOCATION)
 
 	message(STATUS "Looking for CVS library: ${PACKAGE_NAME} version ${PACKAGE_VERSION}")
@@ -270,13 +269,6 @@ function(get_library_from_cvs PACKAGE_NAME PACKAGE_VERSION PACKAGE_LOCATION)
 		FetchContent_populate(${PACKAGE_NAME})
 	endif ()
 
-	if(NOT DOWNLOAD_CVS_SOURCE)
-		if("${CMAKE_BUILD_TYPE}" STREQUAL Release)
-			set(DOWNLOAD_CVS_SOURCE OFF CACHE BOOL "Download CVS Source directory for all dependencies if it exists.")
-		else()
-			set(DOWNLOAD_CVS_SOURCE ON CACHE BOOL "Download CVS Source directory for all dependencies if it exists.")
-		endif()
-	endif()
 	if(DOWNLOAD_CVS_SOURCE)
 		# Check if a Source directory exists
 		execute_process(
@@ -318,7 +310,17 @@ endfunction()
 # ${LIBRARY_NAME}_SYSTEMID
 # ${LIBRARY_NAME}_VERSION
 # ${LIBRARY_NAME}_BUILD_PLATFORM
+# Also sets DOWNLOAD_CVS_SOURCE variable to control Source download (default is OFF for Release config, ON otherwise).
 function(find_and_parse_library_conf)
+	if(NOT DEFINED DOWNLOAD_CVS_SOURCE)
+		if("${CMAKE_BUILD_TYPE}" STREQUAL Release)
+			set(DOWNLOAD_CVS_SOURCE OFF CACHE BOOL "Download CVS Source directory for all dependencies if it exists.")
+		else()
+			set(DOWNLOAD_CVS_SOURCE ON CACHE BOOL "Download CVS Source directory for all dependencies if it exists.")
+		endif()
+	endif()
+
+	# path to library.conf. Located in scripts directory by default, but custom location can be passed in.
 	if(ARGC GREATER_EQUAL 1)
 		set(LIBRARY_CONF "${ARGV0}")
 	else()
