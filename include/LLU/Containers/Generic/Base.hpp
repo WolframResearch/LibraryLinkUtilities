@@ -9,6 +9,7 @@
 #include <type_traits>
 
 #include "LLU/Containers/Passing/Manual.hpp"
+#include "LLU/ErrorLog/ErrorManager.h"
 #include "LLU/LibraryData.h"
 #include "LLU/MArgument.h"
 #include "LLU/Utilities.hpp"

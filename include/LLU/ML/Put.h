@@ -12,6 +12,7 @@
 #include "mathlink.h"
 
 #include "LLU/ErrorLog/Errors.h"
+#include "LLU/ML/Utilities.h"
 #include "LLU/Utilities.hpp"
 
 namespace LLU {
