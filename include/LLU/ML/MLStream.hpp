@@ -32,7 +32,7 @@ namespace LLU {
 	 * @class 	MLStream
 	 * @brief 	Wrapper class over MathLink with a stream-like interface.
 	 *
-	 * MLStream resides in LibraryLinkUtils namespace, whereas other MathLink-related classes can be found in LibraryLinkUtils::ML namespace.
+	 * MLStream resides in LLU namespace, whereas other MathLink-related classes can be found in LLU::ML namespace.
 	 *
 	 * @tparam	EncodingIn - default encoding to use when reading strings from MathLink
 	 * @tparam	EncodingOut - default encoding to use when writing strings to MathLink
@@ -54,7 +54,7 @@ namespace LLU {
 		MLStream(MLINK mlp, int argc);
 
 		/**
-		 *   @brief         Constructs new MLStream and checks whether there is a function with head \c head and \c argc arguments on the LinkObject 
+		 *   @brief         Constructs new MLStream and checks whether there is a function with head \c head and \c argc arguments on the LinkObject
 		 *   				waiting to be read
 		 *   @param[in]     mlp - low-level object of type MLINK received from LibraryLink\
 		 *   @param[in]		head - expected head of expression on the Link
@@ -248,8 +248,8 @@ namespace LLU {
 		 *   @brief			Sends all strings within a given object using specified character encoding.
 		 *
 		 *   Normally, when you send a string MLStream chooses the appropriate MathLink function based on the EncodingOut template parameter.
-		 *   Sometimes you may want to locally override the output encoding and you can do this by wrapping the object with 
-		 *   ML::PutAs<desired encoding, wrapped type> (you can use ML::putAs function to construct ML::PutAs object without 
+		 *   Sometimes you may want to locally override the output encoding and you can do this by wrapping the object with
+		 *   ML::PutAs<desired encoding, wrapped type> (you can use ML::putAs function to construct ML::PutAs object without
 		 *   having to explicitly specify the second template parameter).
 		 *
 		 *   @code
