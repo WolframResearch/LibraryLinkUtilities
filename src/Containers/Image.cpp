@@ -1,4 +1,4 @@
-/** 
+/**
  * @file	Image.cpp
  * @author	Rafal Chojna <rafalc@wolfram.com>
  * @date	18/04/2017
@@ -12,7 +12,7 @@
 #include <cstdint>
 
 namespace LLU {
-/// @cond
+	/// @cond
 	//
 	//	Template specializations for Bit images
 	//
@@ -127,6 +127,5 @@ namespace LLU {
 			this->indexError();
 		}
 	}
-/// @endcond
+	/// @endcond
 } /* namespace LLU */
-
