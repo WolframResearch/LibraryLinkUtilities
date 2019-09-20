@@ -58,11 +58,11 @@ namespace LLU {
 			 * @details According to LibraryLink docs, if the container is shared between the library and the Wolfram Language,
 			 * then automatic return does not change anything in the ownership of the container.
 			 */
-			void passAsResult(MArgument &res) const noexcept override {
+			void passAsResult(MArgument& res) const noexcept override {
 				pass(res);
 			}
 		};
 
 	}
 }
-#endif //LLUTILS_SHARED_HPP
+#endif	  // LLUTILS_SHARED_HPP

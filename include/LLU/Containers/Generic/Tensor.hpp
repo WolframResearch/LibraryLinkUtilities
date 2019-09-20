@@ -27,7 +27,7 @@ namespace LLU {
 		/// Inherit constructors from MContainerBase
 		using MContainerBase<MArgumentType::Tensor, PassingMode>::MContainerBase;
 
-		///Default constructor, the MContainer does not manage any instance of MTensor.
+		/// Default constructor, the MContainer does not manage any instance of MTensor.
 		MContainer() = default;
 
 		/**
@@ -51,8 +51,7 @@ namespace LLU {
 		 * @param   mc - different GenericTensor
 		 */
 		template<class P>
-		explicit MContainer(const MContainer<MArgumentType::Tensor, P>& mc) : Base(mc) {
-		}
+		explicit MContainer(const MContainer<MArgumentType::Tensor, P>& mc) : Base(mc) {}
 
 		MContainer(const MContainer& mc) = default;
 
@@ -60,7 +59,7 @@ namespace LLU {
 
 		MContainer& operator=(const MContainer&) = default;
 
-		MContainer &operator=(MContainer &&mc) noexcept = default;
+		MContainer& operator=(MContainer&& mc) noexcept = default;
 
 		/**
 		 * @brief   Assign a GenericTensor with different passing mode.
@@ -165,4 +164,4 @@ namespace LLU {
 
 }
 
-#endif //LLU_INCLUDE_LLU_CONTAINERS_GENERIC_TENSOR
+#endif	  // LLU_INCLUDE_LLU_CONTAINERS_GENERIC_TENSOR

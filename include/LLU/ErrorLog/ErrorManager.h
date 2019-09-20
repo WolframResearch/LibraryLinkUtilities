@@ -7,17 +7,17 @@
 #ifndef LLUTILS_ERRORMANAGER_H
 #define LLUTILS_ERRORMANAGER_H
 
+#include <algorithm>
 #include <initializer_list>
 #include <string>
-#include <vector>
-#include <algorithm>
 #include <unordered_map>
 #include <utility>
+#include <vector>
 
 #include "WolframLibrary.h"
 
-#include <LLU/LibraryData.h>
 #include <LLU/ErrorLog/LibraryLinkError.h>
+#include <LLU/LibraryData.h>
 
 namespace LLU {
 
@@ -34,7 +34,6 @@ namespace LLU {
 		using ErrorStringData = std::pair<std::string, std::string>;
 
 	public:
-
 		/**
 		 * @brief Default constructor is deleted since ErrorManager is supposed to be completely static
 		 */
@@ -125,17 +124,17 @@ namespace LLU {
 		 * @param 	args - any number of arguments that will replace TemplateSlots (``, `1`, `xx`, etd) in the message text in top-level
 		 */
 		template<typename... T>
-		[[noreturn]] static void throwExceptionWithDebugInfo(WolframLibraryData libData, const std::string& errorName, const std::string& debugInfo, T&&... args);
-
+		[[noreturn]] static void
+		throwExceptionWithDebugInfo(WolframLibraryData libData, const std::string& errorName, const std::string& debugInfo, T&&... args);
 
 		/**
-		 * @brief   Sets new value for the sendParametersImmediately flag. Pass false to make sure that exception do not send their parameters to top-level when they are thrown.
-		 * 			This is essential in multithreaded applications since the WL symbol that parameters are assigned to may be treated as a global shared resource.
-		 * 			It is recommended to use this method in WolframLibrary_initialize.
+		 * @brief   Sets new value for the sendParametersImmediately flag. Pass false to make sure that exception do not send their parameters to top-level when
+		 * they are thrown. This is essential in multithreaded applications since the WL symbol that parameters are assigned to may be treated as a global
+		 * shared resource. It is recommended to use this method in WolframLibrary_initialize.
 		 * @param 	newValue - new value for the sendParametersImmediately flag
 		 */
 		static void setSendParametersImmediately(bool newValue) {
-		  sendParametersImmediately = newValue;
+			sendParametersImmediately = newValue;
 		}
 
 		/**
@@ -143,7 +142,7 @@ namespace LLU {
 		 * @return 	current value of sendParametersImmediately flag.
 		 */
 		static bool getSendParametersImmediately() {
-		  return sendParametersImmediately;
+			return sendParametersImmediately;
 		}
 
 		/**
@@ -156,7 +155,6 @@ namespace LLU {
 		static void sendRegisteredErrorsViaMathlink(MLINK mlp);
 
 	private:
-
 		/// Errors are stored in a map with elements of the form { "ErrorName", immutable LibraryLinkError object }
 		using ErrorMap = std::unordered_map<std::string, const LibraryLinkError>;
 
@@ -231,6 +229,6 @@ namespace LLU {
 		throw std::move(e);
 	}
 
-}  /* namespace LLU */
+} /* namespace LLU */
 
-#endif //LLUTILS_ERRORMANAGER_H
+#endif	  // LLUTILS_ERRORMANAGER_H

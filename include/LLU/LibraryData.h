@@ -7,10 +7,10 @@
 
 #include <memory>
 
-#include "WolframLibrary.h"
-#include "WolframImageLibrary.h"
-#include "WolframNumericArrayLibrary.h"
 #include "WolframIOLibraryFunctions.h"
+#include "WolframImageLibrary.h"
+#include "WolframLibrary.h"
+#include "WolframNumericArrayLibrary.h"
 #include "WolframSparseLibrary.h"
 
 namespace LLU {
@@ -23,7 +23,8 @@ namespace LLU {
 		/**
 		 *   @brief     Set WolframLibraryData structure as static member of LibDataHolder. Call this function in WolframLibrary_initialize.
 		 *   @param[in] ld - WolframLibraryData passed to every library function via LibraryLink
-		 *   @warning	This function must be called before constructing the first MArgumentManager unless you use a constructor that takes WolframLibraryData as argument
+		 *   @warning	This function must be called before constructing the first MArgumentManager
+		 *   unless you use a constructor that takes WolframLibraryData as argument
 		 **/
 		static void setLibraryData(WolframLibraryData ld);
 
@@ -71,4 +72,4 @@ namespace LLU {
 
 }
 
-#endif //LLUTILS_LIBRARYDATA_H
+#endif	  // LLUTILS_LIBRARYDATA_H

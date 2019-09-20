@@ -6,11 +6,11 @@
 #ifndef LLUTILS_MARRAYDIMENSIONS_H_
 #define LLUTILS_MARRAYDIMENSIONS_H_
 
-#include "WolframLibrary.h"
-
 #include <initializer_list>
 #include <type_traits>
 #include <vector>
+
+#include "WolframLibrary.h"
 
 #include "LLU/ErrorLog/ErrorManager.h"
 #include "LLU/Utilities.hpp"
@@ -23,7 +23,6 @@ namespace LLU {
 	 */
 	class MArrayDimensions {
 	public:
-
 		/**
 		 *	@brief Default constructor
 		 **/
@@ -103,14 +102,14 @@ namespace LLU {
 		 *	@brief 		Convert coordinates of an element in a multidimensional MArray to the corresponding index in a flat list of elements
 		 *	@param[in]	indices - vector with coordinates of desired data element
 		 **/
-		mint getIndex(const std::vector<mint> &indices) const;
+		mint getIndex(const std::vector<mint>& indices) const;
 
 		/**
 		 *	@brief 		Check if given coordinates are valid for this container
 		 *	@param[in]	indices - vector with coordinates of desired data element
 		 *	@throws		indexError() - if \c indices are out-of-bounds
 		 **/
-		mint getIndexChecked(const std::vector<mint> &indices) const;
+		mint getIndexChecked(const std::vector<mint>& indices) const;
 
 		/**
 		 * @brief   Check if given index is valid i.e. it does not exceed container bounds
@@ -141,7 +140,6 @@ namespace LLU {
 		void fillOffsets();
 
 	private:
-
 		[[noreturn]] void indexError(mint index) const;
 
 		/**
@@ -164,17 +162,16 @@ namespace LLU {
 	};
 
 	template<typename T, typename>
-	MArrayDimensions::MArrayDimensions(const T *dimensions, mint rank)  : MArrayDimensions(dimensions, dimensions + rank) {}
+	MArrayDimensions::MArrayDimensions(const T* dimensions, mint rank) : MArrayDimensions(dimensions, dimensions + rank) {}
 
 	template<typename T, typename>
 	MArrayDimensions::MArrayDimensions(const std::vector<T>& dimensions) : MArrayDimensions(std::cbegin(dimensions), std::cend(dimensions)) {}
 
 	template<typename InputIter, typename>
-	MArrayDimensions::MArrayDimensions(InputIter dimsBegin,InputIter dimsEnd) {
+	MArrayDimensions::MArrayDimensions(InputIter dimsBegin, InputIter dimsEnd) {
 		mint depth = checkContainerSize(std::distance(dimsBegin, dimsEnd));
-		auto dimsOk = std::all_of(dimsBegin, dimsEnd - 1, [](auto d) {
-			return (d > 0) && (d <= (std::numeric_limits<mint>::max)());
-		}) && (dimsBegin[depth - 1] >= 0) && (dimsBegin[depth - 1] <= (std::numeric_limits<mint>::max)());
+		auto dimsOk = std::all_of(dimsBegin, dimsEnd - 1, [](auto d) { return (d > 0) && (d <= (std::numeric_limits<mint>::max)()); }) &&
+					  (dimsBegin[depth - 1] >= 0) && (dimsBegin[depth - 1] <= (std::numeric_limits<mint>::max)());
 		if (!dimsOk) {
 			ErrorManager::throwExceptionWithDebugInfo(ErrorName::DimensionsError, "Invalid input vector with array dimensions");
 		}

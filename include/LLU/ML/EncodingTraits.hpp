@@ -1,4 +1,4 @@
-/** 
+/**
  * @file	EncodingTraits.hpp
  * @date	Mar 23, 2018
  * @author	Rafal Chojna <rafalc@wolfram.com>
@@ -20,15 +20,14 @@ namespace LLU {
 		 * List of all string encodings supported by MathLink
 		 */
 		enum class Encoding : std::uint8_t {
-			Undefined,	//!< Undefined, can be used to denote that certain function is not supposed to deal with strings
-			Native,   	//!< Use MLGetString for reading and MLPutString for writing strings
-			Byte,     	//!< Use MLGetByteString for reading and MLPutByteString for writing strings
-			UTF8,     	//!< Use MLGetUTF8String for reading and MLPutUTF8String for writing strings
-			UTF16,    	//!< Use MLGetUTF16String for reading and MLPutUTF16String for writing strings
-			UCS2,     	//!< Use MLGetUCS2String for reading and MLPutUCS2String for writing strings
-			UTF32     	//!< Use MLGetUTF32String for reading and MLPutUTF32String for writing strings
+			Undefined,	  //!< Undefined, can be used to denote that certain function is not supposed to deal with strings
+			Native,		  //!< Use MLGetString for reading and MLPutString for writing strings
+			Byte,		  //!< Use MLGetByteString for reading and MLPutByteString for writing strings
+			UTF8,		  //!< Use MLGetUTF8String for reading and MLPutUTF8String for writing strings
+			UTF16,		  //!< Use MLGetUTF16String for reading and MLPutUTF16String for writing strings
+			UCS2,		  //!< Use MLGetUCS2String for reading and MLPutUCS2String for writing strings
+			UTF32		  //!< Use MLGetUTF32String for reading and MLPutUTF32String for writing strings
 		};
-
 
 		/**
 		 * @struct CharTypeStruct
@@ -47,14 +46,31 @@ namespace LLU {
 		 * Specializations of CharTypeStruct, encoding E has assigned type T iff MLPutEString takes const T* as second parameter
 		 * @cond
 		 */
-		template<> struct CharTypeStruct<Encoding::Native> 		{ using type = char; };
-		template<> struct CharTypeStruct<Encoding::Byte> 		{ using type = unsigned char; };
-		template<> struct CharTypeStruct<Encoding::UTF8> 		{ using type = unsigned char; };
-		template<> struct CharTypeStruct<Encoding::UTF16> 		{ using type = unsigned short; };
-		template<> struct CharTypeStruct<Encoding::UCS2> 		{ using type = unsigned short; };
-		template<> struct CharTypeStruct<Encoding::UTF32> 		{ using type = unsigned int; };
+		template<>
+		struct CharTypeStruct<Encoding::Native> {
+			using type = char;
+		};
+		template<>
+		struct CharTypeStruct<Encoding::Byte> {
+			using type = unsigned char;
+		};
+		template<>
+		struct CharTypeStruct<Encoding::UTF8> {
+			using type = unsigned char;
+		};
+		template<>
+		struct CharTypeStruct<Encoding::UTF16> {
+			using type = unsigned short;
+		};
+		template<>
+		struct CharTypeStruct<Encoding::UCS2> {
+			using type = unsigned short;
+		};
+		template<>
+		struct CharTypeStruct<Encoding::UTF32> {
+			using type = unsigned int;
+		};
 		/// @endcond
-
 
 		/**
 		 * @typedef CharType
@@ -96,14 +112,13 @@ namespace LLU {
 		template<Encoding E>
 		using StringType = typename StringTypeStruct<E>::type;
 
-
 		/**
 		 * Get the name of encoding
 		 * @param e - value of ML::Encoding enum
 		 * @return C-string containing the name of encoding e
 		 */
 		constexpr const char* getEncodingName(Encoding e) {
-			switch(e) {
+			switch (e) {
 				case Encoding::Undefined: return "Undefined";
 				case Encoding::Native: return "Native";
 				case Encoding::Byte: return "Byte";
@@ -114,8 +129,6 @@ namespace LLU {
 				default: return "NoSuchEncoding";
 			}
 		}
-
-
 
 		/**
 		 *	@struct PutAs
@@ -170,7 +183,6 @@ namespace LLU {
 			T obj;
 		};
 		/// @endcond
-
 
 		/**
 		 * This is a helper function to facilitate constructing ML::PutAs wrapper.

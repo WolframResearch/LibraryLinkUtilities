@@ -17,8 +17,9 @@
 
 #include "WolframLibrary.h"
 
-#include "MArrayDimensions.h"
 #include "LLU/Utilities.hpp"
+
+#include "MArrayDimensions.h"
 
 namespace LLU {
 
@@ -26,9 +27,9 @@ namespace LLU {
 	 * @class MArray
 	 * @brief This is a class template, where template parameter T is the type of data elements. MArray is the base class for NumericArray, Tensor and Image.
 	 *
-	 * Each MArray<T> is an abstract class, it provides common interface to NumericArrays, Tensors and Images. One of the biggest benefits is that this interface
-	 * contains iterators over underlying data together with begin() and end() member functions which makes it possible to use containers derived
-	 * from MArray directly in many functions from standard library \<algorithms\>.
+	 * Each MArray<T> is an abstract class, it provides common interface to NumericArrays, Tensors and Images. One of the biggest benefits is that this
+	 * interface contains iterators over underlying data together with begin() and end() member functions which makes it possible to use containers derived from
+	 * MArray directly in many functions from standard library \<algorithms\>.
 	 *
 	 * @tparam	T - type of underlying data
 	 */
@@ -36,6 +37,7 @@ namespace LLU {
 	class MArray {
 		template<typename>
 		friend class MArray;
+
 	public:
 		/// Type of elements stored
 		using value_type = T;
@@ -180,7 +182,7 @@ namespace LLU {
 		 *	@param[in]	indices - vector with coordinates of desired data element
 		 **/
 		T& operator[](const std::vector<mint>& indices) {
-			return  (*this)[dims.getIndex(indices)];
+			return (*this)[dims.getIndex(indices)];
 		}
 
 		/**
@@ -188,7 +190,7 @@ namespace LLU {
 		 *	@param[in]	indices - vector with coordinates of desired data element
 		 **/
 		const T& operator[](const std::vector<mint>& indices) const {
-			return  (*this)[dims.getIndex(indices)];
+			return (*this)[dims.getIndex(indices)];
 		}
 
 		/**
@@ -257,7 +259,7 @@ namespace LLU {
 		 * @note	std::vector is always 1D, so the information about dimensions of MArray is lost
 		 */
 		std::vector<T> asVector() const {
-			return std::vector<T> { cbegin(), cend() };
+			return std::vector<T> {cbegin(), cend()};
 		}
 
 	protected:
@@ -306,6 +308,5 @@ namespace LLU {
 	}
 
 } /* namespace LLU */
-
 
 #endif /* LLUTILS_MARRAY_HPP_ */

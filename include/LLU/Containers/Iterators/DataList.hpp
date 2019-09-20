@@ -11,8 +11,8 @@
 #include <list>
 #include <string>
 
-#include "LLU/MArgument.h"
 #include "LLU/Containers/DataList.h"
+#include "LLU/MArgument.h"
 
 namespace LLU {
 
@@ -239,6 +239,6 @@ namespace LLU {
 	template<MArgumentType T>
 	using ReverseValueIterator = NodeValueIterator<T, typename std::list<DataNode<T>>::reverse_iterator>;
 
-} // namespace LLU
+}	 // namespace LLU
 
-#endif //LLU_ITERATORS_DATALIST_HPP
+#endif	  // LLU_ITERATORS_DATALIST_HPP

@@ -46,4 +46,4 @@ namespace LLU {
 		using Constant = Automatic;
 	}
 }
-#endif //LLUTILS_AUTOMATIC_HPP
+#endif	  // LLUTILS_AUTOMATIC_HPP

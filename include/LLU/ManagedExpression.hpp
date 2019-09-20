@@ -2,7 +2,7 @@
  * @file	ManagedExpression.hpp
  * @author	Rafal Chojna <rafalc@wolfram.com>
  * @date	July 17, 2019
- * @brief	
+ * @brief
  */
 #ifndef LIBRARYLINKUTILITIES_MANAGEDEXPRESSION_HPP
 #define LIBRARYLINKUTILITIES_MANAGEDEXPRESSION_HPP
@@ -19,25 +19,25 @@
  * Use this macro to define an instance of ManagedExpressionStore corresponding to your class
  * and a template specialization of manageInstanceCallback for the managed class.
  */
-#define DEFINE_MANAGED_STORE_AND_SPECIALIZATION(ClassName) \
-	LLU::ManagedExpressionStore<ClassName> ClassName##Store; \
-	\
-	template<> inline void LLU::manageInstanceCallback<ClassName>(WolframLibraryData, mbool mode, mint id) {\
-		ClassName##Store.manageInstance(mode, id);\
+#define DEFINE_MANAGED_STORE_AND_SPECIALIZATION(ClassName)                                        \
+	LLU::ManagedExpressionStore<ClassName> ClassName##Store;                                      \
+                                                                                                  \
+	template<>                                                                                    \
+	inline void LLU::manageInstanceCallback<ClassName>(WolframLibraryData, mbool mode, mint id) { \
+		ClassName##Store.manageInstance(mode, id);                                                \
 	}
-
 
 namespace LLU {
 
-    /**
-     * A template for library callback used by LibraryLink to manage instances of ManagedLibraryExpressions
-     *
-     * Specializations should typically just call manageInstance method from the ManagedExpressionStore corresponding to class T.
-     *
-     * @tparam T - class to be managed
-     * @note This function must be explicitly specialized for any class that is supposed to be managed. Therefore instantiation of the general template
-     * will trigger compilation error.
-     */
+	/**
+	 * A template for library callback used by LibraryLink to manage instances of ManagedLibraryExpressions
+	 *
+	 * Specializations should typically just call manageInstance method from the ManagedExpressionStore corresponding to class T.
+	 *
+	 * @tparam T - class to be managed
+	 * @note This function must be explicitly specialized for any class that is supposed to be managed. Therefore instantiation of the general template
+	 * will trigger compilation error.
+	 */
 	template<class T>
 	void manageInstanceCallback(WolframLibraryData, mbool, mint) {
 		static_assert(dependent_false_v<T>, "Use of unspecialized ManageInstance function.");
@@ -75,7 +75,7 @@ namespace LLU {
 		 */
 		template<class DynamicType = T, typename... Args>
 		T& createInstance(mint id, Args&&... args) {
-			checkID(id); // at this point instance must already exist in store
+			checkID(id);	// at this point instance must already exist in store
 			store[id] = std::make_shared<DynamicType>(std::forward<Args>(args)...);
 			return *store[id];
 		}
@@ -129,7 +129,6 @@ namespace LLU {
 		}
 
 	private:
-
 		/**
 		 * Helper function that checks whether given ID is present in the store and throws otherwise
 		 * @param id - id to be checked
@@ -150,4 +149,4 @@ namespace LLU {
 
 }
 
-#endif //LIBRARYLINKUTILITIES_MANAGEDEXPRESSION_HPP
+#endif	  // LIBRARYLINKUTILITIES_MANAGEDEXPRESSION_HPP

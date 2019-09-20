@@ -84,7 +84,7 @@ namespace LLU {
 		 * @param progress - a real number between 0. and (1 - get()). No validation is done.
 		 * @return self
 		 */
-		ProgressMonitor& operator +=(double progress);
+		ProgressMonitor& operator+=(double progress);
 
 		/**
 		 * @brief Decrement current progress value by \c step.
@@ -97,10 +97,9 @@ namespace LLU {
 		 * @param progress - a real number between 0. and get(). No validation is done.
 		 * @return self
 		 */
-		ProgressMonitor& operator -=(double progress);
+		ProgressMonitor& operator-=(double progress);
 
 	private:
-
 		/// This tensor stores current progress as the first element.
 		SharedTensor sharedIndicator;
 
@@ -109,4 +108,4 @@ namespace LLU {
 	};
 
 }
-#endif //LLUTILS_PROGRESSMONITOR_H
+#endif	  // LLUTILS_PROGRESSMONITOR_H
