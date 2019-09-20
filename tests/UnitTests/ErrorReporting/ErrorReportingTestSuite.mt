@@ -26,6 +26,9 @@ TestExecute[
 
 	(* Make sure the log file used in "ReadDataWithLoggingError" does not exist *)
 	Quiet @ DeleteFile["LLUErrorLog.txt"];
+
+	ResultAndLogTest[{result_, {logs_}}, {expectedRes_, {expectedLogs_}}] := MatchQ[result, expectedRes] && LoggerStringTest[logs, expectedLogs];
+	ResultAndLogTest[___] := False;
 ];
 
 (*********************************************************** Top-level failures **************************************************************)
@@ -398,16 +401,16 @@ TestExecute[
 	]&
 ];
 
-Test[
+TestMatch[
 	GreaterAt["my:file.txt", {5, 6, 7, 8, 9}, 1, 3];
 	TestLogSymbol
 	,
 	{
-		{"Debug", 19, loggerTestPath, "GreaterAt", "Library function entered with ", 4, " arguments."},
-		{"Debug", 22, loggerTestPath, "GreaterAt", "Starting try-block, current error code: ", 0},
-		{"Warning", 26, loggerTestPath, "GreaterAt", "File name ", "my:file.txt", " contains a possibly problematic character \":\"."},
-		{"Debug", 28, loggerTestPath, "GreaterAt", "Input tensor is of type: ", 2},
-		{"Debug", 41, loggerTestPath, "GreaterAt", "Comparing ", 5, " with ", 7}
+		{"Debug", _Integer, loggerTestPath, "GreaterAt", "Library function entered with ", 4, " arguments."},
+		{"Debug", _Integer, loggerTestPath, "GreaterAt", "Starting try-block, current error code: ", 0},
+		{"Warning", _Integer, loggerTestPath, "GreaterAt", "File name ", "my:file.txt", " contains a possibly problematic character \":\"."},
+		{"Debug", _Integer, loggerTestPath, "GreaterAt", "Input tensor is of type: ", 2},
+		{"Debug", _Integer, loggerTestPath, "GreaterAt", "Comparing ", 5, " with ", 7}
 	}
 	,
 	TestID -> "ErrorReportingTestSuite-20190409-L8V2U9"
@@ -455,13 +458,14 @@ TestMatch[
 			"Parameters" -> {}
 		|>], {
 		{
-			"[Debug] LoggerTest.cpp:19 (GreaterAt): Library function entered with 4 arguments.",
-			"[Debug] LoggerTest.cpp:22 (GreaterAt): Starting try-block, current error code: 0",
-			"[Debug] LoggerTest.cpp:28 (GreaterAt): Input tensor is of type: 2",
-			"[Error] LoggerTest.cpp:44 (GreaterAt): Caught LLU exception TensorIndexError: Indices (-1, 3) must be positive."
+			"(GreaterAt): Library function entered with 4 arguments.",
+			"(GreaterAt): Starting try-block, current error code: 0",
+			"(GreaterAt): Input tensor is of type: 2",
+			"(GreaterAt): Caught LLU exception TensorIndexError: Indices (-1, 3) must be positive."
 		}
 	}
-	}
+	},
+	SameTest -> ResultAndLogTest
 	,
 	TestID -> "ErrorReportingTestSuite-20190409-P1S6Y9"
 ];
@@ -487,7 +491,9 @@ TestExecute[
 Test[
 	Reap @ GreaterAt["my:file.txt", {5, 6, 7, 8, 9}, 1, 3]
 	,
-	{False, {{"[Warning] LoggerTest.cpp:26 (GreaterAt): File name my:file.txt contains a possibly problematic character \":\"."}}}
+	{False, {{"(GreaterAt): File name my:file.txt contains a possibly problematic character \":\"."}}}
+	,
+	SameTest -> ResultAndLogTest
 	,
 	TestID -> "ErrorReportingTestSuite-20190410-H8S6D5"
 ];
@@ -503,12 +509,13 @@ Test[
 	{
 		False, {
 		{
-			"[Debug] LoggerTest.cpp:22 (GreaterAt): Starting try-block, current error code: 0",
-			"[Warning] LoggerTest.cpp:26 (GreaterAt): File name my:file.txt contains a possibly problematic character \":\".",
-			"[Debug] LoggerTest.cpp:28 (GreaterAt): Input tensor is of type: 2"
+			"(GreaterAt): Starting try-block, current error code: 0",
+			"(GreaterAt): File name my:file.txt contains a possibly problematic character \":\".",
+			"(GreaterAt): Input tensor is of type: 2"
 		}
 	}
-	}
+	},
+	SameTest -> ResultAndLogTest
 	,
 	TestID -> "ErrorReportingTestSuite-20190410-G6A5W4"
 ];
@@ -526,8 +533,10 @@ Test[
 	Reap @ GreaterAtW["my:file.txt", {5, 6, 7, 8, 9}, 1, 3]
 	,
 	{
-		False, {{"[Warning] LoggerTest.cpp:26 (GreaterAt): File name my:file.txt contains a possibly problematic character \":\"."}}
+		False, {{"(GreaterAt): File name my:file.txt contains a possibly problematic character \":\"."}}
 	}
+	,
+	SameTest -> ResultAndLogTest
 	,
 	TestID -> "ErrorReportingTestSuite-20190415-F5I9D0"
 ];
@@ -551,7 +560,7 @@ TestExecute[
 	`LLU`Logger`PrintLogFunctionSelector := Sow @ `LLU`Logger`LogToShortString[##]&;
 ];
 
-TestMatch[
+Test[
 	Reap @ GreaterAtW["file.txt", {5, 6, 7, 8, 9}, -1, 3]
 	,
 	{
@@ -562,10 +571,12 @@ TestMatch[
 			"Parameters" -> {}
 		|>], {
 		{
-			"[Error] LoggerTest.cpp:44 (GreaterAt): Caught LLU exception TensorIndexError: Indices (-1, 3) must be positive."
+			"(GreaterAt): Caught LLU exception TensorIndexError: Indices (-1, 3) must be positive."
 		}
 	}
 	}
+	,
+	SameTest -> ResultAndLogTest
 	,
 	TestID -> "ErrorReportingTestSuite-20190415-P3C4F8"
 ];
