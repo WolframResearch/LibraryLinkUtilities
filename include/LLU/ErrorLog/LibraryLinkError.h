@@ -87,7 +87,7 @@ namespace LLU {
 
 		/**
 		 * @brief	Store arbitrary number of message parameters in a List expression on a loopback link.
-		 * 			They will travel with the exception until \c sendParamaters is called on the exception.
+		 * 			They will travel with the exception until \c sendParameters is called on the exception.
 		 * @tparam 	T - any type(s) that MLStream supports
 		 * @param 	libData - WolframLibraryData, if nullptr, the parameters will not be send
 		 * @param 	params - any number of message parameters

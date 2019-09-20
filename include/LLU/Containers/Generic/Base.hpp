@@ -18,7 +18,7 @@ namespace LLU {
 
 	/**
 	 * @brief Template of the base class for all generic containers.
-	 * MContainerBase stores the raw LibrayLink container and defines a common interface for all generic containers.
+	 * MContainerBase stores the raw LibraryLink container and defines a common interface for all generic containers.
 	 *
 	 * @tparam Type - container type
 	 * @tparam PassingMode - passing mode (Automatic, Manual, etc.)

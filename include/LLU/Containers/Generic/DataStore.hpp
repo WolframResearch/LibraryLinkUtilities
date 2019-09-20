@@ -70,7 +70,7 @@ namespace LLU {
 
 		/**
 		 * @brief   Get the length of the DataStore.
-		 * @return  total number of noded in the DataStore
+		 * @return  total number of nodes in the DataStore
 		 */
 		mint getLength() const {
 			return LibraryData::DataStoreAPI()->DataStore_getLength(this->getContainer());
