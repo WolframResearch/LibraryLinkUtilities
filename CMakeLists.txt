@@ -239,5 +239,11 @@ if(NOT TARGET LLU)
 		COMMAND
 			"${CMAKE_COMMAND}" -E env CTEST_OUTPUT_ON_FAILURE=1 ${CMAKE_CTEST_COMMAND} -C ${CMAKE_BUILD_TYPE}
 	)
+
+    ##############################################
+    ## Create target for Sphinx documentation build
+
+    add_subdirectory("docs")
+
 endif() #end IF NOT TARGET LLU
 
