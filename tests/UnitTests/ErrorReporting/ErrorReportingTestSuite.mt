@@ -417,16 +417,20 @@ Test[
 	MultiThreadedLog = SafeLibraryFunction["LogsFromThreads", {Integer}, "Void"];
 	Clear[TestLogSymbol];
 	MultiThreadedLog[3];
-	And @@ (MatchQ[
-		{"Debug", 90, loggerTestPath, "LogsFromThreads", "Starting ", 3, " threads."} |
-			{"Debug", 93, loggerTestPath, "operator()" | "operator ()", "Thread ", _, " going to sleep."} |
-			{"Debug", 95, loggerTestPath, "operator()" | "operator ()", "Thread ", _, " slept for ", _, "ms."} |
-			{"Debug", 103, loggerTestPath, "LogsFromThreads", "All threads joined."}
-	] /@ TestLogSymbol)
-		&&
-		First[TestLogSymbol] === {"Debug", 90, loggerTestPath, "LogsFromThreads", "Starting ", 3, " threads."}
-		&&
-		Last[TestLogSymbol] === {"Debug", 103, loggerTestPath, "LogsFromThreads", "All threads joined."}
+	And @@ (
+		MatchQ[
+			Alternatives[
+				{"Debug", _Integer, loggerTestPath, "LogsFromThreads", "Starting ", 3, " threads."},
+				{"Debug", _Integer, loggerTestPath, "operator()" | "operator ()", "Thread ", _, " going to sleep."},
+				{"Debug", _Integer, loggerTestPath, "operator()" | "operator ()", "Thread ", _, " slept for ", _, "ms."},
+				{"Debug", _Integer, loggerTestPath, "LogsFromThreads", "All threads joined."}
+			]
+		] /@ TestLogSymbol
+	)
+	&&
+	MatchQ[First[TestLogSymbol], {"Debug", _Integer, loggerTestPath, "LogsFromThreads", "Starting ", 3, " threads."}]
+	&&
+	MatchQ[Last[TestLogSymbol], {"Debug", _Integer, loggerTestPath, "LogsFromThreads", "All threads joined."}]
 	,
 	True
 	,
@@ -454,7 +458,7 @@ TestMatch[
 			"[Debug] LoggerTest.cpp:19 (GreaterAt): Library function entered with 4 arguments.",
 			"[Debug] LoggerTest.cpp:22 (GreaterAt): Starting try-block, current error code: 0",
 			"[Debug] LoggerTest.cpp:28 (GreaterAt): Input tensor is of type: 2",
-			"[Error] LoggerTest.cpp:45 (GreaterAt): Caught LLU exception TensorIndexError: Indices (-1, 3) must be positive."
+			"[Error] LoggerTest.cpp:44 (GreaterAt): Caught LLU exception TensorIndexError: Indices (-1, 3) must be positive."
 		}
 	}
 	}
@@ -558,7 +562,7 @@ TestMatch[
 			"Parameters" -> {}
 		|>], {
 		{
-			"[Error] LoggerTest.cpp:45 (GreaterAt): Caught LLU exception TensorIndexError: Indices (-1, 3) must be positive."
+			"[Error] LoggerTest.cpp:44 (GreaterAt): Caught LLU exception TensorIndexError: Indices (-1, 3) must be positive."
 		}
 	}
 	}
@@ -582,20 +586,20 @@ Test[
 	TestID -> "ErrorReportingTestSuite-20190415-C0D7H6"
 ];
 
-Test[
+TestMatch[
 	{LogDemo[5, 6, 7, 8, 9], TestLogSymbol}
 	,
 	{
 		9,
 		{
-			{"Warning", 66, loggerTestPath, "LogDemo", "Index ", 5, " is too big for the number of arguments: ", 5, ". Changing to ", 4}
+			{"Warning", _Integer, loggerTestPath, "LogDemo", "Index ", 5, " is too big for the number of arguments: ", 5, ". Changing to ", 4}
 		}
 	}
 	,
 	TestID -> "ErrorReportingTestSuite-20190415-J1G2K9"
 ];
 
-Test[
+TestMatch[
 	TestLogSymbol = {};
 	{LogDemo[-1, 6, 7, 8, 9], TestLogSymbol}
 	,
@@ -609,7 +613,7 @@ Test[
 			|>
 		],
 		{
-			{"Error", 73, loggerTestPath, "LogDemo", "Caught LLU exception ", "MArgumentIndexError", ": ", "Index 4294967295 out-of-bound when accessing LibraryLink argument"}
+			{"Error", _Integer, loggerTestPath, "LogDemo", "Caught LLU exception ", "MArgumentIndexError", ": ", "Index 4294967295 out-of-bound when accessing LibraryLink argument"}
 		}
 	}
 	,
