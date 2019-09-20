@@ -2,10 +2,10 @@
 
 #include "WolframLibrary.h"
 
+#include "LLU/Containers/Passing/Shared.hpp"
+#include "LLU/Containers/Tensor.h"
 #include "LLU/LibraryLinkFunctionMacro.h"
 #include "LLU/MArgumentManager.h"
-#include "LLU/Containers/Tensor.h"
-#include "LLU/Containers/Passing/Shared.hpp"
 
 using namespace LLU;
 
@@ -22,85 +22,77 @@ EXTERN_C DLLEXPORT int WolframLibrary_initialize(WolframLibraryData libData) {
 	return 0;
 }
 
-EXTERN_C DLLEXPORT int loadRealArray(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
+EXTERN_C DLLEXPORT int loadRealArray(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument Res) {
 	auto err = ErrorCode::NoError;
 	try {
 		MArgumentManager mngr(Argc, Args, Res);
 		auto genericTensor = mngr.getGenericTensor<Passing::Shared>(0);
 		tensor = std::make_unique<Tensor<double, Passing::Shared>>(std::move(genericTensor));
-	}
-	catch (const LibraryLinkError& e) {
+	} catch (const LibraryLinkError& e) {
 		err = e.which();
-	}
-	catch (...) {
+	} catch (...) {
 		err = ErrorCode::FunctionError;
 	}
 	return err;
 }
 
-EXTERN_C DLLEXPORT int getRealArray(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
+EXTERN_C DLLEXPORT int getRealArray(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument Res) {
 	auto err = ErrorCode::NoError;
 	try {
 		MArgumentManager mngr(Argc, Args, Res);
 		if (!tensor) {
-            return ErrorCode::FunctionError;
+			return ErrorCode::FunctionError;
 		}
 		auto& out = *tensor;
 		mngr.set(out);
-	}
-	catch (const LibraryLinkError& e) {
+	} catch (const LibraryLinkError& e) {
 		err = e.which();
-	}
-	catch (...) {
+	} catch (...) {
 		err = ErrorCode::FunctionError;
 	}
 	return err;
 }
 
-EXTERN_C DLLEXPORT int doubleRealArray(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
+EXTERN_C DLLEXPORT int doubleRealArray(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument Res) {
 	auto err = ErrorCode::NoError;
 	try {
 		MArgumentManager mngr(Argc, Args, Res);
-        if (!tensor) {
-            return ErrorCode::FunctionError;
-        }
+		if (!tensor) {
+			return ErrorCode::FunctionError;
+		}
 		auto& out = *tensor;
 
 		for (auto& elem : out) {
 			elem *= 2;
 		}
 		mngr.set(out);
-	}
-	catch (const LibraryLinkError& e) {
+	} catch (const LibraryLinkError& e) {
 		err = e.which();
-	}
-	catch (...) {
+	} catch (...) {
 		err = ErrorCode::FunctionError;
 	}
 	return err;
 }
 
-EXTERN_C DLLEXPORT int unloadRealArray(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
+EXTERN_C DLLEXPORT int unloadRealArray(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument Res) {
 	auto err = ErrorCode::NoError;
 	try {
 		MArgumentManager mngr(Argc, Args, Res);
-        if (!tensor) {
-            return ErrorCode::FunctionError;
-        }
+		if (!tensor) {
+			return ErrorCode::FunctionError;
+		}
 		mngr.setInteger(tensor->shareCount());
-        tensor.reset();
-	}
-	catch (const LibraryLinkError& e) {
+		tensor.reset();
+	} catch (const LibraryLinkError& e) {
 		err = e.which();
-	}
-	catch (...) {
+	} catch (...) {
 		err = ErrorCode::FunctionError;
 	}
 	return err;
 }
 
-//Modify the contents of tensor in C function
-EXTERN_C DLLEXPORT int add1(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
+// Modify the contents of tensor in C function
+EXTERN_C DLLEXPORT int add1(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument Res) {
 	auto err = ErrorCode::NoError;
 	try {
 		MArgumentManager mngr(Argc, Args, Res);
@@ -109,11 +101,9 @@ EXTERN_C DLLEXPORT int add1(WolframLibraryData libData, mint Argc, MArgument *Ar
 		for (auto& elem : tx) {
 			elem++;
 		}
-	}
-	catch (const LibraryLinkError& e) {
+	} catch (const LibraryLinkError& e) {
 		err = e.which();
-	}
-	catch (...) {
+	} catch (...) {
 		err = ErrorCode::FunctionError;
 	}
 	return err;
@@ -125,13 +115,11 @@ LIBRARY_LINK_FUNCTION(copyShared) {
 		MArgumentManager mngr(Argc, Args, Res);
 		auto sharedTensor = mngr.getTensor<double, Passing::Shared>(0);
 		auto sc = sharedTensor.shareCount();
-		Tensor<double> copy { sharedTensor }; // create deep copy of the shared Tensor. The new Tensor is not Shared
+		Tensor<double> copy {sharedTensor};	   // create deep copy of the shared Tensor. The new Tensor is not Shared
 		mngr.setInteger(100 * sc + 10 * sharedTensor.shareCount() + copy.shareCount());
-	}
-	catch (const LibraryLinkError& e) {
+	} catch (const LibraryLinkError& e) {
 		err = e.which();
-	}
-	catch (...) {
+	} catch (...) {
 		err = ErrorCode::FunctionError;
 	}
 	return err;

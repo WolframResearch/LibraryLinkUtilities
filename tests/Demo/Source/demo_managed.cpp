@@ -1,39 +1,34 @@
 /* Include required header */
 
-#include <unordered_map>
 #include <memory>
+#include <unordered_map>
 
 #include "WolframLibrary.h"
-#include "LLU/MArgumentManager.h"
+
 #include "LLU/Containers/Tensor.h"
+#include "LLU/MArgumentManager.h"
 
 using namespace LibraryLinkUtils;
 
-static std::unordered_map<mint, std::unique_ptr<Tensor<mint>>>map;
+static std::unordered_map<mint, std::unique_ptr<Tensor<mint>>> map;
 
-enum {
-	A_ = 0,
-	C_,
-	M_,
-	X_
-};
+enum { A_ = 0, C_, M_, X_ };
 
 DLLEXPORT void manage_instance(WolframLibraryData libData, mbool mode, mint id) {
 	if (mode == 0) {
 		map[id] = std::make_unique<Tensor<mint>>();
-	}
-	else {
+	} else {
 		map.erase(id);
 	}
 }
 
-EXTERN_C DLLEXPORT int releaseInstance(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument res) {
+EXTERN_C DLLEXPORT int releaseInstance(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument res) {
 	MArgumentManager mngr(Argc, Args, res);
 	auto id = mngr.getInteger<mint>(0);
 	return libData->releaseManagedLibraryExpression("LCG", id);
 }
 
-EXTERN_C DLLEXPORT int setInstanceState(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument res) {
+EXTERN_C DLLEXPORT int setInstanceState(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument res) {
 	auto err = LLErrorCode::NoError;
 	try {
 		MArgumentManager mngr(Argc, Args, res);
@@ -47,17 +42,15 @@ EXTERN_C DLLEXPORT int setInstanceState(WolframLibraryData libData, mint Argc, M
 
 		map[id] = std::make_unique<Tensor<mint>>(T);
 
-	}
-	catch (LibraryLinkError& e) {
+	} catch (LibraryLinkError& e) {
 		err = e.which();
-	}
-	catch (std::exception& e) {
+	} catch (std::exception& e) {
 		err = LLErrorCode::FunctionError;
 	}
 	return err;
 }
 
-EXTERN_C DLLEXPORT int getInstanceState(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
+EXTERN_C DLLEXPORT int getInstanceState(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument Res) {
 	auto err = LLErrorCode::NoError;
 	try {
 		MArgumentManager mngr(Argc, Args, Res);
@@ -68,17 +61,15 @@ EXTERN_C DLLEXPORT int getInstanceState(WolframLibraryData libData, mint Argc, M
 		auto Tcopy = *T;
 		mngr.setTensor(Tcopy);
 
-	}
-	catch (LibraryLinkError& e) {
+	} catch (LibraryLinkError& e) {
 		err = e.which();
-	}
-	catch (std::exception& e) {
+	} catch (std::exception& e) {
 		err = LLErrorCode::FunctionError;
 	}
 	return err;
 }
 
-EXTERN_C DLLEXPORT int generateFromInstance(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
+EXTERN_C DLLEXPORT int generateFromInstance(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument Res) {
 	auto err = LLErrorCode::NoError;
 	try {
 		MArgumentManager mngr(Argc, Args, Res);
@@ -108,21 +99,19 @@ EXTERN_C DLLEXPORT int generateFromInstance(WolframLibraryData libData, mint Arg
 		p[X_] = x;
 
 		mngr.setTensor(Tres);
-	}
-	catch (LibraryLinkError& e) {
+	} catch (LibraryLinkError& e) {
 		err = e.which();
-	}
-	catch (std::exception& e) {
+	} catch (std::exception& e) {
 		err = LLErrorCode::FunctionError;
 	}
 	return err;
 }
 
-EXTERN_C DLLEXPORT int getAllInstanceIDs(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
+EXTERN_C DLLEXPORT int getAllInstanceIDs(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument Res) {
 	auto err = LLErrorCode::NoError;
 	try {
 		MArgumentManager mngr(Argc, Args, Res);
-		//auto id = mngr.getInteger<mint>(0);
+		// auto id = mngr.getInteger<mint>(0);
 
 		std::vector<mint> keys;
 		keys.reserve(map.size());
@@ -132,11 +121,9 @@ EXTERN_C DLLEXPORT int getAllInstanceIDs(WolframLibraryData libData, mint Argc, 
 
 		Tensor<mint> Tres(keys);
 		mngr.setTensor(Tres);
-	}
-	catch (LibraryLinkError& e) {
+	} catch (LibraryLinkError& e) {
 		err = e.which();
-	}
-	catch (std::exception& e) {
+	} catch (std::exception& e) {
 		err = LLErrorCode::FunctionError;
 	}
 	return err;
@@ -157,4 +144,3 @@ EXTERN_C DLLEXPORT int WolframLibrary_initialize(WolframLibraryData libData) {
 EXTERN_C DLLEXPORT void WolframLibrary_uninitialize(WolframLibraryData libData) {
 	libData->unregisterLibraryExpressionManager("LCG");
 }
-

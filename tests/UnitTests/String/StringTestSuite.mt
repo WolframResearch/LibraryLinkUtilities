@@ -26,9 +26,9 @@ ExactTest[
 	EchoString = LibraryFunctionLoad[lib, "EchoString", { LibraryDataType[String] }, LibraryDataType[String]];
 	EchoString["foo bar"]
 	,
-	"foo bar"	
+	"foo bar"
 	,
-	TestID->"StringOperations-20150807-D1D4K5"
+	TestID -> "StringOperations-20150807-D1D4K5"
 ];
 
 ExactTest[
@@ -37,7 +37,7 @@ ExactTest[
 	,
 	"Greetings wolfram!"
 	,
-	TestID->"StringOperations-20150807-X0R7U9"
+	TestID -> "StringOperations-20150807-X0R7U9"
 ];
 
 ExactTest[
@@ -46,7 +46,7 @@ ExactTest[
 	,
 	"Hello World"
 	,
-	TestID->"StringOperations-20150807-K4Y4G8"
+	TestID -> "StringOperations-20150807-K4Y4G8"
 ];
 
 ExactTest[
@@ -55,7 +55,7 @@ ExactTest[
 	,
 	"Hello World"
 	,
-	TestID->"StringTestSuite-20180821-Y4A0E2"
+	TestID -> "StringTestSuite-20180821-Y4A0E2"
 ];
 
 Test[
@@ -64,7 +64,7 @@ Test[
 	,
 	ToUpperCase["Hello World"]
 	,
-	TestID->"StringTestSuite-20180821-X0K5Z1"
+	TestID -> "StringTestSuite-20180821-X0K5Z1"
 ];
 
 Test[
@@ -78,14 +78,14 @@ Test[
 
 	timeString = First @ RepeatedTiming[Do[RoundTripString[largeString], 5];];
 	Print["std::string time: " <> ToString[timeString]];
-	
+
 	Clear[largeString];
-	
+
 	timeString >= timeCString (* Not a very reliable unit test, don't worry too much if it fails *)
 	,
 	True
 	,
-	TestID->"StringTestSuite-20180821-Y0C3Q1"
+	TestID -> "StringTestSuite-20180821-Y0C3Q1"
 ];
 
 Test[
@@ -94,5 +94,5 @@ Test[
 	,
 	33
 	,
-	TestID->"StringOperations-20150813-B8G3E7"
+	TestID -> "StringOperations-20150813-B8G3E7"
 ];

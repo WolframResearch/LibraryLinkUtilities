@@ -1,25 +1,25 @@
 /**
  * @file	Integer.cpp
- * @brief	
+ * @brief
  */
 
 #include "LLU/MArgumentManager.h"
 
 static mint value = 0;
 
-EXTERN_C DLLEXPORT int llGet(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
+EXTERN_C DLLEXPORT int llGet(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument Res) {
 	LLU::MArgumentManager mngr(libData, Argc, Args, Res);
 	mngr.setInteger(value);
 	return LIBRARY_NO_ERROR;
 }
 
-EXTERN_C DLLEXPORT int llSet(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
+EXTERN_C DLLEXPORT int llSet(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument Res) {
 	LLU::MArgumentManager mngr(libData, Argc, Args, Res);
 	value = mngr.getInteger<mint>(0);
 	return LIBRARY_NO_ERROR;
 }
 
-EXTERN_C DLLEXPORT int IntegerAdd(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
+EXTERN_C DLLEXPORT int IntegerAdd(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument Res) {
 	LLU::MArgumentManager mngr(libData, Argc, Args, Res);
 
 	auto in1 = mngr.getInteger<mint>(0);
@@ -29,7 +29,7 @@ EXTERN_C DLLEXPORT int IntegerAdd(WolframLibraryData libData, mint Argc, MArgume
 	return LIBRARY_NO_ERROR;
 }
 
-EXTERN_C DLLEXPORT int IntegerTimes(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
+EXTERN_C DLLEXPORT int IntegerTimes(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument Res) {
 	LLU::MArgumentManager mngr(libData, Argc, Args, Res);
 
 	auto in1 = mngr.getInteger<mint>(0);
@@ -39,7 +39,7 @@ EXTERN_C DLLEXPORT int IntegerTimes(WolframLibraryData libData, mint Argc, MArgu
 	return LIBRARY_NO_ERROR;
 }
 
-EXTERN_C DLLEXPORT int SquareInteger(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
+EXTERN_C DLLEXPORT int SquareInteger(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument Res) {
 	LLU::MArgumentManager mngr(libData, Argc, Args, Res);
 
 	auto x = mngr.getInteger<mint>(0);

@@ -1,8 +1,8 @@
 /* Include required header */
 #include "WolframLibrary.h"
 
-#include "LLU/MArgumentManager.h"
 #include "LLU/Error/ErrorManager.h"
+#include "LLU/MArgumentManager.h"
 
 using namespace LibraryLinkUtils;
 
@@ -22,7 +22,7 @@ EXTERN_C DLLEXPORT void WolframLibrary_uninitialize(WolframLibraryData libData) 
 	return;
 }
 
-EXTERN_C DLLEXPORT int parabola(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
+EXTERN_C DLLEXPORT int parabola(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument Res) {
 	MArgumentManager mngr(Argc, Args, Res);
 	auto x = mngr.getReal(0);
 	auto a = mngr.getReal(1);
@@ -32,7 +32,7 @@ EXTERN_C DLLEXPORT int parabola(WolframLibraryData libData, mint Argc, MArgument
 
 static mint mandelbrot_max_iterations = 1000;
 
-EXTERN_C DLLEXPORT int mandelbrot(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
+EXTERN_C DLLEXPORT int mandelbrot(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument Res) {
 	MArgumentManager mngr(Argc, Args, Res);
 
 	std::complex<double> z = 0;
@@ -56,7 +56,7 @@ EXTERN_C DLLEXPORT int mandelbrot(WolframLibraryData libData, mint Argc, MArgume
 	return LIBRARY_NO_ERROR;
 }
 
-EXTERN_C DLLEXPORT int refine(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
+EXTERN_C DLLEXPORT int refine(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument Res) {
 	MArgumentManager mngr(Argc, Args, Res);
 	auto dist = mngr.getReal(0);
 	auto distsq = dist * dist * (1. + 1.e-8); /* Avoid adding extra points due to roundoff */
@@ -86,12 +86,12 @@ EXTERN_C DLLEXPORT int refine(WolframLibraryData libData, mint Argc, MArgument *
 		double d = dx * dx + dy * dy;
 		if (d > distsq) {
 			d = sqrt(d);
-			mint k = ((mint) ceil(d / dist)) - 1;
+			mint k = ((mint)ceil(d / dist)) - 1;
 			nr += k;
 		}
 	}
 
-	Tensor<double> Tres(0., { 2, nr });
+	Tensor<double> Tres(0., {2, nr});
 	auto* rx = Tres.data();
 	auto* ry = rx + nr;
 
@@ -109,8 +109,8 @@ EXTERN_C DLLEXPORT int refine(WolframLibraryData libData, mint Argc, MArgument *
 		double d = dx * dx + dy * dy;
 		if (d > distsq) {
 			d = sqrt(d);
-			mint k = ((mint) ceil(d / dist)) - 1;
-			double ds = 1. / ((mreal) (k + 1));
+			mint k = ((mint)ceil(d / dist)) - 1;
+			double ds = 1. / ((mreal)(k + 1));
 			for (mint m = 1; m <= k; m++, j++) {
 				double s = m * ds;
 				rx[j] = x1 + s * dx;
@@ -130,7 +130,7 @@ static mreal omegaConstant = 1.0;
 static mreal gammaConstant = 0.15;
 
 /* Overwrites x and y */
-int duffing_rhs(mint n, mreal t, mreal *x, mreal *y) {
+int duffing_rhs(mint n, mreal t, mreal* x, mreal* y) {
 	for (mint i = 0; i < n; i++) {
 		mreal xi = x[i];
 		x[i] = y[i];
@@ -139,7 +139,7 @@ int duffing_rhs(mint n, mreal t, mreal *x, mreal *y) {
 	return 0;
 }
 
-EXTERN_C DLLEXPORT int duffing_crk4(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
+EXTERN_C DLLEXPORT int duffing_crk4(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument Res) {
 	MArgumentManager mngr(Argc, Args, Res);
 	auto Targ = mngr.getTensor<double>(0);
 	auto t0 = mngr.getReal(1);
@@ -203,7 +203,7 @@ EXTERN_C DLLEXPORT int duffing_crk4(WolframLibraryData libData, mint Argc, MArgu
 
 static mreal alpha = 0.02;
 
-EXTERN_C DLLEXPORT int brusselator_pde_rhs(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
+EXTERN_C DLLEXPORT int brusselator_pde_rhs(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument Res) {
 	MArgumentManager mngr(Argc, Args, Res);
 	auto Targ = mngr.getTensor<double>(1);
 
@@ -215,7 +215,7 @@ EXTERN_C DLLEXPORT int brusselator_pde_rhs(WolframLibraryData libData, mint Argc
 	auto u = Targ.begin();
 	auto v = u + n;
 
-	Tensor<double> Tres(0., { nr });
+	Tensor<double> Tres(0., {nr});
 
 	auto up = Tres.begin();
 	auto vp = up + n;
@@ -242,7 +242,7 @@ EXTERN_C DLLEXPORT int brusselator_pde_rhs(WolframLibraryData libData, mint Argc
 	return 0;
 }
 
-EXTERN_C DLLEXPORT int brusselator_pde_jacobian_values(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
+EXTERN_C DLLEXPORT int brusselator_pde_jacobian_values(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument Res) {
 	MArgumentManager mngr(Argc, Args, Res);
 	auto Targ = mngr.getTensor<double>(1);
 
@@ -254,7 +254,7 @@ EXTERN_C DLLEXPORT int brusselator_pde_jacobian_values(WolframLibraryData libDat
 	auto u = Targ.begin();
 	auto v = u + n;
 
-	Tensor<double> Tres(0., { 4 + 8 * (n - 2) });
+	Tensor<double> Tres(0., {4 + 8 * (n - 2)});
 
 	/* Decrement n so loop excludes boundaries */
 	n--;
@@ -286,7 +286,7 @@ EXTERN_C DLLEXPORT int brusselator_pde_jacobian_values(WolframLibraryData libDat
 	return 0;
 }
 
-EXTERN_C DLLEXPORT int brusselator_pde_jacobian_positions(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
+EXTERN_C DLLEXPORT int brusselator_pde_jacobian_positions(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument Res) {
 	MArgumentManager mngr(Argc, Args, Res);
 	auto Targ = mngr.getTensor<double>(1);
 
@@ -295,15 +295,14 @@ EXTERN_C DLLEXPORT int brusselator_pde_jacobian_positions(WolframLibraryData lib
 	auto nr = Targ.size();
 	auto n = nr / 2;
 
-
-	Tensor<mint> Tres(1, { 4 + 8 * (n - 2), 2 });
+	Tensor<mint> Tres(1, {4 + 8 * (n - 2), 2});
 
 	/* Decrement n so loop excludes boundaries */
 	n--;
 
-//	k = 0;
-//	jpos[k++] = 1;
-//	jpos[k++] = 1; /* u[0] bc */
+	//	k = 0;
+	//	jpos[k++] = 1;
+	//	jpos[k++] = 1; /* u[0] bc */
 	mint k = 2;
 	for (mint i = 1; i < n; i++) {
 		/* u equations */

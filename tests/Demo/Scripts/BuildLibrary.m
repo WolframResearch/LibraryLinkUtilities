@@ -52,17 +52,17 @@ SetCCompilerOptionsFromAnt[
 demoFiles = FileNames["*.cpp", AntProperty["sourceDir"]];
 demoFileNamePairs = Map[{#, FileBaseName[#]}&, demoFiles];
 
-result = Apply[ 
+result = Apply[
 	Function[{srcFile, outputName},
-    	{resFiles, mkResourceCmds} = CreateResourceFileCommands[outputName];
+		{resFiles, mkResourceCmds} = CreateResourceFileCommands[outputName];
 
-    	outputName -> CreateLibrary[{srcFile}, outputName,
-    		"ExtraObjectFiles" -> resFiles, 
+		outputName -> CreateLibrary[{srcFile}, outputName,
+			"ExtraObjectFiles" -> resFiles,
 			"PreCompileCommands" -> mkResourceCmds
 		]
 	], demoFileNamePairs, {1}
 ];
 
-If[ Quiet[Union[Map[FileType[#[[2]]]&, result]]] =!= {File}, 
+If[ Quiet[Union[Map[FileType[#[[2]]]&, result]]] =!= {File},
 	AntFail["Libraries not all produced " <> ToString[Column[result]]]
 ]

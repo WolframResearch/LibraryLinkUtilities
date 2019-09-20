@@ -22,8 +22,8 @@ DLLExtension["Windows"] = ".dll";
 DLLExtension["Windows-x86-64"] = ".dll";
 
 GetDLLFile[name_String] := Module[{dll, sys = $SystemID},
-  dll = FileNameJoin[{$DllDemoDir, "LibraryResources", sys, StringJoin[name, DLLExtension[sys]]}];
-  If[FileType[dll] === File, dll, $Failed]
+	dll = FileNameJoin[{$DllDemoDir, "LibraryResources", sys, StringJoin[name, DLLExtension[sys]]}];
+	If[FileType[dll] === File, dll, $Failed]
 ];
 
 dll = GetDLLFile["demo_string"];
@@ -35,17 +35,17 @@ Test[
 	,
 	File
 	,
-	TestID->"StringDLL-20091213-F9W2A7"
+	TestID -> "StringDLL-20091213-F9W2A7"
 ]
 
 
 Test[
-	fun = LibraryFunctionLoad[ dll, 
-  			"countSubstring", {"UTF8String", "UTF8String"}, Integer]
+	fun = LibraryFunctionLoad[ dll,
+		"countSubstring", {"UTF8String", "UTF8String"}, Integer]
 	,
-	LibraryFunction[dll,"countSubstring",{"UTF8String","UTF8String"},Integer]
+	LibraryFunction[dll, "countSubstring", {"UTF8String", "UTF8String"}, Integer]
 	,
-	TestID->"StringDLL-20091213-M1T6Y2"
+	TestID -> "StringDLL-20091213-M1T6Y2"
 ]
 
 Test[
@@ -53,17 +53,17 @@ Test[
 	,
 	2
 	,
-	TestID->"StringDLL-20091213-K8M9M6"
+	TestID -> "StringDLL-20091213-K8M9M6"
 ]
 
 
 Test[
-	fun = LibraryFunctionLoad[ dll, 
-  			"encodeString", {"UTF8String", Integer}, "UTF8String"]
+	fun = LibraryFunctionLoad[ dll,
+		"encodeString", {"UTF8String", Integer}, "UTF8String"]
 	,
-	LibraryFunction[dll,"encodeString",{"UTF8String",Integer},"UTF8String"]
+	LibraryFunction[dll, "encodeString", {"UTF8String", Integer}, "UTF8String"]
 	,
-	TestID->"StringDLL-20091213-T5Z4W3"
+	TestID -> "StringDLL-20091213-T5Z4W3"
 ]
 
 Test[
@@ -71,16 +71,16 @@ Test[
 	,
 	"bcdefg"
 	,
-	TestID->"StringDLL-20091213-L2F4A4"
+	TestID -> "StringDLL-20091213-L2F4A4"
 ]
 
 Test[
-	fun = LibraryFunctionLoad[ dll, 
-  			"reverseString", {"UTF8String"}, "UTF8String"]
+	fun = LibraryFunctionLoad[ dll,
+		"reverseString", {"UTF8String"}, "UTF8String"]
 	,
-	LibraryFunction[dll,"reverseString",{"UTF8String"},"UTF8String"]
+	LibraryFunction[dll, "reverseString", {"UTF8String"}, "UTF8String"]
 	,
-	TestID->"StringDLL-20091213-D2W6E7"
+	TestID -> "StringDLL-20091213-D2W6E7"
 ]
 
 Test[
@@ -88,7 +88,7 @@ Test[
 	,
 	"fedcba"
 	,
-	TestID->"StringDLL-20091213-H6J8O7"
+	TestID -> "StringDLL-20091213-H6J8O7"
 ]
 
 

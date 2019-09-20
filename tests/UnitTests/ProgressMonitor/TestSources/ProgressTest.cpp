@@ -6,8 +6,8 @@
 #include <chrono>
 #include <thread>
 
-#include "LLU/LibraryLinkFunctionMacro.h"
 #include "LLU/LLU.h"
+#include "LLU/LibraryLinkFunctionMacro.h"
 #include "LLU/ProgressMonitor.h"
 
 using namespace std::chrono_literals;
@@ -21,7 +21,6 @@ EXTERN_C DLLEXPORT int WolframLibrary_initialize(WolframLibraryData libData) {
 	LLU::LibraryData::setLibraryData(libData);
 	return 0;
 }
-
 
 /**
  * @brief Simple function that just sleeps in a loop moving the progress bar in a steady pace
@@ -42,11 +41,9 @@ LIBRARY_LINK_FUNCTION(UniformProgress) {
 			++pm;
 		}
 		mngr.setInteger(42);
-	}
-	catch (const LibraryLinkError& e) {
+	} catch (const LibraryLinkError& e) {
 		err = e.which();
-	}
-	catch (...) {
+	} catch (...) {
 		err = LLErrorCode::FunctionError;
 	}
 	return err;
@@ -69,11 +66,9 @@ LIBRARY_LINK_FUNCTION(NoProgressButAbortable) {
 			ProgressMonitor::checkAbort();
 		}
 		mngr.setInteger(42);
-	}
-	catch (const LibraryLinkError& e) {
+	} catch (const LibraryLinkError& e) {
 		err = e.which();
-	}
-	catch (...) {
+	} catch (...) {
 		err = LLErrorCode::FunctionError;
 	}
 	return err;
@@ -95,11 +90,9 @@ LIBRARY_LINK_FUNCTION(NoProgressNotAbortable) {
 			std::this_thread::sleep_for(100ms);
 		}
 		mngr.setInteger(42);
-	}
-	catch (const LibraryLinkError& e) {
+	} catch (const LibraryLinkError& e) {
 		err = e.which();
-	}
-	catch (...) {
+	} catch (...) {
 		err = LLErrorCode::FunctionError;
 	}
 	return err;
@@ -135,11 +128,9 @@ LIBRARY_LINK_FUNCTION(PrepareProcessAndFormat) {
 		pm.set(1);
 
 		mngr.setInteger(42);
-	}
-	catch (const LibraryLinkError& e) {
+	} catch (const LibraryLinkError& e) {
 		err = e.which();
-	}
-	catch (...) {
+	} catch (...) {
 		err = LLErrorCode::FunctionError;
 	}
 	return err;
@@ -160,7 +151,7 @@ LIBRARY_LINK_FUNCTION(DecreaseProgress) {
 		auto pm = mngr.getProgressMonitor(0.01);
 
 		auto prepTime = std::chrono::milliseconds(static_cast<int>(1000 * 0.3 * totalTime));
-		std::this_thread::sleep_for(prepTime); // Prepare data
+		std::this_thread::sleep_for(prepTime);	  // Prepare data
 		pm.set(0.3);
 
 		// How much time to sleep for one iteration of data processing
@@ -191,11 +182,9 @@ LIBRARY_LINK_FUNCTION(DecreaseProgress) {
 		pm.set(1);
 
 		mngr.setInteger(42);
-	}
-	catch (const LibraryLinkError& e) {
+	} catch (const LibraryLinkError& e) {
 		err = e.which();
-	}
-	catch (...) {
+	} catch (...) {
 		err = LLErrorCode::FunctionError;
 	}
 	return err;

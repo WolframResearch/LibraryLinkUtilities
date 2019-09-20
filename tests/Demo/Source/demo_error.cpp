@@ -1,18 +1,18 @@
 /*
- An example that demonstrates catching errors when calling 
+ An example that demonstrates catching errors when calling
  a Wolfram Library function from Mathematica.
  */
-
-#include "WolframLibrary.h"
-#include "LLU/MArgumentManager.h"
 
 #include <cstring>
 #include <iostream>
 #include <ostream>
 
-#include "LLU/Error/ErrorManager.h"
+#include "WolframLibrary.h"
+
 #include "LLU/Containers/Tensor.h"
+#include "LLU/Error/ErrorManager.h"
 #include "LLU/LibraryLinkFunctionMacro.h"
+#include "LLU/MArgumentManager.h"
 
 using namespace LibraryLinkUtils;
 
@@ -22,10 +22,7 @@ EXTERN_C DLLEXPORT mint WolframLibrary_getVersion() {
 
 EXTERN_C DLLEXPORT int WolframLibrary_initialize(WolframLibraryData libData) {
 	MArgumentManager::setLibraryData(libData);
-	ErrorManager::registerPacletErrors({
-		{"DemoError1", "Something went wrong"},
-		{"ąęError", "Let me try non-ASCII: łódź"}
-	});
+	ErrorManager::registerPacletErrors({{"DemoError1", "Something went wrong"}, {"ąęError", "Let me try non-ASCII: łódź"}});
 	return 0;
 }
 
@@ -34,7 +31,7 @@ EXTERN_C DLLEXPORT void WolframLibrary_uninitialize(WolframLibraryData libData) 
 	return;
 }
 
-EXTERN_C DLLEXPORT int errordemo1(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
+EXTERN_C DLLEXPORT int errordemo1(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument Res) {
 	auto err = LLErrorCode::NoError;
 	try {
 		MArgumentManager mngr(Argc, Args, Res);
@@ -42,14 +39,13 @@ EXTERN_C DLLEXPORT int errordemo1(WolframLibraryData libData, mint Argc, MArgume
 		auto I0 = mngr.getInteger<mint>(1);
 
 		mngr.setReal(T0[I0 - 1]);
-	}
-	catch (LibraryLinkError& e) {
+	} catch (LibraryLinkError& e) {
 		err = e.which();
 	}
 	return err;
 }
 
-EXTERN_C DLLEXPORT int errordemo2(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
+EXTERN_C DLLEXPORT int errordemo2(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument Res) {
 	auto err = LLErrorCode::NoError;
 	MArgumentManager mngr(Argc, Args, Res);
 	try {
@@ -57,15 +53,14 @@ EXTERN_C DLLEXPORT int errordemo2(WolframLibraryData libData, mint Argc, MArgume
 		auto I0 = mngr.getInteger<mint>(1);
 
 		mngr.setReal(T0[I0 - 1]);
-	}
-	catch (LibraryLinkError& e) {
+	} catch (LibraryLinkError& e) {
 		std::cout << e.what() << std::endl;
 		mngr.setReal(0.);
 	}
 	return err;
 }
 
-EXTERN_C DLLEXPORT int errordemo3(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
+EXTERN_C DLLEXPORT int errordemo3(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument Res) {
 	auto err = LLErrorCode::NoError;
 	try {
 		MArgumentManager mngr(Argc, Args, Res);
@@ -75,15 +70,14 @@ EXTERN_C DLLEXPORT int errordemo3(WolframLibraryData libData, mint Argc, MArgume
 		mngr.setReal(T0[I0 - 1]);
 
 		mngr.setReal(T0[I0 - 1]);
-	}
-	catch (LibraryLinkError& e) {
+	} catch (LibraryLinkError& e) {
 		std::cout << e.what() << std::endl;
 		err = e.which();
 	}
 	return err;
 }
 
-EXTERN_C DLLEXPORT int errordemo4(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
+EXTERN_C DLLEXPORT int errordemo4(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument Res) {
 	auto err = LLErrorCode::NoError;
 	try {
 		MArgumentManager mngr(Argc, Args, Res);
@@ -104,14 +98,13 @@ EXTERN_C DLLEXPORT int errordemo4(WolframLibraryData libData, mint Argc, MArgume
 		}
 
 		mngr.setReal(T0[I0 - 1]);
-	}
-	catch (LibraryLinkError& e) {
+	} catch (LibraryLinkError& e) {
 		err = e.which();
 	}
 	return err;
 }
 
-EXTERN_C DLLEXPORT int errordemo5(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
+EXTERN_C DLLEXPORT int errordemo5(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument Res) {
 	MTensor T0, Tres;
 	mint n, type, rank, *dims;
 	int err = LIBRARY_NO_ERROR;
@@ -129,19 +122,14 @@ EXTERN_C DLLEXPORT int errordemo5(WolframLibraryData libData, mint Argc, MArgume
 
 	n = libData->MTensor_getFlattenedLength(Tres);
 	switch (type) {
-		case MType_Integer:
-			memset(libData->MTensor_getIntegerData(Tres), 0, n * sizeof(mint));
-			break;
-		case MType_Real:
-			memset(libData->MTensor_getRealData(Tres), 0, n * sizeof(mreal));
-			break;
-		default:
-			break;
+		case MType_Integer: memset(libData->MTensor_getIntegerData(Tres), 0, n * sizeof(mint)); break;
+		case MType_Real: memset(libData->MTensor_getRealData(Tres), 0, n * sizeof(mreal)); break;
+		default: break;
 	}
 	return 0;
 }
 
-EXTERN_C DLLEXPORT int errordemo6(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
+EXTERN_C DLLEXPORT int errordemo6(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument Res) {
 	auto err = LLErrorCode::NoError;
 	try {
 		MArgumentManager mngr(Argc, Args, Res);
@@ -156,24 +144,21 @@ EXTERN_C DLLEXPORT int errordemo6(WolframLibraryData libData, mint Argc, MArgume
 			}
 		}
 		T[0] = i;
-	}
-	catch (LibraryLinkError& e) {
+	} catch (LibraryLinkError& e) {
 		err = e.which();
-	}
-	catch (std::exception& e) {
+	} catch (std::exception& e) {
 		err = LLErrorCode::FunctionError;
 	}
 	return err;
 }
 
-EXTERN_C DLLEXPORT int errorTest_Return(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
+EXTERN_C DLLEXPORT int errorTest_Return(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument Res) {
 	mint retVal;
 
 	retVal = MArgument_getInteger(Args[0]);
 
-	return (int) retVal;
+	return (int)retVal;
 }
-
 
 LIBRARY_LINK_FUNCTION(customError) {
 	auto err = LLErrorCode::NoError;
@@ -186,11 +171,9 @@ LIBRARY_LINK_FUNCTION(customError) {
 			ErrorManager::throwException("NoSuchError");
 		}
 		mngr.setReal(3.14);
-	}
-	catch (LibraryLinkError& e) {
+	} catch (LibraryLinkError& e) {
 		err = e.which();
-	}
-	catch (std::exception& e) {
+	} catch (std::exception& e) {
 		err = LLErrorCode::FunctionError;
 	}
 	return err;
@@ -202,11 +185,9 @@ LIBRARY_LINK_FUNCTION(nonASCIIError) {
 		MArgumentManager mngr(Argc, Args, Res);
 		ErrorManager::throwException("ąęError");
 		mngr.setReal(3.14);
-	}
-	catch (LibraryLinkError& e) {
+	} catch (LibraryLinkError& e) {
 		err = e.which();
-	}
-	catch (std::exception& e) {
+	} catch (std::exception& e) {
 		err = LLErrorCode::FunctionError;
 	}
 	return err;

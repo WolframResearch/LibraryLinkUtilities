@@ -23,7 +23,7 @@ TestExecute[
 	Get[FileNameJoin[{$LLUSharedDir, "LibraryLinkUtilities.wl"}]];
 
 	RegisterPacletErrors[lib, <||>];
-	
+
 	`LLU`Logger`PrintLogFunctionSelector := Block[{`LLU`Logger`FormattedLog = `LLU`Logger`LogToShortString},
 		`LLU`Logger`PrintLogToSymbol[LogSymbol][##]
 	]&;
@@ -35,7 +35,7 @@ TestExecute[
 	(* Register a constructor for new Managed Expression. This step could be more automated if we agree that for each class X that shall be managed there is
 	 * an interface function "OpenManagedX" defined in the library.
 	 * It gets more complicated if you want to use a class hierarchy as MLE as you need to decide which class will be instantiated at WL level.
-	 *)       
+	 *)
 	CreateMyExpression[instance_, text_?StringQ, createChildQ_ : False] := If[createChildQ, $CreateNewMyChildExpression, $CreateNewMyExpression][instance, text];
 	`LLU`Constructor[MyExpression] = CreateMyExpression;
 
@@ -112,7 +112,7 @@ Test[
 	,
 	"I will die when this test ends"
 	,
-	TestID->"ManagedExpressionsTestSuite-20190718-O7N0B8"
+	TestID -> "ManagedExpressionsTestSuite-20190718-O7N0B8"
 ];
 
 Test[
@@ -125,7 +125,7 @@ Test[
 	,
 	SameTest -> LoggerStringTest
 	,
-	TestID->"ManagedExpressionsTestSuite-20190718-J5J8Q0"
+	TestID -> "ManagedExpressionsTestSuite-20190718-J5J8Q0"
 ];
 
 Test[
@@ -163,31 +163,31 @@ Test[
 Test[
 	Catch @ MyExpression[500] @ getText[]
 	,
-	Failure["InvalidManagedExpressionID", 
+	Failure["InvalidManagedExpressionID",
 		<|
-			"MessageTemplate" -> "`expr` is not a valid ManagedExpression.", 
-			"MessageParameters" -> <|"expr" -> MyExpression[500]|>, 
-			"ErrorCode" -> 25, 
+			"MessageTemplate" -> "`expr` is not a valid ManagedExpression.",
+			"MessageParameters" -> <|"expr" -> MyExpression[500]|>,
+			"ErrorCode" -> 25,
 			"Parameters" -> {}
 		|>
 	]
 	,
-	TestID->"ManagedExpressionsTestSuite-20190718-B1C1K7"
+	TestID -> "ManagedExpressionsTestSuite-20190718-B1C1K7"
 ];
 
 Test[
 	Catch @ MyExpression`getText[NotMyExpression[1]]
 	,
-	Failure["UnexpectedManagedExpression", 
+	Failure["UnexpectedManagedExpression",
 		<|
-			"MessageTemplate" -> "Expected managed `expected`, got `actual`.", 
-			"MessageParameters" -> <|"expected" -> MyExpression, "actual" -> NotMyExpression[1]|>, 
-			"ErrorCode" -> 26, 
+			"MessageTemplate" -> "Expected managed `expected`, got `actual`.",
+			"MessageParameters" -> <|"expected" -> MyExpression, "actual" -> NotMyExpression[1]|>,
+			"ErrorCode" -> 26,
 			"Parameters" -> {}
 		|>
 	]
 	,
-	TestID->"ManagedExpressionsTestSuite-20190718-E0M9X3"
+	TestID -> "ManagedExpressionsTestSuite-20190718-E0M9X3"
 ];
 
 Test[
@@ -195,7 +195,7 @@ Test[
 	,
 	NotMyExpression[1] @ getText[]
 	,
-	TestID->"ManagedExpressionsTestSuite-20190821-Z2D6S7"
+	TestID -> "ManagedExpressionsTestSuite-20190821-Z2D6S7"
 ];
 
 Test[
@@ -217,7 +217,7 @@ Test[
 	,
 	SameTest -> LoggerStringTest
 	,
-	TestID->"ManagedExpressionsTestSuite-20190821-W5W6N0"
+	TestID -> "ManagedExpressionsTestSuite-20190821-W5W6N0"
 ];
 
 Test[
@@ -265,7 +265,7 @@ Test[
 	,
 	SameTest -> LoggerStringTest
 	,
-	TestID->"ManagedExpressionsTestSuite-20190911-U4H9A5"
+	TestID -> "ManagedExpressionsTestSuite-20190911-U4H9A5"
 ];
 
 Test[
@@ -286,5 +286,5 @@ Test[
 	,
 	"I'm a subclass! Here is your text: I will die when this test ends"
 	,
-	TestID->"ManagedExpressionsTestSuite-20190911-R3Z8U9"
+	TestID -> "ManagedExpressionsTestSuite-20190911-R3Z8U9"
 ];

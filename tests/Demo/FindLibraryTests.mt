@@ -3,8 +3,8 @@
 Get[FileNameJoin[{ FileNameDrop[ $CurrentFile, -1], "DemoTestConfig.wl"}]];
 
 (* Convert drive letter to upper-case; for some reason it is lowercase on test3win64.  This was causing FindDLLTests-20090217-O1H2E1 to fail. *)
-$DllDemoDir = StringReplace[$DllDemoDir, {RegularExpression["^([[:alpha:]]):\\\\"] :> ToUpperCase["$1"] <> ":\\"}]; 
-    
+$DllDemoDir = StringReplace[$DllDemoDir, {RegularExpression["^([[:alpha:]]):\\\\"] :> ToUpperCase["$1"] <> ":\\"}];
+
 
 << ResourceLocator`;
 
@@ -15,7 +15,7 @@ Test[(* 1 *)
 	,
 	True
 	,
-	TestID->"FindDLLTests-20090217-Y5V7A5"
+	TestID -> "FindDLLTests-20090217-Y5V7A5"
 ]
 
 Test[(* 2 *)
@@ -23,7 +23,7 @@ Test[(* 2 *)
 	,
 	$Failed
 	,
-	TestID->"FindDLLTests-20090217-R9H3X3"
+	TestID -> "FindDLLTests-20090217-R9H3X3"
 ]
 
 TestExecute[
@@ -31,11 +31,11 @@ TestExecute[
 ]
 
 Test[(* 3 *)
-	If[MemberQ[ $LibraryPath, FileNameJoin[{$DllDemoDir , "LibraryResources", $SystemID}]],True,$LibraryPath]
+	If[MemberQ[ $LibraryPath, FileNameJoin[{$DllDemoDir , "LibraryResources", $SystemID}]], True, $LibraryPath]
 	,
 	True
 	,
-	TestID->"FindDLLTests-20090217-O1H2E1"
+	TestID -> "FindDLLTests-20090217-O1H2E1"
 ]
 
 
@@ -44,7 +44,7 @@ Test[(* 4 *)
 	,
 	LibraryFunction[ FindLibrary["demo"], "demo_I_I", {Integer}, Integer]
 	,
-	TestID->"FindDLLTests-20090217-H0C9H7"
+	TestID -> "FindDLLTests-20090217-H0C9H7"
 ]
 
 Test[(* 5 *)
@@ -52,7 +52,7 @@ Test[(* 5 *)
 	,
 	String
 	,
-	TestID->"FindDLLTests-20091204-usor1v-bug-137756"
+	TestID -> "FindDLLTests-20091204-usor1v-bug-137756"
 ]
 
 

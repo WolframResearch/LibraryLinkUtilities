@@ -1,5 +1,5 @@
 /*
- An example that demonstrates using Shared memory management for 
+ An example that demonstrates using Shared memory management for
  communicating between Mathematica and a Wolfram Library.
  */
 
@@ -9,8 +9,8 @@
 
 #include "WolframLibrary.h"
 
-#include "LLU/MArgumentManager.h"
 #include "LLU/Error/ErrorManager.h"
+#include "LLU/MArgumentManager.h"
 
 using namespace LibraryLinkUtils;
 
@@ -25,11 +25,9 @@ EXTERN_C DLLEXPORT int WolframLibrary_initialize(WolframLibraryData libData) {
 
 static std::string s;
 
-EXTERN_C DLLEXPORT void WolframLibrary_uninitialize(WolframLibraryData libData) {
+EXTERN_C DLLEXPORT void WolframLibrary_uninitialize(WolframLibraryData libData) {}
 
-}
-
-EXTERN_C DLLEXPORT int countSubstring(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
+EXTERN_C DLLEXPORT int countSubstring(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument Res) {
 	auto err = LLErrorCode::NoError;
 	try {
 		MArgumentManager mngr(Argc, Args, Res);
@@ -48,17 +46,15 @@ EXTERN_C DLLEXPORT int countSubstring(WolframLibraryData libData, mint Argc, MAr
 			}
 		}
 		mngr.setInteger(c);
-	}
-	catch (LibraryLinkError& e) {
+	} catch (LibraryLinkError& e) {
 		err = e.which();
-	}
-	catch (std::exception& e) {
+	} catch (std::exception& e) {
 		err = LLErrorCode::FunctionError;
 	}
 	return err;
 }
 
-EXTERN_C DLLEXPORT int encodeString(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
+EXTERN_C DLLEXPORT int encodeString(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument Res) {
 	auto err = LLErrorCode::NoError;
 	try {
 		MArgumentManager mngr(Argc, Args, Res);
@@ -80,17 +76,15 @@ EXTERN_C DLLEXPORT int encodeString(WolframLibraryData libData, mint Argc, MArgu
 			c = ((c + shift) % 127) + 1;
 		}
 		mngr.setString(s);
-	}
-	catch (LibraryLinkError& e) {
+	} catch (LibraryLinkError& e) {
 		err = e.which();
-	}
-	catch (std::exception& e) {
+	} catch (std::exception& e) {
 		err = LLErrorCode::FunctionError;
 	}
 	return err;
 }
 
-EXTERN_C DLLEXPORT int reverseString(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
+EXTERN_C DLLEXPORT int reverseString(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument Res) {
 	auto err = LLErrorCode::NoError;
 	try {
 		MArgumentManager mngr(Argc, Args, Res);
@@ -108,13 +102,10 @@ EXTERN_C DLLEXPORT int reverseString(WolframLibraryData libData, mint Argc, MArg
 			std::swap(s[i], s[len - i]);
 		}
 		mngr.setString(s);
-	}
-	catch (LibraryLinkError& e) {
+	} catch (LibraryLinkError& e) {
 		err = e.which();
-	}
-	catch (std::exception& e) {
+	} catch (std::exception& e) {
 		err = LLErrorCode::FunctionError;
 	}
 	return err;
 }
-

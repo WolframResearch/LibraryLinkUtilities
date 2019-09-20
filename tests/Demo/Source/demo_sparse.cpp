@@ -2,8 +2,8 @@
 #include "WolframLibrary.h"
 #include "WolframSparseLibrary.h"
 
-#include "LLU/MArgumentManager.h"
 #include "LLU/Error/ErrorManager.h"
+#include "LLU/MArgumentManager.h"
 
 using namespace LibraryLinkUtils;
 
@@ -24,7 +24,7 @@ EXTERN_C DLLEXPORT void WolframLibrary_uninitialize(WolframLibraryData libData) 
 }
 
 /* Access to sparse properties and CSR data */
-EXTERN_C DLLEXPORT int sparse_properties(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
+EXTERN_C DLLEXPORT int sparse_properties(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument Res) {
 	auto error = LLErrorCode::NoError;
 	try {
 		WolframSparseLibrary_Functions sparseFuns = libData->sparseLibraryFunctions;
@@ -36,8 +36,7 @@ EXTERN_C DLLEXPORT int sparse_properties(WolframLibraryData libData, mint Argc, 
 		MTensor Tres = 0;
 		if (what == "ImplicitValue") {
 			T = sparseFuns->MSparseArray_getImplicitValue(S);
-		}
-		else if (what == "ExplicitValues") {
+		} else if (what == "ExplicitValues") {
 			T = sparseFuns->MSparseArray_getExplicitValues(S);
 			if (*T == NULL) {
 				T = (*(sparseFuns->MSparseArray_getImplicitValue))(S);
@@ -45,20 +44,15 @@ EXTERN_C DLLEXPORT int sparse_properties(WolframLibraryData libData, mint Argc, 
 				mint len = 0;
 				err = libData->MTensor_new(type, 1, &len, &Tres);
 			}
-		}
-		else if (what == "RowPointers") {
+		} else if (what == "RowPointers") {
 			T = sparseFuns->MSparseArray_getRowPointers(S);
-		}
-		else if (what == "ColumnIndices") {
+		} else if (what == "ColumnIndices") {
 			T = sparseFuns->MSparseArray_getColumnIndices(S);
-		}
-		else if (what == "ExplicitPositions") {
+		} else if (what == "ExplicitPositions") {
 			err = sparseFuns->MSparseArray_getExplicitPositions(S, &Tres);
-		}
-		else if (what == "Normal") {
+		} else if (what == "Normal") {
 			err = sparseFuns->MSparseArray_toMTensor(S, &Tres);
-		}
-		else {
+		} else {
 			err = LIBRARY_FUNCTION_ERROR;
 		}
 		if (err)
@@ -67,17 +61,15 @@ EXTERN_C DLLEXPORT int sparse_properties(WolframLibraryData libData, mint Argc, 
 			libData->MTensor_clone(*T, &Tres);
 
 		MArgument_setMTensor(Res, Tres);
-	}
-	catch (LibraryLinkError& e) {
+	} catch (LibraryLinkError& e) {
 		error = e.which();
-	}
-	catch (std::exception& e) {
+	} catch (std::exception& e) {
 		error = LLErrorCode::FunctionError;
 	}
 	return static_cast<int>(error);
 }
 
-EXTERN_C DLLEXPORT int sparse_modify_values(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
+EXTERN_C DLLEXPORT int sparse_modify_values(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument Res) {
 	WolframSparseLibrary_Functions sparseFuns = libData->sparseLibraryFunctions;
 	auto err = LLErrorCode::NoError;
 	try {
@@ -98,13 +90,10 @@ EXTERN_C DLLEXPORT int sparse_modify_values(WolframLibraryData libData, mint Arg
 		sparseFuns->MSparseArray_disown(S);
 		if (!err)
 			MArgument_setMSparseArray(Res, Sout);
-	}
-	catch (LibraryLinkError& e) {
+	} catch (LibraryLinkError& e) {
 		err = e.which();
-	}
-	catch (std::exception& e) {
+	} catch (std::exception& e) {
 		err = LLErrorCode::FunctionError;
 	}
 	return err;
 }
-

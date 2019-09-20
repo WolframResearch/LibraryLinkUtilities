@@ -1,11 +1,11 @@
 /* Include required header */
+#include <exception>
+
 #include "WolframLibrary.h"
 
-#include "LLU/MArgumentManager.h"
 #include "LLU/Error/ErrorManager.h"
 #include "LLU/LibraryLinkFunctionMacro.h"
-
-#include <exception>
+#include "LLU/MArgumentManager.h"
 
 using namespace LibraryLinkUtils;
 
@@ -26,75 +26,67 @@ EXTERN_C DLLEXPORT void WolframLibrary_uninitialize(WolframLibraryData libData) 
 }
 
 /* Adds one to the input, returning the result  */
-EXTERN_C DLLEXPORT int demo_I_I(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
+EXTERN_C DLLEXPORT int demo_I_I(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument Res) {
 	auto err = LLErrorCode::NoError;
 	try {
 		MArgumentManager mngr(Argc, Args, Res);
 		auto i = mngr.getInteger<mint>(0);
 		mngr.setInteger(i + 1);
-	}
-	catch (LibraryLinkError& e) {
+	} catch (LibraryLinkError& e) {
 		err = e.which();
-	}
-	catch (std::exception& e) {
+	} catch (std::exception& e) {
 		err = LLErrorCode::FunctionError;
 	}
 	return err;
 }
 
 /* Adds one to the input, returning the result */
-EXTERN_C DLLEXPORT int demo1_I_I(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
+EXTERN_C DLLEXPORT int demo1_I_I(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument Res) {
 	auto err = LLErrorCode::NoError;
 	try {
 		MArgumentManager mngr(Argc, Args, Res);
 		auto i = mngr.getInteger<mint>(0);
 		mngr.setInteger(i + 1);
-	}
-	catch (LibraryLinkError& e) {
+	} catch (LibraryLinkError& e) {
 		err = e.which();
-	}
-	catch (std::exception& e) {
+	} catch (std::exception& e) {
 		err = LLErrorCode::FunctionError;
 	}
 	return err;
 }
 
 /* Multiply two reals together, returning the result */
-EXTERN_C DLLEXPORT int demo_R_R(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
+EXTERN_C DLLEXPORT int demo_R_R(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument Res) {
 	auto err = LLErrorCode::NoError;
 	try {
 		MArgumentManager mngr(Argc, Args, Res);
 		auto r1 = mngr.getReal(0);
 		mngr.setReal(r1 * r1);
-	}
-	catch (LibraryLinkError& e) {
+	} catch (LibraryLinkError& e) {
 		err = e.which();
-	}
-	catch (std::exception& e) {
+	} catch (std::exception& e) {
 		err = LLErrorCode::FunctionError;
 	}
 	return err;
 }
 
 /* Multiply two reals together, returning the result */
-EXTERN_C DLLEXPORT int demo1_R_R(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
+EXTERN_C DLLEXPORT int demo1_R_R(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument Res) {
 	auto err = LLErrorCode::NoError;
 	try {
 		MArgumentManager mngr(Argc, Args, Res);
 		auto r1 = mngr.getReal(0);
 		mngr.setReal(r1 * r1);
-	}
-	catch (LibraryLinkError& e) {
+	} catch (LibraryLinkError& e) {
 		err = e.which();
-	}
-	catch (std::exception& e) {
+	} catch (std::exception& e) {
 		err = LLErrorCode::FunctionError;
 	}
 	return err;
 }
 
 /* Returns Sum[i*R0, {i, I0}] */
-EXTERN_C DLLEXPORT int demo_IR_R(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
+EXTERN_C DLLEXPORT int demo_IR_R(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument Res) {
 	auto err = LLErrorCode::NoError;
 	try {
 		MArgumentManager mngr(Argc, Args, Res);
@@ -105,18 +97,16 @@ EXTERN_C DLLEXPORT int demo_IR_R(WolframLibraryData libData, mint Argc, MArgumen
 			r1 += i * r0;
 		}
 		mngr.setReal(r1);
-	}
-	catch (LibraryLinkError& e) {
+	} catch (LibraryLinkError& e) {
 		err = e.which();
-	}
-	catch (std::exception& e) {
+	} catch (std::exception& e) {
 		err = LLErrorCode::FunctionError;
 	}
 	return err;
 }
 
 /* Returns Sum[i*R0, {i, I0}] */
-EXTERN_C DLLEXPORT int demo1_IR_R(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
+EXTERN_C DLLEXPORT int demo1_IR_R(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument Res) {
 	auto err = LLErrorCode::NoError;
 	try {
 		MArgumentManager mngr(Argc, Args, Res);
@@ -127,29 +117,25 @@ EXTERN_C DLLEXPORT int demo1_IR_R(WolframLibraryData libData, mint Argc, MArgume
 			r1 += i * r0;
 		}
 		mngr.setReal(r1);
-	}
-	catch (LibraryLinkError& e) {
+	} catch (LibraryLinkError& e) {
 		err = e.which();
-	}
-	catch (std::exception& e) {
+	} catch (std::exception& e) {
 		err = LLErrorCode::FunctionError;
 	}
 	return err;
 }
 
 /* Gets the I0 th Real number from the rank 1 tensor T0 */
-EXTERN_C DLLEXPORT int demo_TI_R(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
+EXTERN_C DLLEXPORT int demo_TI_R(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument Res) {
 	auto err = LLErrorCode::NoError;
 	try {
 		MArgumentManager mngr(Argc, Args, Res);
 		auto t0 = mngr.getTensor<double>(0);
 		auto i0 = mngr.getInteger<mint>(1) - 1;
 		mngr.setReal(t0[i0]);
-	}
-	catch (LibraryLinkError& e) {
+	} catch (LibraryLinkError& e) {
 		err = e.which();
-	}
-	catch (std::exception& e) {
+	} catch (std::exception& e) {
 		err = LLErrorCode::FunctionError;
 	}
 	return err;
@@ -158,28 +144,26 @@ EXTERN_C DLLEXPORT int demo_TI_R(WolframLibraryData libData, mint Argc, MArgumen
 /**
  * Same as demo_TI_R, but pass in a packed array then manually free it.
  **/
-EXTERN_C DLLEXPORT int demo1_TI_R(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
+EXTERN_C DLLEXPORT int demo1_TI_R(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument Res) {
 	auto err = LLErrorCode::NoError;
 	try {
 		MArgumentManager mngr(Argc, Args, Res);
 		auto t0 = mngr.getTensor<double>(0);
 		auto i0 = mngr.getInteger<mint>(1) - 1;
 		mngr.setReal(t0[i0]);
-	}
-	catch (LibraryLinkError& e) {
+	} catch (LibraryLinkError& e) {
 		err = e.which();
-	}
-	catch (std::exception& e) {
+	} catch (std::exception& e) {
 		err = LLErrorCode::FunctionError;
 	}
 	return err;
 }
 
 /**
- * Same as demo_TI_R, but just to avoid copying, so we need 
+ * Same as demo_TI_R, but just to avoid copying, so we need
  * to disown the tensor input.
  **/
-EXTERN_C DLLEXPORT int demo2_TI_R(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
+EXTERN_C DLLEXPORT int demo2_TI_R(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument Res) {
 	auto err = LLErrorCode::NoError;
 	Tensor<double> t0;
 	try {
@@ -187,11 +171,9 @@ EXTERN_C DLLEXPORT int demo2_TI_R(WolframLibraryData libData, mint Argc, MArgume
 		t0 = mngr.getTensor<double>(0);
 		auto i0 = mngr.getInteger<mint>(1) - 1;
 		mngr.setReal(t0[i0]);
-	}
-	catch (LibraryLinkError& e) {
+	} catch (LibraryLinkError& e) {
 		err = e.which();
-	}
-	catch (std::exception& e) {
+	} catch (std::exception& e) {
 		err = LLErrorCode::FunctionError;
 	}
 	t0.disown();
@@ -202,20 +184,18 @@ EXTERN_C DLLEXPORT int demo2_TI_R(WolframLibraryData libData, mint Argc, MArgume
  * Constructs a new rank 1 tensor of length I0, and sets the
  * ith element of the vector to 2*i
  **/
-EXTERN_C DLLEXPORT int demo_I_T(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
+EXTERN_C DLLEXPORT int demo_I_T(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument Res) {
 	auto err = LLErrorCode::NoError;
 	try {
 		MArgumentManager mngr(Argc, Args, Res);
 		auto i0 = mngr.getInteger<mint>(0);
-		Tensor<mint> t0(static_cast<mint>(0), { i0 });
+		Tensor<mint> t0(static_cast<mint>(0), {i0});
 		for (mint i = 1; i <= i0; i++)
 			t0[i - 1] = 2 * i;
 		mngr.setTensor(t0);
-	}
-	catch (LibraryLinkError& e) {
+	} catch (LibraryLinkError& e) {
 		err = e.which();
-	}
-	catch (std::exception& e) {
+	} catch (std::exception& e) {
 		err = LLErrorCode::FunctionError;
 	}
 	return err;
@@ -224,7 +204,7 @@ EXTERN_C DLLEXPORT int demo_I_T(WolframLibraryData libData, mint Argc, MArgument
 /**
  * Same as demo_TI_R, but just to avoid copying
  **/
-EXTERN_C DLLEXPORT int demo_TT_T(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
+EXTERN_C DLLEXPORT int demo_TT_T(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument Res) {
 	auto err = LLErrorCode::NoError;
 	try {
 		MArgumentManager mngr(Argc, Args, Res);
@@ -232,15 +212,13 @@ EXTERN_C DLLEXPORT int demo_TT_T(WolframLibraryData libData, mint Argc, MArgumen
 		auto t1 = mngr.getTensor<mint>(1);
 		auto r0 = t1[t0[0] - 1];
 
-		Tensor<double> t2(0., { });
+		Tensor<double> t2(0., {});
 		t2[0] = r0;
 
 		mngr.setTensor(t2);
-	}
-	catch (LibraryLinkError& e) {
+	} catch (LibraryLinkError& e) {
 		err = e.which();
-	}
-	catch (std::exception& e) {
+	} catch (std::exception& e) {
 		err = LLErrorCode::FunctionError;
 	}
 	return err;
@@ -249,7 +227,7 @@ EXTERN_C DLLEXPORT int demo_TT_T(WolframLibraryData libData, mint Argc, MArgumen
 /**
  * Intended to demonstrate working with rank 0 tensors.
  *
- * The arguments are three tensors.  
+ * The arguments are three tensors.
  * The first is a rank > 0 real tensor.
  * The second is a rank 0 integer tensor.
  * The third a rank 0 real tensor.
@@ -260,7 +238,7 @@ EXTERN_C DLLEXPORT int demo_TT_T(WolframLibraryData libData, mint Argc, MArgumen
  *
  * The result is returned as a rank 0 real tensor.
  **/
-EXTERN_C DLLEXPORT int demo_TTT_T(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
+EXTERN_C DLLEXPORT int demo_TTT_T(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument Res) {
 	auto err = LLErrorCode::NoError;
 	try {
 		MArgumentManager mngr(Argc, Args, Res);
@@ -271,15 +249,13 @@ EXTERN_C DLLEXPORT int demo_TTT_T(WolframLibraryData libData, mint Argc, MArgume
 		auto R0 = T_R_arg[0];
 		R0 += T_arg[T_I_arg[0] - 1];
 
-		Tensor<mint> T_res(0, { });
+		Tensor<mint> T_res(0, {});
 		T_res[0] = static_cast<mint>(R0);
 
 		mngr.setTensor(T_res);
-	}
-	catch (LibraryLinkError& e) {
+	} catch (LibraryLinkError& e) {
 		err = e.which();
-	}
-	catch (std::exception& e) {
+	} catch (std::exception& e) {
 		err = LLErrorCode::FunctionError;
 	}
 	return err;
@@ -309,9 +285,7 @@ LIBRARY_LINK_FUNCTION(demo_T_T) {
 			Tensor<TensorType> T_res(static_cast<TensorType>(0), {len});
 
 			std::copy(std::begin(T_arg), std::end(T_arg), std::begin(T_res));
-			std::transform(std::begin(dims), std::end(dims), std::begin(T_res) + num, [](auto d) {
-				return static_cast<TensorType>(d);
-			});
+			std::transform(std::begin(dims), std::end(dims), std::begin(T_res) + num, [](auto d) { return static_cast<TensorType>(d); });
 
 			T_res[num + rank] = num;
 			T_res[num + rank + 1] = rank;
@@ -319,11 +293,9 @@ LIBRARY_LINK_FUNCTION(demo_T_T) {
 
 			mngr.setTensor(T_res);
 		});
-	}
-	catch (LibraryLinkError& e) {
+	} catch (LibraryLinkError& e) {
 		err = e.which();
-	}
-	catch (std::exception& e) {
+	} catch (std::exception& e) {
 		err = LLErrorCode::FunctionError;
 	}
 	return err;
@@ -350,12 +322,10 @@ LIBRARY_LINK_FUNCTION(demo1_T_T) {
 			 */
 			mint len = num + rank + 3;
 
-			Tensor<TensorType> T_res(static_cast<TensorType>(0), {len} );
+			Tensor<TensorType> T_res(static_cast<TensorType>(0), {len});
 
 			std::copy(std::begin(T_arg), std::end(T_arg), std::begin(T_res));
-			std::transform(std::begin(dims), std::end(dims), std::begin(T_res) + num, [](auto d) {
-				return static_cast<TensorType>(d);
-			});
+			std::transform(std::begin(dims), std::end(dims), std::begin(T_res) + num, [](auto d) { return static_cast<TensorType>(d); });
 
 			T_res[num + rank] = num;
 			T_res[num + rank + 1] = rank;
@@ -363,11 +333,9 @@ LIBRARY_LINK_FUNCTION(demo1_T_T) {
 
 			mngr.setTensor(T_res);
 		});
-	}
-	catch (LibraryLinkError& e) {
+	} catch (LibraryLinkError& e) {
 		err = e.which();
-	}
-	catch (std::exception& e) {
+	} catch (std::exception& e) {
 		err = LLErrorCode::FunctionError;
 	}
 	return err;
@@ -378,81 +346,73 @@ LIBRARY_LINK_FUNCTION(demo1_T_T) {
  * ith element with the value 2*i. The newly constructed tensor is
  * returned.
  **/
-EXTERN_C DLLEXPORT int demo1_I_T(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
+EXTERN_C DLLEXPORT int demo1_I_T(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument Res) {
 	auto err = LLErrorCode::NoError;
 	try {
 		MArgumentManager mngr(Argc, Args, Res);
 		auto i = mngr.getInteger<mint>(0);
 
-		Tensor<mint> T0(0, { i });
+		Tensor<mint> T0(0, {i});
 		mint k = 1;
 		for (auto& elem : T0)
 			elem = 2 * k++;
 		mngr.setTensor(T0);
-	}
-	catch (LibraryLinkError& e) {
+	} catch (LibraryLinkError& e) {
 		err = e.which();
-	}
-	catch (std::exception& e) {
+	} catch (std::exception& e) {
 		err = LLErrorCode::FunctionError;
 	}
 	return err;
 }
 
 /* Gets the I0th element of T0, returning that value */
-EXTERN_C DLLEXPORT int demo_T_I(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
+EXTERN_C DLLEXPORT int demo_T_I(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument Res) {
 	auto err = LLErrorCode::NoError;
 	try {
 		MArgumentManager mngr(Argc, Args, Res);
 		auto t0 = mngr.getTensor<mint>(0);
 		auto i0 = mngr.getInteger<mint>(1);
 		mngr.setInteger(t0[i0 - 1]);
-	}
-	catch (LibraryLinkError& e) {
+	} catch (LibraryLinkError& e) {
 		err = e.which();
-	}
-	catch (std::exception& e) {
+	} catch (std::exception& e) {
 		err = LLErrorCode::FunctionError;
 	}
 	return err;
 }
 
-EXTERN_C DLLEXPORT int demo_MintSize(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
+EXTERN_C DLLEXPORT int demo_MintSize(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument Res) {
 	auto err = LLErrorCode::NoError;
 	try {
 		MArgumentManager mngr(Argc, Args, Res);
 		mngr.setInteger(sizeof(mint));
-	}
-	catch (LibraryLinkError& e) {
+	} catch (LibraryLinkError& e) {
 		err = e.which();
-	}
-	catch (std::exception& e) {
+	} catch (std::exception& e) {
 		err = LLErrorCode::FunctionError;
 	}
 	return err;
 }
 
 /* Gets the I0,I1 th integer element of T0 returning that value */
-EXTERN_C DLLEXPORT int demo_TII_I(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
+EXTERN_C DLLEXPORT int demo_TII_I(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument Res) {
 	auto err = LLErrorCode::NoError;
 	try {
 		MArgumentManager mngr(Argc, Args, Res);
 		auto t0 = mngr.getTensor<mint>(0);
 		auto i0 = mngr.getInteger<mint>(1) - 1;
 		auto i1 = mngr.getInteger<mint>(2) - 1;
-		mngr.setInteger(t0[ { i0, i1 }]);
-	}
-	catch (LibraryLinkError& e) {
+		mngr.setInteger(t0[{i0, i1}]);
+	} catch (LibraryLinkError& e) {
 		err = e.which();
-	}
-	catch (std::exception& e) {
+	} catch (std::exception& e) {
 		err = LLErrorCode::FunctionError;
 	}
 	return err;
 }
 
 /* Sets the I0,I1 th integer element of T0 with value, returning that position */
-EXTERN_C DLLEXPORT int demo_TIII_I(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
+EXTERN_C DLLEXPORT int demo_TIII_I(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument Res) {
 	auto err = LLErrorCode::NoError;
 	try {
 		MArgumentManager mngr(Argc, Args, Res);
@@ -460,39 +420,35 @@ EXTERN_C DLLEXPORT int demo_TIII_I(WolframLibraryData libData, mint Argc, MArgum
 		auto i0 = mngr.getInteger<mint>(1) - 1;
 		auto i1 = mngr.getInteger<mint>(2) - 1;
 		auto value = mngr.getInteger<mint>(3);
-		t0[ { i0, i1 }] = value;
-		mngr.setInteger(t0[ { i0, i1 }]);
-	}
-	catch (LibraryLinkError& e) {
+		t0[{i0, i1}] = value;
+		mngr.setInteger(t0[{i0, i1}]);
+	} catch (LibraryLinkError& e) {
 		err = e.which();
-	}
-	catch (std::exception& e) {
+	} catch (std::exception& e) {
 		err = LLErrorCode::FunctionError;
 	}
 	return err;
 }
 
 /* Gets the I0,I1 th real element of T0 returning that value */
-EXTERN_C DLLEXPORT int demo_TII_R(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
+EXTERN_C DLLEXPORT int demo_TII_R(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument Res) {
 	auto err = LLErrorCode::NoError;
 	try {
 		MArgumentManager mngr(Argc, Args, Res);
 		auto t0 = mngr.getTensor<double>(0);
 		auto i0 = mngr.getInteger<mint>(1) - 1;
 		auto i1 = mngr.getInteger<mint>(2) - 1;
-		mngr.setReal(t0[ { i0, i1 }]);
-	}
-	catch (LibraryLinkError& e) {
+		mngr.setReal(t0[{i0, i1}]);
+	} catch (LibraryLinkError& e) {
 		err = e.which();
-	}
-	catch (std::exception& e) {
+	} catch (std::exception& e) {
 		err = LLErrorCode::FunctionError;
 	}
 	return err;
 }
 
 /* Sets the I0,I1 th real element of T0 with value, returning that position */
-EXTERN_C DLLEXPORT int demo_TIIR_R(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
+EXTERN_C DLLEXPORT int demo_TIIR_R(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument Res) {
 	auto err = LLErrorCode::NoError;
 	try {
 		MArgumentManager mngr(Argc, Args, Res);
@@ -500,20 +456,18 @@ EXTERN_C DLLEXPORT int demo_TIIR_R(WolframLibraryData libData, mint Argc, MArgum
 		auto i0 = mngr.getInteger<mint>(1) - 1;
 		auto i1 = mngr.getInteger<mint>(2) - 1;
 		auto value = mngr.getReal(3);
-		t0[ { i0, i1 }] = value;
-		mngr.setReal(t0[ { i0, i1 }]);
-	}
-	catch (LibraryLinkError& e) {
+		t0[{i0, i1}] = value;
+		mngr.setReal(t0[{i0, i1}]);
+	} catch (LibraryLinkError& e) {
 		err = e.which();
-	}
-	catch (std::exception& e) {
+	} catch (std::exception& e) {
 		err = LLErrorCode::FunctionError;
 	}
 	return err;
 }
 
 /* Gets the subpart of the input tensor starting at the I0 th position */
-EXTERN_C DLLEXPORT int demo_TI_T(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
+EXTERN_C DLLEXPORT int demo_TI_T(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument Res) {
 	MTensor T0, T1 = 0;
 	mint I0;
 	int err = LIBRARY_NO_ERROR;
@@ -526,7 +480,7 @@ EXTERN_C DLLEXPORT int demo_TI_T(WolframLibraryData libData, mint Argc, MArgumen
 }
 
 /* Sets the I0 th element in T0 to its value in T1 */
-EXTERN_C DLLEXPORT int demo_TTI_T(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
+EXTERN_C DLLEXPORT int demo_TTI_T(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument Res) {
 	MTensor T0, T1;
 	mint I0;
 	int err = LIBRARY_NO_ERROR;
@@ -540,7 +494,7 @@ EXTERN_C DLLEXPORT int demo_TTI_T(WolframLibraryData libData, mint Argc, MArgume
 }
 
 /* Gets the subpart of the input tensor starting at the I0,I1 th position */
-EXTERN_C DLLEXPORT int demo_TII_T(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
+EXTERN_C DLLEXPORT int demo_TII_T(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument Res) {
 	MTensor T0, T1 = 0;
 	mint I0, I1;
 	mint pos[2];
@@ -557,7 +511,7 @@ EXTERN_C DLLEXPORT int demo_TII_T(WolframLibraryData libData, mint Argc, MArgume
 }
 
 /* Sets the element in the I0,I1 position in T0 to its value in T1, returning T0 */
-EXTERN_C DLLEXPORT int demo_TTII_T(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
+EXTERN_C DLLEXPORT int demo_TTII_T(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument Res) {
 	MTensor T0, T1;
 	mint I0, I1;
 	mint pos[2];
@@ -575,14 +529,14 @@ EXTERN_C DLLEXPORT int demo_TTII_T(WolframLibraryData libData, mint Argc, MArgum
 }
 
 /* Accepts no inputs, but returns a result */
-EXTERN_C DLLEXPORT int demoNoArguments(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
+EXTERN_C DLLEXPORT int demoNoArguments(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument Res) {
 	MArgumentManager mngr(Argc, Args, Res);
 	mngr.setInteger(Argc);
 	return LIBRARY_NO_ERROR;
 }
 
 /* Accepts inputs, but returns nothing */
-EXTERN_C DLLEXPORT int demoNoResult(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
+EXTERN_C DLLEXPORT int demoNoResult(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument Res) {
 	MArgumentManager mngr(Argc, Args, Res);
 	auto T = mngr.getTensor<mint>(0);
 
@@ -591,7 +545,7 @@ EXTERN_C DLLEXPORT int demoNoResult(WolframLibraryData libData, mint Argc, MArgu
 }
 
 /* Returns BitNot[b1] of the input*/
-EXTERN_C DLLEXPORT int demoBoolean1(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
+EXTERN_C DLLEXPORT int demoBoolean1(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument Res) {
 	MArgumentManager mngr(Argc, Args, Res);
 	auto b = mngr.getBoolean(0);
 	mngr.setBoolean(!b);
@@ -599,7 +553,7 @@ EXTERN_C DLLEXPORT int demoBoolean1(WolframLibraryData libData, mint Argc, MArgu
 }
 
 /* Returns the complex conjugate of the complex number inputed */
-EXTERN_C DLLEXPORT int demoComplex1(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
+EXTERN_C DLLEXPORT int demoComplex1(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument Res) {
 	MArgumentManager mngr(Argc, Args, Res);
 	auto c = mngr.getComplex(0);
 	mngr.setComplex(std::conj(c));
@@ -607,21 +561,20 @@ EXTERN_C DLLEXPORT int demoComplex1(WolframLibraryData libData, mint Argc, MArgu
 }
 
 /* Sets the output to the number of arguments passed in to the function */
-EXTERN_C DLLEXPORT int demoNoInput(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
+EXTERN_C DLLEXPORT int demoNoInput(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument Res) {
 	MArgumentManager mngr(Argc, Args, Res);
 	mngr.setInteger(Argc);
 	return LIBRARY_NO_ERROR;
 }
 
 /* Accepts and returns nothing */
-EXTERN_C DLLEXPORT int demoVoid(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
+EXTERN_C DLLEXPORT int demoVoid(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument Res) {
 	MArgumentManager mngr(Argc, Args, Res);
 	return LIBRARY_NO_ERROR;
 }
 
 /* Accepts and returns nothing */
-EXTERN_C DLLEXPORT int demoNoInputVoid(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
+EXTERN_C DLLEXPORT int demoNoInputVoid(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument Res) {
 	MArgumentManager mngr(Argc, Args, Res);
 	return LIBRARY_NO_ERROR;
 }
-

@@ -1,11 +1,12 @@
 /* Include required header */
 #include "WolframLibrary.h"
+
+#include "LLU/Containers/Tensor.h"
+#include "LLU/MArgumentManager.h"
+
+#include "math.h"
 #include "stdio.h"
 #include "stdlib.h"
-#include "math.h"
-
-#include "LLU/MArgumentManager.h"
-#include "LLU/Containers/Tensor.h"
 
 using namespace LibraryLinkUtils;
 
@@ -16,8 +17,8 @@ EXTERN_C DLLEXPORT mint WolframLibrary_getVersion() {
 
 static mint call_id;
 static mint call_nargs;
-static MArgument *cbArgs;
-static mreal **tdata;
+static MArgument* cbArgs;
+static mreal** tdata;
 
 EXTERN_C DLLEXPORT mbool manage_callback(WolframLibraryData libData, mint id, MTensor argtypes) {
 	if (call_id) {
@@ -44,8 +45,8 @@ EXTERN_C DLLEXPORT mbool manage_callback(WolframLibraryData libData, mint id, MT
 		}
 		typerank += 2;
 	}
-	cbArgs = (MArgument *) malloc((call_nargs + 1) * sizeof(MArgument));
-	tdata = (mreal **) malloc(call_nargs * sizeof(mreal *));
+	cbArgs = (MArgument*)malloc((call_nargs + 1) * sizeof(MArgument));
+	tdata = (mreal**)malloc(call_nargs * sizeof(mreal*));
 	return True;
 }
 
@@ -61,7 +62,7 @@ EXTERN_C DLLEXPORT void WolframLibrary_uninitialize(WolframLibraryData libData) 
 	(*libData->unregisterLibraryCallbackManager)("demo_callback_manager");
 }
 
-EXTERN_C DLLEXPORT int apply_callback(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
+EXTERN_C DLLEXPORT int apply_callback(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument Res) {
 	auto err = LLErrorCode::NoError;
 	try {
 		if (call_id <= 0)
@@ -95,43 +96,41 @@ EXTERN_C DLLEXPORT int apply_callback(WolframLibraryData libData, mint Argc, MAr
 			}
 		}
 		mngr.setTensor(Tres);
-	}
-	catch (LibraryLinkError& e) {
+	} catch (LibraryLinkError& e) {
 		err = e.which();
-	}
-	catch (std::exception& e) {
+	} catch (std::exception& e) {
 		err = LLErrorCode::FunctionError;
 	}
 	return err;
 }
 
-EXTERN_C DLLEXPORT int apply_sin(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
-int err = 0;
-int type;
-mint i, n, rank;
-mint const *dims;
-mreal *t, *r;
-MTensor T, Tres = 0;
+EXTERN_C DLLEXPORT int apply_sin(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument Res) {
+	int err = 0;
+	int type;
+	mint i, n, rank;
+	mint const* dims;
+	mreal *t, *r;
+	MTensor T, Tres = 0;
 
-if (Argc != 1)
-	return LIBRARY_FUNCTION_ERROR;
+	if (Argc != 1)
+		return LIBRARY_FUNCTION_ERROR;
 
-T = MArgument_getMTensor(Args[0]);
-type = (*libData->MTensor_getType)(T);
-rank = (*libData->MTensor_getRank)(T);
-dims = (*libData->MTensor_getDimensions)(T);
-n = (*libData->MTensor_getFlattenedLength)(T);
-t = (*libData->MTensor_getRealData)(T);
+	T = MArgument_getMTensor(Args[0]);
+	type = (*libData->MTensor_getType)(T);
+	rank = (*libData->MTensor_getRank)(T);
+	dims = (*libData->MTensor_getDimensions)(T);
+	n = (*libData->MTensor_getFlattenedLength)(T);
+	t = (*libData->MTensor_getRealData)(T);
 
-err = (*libData->MTensor_new)(type, rank, dims, &Tres);
-if (err)
-	return err;
-r = (*libData->MTensor_getRealData)(Tres);
+	err = (*libData->MTensor_new)(type, rank, dims, &Tres);
+	if (err)
+		return err;
+	r = (*libData->MTensor_getRealData)(Tres);
 
-for (i = 0; i < n; i++) {
-	r[i] = sin(t[i]);
-}
+	for (i = 0; i < n; i++) {
+		r[i] = sin(t[i]);
+	}
 
-MArgument_setMTensor(Res, Tres);
-return 0;
+	MArgument_setMTensor(Res, Tres);
+	return 0;
 }

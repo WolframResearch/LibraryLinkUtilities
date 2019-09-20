@@ -19,7 +19,7 @@ TestExecute[
 		options (* defined in TestConfig.wl *)
 	];
 
-	
+
 	Get[FileNameJoin[{$LLUSharedDir, "LibraryLinkUtilities.wl"}]];
 	RegisterPacletErrors[lib, <||>];
 
@@ -148,7 +148,7 @@ TestMatch[
 	Failure["CreateFromNullError", <|
 		"MessageTemplate" -> "Attempting to create a generic container from nullptr.",
 		"MessageParameters" -> <||>,
-		"ErrorCode" -> _?CppErrorCodeQ, 
+		"ErrorCode" -> _?CppErrorCodeQ,
 		"Parameters" -> {}|>
 	]
 	,

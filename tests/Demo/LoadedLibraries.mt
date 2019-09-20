@@ -1,4 +1,3 @@
-
 TestExecute[
 	(* WRIunzip or libCurlLink may already be loaded *)
 	init = Compile`LoadedLibraries[];
@@ -10,7 +9,7 @@ Test[
 	,
 	{}
 	,
-	TestID->"LoadedLibraries-20141110-D9G6V7"
+	TestID -> "LoadedLibraries-20141110-D9G6V7"
 ]
 
 
@@ -20,7 +19,7 @@ Test[
 	,
 	{FindLibrary["demo"]}
 	,
-	TestID->"LoadedLibraries-20141110-A4J2X0"
+	TestID -> "LoadedLibraries-20141110-A4J2X0"
 ]
 
 
@@ -30,7 +29,7 @@ Test[
 	,
 	{FindLibrary["demo_LinkObject"]}
 	,
-	TestID->"LoadedLibraries-20141110-V1B7G4"
+	TestID -> "LoadedLibraries-20141110-V1B7G4"
 ]
 
 
@@ -40,7 +39,7 @@ Test[
 	,
 	{FindLibrary["demo_LinkObject"]}
 	,
-	TestID->"LoadedLibraries-20141110-R7C8U8"
+	TestID -> "LoadedLibraries-20141110-R7C8U8"
 ]
 
 
@@ -50,5 +49,5 @@ Test[
 	,
 	init
 	,
-	TestID->"LoadedLibraries-20141110-T6Y3N7"
+	TestID -> "LoadedLibraries-20141110-T6Y3N7"
 ]

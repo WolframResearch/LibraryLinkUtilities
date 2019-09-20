@@ -1,4 +1,4 @@
-/** 
+/**
  * @file	MLTestCompilationErrors.cpp
  * @date	Jan 30, 2018
  * @author	Rafal Chojna <rafalc@wolfram.com>
@@ -21,27 +21,27 @@ LIBRARY_MATHLINK_FUNCTION(Wrong) {
 	try {
 		MLStream<ML::Encoding::UCS2, ML::Encoding::UTF16> ml(mlp, "List", 0);
 
-		ml << "Hello";	// ERROR (static_assert): "Character type does not match the encoding in ML::String<E>::put"
+		ml << "Hello";	  // ERROR (static_assert): "Character type does not match the encoding in ML::String<E>::put"
 
-		ml << ML::putAs<ML::Encoding::Native>("Hello");		// This should be fine
+		ml << ML::putAs<ML::Encoding::Native>("Hello");	   // This should be fine
 
 		std::basic_string<unsigned char> s;
 
-		ml >> s;		// ERROR (static_assert): "Character type does not match the encoding in ML::String<E>::getString"
+		ml >> s;	// ERROR (static_assert): "Character type does not match the encoding in ML::String<E>::getString"
 
-		ml >> ML::getAs<ML::Encoding::UTF8>(s);				// This should be fine
+		ml >> ML::getAs<ML::Encoding::UTF8>(s);	   // This should be fine
 
-		unsigned int i { 129 };
+		unsigned int i {129};
 
-		ml >> i; 		// ERROR (static_assert): "Calling operator>> with unsupported type."
+		ml >> i;	// ERROR (static_assert): "Calling operator>> with unsupported type."
 
-		ml << i;		// ERROR (static_assert): "Calling operator<< with unsupported type."
+		ml << i;	// ERROR (static_assert): "Calling operator<< with unsupported type."
 
-		i = ML::GetScalar<unsigned int>::get(mlp);  		// ERROR (static_assert): Trying to use ML::GetScalar<T> for unsupported type T
+		i = ML::GetScalar<unsigned int>::get(mlp);	  // ERROR (static_assert): Trying to use ML::GetScalar<T> for unsupported type T
 
-		ML::PutScalar<unsigned int>::put(mlp, i);			// ERROR (static_assert): Trying to use ML::PutScalar<T> for unsupported type T
+		ML::PutScalar<unsigned int>::put(mlp, i);	 // ERROR (static_assert): Trying to use ML::PutScalar<T> for unsupported type T
 
-		ml << static_cast<mlint64>(i); 		// This should be fine
+		ml << static_cast<mlint64>(i);	  // This should be fine
 
 	} catch (LLU::LibraryLinkError& e) {
 		err = e.which();
@@ -50,4 +50,3 @@ LIBRARY_MATHLINK_FUNCTION(Wrong) {
 	}
 	return err;
 }
-

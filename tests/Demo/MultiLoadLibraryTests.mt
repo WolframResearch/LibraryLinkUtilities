@@ -20,10 +20,10 @@ DLLExtension["Windows"] = ".dll";
 DLLExtension["Windows-x86-64"] = ".dll";
 
 GetDLLFile[name_String] := Module[{dll, sys = $SystemID},
-  dll = FileNameJoin[{$DllDemoDir, "LibraryResources", sys, 
-     StringJoin[name, DLLExtension[sys]]}];
-  If[FileType[dll] === File, dll, $Failed]];
-	
+	dll = FileNameJoin[{$DllDemoDir, "LibraryResources", sys,
+		StringJoin[name, DLLExtension[sys]]}];
+	If[FileType[dll] === File, dll, $Failed]];
+
 dll = GetDLLFile["demo"];
 
 Print["dll = " <> dll];
@@ -33,7 +33,7 @@ Test[
 	,
 	File
 	,
-	TestID->"MultiLoadDLLTests-20081130-E1Q8K3"
+	TestID -> "MultiLoadDLLTests-20081130-E1Q8K3"
 ]
 
 Test[
@@ -41,7 +41,7 @@ Test[
 	,
 	LibraryFunction[dll, "demo_I_I", {Integer}, Integer]
 	,
-	TestID->"MultiLoadDLLTests-20081130-S0V4O2"
+	TestID -> "MultiLoadDLLTests-20081130-S0V4O2"
 ]
 
 
@@ -50,7 +50,7 @@ Test[
 	,
 	LibraryFunction[dll, "demo_I_I", {Integer}, Integer]
 	,
-	TestID->"MultiLoadDLLTests-20090217-C0E1Z4"
+	TestID -> "MultiLoadDLLTests-20090217-C0E1Z4"
 ]
 
 
@@ -61,7 +61,7 @@ Test[
 	,
 	{LibraryFunction::overload}
 	,
-	TestID->"MultiLoadDLLTests-20090217-P7O0W9"
+	TestID -> "MultiLoadDLLTests-20090217-P7O0W9"
 ]
 
 
@@ -69,9 +69,9 @@ Test[
 Test[
 	fun1 = LibraryFunctionLoad[dll, "demo_T_T", {{Real, 1}}, {Real, 1}]
 	,
-	LibraryFunction[dll, "demo_T_T",{{Real, 1}}, {Real, 1}]
+	LibraryFunction[dll, "demo_T_T", {{Real, 1}}, {Real, 1}]
 	,
-	TestID->"MultiLoadDLLTests-20091213-M0N3H3"
+	TestID -> "MultiLoadDLLTests-20091213-M0N3H3"
 ]
 
 
@@ -80,11 +80,11 @@ Test[
 Test[
 	fun2 = LibraryFunctionLoad[dll, "demo_T_T", {{Real, 2}}, {Real, 1}]
 	,
-	LibraryFunction[dll, "demo_T_T",{{Real, 2}}, {Real, 1}]
+	LibraryFunction[dll, "demo_T_T", {{Real, 2}}, {Real, 1}]
 	,
 	{LibraryFunction::overload}
 	,
-	TestID->"MultiLoadDLLTests-20091213-X4Y5P6"
+	TestID -> "MultiLoadDLLTests-20091213-X4Y5P6"
 ]
 
 
@@ -94,7 +94,7 @@ Test[
 	,
 	{1., 2., 3., 4., 4., 4., 1., 3.}
 	,
-	TestID->"MultiLoadDLLTests-20091213-F1K2C6"
+	TestID -> "MultiLoadDLLTests-20091213-F1K2C6"
 ]
 
 
@@ -104,7 +104,7 @@ Test[
 	,
 	{1., 2., 3., 4., 2., 2., 4., 2., 3.}
 	,
-	TestID->"MultiLoadDLLTests-20091213-B5F0C0-bug-181705"
+	TestID -> "MultiLoadDLLTests-20091213-B5F0C0-bug-181705"
 ]
 
 
@@ -113,7 +113,7 @@ Test[
 	,
 	Null
 	,
-	TestID->"MultiLoadDLLTests-20091213-I3C2H1"
+	TestID -> "MultiLoadDLLTests-20091213-I3C2H1"
 ]
 
 Test[
@@ -123,27 +123,27 @@ Test[
 	,
 	{LibraryFunction::nofun}
 	,
-	TestID->"MultiLoadDLLTests-20091213-H3N2F2"
+	TestID -> "MultiLoadDLLTests-20091213-H3N2F2"
 ]
 
 Test[
-	Part[fun2[{{1., 2.}, {3., 4.}}],0,0]
+	Part[fun2[{{1., 2.}, {3., 4.}}], 0, 0]
 	,
 	LibraryFunction
 	,
 	{LibraryFunction::nofun}
 	,
-	TestID->"MultiLoadDLLTests-20091213-H2H9N2"
+	TestID -> "MultiLoadDLLTests-20091213-H2H9N2"
 ]
 
 Test[
 	fun2 = LibraryFunctionLoad[dll, "demo_T_T", {{Real, 2}}, {Real, 1}]
 	,
-	LibraryFunction[dll, "demo_T_T",{{Real, 2}}, {Real, 1}]
+	LibraryFunction[dll, "demo_T_T", {{Real, 2}}, {Real, 1}]
 	,
 	{LibraryFunction::overload}
 	,
-	TestID->"MultiLoadDLLTests-20091213-E0Q3I4"
+	TestID -> "MultiLoadDLLTests-20091213-E0Q3I4"
 ]
 
 Test[
@@ -151,28 +151,28 @@ Test[
 	,
 	Null
 	,
-	TestID->"MultiLoadDLLTests-20091213-G3W6J4"
+	TestID -> "MultiLoadDLLTests-20091213-G3W6J4"
 ]
 
 Test[
-	Part[fun1[{1., 2., 3., 4.}],0,0]
+	Part[fun1[{1., 2., 3., 4.}], 0, 0]
 	,
 	LibraryFunction
 	,
 	{LibraryFunction::nofun}
 	,
-	TestID->"MultiLoadDLLTests-20091213-F0B9E0"
+	TestID -> "MultiLoadDLLTests-20091213-F0B9E0"
 ]
 
 
 Test[
-	Part[fun2[{{1., 2.}, {3., 4.}}],0,0]
+	Part[fun2[{{1., 2.}, {3., 4.}}], 0, 0]
 	,
 	LibraryFunction
 	,
 	{LibraryFunction::nofun}
 	,
-	TestID->"MultiLoadDLLTests-20091213-B1Z3E2"
+	TestID -> "MultiLoadDLLTests-20091213-B1Z3E2"
 ]
 
 Test[
@@ -182,6 +182,6 @@ Test[
 	,
 	{LibraryFunction::unloadlib}
 	,
-	TestID->"MultiLoadDLLTests-20091213-C6A0E4"
+	TestID -> "MultiLoadDLLTests-20091213-C6A0E4"
 ]
 

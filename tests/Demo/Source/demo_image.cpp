@@ -1,6 +1,6 @@
 /* Include required header */
-#include "WolframLibrary.h"
 #include "WolframImageLibrary.h"
+#include "WolframLibrary.h"
 
 // In this file std::max is used so if you want to include windows.h you should not do it directly:
 //
@@ -8,8 +8,6 @@
 //
 // but rather using LLU wrapper:
 //
-#include "LLU/NoMinMaxWindows.h"
-
 #include <algorithm>
 #include <cmath>
 #include <complex>
@@ -17,10 +15,11 @@
 #include <iterator>
 #include <vector>
 
-#include "LLU/MArgumentManager.h"
 #include "LLU/Containers/Image.h"
 #include "LLU/Error/ErrorManager.h"
 #include "LLU/LibraryLinkFunctionMacro.h"
+#include "LLU/MArgumentManager.h"
+#include "LLU/NoMinMaxWindows.h"
 
 using namespace LibraryLinkUtils;
 using std::log2;
@@ -43,27 +42,33 @@ EXTERN_C DLLEXPORT void WolframLibrary_uninitialize(WolframLibraryData libData) 
 	return;
 }
 
-template<typename T> static T maxValue() {
-	return -1; // ERROR
+template<typename T>
+static T maxValue() {
+	return -1;	  // ERROR
 }
 
-template<> char maxValue<char>() {
+template<>
+char maxValue<char>() {
 	return 1;
 }
 
-template<> raw_t_ubit8 maxValue<raw_t_ubit8>() {
+template<>
+raw_t_ubit8 maxValue<raw_t_ubit8>() {
 	return 255;
 }
 
-template<> raw_t_ubit16 maxValue<raw_t_ubit16>() {
+template<>
+raw_t_ubit16 maxValue<raw_t_ubit16>() {
 	return 65535;
 }
 
-template<> raw_t_real32 maxValue<raw_t_real32>() {
+template<>
+raw_t_real32 maxValue<raw_t_real32>() {
 	return 1.0f;
 }
 
-template<> raw_t_real64 maxValue<raw_t_real64>() {
+template<>
+raw_t_real64 maxValue<raw_t_real64>() {
 	return 1.0;
 }
 
@@ -75,17 +80,14 @@ LIBRARY_LINK_FUNCTION(color_negate) {
 
 		mngr.operateOnImage(0, [&](const auto& image_in) {
 			auto image_out = image_in;
-			std::transform(std::cbegin(image_in), std::cend(image_in), std::begin(image_out), [](auto channelValue) {
-						return maxValue<decltype(channelValue)>() - channelValue;
-					});
+			std::transform(std::cbegin(image_in), std::cend(image_in), std::begin(image_out),
+						   [](auto channelValue) { return maxValue<decltype(channelValue)>() - channelValue; });
 			mngr.setImage(image_out);
 		});
 
-	}
-	catch (LibraryLinkError& e) {
+	} catch (LibraryLinkError& e) {
 		err = e.which();
-	}
-	catch (std::exception& e) {
+	} catch (std::exception& e) {
 		err = LLErrorCode::FunctionError;
 	}
 	return err;
@@ -104,8 +106,7 @@ static void irgb_to_gray(T* out, const T* in, mint rows, mint cols, mbool alphaQ
 				out[2 * idx + 1] = in[4 * idx + 3];
 			}
 		}
-	}
-	else {
+	} else {
 		for (mint row = 0; row < rows; row++) {
 			for (mint col = 0; col < cols; col++) {
 				mint idx = row * cols + col;
@@ -143,16 +144,14 @@ inline void RGBImageToGrayscale::operator()(Image<std::int8_t>, MArgumentManager
 }
 
 /* Convert interleaved RGB image to grayscale */
-EXTERN_C DLLEXPORT int rgb_to_gray(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument res) {
+EXTERN_C DLLEXPORT int rgb_to_gray(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument res) {
 	auto err = LLErrorCode::NoError;
 	try {
 		MArgumentManager mngr(Argc, Args, res);
 		mngr.operateOnImage<RGBImageToGrayscale>(0, mngr);
-	}
-	catch (LibraryLinkError& e) {
+	} catch (LibraryLinkError& e) {
 		err = e.which();
-	}
-	catch (std::exception& e) {
+	} catch (std::exception& e) {
 		err = LLErrorCode::FunctionError;
 	}
 	return err;
@@ -205,16 +204,14 @@ inline void RGBHistogramEqualization::operator()(Image<std::int8_t>, MArgumentMa
 	ErrorManager::throwException("FunctionError");
 }
 
-EXTERN_C DLLEXPORT int rgbHistogramEqualization(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument res) {
+EXTERN_C DLLEXPORT int rgbHistogramEqualization(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument res) {
 	auto err = LLErrorCode::NoError;
 	try {
 		MArgumentManager mngr(Argc, Args, res);
 		mngr.operateOnImage<RGBHistogramEqualization>(0, mngr);
-	}
-	catch (LibraryLinkError& e) {
+	} catch (LibraryLinkError& e) {
 		err = e.which();
-	}
-	catch (std::exception& e) {
+	} catch (std::exception& e) {
 		err = LLErrorCode::FunctionError;
 	}
 	return err;
@@ -254,16 +251,14 @@ struct iUpsample {
 	}
 };
 
-EXTERN_C DLLEXPORT int Upsample(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
+EXTERN_C DLLEXPORT int Upsample(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument Res) {
 	auto err = LLErrorCode::NoError;
 	try {
 		MArgumentManager mngr(Argc, Args, Res);
 		mngr.operateOnImage<iUpsample>(0, mngr);
-	}
-	catch (LibraryLinkError& e) {
+	} catch (LibraryLinkError& e) {
 		err = e.which();
-	}
-	catch (std::exception& e) {
+	} catch (std::exception& e) {
 		err = LLErrorCode::FunctionError;
 	}
 	return err;
@@ -296,7 +291,8 @@ EXTERN_C DLLEXPORT int Upsample(WolframLibraryData libData, mint Argc, MArgument
  ]
  */
 
-template<typename T> static T clip(const T &x, const T &minVal, const T &maxVal) {
+template<typename T>
+static T clip(const T& x, const T& minVal, const T& maxVal) {
 	return std::max(std::min(x, maxVal), minVal);
 }
 
@@ -304,7 +300,7 @@ static raw_t_real32 luminance(raw_t_real32 r, raw_t_real32 g, raw_t_real32 b) {
 	return 0.27f * r + 0.67f * g + 0.06f * b;
 }
 
-static void ireinhard_global(raw_t_real32 *out, raw_t_real32 *in, mint width, mint height, mint channels) {
+static void ireinhard_global(raw_t_real32* out, raw_t_real32* in, mint width, mint height, mint channels) {
 	const raw_t_real32 delta = 0.00001f;
 	mint pixelCount = width * height;
 
@@ -352,7 +348,7 @@ static void ireinhard_global(raw_t_real32 *out, raw_t_real32 *in, mint width, mi
 }
 
 /* perform the reinhard_global tone mapping */
-EXTERN_C DLLEXPORT int reinhard_global(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
+EXTERN_C DLLEXPORT int reinhard_global(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument Res) {
 	auto err = LLErrorCode::NoError;
 	try {
 		MArgumentManager mngr(Argc, Args, Res);
@@ -373,11 +369,9 @@ EXTERN_C DLLEXPORT int reinhard_global(WolframLibraryData libData, mint Argc, MA
 		ireinhard_global(imageOut.data(), imageIn.data(), width, height, channels);
 
 		mngr.setImage(imageOut);
-	}
-	catch (LibraryLinkError& e) {
+	} catch (LibraryLinkError& e) {
 		err = e.which();
-	}
-	catch (std::exception& e) {
+	} catch (std::exception& e) {
 		err = LLErrorCode::FunctionError;
 	}
 	return err;
@@ -428,9 +422,10 @@ EXTERN_C DLLEXPORT int reinhard_global(WolframLibraryData libData, mint Argc, MA
  */
 
 /* GaussianMatrix[{1, 1.6}] */
-static constexpr raw_t_real32 gauss_kernel_1[3][3] = { { 0.0920282f, 0.119305f, 0.0920282f }, { 0.119305f, 0.154667f, 0.119305f }, { 0.0920282f, 0.119305f, 0.0920282f } };
+static constexpr raw_t_real32 gauss_kernel_1[3][3] = {
+	{0.0920282f, 0.119305f, 0.0920282f}, {0.119305f, 0.154667f, 0.119305f}, {0.0920282f, 0.119305f, 0.0920282f}};
 
-static raw_t_real32 guass_r_1(raw_t_real32 *img, mint xpos, mint ypos, mint width, mint height) {
+static raw_t_real32 guass_r_1(raw_t_real32* img, mint xpos, mint ypos, mint width, mint height) {
 	mint ii, jj, pos;
 	raw_t_real32 accum = 0;
 	mint idx = ypos * width + xpos;
@@ -450,11 +445,13 @@ static raw_t_real32 guass_r_1(raw_t_real32 *img, mint xpos, mint ypos, mint widt
 }
 
 /* GaussianMatrix[{2, 1.6*2}] */
-static constexpr raw_t_real32 gauss_kernel_2[5][5] = { { 0.0323465f, 0.0377221f, 0.0397141f, 0.0377221f, 0.0323465f }, { 0.0377221f, 0.043991f, 0.0463141f, 0.043991f, 0.0377221f },
-	{ 0.0397141f, 0.0463141f, 0.0487599f, 0.0463141f, 0.0397141f }, { 0.0377221f, 0.043991f, 0.0463141f, 0.043991f, 0.0377221f }, { 0.0323465f, 0.0377221f, 0.0397141f, 0.0377221f,
-		0.0323465f } };
+static constexpr raw_t_real32 gauss_kernel_2[5][5] = {{0.0323465f, 0.0377221f, 0.0397141f, 0.0377221f, 0.0323465f},
+													  {0.0377221f, 0.043991f, 0.0463141f, 0.043991f, 0.0377221f},
+													  {0.0397141f, 0.0463141f, 0.0487599f, 0.0463141f, 0.0397141f},
+													  {0.0377221f, 0.043991f, 0.0463141f, 0.043991f, 0.0377221f},
+													  {0.0323465f, 0.0377221f, 0.0397141f, 0.0377221f, 0.0323465f}};
 
-static raw_t_real32 guass_r_2(raw_t_real32 *img, mint xpos, mint ypos, mint width, mint height) {
+static raw_t_real32 guass_r_2(raw_t_real32* img, mint xpos, mint ypos, mint width, mint height) {
 	mint ii, jj, pos;
 	raw_t_real32 accum = 0;
 	mint idx = ypos * width + xpos;
@@ -473,12 +470,15 @@ static raw_t_real32 guass_r_2(raw_t_real32 *img, mint xpos, mint ypos, mint widt
 	return accum;
 }
 
-static const raw_t_real32 gauss_kernel_3[7][7] = { /* GaussianMatrix[{3, 1.6*3}] */
-{ 0.0162577f, 0.0181613f, 0.0194107f, 0.0198463f, 0.0194107f, 0.0181613f, 0.0162577f }, { 0.0181613f, 0.0202878f, 0.0216835f, 0.0221701f, 0.0216835f, 0.0202878f, 0.0181613f }, {
-	0.0194107f, 0.0216835f, 0.0231752f, 0.0236952f, 0.0231752f, 0.0216835f, 0.0194107f }, { 0.0198463f, 0.0221701f, 0.0236952f, 0.024227f, 0.0236952f, 0.0221701f, 0.0198463f }, {
-	0.0194107f, 0.0216835f, 0.0231752f, 0.0236952f, 0.0231752f, 0.0216835f, 0.0194107f }, { 0.0181613f, 0.0202878f, 0.0216835f, 0.0221701f, 0.0216835f, 0.0202878f, 0.0181613f }, {
-	0.0162577f, 0.0181613f, 0.0194107f, 0.0198463f, 0.0194107f, 0.0181613f, 0.0162577f } };
-static raw_t_real32 guass_r_3(raw_t_real32 *img, mint xpos, mint ypos, mint width, mint height) {
+static const raw_t_real32 gauss_kernel_3[7][7] = {/* GaussianMatrix[{3, 1.6*3}] */
+												  {0.0162577f, 0.0181613f, 0.0194107f, 0.0198463f, 0.0194107f, 0.0181613f, 0.0162577f},
+												  {0.0181613f, 0.0202878f, 0.0216835f, 0.0221701f, 0.0216835f, 0.0202878f, 0.0181613f},
+												  {0.0194107f, 0.0216835f, 0.0231752f, 0.0236952f, 0.0231752f, 0.0216835f, 0.0194107f},
+												  {0.0198463f, 0.0221701f, 0.0236952f, 0.024227f, 0.0236952f, 0.0221701f, 0.0198463f},
+												  {0.0194107f, 0.0216835f, 0.0231752f, 0.0236952f, 0.0231752f, 0.0216835f, 0.0194107f},
+												  {0.0181613f, 0.0202878f, 0.0216835f, 0.0221701f, 0.0216835f, 0.0202878f, 0.0181613f},
+												  {0.0162577f, 0.0181613f, 0.0194107f, 0.0198463f, 0.0194107f, 0.0181613f, 0.0162577f}};
+static raw_t_real32 guass_r_3(raw_t_real32* img, mint xpos, mint ypos, mint width, mint height) {
 	mint ii, jj, pos;
 	raw_t_real32 accum = 0;
 	mint idx = ypos * width + xpos;
@@ -497,14 +497,19 @@ static raw_t_real32 guass_r_3(raw_t_real32 *img, mint xpos, mint ypos, mint widt
 	return accum;
 }
 
-static const raw_t_real32 gauss_kernel_4[9][9] = { /* GaussianMatrix[{4, 1.6*4}] */
-{ 0.00975387f, 0.0106342f, 0.0113116f, 0.0117388f, 0.0118848f, 0.0117388f, 0.0113116f, 0.0106342f, 0.00975387f }, { 0.0106342f, 0.0115939f, 0.0123325f, 0.0127982f, 0.0129574f,
-	0.0127982f, 0.0123325f, 0.0115939f, 0.0106342f }, { 0.0113116f, 0.0123325f, 0.0131181f, 0.0136135f, 0.0137829f, 0.0136135f, 0.0131181f, 0.0123325f, 0.0113116f }, { 0.0117388f,
-	0.0127982f, 0.0136135f, 0.0141277f, 0.0143034f, 0.0141277f, 0.0136135f, 0.0127982f, 0.0117388f }, { 0.0118848f, 0.0129574f, 0.0137829f, 0.0143034f, 0.0144813f, 0.0143034f,
-	0.0137829f, 0.0129574f, 0.0118848f }, { 0.0117388f, 0.0127982f, 0.0136135f, 0.0141277f, 0.0143034f, 0.0141277f, 0.0136135f, 0.0127982f, 0.0117388f }, { 0.0113116f, 0.0123325f,
-	0.0131181f, 0.0136135f, 0.0137829f, 0.0136135f, 0.0131181f, 0.0123325f, 0.0113116f }, { 0.0106342f, 0.0115939f, 0.0123325f, 0.0127982f, 0.0129574f, 0.0127982f, 0.0123325f,
-	0.0115939f, 0.0106342f }, { 0.00975387f, 0.0106342f, 0.0113116f, 0.0117388f, 0.0118848f, 0.0117388f, 0.0113116f, 0.0106342f, 0.00975387f } };
-static raw_t_real32 guass_r_4(raw_t_real32 *img, mint xpos, mint ypos, mint width, mint height) {
+static const raw_t_real32 gauss_kernel_4[9][9] = {/* GaussianMatrix[{4, 1.6*4}] */
+												  {0.00975387f, 0.0106342f, 0.0113116f, 0.0117388f, 0.0118848f, 0.0117388f, 0.0113116f, 0.0106342f,
+												   0.00975387f},
+												  {0.0106342f, 0.0115939f, 0.0123325f, 0.0127982f, 0.0129574f, 0.0127982f, 0.0123325f, 0.0115939f, 0.0106342f},
+												  {0.0113116f, 0.0123325f, 0.0131181f, 0.0136135f, 0.0137829f, 0.0136135f, 0.0131181f, 0.0123325f, 0.0113116f},
+												  {0.0117388f, 0.0127982f, 0.0136135f, 0.0141277f, 0.0143034f, 0.0141277f, 0.0136135f, 0.0127982f, 0.0117388f},
+												  {0.0118848f, 0.0129574f, 0.0137829f, 0.0143034f, 0.0144813f, 0.0143034f, 0.0137829f, 0.0129574f, 0.0118848f},
+												  {0.0117388f, 0.0127982f, 0.0136135f, 0.0141277f, 0.0143034f, 0.0141277f, 0.0136135f, 0.0127982f, 0.0117388f},
+												  {0.0113116f, 0.0123325f, 0.0131181f, 0.0136135f, 0.0137829f, 0.0136135f, 0.0131181f, 0.0123325f, 0.0113116f},
+												  {0.0106342f, 0.0115939f, 0.0123325f, 0.0127982f, 0.0129574f, 0.0127982f, 0.0123325f, 0.0115939f, 0.0106342f},
+												  {0.00975387f, 0.0106342f, 0.0113116f, 0.0117388f, 0.0118848f, 0.0117388f, 0.0113116f, 0.0106342f,
+												   0.00975387f}};
+static raw_t_real32 guass_r_4(raw_t_real32* img, mint xpos, mint ypos, mint width, mint height) {
 	mint ii, jj, pos;
 	raw_t_real32 accum = 0;
 	mint idx = ypos * width + xpos;
@@ -523,18 +528,20 @@ static raw_t_real32 guass_r_4(raw_t_real32 *img, mint xpos, mint ypos, mint widt
 	return accum;
 }
 
-static const raw_t_real32 gauss_kernel_5[11][11] = { /* Map[ToString, GaussianMatrix[{5, 1.6*5}], {2}] /. x_String :> StringJoin[x, "f"] */
-{ 0.0064955f, 0.00697212f, 0.00736701f, 0.00766278f, 0.00784594f, 0.00790796f, 0.00784594f, 0.00766278f, 0.00736701f, 0.00697212f, 0.0064955f }, { 0.00697212f, 0.00748371f,
-	0.00790758f, 0.00822505f, 0.00842165f, 0.00848823f, 0.00842165f, 0.00822505f, 0.00790758f, 0.00748371f, 0.00697212f }, { 0.00736701f, 0.00790758f, 0.00835546f, 0.00869091f,
-	0.00889864f, 0.00896899f, 0.00889864f, 0.00869091f, 0.00835546f, 0.00790758f, 0.00736701f }, { 0.00766278f, 0.00822505f, 0.00869091f, 0.00903982f, 0.0092559f, 0.00932907f,
-	0.0092559f, 0.00903982f, 0.00869091f, 0.00822505f, 0.00766278f }, { 0.00784594f, 0.00842165f, 0.00889864f, 0.0092559f, 0.00947714f, 0.00955206f, 0.00947714f, 0.0092559f,
-	0.00889864f, 0.00842165f, 0.00784594f }, { 0.00790796f, 0.00848823f, 0.00896899f, 0.00932907f, 0.00955206f, 0.00962757f, 0.00955206f, 0.00932907f, 0.00896899f, 0.00848823f,
-	0.00790796f }, { 0.00784594f, 0.00842165f, 0.00889864f, 0.0092559f, 0.00947714f, 0.00955206f, 0.00947714f, 0.0092559f, 0.00889864f, 0.00842165f, 0.00784594f }, { 0.00766278f,
-	0.00822505f, 0.00869091f, 0.00903982f, 0.0092559f, 0.00932907f, 0.0092559f, 0.00903982f, 0.00869091f, 0.00822505f, 0.00766278f }, { 0.00736701f, 0.00790758f, 0.00835546f,
-	0.00869091f, 0.00889864f, 0.00896899f, 0.00889864f, 0.00869091f, 0.00835546f, 0.00790758f, 0.00736701f }, { 0.00697212f, 0.00748371f, 0.00790758f, 0.00822505f, 0.00842165f,
-	0.00848823f, 0.00842165f, 0.00822505f, 0.00790758f, 0.00748371f, 0.00697212f }, { 0.0064955f, 0.00697212f, 0.00736701f, 0.00766278f, 0.00784594f, 0.00790796f, 0.00784594f,
-	0.00766278f, 0.00736701f, 0.00697212f, 0.0064955f } };
-static raw_t_real32 guass_r_5(raw_t_real32 *img, mint xpos, mint ypos, mint width, mint height) {
+static const raw_t_real32 gauss_kernel_5[11][11] =
+	{/* Map[ToString, GaussianMatrix[{5, 1.6*5}], {2}] /. x_String :> StringJoin[x, "f"] */
+	 {0.0064955f, 0.00697212f, 0.00736701f, 0.00766278f, 0.00784594f, 0.00790796f, 0.00784594f, 0.00766278f, 0.00736701f, 0.00697212f, 0.0064955f},
+	 {0.00697212f, 0.00748371f, 0.00790758f, 0.00822505f, 0.00842165f, 0.00848823f, 0.00842165f, 0.00822505f, 0.00790758f, 0.00748371f, 0.00697212f},
+	 {0.00736701f, 0.00790758f, 0.00835546f, 0.00869091f, 0.00889864f, 0.00896899f, 0.00889864f, 0.00869091f, 0.00835546f, 0.00790758f, 0.00736701f},
+	 {0.00766278f, 0.00822505f, 0.00869091f, 0.00903982f, 0.0092559f, 0.00932907f, 0.0092559f, 0.00903982f, 0.00869091f, 0.00822505f, 0.00766278f},
+	 {0.00784594f, 0.00842165f, 0.00889864f, 0.0092559f, 0.00947714f, 0.00955206f, 0.00947714f, 0.0092559f, 0.00889864f, 0.00842165f, 0.00784594f},
+	 {0.00790796f, 0.00848823f, 0.00896899f, 0.00932907f, 0.00955206f, 0.00962757f, 0.00955206f, 0.00932907f, 0.00896899f, 0.00848823f, 0.00790796f},
+	 {0.00784594f, 0.00842165f, 0.00889864f, 0.0092559f, 0.00947714f, 0.00955206f, 0.00947714f, 0.0092559f, 0.00889864f, 0.00842165f, 0.00784594f},
+	 {0.00766278f, 0.00822505f, 0.00869091f, 0.00903982f, 0.0092559f, 0.00932907f, 0.0092559f, 0.00903982f, 0.00869091f, 0.00822505f, 0.00766278f},
+	 {0.00736701f, 0.00790758f, 0.00835546f, 0.00869091f, 0.00889864f, 0.00896899f, 0.00889864f, 0.00869091f, 0.00835546f, 0.00790758f, 0.00736701f},
+	 {0.00697212f, 0.00748371f, 0.00790758f, 0.00822505f, 0.00842165f, 0.00848823f, 0.00842165f, 0.00822505f, 0.00790758f, 0.00748371f, 0.00697212f},
+	 {0.0064955f, 0.00697212f, 0.00736701f, 0.00766278f, 0.00784594f, 0.00790796f, 0.00784594f, 0.00766278f, 0.00736701f, 0.00697212f, 0.0064955f}};
+static raw_t_real32 guass_r_5(raw_t_real32* img, mint xpos, mint ypos, mint width, mint height) {
 	mint ii, jj, pos;
 	raw_t_real32 accum = 0;
 	mint idx = ypos * width + xpos;
@@ -553,7 +560,7 @@ static raw_t_real32 guass_r_5(raw_t_real32 *img, mint xpos, mint ypos, mint widt
 	return accum;
 }
 
-static mbool find_gauss_aux(raw_t_real32 a, raw_t_real32 delta, mint n, raw_t_real32 v1, raw_t_real32 v2, raw_t_real32 *v) {
+static mbool find_gauss_aux(raw_t_real32 a, raw_t_real32 delta, mint n, raw_t_real32 v1, raw_t_real32 v2, raw_t_real32* v) {
 	const raw_t_real32 phi = 8.0f;
 	const raw_t_real32 threshold = 0.05f;
 	raw_t_real32 s = pow(1.6f, 2.0f * n);
@@ -566,7 +573,7 @@ static mbool find_gauss_aux(raw_t_real32 a, raw_t_real32 delta, mint n, raw_t_re
 	return False;
 }
 
-static raw_t_real32 find_gauss(raw_t_real32 a, raw_t_real32 delta, raw_t_real32 *img, mint xpos, mint ypos, mint width, mint height) {
+static raw_t_real32 find_gauss(raw_t_real32 a, raw_t_real32 delta, raw_t_real32* img, mint xpos, mint ypos, mint width, mint height) {
 	raw_t_real32 res;
 	raw_t_real32 v1 = guass_r_1(img, xpos, ypos, width, height);
 	raw_t_real32 v2 = guass_r_2(img, xpos, ypos, width, height);
@@ -591,7 +598,7 @@ static raw_t_real32 find_gauss(raw_t_real32 a, raw_t_real32 delta, raw_t_real32 
 	return v1;
 }
 
-static void ireinhard_local(raw_t_real32 *out, raw_t_real32 *in, mint width, mint height, mint channels) {
+static void ireinhard_local(raw_t_real32* out, raw_t_real32* in, mint width, mint height, mint channels) {
 	mint ii, jj, kk;
 	const raw_t_real32 delta = 0.00001f;
 	mint pixelCount = width * height;
@@ -623,7 +630,7 @@ static void ireinhard_local(raw_t_real32 *out, raw_t_real32 *in, mint width, min
 	lworld = exp(lworld / pixelCount);
 
 	raw_t_real32 a = 0.18f * pow(4.0f, ((2 * log2(lworld) - log2(lmin) - log2(lmax)) / (delta + log2(lmax) - log2(lmin))));
-	//raw_t_real32 lwhite = 1.5f * pow(2.0f, (log2(lmax) - log2(lmin) - 5));
+	// raw_t_real32 lwhite = 1.5f * pow(2.0f, (log2(lmax) - log2(lmin) - 5));
 
 	for (ii = 0; ii < height; ii++) {
 		for (jj = 0; jj < width; jj++) {
@@ -640,7 +647,7 @@ static void ireinhard_local(raw_t_real32 *out, raw_t_real32 *in, mint width, min
 }
 
 /* perform the reinhard_global tone mapping */
-EXTERN_C DLLEXPORT int reinhard_local(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
+EXTERN_C DLLEXPORT int reinhard_local(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument Res) {
 	auto err = LLErrorCode::NoError;
 	try {
 		MArgumentManager mngr(Argc, Args, Res);
@@ -661,11 +668,9 @@ EXTERN_C DLLEXPORT int reinhard_local(WolframLibraryData libData, mint Argc, MAr
 		ireinhard_local(imageOut.data(), imageIn.data(), width, height, channels);
 
 		mngr.setImage(imageOut);
-	}
-	catch (LibraryLinkError& e) {
+	} catch (LibraryLinkError& e) {
 		err = e.which();
-	}
-	catch (std::exception& e) {
+	} catch (std::exception& e) {
 		err = LLErrorCode::FunctionError;
 	}
 	return err;
@@ -691,28 +696,28 @@ EXTERN_C DLLEXPORT int reinhard_local(WolframLibraryData libData, mint Argc, MAr
 
  */
 
-static void xyzToXY(const raw_t_real32 &x, const raw_t_real32 &y, const raw_t_real32 &z, raw_t_real32 &X, raw_t_real32 &Y) {
+static void xyzToXY(const raw_t_real32& x, const raw_t_real32& y, const raw_t_real32& z, raw_t_real32& X, raw_t_real32& Y) {
 	const raw_t_real32 sum = x + y + z;
 	X = x / sum;
 	Y = y / sum;
 	return;
 }
 
-static void xyToXYZ(const raw_t_real32 &X, const raw_t_real32 &Y, const raw_t_real32 &C, raw_t_real32 &x, raw_t_real32 &y, raw_t_real32 &z) {
+static void xyToXYZ(const raw_t_real32& X, const raw_t_real32& Y, const raw_t_real32& C, raw_t_real32& x, raw_t_real32& y, raw_t_real32& z) {
 	x = C / (Y * X);
 	y = C;
 	z = C / y * (1 - x - y);
 	return;
 }
 
-static void RGB_toXYZ(const raw_t_real32 &r, const raw_t_real32 &g, const raw_t_real32 &b, raw_t_real32 &x, raw_t_real32 &y, raw_t_real32 &z) {
+static void RGB_toXYZ(const raw_t_real32& r, const raw_t_real32& g, const raw_t_real32& b, raw_t_real32& x, raw_t_real32& y, raw_t_real32& z) {
 	x = r * static_cast<raw_t_real32>(0.412387) + g * static_cast<raw_t_real32>(0.357591) + b * static_cast<raw_t_real32>(0.18045);
 	y = r * static_cast<raw_t_real32>(0.212637) + g * static_cast<raw_t_real32>(0.715183) + b * static_cast<raw_t_real32>(0.0721802);
 	z = r * static_cast<raw_t_real32>(0.0193306) + g * static_cast<raw_t_real32>(0.119197) + b * static_cast<raw_t_real32>(0.950373);
 	return;
 }
 
-static void XYZToRGB(const raw_t_real32 &x, const raw_t_real32 &y, const raw_t_real32 &z, raw_t_real32 &r, raw_t_real32 &g, raw_t_real32 &b) {
+static void XYZToRGB(const raw_t_real32& x, const raw_t_real32& y, const raw_t_real32& z, raw_t_real32& r, raw_t_real32& g, raw_t_real32& b) {
 	r = x * static_cast<raw_t_real32>(3.241) + y * static_cast<raw_t_real32>(-1.5374) + z * static_cast<raw_t_real32>(-0.498616);
 	g = y * static_cast<raw_t_real32>(-0.969224) + y * static_cast<raw_t_real32>(1.87593) + z * static_cast<raw_t_real32>(0.0415542);
 	b = z * static_cast<raw_t_real32>(0.0556394) + y * static_cast<raw_t_real32>(-0.204011) + z * static_cast<raw_t_real32>(1.05715);
@@ -760,7 +765,7 @@ static void XYZToRGB(const raw_t_real32 &x, const raw_t_real32 &y, const raw_t_r
  ]
  */
 
-void whiteBalance(raw_t_ubit8 *out, raw_t_ubit8 *in, mint width, mint height, mint channels, mint medX, mint medY, mint medZ) {
+void whiteBalance(raw_t_ubit8* out, raw_t_ubit8* in, mint width, mint height, mint channels, mint medX, mint medY, mint medZ) {
 	for (mint ii = 0; ii < height; ii++) {
 		for (mint jj = 0; jj < width; jj++) {
 			for (mint kk = 0; kk < channels; kk++) {
@@ -800,37 +805,31 @@ void whiteBalance(raw_t_ubit8 *out, raw_t_ubit8 *in, mint width, mint height, mi
 				double th = 0;
 				double ti = 0. + 0.91822 * (0. + 1.0890636230968613 * z);
 
-				x = b
-						* (0.584699569474613 * ta + 0.23387982778984517 * tb + 3.0794175165359725 * tc + -0.2773574912653834 * td + -0.11094299650615336 * te
-								+ -1.4607493515217624 * tf + -0.08995378598808151 * tg + -0.03598151439523261 * th + -0.4737565729684595 * ti)
-						+ g
-								* (1.1587092024906749 * ta + 2.3174184049813498 * tb + 0.3862362928150638 * tc + -0.5496441151781635 * td + -1.099288230356327 * te
-										+ -0.18321465382142613 * tf + -0.1782629662561986 * tg + -0.3565259325123972 * th + -0.05942097213434799 * ti)
-						+ r
-								* (1.3365463360279806 * ta + 0.6891569272956974 * tb + 0.06265062975415432 * tc + -0.6340027564134477 * td + -0.32690777695397993 * te
-										+ -0.029718888813998177 * tf + -0.2056225271078049 * tg + -0.10602414981400575 * th + -0.009638559074000522 * ti);
-				y = r
-						* (-0.3997801258091086 * ta + -0.20613669400738588 * tb + -0.0187396994552169 * tc + 0.7737727140710301 * td + 0.39897668466862624 * te
-								+ 0.03627060769714784 * tf + 0.01714007212281252 * tg + 0.008837852545305867 * th + 0.0008034411404823516 * ti)
-						+ g
-								* (-0.34658649555281573 * ta + -0.6931729911056315 * tb + -0.11552879954205893 * tc + 0.6708166714928755 * td + 1.341633342985751 * te
-										+ 0.2236054946305942 * tf + 0.014859461856802371 * tg + 0.029718923713604743 * th + 0.004953152567064713 * ti)
-						+ b
-								* (-0.17489200422318826 * ta + -0.06995680168927532 * tb + -0.9210978242910322 * tc + 0.338502721973017 * td + 0.1354010887892068 * te
-										+ 1.7827808773238276 * tf + 0.007498275608427907 * tg + 0.002999310243371163 * th + 0.039490915433981484 * ti);
-				z = r
-						* (0.02295048453364339 * ta + 0.011833847413144971 * tb + 0.0010758043102859064 * tc + -0.08415176935817942 * td + -0.04339077010208874 * te
-								+ -0.003944615463826249 * tf + 0.43605928449681247 * tg + 0.22484314125289886 * th + 0.02044028556844535 * ti)
-						+ g
-								* (0.019896756972738263 * ta + 0.039793513945476526 * tb + 0.0066322504694654345 * tc + -0.07295476926821186 * td + -0.14590953853642372 * te
-										+ -0.02431824962187548 * tf + 0.37803845041357265 * tg + 0.7560769008271453 * th + 0.12601278156368545 * ti)
-						+ b
-								* (0.010040159524835302 * ta + 0.004016063809934121 * tb + 0.05287816978790461 * tc + -0.036813915079427786 * td + -0.014725566031771114 * te
-										+ -0.19388660581659606 * tf + 0.19076306525100253 * tg + 0.07630522610040101 * th + 1.0046854065069357 * ti);
+				x = b * (0.584699569474613 * ta + 0.23387982778984517 * tb + 3.0794175165359725 * tc + -0.2773574912653834 * td + -0.11094299650615336 * te +
+						 -1.4607493515217624 * tf + -0.08995378598808151 * tg + -0.03598151439523261 * th + -0.4737565729684595 * ti) +
+					g * (1.1587092024906749 * ta + 2.3174184049813498 * tb + 0.3862362928150638 * tc + -0.5496441151781635 * td + -1.099288230356327 * te +
+						 -0.18321465382142613 * tf + -0.1782629662561986 * tg + -0.3565259325123972 * th + -0.05942097213434799 * ti) +
+					r * (1.3365463360279806 * ta + 0.6891569272956974 * tb + 0.06265062975415432 * tc + -0.6340027564134477 * td + -0.32690777695397993 * te +
+						 -0.029718888813998177 * tf + -0.2056225271078049 * tg + -0.10602414981400575 * th + -0.009638559074000522 * ti);
+				y = r * (-0.3997801258091086 * ta + -0.20613669400738588 * tb + -0.0187396994552169 * tc + 0.7737727140710301 * td + 0.39897668466862624 * te +
+						 0.03627060769714784 * tf + 0.01714007212281252 * tg + 0.008837852545305867 * th + 0.0008034411404823516 * ti) +
+					g * (-0.34658649555281573 * ta + -0.6931729911056315 * tb + -0.11552879954205893 * tc + 0.6708166714928755 * td + 1.341633342985751 * te +
+						 0.2236054946305942 * tf + 0.014859461856802371 * tg + 0.029718923713604743 * th + 0.004953152567064713 * ti) +
+					b * (-0.17489200422318826 * ta + -0.06995680168927532 * tb + -0.9210978242910322 * tc + 0.338502721973017 * td + 0.1354010887892068 * te +
+						 1.7827808773238276 * tf + 0.007498275608427907 * tg + 0.002999310243371163 * th + 0.039490915433981484 * ti);
+				z = r * (0.02295048453364339 * ta + 0.011833847413144971 * tb + 0.0010758043102859064 * tc + -0.08415176935817942 * td +
+						 -0.04339077010208874 * te + -0.003944615463826249 * tf + 0.43605928449681247 * tg + 0.22484314125289886 * th +
+						 0.02044028556844535 * ti) +
+					g * (0.019896756972738263 * ta + 0.039793513945476526 * tb + 0.0066322504694654345 * tc + -0.07295476926821186 * td +
+						 -0.14590953853642372 * te + -0.02431824962187548 * tf + 0.37803845041357265 * tg + 0.7560769008271453 * th +
+						 0.12601278156368545 * ti) +
+					b * (0.010040159524835302 * ta + 0.004016063809934121 * tb + 0.05287816978790461 * tc + -0.036813915079427786 * td +
+						 -0.014725566031771114 * te + -0.19388660581659606 * tf + 0.19076306525100253 * tg + 0.07630522610040101 * th +
+						 1.0046854065069357 * ti);
 
-				out[index + 0] = (raw_t_ubit8) (255 * x);
-				out[index + 1] = (raw_t_ubit8) (255 * y);
-				out[index + 2] = (raw_t_ubit8) (255 * z);
+				out[index + 0] = (raw_t_ubit8)(255 * x);
+				out[index + 1] = (raw_t_ubit8)(255 * y);
+				out[index + 2] = (raw_t_ubit8)(255 * z);
 
 				for (int ii = 3; ii < channels; ii++) {
 					out[index + ii] = in[index + ii];
@@ -850,7 +849,7 @@ void whiteBalance(raw_t_ubit8 *out, raw_t_ubit8 *in, mint width, mint height, mi
  sepiaBlue[{r_, g_, b_}] := r*0.272 + g*0.534 + b*0.131
  Sepia[img_] := ImageApply[Through[{sepiaRed, sepiaGreen, sepiaBlue}[#]] &, img]
  */
-static void isepia(raw_t_real32 *out, raw_t_real32 *in, mint width, mint height, mint channels) {
+static void isepia(raw_t_real32* out, raw_t_real32* in, mint width, mint height, mint channels) {
 	for (mint ii = 0; ii < height; ii++) {
 		for (mint jj = 0; jj < width; jj++) {
 			for (mint kk = 0; kk < channels; kk++) {
@@ -872,7 +871,7 @@ static void isepia(raw_t_real32 *out, raw_t_real32 *in, mint width, mint height,
 	return;
 }
 
-EXTERN_C DLLEXPORT int sepia(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
+EXTERN_C DLLEXPORT int sepia(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument Res) {
 	auto err = LLErrorCode::NoError;
 	try {
 		MArgumentManager mngr(Argc, Args, Res);
@@ -893,11 +892,9 @@ EXTERN_C DLLEXPORT int sepia(WolframLibraryData libData, mint Argc, MArgument *A
 		isepia(imageOut.data(), imageIn.data(), width, height, channels);
 
 		mngr.setImage(imageOut);
-	}
-	catch (LibraryLinkError& e) {
+	} catch (LibraryLinkError& e) {
 		err = e.which();
-	}
-	catch (std::exception& e) {
+	} catch (std::exception& e) {
 		err = LLErrorCode::FunctionError;
 	}
 	return err;
@@ -922,9 +919,8 @@ static raw_t_real32 vignette(const mint xIndex, const mint yIndex, const mint wi
 	raw_t_real32 midX = width / static_cast<raw_t_real32>(2);
 	raw_t_real32 midY = height / static_cast<raw_t_real32>(2);
 
-	raw_t_real32 dist = sqrt(
-			pow(static_cast<raw_t_real32>(xIndex - midX) / midX, static_cast<raw_t_real32>(2.0))
-					+ pow(static_cast<raw_t_real32>(yIndex - midY) / midY, static_cast<raw_t_real32>(2.0)));
+	raw_t_real32 dist = sqrt(pow(static_cast<raw_t_real32>(xIndex - midX) / midX, static_cast<raw_t_real32>(2.0)) +
+							 pow(static_cast<raw_t_real32>(yIndex - midY) / midY, static_cast<raw_t_real32>(2.0)));
 
 	dist /= sqrt(static_cast<raw_t_real32>(2.0));
 
@@ -950,7 +946,7 @@ static raw_t_real32 imageAdjust(const raw_t_real32 pixel, const raw_t_real32 low
 	return clip(res, 0.0f, 1.0f);
 }
 
-static void ilomography(raw_t_real32 *out, raw_t_real32 *in, mint width, mint height, mint channels) {
+static void ilomography(raw_t_real32* out, raw_t_real32* in, mint width, mint height, mint channels) {
 	const raw_t_real32 c = 0.75;
 	for (mint ii = 0; ii < height; ii++) {
 		for (mint jj = 0; jj < width; jj++) {
@@ -980,7 +976,7 @@ static void ilomography(raw_t_real32 *out, raw_t_real32 *in, mint width, mint he
 	return;
 }
 
-EXTERN_C DLLEXPORT int lomography(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
+EXTERN_C DLLEXPORT int lomography(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument Res) {
 	auto err = LLErrorCode::NoError;
 	try {
 		MArgumentManager mngr(Argc, Args, Res);
@@ -1001,11 +997,9 @@ EXTERN_C DLLEXPORT int lomography(WolframLibraryData libData, mint Argc, MArgume
 		ilomography(imageOut.data(), imageIn.data(), width, height, channels);
 
 		mngr.setImage(imageOut);
-	}
-	catch (LibraryLinkError& e) {
+	} catch (LibraryLinkError& e) {
 		err = e.which();
-	}
-	catch (std::exception& e) {
+	} catch (std::exception& e) {
 		err = LLErrorCode::FunctionError;
 	}
 	return err;
