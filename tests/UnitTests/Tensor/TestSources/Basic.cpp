@@ -93,7 +93,7 @@ LIBRARY_LINK_FUNCTION(TestDimensions2) {
 
 		mngr.setDataList(naList);
 	} catch (const LibraryLinkError& e) {
-		err = ErrorCode::FunctionError;
+		err = e.which();
 	}
 	return err;
 }
@@ -167,7 +167,7 @@ EXTERN_C DLLEXPORT int IntegerMatrixTranspose(WolframLibraryData libData, mint A
 		mngr.setTensor(out);
 	} catch (LibraryLinkError& e) {
 		err = e.which();
-	} catch (std::exception& e) {
+	} catch (std::exception&) {
 		err = ErrorCode::FunctionError;
 	}
 	return err;
