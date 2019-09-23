@@ -13,7 +13,7 @@
 
 if (SPHINX_EXE_PATH)
     set(_SPHINX_EXE_PATH "${SPHINX_EXE_PATH}")
-else ()
+elseif ($ENV{SPHINX_EXE_PATH})
     set(_SPHINX_EXE_PATH "$ENV{SPHINX_EXE_PATH}")
 endif ()
 
