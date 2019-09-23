@@ -86,6 +86,9 @@ namespace LLU {
 		LLU_DEFINE_ERROR_NAME(ArgumentAddNodeMArgument);
 
 		LLU_DEFINE_ERROR_NAME(Aborted);
+
+		LLU_DEFINE_ERROR_NAME(ManagedExprInvalidID);
+		LLU_DEFINE_ERROR_NAME(MLEDynamicTypeError);
 	}
 
 } /* namespace LLU */

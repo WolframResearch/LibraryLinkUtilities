@@ -119,6 +119,10 @@ namespace LLU {
 
 		// ProgressMonitor errors:
 		extern const std::string Aborted;    	///< Computation aborted by the user
+
+		// ManagedExpression errors:
+		extern const std::string ManagedExprInvalidID;		///< Given number is not an ID of any existing managed expression
+		extern const std::string MLEDynamicTypeError;		///< Invalid dynamic type requested for a Managed Library Expression
 	}
 
 }

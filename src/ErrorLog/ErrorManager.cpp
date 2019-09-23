@@ -102,6 +102,10 @@ namespace LLU {
 
 			// ProgressMonitor errors:
 			{ErrorName::Aborted,                     "Computation aborted by the user." },
+
+			// ManagedExpression errors:
+			{ErrorName::ManagedExprInvalidID,        "Given number is not an ID of any existing managed expression." },
+			{ErrorName::MLEDynamicTypeError,         "Invalid dynamic type requested for a Managed Library Expression" },
 		});
 		return errMap;
 	}

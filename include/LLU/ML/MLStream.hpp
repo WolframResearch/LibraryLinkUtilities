@@ -409,6 +409,14 @@ namespace LLU {
 		MLStream& operator>>(bool& b);
 
 		/**
+		 *   @brief			Receives a mint value.
+		 *   @param[in] 	i - argument to which a mint value will be assigned
+		 *
+		 *   @note		    It actually reads an mlint64 and casts to mint, as mint is not natively supported by MathLink.
+		 **/
+		MLStream& operator>>(mint& i);
+
+		/**
 		 *   @brief			Receives a MathLink array
 		 *   @tparam		T - array element type
 		 *   @param[out] 	a - argument to which the ML::ArrayData received from MathLink will be assigned
@@ -933,6 +941,12 @@ namespace LLU {
 		else {
 			ML::throwLLUException(ErrorName::MLWrongSymbolForBool, R"(Expected "True" or "False", got )" + boolean.getHead());
 		}
+		return *this;
+	}
+
+	template<ML::Encoding EIn, ML::Encoding EOut>
+	auto MLStream<EIn, EOut>::operator>>(mint& i) -> MLStream& {
+		i = static_cast<mint>(ML::GetScalar<mlint64>::get(m));
 		return *this;
 	}
 

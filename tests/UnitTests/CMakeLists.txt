@@ -21,6 +21,7 @@
 		"DataList"
 		"ErrorReporting"
 		"Image"
+		"ManagedExpressions"
 		"MathLink"
 		"NumericArray"
 		"GenericContainers"

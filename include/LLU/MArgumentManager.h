@@ -23,6 +23,7 @@
 #include "LLU/Containers/Tensor.h"
 #include "LLU/Containers/Passing/Automatic.hpp"
 #include "LLU/MArgument.h"
+#include "LLU/ManagedExpression.hpp"
 #include "LLU/ProgressMonitor.h"
 
 #include "WolframLibrary.h"
@@ -231,6 +232,28 @@ namespace LLU {
 		 *   @throws        ErrorName::MArgumentIndexError - if \c index is out-of-bounds
 		 **/
 		DataStore getDataStore(unsigned int index) const;
+
+		/**
+		 * @brief   Get a reference to an instance of Managed Expression that was sent from Wolfram Language as argument to a library function
+		 * @tparam  ManagedExpr - registered Managed Expression class
+		 * @tparam  DynamicType - actual type of Managed Expression, this must be ManagedExpr or its subclass
+		 * @param   index - position of desired argument in \c Args
+		 * @param   store - Managed Expression store that manages expressions of type ManagedExpr
+		 * @return  a reference to the Managed Expression
+		 */
+		template<class ManagedExpr, class DynamicType = ManagedExpr>
+		DynamicType& getManagedExpression(unsigned int index, ManagedExpressionStore<ManagedExpr>& store) const;
+
+		/**
+		 * @brief   Get a shared pointer to an instance of Managed Expression that was sent from Wolfram Language as argument to a library function
+		 * @tparam  ManagedExpr - registered Managed Expression class
+		 * @tparam  DynamicType - actual type of Managed Expression, this must be ManagedExpr or its subclass
+		 * @param   index - position of desired argument in \c Args
+		 * @param   store - Managed Expression store that manages expressions of type ManagedExpr
+		 * @return  a shared pointer to the Managed Expression
+		 */
+		template<class ManagedExpr, class DynamicType = ManagedExpr>
+		std::shared_ptr<DynamicType> getManagedExpressionPtr(unsigned int index, ManagedExpressionStore<ManagedExpr> &store) const;
 
 		/************************************ MArgument "setters" ************************************/
 
@@ -825,6 +848,22 @@ namespace LLU {
 	template<class PassingMode>
 	GenericDataList<PassingMode> MArgumentManager::getGenericDataList(unsigned int index) const {
 		return getDataStore(index);
+	}
+
+	template<class ManagedExpr, class DynamicType>
+	DynamicType& MArgumentManager::getManagedExpression(unsigned int index, ManagedExpressionStore<ManagedExpr>& store) const {
+		auto ptr = getManagedExpressionPtr<ManagedExpr, DynamicType>(index, store);
+		if (!ptr) {
+			ErrorManager::throwException(ErrorName::MLEDynamicTypeError);
+		}
+		return *ptr;
+	}
+
+	template<class ManagedExpr, class DynamicType>
+	std::shared_ptr<DynamicType> MArgumentManager::getManagedExpressionPtr(unsigned int index, ManagedExpressionStore<ManagedExpr> &store) const {
+		auto exprID = getInteger<mint>(index);
+		auto baseClassPtr = store.getInstancePointer(exprID);
+		return std::dynamic_pointer_cast<DynamicType>(baseClassPtr);
 	}
 
 } /* namespace LLU */

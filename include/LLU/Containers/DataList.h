@@ -353,7 +353,7 @@ namespace LLU {
 
 		template<MArgumentType MArgT, class P>
 		ValidNodeType<MArgT> push_back(const std::string &name, const MContainer<MArgT, P> &nodeData) {
-			push_back(name, nodeData.abandonContainer());
+			push_back<MArgT>(name, nodeData.abandonContainer());
 		}
 
 		/**
