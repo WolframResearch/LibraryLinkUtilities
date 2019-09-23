@@ -12,5 +12,5 @@ lib/
 build*/
 install/
 
-docs/_build
-docs/html
+docs/xml
+docs/LibraryLinkUtilities
