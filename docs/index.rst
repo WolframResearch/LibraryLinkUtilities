@@ -1,21 +1,43 @@
-.. LibraryLink Utilities documentation master file, created by
-   sphinx-quickstart on Thu Sep 19 14:55:10 2019.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
 
-Welcome to LibraryLink Utilities documentation!
+.. role:: cpp(code)
+   :language: cpp
+   :class: highlight
+
+.. role:: wl(code)
+   :language: mma
+   :class: highlight
+
+.. role:: raw-html(raw)
+   :format: html
+
+LibraryLink Utilities
 =================================================
 
 Contents:
 
 .. toctree::
-   :maxdepth: 2
+   :caption: Basic Info
+
+.. toctree::
+   :hidden:
+   :caption: Modules
+
+   modules/containers
+   modules/error_handling
+   modules/mathlink
+   modules/managed_expressions
+
+.. toctree::
+   :hidden:
+   :caption: Internal
+
+   internal/paclet_use
+   internal/cmake_utilities
 
 Docs
 ====
 
 .. doxygennamespace:: LLU
-   :members:
 
 Indices and tables
 ==================
@@ -23,4 +45,3 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
-
