@@ -7,6 +7,7 @@
 #ifndef LLUTILS_ML_STRINGS_H_
 #define LLUTILS_ML_STRINGS_H_
 
+#include <algorithm>
 #include <functional>
 #include <memory>
 
