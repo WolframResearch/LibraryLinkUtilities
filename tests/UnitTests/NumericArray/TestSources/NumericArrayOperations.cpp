@@ -327,7 +327,7 @@ LIBRARY_LINK_FUNCTION(TestDimensions2) {
 		}
 		mngr.setDataList(naList);
 	} catch (const LibraryLinkError& e) {
-		err = ErrorCode::FunctionError;
+		err = e.which();
 	}
 	return err;
 }
