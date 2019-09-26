@@ -108,7 +108,7 @@ namespace LLU {
 		/**
 		 *  @brief  Get dimension value at position \p index
 		 */
-		mint dimension(mint index) {
+		mint dimension(mint index) const {
 			return dims.get(index);
 		}
 
