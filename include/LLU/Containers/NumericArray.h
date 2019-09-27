@@ -12,14 +12,12 @@
 #include <initializer_list>
 #include <type_traits>
 
-#include "WolframLibrary.h"
-#include "WolframNumericArrayLibrary.h"
-
 #include "LLU/Containers/Generic/NumericArray.hpp"
 #include "LLU/Containers/MArray.hpp"
 #include "LLU/Containers/Passing/Automatic.hpp"
 #include "LLU/Containers/Passing/Manual.hpp"
 #include "LLU/Containers/Passing/PassingPolicy.hpp"
+#include "LLU/LibraryData.h"
 #include "LLU/Utilities.hpp"
 
 namespace LLU {

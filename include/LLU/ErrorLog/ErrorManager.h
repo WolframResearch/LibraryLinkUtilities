@@ -14,8 +14,6 @@
 #include <utility>
 #include <vector>
 
-#include "WolframLibrary.h"
-
 #include <LLU/ErrorLog/LibraryLinkError.h>
 #include <LLU/LibraryData.h>
 

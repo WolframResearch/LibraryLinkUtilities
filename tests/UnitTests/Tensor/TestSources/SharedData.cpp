@@ -1,7 +1,5 @@
 #include <memory>
 
-#include "WolframLibrary.h"
-
 #include "LLU/Containers/Passing/Shared.hpp"
 #include "LLU/Containers/Tensor.h"
 #include "LLU/LibraryLinkFunctionMacro.h"

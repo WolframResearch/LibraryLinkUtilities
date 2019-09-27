@@ -11,8 +11,6 @@
 #include <unordered_map>
 #include <utility>
 
-#include "WolframLibrary.h"
-
 #include <LLU/LibraryData.h>
 #include <LLU/Utilities.hpp>
 

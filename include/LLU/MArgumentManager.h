@@ -17,14 +17,13 @@
 #include <utility>
 #include <vector>
 
-#include "WolframLibrary.h"
-
 #include "LLU/Containers/DataList.h"
 #include "LLU/Containers/Image.h"
 #include "LLU/Containers/NumericArray.h"
 #include "LLU/Containers/Passing/Automatic.hpp"
 #include "LLU/Containers/Tensor.h"
 #include "LLU/ErrorLog/ErrorManager.h"
+#include "LLU/LibraryData.h"
 #include "LLU/MArgument.h"
 #include "LLU/ManagedExpression.hpp"
 #include "LLU/ProgressMonitor.h"

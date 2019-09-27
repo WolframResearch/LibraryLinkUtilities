@@ -15,8 +15,7 @@
 #include <utility>
 #include <vector>
 
-#include "WolframLibrary.h"
-
+#include "LLU/LibraryData.h"
 #include "LLU/Utilities.hpp"
 
 #include "MArrayDimensions.h"

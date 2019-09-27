@@ -7,9 +7,34 @@
 
 #include <memory>
 
+#ifdef _MATHLINK_H
+
+/* If mathlink.h has already been included we just include WolframLibrary.h */
+#include "WolframLibrary.h"
+
+#else
+
+/* If mathlink.h has not been included before WolframLibrary.h, we include WolframLibary.h and undefine _MATHLINK_H.
+ * It will have no effect in 12.1+ but in 12.0- it will allow mathlink.h to be included later. */
+
+#pragma push_macro("DLLIMPORT")
+#undef DLLIMPORT
+
+#include "dllexport.h"
+
+#ifndef DLLIMPORT
+#pragma pop_macro("DLLIMPORT")
+
+#include "mathlink.h"
+
+#endif	/* DLLIMPORT */
+
+#include "WolframLibrary.h"
+
+#endif	/* _MATHLINK_H */
+
 #include "WolframIOLibraryFunctions.h"
 #include "WolframImageLibrary.h"
-#include "WolframLibrary.h"
 #include "WolframNumericArrayLibrary.h"
 #include "WolframSparseLibrary.h"
 

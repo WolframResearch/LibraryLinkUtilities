@@ -14,9 +14,6 @@
 #include <type_traits>
 #include <utility>
 
-#include "WolframIOLibraryFunctions.h"
-#include "WolframLibrary.h"
-
 #include "LLU/Containers/Generic/DataStore.hpp"
 #include "LLU/Containers/Passing/Automatic.hpp"
 #include "LLU/Containers/Passing/Manual.hpp"
@@ -97,8 +94,8 @@ namespace LLU {
 	/**
 	 * @class	DataList
 	 * @brief 	Top-level wrapper over LibraryLink's DataStore.
-	 * 			Designed to be strongly typed i.e. to wrap only homogeneous DataStores but by passing MArgumentType::MArgument as template parameter it will work
-	 * with arbitrary DataStores.
+	 * 			Designed to be strongly typed i.e. to wrap only homogeneous DataStores but by passing MArgumentType::MArgument as template parameter it will
+	 * work with arbitrary DataStores.
 	 * @tparam 	T - type of data stored in each node, see the enum type \c MArgumentType
 	 * @tparam 	PassingMode - policy for memory management of the internal container
 	 */

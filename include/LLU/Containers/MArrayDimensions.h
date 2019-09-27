@@ -10,9 +10,8 @@
 #include <type_traits>
 #include <vector>
 
-#include "WolframLibrary.h"
-
 #include "LLU/ErrorLog/ErrorManager.h"
+#include "LLU/LibraryData.h"
 #include "LLU/Utilities.hpp"
 
 namespace LLU {

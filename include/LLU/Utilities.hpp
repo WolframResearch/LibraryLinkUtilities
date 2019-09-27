@@ -14,8 +14,7 @@
 #include <type_traits>
 #include <utility>
 
-#include "WolframLibrary.h"
-#include "WolframNumericArrayLibrary.h"
+#include "LLU/LibraryData.h"
 
 namespace LLU {
 

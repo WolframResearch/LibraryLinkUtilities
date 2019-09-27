@@ -7,7 +7,7 @@
 #ifndef LLUTILS_PASSINGPOLICY_HPP
 #define LLUTILS_PASSINGPOLICY_HPP
 
-#include "WolframLibrary.h"
+#include "LLU/LibraryData.h"
 
 namespace LLU {
 	/// Namespace containing classes representing different passing modes that exist in LibraryLink
