@@ -124,7 +124,6 @@ if(NOT TARGET LLU)
 			PRIVATE "-Wall"
 			PRIVATE "-Wextra"
 			PRIVATE "-pedantic"
-			PRIVATE "-Werror-implicit-function-declaration"
 			PRIVATE "$<$<NOT:$<CONFIG:Debug>>:-O3>"
 		)
 	endif()
