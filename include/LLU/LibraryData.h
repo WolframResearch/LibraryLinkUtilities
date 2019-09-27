@@ -1,28 +1,30 @@
 /**
  * @file
  * Definition of the LibraryData class.
+ * This file is the only place in LLU where LibraryLink header files are included. It is done this way to solve the include order dependency issue which was
+ * present in LibraryLink before WL version 12.1.
  */
 #ifndef LLUTILS_LIBRARYDATA_H
 #define LLUTILS_LIBRARYDATA_H
 
 #include <memory>
 
+/* If mathlink.h has already been included we just include WolframLibrary.h because there will be no conflict. */
 #ifdef _MATHLINK_H
 
-/* If mathlink.h has already been included we just include WolframLibrary.h */
 #include "WolframLibrary.h"
 
 #else
 
-/* If mathlink.h has not been included before WolframLibrary.h, we include WolframLibary.h and undefine _MATHLINK_H.
- * It will have no effect in 12.1+ but in 12.0- it will allow mathlink.h to be included later. */
+/* If mathlink.h has not been included before WolframLibrary.h, we need to detect if we are dealing with WL 12.0- or 12.1+.
+ * To achieve this we include a small header file dllexport.h which defines DLLIMPORT macro only since 12.1. */
 
-#pragma push_macro("DLLIMPORT")
+#pragma push_macro("DLLIMPORT") /* Although unlikely, DLLIMPORT might have been defined elsewhere, so save it and temporarily undefine. */
 #undef DLLIMPORT
 
 #include "dllexport.h"
 
-#ifndef DLLIMPORT
+#ifndef DLLIMPORT	/* We are dealing with WL 12.0-, restore DLLIMPORT macro and include mathlink.h even though we don't really need it at this point. */
 #pragma pop_macro("DLLIMPORT")
 
 #include "mathlink.h"
