@@ -2,10 +2,12 @@
 MathLink support
 ===================
 
-_LibraryLink_ allows you to pass LinkObject as argument, which may then be utilized to exchange data between your library and the Kernel using MathLink.
-The original MathLink API is in old C style with error codes, macros, manual memory management, etc. Therefore, __LLU__ provides a wrapper for the LinkObject called `MLStream`.
+*LibraryLink* allows you to pass LinkObject as argument, which may then be utilized to exchange data between your library and the Kernel using MathLink.
+The original MathLink API is in old C style with error codes, macros, manual memory management, etc.
+Therefore, *LLU* provides a wrapper for the LinkObject called `MLStream`.
 
-`MLStream` is actually a class template parameterized by the default encoding to be used for strings, but for the sake of clarity, the template parameter is skipped in the remainder of this README.
+`MLStream` is actually a class template parameterized by the default encoding to be used for strings, but for the sake of clarity,
+the template parameter is skipped in the remainder of this text.
 
 
 Main features
@@ -14,8 +16,8 @@ Main features
 Convenient syntax
 -----------------------
 
-In this extension to __LLU__ MathLink is interpreted as an i/o stream, so operators << and >> are utilized to make the syntax cleaner and more concise.
-This means that the framework frees the developer from the responsibility to choose proper MathLink function for the data they intend to read or write.
+In __LLU__ MathLink is interpreted as an i/o stream, so operators << and >> are utilized to make the syntax cleaner and more concise.
+This means that the framework frees developers from the responsibility to choose proper MathLink function for the data they intend to read or write.
 
 Error checking
 -----------------------
