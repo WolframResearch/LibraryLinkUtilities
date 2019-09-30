@@ -56,7 +56,7 @@ namespace LLU {
 	}
 
 	mint MArrayDimensions::checkContainerSize(std::initializer_list<mint> v) const {
-		if (v.size() <= 0 || v.size() > static_cast<decltype(v)::size_type>(std::numeric_limits<mint>::max())) {
+		if (v.size() <= 0 || v.size() > static_cast<decltype(v)::size_type>((std::numeric_limits<mint>::max)())) {
 			ErrorManager::throwException(ErrorName::DimensionsError);
 		}
 		return static_cast<mint>(v.size());
