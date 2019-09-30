@@ -30,12 +30,17 @@ set(TEST_MODULES
         "Tensor"
         )
 
+set(CMAKE_FIND_APPBUNDLE NEVER)
+
 find_program(WOLFRAMSCRIPT_EXE
         NAMES wolframscript
         PATHS ${MATHEMATICA_INSTALL_DIR}
-        PATH_SUFFIXES Executables
+        PATH_SUFFIXES Executables MacOS
+		NO_DEFAULT_PATH
         DOC "Path to wolframscript executable."
 )
+
+message(STATUS "Unit tests will be run with: ${WOLFRAMSCRIPT_EXE}")
 
 foreach (UnitTest ${TEST_MODULES})
     set(MODULE_CODE "
@@ -45,6 +50,6 @@ foreach (UnitTest ${TEST_MODULES})
 		")
     add_test(NAME ${UnitTest}
             WORKING_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}/${UnitTest}"
-            COMMAND ${WOLFRAMSCRIPT_EXE} -code ${MODULE_CODE} # we assume here that wolframscript is installed and on the PATH
+            COMMAND ${WOLFRAMSCRIPT_EXE} -code ${MODULE_CODE}
             )
 endforeach ()
