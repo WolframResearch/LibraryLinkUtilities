@@ -34,9 +34,8 @@ set(CMAKE_FIND_APPBUNDLE NEVER)
 
 find_program(WOLFRAMSCRIPT_EXE
         NAMES wolframscript
-        PATHS ${MATHEMATICA_INSTALL_DIR}
+        HINTS ${MATHEMATICA_INSTALL_DIR}
         PATH_SUFFIXES Executables MacOS
-		NO_DEFAULT_PATH
         DOC "Path to wolframscript executable."
 )
 
