@@ -355,7 +355,6 @@ function(find_and_parse_library_conf)
 
 		if(NOT ${LIB_SYSTEMID})
 			set(${LIB_SYSTEMID} ${SYSTEMID})
-			set(${LIB_SYSTEMID} ${SYSTEMID} PARENT_SCOPE)
 		endif()
 
 		set(_LIBRARY_CONF_LIBRARY_STRING ${_LIBRARY_CONF_STRINGS})
@@ -376,8 +375,8 @@ function(find_and_parse_library_conf)
 		list(GET _LIB_VERSION_BUILD_PLATFORM 1 _LIB_BUILD_PLATFORM)
 
 		set(${LIB_VERSION} ${_LIB_VERSION} PARENT_SCOPE)
-
 		set(${LIB_BUILD_PLATFORM} ${_LIB_BUILD_PLATFORM} PARENT_SCOPE)
+		set(${LIB_SYSTEMID} ${${LIB_SYSTEMID}} PARENT_SCOPE)
 	endforeach()
 endfunction()
 
@@ -395,6 +394,11 @@ function(find_cvs_dependency LIB_NAME)
 	set(LIB_SYSTEMID ${${_LIB_NAME}_SYSTEMID})
 	set(LIB_BUILD_PLATFORM ${${_LIB_NAME}_BUILD_PLATFORM})
 	set(_LIB_DIR_SUFFIX ${LIB_VERSION}/${LIB_SYSTEMID}/${LIB_BUILD_PLATFORM})
+
+	if(NOT LIB_SYSTEMID)
+		message(STATUS "[find_cvs_dependency] ${LIB_NAME}_SYSTEMID not defined. Returning.")
+		return()
+	endif()
 
 	# Check if there is a full path to the dependency with version, system id and build platform.
 	if(NOT ${LIB_DIR} STREQUAL "")
@@ -440,7 +444,6 @@ function(find_cvs_dependency LIB_NAME)
 		BUILD_PLATFORM ${LIB_BUILD_PLATFORM}
 	)
 	set(${_LIB_NAME}_DIR ${LIB_LOCATION} PARENT_SCOPE)
-
 endfunction()
 
 # Sets SEARCH_OPTS depending on whether the variable PATH has a value.
