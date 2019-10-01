@@ -5,6 +5,8 @@
  * @brief	Source code for MathLinkStream unit tests.
  */
 
+#include "LLU/NoMinMaxWindows.h"
+
 #include <algorithm>
 #include <iostream>
 #include <map>
@@ -21,7 +23,7 @@
 #include "LLU/ErrorLog/LibraryLinkError.h"
 #include "LLU/LibraryLinkFunctionMacro.h"
 #include "LLU/ML/MLStream.hpp"
-#include "LLU/NoMinMaxWindows.h"
+
 
 using namespace LLU;
 using MathLinkStream = MLStream<ML::Encoding::UTF8>;
@@ -37,7 +39,7 @@ template<typename T>
 void readAndWriteScalarMax(MathLinkStream& m) {
 	T x;
 	m >> x;
-	m << std::numeric_limits<T>::max();
+	m << (std::numeric_limits<T>::max)();
 }
 
 //
