@@ -1,5 +1,5 @@
 ================
-Error Handling
+Error handling
 ================
 
 Every *LibraryLink* function in C code has a fixed signature [#]_
