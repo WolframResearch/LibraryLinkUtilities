@@ -203,30 +203,47 @@ function(set_rpath TARGET_NAME NEW_RPATH)
 	set_target_properties(${TARGET_NAME} PROPERTIES INSTALL_RPATH ${NEW_RPATH})
 endfunction()
 
-# helper function for get_library_from_cvs
-function(_set_package_args PACKAGE_SYSTEM_ID PACKAGE_BUILD_PLATFORM TAG VALUE)
-	if(${TAG} STREQUAL SYSTEM_ID)
-		set(${PACKAGE_SYSTEM_ID} ${VALUE} PARENT_SCOPE)
-	elseif(${TAG} STREQUAL BUILD_PLATFORM)
-		set(${PACKAGE_BUILD_PLATFORM} ${VALUE} PARENT_SCOPE)
+#Helper function to check whether given CVS module exists.
+function(cvsmoduleQ MODULE WORKINGDIR RES)
+	execute_process(
+		COMMAND cvs -d $ENV{CVSROOT} rdiff -r HEAD ${MODULE}
+		WORKING_DIRECTORY ${WORKINGDIR}
+		RESULT_VARIABLE _RES
+		OUTPUT_QUIET ERROR_QUIET
+	)
+	if("${_RES}" STREQUAL "0")
+		set(${RES} TRUE PARENT_SCOPE)
+	else()
+		set(${RES} FALSE PARENT_SCOPE)
 	endif()
 endfunction()
 
+# Helper function to download content from CVS.
+function(download_cvs_content content_name download_path module_path DOWNLOAD_LOCATION_OUT)
+	include(FetchContent)
+	FetchContent_declare(
+		${content_name}
+		SOURCE_DIR "${download_path}"
+		CVS_REPOSITORY $ENV{CVSROOT}
+		CVS_MODULE "${module_path}"
+	)
+	string(TOLOWER ${content_name} lc_content_name)
+	FetchContent_getproperties(${content_name})
+	if(NOT ${lc_content_name}_POPULATED)
+		message(STATUS "Downloading CVS module: ${module_path}")
+		FetchContent_populate(${content_name})
+	endif()
+	# store the download location in a variable
+	set(${DOWNLOAD_LOCATION_OUT} "${${lc_content_name}_SOURCE_DIR}" PARENT_SCOPE)
+endfunction()
+
 # Download a library from Wolfram's CVS repository and set PACKAGE_LOCATION to the download location.
-# SystemId and BuildPlatform can be provided as optional arguments to only download a specific instance of the library.
 # If a Source directory exists in the component root directory and DOWNLOAD_CVS_SOURCE is ON, it will be downloaded.
-function(get_library_from_cvs PACKAGE_NAME PACKAGE_VERSION PACKAGE_LOCATION)
+function(get_library_from_cvs PACKAGE_NAME PACKAGE_VERSION PACKAGE_SYSTEM_ID PACKAGE_BUILD_PLATFORM PACKAGE_LOCATION)
 
 	message(STATUS "Looking for CVS library: ${PACKAGE_NAME} version ${PACKAGE_VERSION}")
 
-	# Check optional system id and build platform
-	if(ARGC GREATER_EQUAL 5)
-		_set_package_args(PACKAGE_SYSTEM_ID PACKAGE_BUILD_PLATFORM ${ARGV3} ${ARGV4})
-		if(ARGC GREATER_EQUAL 7)
-			_set_package_args(PACKAGE_SYSTEM_ID PACKAGE_BUILD_PLATFORM ${ARGV5} ${ARGV6})
-		endif()
-	endif()
-
+	# Specifying false value for SystemId or BuildPlatform allows all systems or platforms to be downloaded.
 	set(_PACKAGE_PATH_SUFFIX ${PACKAGE_VERSION})
 	if(PACKAGE_SYSTEM_ID)
 		set(_PACKAGE_PATH_SUFFIX ${_PACKAGE_PATH_SUFFIX}/${PACKAGE_SYSTEM_ID})
@@ -236,49 +253,27 @@ function(get_library_from_cvs PACKAGE_NAME PACKAGE_VERSION PACKAGE_LOCATION)
 	endif()
 
 	# Download component library
-	include(FetchContent)
-	FetchContent_declare(
-		${PACKAGE_NAME}
-		SOURCE_DIR ${${PACKAGE_LOCATION}}/${_PACKAGE_PATH_SUFFIX}
-		CVS_REPOSITORY $ENV{CVSROOT}
-		CVS_MODULE "Components/${PACKAGE_NAME}/${_PACKAGE_PATH_SUFFIX}"
+	download_cvs_content(${PACKAGE_NAME}
+		"${${PACKAGE_LOCATION}}/${_PACKAGE_PATH_SUFFIX}"
+		"Components/${PACKAGE_NAME}/${_PACKAGE_PATH_SUFFIX}"
+		_PACKAGE_LOCATION
 	)
 
-	string(TOLOWER ${PACKAGE_NAME} lc_package_name)
-	FetchContent_getproperties(${PACKAGE_NAME})
-	if (NOT ${lc_package_name}_POPULATED)
-		message(STATUS "Downloading CVS library: ${PACKAGE_NAME}")
-		FetchContent_populate(${PACKAGE_NAME})
-	endif ()
+	set(${PACKAGE_LOCATION} "${_PACKAGE_LOCATION}" PARENT_SCOPE)
+	message(STATUS "${PACKAGE_NAME} downloaded to ${_PACKAGE_LOCATION}")
 
 	if(DOWNLOAD_CVS_SOURCE)
 		# Check if a Source directory exists
-		execute_process(
-			COMMAND cvs -d $ENV{CVSROOT} rdiff -r HEAD Components/${PACKAGE_NAME}/${PACKAGE_VERSION}/Source
-			WORKING_DIRECTORY ${${PACKAGE_LOCATION}}
-			RESULT_VARIABLE RES
-			OUTPUT_QUIET ERROR_QUIET
-		)
-		if("${RES}" STREQUAL "0")
+		cvsmoduleQ(Components/${PACKAGE_NAME}/${PACKAGE_VERSION}/Source "${${PACKAGE_LOCATION}}" HAS_SOURCE)
+		if(HAS_SOURCE)
 			# Download component source
-			FetchContent_declare(
-				${PACKAGE_NAME}_SOURCE
-				SOURCE_DIR ${${PACKAGE_LOCATION}}/${PACKAGE_VERSION}/Source
-				CVS_REPOSITORY $ENV{CVSROOT}
-				CVS_MODULE "Components/${PACKAGE_NAME}/${PACKAGE_VERSION}/Source"
+			download_cvs_content(${PACKAGE_NAME}_SOURCE
+				"${${PACKAGE_LOCATION}}/${PACKAGE_VERSION}/Source"
+				"Components/${PACKAGE_NAME}/${PACKAGE_VERSION}/Source"
+				_PACKAGE_SOURCE_LOCATION
 			)
-			FetchContent_getproperties(${PACKAGE_NAME}_SOURCE)
-			if (NOT ${lc_package_name}_source_POPULATED)
-				message(STATUS "Downloading CVS source: ${PACKAGE_NAME}/${PACKAGE_VERSION}/Source")
-				FetchContent_populate(${PACKAGE_NAME}_SOURCE)
-			endif ()
 		endif()
 	endif()
-
-	set(${PACKAGE_LOCATION} ${${lc_package_name}_SOURCE_DIR} PARENT_SCOPE)
-
-	message(STATUS "${PACKAGE_NAME} downloaded to ${${PACKAGE_LOCATION}}/${_PACKAGE_PATH_SUFFIX}")
-
 endfunction()
 
 # Splits comma delimited string STR and saves list to variable LIST
@@ -420,10 +415,7 @@ function(find_cvs_dependency LIB_NAME)
 	set(LIB_LOCATION "${CMAKE_BINARY_DIR}/Components/${LIB_NAME}")
 	set(${_LIB_NAME}_LOCATION ${LIB_LOCATION} CACHE PATH "Location of ${LIB_NAME} root directory.")
 
-	get_library_from_cvs(${LIB_NAME} ${LIB_VERSION} LIB_LOCATION
-		SYSTEM_ID ${LIB_SYSTEMID}
-		BUILD_PLATFORM ${LIB_BUILD_PLATFORM}
-	)
+	get_library_from_cvs(${LIB_NAME} ${LIB_VERSION} ${LIB_SYSTEMID} ${LIB_BUILD_PLATFORM} LIB_LOCATION)
 	set(${_LIB_NAME}_DIR ${LIB_LOCATION} PARENT_SCOPE)
 endfunction()
 
