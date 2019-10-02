@@ -203,25 +203,6 @@ function(set_rpath TARGET_NAME NEW_RPATH)
 	set_target_properties(${TARGET_NAME} PROPERTIES INSTALL_RPATH ${NEW_RPATH})
 endfunction()
 
-# On MacOS, enables rpath search mechanism for dependency library in SystemFiles/Links.
-# Note, rpath on MacOS has lower precedence than DYLD_LIBRARY_PATH. see: https://gitlab.kitware.com/cmake/community/wikis/doc/cmake/RPATH-handling
-# CMake >= 3.13 is required for target_link_options().
-function(change_loader_path_for_layout TARGET_NAME DEP_TARGET_NAME DEP_PACLET_NAME)
-	if(APPLE)
-		detect_system_id(SYSTEMID)
-		set(DEP_FILE_NAME "$<TARGET_FILE_NAME:${DEP_TARGET_NAME}>")
-		add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
-			COMMAND "install_name_tool" ARGS
-				"-change"
-				"@loader_path/${DEP_FILE_NAME}"
-				"@rpath/${DEP_FILE_NAME}"
-				"$<TARGET_FILE:${TARGET_NAME}>"
-		)
-		#can't append to INSTALL_RPATH since it doesn't accept generator expressions
-		target_link_options(${TARGET_NAME} PRIVATE "-Wl,-rpath,@executable_path/../SystemFiles/Links/${DEP_PACLET_NAME}/LibraryResources/${SYSTEMID}/${DEP_FILE_NAME}")
-	endif()
-endfunction()
-
 # helper function for get_library_from_cvs
 function(_set_package_args PACKAGE_SYSTEM_ID PACKAGE_BUILD_PLATFORM TAG VALUE)
 	if(${TAG} STREQUAL SYSTEM_ID)
