@@ -1,15 +1,24 @@
 LibraryLink Utilities
 =================================================
 
+.. image:: _static/img/LLULogo.png
+   :alt: LLU logo
+   :scale: 50
+   :target: https://actual-github-link-goes.here
+   :class: with-shadow float-left
+
 :dfn:`LibraryLink Utilities` (abbr. LLU) is a set of modern C++ wrappers over most parts of :term:`LibraryLink` - the Wolfram Language framework for connecting
 to C/C++ libraries. LLU started as an internal Wolfram project which can now be used as a stand-alone library and is available publicly on GitHub.
 
-This documentation is split into modules, each describes a core part of LLU providing general overview, examples and detailed description of related C++ entities.
+The official documentation including use instructions can be found here:
 
-.. For more details about each class see [the documentation](http://algorithms.wolfram.com:8080/documentation/LibraryLinkUtilities).
+http://algorithms.wolfram.com:8080/documentation/LLU **TODO: replace with GitHub Pages link**
+
+This documentation is split into modules. Each describes a core part of LLU providing general overview, examples and detailed description of related C++ entities.
 
 Please use GitHub to report bugs, make suggestions and request features.
 
+.. rst-class::  clear-both
 
 Motivation
 ------------------------------
@@ -165,9 +174,6 @@ and corresponding C++ version written with *LibraryLink Utilities*:
 	    }
 	    catch (const LLU::LibraryLinkError& e) {
 	        err = e.which();
-	    }
-	    catch (const std::exception&) {
-	        err = LLU::ErrorCode::FunctionError;
 	    }
 	    return err;
 	}

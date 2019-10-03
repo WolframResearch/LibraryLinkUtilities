@@ -23,7 +23,7 @@
 
 .. toctree::
    :hidden:
-   :caption: Internal
+   :caption: Internal Notes
 
    internal/paclet_use
    internal/cmake_utilities
