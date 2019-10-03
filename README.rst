@@ -21,7 +21,7 @@ Most significant features missing in *LibraryLink* from the standpoint of C++ de
 * automatic resource management
 * exception handling
 * container iterators
-* class-like interface for data structures, for example :cpp:`rank()` as member function of :cpp:`Tensor` class instead of separate function ``mint MTensor_getRank(MTensor)``, or a copy constructor instead of ``int MTensor_clone(MTensor, MTensor*)``
+* class-like interface for data structures, for example ``rank()`` as member function of ``Tensor`` class instead of separate function ``mint MTensor_getRank(MTensor)``, or a copy constructor instead of ``int MTensor_clone(MTensor, MTensor*)``
 * type safety
 
 The motivation behind *LibraryLink Utilities* is to provide the aforementioned features without touching *LibraryLink* sources.

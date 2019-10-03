@@ -1,18 +1,10 @@
-.. role:: cpp(code)
-   :language: cpp
-   :class: highlight
-
-.. role:: wl(code)
-   :language: mma
-   :class: highlight
-
-.. role:: raw-html(raw)
-   :format: html
+.. include:: globals.rst
 
 .. toctree::
    :hidden:
    :caption: Basic Info
 
+   Intro <self>
    basic/how_to_use
 ..   basic/unit_tests_and_demo
 ..   basic/faq
