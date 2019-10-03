@@ -19,29 +19,29 @@ classes:
 Level 0
 ----------------------------------
 
-* MTensor
-* MNumericArray
-* MImage
 * DataStore
+* MImage
+* MNumericArray
+* MTensor
 
 These are just raw _LibraryLink_ containers. If someone wants to use them directly, they probably don't need LLU at all, but it's possible to use them within LLU as well.
 
 Level 1A
 ----------------------------------
 
-* [GenericTensor\<PassingMode\>](http://algorithms.wolfram.com:8080/documentation/LLU2_0_0/classLLU_1_1MContainer_3_01MArgumentType_1_1Tensor_00_01PassingMode_01_4.html)
-* [GenericNumericArray\<PassingMode\>](http://algorithms.wolfram.com:8080/documentation/LLU2_0_0/classLLU_1_1MContainer_3_01MArgumentType_1_1NumericArray_00_01PassingMode_01_4.html)
-* [GenericImage\<PassingMode\>](http://algorithms.wolfram.com:8080/documentation/LLU2_0_0/classLLU_1_1MContainer_3_01MArgumentType_1_1Image_00_01PassingMode_01_4.html)
-* [GenericDataList\<PassingMode\>](http://algorithms.wolfram.com:8080/documentation/LLU2_0_0/classLLU_1_1MContainer_3_01MArgumentType_1_1DataStore_00_01PassingMode_01_4.html)
+* :cpp:type:`template\<class PassingMode> LLU::GenericDataList`
+* :cpp:type:`template\<class PassingMode> LLU::GenericImage`
+* :cpp:type:`template\<class PassingMode> LLU::GenericNumericArray`
+* :cpp:type:`template\<class PassingMode> LLU::GenericTensor`
 
 These are type-unaware wrappers, offer automatic memory management and basic interface like access to metadata (dimensions, rank, etc). No direct access to underlying data.
 
 Level 1B
 ----------------------------------
 
-- Type-aware interface to [Tensor](http://algorithms.wolfram.com:8080/documentation/LLU2_0_0/classLLU_1_1TypedTensor.html)
-- Type-aware interface to [NumericArray](http://algorithms.wolfram.com:8080/documentation/LLU2_0_0/classLLU_1_1TypedNumericArray.html)
-- Type-aware interface to [Image](http://algorithms.wolfram.com:8080/documentation/LLU2_0_0/classLLU_1_1TypedImage.html)
+- :cpp:class:`TypedImage\<T> <template\<typename T> LLU::TypedImage>` - type-aware interface to :cpp:class:`Image <template\<typename T, class PassingMode = Passing::Manual> LLU::Image>`
+- :cpp:class:`TypedNumericArray\<T> <template\<typename T> LLU::TypedNumericArray>` - type-aware interface to :cpp:class:`NumericArray <template\<typename T, class PassingMode = Passing::Manual> LLU::NumericArray>`
+- :cpp:class:`TypedTensor\<T> <template\<typename T> LLU::TypedTensor>` - type-aware interface to :cpp:class:`Tensor <template\<typename T, class PassingMode = Passing::Manual> LLU::Tensor>`
 
 These template classes offer iterators and data access functions for each container. They shouldn't be used directly,
 as they don't hold any data. Instead, use containers from level 2 which inherits from level 1B containers.
@@ -49,10 +49,10 @@ as they don't hold any data. Instead, use containers from level 2 which inherits
 Level 2
 ----------------------------------
 
-- [Tensor<T, PassingMode>](http://algorithms.wolfram.com:8080/documentation/LLU2_0_0/classLLU_1_1Tensor.html)
-- [NumericArray<T, PassingMode>](http://algorithms.wolfram.com:8080/documentation/LLU2_0_0/classLLU_1_1NumericArray.html)
-- [Image<T, PassingMode>](http://algorithms.wolfram.com:8080/documentation/LLU2_0_0/classLLU_1_1Image.html)
-- [DataList<T, PassingMode>](http://algorithms.wolfram.com:8080/documentation/LLU2_0_0/classLLU_1_1DataList.html)
+- :cpp:class:`DataList\<T, PassingMode> <template\<MArgumentType T, class PassingMode = Passing::Manual> LLU::DataList>`
+- :cpp:class:`Image\<T, PassingMode> <template\<typename T, class PassingMode = Passing::Manual> LLU::Image>`
+- :cpp:class:`NumericArray\<T, PassingMode> <template\<typename T, class PassingMode = Passing::Manual> LLU::NumericArray>`
+- :cpp:class:`Tensor\<T, PassingMode> <template\<typename T, class PassingMode = Passing::Manual> LLU::Tensor>`
 
 Full-fledged wrappers with automatic memory management (via Passing policies, see section below), type-safe data access, iterators, etc.
 
@@ -82,7 +82,7 @@ When passing a container from WL to a C++ library you have to choose one of the 
 
 With exception of DataStore, which cannot be Shared.
 
-All of the above are described in the [LibraryLink documentation](https://reference.wolfram.com/language/LibraryLink/tutorial/InteractionWithWolframLanguage.html#97446640).
+All of the above are described in the `LibraryLink documentation <https://reference.wolfram.com/language/LibraryLink/tutorial/InteractionWithWolframLanguage.html#97446640>`_.
 
 In plain _LibraryLink_, the choice you make is reflected only in the WL code where you call `LibraryFunctionLoad` and specify
 the list of parameters for the library function. There is no way to query the WolframLibraryData or MArgument about
@@ -125,3 +125,65 @@ Some examples:
 	LLU::GenericImage<Manual> clone {t};   // but this is fine, we make a deep copy which is no longer Shared
 
 More examples can be found in unit tests.
+
+
+Examples
+========================
+<to be added>
+
+API Reference
+========================
+
+Typed Containers
+------------------------
+
+DataList
+~~~~~~~~~~~~~~~~~~~~~~~~
+.. doxygenclass:: LLU::DataList
+   :members:
+
+Image
+~~~~~~~~~~~~~~~~~~~~~~~~
+.. doxygenclass:: LLU::Image
+   :members:
+
+NumericArray
+~~~~~~~~~~~~~~~~~~~~~~~~
+.. doxygenclass:: LLU::NumericArray
+   :members:
+
+Tensor
+~~~~~~~~~~~~~~~~~~~~~~~~
+.. doxygenclass:: LLU::Tensor
+   :members:
+
+Generic Containers
+------------------------
+
+GenericDataList
+~~~~~~~~~~~~~~~~~~~~~~~~
+.. doxygentypedef:: LLU::GenericDataList
+
+.. doxygenclass:: LLU::MContainer< MArgumentType::DataStore, PassingMode >
+   :members:
+
+GenericImage
+~~~~~~~~~~~~~~~~~~~~~~~~
+.. doxygentypedef:: LLU::GenericImage
+
+.. doxygenclass:: LLU::MContainer< MArgumentType::Image, PassingMode >
+   :members:
+
+GenericNumericArray
+~~~~~~~~~~~~~~~~~~~~~~~~
+.. doxygentypedef:: LLU::GenericNumericArray
+
+.. doxygenclass:: LLU::MContainer< MArgumentType::NumericArray, PassingMode >
+   :members:
+
+GenericTensor
+~~~~~~~~~~~~~~~~~~~~~~~~
+.. doxygentypedef:: LLU::GenericTensor
+
+.. doxygenclass:: LLU::MContainer< MArgumentType::Tensor, PassingMode >
+   :members:

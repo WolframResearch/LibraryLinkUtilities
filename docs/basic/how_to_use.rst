@@ -24,7 +24,7 @@ MathLink library and WolframLibrary header files can be found in any Mathematica
 1. Get source code
 =========================================
 
-You can clone LLU from Stash like any other repository. _LLU_ resides in the _IMEX_ bank and is a public repo so there should never be problems with read access.
+You can clone LLU from GitHub:
 
 ssh://git@stash.wolfram.com:7999/imex/librarylinkutilities.git **TODO: replace with GitHub clone link**
 
@@ -57,7 +57,7 @@ Below is a quick overview of CMake variables which you can use to customize buil
 
 2. Use MathLink and WolframLibrary from arbitrary locations
 
-   For some reason you may want to link to MathLink or WolframLibrary not coming from Mathematica installation. In that case you have to pass 2 paths to cmake:
+   For some reason you may want to link to MathLink or WolframLibrary not coming from Mathematica installation. In that case you have to pass 2 paths to CMake:
 
    .. code-block:: bash
 
