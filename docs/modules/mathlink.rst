@@ -16,7 +16,7 @@ Main features
 Convenient syntax
 -----------------------
 
-In __LLU__ MathLink is interpreted as an i/o stream, so operators << and >> are utilized to make the syntax cleaner and more concise.
+In **LLU** MathLink is interpreted as an i/o stream, so operators << and >> are utilized to make the syntax cleaner and more concise.
 This means that the framework frees developers from the responsibility to choose proper MathLink function for the data they intend to read or write.
 
 Error checking
@@ -110,7 +110,7 @@ The same strategy has been incorporated into `MLStream` so that developers do no
 Example
 =============
 
-Let's compare the same piece of code written in plain _LibraryLink_ with one written with _LLU_ and `MLStream`.
+Let's compare the same piece of code written in plain *LibraryLink* with one written with *LLU* and `MLStream`.
 Take a look at the code snippet taken from one of the Import/Export paclets:
 
 .. code-block:: cpp

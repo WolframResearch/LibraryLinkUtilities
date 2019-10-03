@@ -36,7 +36,7 @@ If you don't want to clone a git repo you can just download a zip package from G
 Dependencies
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-_LLU_ depends on MathLink and on WolframLibrary so you must have those 2 installed on your system.
+*LLU* depends on MathLink and on WolframLibrary so you must have those 2 installed on your system.
 Below is a quick overview of CMake variables which you can use to customize build process. Let's consider a number of possible scenarios:
 
 1. Use MathLink and WolframLibrary from Mathematica installation
@@ -66,11 +66,11 @@ Below is a quick overview of CMake variables which you can use to customize buil
 Other Options
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Other useful cmake variables used by _LLU_ include:
+Other useful cmake variables used by *LLU* include:
 
- - ``BUILD_SHARED_LIBS`` - Whether to build _LLU_ as shared library. By default static library is created.
+ - ``BUILD_SHARED_LIBS`` - Whether to build *LLU* as shared library. By default static library is created.
  - ``CMAKE_BUILD_TYPE`` - Choose the type of build, this should match the type of build of your project.
- - ``CMAKE_INSTALL_PREFIX`` - Where to install _LLU_. By default it is installed to _install_ directory in the source tree.
+ - ``CMAKE_INSTALL_PREFIX`` - Where to install *LLU*. By default it is installed to _install_ directory in the source tree.
  - ``CMAKE_VERBOSE_MAKEFILE`` - Useful for debugging.
 
 3. Build, Install and Test
@@ -112,8 +112,8 @@ you will see the whole output produced by ctest and wolframscript. There is stil
 4. Link from your project
 =========================================
 
-_LLU_ tries to follow modern CMake standards therefore it defines export target and hides build details. You don't need to manually set up any dependencies,
-compiler flags, include paths, etc. After _LLU_ is installed, in your CMakeLists.txt call:
+*LLU* tries to follow modern CMake standards therefore it defines export target and hides build details. You don't need to manually set up any dependencies,
+compiler flags, include paths, etc. After *LLU* is installed, in your CMakeLists.txt call:
 
 .. code-block:: cmake
 
