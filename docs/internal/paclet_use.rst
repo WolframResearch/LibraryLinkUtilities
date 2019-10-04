@@ -56,5 +56,5 @@ The list below may not be complete.
 
 - `PacletTemplate <https://stash.wolfram.com/projects/IMEX/repos/paclettemplate>`_ - this is a model paclet for Import/Export developers
 - `GIFTools <https://stash.wolfram.com/projects/IMEX/repos/giftools>`_
-- `MediaTools <https://stash.wolfram.com/projects/IMEX/repos/mediatools>`_
-- `RAWTools <https://stash.wolfram.com/projects/IMEX/repos/rawtools>`_
+- `SVTools <https://stash.wolfram.com/projects/IMEX/repos/svtools>`_
+- `XLTools <https://stash.wolfram.com/projects/IMEX/repos/xltools>`_
