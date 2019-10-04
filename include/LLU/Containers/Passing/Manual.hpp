@@ -23,7 +23,7 @@ namespace LLU {
 			Manual() : PassingPolicy(true) {}
 
 			/// Create Manual object from any other passing policy
-			explicit Manual(const PassingPolicy &) : PassingPolicy(true) {};
+			explicit Manual(const PassingPolicy&) : PassingPolicy(true) {};
 
 			/// Copy constructor. Deep copy of the resource will be created so we own it.
 			Manual(const Manual&) : PassingPolicy(true) {};
@@ -73,11 +73,11 @@ namespace LLU {
 
 			/// For Manual containers cleanup means freeing the container
 			void cleanup() const noexcept override {
-                if (isOwner()) {
+				if (isOwner()) {
 					free();
 				}
 			}
 		};
 	}
 }
-#endif //LLUTILS_MANUAL_HPP
+#endif	  // LLUTILS_MANUAL_HPP

@@ -14,17 +14,12 @@ namespace LLU {
 
 	std::string Logger::to_string(Level l) {
 		switch (l) {
-			case Level::Debug:
-				return "Debug";
-			case Level::Warning:
-				return "Warning";
-			case Level::Error:
-				return "Error";
-			default:
-				return "Unknown";
+			case Level::Debug: return "Debug";
+			case Level::Warning: return "Warning";
+			case Level::Error: return "Error";
+			default: return "Unknown";
 		}
 	}
-
 
 	LIBRARY_LINK_FUNCTION(setLoggerContext) {
 		auto err = ErrorCode::NoError;
@@ -33,11 +28,9 @@ namespace LLU {
 			auto newContext = mngr.getString(0);
 			Logger::setContext(newContext);
 			mngr.setString(Logger::getSymbol());
-		}
-		catch (LibraryLinkError& e) {
+		} catch (LibraryLinkError& e) {
 			err = e.which();
-		}
-		catch (...) {
+		} catch (...) {
 			err = ErrorCode::FunctionError;
 		}
 		return err;

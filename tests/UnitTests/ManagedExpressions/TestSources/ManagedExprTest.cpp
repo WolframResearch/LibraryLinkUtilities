@@ -1,11 +1,11 @@
 /**
  * @file	ManagedExprTest.cpp
- * @brief	
+ * @brief
  */
 #include <functional>
 
-#include <LLU/LLU.h>
 #include <LLU/ErrorLog/Logger.h>
+#include <LLU/LLU.h>
 #include <LLU/LibraryLinkFunctionMacro.h>
 #include <LLU/ManagedExpression.hpp>
 
@@ -56,7 +56,7 @@ LIBRARY_LINK_FUNCTION(OpenManagedMyExpression) {
 		auto id = mngr.getInteger<mint>(0);
 		auto text = mngr.getString(1);
 		MyExpressionStore.createInstance(id, id, text);
-	} catch (const LLU::LibraryLinkError &e) {
+	} catch (const LLU::LibraryLinkError& e) {
 		err = e.which();
 	}
 	return err;
@@ -68,7 +68,7 @@ LIBRARY_LINK_FUNCTION(GetText) {
 		LLU::MArgumentManager mngr(Argc, Args, Res);
 		const MyExpression& myExpr = mngr.getManagedExpression(0, MyExpressionStore);
 		mngr.set(myExpr.getText());
-	} catch (const LLU::LibraryLinkError &e) {
+	} catch (const LLU::LibraryLinkError& e) {
 		err = e.which();
 	}
 	return err;
@@ -81,7 +81,7 @@ LIBRARY_LINK_FUNCTION(SetText) {
 		auto& myExpr = mngr.getManagedExpression(0, MyExpressionStore);
 		auto newText = mngr.getString(1);
 		myExpr.setText(newText);
-	} catch (const LLU::LibraryLinkError &e) {
+	} catch (const LLU::LibraryLinkError& e) {
 		err = e.which();
 	}
 	return err;
@@ -94,7 +94,7 @@ LIBRARY_LINK_FUNCTION(JoinText) {
 		const auto& myExpr1 = mngr.getManagedExpression(0, MyExpressionStore);
 		const auto& myExpr2 = mngr.getManagedExpression(1, MyExpressionStore);
 		mngr.set(myExpr1.getText() + myExpr2.getText());
-	} catch (const LLU::LibraryLinkError &e) {
+	} catch (const LLU::LibraryLinkError& e) {
 		err = e.which();
 	}
 	return err;
@@ -127,9 +127,9 @@ LLU::MLStream<EIn, EOut>& operator>>(LLU::MLStream<EIn, EOut>& ml, std::shared_p
  * Get a reference to a managed MyExpression passed via MathLink
  */
 template<LLU::ML::Encoding EIn, LLU::ML::Encoding EOut>
-MyExpression& getFromMathLink(LLU::MLStream<EIn, EOut> &ml) {
-	ml >> LLU::ML::Function("MyExpression", 1);		// Watch out for context here!
-	mint myExprID{};								// In paclets the function head will usually be XXXTools`Private`MyExpression
+MyExpression& getFromMathLink(LLU::MLStream<EIn, EOut>& ml) {
+	ml >> LLU::ML::Function("MyExpression", 1);	   // Watch out for context here!
+	mint myExprID {};							   // In paclets the function head will usually be XXXTools`Private`MyExpression
 	ml >> myExprID;
 	return MyExpressionStore.getInstance(myExprID);
 }
@@ -147,8 +147,7 @@ LIBRARY_MATHLINK_FUNCTION(SwapText) {
 		firstExpr->setText(secondExpr.getText());
 		secondExpr.setText(std::move(tempText));
 		ml << ML::Null << ML::EndPacket;
-	}
-	catch (const LLU::LibraryLinkError &e) {
+	} catch (const LLU::LibraryLinkError& e) {
 		err = e.which();
 	}
 	return err;
@@ -164,13 +163,11 @@ LIBRARY_MATHLINK_FUNCTION(SetTextML) {
 		ml >> newText;
 		myExpr.setText(std::move(newText));
 		ml << ML::Null << ML::EndPacket;
-	}
-	catch (const LLU::LibraryLinkError &e) {
+	} catch (const LLU::LibraryLinkError& e) {
 		err = e.which();
 	}
 	return err;
 }
-
 
 // Create a subclass of MyExpression and use it as Managed Expression with the same Store
 // All previously defined Get/Set functions should work on MLEs that are actually MyChildExpressions
@@ -193,6 +190,7 @@ public:
 	void setText(std::string newText) override {
 		MyExpression::setText(std::string {"I'm a subclass! Here is your text: "} + std::move(newText));
 	}
+
 private:
 	mint counter = 0;
 };
@@ -204,7 +202,7 @@ LIBRARY_LINK_FUNCTION(OpenManagedMyChildExpression) {
 		auto id = mngr.getInteger<mint>(0);
 		auto text = mngr.getString(1);
 		MyExpressionStore.createInstance<MyChildExpression>(id, id, text);
-	} catch (const LLU::LibraryLinkError &e) {
+	} catch (const LLU::LibraryLinkError& e) {
 		err = e.which();
 	}
 	return err;
@@ -216,7 +214,7 @@ LIBRARY_LINK_FUNCTION(GetCounter) {
 		LLU::MArgumentManager mngr(Argc, Args, Res);
 		MyChildExpression& myExpr = mngr.getManagedExpression<MyExpression, MyChildExpression>(0, MyExpressionStore);
 		mngr.set(myExpr.getCounter());
-	} catch (const LLU::LibraryLinkError &e) {
+	} catch (const LLU::LibraryLinkError& e) {
 		err = e.which();
 	}
 	return err;

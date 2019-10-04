@@ -26,15 +26,17 @@ namespace LLU {
 	 * All exceptions that are thrown from paclet code should be of this class. To prevent users from overriding predefined LLU exceptions the constructor
 	 * of LibraryLinkError class is private. Developers should use ErrorManager::throwException method to throw exceptions.
 	 **/
-	class LibraryLinkError: public std::runtime_error {
+	class LibraryLinkError : public std::runtime_error {
 		friend class ErrorManager;
+
 	public:
 		using IdType = int;
 
 		LibraryLinkError(const LibraryLinkError& e);
 
-		LibraryLinkError(LibraryLinkError&& e) noexcept : std::runtime_error(e), errorId(e.errorId), type(e.type), messageTemplate(e.messageTemplate),
-														  debugInfo(e.debugInfo), messageParams(e.messageParams) {
+		LibraryLinkError(LibraryLinkError&& e) noexcept
+			: std::runtime_error(e), errorId(e.errorId), type(e.type), messageTemplate(e.messageTemplate), debugInfo(e.debugInfo),
+			  messageParams(e.messageParams) {
 			e.messageParams = nullptr;
 		}
 
@@ -85,7 +87,7 @@ namespace LLU {
 
 		/**
 		 * @brief	Store arbitrary number of message parameters in a List expression on a loopback link.
-		 * 			They will travel with the exception until \c sendParamaters is called on the exception.
+		 * 			They will travel with the exception until \c sendParameters is called on the exception.
 		 * @tparam 	T - any type(s) that MLStream supports
 		 * @param 	libData - WolframLibraryData, if nullptr, the parameters will not be send
 		 * @param 	params - any number of message parameters
@@ -128,10 +130,8 @@ namespace LLU {
 		 *   @param[in]		msg - error description
 		 *   @warning		This is constructor is not supposed to be used directly by paclet developers. All errors should be thrown by ErrorManager.
 		 **/
-		LibraryLinkError(IdType which, std::string t, std::string msg) :
-				std::runtime_error(t), errorId(which), type(std::move(t)), messageTemplate(std::move(msg)) {
-
-		}
+		LibraryLinkError(IdType which, std::string t, std::string msg)
+			: std::runtime_error(t), errorId(which), type(std::move(t)), messageTemplate(std::move(msg)) {}
 
 		/**
 		 * @brief	Helper functions that opens a loopback link given a MathLink environment
@@ -153,17 +153,16 @@ namespace LLU {
 		MLINK messageParams = nullptr;
 	};
 
-
 	template<typename... T>
 	void LibraryLinkError::setMessageParameters(WolframLibraryData libData, T&&... params) {
 		messageParams = openLoopback(libData->getWSLINKEnvironment(libData));
 		if (!messageParams) {
 			return;
 		}
-		MLStream<ML::Encoding::UTF8> loopback { messageParams };
+		MLStream<ML::Encoding::UTF8> loopback {messageParams};
 		auto messageParamsCount = sizeof...(T);
 		loopback << ML::List(static_cast<int>(messageParamsCount));
-		static_cast<void>(std::initializer_list<int> { (loopback << params, 0)... });
+		static_cast<void>(std::initializer_list<int> {(loopback << params, 0)...});
 	}
 } /* namespace LLU */
 

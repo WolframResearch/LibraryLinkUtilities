@@ -1,4 +1,4 @@
-/** 
+/**
  * @file	Utilities.hpp
  * @author	Rafal Chojna <rafalc@wolfram.com>
  * @date	8/07/2017
@@ -12,10 +12,9 @@
 #include <complex>
 #include <cstdint>
 #include <type_traits>
+#include <utility>
 
-#include "WolframLibrary.h"
-#include "WolframNumericArrayLibrary.h"
-
+#include "LLU/LibraryData.h"
 
 namespace LLU {
 
@@ -48,7 +47,6 @@ namespace LLU {
 	 */
 	template<typename Iterator>
 	using enable_if_input_iterator = enable_if_same_or_derived<std::input_iterator_tag, typename std::iterator_traits<Iterator>::iterator_category>;
-
 
 	/**
 	 * @brief 	Utility type that checks if given container type has elements that are integers (and therefore can be used as Tensor or NumericArray dimensions)
@@ -93,12 +91,7 @@ namespace LLU {
 
 	template<typename Container, typename T>
 	constexpr bool is_iterable_container_with_matching_type_v =
-		conjunction<
-			std::is_class<Container>,
-			has_value_type<Container>,
-			is_iterable<Container>,
-			has_matching_type<Container, T>
-		>::value;
+		conjunction<std::is_class<Container>, has_value_type<Container>, is_iterable<Container>, has_matching_type<Container, T>>::value;
 
 	/**
 	 * @brief 	Dummy function called on otherwise unused parameters to eliminate compiler warnings.
@@ -126,53 +119,65 @@ namespace LLU {
 	struct NumericArrayFromEnum;
 
 	/// @cond
-	template<> struct NumericArrayFromEnum<MNumericArray_Type_Bit8> {
+	template<>
+	struct NumericArrayFromEnum<MNumericArray_Type_Bit8> {
 		using type = std::int8_t;
 		static constexpr const char* typeName = "Integer8";
 	};
-	template<> struct NumericArrayFromEnum<MNumericArray_Type_UBit8> {
+	template<>
+	struct NumericArrayFromEnum<MNumericArray_Type_UBit8> {
 		using type = std::uint8_t;
-		static constexpr const char *typeName = "UnsignedInteger8";
+		static constexpr const char* typeName = "UnsignedInteger8";
 	};
-	template<> struct NumericArrayFromEnum<MNumericArray_Type_Bit16> {
+	template<>
+	struct NumericArrayFromEnum<MNumericArray_Type_Bit16> {
 		using type = std::int16_t;
-		static constexpr const char *typeName = "Integer16";
+		static constexpr const char* typeName = "Integer16";
 	};
-	template<> struct NumericArrayFromEnum<MNumericArray_Type_UBit16> {
+	template<>
+	struct NumericArrayFromEnum<MNumericArray_Type_UBit16> {
 		using type = std::uint16_t;
-		static constexpr const char *typeName = "UnsignedInteger16";
+		static constexpr const char* typeName = "UnsignedInteger16";
 	};
-	template<> struct NumericArrayFromEnum<MNumericArray_Type_Bit32> {
+	template<>
+	struct NumericArrayFromEnum<MNumericArray_Type_Bit32> {
 		using type = std::int32_t;
-		static constexpr const char *typeName = "Integer32";
+		static constexpr const char* typeName = "Integer32";
 	};
-	template<> struct NumericArrayFromEnum<MNumericArray_Type_UBit32> {
+	template<>
+	struct NumericArrayFromEnum<MNumericArray_Type_UBit32> {
 		using type = std::uint32_t;
-		static constexpr const char *typeName = "UnsignedInteger32";
+		static constexpr const char* typeName = "UnsignedInteger32";
 	};
-	template<> struct NumericArrayFromEnum<MNumericArray_Type_Bit64> {
+	template<>
+	struct NumericArrayFromEnum<MNumericArray_Type_Bit64> {
 		using type = std::int64_t;
-		static constexpr const char *typeName = "Integer64";
+		static constexpr const char* typeName = "Integer64";
 	};
-	template<> struct NumericArrayFromEnum<MNumericArray_Type_UBit64> {
+	template<>
+	struct NumericArrayFromEnum<MNumericArray_Type_UBit64> {
 		using type = std::uint64_t;
-		static constexpr const char *typeName = "UnsignedInteger64";
+		static constexpr const char* typeName = "UnsignedInteger64";
 	};
-	template<> struct NumericArrayFromEnum<MNumericArray_Type_Real32> {
+	template<>
+	struct NumericArrayFromEnum<MNumericArray_Type_Real32> {
 		using type = float;
-		static constexpr const char *typeName = "Real32";
+		static constexpr const char* typeName = "Real32";
 	};
-	template<> struct NumericArrayFromEnum<MNumericArray_Type_Real64> {
+	template<>
+	struct NumericArrayFromEnum<MNumericArray_Type_Real64> {
 		using type = double;
-		static constexpr const char *typeName = "Real64";
+		static constexpr const char* typeName = "Real64";
 	};
-	template<> struct NumericArrayFromEnum<MNumericArray_Type_Complex_Real32> {
+	template<>
+	struct NumericArrayFromEnum<MNumericArray_Type_Complex_Real32> {
 		using type = std::complex<float>;
-		static constexpr const char *typeName = "ComplexReal32";
+		static constexpr const char* typeName = "ComplexReal32";
 	};
-	template<> struct NumericArrayFromEnum<MNumericArray_Type_Complex_Real64> {
+	template<>
+	struct NumericArrayFromEnum<MNumericArray_Type_Complex_Real64> {
 		using type = std::complex<double>;
-		static constexpr const char *typeName = "ComplexReal64";
+		static constexpr const char* typeName = "ComplexReal64";
 	};
 	/// @endcond
 
@@ -187,7 +192,7 @@ namespace LLU {
 	 * @param args - additional arguments for f::operator()
 	 * @warning This function is a prototype, has not been tested yet and is likely to change in the future.
 	 */
-	template<typename Callable, typename ... Args>
+	template<typename Callable, typename... Args>
 	void applyToNumericArray(numericarray_data_t raType, Callable&& f, Args&&... args) {
 		switch (raType) {
 			case MNumericArray_Type_Bit8:
@@ -226,8 +231,7 @@ namespace LLU {
 			case MNumericArray_Type_Complex_Real64:
 				std::forward<Callable>(f).template operator()<NumericArrayTypeFromEnum<MNumericArray_Type_Complex_Real64>>(std::forward<Args>(args)...);
 				break;
-			default:
-				return;
+			default: return;
 		}
 	}
 
@@ -249,32 +253,19 @@ namespace LLU {
 
 		inline std::string typeToString(numericarray_data_t t) {
 			switch (t) {
-				case MNumericArray_Type_Undef:
-					return "Undefined";
-				case MNumericArray_Type_Bit8:
-					return NumericArrayFromEnum<MNumericArray_Type_Bit8>::typeName;
-				case MNumericArray_Type_UBit8:
-					return NumericArrayFromEnum<MNumericArray_Type_UBit8>::typeName;
-				case MNumericArray_Type_Bit16:
-					return NumericArrayFromEnum<MNumericArray_Type_Bit16>::typeName;
-				case MNumericArray_Type_UBit16:
-					return NumericArrayFromEnum<MNumericArray_Type_UBit16>::typeName;
-				case MNumericArray_Type_Bit32:
-					return NumericArrayFromEnum<MNumericArray_Type_Bit32>::typeName;
-				case MNumericArray_Type_UBit32:
-					return NumericArrayFromEnum<MNumericArray_Type_UBit32>::typeName;
-				case MNumericArray_Type_Bit64:
-					return NumericArrayFromEnum<MNumericArray_Type_Bit64>::typeName;
-				case MNumericArray_Type_UBit64:
-					return NumericArrayFromEnum<MNumericArray_Type_UBit64>::typeName;
-				case MNumericArray_Type_Real32:
-					return NumericArrayFromEnum<MNumericArray_Type_Real32>::typeName;
-				case MNumericArray_Type_Real64:
-					return NumericArrayFromEnum<MNumericArray_Type_Real64>::typeName;
-				case MNumericArray_Type_Complex_Real32:
-					return NumericArrayFromEnum<MNumericArray_Type_Complex_Real32>::typeName;
-				case MNumericArray_Type_Complex_Real64:
-					return NumericArrayFromEnum<MNumericArray_Type_Complex_Real64>::typeName;
+				case MNumericArray_Type_Undef: return "Undefined";
+				case MNumericArray_Type_Bit8: return NumericArrayFromEnum<MNumericArray_Type_Bit8>::typeName;
+				case MNumericArray_Type_UBit8: return NumericArrayFromEnum<MNumericArray_Type_UBit8>::typeName;
+				case MNumericArray_Type_Bit16: return NumericArrayFromEnum<MNumericArray_Type_Bit16>::typeName;
+				case MNumericArray_Type_UBit16: return NumericArrayFromEnum<MNumericArray_Type_UBit16>::typeName;
+				case MNumericArray_Type_Bit32: return NumericArrayFromEnum<MNumericArray_Type_Bit32>::typeName;
+				case MNumericArray_Type_UBit32: return NumericArrayFromEnum<MNumericArray_Type_UBit32>::typeName;
+				case MNumericArray_Type_Bit64: return NumericArrayFromEnum<MNumericArray_Type_Bit64>::typeName;
+				case MNumericArray_Type_UBit64: return NumericArrayFromEnum<MNumericArray_Type_UBit64>::typeName;
+				case MNumericArray_Type_Real32: return NumericArrayFromEnum<MNumericArray_Type_Real32>::typeName;
+				case MNumericArray_Type_Real64: return NumericArrayFromEnum<MNumericArray_Type_Real64>::typeName;
+				case MNumericArray_Type_Complex_Real32: return NumericArrayFromEnum<MNumericArray_Type_Complex_Real32>::typeName;
+				case MNumericArray_Type_Complex_Real64: return NumericArrayFromEnum<MNumericArray_Type_Complex_Real64>::typeName;
 			}
 			return "Undefined";
 		}

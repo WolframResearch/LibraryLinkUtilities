@@ -9,6 +9,7 @@
 #include <type_traits>
 
 #include "LLU/Containers/Passing/Manual.hpp"
+#include "LLU/ErrorLog/ErrorManager.h"
 #include "LLU/LibraryData.h"
 #include "LLU/MArgument.h"
 #include "LLU/Utilities.hpp"
@@ -17,7 +18,7 @@ namespace LLU {
 
 	/**
 	 * @brief Template of the base class for all generic containers.
-	 * MContainerBase stores the raw LibrayLink container and defines a common interface for all generic containers.
+	 * MContainerBase stores the raw LibraryLink container and defines a common interface for all generic containers.
 	 *
 	 * @tparam Type - container type
 	 * @tparam PassingMode - passing mode (Automatic, Manual, etc.)
@@ -26,6 +27,7 @@ namespace LLU {
 	class MContainerBase : public PassingMode {
 	public:
 		using Container = MType_t<Type>;
+
 	public:
 		/**
 		 * @brief Default constructor.
@@ -53,15 +55,13 @@ namespace LLU {
 		 * @param mc - MContainerBase that will be copied
 		 */
 		template<class P>
-		explicit MContainerBase(const MContainerBase<Type, P>& mc) : PassingMode(mc), container(mc.clone()) {
-		}
+		explicit MContainerBase(const MContainerBase<Type, P>& mc) : PassingMode(mc), container(mc.clone()) {}
 
 		/**
 		 * @brief Copy-constructor, performs a deep copy of the raw container.
 		 * @param mc - MContainerBase to be copied
 		 */
-		MContainerBase(const MContainerBase& mc) : PassingMode(mc), container(mc.clone()) {
-		}
+		MContainerBase(const MContainerBase& mc) : PassingMode(mc), container(mc.clone()) {}
 
 		/**
 		 * @brief Move-constructor
@@ -87,7 +87,7 @@ namespace LLU {
 		 * @param mc - MContainerBase to be moved-from, it's internal container becomes nullptr
 		 * @return reference to this object
 		 */
-		MContainerBase& operator=(MContainerBase &&mc) noexcept {
+		MContainerBase& operator=(MContainerBase&& mc) noexcept {
 			PassingMode::operator=(std::move(mc));
 			setContainer(mc.container);
 			mc.container = nullptr;
@@ -161,7 +161,6 @@ namespace LLU {
 		}
 
 	protected:
-
 		/// Disown internal container if present
 		void disown() const noexcept override {
 			if (container) {
@@ -207,12 +206,12 @@ namespace LLU {
 	 */
 	template<MArgumentType Type, class PassingMode>
 #ifdef _WIN32
-	class MContainer; // On Windows we cannot provide a body with static_assert because of ridiculous MSVC compiler errors (probably a bug).
-#else // On other platforms we get a nice, compile-time error.
+	class MContainer;	 // On Windows we cannot provide a body with static_assert because of ridiculous MSVC compiler errors (probably a bug).
+#else					 // On other platforms we get a nice, compile-time error.
 	class MContainer {
 		static_assert(dependent_false_v<PassingMode>, "Trying to instantiate unspecialized MContainer template.");
 	};
 #endif
 }
 
-#endif //LLU_CONTAINERS_GENERIC_BASE_HPP
+#endif	  // LLU_CONTAINERS_GENERIC_BASE_HPP

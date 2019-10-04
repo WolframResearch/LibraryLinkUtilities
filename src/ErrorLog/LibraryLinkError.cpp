@@ -1,4 +1,4 @@
-/** 
+/**
  * @file	LibraryLinkError.cpp
  * @author	Rafal Chojna <rafalc@wolfram.com>
  *
@@ -10,7 +10,6 @@
 #include "LLU/LLU.h"
 #include "LLU/LibraryLinkFunctionMacro.h"
 #include "LLU/ML/MLStream.hpp"
-
 
 namespace LLU {
 
@@ -37,8 +36,8 @@ namespace LLU {
 		return link;
 	}
 
-	LibraryLinkError::LibraryLinkError(const LibraryLinkError& e) : std::runtime_error(e), errorId(e.errorId), type(e.type), messageTemplate(e.messageTemplate),
-												  debugInfo(e.debugInfo) {
+	LibraryLinkError::LibraryLinkError(const LibraryLinkError& e)
+		: std::runtime_error(e), errorId(e.errorId), type(e.type), messageTemplate(e.messageTemplate), debugInfo(e.debugInfo) {
 		if (e.messageParams) {
 			messageParams = openLoopback(MLLinkEnvironment(e.messageParams));
 			if (!messageParams) {
@@ -60,7 +59,7 @@ namespace LLU {
 	auto LibraryLinkError::sendParameters(WolframLibraryData libData, const std::string& WLSymbol) const noexcept -> IdType {
 		try {
 			if (libData) {
-				MLStream<ML::Encoding::UTF8> mls{libData->getWSLINK(libData)};
+				MLStream<ML::Encoding::UTF8> mls {libData->getWSLINK(libData)};
 				mls << ML::Function("EvaluatePacket", 1);
 				mls << ML::Function("Set", 2);
 				mls << ML::Symbol(WLSymbol);
@@ -88,14 +87,11 @@ namespace LLU {
 			auto newContext = mngr.getString(0);
 			LibraryLinkError::setExceptionDetailsSymbolContext(std::move(newContext));
 			mngr.setString(LibraryLinkError::getExceptionDetailsSymbol());
-		}
-		catch (LibraryLinkError& e) {
+		} catch (LibraryLinkError& e) {
 			err = e.which();
-		}
-		catch (...) {
+		} catch (...) {
 			err = ErrorCode::FunctionError;
 		}
 		return err;
 	}
 } /* namespace LLU */
-

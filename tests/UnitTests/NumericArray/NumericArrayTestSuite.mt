@@ -1,5 +1,5 @@
 (* Wolfram Language Test file *)
-TestRequirement[$VersionNumber > 12.0]
+TestRequirement[$VersionNumber >= 12.0]
 Catch @ TestExecute[
 	currentDirectory = DirectoryName[$CurrentFile];
 	Get[FileNameJoin[{ParentDirectory[currentDirectory], "TestConfig.wl"}]];
@@ -16,14 +16,14 @@ Test[
 	,
 	Developer`DataStore @@ Table[NumericArray[{1, 2, 3, 4}, "UnsignedInteger8"], 3]
 	,
-	TestID->"NumericArrayTestSuite-20190910-D6E1E5"
+	TestID -> "NumericArrayTestSuite-20190910-D6E1E5"
 ]
 
 Test[
 	num = NumericArray[N @ Range[0, 47] / 47, "Real64"];
-	echoNumericArrays[{{},{}}, na,  num]
+	echoNumericArrays[{{}, {}}, na, num]
 	,
-	Developer`DataStore[{{},{}}, na, num]
+	Developer`DataStore[{{}, {}}, na, num]
 	,
 	TestID -> "NumericArrayTestSuite-20190910-N9N5N6"
 ]
@@ -33,7 +33,7 @@ Test[
 	,
 	{}
 	,
-	TestID->"NumericArrayTestSuite-20190910-L4P0L7"
+	TestID -> "NumericArrayTestSuite-20190910-L4P0L7"
 ];
 
 Test[
@@ -41,7 +41,7 @@ Test[
 	,
 	{3, 5, 0}
 	,
-	TestID->"NumericArrayTestSuite-20190910-C1R3B0"
+	TestID -> "NumericArrayTestSuite-20190910-C1R3B0"
 ];
 
 Test[
@@ -54,7 +54,7 @@ Test[
 		"Parameters" -> {}|>
 	]
 	,
-	TestID->"NumericArrayTestSuite-20190910-S4B6X0"
+	TestID -> "NumericArrayTestSuite-20190910-S4B6X0"
 ];
 
 Test[
@@ -69,7 +69,7 @@ Test[
 		{{{0., 0., 0., 0.}, {0., 0., 0., 0.}}, {{0., 0., 0., 0.}, {0., 0., 0., 0.}}, {{0., 0., 0., 0.}, {0., 0., 0., 0.}}}
 	}
 	,
-	TestID->"NumericArrayTestSuite-20190910-N6W9L8"
+	TestID -> "NumericArrayTestSuite-20190910-N6W9L8"
 ];
 
 Test[
@@ -84,7 +84,7 @@ Test[
 		{{{0., 0., 0., 0.}, {0., 0., 0., 0.}}, {{0., 0., 0., 0.}, {0., 0., 0., 0.}}, {{0., 0., 0., 0.}, {0., 0., 0., 0.}}}
 	}
 	,
-	TestID->"NumericArrayTestSuite-20190910-E1T0G1"
+	TestID -> "NumericArrayTestSuite-20190910-E1T0G1"
 ];
 
 ExactTest[
@@ -92,7 +92,7 @@ ExactTest[
 	,
 	4
 	,
-	TestID->"NumericArrayTestSuite-20190910-I0L8K4"
+	TestID -> "NumericArrayTestSuite-20190910-I0L8K4"
 ]
 
 ExactTest[
@@ -100,7 +100,7 @@ ExactTest[
 	,
 	1
 	,
-	TestID->"NumericArrayTestSuite-20190910-G8Y0D3"
+	TestID -> "NumericArrayTestSuite-20190910-G8Y0D3"
 ]
 
 Test[
@@ -108,7 +108,7 @@ Test[
 	,
 	True
 	,
-	TestID->"NumericArrayTestSuite-20190910-E2L8V6"
+	TestID -> "NumericArrayTestSuite-20190910-E2L8V6"
 ]
 
 Test[
@@ -116,7 +116,7 @@ Test[
 	,
 	Developer`DataStore[{}, {{}, {}}, na]
 	,
-	TestID->"NumericArrayTestSuite-20190910-Z1A9U0"
+	TestID -> "NumericArrayTestSuite-20190910-Z1A9U0"
 ]
 
 Test[(*check NumericArray shared APi's*)
@@ -126,7 +126,7 @@ Test[(*check NumericArray shared APi's*)
 	,
 	True
 	,
-	TestID->"NumericArrayTestSuite-20190910-R4C9R1"
+	TestID -> "NumericArrayTestSuite-20190910-R4C9R1"
 ]
 
 Test[
@@ -134,7 +134,7 @@ Test[
 	,
 	Total @ Range[10]
 	,
-	TestID->"NumericArrayTestSuite-20190910-P0Q4I7"
+	TestID -> "NumericArrayTestSuite-20190910-P0Q4I7"
 ]
 
 Test[
@@ -142,7 +142,7 @@ Test[
 	,
 	Failure["FunctionError", <|"MessageTemplate" -> "An error occurred in the library function.", "MessageParameters" -> <||>, "ErrorCode" -> 6, "Parameters" -> {}|>]
 	,
-	TestID->"NumericArrayTestSuite-20190910-L8X7U3"
+	TestID -> "NumericArrayTestSuite-20190910-L8X7U3"
 ]
 
 Test[
@@ -150,7 +150,7 @@ Test[
 	,
 	{"Check", "ClipCheck", "Coerce", "ClipCoerce", "Round", "ClipRound", "Scale", "ClipScale"}
 	,
-	TestID->"NumericArrayTestSuite-20190910-Y7M9C9"
+	TestID -> "NumericArrayTestSuite-20190910-Y7M9C9"
 ]
 
 TestMatch[
@@ -158,7 +158,7 @@ TestMatch[
 	,
 	_Failure
 	,
-	TestID->"NumericArrayTestSuite-20190910-S9G5N5"
+	TestID -> "NumericArrayTestSuite-20190910-S9G5N5"
 ]
 
 Test[
@@ -167,20 +167,20 @@ Test[
 	,
 	NumericArray[NumericArray[{3.5}], "UnsignedInteger16", "Round", Tolerance -> 0]
 	,
-	TestID->"NumericArrayTestSuite-20190910-J2Y2X5"
+	TestID -> "NumericArrayTestSuite-20190910-J2Y2X5"
 ]
 
 TestMatch[
 	convert[NumericArray[{3.5}], 1 (* Check *), 0]
 	,
 	Failure["NumericArrayConversionError", <|
-		"MessageTemplate" -> "Failed to convert NumericArray from different type.", 
-		"MessageParameters" -> <||>, 
-		"ErrorCode" -> _?CppErrorCodeQ, 
+		"MessageTemplate" -> "Failed to convert NumericArray from different type.",
+		"MessageParameters" -> <||>,
+		"ErrorCode" -> _?CppErrorCodeQ,
 		"Parameters" -> {}|>
 	]
 	,
-	TestID->"NumericArrayTestSuite-20190910-D8W3R2"
+	TestID -> "NumericArrayTestSuite-20190910-D8W3R2"
 ]
 
 Test[
@@ -188,7 +188,7 @@ Test[
 	,
 	NumericArray[NumericArray[Range[10]], "UnsignedInteger16", "ClipAndScale", Tolerance -> 1]
 	,
-	TestID->"NumericArrayTestSuite-20190910-P4Z3Z8"
+	TestID -> "NumericArrayTestSuite-20190910-P4Z3Z8"
 ]
 
 Test[
@@ -209,12 +209,12 @@ Test[
 ]
 
 Test[
-	FlattenThroughList[NumericArray[{{}, {}},"Integer32"]]
+	FlattenThroughList[NumericArray[{{}, {}}, "Integer32"]]
 	,
 	{}
 	,
-	
-	TestID->"NumericArrayTestSuite-20190910-P4K7R7"
+
+	TestID -> "NumericArrayTestSuite-20190910-P4K7R7"
 ];
 
 Test[
@@ -222,7 +222,7 @@ Test[
 	,
 	NumericArray[{1, 2, 3, 4}, "Integer32"]
 	,
-	TestID->"NumericArrayTestSuite-20190910-W1P5E0"
+	TestID -> "NumericArrayTestSuite-20190910-W1P5E0"
 ];
 
 Test[
@@ -230,7 +230,7 @@ Test[
 	,
 	{{}, {}}
 	,
-	TestID->"NumericArrayTestSuite-20190910-G1X3J3"
+	TestID -> "NumericArrayTestSuite-20190910-G1X3J3"
 ];
 
 Test[
@@ -238,7 +238,7 @@ Test[
 	,
 	NumericArray[{{1.9, 2.8}, {3.7, 4.6}}, "Real64"]
 	,
-	TestID->"NumericArrayTestSuite-20190910-I3D6Q7"
+	TestID -> "NumericArrayTestSuite-20190910-I3D6Q7"
 ];
 
 EndRequirement[]

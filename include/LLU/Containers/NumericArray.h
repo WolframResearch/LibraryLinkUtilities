@@ -9,17 +9,15 @@
 #ifndef LLUTILS_NUMERICARRAY_H_
 #define LLUTILS_NUMERICARRAY_H_
 
-#include <type_traits>
 #include <initializer_list>
+#include <type_traits>
 
-#include "WolframLibrary.h"
-#include "WolframNumericArrayLibrary.h"
-
+#include "LLU/Containers/Generic/NumericArray.hpp"
 #include "LLU/Containers/MArray.hpp"
-#include "LLU/Containers/Passing/PassingPolicy.hpp"
 #include "LLU/Containers/Passing/Automatic.hpp"
 #include "LLU/Containers/Passing/Manual.hpp"
-#include "LLU/Containers/Generic/NumericArray.hpp"
+#include "LLU/Containers/Passing/PassingPolicy.hpp"
+#include "LLU/LibraryData.h"
 #include "LLU/Utilities.hpp"
 
 namespace LLU {
@@ -30,31 +28,31 @@ namespace LLU {
 	 *  Provides iterators, data access and info about dimensions.
 	 *  @tparam T - type of data in NumericArray
 	 */
-    template<typename T>
-    class TypedNumericArray : public MArray<T> {
-    public:
-        using MArray<T>::MArray;
+	template<typename T>
+	class TypedNumericArray : public MArray<T> {
+	public:
+		using MArray<T>::MArray;
 
-        /**
-         *   @brief	Return matching type of MNumericArray
-         **/
-        static numericarray_data_t getType() noexcept {
-            return type;
-        }
+		/**
+		 *   @brief	Return matching type of MNumericArray
+		 **/
+		static numericarray_data_t getType() noexcept {
+			return type;
+		}
 
-    private:
-        /**
-         *   @brief Return raw pointer to underlying data
-         **/
-        T* getData() const noexcept override {
-            return static_cast<T*>(LibraryData::NumericArrayAPI()->MNumericArray_getData(this->getInternal()));
-        }
+	private:
+		/**
+		 *   @brief Return raw pointer to underlying data
+		 **/
+		T* getData() const noexcept override {
+			return static_cast<T*>(LibraryData::NumericArrayAPI()->MNumericArray_getData(this->getInternal()));
+		}
 
-        virtual MNumericArray getInternal() const = 0;
+		virtual MNumericArray getInternal() const = 0;
 
-        /// NumericArray data type matching template parameter T
-        static const numericarray_data_t type;
-    };
+		/// NumericArray data type matching template parameter T
+		static const numericarray_data_t type;
+	};
 
 	/**
 	 * @class NumericArray
@@ -66,9 +64,8 @@ namespace LLU {
 	 * @tparam	T - type of underlying data
 	 */
 	template<typename T, class PassingMode = Passing::Manual>
-	class NumericArray: public TypedNumericArray<T>, public GenericNumericArray<PassingMode> {
+	class NumericArray : public TypedNumericArray<T>, public GenericNumericArray<PassingMode> {
 	public:
-
 		/**
 		 *   @brief         Constructs flat NumericArray based on a list of elements
 		 *   @param[in]     v - initializer list with NumericArray elements
@@ -84,7 +81,7 @@ namespace LLU {
 		 * @param   c - const reference to a collection from which data will be copied to the NumericArray
 		 */
 		template<class Container, typename = std::enable_if_t<is_iterable_container_with_matching_type_v<Container, T> && has_size_v<Container>>>
-		explicit NumericArray(const Container &c) : NumericArray(c, {static_cast<mint>(c.size())}) {}
+		explicit NumericArray(const Container& c) : NumericArray(c, {static_cast<mint>(c.size())}) {}
 
 		/**
 		 * @brief   Constructs a NumericArray with contents copied from a given collection of data and dimensions passed as parameter
@@ -93,8 +90,8 @@ namespace LLU {
 		 * @param   dims - dimensions of the NumericArray
 		 */
 		template<class Container, typename = std::enable_if_t<is_iterable_container_with_matching_type_v<Container, T>>>
-		NumericArray(const Container &c, MArrayDimensions dims) : NumericArray(std::begin(c), std::end(c), std::move(dims)) {}
-		
+		NumericArray(const Container& c, MArrayDimensions dims) : NumericArray(std::begin(c), std::end(c), std::move(dims)) {}
+
 		/**
 		 *   @brief         Constructs flat NumericArray with elements from range [first, last)
 		 *   @param[in]     first - iterator to the beginning of range
@@ -136,7 +133,8 @@ namespace LLU {
 		/**
 		 *   @brief     Create new NumericArray from a GenericNumericArray
 		 *   @param[in] na - generic NumericArray to be wrapped into NumericArray class
-		 *   @throws	ErrorName::NumericArrayTypeError - if the NumericArray template type \b T does not match the actual data type of the generic NumericArray
+		 *   @throws	ErrorName::NumericArrayTypeError - if the NumericArray template type \b T does not match the actual data type of the generic
+		 *NumericArray
 		 **/
 		explicit NumericArray(GenericNumericArray<PassingMode> na);
 
@@ -164,7 +162,7 @@ namespace LLU {
 		 *   @brief         Move constructor
 		 *   @param[in]     other - rvalue reference to a NumericArray of matching type
 		 **/
-		NumericArray(NumericArray &&other) noexcept = default;
+		NumericArray(NumericArray&& other) noexcept = default;
 
 		/**
 		 *    @brief	Free internal MNumericArray if necessary
@@ -181,63 +179,56 @@ namespace LLU {
 		 *   @brief         Copy-assignment operator with passing mode change
 		 *   @param[in]     other - const reference to a NumericArray of matching type
 		 **/
-        template<class P>
+		template<class P>
 		NumericArray& operator=(const NumericArray<T, P>& other) {
-            TypedNumericArray<T>::operator=(other);
+			TypedNumericArray<T>::operator=(other);
 			GenericBase::operator=(other);
-            return *this;
+			return *this;
 		}
 
 	private:
 		using GenericBase = GenericNumericArray<PassingMode>;
 
-        MNumericArray getInternal() const noexcept override {
-            return this->getContainer();
-        }
+		MNumericArray getInternal() const noexcept override {
+			return this->getContainer();
+		}
 	};
 
-
 	template<typename T, class PassingMode>
-	NumericArray<T, PassingMode>::NumericArray(std::initializer_list<T> v) :
-			NumericArray(std::begin(v), std::end(v), { static_cast<mint>(v.size()) }) {
-	}
+	NumericArray<T, PassingMode>::NumericArray(std::initializer_list<T> v) : NumericArray(std::begin(v), std::end(v), {static_cast<mint>(v.size())}) {}
 
 	template<typename T, class PassingMode>
 	template<class InputIt, typename>
-	NumericArray<T, PassingMode>::NumericArray(InputIt first, InputIt last) :
-			NumericArray(first, last, { static_cast<mint>(std::distance(first, last)) }) {
-	}
+	NumericArray<T, PassingMode>::NumericArray(InputIt first, InputIt last) : NumericArray(first, last, {static_cast<mint>(std::distance(first, last))}) {}
 
 	template<typename T, class PassingMode>
-	NumericArray<T, PassingMode>::NumericArray(T init, MArrayDimensions dims) : TypedNumericArray<T>(std::move(dims)),
-	        GenericBase(TypedNumericArray<T>::getType(), this->rank(), this->dims.data()) {
+	NumericArray<T, PassingMode>::NumericArray(T init, MArrayDimensions dims)
+		: TypedNumericArray<T>(std::move(dims)), GenericBase(TypedNumericArray<T>::getType(), this->rank(), this->dims.data()) {
 		std::fill(this->begin(), this->end(), init);
 	}
 
 	template<typename T, class PassingMode>
 	template<class InputIt, typename>
-	NumericArray<T, PassingMode>::NumericArray(InputIt first, InputIt last, MArrayDimensions dims) : TypedNumericArray<T>(std::move(dims)),
-			GenericBase(TypedNumericArray<T>::getType(), this->rank(), this->dims.data()) {
+	NumericArray<T, PassingMode>::NumericArray(InputIt first, InputIt last, MArrayDimensions dims)
+		: TypedNumericArray<T>(std::move(dims)), GenericBase(TypedNumericArray<T>::getType(), this->rank(), this->dims.data()) {
 		if (std::distance(first, last) != this->dims.flatCount())
 			ErrorManager::throwException(ErrorName::NumericArrayNewError, "Length of data range does not match specified dimensions");
 		std::copy(first, last, this->begin());
 	}
 
 	template<typename T, class PassingMode>
-	NumericArray<T, PassingMode>::NumericArray(GenericBase na) : TypedNumericArray<T>({na.getDimensions(), na.getRank()}),
-			GenericBase(std::move(na)) {
+	NumericArray<T, PassingMode>::NumericArray(GenericBase na) : TypedNumericArray<T>({na.getDimensions(), na.getRank()}), GenericBase(std::move(na)) {
 		if (TypedNumericArray<T>::getType() != GenericBase::type())
 			ErrorManager::throwException(ErrorName::NumericArrayTypeError);
 	}
 
 	template<typename T, class PassingMode>
-	NumericArray<T, PassingMode>::NumericArray(MNumericArray na) : NumericArray(GenericBase { na }) {}
+	NumericArray<T, PassingMode>::NumericArray(MNumericArray na) : NumericArray(GenericBase {na}) {}
 
 	template<typename T, class PassingMode>
 	template<class P>
-	NumericArray<T, PassingMode>::NumericArray(const GenericNumericArray<P>& other, NA::ConversionMethod method, double param) :
-			TypedNumericArray<T>({other.getDimensions(), other.getRank()}), GenericBase(other.convert(this->getType(), method, param)) {
-	}
+	NumericArray<T, PassingMode>::NumericArray(const GenericNumericArray<P>& other, NA::ConversionMethod method, double param)
+		: TypedNumericArray<T>({other.getDimensions(), other.getRank()}), GenericBase(other.convert(this->getType(), method, param)) {}
 
 } /* namespace LLU */
 

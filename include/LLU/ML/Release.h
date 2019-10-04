@@ -1,4 +1,4 @@
-/** 
+/**
  * @file	Release.h
  * @date	Nov 28, 2017
  * @author	Rafal Chojna <rafalc@wolfram.com>
@@ -10,8 +10,8 @@
 #include <functional>
 
 #include "mathlink.h"
-#include "LLU/Utilities.hpp"
 
+#include "LLU/Utilities.hpp"
 
 namespace LLU {
 
@@ -61,6 +61,7 @@ namespace LLU {
 			int getRank() const {
 				return rank;
 			}
+
 		private:
 			static Func Release;
 
@@ -71,20 +72,20 @@ namespace LLU {
 		};
 
 		template<typename T>
-		typename ReleaseArray<T>::Func ReleaseArray<T>::Release  = [] (MLINK, T*, int*, char**, int) {
-			static_assert(dependent_false_v<T>, "Trying to use ML::ReleaseArray<T>::Release for unsupported type T");
-		};
+		typename ReleaseArray<T>::Func ReleaseArray<T>::Release =
+			[](MLINK, T*, int*, char**, int) { static_assert(dependent_false_v<T>, "Trying to use ML::ReleaseArray<T>::Release for unsupported type T"); };
 
 		template<typename T>
-		typename ReleaseList<T>::Func ReleaseList<T>::Release  = [] (MLINK, T*, int) {
-			static_assert(dependent_false_v<T>, "Trying to use ML::ReleaseList<T>::Release for unsupported type T");
-		};
+		typename ReleaseList<T>::Func ReleaseList<T>::Release =
+			[](MLINK, T*, int) { static_assert(dependent_false_v<T>, "Trying to use ML::ReleaseList<T>::Release for unsupported type T"); };
 
 #ifndef _WIN32
 
 #define ML_RELEASE_DECLARE_SPECIALIZATIONS_OF_STATIC_MEMBERS(T) \
-	template<> ReleaseArray<T>::Func ReleaseArray<T>::Release;\
-	template<> ReleaseList<T>::Func ReleaseList<T>::Release;
+	template<>                                                  \
+	ReleaseArray<T>::Func ReleaseArray<T>::Release;             \
+	template<>                                                  \
+	ReleaseList<T>::Func ReleaseList<T>::Release;
 
 		ML_RELEASE_DECLARE_SPECIALIZATIONS_OF_STATIC_MEMBERS(unsigned char)
 		ML_RELEASE_DECLARE_SPECIALIZATIONS_OF_STATIC_MEMBERS(short)

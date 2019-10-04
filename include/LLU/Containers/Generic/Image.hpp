@@ -38,9 +38,8 @@ namespace LLU {
 		 * @param colorSpace - image color space
 		 * @param interleaving - whether the image data should be interleaved or not
 		 */
-		MContainer(mint width, mint height, mint channels, imagedata_t type, colorspace_t colorSpace, mbool interleaving) :
-				MContainer(0, width, height, channels, type, colorSpace, interleaving) {
-		}
+		MContainer(mint width, mint height, mint channels, imagedata_t type, colorspace_t colorSpace, mbool interleaving)
+			: MContainer(0, width, height, channels, type, colorSpace, interleaving) {}
 
 		/**
 		 * @brief Create new 2D or 3D MImage based on given parameters
@@ -54,8 +53,8 @@ namespace LLU {
 		 */
 		MContainer(mint slices, mint width, mint height, mint channels, imagedata_t type, colorspace_t colorSpace, mbool interleaving) {
 			RawContainer tmp {};
-			if (slices ? LibraryData::ImageAPI()->MImage_new3D(slices, width, height, channels, type, colorSpace, interleaving, &tmp) :
-			    LibraryData::ImageAPI()->MImage_new2D(width, height, channels, type, colorSpace, interleaving, &tmp)) {
+			if (slices ? LibraryData::ImageAPI()->MImage_new3D(slices, width, height, channels, type, colorSpace, interleaving, &tmp)
+					   : LibraryData::ImageAPI()->MImage_new2D(width, height, channels, type, colorSpace, interleaving, &tmp)) {
 				ErrorManager::throwException(ErrorName::ImageNewError);
 			}
 			this->setContainer(tmp);
@@ -67,16 +66,15 @@ namespace LLU {
 		 * @param   mc - different GenericImage
 		 */
 		template<class P>
-		explicit MContainer(const MContainer<MArgumentType::Image, P>& mc) : Base(mc) {
-		}
+		explicit MContainer(const MContainer<MArgumentType::Image, P>& mc) : Base(mc) {}
 
 		MContainer(const MContainer& mc) = default;
 
 		MContainer(MContainer&& mc) noexcept = default;
 
-		MContainer &operator=(const MContainer &) = default;
+		MContainer& operator=(const MContainer&) = default;
 
-		MContainer &operator=(MContainer &&) noexcept = default;
+		MContainer& operator=(MContainer&&) noexcept = default;
 
 		/**
 		 * @brief   Assign a GenericImage with different passing mode.
@@ -265,9 +263,8 @@ namespace LLU {
 		void passImpl(MArgument& res) const noexcept override {
 			MArgument_setMImage(res, this->getContainer());
 		}
-
 	};
 
 }
 
-#endif //LLU_INCLUDE_LLU_CONTAINERS_GENERIC_IMAGE
+#endif	  // LLU_INCLUDE_LLU_CONTAINERS_GENERIC_IMAGE

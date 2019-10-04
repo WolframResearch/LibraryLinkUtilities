@@ -1,14 +1,14 @@
-/** 
+/**
  * @file	Strings.cpp
  * @date	Mar 23, 2018
  * @author	Rafal Chojna <rafalc@wolfram.com>
  * @brief	Implementation file for all the functionality related to Strings in MathLink
  */
 
+#include "LLU/ML/Strings.h"
+
 #include <algorithm>
 #include <type_traits>
-
-#include "LLU/ML/Strings.h"
 
 namespace LLU {
 
@@ -27,18 +27,14 @@ namespace LLU {
 			return MLGetString(m, strData);
 		};
 		template<>
-		PutStringFuncT<CharType<Encoding::Native>> String<Encoding::Native>::Put = [](MLINK m, const char* strData, int) {
-			return MLPutString(m, strData);
-		};
+		PutStringFuncT<CharType<Encoding::Native>> String<Encoding::Native>::Put = [](MLINK m, const char* strData, int) { return MLPutString(m, strData); };
 		template<>
-		ReleaseStringFuncT<CharType<Encoding::Native>> String<Encoding::Native>::Release = [](MLINK m, const char* strData, int) {
-			MLReleaseString(m, strData);
-		};
+		ReleaseStringFuncT<CharType<Encoding::Native>>
+			String<Encoding::Native>::Release = [](MLINK m, const char* strData, int) { MLReleaseString(m, strData); };
 		template<>
 		const std::string String<Encoding::Native>::GetFName = "MLGetString";
 		template<>
 		const std::string String<Encoding::Native>::PutFName = "MLPutString";
-
 
 		template<>
 		GetStringFuncT<CharType<Encoding::Byte>> String<Encoding::Byte>::Get = [](MLINK m, const unsigned char** strData, int* len, int* charCnt) {
@@ -71,7 +67,6 @@ namespace LLU {
 		template<>
 		const std::string String<Encoding::UTF8>::PutFName = "MLPut(UTF8/Byte)String";
 
-
 		template<>
 		GetStringFuncT<CharType<Encoding::UTF16>> String<Encoding::UTF16>::Get = MLGetUTF16String;
 		template<>
@@ -82,7 +77,6 @@ namespace LLU {
 		const std::string String<Encoding::UTF16>::GetFName = "MLGetUTF16String";
 		template<>
 		const std::string String<Encoding::UTF16>::PutFName = "MLPutUTF16String";
-
 
 		template<>
 		GetStringFuncT<CharType<Encoding::UCS2>> String<Encoding::UCS2>::Get = [](MLINK m, const unsigned short** strData, int* len, int* charCnt) {
@@ -97,7 +91,6 @@ namespace LLU {
 		const std::string String<Encoding::UCS2>::GetFName = "MLGetUCS2String";
 		template<>
 		const std::string String<Encoding::UCS2>::PutFName = "MLPutUCS2String";
-
 
 		template<>
 		GetStringFuncT<CharType<Encoding::UTF32>> String<Encoding::UTF32>::Get = [](MLINK m, const unsigned int** strData, int* len, int* charCnt) {

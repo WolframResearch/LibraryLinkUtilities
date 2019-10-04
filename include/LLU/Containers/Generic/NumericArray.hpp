@@ -52,8 +52,7 @@ namespace LLU {
 		 * @param   mc - different GenericNumericArray
 		 */
 		template<class P>
-		explicit MContainer(const MContainer<MArgumentType::NumericArray, P>& mc) : Base(mc) {
-		}
+		explicit MContainer(const MContainer<MArgumentType::NumericArray, P>& mc) : Base(mc) {}
 
 		MContainer(const MContainer& mc) = default;
 
@@ -90,10 +89,8 @@ namespace LLU {
 		 */
 		GenericNumericArray<Passing::Manual> convert(numericarray_data_t t, NA::ConversionMethod method, double param) const {
 			MNumericArray newNA = nullptr;
-			auto err = LibraryData::NumericArrayAPI()->MNumericArray_convertType(
-					&newNA, this->getContainer(), t,
-					static_cast<numericarray_convert_method_t>(method), param
-			);
+			auto err = LibraryData::NumericArrayAPI()->MNumericArray_convertType(&newNA, this->getContainer(), t,
+																				 static_cast<numericarray_convert_method_t>(method), param);
 			if (err) {
 				ErrorManager::throwException(ErrorName::NumericArrayConversionError, "Conversion to type " + std::to_string(static_cast<int>(t)) + " failed.");
 			}
@@ -195,4 +192,4 @@ namespace LLU {
 
 }
 
-#endif //LLU_INCLUDE_LLU_CONTAINERS_GENERIC_NUMERICARRAY
+#endif	  // LLU_INCLUDE_LLU_CONTAINERS_GENERIC_NUMERICARRAY

@@ -1,16 +1,43 @@
 /**
  * @file
  * Definition of the LibraryData class.
+ * This file is the only place in LLU where LibraryLink header files are included. It is done this way to solve the include order dependency issue which was
+ * present in LibraryLink before WL version 12.1.
  */
 #ifndef LLUTILS_LIBRARYDATA_H
 #define LLUTILS_LIBRARYDATA_H
 
 #include <memory>
 
+/* If mathlink.h has already been included we just include WolframLibrary.h because there will be no conflict. */
+#ifdef _MATHLINK_H
+
 #include "WolframLibrary.h"
+
+#else
+
+/* If mathlink.h has not been included before WolframLibrary.h, we need to detect if we are dealing with WL 12.0- or 12.1+.
+ * To achieve this we include a small header file dllexport.h which defines DLLIMPORT macro only since 12.1. */
+
+#pragma push_macro("DLLIMPORT") /* Although unlikely, DLLIMPORT might have been defined elsewhere, so save it and temporarily undefine. */
+#undef DLLIMPORT
+
+#include "dllexport.h"
+
+#ifndef DLLIMPORT	/* We are dealing with WL 12.0-, restore DLLIMPORT macro and include mathlink.h even though we don't really need it at this point. */
+#pragma pop_macro("DLLIMPORT")
+
+#include "mathlink.h"
+
+#endif	/* DLLIMPORT */
+
+#include "WolframLibrary.h"
+
+#endif	/* _MATHLINK_H */
+
+#include "WolframIOLibraryFunctions.h"
 #include "WolframImageLibrary.h"
 #include "WolframNumericArrayLibrary.h"
-#include "WolframIOLibraryFunctions.h"
 #include "WolframSparseLibrary.h"
 
 namespace LLU {
@@ -23,7 +50,8 @@ namespace LLU {
 		/**
 		 *   @brief     Set WolframLibraryData structure as static member of LibDataHolder. Call this function in WolframLibrary_initialize.
 		 *   @param[in] ld - WolframLibraryData passed to every library function via LibraryLink
-		 *   @warning	This function must be called before constructing the first MArgumentManager unless you use a constructor that takes WolframLibraryData as argument
+		 *   @warning	This function must be called before constructing the first MArgumentManager
+		 *   unless you use a constructor that takes WolframLibraryData as argument
 		 **/
 		static void setLibraryData(WolframLibraryData ld);
 
@@ -71,4 +99,4 @@ namespace LLU {
 
 }
 
-#endif //LLUTILS_LIBRARYDATA_H
+#endif	  // LLUTILS_LIBRARYDATA_H

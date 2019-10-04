@@ -5,12 +5,12 @@ RegisterPacletErrors[lib, <||>];
 
 emptyVector = SafeLibraryFunction["CreateEmptyVector", {}, NumericArray];
 emptyMatrix = SafeLibraryFunction["CreateEmptyMatrix", {}, NumericArray];
-echoNumericArrays = SafeLibraryFunction["echoNumericArrays",{NumericArray, {NumericArray, "Manual"}, {NumericArray, "Shared"}}, "DataStore"];
+echoNumericArrays = SafeLibraryFunction["echoNumericArrays", {NumericArray, {NumericArray, "Manual"}, {NumericArray, "Shared"}}, "DataStore"];
 getNALength = SafeLibraryFunction["getNumericArrayLength", {NumericArray}, Integer];
 getNARank = SafeLibraryFunction["getNumericArrayRank", {NumericArray}, Integer];
 newNA = SafeLibraryFunction["newNumericArray", {}, NumericArray];
 cloneNA = SafeLibraryFunction["cloneNumericArrays", {{NumericArray, "Constant"}, {NumericArray, "Manual"}, {NumericArray, "Shared"}}, "DataStore"];
-changeSharedNA  = SafeLibraryFunction["changeSharedNumericArray", {{NumericArray,"Shared"}}, Integer];
+changeSharedNA = SafeLibraryFunction["changeSharedNumericArray", {{NumericArray, "Shared"}}, Integer];
 getSharedNA = SafeLibraryFunction["getSharedNumericArray", {}, NumericArray];
 accumulateIntegers = SafeLibraryFunction["accumulateIntegers", {{NumericArray, "Constant"}}, Integer];
 convertMethodName = SafeLibraryFunction["convertMethodName", {Integer}, String];

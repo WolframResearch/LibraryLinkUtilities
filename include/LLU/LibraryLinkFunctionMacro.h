@@ -13,28 +13,28 @@
 #ifndef LLUTILS_LIBRARYLINKFUNCTIONMACRO_H_
 #define LLUTILS_LIBRARYLINKFUNCTIONMACRO_H_
 
-#define LIBRARY_LINK_FUNCTION(name) \
-		EXTERN_C DLLEXPORT int name(WolframLibraryData, mint, MArgument*, MArgument); \
-		int name(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res)
+#define LIBRARY_LINK_FUNCTION(name)                                               \
+	EXTERN_C DLLEXPORT int name(WolframLibraryData, mint, MArgument*, MArgument); \
+	int name(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument Res)
 
-#define LIBRARY_MATHLINK_FUNCTION(name) \
-		EXTERN_C DLLEXPORT int name(WolframLibraryData, MLINK); \
-		int name(WolframLibraryData libData, MLINK mlp)
+#define LIBRARY_MATHLINK_FUNCTION(name)                     \
+	EXTERN_C DLLEXPORT int name(WolframLibraryData, MLINK); \
+	int name(WolframLibraryData libData, MLINK mlp)
 
-#define LLU_LIBRARY_FUNCTION(name) \
-        void impl_##name(LLU::MArgumentManager&); /* forward declaration */	\
-        LIBRARY_LINK_FUNCTION(name) {	\
-            auto err = LLU::ErrorCode::NoError; 	\
-            try {  \
-                LLU::MArgumentManager mngr {libData, Argc, Args, Res}; \
-            	impl_##name(mngr); \
-            }	\
-            catch (const LLU::LibraryLinkError& e) { err = e.which(); }	\
-            catch (...) { err = LLU::ErrorCode::FunctionError; }	\
-            return err;	\
-        }	\
-        void impl_##name(LLU::MArgumentManager& mngr)
-
-
+#define LLU_LIBRARY_FUNCTION(name)                                      \
+	void impl_##name(LLU::MArgumentManager&); /* forward declaration */ \
+	LIBRARY_LINK_FUNCTION(name) {                                       \
+		auto err = LLU::ErrorCode::NoError;                             \
+		try {                                                           \
+			LLU::MArgumentManager mngr {libData, Argc, Args, Res};      \
+			impl_##name(mngr);                                          \
+		} catch (const LLU::LibraryLinkError& e) {                      \
+			err = e.which();                                            \
+		} catch (...) {                                                 \
+			err = LLU::ErrorCode::FunctionError;                        \
+		}                                                               \
+		return err;                                                     \
+	}                                                                   \
+	void impl_##name(LLU::MArgumentManager& mngr)
 
 #endif /* LLUTILS_LIBRARYLINKFUNCTIONMACRO_H_ */

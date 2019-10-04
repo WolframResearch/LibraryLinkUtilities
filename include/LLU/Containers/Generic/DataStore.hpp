@@ -11,7 +11,6 @@
 
 namespace LLU {
 
-
 	template<class PassingMode>
 	class MContainer<MArgumentType::DataStore, PassingMode>;
 
@@ -26,6 +25,7 @@ namespace LLU {
 	template<class PassingMode>
 	class MContainer<MArgumentType::DataStore, PassingMode> : public MContainerBase<MArgumentType::DataStore, PassingMode> {
 		static_assert(!std::is_same<PassingMode, Passing::Shared>::value, "DataStore cannot be Shared.");
+
 	public:
 		/// Inherit constructors from MContainerBase
 		using MContainerBase<MArgumentType::DataStore, PassingMode>::MContainerBase;
@@ -41,8 +41,7 @@ namespace LLU {
 		 * @param   mc - different GenericDataList
 		 */
 		template<class P>
-		explicit MContainer(const MContainer<MArgumentType::DataStore, P>& mc) : Base(mc) {
-		}
+		explicit MContainer(const MContainer<MArgumentType::DataStore, P>& mc) : Base(mc) {}
 
 		MContainer(const MContainer& mc) = default;
 
@@ -59,7 +58,7 @@ namespace LLU {
 		 * @return  this
 		 */
 		template<class P>
-		MContainer &operator=(const MContainer<MArgumentType::DataStore, P> &mc) {
+		MContainer& operator=(const MContainer<MArgumentType::DataStore, P>& mc) {
 			Base::operator=(mc);
 			return *this;
 		}
@@ -71,7 +70,7 @@ namespace LLU {
 
 		/**
 		 * @brief   Get the length of the DataStore.
-		 * @return  total number of noded in the DataStore
+		 * @return  total number of nodes in the DataStore
 		 */
 		mint getLength() const {
 			return LibraryData::DataStoreAPI()->DataStore_getLength(this->getContainer());
@@ -113,8 +112,7 @@ namespace LLU {
 		/**
 		 * @brief   Disowning does nothing for DataStore as it cannot be shared.
 		 */
-		void disownImpl() const noexcept override {
-		}
+		void disownImpl() const noexcept override {}
 
 		/**
 		 * @brief   Free the underlying raw container.
@@ -134,4 +132,4 @@ namespace LLU {
 
 }
 
-#endif //LLU_INCLUDE_LLU_CONTAINERS_GENERIC_DATASTORE
+#endif	  // LLU_INCLUDE_LLU_CONTAINERS_GENERIC_DATASTORE

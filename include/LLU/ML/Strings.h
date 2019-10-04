@@ -1,4 +1,4 @@
-/** 
+/**
  * @file	Strings.h
  * @date	Mar 22, 2018
  * @author	Rafal Chojna <rafalc@wolfram.com>
@@ -7,6 +7,7 @@
 #ifndef LLUTILS_ML_STRINGS_H_
 #define LLUTILS_ML_STRINGS_H_
 
+#include <algorithm>
 #include <functional>
 #include <memory>
 
@@ -14,6 +15,7 @@
 
 #include "LLU/ErrorLog/Errors.h"
 #include "LLU/ML/EncodingTraits.hpp"
+#include "LLU/ML/Utilities.h"
 #include "LLU/Utilities.hpp"
 
 namespace LLU {
@@ -39,7 +41,6 @@ namespace LLU {
 
 		template<Encoding E>
 		using StringData = std::unique_ptr<const CharType<E>[], ReleaseString<E>>;
-
 
 		template<typename T>
 		using GetStringFuncT = std::function<int(MLINK, const T**, int*, int*)>;
@@ -73,7 +74,7 @@ namespace LLU {
 				const CharT* rawResult;
 				int bytes, characters;
 				checkError(m, Get(m, &rawResult, &bytes, &characters), ErrorName::MLGetStringError, GetFName);
-				return {rawResult, ReleaseString<E> {m, bytes , characters}};
+				return {rawResult, ReleaseString<E> {m, bytes, characters}};
 			}
 
 			template<typename T>
@@ -81,13 +82,13 @@ namespace LLU {
 				static_assert(CharacterTypesCompatible<E, T>, "Character type does not match the encoding in ML::String<E>::getString");
 				using StringType = std::basic_string<T>;
 
-				auto strData { get(m) };
+				auto strData {get(m)};
 
 				auto bytes = strData.get_deleter().getLength();
 				auto* expectedData = reinterpret_cast<const T*>(strData.get());
 				auto strlen = static_cast<typename StringType::size_type>(bytes);
 
-				return (bytes < 0? StringType { expectedData } : StringType { expectedData, strlen });
+				return (bytes < 0 ? StringType {expectedData} : StringType {expectedData, strlen});
 			}
 		};
 
@@ -118,7 +119,6 @@ namespace LLU {
 		};
 		/// @endcond
 
-
 		template<Encoding E>
 		struct ReleaseString {
 			ReleaseString() = default;
@@ -142,17 +142,21 @@ namespace LLU {
 			int chars = 0;
 		};
 
-
 #ifndef _WIN32
 
 /// Macro for declaring specializations of static members for ML::String<Encoding::E>
 /// For internal use only.
-#define ML_STRING_DECLARE_SPECIALIZATIONS_OF_STATIC_MEMBERS(E) \
-	template<> GetStringFuncT<CharType<Encoding::E>> String<Encoding::E>::Get;\
-	template<> PutStringFuncT<CharType<Encoding::E>> String<Encoding::E>::Put;\
-	template<> ReleaseStringFuncT<CharType<Encoding::E>> String<Encoding::E>::Release;\
-	template<> const std::string String<Encoding::E>::GetFName;\
-	template<> const std::string String<Encoding::E>::PutFName;
+#define ML_STRING_DECLARE_SPECIALIZATIONS_OF_STATIC_MEMBERS(E)              \
+	template<>                                                              \
+	GetStringFuncT<CharType<Encoding::E>> String<Encoding::E>::Get;         \
+	template<>                                                              \
+	PutStringFuncT<CharType<Encoding::E>> String<Encoding::E>::Put;         \
+	template<>                                                              \
+	ReleaseStringFuncT<CharType<Encoding::E>> String<Encoding::E>::Release; \
+	template<>                                                              \
+	const std::string String<Encoding::E>::GetFName;                        \
+	template<>                                                              \
+	const std::string String<Encoding::E>::PutFName;
 
 		ML_STRING_DECLARE_SPECIALIZATIONS_OF_STATIC_MEMBERS(Native)
 		ML_STRING_DECLARE_SPECIALIZATIONS_OF_STATIC_MEMBERS(Byte)
@@ -169,18 +173,14 @@ namespace LLU {
 			return MLGetString(m, strData);
 		};
 		template<>
-		PutStringFuncT<CharType<Encoding::Native>> String<Encoding::Native>::Put = [](MLINK m, const char* strData, int) {
-			return MLPutString(m, strData);
-		};
+		PutStringFuncT<CharType<Encoding::Native>> String<Encoding::Native>::Put = [](MLINK m, const char* strData, int) { return MLPutString(m, strData); };
 		template<>
-		ReleaseStringFuncT<CharType<Encoding::Native>> String<Encoding::Native>::Release = [](MLINK m, const char* strData, int) {
-			MLReleaseString(m, strData);
-		};
+		ReleaseStringFuncT<CharType<Encoding::Native>>
+			String<Encoding::Native>::Release = [](MLINK m, const char* strData, int) { MLReleaseString(m, strData); };
 		template<>
 		const std::string String<Encoding::Native>::GetFName = "MLGetString";
 		template<>
 		const std::string String<Encoding::Native>::PutFName = "MLPutString";
-
 
 		template<>
 		GetStringFuncT<CharType<Encoding::Byte>> String<Encoding::Byte>::Get = [](MLINK m, const unsigned char** strData, int* len, int* charCnt) {
@@ -220,7 +220,6 @@ namespace LLU {
 		template<>
 		const std::string String<Encoding::UTF8>::PutFName = "MLPut(UTF8/Byte)String";
 
-
 		template<>
 		GetStringFuncT<CharType<Encoding::UTF16>> String<Encoding::UTF16>::Get = MLGetUTF16String;
 		template<>
@@ -231,7 +230,6 @@ namespace LLU {
 		const std::string String<Encoding::UTF16>::GetFName = "MLGetUTF16String";
 		template<>
 		const std::string String<Encoding::UTF16>::PutFName = "MLPutUTF16String";
-
 
 		template<>
 		GetStringFuncT<CharType<Encoding::UCS2>> String<Encoding::UCS2>::Get = [](MLINK m, const unsigned short** strData, int* len, int* charCnt) {
@@ -246,7 +244,6 @@ namespace LLU {
 		const std::string String<Encoding::UCS2>::GetFName = "MLGetUCS2String";
 		template<>
 		const std::string String<Encoding::UCS2>::PutFName = "MLPutUCS2String";
-
 
 		template<>
 		GetStringFuncT<CharType<Encoding::UTF32>> String<Encoding::UTF32>::Get = [](MLINK m, const unsigned int** strData, int* len, int* charCnt) {

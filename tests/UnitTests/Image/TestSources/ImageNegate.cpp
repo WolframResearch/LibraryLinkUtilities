@@ -18,11 +18,9 @@ uint16_t negator<uint16_t> = 0xFFFF;
 struct ImageNegator {
 	template<typename T, class P>
 	void operator()(LLU::Image<T, P> in, LLU::MArgumentManager& mngr) {
-		LLU::Image<T> out(in.is3D()? in.slices() : 0, in.columns(), in.rows(), in.channels(), in.colorspace(), in.interleavedQ());
+		LLU::Image<T> out(in.is3D() ? in.slices() : 0, in.columns(), in.rows(), in.channels(), in.colorspace(), in.interleavedQ());
 
-		std::transform(std::cbegin(in), std::cend(in), std::begin(out), [](T inElem) {
-			return negator<T> & ~inElem;
-		});
+		std::transform(std::cbegin(in), std::cend(in), std::begin(out), [](T inElem) { return negator<T> & ~inElem; });
 		mngr.setImage(out);
 	}
 
@@ -37,17 +35,14 @@ struct ImageNegator {
 	}
 };
 
-
 LIBRARY_LINK_FUNCTION(ImageNegate) {
 	auto err = LLU::ErrorCode::NoError;
 	try {
 		LLU::MArgumentManager mngr(libData, Argc, Args, Res);
 		mngr.operateOnImage<LLU::Passing::Automatic, ImageNegator>(0, mngr);
-	}
-	catch (const LLU::LibraryLinkError& e) {
+	} catch (const LLU::LibraryLinkError& e) {
 		err = e.which();
-	}
-	catch (...) {
+	} catch (...) {
 		err = LLU::ErrorCode::FunctionError;
 	}
 	return err;

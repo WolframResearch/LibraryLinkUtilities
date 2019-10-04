@@ -8,7 +8,7 @@
 
 namespace LLU {
 
-	#define LLU_DEFINE_ERROR_NAME(errorIdentifier) const std::string errorIdentifier = #errorIdentifier
+#define LLU_DEFINE_ERROR_NAME(errorIdentifier) const std::string errorIdentifier = #errorIdentifier
 
 	namespace ErrorName {
 		LLU_DEFINE_ERROR_NAME(VersionError);

@@ -1,4 +1,4 @@
-/** 
+/**
  * @file	Get.cpp
  * @date	Nov 28, 2017
  * @author	Rafal Chojna <rafalc@wolfram.com>
@@ -13,7 +13,6 @@
 namespace LLU {
 
 	namespace ML {
-
 
 		/* ***************************************************************** */
 		/* ********* Template specializations for  unsigned char  ********** */
@@ -43,7 +42,6 @@ namespace LLU {
 		template<>
 		const std::string GetScalar<unsigned char>::ScalarFName = "MLGetInteger8";
 
-
 		/* ***************************************************************** */
 		/* ******* Template specializations for  (unsigned) short  ********* */
 		/* ***************************************************************** */
@@ -71,7 +69,6 @@ namespace LLU {
 
 		template<>
 		const std::string GetScalar<short>::ScalarFName = "MLGetInteger16";
-
 
 		/* ***************************************************************** */
 		/* ******** Template specializations for  (unsigned) int  ********** */
@@ -101,7 +98,6 @@ namespace LLU {
 		template<>
 		const std::string GetScalar<int>::ScalarFName = "MLGetInteger32";
 
-
 		/* ***************************************************************** */
 		/* *********** Template specializations for  mlint64  ************** */
 		/* ***************************************************************** */
@@ -130,7 +126,6 @@ namespace LLU {
 		template<>
 		const std::string GetScalar<mlint64>::ScalarFName = "MLGetInteger64";
 
-
 		/* ***************************************************************** */
 		/* ************ Template specializations for  float  *************** */
 		/* ***************************************************************** */
@@ -158,7 +153,6 @@ namespace LLU {
 
 		template<>
 		const std::string GetScalar<float>::ScalarFName = "MLGetReal32";
-
 
 		/* ***************************************************************** */
 		/* *********** Template specializations for  double  *************** */

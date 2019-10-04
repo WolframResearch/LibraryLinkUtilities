@@ -1,4 +1,4 @@
-/** 
+/**
  * @file	LLU.h
  * @brief	Header file which includes all major parts of LLU.
  *
@@ -9,20 +9,23 @@
 #ifndef LLUTILS_LLU_H_
 #define LLUTILS_LLU_H_
 
+/* Containers */
 #include "LLU/Containers/DataList.h"
 #include "LLU/Containers/Image.h"
 #include "LLU/Containers/NumericArray.h"
-#include "LLU/Containers/Tensor.h"
-
 #include "LLU/Containers/Passing/Automatic.hpp"
 #include "LLU/Containers/Passing/Manual.hpp"
 #include "LLU/Containers/Passing/Shared.hpp"
+#include "LLU/Containers/Tensor.h"
 
-#include "LLU/ErrorLog/Errors.h"
+/* Error reporting */
 #include "LLU/ErrorLog/ErrorManager.h"
+#include "LLU/ErrorLog/Errors.h"
 
+/* Library function arguments */
+#include "LLU/MArgumentManager.h"
+
+/* MathLink */
 #include "LLU/ML/MLStream.hpp"
-
-#include "MArgumentManager.h"
 
 #endif /* LLUTILS_LLU_H_ */

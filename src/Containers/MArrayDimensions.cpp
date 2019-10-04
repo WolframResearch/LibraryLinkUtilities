@@ -21,9 +21,8 @@ namespace LLU {
 	void MArrayDimensions::fillOffsets() {
 		offsets.assign(dims.size(), 1);
 		if (rank() >= 2) {
-			std::transform(std::rbegin(offsets), std::rend(offsets) - 1, std::crbegin(dims), std::rbegin(offsets) + 1, [](auto off, auto dim) {
-				return off * dim;
-			});
+			std::transform(std::rbegin(offsets), std::rend(offsets) - 1, std::crbegin(dims), std::rbegin(offsets) + 1,
+						   [](auto off, auto dim) { return off * dim; });
 		}
 	}
 
@@ -56,9 +55,8 @@ namespace LLU {
 		return flatIndex;
 	}
 
-
 	mint MArrayDimensions::checkContainerSize(std::initializer_list<mint> v) const {
-		if (v.size() <= 0 || v.size() > static_cast<decltype(v)::size_type>(std::numeric_limits<mint>::max())) {
+		if (v.size() <= 0 || v.size() > static_cast<decltype(v)::size_type>((std::numeric_limits<mint>::max)())) {
 			ErrorManager::throwException(ErrorName::DimensionsError);
 		}
 		return static_cast<mint>(v.size());
@@ -71,6 +69,5 @@ namespace LLU {
 	void MArrayDimensions::indexError(mint index) const {
 		ErrorManager::throwException(ErrorName::MArrayElementIndexError, index);
 	}
-
 
 } /* namespace LLU */

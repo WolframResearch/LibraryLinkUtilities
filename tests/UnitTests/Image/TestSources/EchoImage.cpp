@@ -1,22 +1,22 @@
+#include <cstdint>
+#include <type_traits>
+
 #include "LLU/LLU.h"
 #include "LLU/LibraryLinkFunctionMacro.h"
-
-#include <type_traits>
-#include <cstdint>
 
 LLU_LIBRARY_FUNCTION(EchoImage1) {
 	mngr.operateOnImage(0, [&mngr](auto im1) {
 		using T = typename std::remove_reference_t<decltype(im1)>::value_type;
-		auto im2 {std::move(im1)};  // test move constructor
+		auto im2 {std::move(im1)};	  // test move constructor
 		LLU::Image<T, LLU::Passing::Manual> im3;
-		im3 = std::move(im2);  // test move assignment
+		im3 = std::move(im2);	 // test move assignment
 		mngr.setImage(im3);
 	});
 }
 
 LLU_LIBRARY_FUNCTION(EchoImage2) {
 	mngr.operateOnImage(0, [&mngr](auto&& in) {
-		auto slices = in.is3D()? in.slices() : 0;
+		auto slices = in.is3D() ? in.slices() : 0;
 		auto columns = in.columns();
 		auto rows = in.rows();
 		auto channels = in.channels();
@@ -60,21 +60,20 @@ LLU_LIBRARY_FUNCTION(UnifyImageTypes) {
 			LLU::Image<T> out(in2);
 			mngr.setImage(out);
 		});
-
 	});
 }
 
 LLU_LIBRARY_FUNCTION(CloneImage) {
 	mngr.operateOnImage(0, [&mngr](auto&& im1) {
 		using T = typename std::remove_reference_t<decltype(im1)>::value_type;
-		LLU::Image<T, LLU::Passing::Manual> im2 {im1};  // test copy constructor
+		LLU::Image<T, LLU::Passing::Manual> im2 {im1};	  // test copy constructor
 		LLU::Image<T> im3;
-		im3 = im2;  // test copy assignment
+		im3 = im2;	  // test copy assignment
 		mngr.setImage(im3);
 	});
 }
 
 LLU_LIBRARY_FUNCTION(EmptyWrapper) {
 	LLU::Unused(mngr);
-	LLU::Image<std::uint8_t> im { nullptr }; // this should trigger an exception
+	LLU::Image<std::uint8_t> im {nullptr};	  // this should trigger an exception
 }
