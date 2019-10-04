@@ -49,11 +49,11 @@ Below is a quick overview of CMake variables which you can use to customize buil
       cmake .. -DMATHEMATICA_VERSION=12.0
 
    If you installed Mathematica in nonstandard location, you have to provide the path to Mathematica installation
-   (you don't need to specify ``MATHEMATICA_VERSION``), for example if you want to link to WolframLibrary and MathLink from the XKernel:
+   (you don't need to specify ``MATHEMATICA_VERSION``), for example:
 
    .. code-block:: bash
 
-      cmake .. -DMATHEMATICA_INSTALL_DIR=/home/path/to/XKernel
+      cmake .. -DMATHEMATICA_INSTALL_DIR=/home/jerome/path/to/Mathematica
 
 2. Use MathLink and WolframLibrary from arbitrary locations
 
