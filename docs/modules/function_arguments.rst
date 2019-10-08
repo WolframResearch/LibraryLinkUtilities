@@ -10,10 +10,6 @@ LibraryLink does the heavy lifting by providing translation between popular WL e
 a ``String`` expression to the library function, you will receive a null-terminated ``char*`` in the C code, passing a ``NumericArray`` will yield
 an object of type ``MNumericArray``. There is still some work needed to translate LibraryLink types into external library types.
 
-.. image:: ../_static/img/types2.png
-   :align: center
-   :alt: Type mapping between Wolfram Language types and external library types.
-
 In practice, what you will receive in a library function as input arguments from Wolfram Language is an array of ``MArgument``, which is a union type::
 
 	typedef union {
