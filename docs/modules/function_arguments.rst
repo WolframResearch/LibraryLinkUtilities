@@ -6,7 +6,7 @@ Passing data between Wolfram Language and external C/C++ libraries is a core fea
 Wolfram Language everything is an expression and variable's type can change at run time, whereas C and C++ are both statically typed. Apart from that,
 every C/C++ library may define custom data types it uses.
 
-LibraryLink does the heavy lifting by providing translation between popular WL expression types and corresponding C types. For instance, when you pass
+LibraryLink does the heavy lifting by providing translation between popular Wolfram Language expression types and corresponding C types. For instance, when you pass
 a ``String`` expression to the library function, you will receive a null-terminated ``char*`` in the C code, passing a ``NumericArray`` will yield
 an object of type ``MNumericArray``. There is still some work needed to translate LibraryLink types into external library types.
 

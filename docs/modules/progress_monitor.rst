@@ -7,9 +7,8 @@ Progress monitor
    :class: highlight
 
 When a library function is executed from the Wolfram Language session, the Kernel will wait until the function returns. There is usually no real-time feedback about
-function progress. :term:`LibraryLink` offers `AbortQ <https://reference.wolfram.com/language/LibraryLink/ref/callback/AbortQ.html>`_ function that allows
-developers to correctly handle cases when users abort library function execution. But it is entirely up to library developers whether they will use ``AbortQ`` and
-whether they will actually immediately return from the function if ``AbortQ`` returns ``true``.
+function progress. :term:`LibraryLink` offers the `AbortQ <https://reference.wolfram.com/language/LibraryLink/ref/callback/AbortQ.html>`_ function which allows
+developers to correctly handle cases when the user aborts a library function execution. The drawback is it is entirely up to library developers to use ``AbortQ`` manually. The library must still return even when ``AbortQ`` returns ``true``, so there is still no guarantee that the execution will end immediately upon an abort.
 
 In practice, using time-consuming library functions often looks like this:
 
@@ -27,10 +26,10 @@ Whereas it could look like this:
 library function execution. The value in the tensor is a real number between 0.0 and 1.0 which indicates current progress of the function. It can be
 increased/decreased by a given step (using convenient increment/decrement operators) or set to arbitrary value.
 (Yes, decreasing progress may be useful sometimes too.)
-Progress value can be read in the Kernel and displayed in the Front End for example as a progress bar. See example below for more
+Progress value can be read in the Kernel and displayed in the Front End for example as a progress bar. See the example below for more
 details.
 
-As with almost every LLU feature, ``ProgressMonitor`` implementation consists of two parts: one in the library and one in top-level. The goal is to have
+As with almost every LLU feature, the ``ProgressMonitor`` implementation consists of two parts: one in the library and one in Wolfram Language code. The goal is to have
 decent functionality with minimal effort on the programmers side.
 
 In C++ code the only thing you have to do is to get an instance of ProgressMonitor from MArgumentManager.
@@ -40,11 +39,11 @@ In C++ code the only thing you have to do is to get an instance of ProgressMonit
    auto pm = mngr.getProgressMonitor();
 
 ``ProgressMonitor`` class also defines a method :cpp:func:`LLU::ProgressMonitor::checkAbort` which checks if the user has requested to abort current computation
-and if so, throws an exception. It's a static function, so even if you don't own a ``ProgressMonitor`` instance you can still check for aborts.
+and if so, throws an exception. It's a static function, so even if you don't own a ``ProgressMonitor`` instance, you can still check for aborts.
 Calling ``checkAbort()`` also has a significant side-effect: it gives some CPU time to the Kernel in the middle of library function evaluation
 and this may be helpful in updating the ``Dynamic`` which moves the progress bar in Front End.
 
-The top-level implementation is minimal and basic. When you ``SafeLibraryLoad`` a function which uses ``ProgressMonitor``, you have to pass
+The Wolfram Language implementation is minimal and basic. When you ``SafeLibraryLoad`` a function which uses ``ProgressMonitor``, you have to pass
 an option :wl:`"ProgressMonitor" -> x`, where ``x`` is a Symbol.
 
 Every time your library function reports a progress, the new progress value will be assigned to ``x``. If and how the progress is visualized
@@ -86,14 +85,14 @@ Consider a simple function that just sleeps in a loop moving the progress bar in
 		return LLU::ErrorCode::NoError;
 	}
 
-For progress reporting to work on the Wolfram Language side as expected, library function must be loaded with extra option "ProgressMonitor", like this:
+For progress reporting to work on the Wolfram Language side as expected, the library function must be loaded with extra option "ProgressMonitor", like this:
 
 .. code-block:: mma
 
    UniformProgress = SafeLibraryFunction["UniformProgress", {Real}, Integer, "ProgressMonitor" -> MyPaclet`PM`UniformProgress];
 
 By default, :wl:`"ProgressMonitor" -> None`.
-It's good to make sure the name for the monitoring symbol will be unique, my suggestion is to use ``PacletName`PM`` context and the name of the symbol
+It's good to make sure the name for the monitoring symbol will be unique, my suggestion is to use ``PacletName`PM`` as the context, and the name of the symbol
 to be the same as the function name.
 
 Now, run our library function with simple progress bar:

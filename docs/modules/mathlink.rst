@@ -2,9 +2,9 @@
 MathLink support
 ===================
 
-*LibraryLink* allows you to pass LinkObject as argument, which may then be utilized to exchange data between your library and the Kernel using MathLink.
+*LibraryLink* allows a LinkObject to be passed as an argument which may then exchange data between your library and the Kernel using MathLink.
 The original MathLink API is in old C style with error codes, macros, manual memory management, etc.
-Therefore, *LLU* provides a wrapper for the LinkObject called `MLStream`.
+*LLU* provides a wrapper for the LinkObject called `MLStream`.
 
 `MLStream` is actually a class template parameterized by the default encoding to be used for strings, but for the sake of clarity,
 the template parameter is skipped in the remainder of this text.
@@ -17,12 +17,12 @@ Convenient syntax
 -----------------------
 
 In **LLU** MathLink is interpreted as an i/o stream, so operators << and >> are utilized to make the syntax cleaner and more concise.
-This means that the framework frees developers from the responsibility to choose proper MathLink function for the data they intend to read or write.
+This frees developers from the responsibility to choose the proper MathLink function for the data they intend to read or write.
 
 Error checking
 -----------------------
 
-Each call to MathLink has its return status checked. In case of failure an exception is thrown. Such exceptions carry some debug info to help locate the problem.
+Each call to MathLink has its return status checked. An exception is thrown on failures which carries some debug info to help locate the problem.
 Sample debug info looks like this::
 
 	Error code reported by MathLink: 48
@@ -33,19 +33,19 @@ Sample debug info looks like this::
 Memory cleanup
 -----------------------
 
-You're no longer required to call `MLRelease*` on the data received from MathLink. The framework does it for you.
+`MLRelease*` no longer needs to be called on the data received from MathLink. The *LLU* framework does it for you.
 
 Automated handling of common data types
 --------------------------------------------------
 
-Some sophisticated types can be sent to Mathematica directly via `MLStream` class. For example nested maps:
+Some sophisticated types can be sent to Mathematica directly via a `MLStream` class. For example nested maps:
 
 .. code-block:: cpp
 
 	std::map<std::string, std::map<int, std::vector<double>>> myNestedMap
 
 
-Just write `ms << myNestedMap` and you will get a nested Association on the other side. It works in the other direction as well.
+Just write `ms << myNestedMap` and a nested Association will be returned. It works in the other direction as well.
 Obviously, for the above to work, key and value type in the map must be supported by MathLink.
 
 If you have any particular type that you think should be directly supported by `MLStream`, please let me know.
@@ -75,36 +75,7 @@ It is enough to overload `operator<<` like this:
 	}
 
 
-And now you're able to send objects of class `Color` directly via `MLStream`.
-
-Expressions of unknown length
------------------------------------------------
-
-Whenever you send an expression via MathLink you have to first specify the head and the number of arguments. It proved multiple times that this design is not very flexible,
-for example when you are reading from a file and cannot easily tell how much data is left.
-
-As a workaround, one can create a temporary loopback link, accumulate all the arguments there (without the head),
-count the arguments and then send everything to the "main" link as usual.
-
-The same strategy has been incorporated into `MLStream` so that developers do not have to implement it manually any longer. Now you can send a `List` like this:
-
-.. code-block:: cpp
-   :linenos:
-   :dedent: 1
-
-	MLStream ms(mlp);
-
-	ms << ML::BeginExpr("List");
-	while (dataFromFile != EOF) {
-		// process data from file and send to MLStream
-	}
-	ms << ML::EndExpr();
-
-
-.. warning::
-
-	This feature should only be used if necessary since it requires a temporary link and makes extra copies
-	of data. Simple benchmarks showed a ~2x slowdown compared to the usual `MLPutFunction`.
+Objects of class `Color` can now be sent directly via `MLStream`.
 
 
 Example
@@ -217,6 +188,36 @@ and now the same code using `MLStream`:
 	}
 
 	ms << ML::EndPacket << ML::Flush;
+
+
+Expressions of unknown length
+-----------------------------------------------
+
+Whenever you send an expression via MathLink you have to first specify the head and the number of arguments. This design is not very flexible,
+for example when an unknown number of contents are being read from a file.
+
+As a workaround, one can create a temporary loopback link, accumulate all the arguments there (without the head),
+count the arguments, and then send everything to the "main" link as usual.
+
+The same strategy has been incorporated into `MLStream` so that developers do not have to implement it manually any longer. Now you can send a `List` like this:
+
+.. code-block:: cpp
+   :linenos:
+   :dedent: 1
+
+	MLStream ms(mlp);
+
+	ms << ML::BeginExpr("List");
+	while (dataFromFile != EOF) {
+		// process data from file and send to MLStream
+	}
+	ms << ML::EndExpr();
+
+
+.. warning::
+
+	This feature should only be used if necessary since it requires a temporary link and makes extra copies
+	of data. Simple benchmarks showed a ~2x slowdown compared to the usual `MLPutFunction`.
 
 
 API reference

@@ -6,21 +6,21 @@ One of the features offered by LibraryLink is Managed Library Expressions (MLEs)
 that will be automatically deleted when they are no longer referenced in the Wolfram Language code. More information can
 be found in the official LibraryLink `documentation <https://reference.wolfram.com/language/LibraryLink/tutorial/InteractionWithWolframLanguage.html#353220453>`_.
 
-It is clear that this plays nicely with object-oriented programming paradigm and it is the recommended way of referencing
-C++ objects from Wolfram Language. Two most notable alternatives include
+This allows for an object-oriented programming paradigm and it is the recommended way of referencing
+C++ objects from Wolfram Language. The two most notable alternatives are:
 
 * recreating C++ objects every time a library function is called
 
 * maintaining some sort of global cache with referenced objects, where each object is added on first use and manually deleted at some point.
 
-The second alternative is in a way utilized in LLU to greatly facilitate using MLEs and decrease the amount of boilerplate
+LLU uses methods similar to the second alternative to facilitate using MLEs and decrease the amount of boilerplate
 code needed from developers. Namely, for each class that you register to be used as MLE, LLU will maintain a map, which
 associates managed C++ objects with IDs assigned to them by Wolfram Language.
 
 Register a class as Managed Expression
 =========================================
 
-Imagine with have a class `A` whose objects we want to manage from WL. We need to define the class, of course:
+Imagine with have a class `A` whose objects we want to manage from Wolfram Language. The class needs to be defined:
 
 .. code-block:: cpp
    :dedent: 1
@@ -32,7 +32,7 @@ Imagine with have a class `A` whose objects we want to manage from WL. We need t
 	    int myNumber;
 	};
 
-then we must create the corresponding Store and specialize a callback function for LibraryLink (this is a technicality
+Then we must create the corresponding Store and specialize a callback function for LibraryLink (this is a technicality
 that just needs to be done):
 
 .. code-block:: cpp
@@ -54,7 +54,7 @@ The last step is to actually register and unregister your type when library gets
 
 	EXTERN_C DLLEXPORT int WolframLibrary_initialize(WolframLibraryData libData) {
 		LLU::LibraryData::setLibraryData(libData);
-		AStore.registerType("A");   // the string you pass is the name of a symbol that will be used in WL for managing
+		AStore.registerType("A");   // the string you pass is the name of a symbol that will be used in Wolfram Language for managing
 		return 0;                   // objects of your class, it is a good convention to just use the class name
 	}
 
@@ -95,7 +95,7 @@ Typically, it will look like this:
 	}
 
 
-The Wolfram Language part of registering an MLE is simpler. You only need to load your constructor wrapper:
+It is simpler to register an MLE in Wolfram Language. You only need to load your constructor wrapper:
 
 .. code-block:: mathematica
 
@@ -124,7 +124,7 @@ for example let's define a wrapper over `A::getMyNumber()`:
 		return err;
 	}
 
-In WL, wrappers over member functions can be conveniently loaded:
+In Wolfram Language, wrappers over member functions can be conveniently loaded:
 
 .. code-block:: mma
    :dedent: 1

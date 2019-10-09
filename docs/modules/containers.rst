@@ -5,15 +5,15 @@ Containers
 Overview
 ============================
 
-Raw *LibraryLink* containers like MTensor or MNumericArray store their element type as a regular field in the stucture
-meaning that the type cannot be used in compile-time context, which makes writing generic code that does something with
-the underlying data very difficult (lots of switches and code repetition).
+Raw *LibraryLink* containers like MTensor or MNumericArray store their element type as a regular field in the stucture.
+This means that the type cannot be used at compile-time, which makes writing generic code that does something with
+the underlying data very difficult (lots of switches on the element type and code repetition).
 
-On the other hand, having element type as template parameter, like in STL containers, is often inconvenient and requires
+On the other hand, having the element type as template parameter, like STL containers, is often inconvenient and requires
 some template magic for simple things like passing forward the container or reading metadata when the data type is not
 known a priori.
 
-To get the best of two worlds at cost of a bit more complicated interface LLU provides the following hierarchy of container
+To get the best of two worlds at cost of a bit more complicated interface, LLU provides the following hierarchy of container
 classes:
 
 Level 0
@@ -24,7 +24,7 @@ Level 0
 * MNumericArray
 * MTensor
 
-These are just raw *LibraryLink* containers. If someone wants to use them directly, they probably don't need LLU at all, but it's possible to use them within LLU as well.
+These are just raw *LibraryLink* containers. LLU is likely unecessary when working with raw *LibraryLink* containers However, they are still supported.
 
 Level 1A
 ----------------------------------
@@ -34,7 +34,7 @@ Level 1A
 * :cpp:type:`template\<class PassingMode> LLU::GenericNumericArray`
 * :cpp:type:`template\<class PassingMode> LLU::GenericTensor`
 
-These are type-unaware wrappers, offer automatic memory management and basic interface like access to metadata (dimensions, rank, etc). No direct access to underlying data.
+These are type-unaware wrappers that offer automatic memory management and basic interface like access to metadata (dimensions, rank, etc). They do not provide direct access to the underlying data.
 
 Level 1B
 ----------------------------------
@@ -73,25 +73,25 @@ The following table summarizes current status of *LibraryLink* containers and th
 Passing policies
 ============================
 
-When passing a container from WL to a C++ library you have to choose one of the 4 available passing modes:
+When passing a container from Wolfram Language to a C++ library, one of 4 passing modes must be chosen:
 
 * Automatic
 * Constant
 * Manual
 * Shared
 
-With exception of DataStore, which cannot be Shared.
+With the exception of DataStore, which cannot be Shared.
 
 All of the above are described in the `LibraryLink documentation <https://reference.wolfram.com/language/LibraryLink/tutorial/InteractionWithWolframLanguage.html#97446640>`_.
 
-In plain *LibraryLink*, the choice you make is reflected only in the WL code where you call `LibraryFunctionLoad` and specify
+In plain *LibraryLink*, the choice you make is reflected only in the Wolfram Language code where `LibraryFunctionLoad` specifies
 the list of parameters for the library function. There is no way to query the WolframLibraryData or MArgument about
 the passing modes of function arguments from within C++ code. Therefore, the programmer must remember the passing mode
 for each argument and then ensure the correct action is taken (releasing/not releasing memory depending
-on the combination of passing mode and whether the container has been returned from the library function as result to WL).
+on the combination of passing mode and whether the container has been returned from the library function as result to Wolfram Language).
 This design is far from perfect because manual resource management often leads to bugs and leaks.
 
-As a remedy for this flaw of *LibraryLink*, LLU encodes the passing mode in a form of template parameter for each
+As a remedy for this flaw in *LibraryLink*, LLU encodes the passing mode in a form of template parameter for each
 container wrapper. It makes sense because passing mode is known at compile time and cannot be changed throughout
 the life of container.
 

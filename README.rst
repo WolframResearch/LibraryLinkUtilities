@@ -23,9 +23,7 @@ Please use GitHub to report bugs, make suggestions and request features.
 Motivation
 ------------------------------
 
-:term:`LibraryLink` is a great tool for connecting Wolfram Language with external libraries and programs written in C and it is widely used internally for developing paclets.
-But as more and more paclets are now being developed in modern C++ the integration with *LibraryLink*, although still possible, becomes cumbersome and inelegant.
-Most significant features missing in *LibraryLink* from the standpoint of C++ developer are:
+:term:`LibraryLink` is a great tool for connecting Wolfram Language with external libraries. *LibraryLink* programs are written in C and it is widely used at Wolfram Research for developing paclets. As more and more paclets are now being developed in modern C++ the integration with *LibraryLink* becomes cumbersome and inelegant. The most significant features missing in *LibraryLink* from the standpoint of a C++ developer are:
 
 * automatic resource management
 * exception handling
@@ -40,8 +38,8 @@ The motivation behind *LibraryLink Utilities* is to provide the aforementioned f
 Example
 ----------------------------------
 
-Probably the best way to see how to use :abbr:`LLU (LibraryLink Utilities)` and what advantages it has over classic :term:`LibraryLink` is by comparing
-the same function written in two different styles.
+The easiest way to demonstrate the advantages :abbr:`LLU (LibraryLink Utilities)` has over classic :term:`LibraryLink` is by comparing
+the same function written with and without :abbr:`LLU (LibraryLink Utilities)`.
 Below we will implement a simple function ``repeatCharacters`` that takes a string ``s`` and a tensor ``t`` and returns a new string ``s2`` that consists of each
 character ``s[i]`` from original string but repeated ``t[i]`` times, so for example
 
@@ -131,7 +129,7 @@ First, C - style implementation:
 	}
 
 
-and corresponding C++ version written with *LibraryLink Utilities*:
+and the corresponding C++ version written with *LibraryLink Utilities*:
 
 .. code-block:: cpp
    :dedent: 1
