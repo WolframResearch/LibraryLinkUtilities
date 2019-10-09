@@ -70,7 +70,7 @@ Other useful cmake variables used by *LLU* include:
 
  - ``BUILD_SHARED_LIBS`` - Whether to build *LLU* as shared library. By default static library is created.
  - ``CMAKE_BUILD_TYPE`` - Choose the type of build, this should match the type of build of your project.
- - ``CMAKE_INSTALL_PREFIX`` - Where to install *LLU*. By default it is installed to _install_ directory in the source tree.
+ - ``CMAKE_INSTALL_PREFIX`` - Where to install *LLU*. By default it is installed to :file:`install/` directory in the source tree.
  - ``CMAKE_VERBOSE_MAKEFILE`` - Useful for debugging.
 
 3. Build, Install and Test
