@@ -53,7 +53,7 @@ namespace LLU {
 		 * @tparam 	T - type template parameter pack
 		 * @param 	errorName - name of error to be thrown, must be registered beforehand
 		 * @param 	args - any number of arguments that will replace TemplateSlots (``, `1`, `xx`, etd) in the message text in top-level
-		 * @note	This function requires a copy of WolframLibraryData to be saved in WolframLibrary_initialize via LibDataHolder::setLibraryData
+		 * @note	This function requires a copy of WolframLibraryData to be saved in WolframLibrary_initialize via LibraryData::setLibraryData
 		 * 			or MArgumentManager::setLibraryData.
 		 */
 		template<typename... T>
@@ -100,7 +100,7 @@ namespace LLU {
 		 * @param 	errorName - name of error to be thrown, must be registered beforehand
 		 * @param	debugInfo - additional message with debug info, this message will not be passed to top-level Failure object
 		 * @param 	args - any number of arguments that will replace TemplateSlots (``, `1`, `xx`, etd) in the message text in top-level
-		 * @note	This function requires a copy of WolframLibraryData to be saved in WolframLibrary_initialize via LibDataHolder::setLibraryData
+		 * @note	This function requires a copy of WolframLibraryData to be saved in WolframLibrary_initialize via LibraryData::setLibraryData
 		 * 			or MArgumentManager::setLibraryData.
 		 */
 		template<typename... T>
