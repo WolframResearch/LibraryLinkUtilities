@@ -1,4 +1,4 @@
-find_package(Sphinx REQUIRED)
+find_package(Sphinx)
 
 set(SPHINX_SOURCE ${CMAKE_CURRENT_SOURCE_DIR})
 set(SPHINX_BUILD ${CMAKE_CURRENT_BINARY_DIR}/LLU)
