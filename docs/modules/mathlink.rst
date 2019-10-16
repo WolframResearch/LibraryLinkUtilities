@@ -1,9 +1,10 @@
 ===================
-MathLink support
+WSTP support
 ===================
 
-*LibraryLink* allows a LinkObject to be passed as an argument which may then exchange data between your library and the Kernel using MathLink.
-The original MathLink API is in old C style with error codes, macros, manual memory management, etc.
+*LibraryLink* allows a LinkObject to be passed as an argument which may then exchange data between your library and the Kernel using
+Wolfram Symbolic Transfer Protocol (**WSTP**, also known as **MathLink**).
+The original WSTP API is in old C style with error codes, macros, manual memory management, etc.
 *LLU* provides a wrapper for the LinkObject called `MLStream`.
 
 `MLStream` is actually a class template parameterized by the default encoding to be used for strings, but for the sake of clarity,
@@ -16,13 +17,13 @@ Main features
 Convenient syntax
 -----------------------
 
-In **LLU** MathLink is interpreted as an i/o stream, so operators << and >> are utilized to make the syntax cleaner and more concise.
-This frees developers from the responsibility to choose the proper MathLink function for the data they intend to read or write.
+In **LLU** WSTP is interpreted as an i/o stream, so operators << and >> are utilized to make the syntax cleaner and more concise.
+This frees developers from the responsibility to choose the proper WSTP API function for the data they intend to read or write.
 
 Error checking
 -----------------------
 
-Each call to MathLink has its return status checked. An exception is thrown on failures which carries some debug info to help locate the problem.
+Each call to WSTP API has its return status checked. An exception is thrown on failures which carries some debug info to help locate the problem.
 Sample debug info looks like this::
 
 	Error code reported by MathLink: 48
@@ -33,7 +34,7 @@ Sample debug info looks like this::
 Memory cleanup
 -----------------------
 
-`MLRelease*` no longer needs to be called on the data received from MathLink. The *LLU* framework does it for you.
+`WSRelease*` no longer needs to be called on the data received from WSTP. The *LLU* framework does it for you.
 
 Automated handling of common data types
 --------------------------------------------------
@@ -46,7 +47,7 @@ Some sophisticated types can be sent to Mathematica directly via a `MLStream` cl
 
 
 Just write `ms << myNestedMap` and a nested Association will be returned. It works in the other direction as well.
-Obviously, for the above to work, key and value type in the map must be supported by MathLink.
+Obviously, for the above to work, key and value type in the map must be supported by WSTP.
 
 If you have any particular type that you think should be directly supported by `MLStream`, please let me know.
 
@@ -193,7 +194,7 @@ and now the same code using `MLStream`:
 Expressions of unknown length
 -----------------------------------------------
 
-Whenever you send an expression via MathLink you have to first specify the head and the number of arguments. This design is not very flexible,
+Whenever you send an expression via WSTP you have to first specify the head and the number of arguments. This design is not very flexible,
 for example when an unknown number of contents are being read from a file.
 
 As a workaround, one can create a temporary loopback link, accumulate all the arguments there (without the head),
