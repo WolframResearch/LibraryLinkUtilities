@@ -23,19 +23,15 @@ Please use GitHub to report bugs, make suggestions and request features.
 Motivation
 ------------------------------
 
-:term:`LibraryLink` is a great tool for connecting Wolfram Language with external libraries. *LibraryLink* programs are written in C and it is widely used at Wolfram Research for developing paclets.
-In case of modern C++ projects, the integration with *LibraryLink* is not as smooth and requires a bit of extra effort.
-The most significant features missing in *LibraryLink* from the standpoint of a C++ developer are:
+:term:`LibraryLink` is a great tool for connecting Wolfram Language to external C/C++ libraries and is already widely used by Wolfram Research and
+Wolfram Language developers for developing paclets.
+:term:`LibraryLink Utilities` makes it even easier to use *LibraryLink* by providing the following features:
 
 * automatic resource management
 * exception handling
 * container iterators
 * class-like interface for data structures, for example ``rank()`` as member function of ``Tensor`` class instead of separate function ``mint MTensor_getRank(MTensor)``, or a copy constructor instead of ``int MTensor_clone(MTensor, MTensor*)``
 * type safety
-
-The motivation behind *LibraryLink Utilities* is to provide the aforementioned features without touching *LibraryLink* sources.
-
-
 
 Example
 ----------------------------------
