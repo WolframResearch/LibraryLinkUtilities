@@ -177,7 +177,7 @@ and this is the corresponding C++ version written with LibraryLink Utilities:
 Limitations with respect to LibraryLink
 ---------------------------------------------
 
-There are some LibraryLink features currently not covered by *LLU*, most notably:
+There are some LibraryLink features currently not covered by LLU, most notably:
 
 - Sparse Arrays
 - Tensor subsetting: `MTensor_getTensor`
