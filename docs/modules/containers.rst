@@ -5,7 +5,7 @@ Containers
 Overview
 ============================
 
-Raw *LibraryLink* containers like MTensor or MNumericArray store their element type as a regular field in the stucture.
+Raw LibraryLink containers like MTensor or MNumericArray store their element type as a regular field in the stucture.
 This means that the type cannot be used at compile-time, which makes writing generic code that does something with
 the underlying data very difficult (lots of switches on the element type and code repetition).
 
@@ -24,7 +24,7 @@ Level 0
 * MNumericArray
 * MTensor
 
-These are just raw *LibraryLink* containers. LLU is likely unecessary when working with raw *LibraryLink* containers However, they are still supported.
+These are just raw LibraryLink containers. LLU is likely unecessary when working with raw LibraryLink containers However, they are still supported.
 
 Level 1A
 ----------------------------------
@@ -56,7 +56,7 @@ Level 2
 
 Full-fledged wrappers with automatic memory management (via Passing policies, see section below), type-safe data access, iterators, etc.
 
-The following table summarizes current status of *LibraryLink* containers and their LLU wrappers:
+The following table summarizes current status of LibraryLink containers and their LLU wrappers:
 
 +---------------------+--------------------------+--------------------+
 | LibraryLink element |    Generic wrapper       |   Typed wrapper    |
@@ -84,14 +84,14 @@ With the exception of DataStore, which cannot be Shared.
 
 All of the above are described in the `LibraryLink documentation <https://reference.wolfram.com/language/LibraryLink/tutorial/InteractionWithWolframLanguage.html#97446640>`_.
 
-In plain *LibraryLink*, the choice you make is reflected only in the Wolfram Language code where `LibraryFunctionLoad` specifies
+In plain LibraryLink, the choice you make is reflected only in the Wolfram Language code where `LibraryFunctionLoad` specifies
 the list of parameters for the library function. There is no way to query the WolframLibraryData or MArgument about
 the passing modes of function arguments from within C++ code. Therefore, the programmer must remember the passing mode
 for each argument and then ensure the correct action is taken (releasing/not releasing memory depending
 on the combination of passing mode and whether the container has been returned from the library function as result to Wolfram Language).
 This design is far from perfect because manual resource management often leads to bugs and leaks.
 
-As a remedy for this flaw in *LibraryLink*, LLU encodes the passing mode in a form of template parameter for each
+As a remedy for this flaw in LibraryLink, LLU encodes the passing mode in a form of template parameter for each
 container wrapper. It makes sense because passing mode is known at compile time and cannot be changed throughout
 the life of container.
 

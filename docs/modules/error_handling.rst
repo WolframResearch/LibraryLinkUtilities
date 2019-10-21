@@ -4,7 +4,7 @@
 Error handling
 ================
 
-Every *LibraryLink* function in C code has a fixed signature [#]_
+Every LibraryLink function in C code has a fixed signature [#]_
 
 .. code-block:: cpp
 
@@ -14,7 +14,7 @@ The actual result of computations should be returned via the "out-parameter" ``R
 return value of ``f`` (of type ``int``) was equal to ``LIBRARY_NO_ERROR`` (with LLU use ``ErrorCode::NoError``, see note below).
 
 .. tip::
-   *LibraryLink* uses 8 predefined error codes
+   LibraryLink uses 8 predefined error codes
 
    .. code-block:: cpp
 
@@ -29,14 +29,14 @@ return value of ``f`` (of type ``int``) was equal to ``LIBRARY_NO_ERROR`` (with 
           LIBRARY_VERSION_ERROR
       };
 
-   *LLU* redefines those values as constexpr integers in a dedicated namespace :cpp:any:`LLU::ErrorCode`, so for example instead of
+   LLU redefines those values as constexpr integers in a dedicated namespace :cpp:any:`LLU::ErrorCode`, so for example instead of
    ``LIBRARY_FUNCTION_ERROR`` one can use :cpp:any:`ErrorCode::FunctionError`.
 
 
 That means, that the **only information** about an error which occurred in the library that makes it to the Wolfram Language code is a **single integer**.
 
-In C++ exceptions are the preferred way of error handling, so *LLU* offers a special class of exceptions that can be easily translated to error codes,
-returned to *LibraryLink* and then translated to descriptive :wl:`Failure` objects in Wolfram Language.
+In C++ exceptions are the preferred way of error handling, so LLU offers a special class of exceptions that can be easily translated to error codes,
+returned to LibraryLink and then translated to descriptive :wl:`Failure` objects in Wolfram Language.
 
 Such exceptions are identified in the C++ code by name - a short string. For example, imagine you have a function that reads data from a source.
 If the source does not exist or is empty, you want to throw exceptions, let's call them "NoSourceError" and "EmptySourceError", respectively.
@@ -63,7 +63,7 @@ This text may contain "slots" denoted as \`1\`, \`2\`, etc. that work like `Temp
 in the Wolfram Language.
 
 .. note::
-   Notice that there is no way to assign specific error codes to your custom exceptions, this is handled internally by *LLU*.
+   Notice that there is no way to assign specific error codes to your custom exceptions, this is handled internally by LLU.
 
 Now, in the function that reads data:
 

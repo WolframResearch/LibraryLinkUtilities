@@ -2,10 +2,10 @@
 WSTP support
 ===================
 
-*LibraryLink* allows a LinkObject to be passed as an argument which may then exchange data between your library and the Kernel using
+LibraryLink allows a LinkObject to be passed as an argument which may then exchange data between your library and the Kernel using
 Wolfram Symbolic Transfer Protocol (**WSTP**, also known as **MathLink**).
 The original WSTP API is in old C style with error codes, macros, manual memory management, etc.
-*LLU* provides a wrapper for the LinkObject called `MLStream`.
+LLU provides a wrapper for the LinkObject called `MLStream`.
 
 `MLStream` is actually a class template parameterized by the default encoding to be used for strings, but for the sake of clarity,
 the template parameter is skipped in the remainder of this text.
@@ -17,7 +17,7 @@ Main features
 Convenient syntax
 -----------------------
 
-In **LLU** WSTP is interpreted as an i/o stream, so operators << and >> are utilized to make the syntax cleaner and more concise.
+In *LLU* WSTP is interpreted as an i/o stream, so operators << and >> are utilized to make the syntax cleaner and more concise.
 This frees developers from the responsibility to choose the proper WSTP API function for the data they intend to read or write.
 
 Error checking
@@ -34,7 +34,7 @@ Sample debug info looks like this::
 Memory cleanup
 -----------------------
 
-`WSRelease*` no longer needs to be called on the data received from WSTP. The *LLU* framework does it for you.
+`WSRelease*` no longer needs to be called on the data received from WSTP. The LLU framework does it for you.
 
 Automated handling of common data types
 --------------------------------------------------
@@ -82,7 +82,7 @@ Objects of class `Color` can now be sent directly via `MLStream`.
 Example
 =============
 
-Let's compare the same piece of code written in plain *LibraryLink* with one written with *LLU* and `MLStream`.
+Let's compare the same piece of code written in plain LibraryLink with one written with LLU and `MLStream`.
 Take a look at the code snippet taken from one of the Import/Export paclets:
 
 .. code-block:: cpp

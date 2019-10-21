@@ -13,12 +13,12 @@ For SourceTree users there is also a helpful `blog post <https://blog.sourcetree
 
 In most cases you will access *LibraryLink Utilities* in "read-only" manner, i.e. you will just update the submodule to make sure you use the most recent version.
 
-When you work on your paclet you may occasionally find a bug in *LLU* or a missing feature. You should either report it or try to make changes yourself
+When you work on your paclet you may occasionally find a bug in LLU or a missing feature. You should either report it or try to make changes yourself
 following the usual workflow: create new branch - implement changes - open PR - merge.
 
 .. warning::
 
-   All development of *LLU* should happen on GitHub. We still maintain a Stash mirror of the repo that paclets should link to, but no changes should be made there.
+   All development of LLU should happen on GitHub. We still maintain a Stash mirror of the repo that paclets should link to, but no changes should be made there.
 
 
 Here is a list of commands that will be useful to developers working on Import/Export paclets (names ending with "Tools").
@@ -42,16 +42,16 @@ Usually these paclets have :file:`CPPSource/` directory containing the source co
 
       git submodule update --remote CPPSource/LibraryLinkUtilities/
 
-Submodules work in a "detached head" state which means they stick to a chosen commit, so even if there are backwards incompatible changes merged to *LLU* master
+Submodules work in a "detached head" state which means they stick to a chosen commit, so even if there are backwards incompatible changes merged to LLU master
 your project will not be affected unless you manually update the submodule.
 
-With *LLU* attached to your project in a submodule you always have the sources so you only need to follow steps 2 - 4 described
+With LLU attached to your project in a submodule you always have the sources so you only need to follow steps 2 - 4 described
 :doc:`in the official build instructions<../basic/how_to_use>`.
 
 Paclets that use LLU
 ==========================================================
 
-If you look for examples of *LLU* usage and whatever is in this documentation was not enough you can take a look at paclets that already use *LLU*.
+If you look for examples of LLU usage and whatever is in this documentation was not enough you can take a look at paclets that already use LLU.
 The list below may not be complete.
 
 - `PacletTemplate <https://stash.wolfram.com/projects/IMEX/repos/paclettemplate>`_ - this is a model paclet for Import/Export developers

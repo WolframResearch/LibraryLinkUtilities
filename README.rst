@@ -25,7 +25,7 @@ Motivation
 
 :term:`LibraryLink` is a great tool for connecting Wolfram Language to external C/C++ libraries and is already widely used by Wolfram Research and
 Wolfram Language developers for developing paclets.
-:term:`LibraryLink Utilities` makes it even easier to use *LibraryLink* by providing the following features:
+:term:`LibraryLink Utilities` makes it even easier to use LibraryLink by providing the following features:
 
 * automatic resource management
 * exception handling
@@ -177,7 +177,7 @@ and this is the corresponding C++ version written with *LibraryLink Utilities*:
 Limitations with respect to LibraryLink
 ---------------------------------------------
 
-There are some *LibraryLink* features currently not covered by *LLU*, most notably:
+There are some LibraryLink features currently not covered by *LLU*, most notably:
 
 - Sparse Arrays
 - Tensor subsetting: `MTensor_getTensor`

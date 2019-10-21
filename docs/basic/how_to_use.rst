@@ -36,7 +36,7 @@ Alternatively, a zip package can be downloaded from GitHub containing a snapshot
 Dependencies
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-*LLU* depends on MathLink and WolframLibrary so both must be installed on your system.
+LLU depends on MathLink and WolframLibrary so both must be installed on your system.
 Below is a quick overview of CMake variables which you can use to customize build process. Let's consider a number of possible scenarios:
 
 1. Use MathLink and WolframLibrary from a standard Mathematica installation:
@@ -65,11 +65,11 @@ Below is a quick overview of CMake variables which you can use to customize buil
 Other Options
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Other useful cmake variables used by *LLU* include:
+Other useful cmake variables used by LLU include:
 
- - ``BUILD_SHARED_LIBS`` - Whether to build *LLU* as shared library. A static library is created by default.
+ - ``BUILD_SHARED_LIBS`` - Whether to build LLU as shared library. A static library is created by default.
  - ``CMAKE_BUILD_TYPE`` - Choose the type of build. This should match the type of build of your project.
- - ``CMAKE_INSTALL_PREFIX`` - Where to install *LLU*. The default location is the :file:`install/` directory in the source tree.
+ - ``CMAKE_INSTALL_PREFIX`` - Where to install LLU. The default location is the :file:`install/` directory in the source tree.
  - ``CMAKE_VERBOSE_MAKEFILE`` - Useful for debugging.
 
 3. Build, Install and Test
@@ -109,8 +109,8 @@ will show the whole output produced by ctest and wolframscript. There is still r
 4. Link from your project
 =========================================
 
-*LLU* defines CMake export target and hides the build details. Dependencies, compiler flags, include paths, etc do not need to be set. 
-After *LLU* is installed, in your project's CMakeLists.txt call:
+LLU defines CMake export target and hides the build details. Dependencies, compiler flags, include paths, etc do not need to be set.
+After LLU is installed, in your project's CMakeLists.txt call:
 
 .. code-block:: cmake
 
