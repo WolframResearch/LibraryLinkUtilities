@@ -15,6 +15,7 @@ Since the source code uses C++14 features, you have to make sure your compiler s
  * **clang** >= 3.4
 
 Plus:
+
  * **CMake** >= 3.8.0
  * **MathLink** interface version 4 or later
  * **WolframLibrary** >= 5
@@ -28,7 +29,7 @@ You can clone LLU from GitHub:
 
 ssh://git@stash.wolfram.com:7999/imex/librarylinkutilities.git **TODO: replace with GitHub clone link**
 
-Alternatively, a zip package can be downloaded from GitHub containing a snapshot from any chosen branch.
+Alternatively, a zip package can be downloaded from GitHub containing a snapshot from any branch.
 
 2. Configure
 =========================================
