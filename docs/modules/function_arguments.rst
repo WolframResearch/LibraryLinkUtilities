@@ -3,12 +3,12 @@ Function arguments
 ===========================================
 
 Passing data between Wolfram Language and external C/C++ libraries is a core feature of LibraryLink. This is far from a straightforward task, because in
-Wolfram Language everything is an expression and variable's type can change at run time, whereas C and C++ are both statically typed. Apart from that,
+Wolfram Language everything is an expression and variable's type can change at run time, whereas C and C++ variables are statically typed. Apart from that,
 every C/C++ library may define custom data types it uses.
 
 LibraryLink does the heavy lifting by providing translation between popular Wolfram Language expression types and corresponding C types. For instance, when you pass
-a ``String`` expression to the library function, you will receive a null-terminated ``char*`` in the C code, passing a ``NumericArray`` will yield
-an object of type ``MNumericArray``. There is still some work needed to translate LibraryLink types into external library types.
+a ``String`` expression to the library function, you will receive a null-terminated ``char*`` in the C code, or passing a ``NumericArray`` will yield
+an object of type ``MNumericArray``.
 
 In practice, what you will receive in a library function as input arguments from Wolfram Language is an array of ``MArgument``, which is a union type::
 
@@ -51,7 +51,7 @@ Write a library function that adds two integers
        return ErrorCode::NoError;
    }
 
-Such function, when compiled into a shared library, say :file:`myLib.so`, could then be loaded into WolframLanguage and used like this:
+Such function, when compiled into a shared library, say :file:`myLib.so`, could be loaded into WolframLanguage and used like this:
 
 .. code-block:: mma
 
