@@ -17,7 +17,7 @@ Main features
 Convenient syntax
 -----------------------
 
-In *LLU* WSTP is interpreted as an i/o stream, so operators << and >> are utilized to make the syntax cleaner and more concise.
+In LLU WSTP is interpreted as an i/o stream, so operators << and >> are utilized to make the syntax cleaner and more concise.
 This frees developers from the responsibility to choose the proper WSTP API function for the data they intend to read or write.
 
 Error checking
@@ -34,22 +34,22 @@ Sample debug info looks like this::
 Memory cleanup
 -----------------------
 
-`WSRelease*` no longer needs to be called on the data received from WSTP. The LLU framework does it for you.
+WSRelease* no longer needs to be called on the data received from WSTP. The LLU framework does it for you.
 
 Automated handling of common data types
 --------------------------------------------------
 
-Some sophisticated types can be sent to Mathematica directly via a `MLStream` class. For example nested maps:
+Some sophisticated types can be sent to Mathematica directly via an MLStream class. For example nested maps:
 
 .. code-block:: cpp
 
 	std::map<std::string, std::map<int, std::vector<double>>> myNestedMap
 
 
-Just write `ms << myNestedMap` and a nested Association will be returned. It works in the other direction as well.
+Just write `ms << myNestedMap` and a nested Association will be returned. It works in the other direction too.
 Obviously, for the above to work, key and value type in the map must be supported by WSTP.
 
-If you have any particular type that you think should be directly supported by `MLStream`, please let me know.
+If you have any particular type that you think should be directly supported by MLStream, please let me know.
 
 User-defined classes
 ----------------------------------------
@@ -76,14 +76,13 @@ It is enough to overload `operator<<` like this:
 	}
 
 
-Objects of class `Color` can now be sent directly via `MLStream`.
+Objects of class `Color` can now be sent directly via MLStream.
 
 
 Example
 =============
 
-Let's compare the same piece of code written in plain LibraryLink with one written with LLU and `MLStream`.
-Take a look at the code snippet taken from one of the Import/Export paclets:
+Let's compare the same piece of code written in plain LibraryLink with one written with LLU and MLStream. Here is the plain LibraryLink code:
 
 .. code-block:: cpp
    :dedent: 1
@@ -163,7 +162,7 @@ Take a look at the code snippet taken from one of the Import/Export paclets:
 		/* unable to flush any buffered output data in mlp */
 	}
 
-and now the same code using `MLStream`:
+and now the same code using MLStream:
 
 .. code-block:: cpp
    :dedent: 1
@@ -194,13 +193,13 @@ and now the same code using `MLStream`:
 Expressions of unknown length
 -----------------------------------------------
 
-Whenever you send an expression via WSTP you have to first specify the head and the number of arguments. This design is not very flexible,
+Whenever you send an expression via WSTP you have to first specify the head and the number of arguments. This is not very flexible
 for example when an unknown number of contents are being read from a file.
 
 As a workaround, one can create a temporary loopback link, accumulate all the arguments there (without the head),
 count the arguments, and then send everything to the "main" link as usual.
 
-The same strategy has been incorporated into `MLStream` so that developers do not have to implement it manually any longer. Now you can send a `List` like this:
+The same strategy has been incorporated into MLStream so that developers do not have to implement it. Now you can send a `List` like this:
 
 .. code-block:: cpp
    :linenos:
