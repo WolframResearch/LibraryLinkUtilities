@@ -20,7 +20,7 @@ associates managed C++ objects with IDs assigned to them by Wolfram Language.
 Register a class as Managed Expression
 =========================================
 
-Imagine with have a class `A` whose objects we want to manage from Wolfram Language. The class needs to be defined:
+Imagine you have a class `A` whose objects you want to manage from Wolfram Language. The class needs to be defined:
 
 .. code-block:: cpp
    :dedent: 1
@@ -32,7 +32,7 @@ Imagine with have a class `A` whose objects we want to manage from Wolfram Langu
 	    int myNumber;
 	};
 
-Then we must create the corresponding Store and specialize a callback function for LibraryLink (this is a technicality
+Then you must create the corresponding Store and specialize a callback function for LibraryLink (this is a technicality
 that just needs to be done):
 
 .. code-block:: cpp
@@ -95,7 +95,7 @@ Typically, it will look like this:
 	}
 
 
-It is simpler to register an MLE in Wolfram Language. You only need to load your constructor wrapper:
+It is simpler to register an MLE in the Wolfram Language. You only need to load your constructor wrapper:
 
 .. code-block:: mathematica
 
@@ -124,7 +124,7 @@ for example let's define a wrapper over `A::getMyNumber()`:
 		return err;
 	}
 
-In Wolfram Language, wrappers over member functions can be conveniently loaded:
+In the Wolfram Language, wrappers over member functions can be conveniently loaded:
 
 .. code-block:: mma
    :dedent: 1
