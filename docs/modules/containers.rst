@@ -13,7 +13,7 @@ On the other hand, having the element type as template parameter, like STL conta
 some template magic for simple things like passing forward the container or reading metadata when the data type is not
 known a priori.
 
-To get the best of two worlds at cost of a bit more complicated interface, LLU provides the following hierarchy of container
+To get the best of both worlds at cost of a bit more complicated interface, LLU provides the following hierarchy of container
 classes:
 
 Level 0
@@ -24,7 +24,7 @@ Level 0
 * MNumericArray
 * MTensor
 
-These are just raw LibraryLink containers. LLU is likely unecessary when working with raw LibraryLink containers However, they are still supported.
+These are just raw LibraryLink containers. LLU is likely unnecessary when working with raw LibraryLink containers. However, they are still supported.
 
 Level 1A
 ----------------------------------
@@ -44,7 +44,7 @@ Level 1B
 - :cpp:class:`TypedTensor\<T> <template\<typename T> LLU::TypedTensor>` - type-aware interface to :cpp:class:`Tensor <template\<typename T, class PassingMode = Passing::Manual> LLU::Tensor>`
 
 These template classes offer iterators and data access functions for each container. They shouldn't be used directly,
-as they don't hold any data. Instead, use containers from level 2 which inherits from level 1B containers.
+as they don't hold any data. Instead, use containers from level 2 which inherit from level 1B containers.
 
 Level 2
 ----------------------------------
@@ -84,16 +84,16 @@ With the exception of DataStore, which cannot be Shared.
 
 All of the above are described in the `LibraryLink documentation <https://reference.wolfram.com/language/LibraryLink/tutorial/InteractionWithWolframLanguage.html#97446640>`_.
 
-In plain LibraryLink, the choice you make is reflected only in the Wolfram Language code where `LibraryFunctionLoad` specifies
+In plain LibraryLink, the choice you make is reflected only in the Wolfram Language code where LibraryFunctionLoad specifies
 the list of parameters for the library function. There is no way to query the WolframLibraryData or MArgument about
 the passing modes of function arguments from within C++ code. Therefore, the programmer must remember the passing mode
 for each argument and then ensure the correct action is taken (releasing/not releasing memory depending
-on the combination of passing mode and whether the container has been returned from the library function as result to Wolfram Language).
+on the combination of passing mode and whether the container has been returned from the library function to the Wolfram Language).
 This design is far from perfect because manual resource management often leads to bugs and leaks.
 
-As a remedy for this flaw in LibraryLink, LLU encodes the passing mode in a form of template parameter for each
+LLU, on the other hand, encodes the passing mode in a form of template parameter for each
 container wrapper. It makes sense because passing mode is known at compile time and cannot be changed throughout
-the life of container.
+the life cycle of a container.
 
 LLU defines 3 classes representing passing policies:
 
@@ -107,7 +107,7 @@ should be freed when the wrapper ends its life.
 There is also `Passing::Constant` which is just an alias for Passing::Automatic because from the memory management
 point of view these two policies are equivalent.
 
-Some examples:
+Here are some examples:
 
 .. code-block:: cpp
    :linenos:
