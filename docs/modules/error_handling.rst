@@ -35,8 +35,8 @@ return value of ``f`` (of type ``int``) was equal to ``LIBRARY_NO_ERROR`` (with 
 
 That means, that the **only information** about an error which occurred in the library that makes it to the Wolfram Language code is a **single integer**.
 
-In C++ exceptions are the preferred way of error handling, so LLU offers a special class of exceptions that can be easily translated to error codes,
-returned to LibraryLink and then translated to descriptive :wl:`Failure` objects in Wolfram Language.
+In C++, exceptions are the preferred way of error handling, so LLU offers a special class of exceptions that can be easily translated to error codes,
+returned to LibraryLink and then translated to descriptive :wl:`Failure` objects in the Wolfram Language.
 
 Such exceptions are identified in the C++ code by name - a short string. For example, imagine you have a function that reads data from a source.
 If the source does not exist or is empty, you want to throw exceptions, let's call them "NoSourceError" and "EmptySourceError", respectively.
@@ -65,7 +65,7 @@ in the Wolfram Language.
 .. note::
    Notice that there is no way to assign specific error codes to your custom exceptions, this is handled internally by LLU.
 
-Now, in the function that reads data:
+Now, throw exceptions from a function that reads data:
 
 .. code-block:: cpp
    :linenos:
@@ -82,9 +82,9 @@ Now, in the function that reads data:
 
 Each call to :cpp:func:`ErrorManager::throwException<LLU::ErrorManager::throwException>` causes an exception of class :cpp:class:`LibraryLinkError<LLU::LibraryLinkError>`
 with predefined name and error code to be thrown.
-All parameters to :cpp:func:`throwException<LLU::ErrorManager::throwException>` call after the first one are used to populate consecutive template slots in the error message.
-The only thing left do now is to catch the exception.
-Usually, you will catch only in the interface functions (the ones with ``EXTERN_C DLLEXPORT``), extract the error code from exception and return it:
+All parameters of :cpp:func:`throwException<LLU::ErrorManager::throwException>` after the first one are used to populate consecutive template slots in the error message.
+The only thing left to do now is to catch the exception.
+Usually, you catch only in the interface functions (the ones with ``EXTERN_C DLLEXPORT``), extract the error code from exception and return it:
 
 .. code-block:: cpp
    :linenos:
