@@ -39,7 +39,7 @@ Example
 Let's demonstrate the advantages :abbr:`LLU (LibraryLink Utilities)` has over classic :term:`LibraryLink` by comparing
 the same function written with and without :abbr:`LLU (LibraryLink Utilities)`.
 Below we will implement a simple function ``repeatCharacters`` that takes a string ``s`` and a tensor ``t`` and returns a new string ``s2`` that consists of each
-character ``s[i]`` from original string but repeated ``t[i]`` times, so for example
+character ``s[i]`` from original string but repeated ``t[i]`` times. So, for example
 
 .. code-block:: cpp
 
@@ -127,7 +127,7 @@ This is the C - style implementation:
 	}
 
 
-and this is the corresponding C++ version written with *LibraryLink Utilities*:
+and this is the corresponding C++ version written with LibraryLink Utilities:
 
 .. code-block:: cpp
    :dedent: 1
