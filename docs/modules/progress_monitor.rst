@@ -8,7 +8,7 @@ Progress monitor
 
 When a library function is executed from the Wolfram Language session, the Kernel will wait until the function returns. There is usually no real-time feedback about
 function progress. :term:`LibraryLink` offers the `AbortQ <https://reference.wolfram.com/language/LibraryLink/ref/callback/AbortQ.html>`_ function which allows
-developers to correctly handle cases when the user aborts a library function execution. The drawback is it is entirely up to library developers to use ``AbortQ`` manually. The library must still return even when ``AbortQ`` returns ``true``, so there is still no guarantee that the execution will end immediately upon an abort.
+developers to correctly handle cases when the user aborts a library function execution. The drawback is that it is entirely up to library developers to use ``AbortQ`` manually. The library must still return even when ``AbortQ`` returns ``true``, so there is still no guarantee that the execution will end immediately upon an abort.
 
 In practice, using time-consuming library functions often looks like this:
 
@@ -22,7 +22,7 @@ Whereas it could look like this:
    :align: center
    :alt: Using abortable library function with simple progress bar.
 
-:term:`LLU` provides a class :cpp:class:`LLU::ProgressMonitor` which uses a 1-element shared Tensor to report progress to Wolfram Language in the middle of
+:term:`LLU` provides a class :cpp:class:`LLU::ProgressMonitor` which uses a 1-element shared Tensor to report progress to Wolfram Language during a
 library function execution. The value in the tensor is a real number between 0.0 and 1.0 which indicates current progress of the function. It can be
 increased/decreased by a given step (using convenient increment/decrement operators) or set to arbitrary value.
 (Yes, decreasing progress may be useful sometimes too.)
@@ -32,7 +32,7 @@ details.
 As with almost every LLU feature, the ``ProgressMonitor`` implementation consists of two parts: one in the library and one in Wolfram Language code. The goal is to have
 decent functionality with minimal effort on the programmers side.
 
-In C++ code the only thing you have to do is to get an instance of ProgressMonitor from MArgumentManager.
+In C++, the only thing you have to do is to get an instance of ProgressMonitor from MArgumentManager.
 
 .. code-block:: cpp
 
@@ -53,6 +53,7 @@ Example
 =========================
 
 Consider a simple function that just sleeps in a loop moving the progress bar in a steady pace. This function takes two arguments:
+
  1. (Real) Total time (in seconds) for the function to complete
  2. (ProgressMonitor) Shared instance of an MTensor automatically wrapped in ProgressMonitor by MArgumentManager
 
@@ -91,11 +92,11 @@ For progress reporting to work on the Wolfram Language side as expected, the lib
 
    UniformProgress = SafeLibraryFunction["UniformProgress", {Real}, Integer, "ProgressMonitor" -> MyPaclet`PM`UniformProgress];
 
-By default, :wl:`"ProgressMonitor" -> None`.
-It's good to make sure the name for the monitoring symbol will be unique, my suggestion is to use ``PacletName`PM`` as the context, and the name of the symbol
+By default, :wl:`"ProgressMonitor" -> None` is used.
+It's good to make sure the name for the monitoring symbol will be unique. A good suggestion is to use ``PacletName`PM`` as the context, and the name of the symbol
 to be the same as the function name.
 
-Now, run our library function with simple progress bar:
+Now, run your library function with simple progress bar:
 
 .. code-block:: mma
 
