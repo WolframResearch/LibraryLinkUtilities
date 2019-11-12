@@ -126,10 +126,10 @@ namespace LLU {
 
 		/**
 		 * @brief   Get the type of this GenericNumericArray
-		 * @return  type of elements (see definition of \c imagedata_t)
+		 * @return  type of elements (see definition of \c numericarray_data_t)
 		 * @see 	<http://reference.wolfram.com/language/LibraryLink/ref/callback/MNumericArray_getDataType.html>
 		 */
-		mint type() const {
+		numericarray_data_t type() const {
 			return LibraryData::NumericArrayAPI()->MNumericArray_getType(this->getContainer());
 		}
 
