@@ -288,3 +288,26 @@ Test[
 	,
 	TestID -> "ManagedExpressionsTestSuite-20190911-R3Z8U9"
 ];
+
+Test[
+	(* Reload the getText member. MyExpression`getText will be Cleared and then reloaded. *)
+	`LLU`LoadMemberFunction[MyExpression][getText, "GetText", {}, String];
+	globalExpr @ getText[]
+	,
+	"I will live through all tests"
+	,
+	TestID -> "ManagedExpressionsTestSuite-20190911-R3ZHG9"
+];
+
+Test[
+	getText = 3;
+	(* When the symbol for member function is taken, LoadMemberFunction will fail silently.
+	 * You can no longer use the "member function" syntax, but you can still access the member function with full context. 
+	 *)
+	`LLU`LoadMemberFunction[MyExpression][getText, "GetText", {}, String];
+	{globalExpr @ getText[], MyExpression`getText @ globalExpr}
+	,
+	{globalExpr[3[]], "I will live through all tests"}
+	,
+	TestID -> "ManagedExpressionsTestSuite-20190911-R4ZHG9"
+];
