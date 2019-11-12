@@ -535,14 +535,20 @@ End[]; (* `LLU`Logger` *)
 
 `LLU`GetManagedID[instance_] := ManagedLibraryExpressionID[instance];
 
-SetAttributes[ClassMember, HoldAll];
-ClassMember[className_, f_] := Symbol[className <> "`" <> SymbolName[Unevaluated[f]]];
+SetAttributes[ClassMemberName, HoldAll];
+ClassMemberName[className_, f_] := SymbolName[className] <> "`" <> SymbolName[Unevaluated[f]];
 
-`LLU`LoadMemberFunction[exprHead_][memberSymbol_, fname_String, fParams_, retType_, opts : OptionsPattern[SafeLibraryFunction]] :=
+SetAttributes[ClassMember, HoldAll];
+ClassMember[className_, f_] := Symbol @ ClassMemberName[className, f];
+
+`LLU`LoadMemberFunction[exprHead_][memberSymbol_?Developer`SymbolQ, fname_String, fParams_, retType_, opts : OptionsPattern[SafeLibraryFunction]] :=
 	(
-		exprHead /: exprHead[id_][memberSymbol[args___]] := ClassMember[SymbolName[exprHead], memberSymbol][exprHead[id], args];
-		Evaluate[ClassMember[SymbolName[exprHead], memberSymbol]] = LibraryMemberFunction[exprHead][fname, fParams, retType, opts];
+		If[Not @ Developer`SymbolQ @ ClassMember[exprHead, memberSymbol],
+			Clear @ Evaluate @ ClassMemberName[exprHead, memberSymbol];
+		];
+		exprHead /: exprHead[id_][memberSymbol[args___]] := ClassMember[exprHead, memberSymbol][exprHead[id], args];
+		Evaluate[ClassMember[exprHead, memberSymbol]] = LibraryMemberFunction[exprHead][fname, fParams, retType, opts];
 	);
 
-`LLU`LoadMathLinkMemberFunction[exprHead_][memberSymbol_, fname_String, opts : OptionsPattern[SafeLibraryFunction]] :=
+`LLU`LoadMathLinkMemberFunction[exprHead_][memberSymbol_?Developer`SymbolQ, fname_String, opts : OptionsPattern[SafeLibraryFunction]] :=
 	`LLU`LoadMemberFunction[exprHead][memberSymbol, fname, LinkObject, LinkObject, opts];
