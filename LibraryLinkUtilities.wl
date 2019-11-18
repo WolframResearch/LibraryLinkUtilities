@@ -45,7 +45,9 @@ $CorePacletFailureLUT = <|
 	"FunctionLoadFailure" -> {21, "Failed to load the function `FunctionName` from `LibraryName`."},
 	"RegisterFailure" -> {22, "Incorrect arguments to RegisterPacletErrors."},
 	"UnknownFailure" -> {23, "The error `ErrorName` has not been registered."},
-	"ProgressMonInvalidValue" -> {24, "Expecting None or a Symbol for the option \"ProgressMonitor\"."}
+	"ProgressMonInvalidValue" -> {24, "Expecting None or a Symbol for the option \"ProgressMonitor\"."},
+	"InvalidManagedExpressionID" -> {25, "`expr` is not a valid ManagedExpression." },
+	"UnexpectedManagedExpression" -> {26, "Expected managed `expected`, got `actual`." }
 |>;
 
 
@@ -103,15 +105,27 @@ Options[SafeLibraryFunctionLoad] = {
 	"Optional" -> False
 };
 
-SafeLibraryFunctionLoad[args___, opts : OptionsPattern[SafeLibraryFunctionLoad]] :=
+SafeLibraryFunctionLoad[fname_?StringQ, fParams_, retType_, opts : OptionsPattern[SafeLibraryFunctionLoad]] :=
 	Quiet[
 		Check[
-			LibraryFunctionLoad[$PacletLibrary, args]
+			(* There are 2 categories of function arguments:
+			 * - regular - supported by LibraryLink (String, Integer, NumericArray, etc.)
+			 * - special - extensions added by LLU that need extra parsing before they can be passed to LibraryLink, for example Managed Expressions
+			 *)
+			Block[{specialArgs = argumentCategorizer[fParams]},
+				If[Length @ specialArgs > 0,
+					(* If the function that we are registering takes special arguments, we need to compose it with argumentParser function,
+					 * which will parse input arguments before every call, so that they are accepted by LibraryLink.*)
+					LibraryFunctionLoad[$PacletLibrary, fname, normalizeArgTypes @ fParams, retType] @* argumentParser[specialArgs]
+					,
+					LibraryFunctionLoad[$PacletLibrary, fname, fParams, retType]
+				]
+			]
 			,
 			If[TrueQ @ OptionValue["Optional"],
 				Null&
 				,
-				Throw @ CreatePacletFailure["FunctionLoadFailure", "MessageParameters" -> <|"FunctionName" -> First[{args}], "LibraryName" -> $PacletLibrary|>]
+				Throw @ CreatePacletFailure["FunctionLoadFailure", "MessageParameters" -> <|"FunctionName" -> fname, "LibraryName" -> $PacletLibrary|>]
 			]
 		]
 	];
@@ -120,6 +134,40 @@ Options[SafeLibraryFunction] = {
 	"ProgressMonitor" -> None,
 	"Throws" -> False
 };
+
+(* Decide whether given input argument to a LibraryFunction needs special treatment.
+ * Currently only Managed Expressions do but this may change in the future.
+ *)
+specialArgQ[a_`LLU`Managed] := True;
+specialArgQ[_] := False;
+
+(* Simple function expected to select all "special" arguments from a list of argument types for a LibraryFunction. *)
+argumentCategorizer[argTypes_List] := Select[AssociationThread[Range[Length[#]], #]& @ argTypes, specialArgQ];
+argumentCategorizer[LinkObject] = {};
+
+(* Replace special argument types with corresponding regular types that are be accepted by LibraryLink *)
+normalizeArgTypes[argTypes_List] := Replace[argTypes, `LLU`Managed[h_] :> Integer, 1];
+
+(* Parse ManagedExpression before it is passed to a LibraryFunction. First argument is expected ManagedExpression type and the second is actual instance
+ * of a MangedExpression. If the instance type does not match the expected type a paclet Failure will be thrown.
+ *)
+parseManaged[`LLU`Managed[expectedHead_], expectedHead_[id_Integer]] :=
+    If[ManagedLibraryExpressionQ[expectedHead[id]],
+	    id
+	    ,
+	    Throw @ CreatePacletFailure["InvalidManagedExpressionID", "MessageParameters" -> <|"expr" -> expectedHead[id]|>];
+    ];
+parseManaged[`LLU`Managed[expectedHead_], differentHead_[id_Integer]] :=
+	Throw @ CreatePacletFailure["UnexpectedManagedExpression", "MessageParameters" -> <|"expected" -> expectedHead, "actual" -> differentHead[id]|>];
+parseManaged[_, arg_] := arg;
+
+(* Parse special arguments before they are passed to a LibraryFunction. Currently the only implemented type of special arguments are ManagedExpressions, so
+ * just call parseManaged directly but in the future this implementation might need to be generalised.
+ *
+ * NOTE: This function is invoked before every call to a LibraryFunction so efficiency is top concern here!
+ *)
+argumentParser[specialArgs_?AssociationQ] := Sequence @@ MapIndexed[parseManaged[specialArgs[First @ #2], #1]&, {##}]&;
+
 
 holdSet[Hold[sym_], rhs_] := sym = rhs;
 
@@ -146,10 +194,17 @@ Module[{errorHandler, pmSymbol, newParams, f, functionOptions, loadOptions},
 		    f[##, ReleaseHold[pmSymbol]]
 	    )&
     ]
-]
+];
 
 SafeMathLinkFunction[fname_String, opts : OptionsPattern[SafeLibraryFunction]] :=
-	SafeLibraryFunction[fname, LinkObject, LinkObject, opts]
+	SafeLibraryFunction[fname, LinkObject, LinkObject, opts];
+
+LibraryMemberFunction[exprHead_][fname_String, fParams_, retType_, opts : OptionsPattern[SafeLibraryFunction]] :=
+    If[fParams === LinkObject && retType === LinkObject,
+	    SafeMathLinkFunction[fname, opts]
+	    ,
+		SafeLibraryFunction[fname, Prepend[fParams, `LLU`Managed[exprHead]], retType, opts]
+    ];
 
 (* ::SubSection:: *)
 (* RegisterPacletErrors *)
@@ -462,5 +517,42 @@ End[]; (* `LLU`Logger` *)
 
 	But in this case, you are loosing the correct handling of filtered-out messages so it's only fine with the default "accept-all" filter.
 ***)
+
+
+(* ::SubSection:: *)
+(* Managed Expressions *)
+(* ------------------------------------------------------------------------- *)
+(* ------------------------------------------------------------------------- *)
+Constructor;
+
+NewManagedExpression[exprHead_][args___] :=
+	Block[{res},
+		res = CreateManagedLibraryExpression[SymbolName[exprHead], exprHead];
+		Constructor[exprHead][ManagedLibraryExpressionID[res], args];
+		res
+	];
+
+ManagedQ[exprHead_] := ManagedLibraryExpressionQ[#, SymbolName[exprHead]]&;
+ManagedIDQ[exprHead_] := ManagedLibraryExpressionQ[exprHead[#], SymbolName[exprHead]]&;
+
+GetManagedID[instance_] := ManagedLibraryExpressionID[instance];
+
+SetAttributes[ClassMemberName, HoldAll];
+ClassMemberName[className_, f_] := SymbolName[className] <> "`" <> SymbolName[Unevaluated[f]];
+
+SetAttributes[ClassMember, HoldAll];
+ClassMember[className_, f_] := Symbol @ ClassMemberName[className, f];
+
+LoadMemberFunction[exprHead_][memberSymbol_?Developer`SymbolQ, fname_String, fParams_, retType_, opts : OptionsPattern[SafeLibraryFunction]] :=
+	(
+		If[Not @ Developer`SymbolQ @ ClassMember[exprHead, memberSymbol],
+			Clear @ Evaluate @ ClassMemberName[exprHead, memberSymbol];
+		];
+		exprHead /: exprHead[id_][memberSymbol[args___]] := ClassMember[exprHead, memberSymbol][exprHead[id], args];
+		Evaluate[ClassMember[exprHead, memberSymbol]] = LibraryMemberFunction[exprHead][fname, fParams, retType, opts];
+	);
+
+LoadMathLinkMemberFunction[exprHead_][memberSymbol_?Developer`SymbolQ, fname_String, opts : OptionsPattern[SafeLibraryFunction]] :=
+	LoadMemberFunction[exprHead][memberSymbol, fname, LinkObject, LinkObject, opts];
 
 End[]; (* `LLU` *)

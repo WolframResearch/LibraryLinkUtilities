@@ -9,11 +9,11 @@
 cmake_minimum_required(VERSION 3.8.0)
 
 #set minimum MacOS target version if not defined as environment variable
-if(NOT DEFINED ENV{MACOSX_DEPLOYMENT_TARGET})
-	set(CMAKE_OSX_DEPLOYMENT_TARGET "10.10" CACHE STRING "Minimum OS X deployment version")
+if(APPLE AND NOT DEFINED ENV{MACOSX_DEPLOYMENT_TARGET})
+	set(CMAKE_OSX_DEPLOYMENT_TARGET "10.12" CACHE STRING "Minimum OS X deployment version")
 endif()
 
-project(LLU VERSION 1.0.0 LANGUAGES CXX)
+project(LLU VERSION 2.0.0 LANGUAGES CXX)
 
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 
@@ -36,8 +36,8 @@ set(MATHEMATICA_INSTALL_DIR ${_MATHEMATICA_INSTALL_DIR} CACHE PATH "Mathematica 
 
 # set default build type to Release
 if(NOT CMAKE_BUILD_TYPE)
-  set(CMAKE_BUILD_TYPE Release CACHE STRINGS "Choose the type of build, options are: None Debug Release RelWithDebInfo MinSizeRel." FORCE)
-	set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS ${CMAKE_CONFIGURATION_TYPES})
+  set(CMAKE_BUILD_TYPE Release CACHE STRING "Choose the type of build." FORCE)
+	set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "None" "Debug" "Release" "MinSizeRel" "RelWithDebInfo")
 endif()
 
 # verbose output - useful for debugging, but turned off by default
@@ -72,10 +72,10 @@ if(NOT TARGET LLU)
 	# define source files
 	set(LLU_SOURCE_FILES
 		${LLU_SOURCE_DIR}/Containers/Image.cpp
-		${LLU_SOURCE_DIR}/Containers/LibDataHolder.cpp
+		${LLU_SOURCE_DIR}/LibraryData.cpp
 		${LLU_SOURCE_DIR}/ErrorLog/LibraryLinkError.cpp
 		${LLU_SOURCE_DIR}/MArgumentManager.cpp
-		${LLU_SOURCE_DIR}/Containers/MArrayBase.cpp
+		${LLU_SOURCE_DIR}/Containers/MArrayDimensions.cpp
 		${LLU_SOURCE_DIR}/Containers/NumericArray.cpp
 		${LLU_SOURCE_DIR}/Containers/Tensor.cpp
 		${LLU_SOURCE_DIR}/ML/Get.cpp
@@ -124,7 +124,6 @@ if(NOT TARGET LLU)
 			PRIVATE "-Wall"
 			PRIVATE "-Wextra"
 			PRIVATE "-pedantic"
-			PRIVATE "-Werror-implicit-function-declaration"
 			PRIVATE "$<$<NOT:$<CONFIG:Debug>>:-O3>"
 		)
 	endif()
@@ -239,5 +238,11 @@ if(NOT TARGET LLU)
 		COMMAND
 			"${CMAKE_COMMAND}" -E env CTEST_OUTPUT_ON_FAILURE=1 ${CMAKE_CTEST_COMMAND} -C ${CMAKE_BUILD_TYPE}
 	)
+
+    ##############################################
+    ## Create target for Sphinx documentation build
+
+    add_subdirectory("docs")
+
 endif() #end IF NOT TARGET LLU
 

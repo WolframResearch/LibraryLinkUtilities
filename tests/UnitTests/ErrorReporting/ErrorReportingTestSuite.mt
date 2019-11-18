@@ -1,9 +1,9 @@
 (* Wolfram Language Test file *)
 TestRequirement[$VersionNumber > 10.3];
 (***************************************************************************************************************************************)
-				(*
-					Set of test cases to test LLU functionality related to error reporting
-				*)
+(*
+	Set of test cases to test LLU functionality related to error reporting
+*)
 (***************************************************************************************************************************************)
 TestExecute[
 	Needs["CCompilerDriver`"];
@@ -13,7 +13,7 @@ TestExecute[
 	Get[FileNameJoin[{ParentDirectory[currentDirectory], "TestConfig.wl"}]];
 
 	(* Compile the test library *)
-	lib = CCompilerDriver`CreateLibrary[FileNameJoin[{currentDirectory, #}]& /@ {"ErrorReportingTest.cpp"},
+	lib = CCompilerDriver`CreateLibrary[FileNameJoin[{currentDirectory, "TestSources", #}]& /@ {"ErrorReportingTest.cpp"},
 		"ErrorReporting", options];
 
 	Get[FileNameJoin[{$LLUSharedDir, "LibraryLinkUtilities.wl"}]];
@@ -26,6 +26,9 @@ TestExecute[
 
 	(* Make sure the log file used in "ReadDataWithLoggingError" does not exist *)
 	Quiet @ DeleteFile["LLUErrorLog.txt"];
+
+	ResultAndLogTest[{result_, {logs_}}, {expectedRes_, {expectedLogs_}}] := MatchQ[result, expectedRes] && LoggerStringTest[logs, expectedLogs];
+	ResultAndLogTest[___] := False;
 ];
 
 (*********************************************************** Top-level failures **************************************************************)
@@ -39,7 +42,7 @@ Test[
 		"Parameters" -> {}
 	|>]
 	,
-	TestID->"ErrorReportingTestSuite-20171201-L1W7O4"
+	TestID -> "ErrorReportingTestSuite-20171201-L1W7O4"
 ];
 
 TestMatch[
@@ -50,9 +53,9 @@ TestMatch[
 		"MessageParameters" -> <||>,
 		"ErrorCode" -> n_,
 		"Parameters" -> {}
-	|>]/; n > 7
+	|>] /; n > 7
 	,
-	TestID->"ErrorReportingTestSuite-20190320-V9F7V7"
+	TestID -> "ErrorReportingTestSuite-20190320-V9F7V7"
 ];
 
 TestMatch[
@@ -65,7 +68,7 @@ TestMatch[
 		"Parameters" -> {"p1", "p2"}
 	|>]
 	,
-	TestID->"ErrorReportingTestSuite-20190320-C8I1M4"
+	TestID -> "ErrorReportingTestSuite-20190320-C8I1M4"
 ];
 
 TestMatch[
@@ -78,7 +81,7 @@ TestMatch[
 		"Parameters" -> {}
 	|>]
 	,
-	TestID->"ErrorReportingTestSuite-20190320-N4O5P9"
+	TestID -> "ErrorReportingTestSuite-20190320-N4O5P9"
 ];
 
 TestMatch[
@@ -86,12 +89,12 @@ TestMatch[
 	,
 	Failure["TopLevelNamedSlotsError", <|
 		"MessageTemplate" -> "Hi `name`! Error occurred `when`.",
-		"MessageParameters" ->  <|"name" -> "John", "when" -> _String, "unused" -> "param"|>,
+		"MessageParameters" -> <|"name" -> "John", "when" -> _String, "unused" -> "param"|>,
 		"ErrorCode" -> n_?TopLevelErrorCodeQ,
 		"Parameters" -> {}
 	|>]
 	,
-	TestID->"ErrorReportingTestSuite-20190320-D1Q8T7"
+	TestID -> "ErrorReportingTestSuite-20190320-D1Q8T7"
 ];
 
 TestMatch[
@@ -99,12 +102,12 @@ TestMatch[
 	,
 	Failure["TopLevelNumberedSlotsError", <|
 		"MessageTemplate" -> "Slot number one: `1`, number two: `2`.",
-		"MessageParameters" ->  {"x", "y", "z"},
+		"MessageParameters" -> {"x", "y", "z"},
 		"ErrorCode" -> n_?TopLevelErrorCodeQ,
 		"Parameters" -> {}
 	|>]
 	,
-	TestID->"ErrorReportingTestSuite-20190320-Z5Q7P0"
+	TestID -> "ErrorReportingTestSuite-20190320-Z5Q7P0"
 ];
 
 (*********************************************************** C++ code failures **************************************************************)
@@ -115,12 +118,12 @@ TestMatch[
 	,
 	Failure["DataFileError", <|
 		"MessageTemplate" -> "Data in file `fname` in line `lineNumber` is invalid because `reason`.",
-		"MessageParameters" ->  <|"fname" -> "test.txt", "lineNumber" -> 8, "reason" -> "data type is not supported"|>,
+		"MessageParameters" -> <|"fname" -> "test.txt", "lineNumber" -> 8, "reason" -> "data type is not supported"|>,
 		"ErrorCode" -> n_?CppErrorCodeQ,
 		"Parameters" -> {}
 	|>]
 	,
-	TestID->"ErrorReportingTestSuite-20190320-Z5Q2A7"
+	TestID -> "ErrorReportingTestSuite-20190320-Z5Q2A7"
 ];
 
 TestMatch[
@@ -128,12 +131,12 @@ TestMatch[
 	,
 	Failure["DataFileError", <|
 		"MessageTemplate" -> "Data in file `fname` in line `lineNumber` is invalid because `reason`.",
-		"MessageParameters" ->  <|"fname" -> "somefile.txt", "lineNumber" -> 12, "reason" -> "data type is not supported"|>,
+		"MessageParameters" -> <|"fname" -> "somefile.txt", "lineNumber" -> 12, "reason" -> "data type is not supported"|>,
 		"ErrorCode" -> n_?CppErrorCodeQ,
 		"Parameters" -> {}
 	|>]
 	,
-	TestID->"ErrorReportingTestSuite-20190320-W3B2B3"
+	TestID -> "ErrorReportingTestSuite-20190320-W3B2B3"
 ];
 
 TestMatch[
@@ -142,12 +145,12 @@ TestMatch[
 	,
 	Failure["DataFileError", <|
 		"MessageTemplate" -> "Data in file `fname` in line `lineNumber` is invalid because `reason`.",
-		"MessageParameters" ->  <|"fname" -> "test.txt", "lineNumber" -> 8, "reason" -> "data type is not supported"|>,
+		"MessageParameters" -> <|"fname" -> "test.txt", "lineNumber" -> 8, "reason" -> "data type is not supported"|>,
 		"ErrorCode" -> n_?CppErrorCodeQ,
 		"Parameters" -> {}
 	|>]
 	,
-	TestID->"ErrorReportingTestSuite-20190320-V5I1S9"
+	TestID -> "ErrorReportingTestSuite-20190320-V5I1S9"
 ];
 
 TestMatch[
@@ -155,12 +158,12 @@ TestMatch[
 	,
 	Failure["DataFileError", <|
 		"MessageTemplate" -> "Data in file `fname` in line `lineNumber` is invalid because `reason`.",
-		"MessageParameters" ->  <|"fname" -> "somefile.txt", "lineNumber" -> 12, "reason" -> "data type is not supported"|>,
+		"MessageParameters" -> <|"fname" -> "somefile.txt", "lineNumber" -> 12, "reason" -> "data type is not supported"|>,
 		"ErrorCode" -> n_?CppErrorCodeQ,
 		"Parameters" -> {}
 	|>]
 	,
-	TestID->"ErrorReportingTestSuite-20190320-A4B7N1"
+	TestID -> "ErrorReportingTestSuite-20190320-A4B7N1"
 ];
 
 TestMatch[
@@ -169,12 +172,12 @@ TestMatch[
 	,
 	Failure["RepeatedTemplateError", <|
 		"MessageTemplate" -> "Cannot accept `x` nor `y` because `x` is unacceptable. So are `y` and `z`.",
-		"MessageParameters" ->  <|"x" -> "x", "y" -> "y", "z" -> "z"|>,
+		"MessageParameters" -> <|"x" -> "x", "y" -> "y", "z" -> "z"|>,
 		"ErrorCode" -> n_?CppErrorCodeQ,
 		"Parameters" -> {}
 	|>]
 	,
-	TestID->"ErrorReportingTestSuite-20190320-G2N3F5"
+	TestID -> "ErrorReportingTestSuite-20190320-G2N3F5"
 ];
 
 TestMatch[
@@ -183,12 +186,12 @@ TestMatch[
 	,
 	Failure["NumberedSlotsError", <|
 		"MessageTemplate" -> "First slot is `1` and second is `2`.",
-		"MessageParameters" ->  {1, {"2", "3", "4"}},
+		"MessageParameters" -> {1, {"2", "3", "4"}},
 		"ErrorCode" -> n_?CppErrorCodeQ,
 		"Parameters" -> {}
 	|>]
 	,
-	TestID->"ErrorReportingTestSuite-20190320-N1J5Q8"
+	TestID -> "ErrorReportingTestSuite-20190320-N1J5Q8"
 ];
 
 TestMatch[
@@ -197,12 +200,12 @@ TestMatch[
 	,
 	Failure["RepeatedNumberTemplateError", <|
 		"MessageTemplate" -> "Cannot accept `` nor `` because `1` is unacceptable. So are `2` and ``.",
-		"MessageParameters" ->  {"x", "y", "z"},
+		"MessageParameters" -> {"x", "y", "z"},
 		"ErrorCode" -> n_?CppErrorCodeQ,
 		"Parameters" -> {}
 	|>]
 	,
-	TestID->"ErrorReportingTestSuite-20190320-R9L9R5"
+	TestID -> "ErrorReportingTestSuite-20190320-R9L9R5"
 ];
 
 TestMatch[
@@ -211,12 +214,12 @@ TestMatch[
 	,
 	Failure["NumberedSlotsError", <|
 		"MessageTemplate" -> "First slot is `1` and second is `2`.",
-		"MessageParameters" ->  {1, 2, 3, 4, 5},
+		"MessageParameters" -> {1, 2, 3, 4, 5},
 		"ErrorCode" -> n_?CppErrorCodeQ,
 		"Parameters" -> {}
 	|>]
 	,
-	TestID->"ErrorReportingTestSuite-20190320-A9U4T2"
+	TestID -> "ErrorReportingTestSuite-20190320-A9U4T2"
 ];
 
 TestMatch[
@@ -225,12 +228,12 @@ TestMatch[
 	,
 	Failure["NumberedSlotsError", <|
 		"MessageTemplate" -> "First slot is `1` and second is `2`.",
-		"MessageParameters" ->  {},
+		"MessageParameters" -> {},
 		"ErrorCode" -> n_?CppErrorCodeQ,
 		"Parameters" -> {}
 	|>]
 	,
-	TestID->"ErrorReportingTestSuite-20190320-R0E3G0"
+	TestID -> "ErrorReportingTestSuite-20190320-R0E3G0"
 ];
 
 TestMatch[
@@ -239,12 +242,12 @@ TestMatch[
 	,
 	Failure["MixedSlotsError", <|
 		"MessageTemplate" -> "This message `` mixes `2` different `kinds` of `` slots.",
-		"MessageParameters" ->  {1, 2, <|"kinds" -> 3|>, 4},
+		"MessageParameters" -> {1, 2, <|"kinds" -> 3|>, 4},
 		"ErrorCode" -> n_?CppErrorCodeQ,
 		"Parameters" -> {}
 	|>]
 	,
-	TestID->"ErrorReportingTestSuite-20190320-C0V5L0"
+	TestID -> "ErrorReportingTestSuite-20190320-C0V5L0"
 ];
 
 
@@ -256,12 +259,12 @@ TestMatch[
 	,
 	Failure["DataFileError", <|
 		"MessageTemplate" -> "Data in file `fname` in line `lineNumber` is invalid because `reason`.",
-		"MessageParameters" ->  <|"fname" -> "test.txt", "lineNumber" -> 8, "reason" -> "data type is not supported"|>,
+		"MessageParameters" -> <|"fname" -> "test.txt", "lineNumber" -> 8, "reason" -> "data type is not supported"|>,
 		"ErrorCode" -> n_?CppErrorCodeQ,
 		"Parameters" -> {}
 	|>]
 	,
-	TestID->"ErrorReportingTestSuite-20190404-F2M3A2"
+	TestID -> "ErrorReportingTestSuite-20190404-F2M3A2"
 ];
 
 TestMatch[
@@ -269,12 +272,12 @@ TestMatch[
 	,
 	Failure["DataFileError", <|
 		"MessageTemplate" -> "Data in file `fname` in line `lineNumber` is invalid because `reason`.",
-		"MessageParameters" ->  <|"fname" -> "ThisFileHasExtremelyLongName.txt", "lineNumber" -> 32, "reason" -> "file name is too long"|>,
+		"MessageParameters" -> <|"fname" -> "ThisFileHasExtremelyLongName.txt", "lineNumber" -> 32, "reason" -> "file name is too long"|>,
 		"ErrorCode" -> n_?CppErrorCodeQ,
 		"Parameters" -> {}
 	|>]
 	,
-	TestID->"ErrorReportingTestSuite-20190404-B7J4Y9"
+	TestID -> "ErrorReportingTestSuite-20190404-B7J4Y9"
 ];
 
 TestMatch[
@@ -282,12 +285,12 @@ TestMatch[
 	,
 	Failure["DataFileError", <|
 		"MessageTemplate" -> "Data in file `fname` in line `lineNumber` is invalid because `reason`.",
-		"MessageParameters" ->  <|"fname" -> "Secret:Data", "lineNumber" -> 0, "reason" -> "file name contains a possibly problematic character \":\""|>,
+		"MessageParameters" -> <|"fname" -> "Secret:Data", "lineNumber" -> 0, "reason" -> "file name contains a possibly problematic character \":\""|>,
 		"ErrorCode" -> n_?CppErrorCodeQ,
 		"Parameters" -> {}
 	|>]
 	,
-	TestID->"ErrorReportingTestSuite-20190404-K3J3E1"
+	TestID -> "ErrorReportingTestSuite-20190404-K3J3E1"
 ];
 
 Test[
@@ -297,57 +300,56 @@ Test[
 	,
 	3
 	,
-	TestID->"ErrorReportingTestSuite-20190404-U4H9N8"
+	TestID -> "ErrorReportingTestSuite-20190404-U4H9N8"
 ];
 
 
 (* Unit tests of ErrorManager::sendParamatersImmediately *)
 
 Test[
-  GetSPI = SafeLibraryFunction["GetSendParametersImmediately", {}, "Boolean"];
-  GetSPI[]
-  ,
-  True
-  ,
-  TestID->"ErrorReportingTestSuite-20190404-F9O0O1"
+	GetSPI = SafeLibraryFunction["GetSendParametersImmediately", {}, "Boolean"];
+	GetSPI[]
+	,
+	True
+	,
+	TestID -> "ErrorReportingTestSuite-20190404-F9O0O1"
 ];
 
 Test[
-  SetSPI = SafeLibraryFunction["SetSendParametersImmediately", {"Boolean"}, "Void"];
-  SetSPI[False];
+	SetSPI = SafeLibraryFunction["SetSendParametersImmediately", {"Boolean"}, "Void"];
+	SetSPI[False];
 
-  `LLU`$LastFailureParameters = {"This", "will", "be", "overwritten"};
-  ReadData["somefile.txt"];
-  `LLU`$LastFailureParameters
-  ,
-  {}
-  ,
-  TestID->"ErrorReportingTestSuite-20190404-O3A4K4"
+	`LLU`$LastFailureParameters = {"This", "will", "be", "overwritten"};
+	ReadData["somefile.txt"];
+	`LLU`$LastFailureParameters
+	,
+	{}
+	,
+	TestID -> "ErrorReportingTestSuite-20190404-O3A4K4"
 ];
 
 TestMatch[
-  ReadDataDelayedParametersTransfer = SafeLibraryFunction["ReadDataDelayedParametersTransfer", {String}, "Void"];
-  ReadDataDelayedParametersTransfer["somefile.txt"]
-  ,
-  Failure["DataFileError", <|
-    "MessageTemplate" -> "Data in file `fname` in line `lineNumber` is invalid because `reason`.",
-    "MessageParameters" ->  <|"fname" -> "somefile.txt", "lineNumber" -> 12, "reason" -> "data type is not supported"|>,
-    "ErrorCode" -> n_?CppErrorCodeQ,
-    "Parameters" -> {}
-  |>]
-  ,
-  TestID->"ErrorReportingTestSuite-20190404-N7X5J6"
+	ReadDataDelayedParametersTransfer = SafeLibraryFunction["ReadDataDelayedParametersTransfer", {String}, "Void"];
+	ReadDataDelayedParametersTransfer["somefile.txt"]
+	,
+	Failure["DataFileError", <|
+		"MessageTemplate" -> "Data in file `fname` in line `lineNumber` is invalid because `reason`.",
+		"MessageParameters" -> <|"fname" -> "somefile.txt", "lineNumber" -> 12, "reason" -> "data type is not supported"|>,
+		"ErrorCode" -> n_?CppErrorCodeQ,
+		"Parameters" -> {}
+	|>]
+	,
+	TestID -> "ErrorReportingTestSuite-20190404-N7X5J6"
 ];
 
 (*********************************************************** Logging tests **************************************************************)
 TestExecute[
-	libLogDebug = CCompilerDriver`CreateLibrary[FileNameJoin[{currentDirectory, #}]& /@ {"LoggerTest.cpp"},
-		"LogDebug", options, "Defines" -> {"LLU_LOG_DEBUG"}];
+	loggerTestPath = FileNameJoin[{currentDirectory, "TestSources", "LoggerTest.cpp"}];
+	libLogDebug = CCompilerDriver`CreateLibrary[{loggerTestPath}, "LogDebug", options, "Defines" -> {"LLU_LOG_DEBUG"}];
 
 	$InitLibraryLinkUtils = False;
 	RegisterPacletErrors[libLogDebug, <||>];
 
-	loggerTestPath = FileNameJoin[{currentDirectory, "LoggerTest.cpp"}];
 	`LLU`Logger`PrintLogFunctionSelector := Block[{`LLU`Logger`FormattedLog = `LLU`Logger`LogToAssociation},
 		`LLU`Logger`PrintLogToSymbol[TestLogSymbol][##]
 	]&;
@@ -360,36 +362,36 @@ Test[
 	,
 	{
 		<|
-			"Level" -> "Debug", 
-			"Line" -> 17, 
-			"File" -> loggerTestPath, 
-			"Function" -> "GreaterAt", 
+			"Level" -> "Debug",
+			"Line" -> 19,
+			"File" -> loggerTestPath,
+			"Function" -> "GreaterAt",
 			"Message" -> Style["Library function entered with 4 arguments.", FontSize -> Inherited]
 		|>,
 		<|
-			"Level" -> "Debug", 
-			"Line" -> 20, 
-			"File" -> loggerTestPath, 
-			"Function" -> "GreaterAt", 
+			"Level" -> "Debug",
+			"Line" -> 22,
+			"File" -> loggerTestPath,
+			"Function" -> "GreaterAt",
 			"Message" -> Style["Starting try-block, current error code: 0", FontSize -> Inherited]
-		|>, 
+		|>,
 		<|
-			"Level" -> "Debug", 
-			"Line" -> 26, 
-			"File" -> loggerTestPath, 
-			"Function" -> "GreaterAt", 
+			"Level" -> "Debug",
+			"Line" -> 28,
+			"File" -> loggerTestPath,
+			"Function" -> "GreaterAt",
 			"Message" -> Style["Input tensor is of type: 2", FontSize -> Inherited]
-		|>, 
+		|>,
 		<|
-			"Level" -> "Debug", 
-			"Line" -> 39, 
-			"File" -> loggerTestPath, 
-			"Function" -> "GreaterAt", 
+			"Level" -> "Debug",
+			"Line" -> 41,
+			"File" -> loggerTestPath,
+			"Function" -> "GreaterAt",
 			"Message" -> Style["Comparing 5 with 7", FontSize -> Inherited]
 		|>
 	}
 	,
-	TestID->"ErrorReportingTestSuite-20190409-U4I2Y8"
+	TestID -> "ErrorReportingTestSuite-20190409-U4I2Y8"
 ];
 
 TestExecute[
@@ -399,39 +401,43 @@ TestExecute[
 	]&
 ];
 
-Test[
+TestMatch[
 	GreaterAt["my:file.txt", {5, 6, 7, 8, 9}, 1, 3];
 	TestLogSymbol
 	,
 	{
-		{"Debug", 17, loggerTestPath, "GreaterAt", "Library function entered with ", 4, " arguments."}, 
-		{"Debug", 20, loggerTestPath, "GreaterAt", "Starting try-block, current error code: ", 0},
-		{"Warning", 24, loggerTestPath, "GreaterAt", "File name ", "my:file.txt", " contains a possibly problematic character \":\"."}, 
-		{"Debug", 26, loggerTestPath, "GreaterAt", "Input tensor is of type: ", 2}, 
-		{"Debug", 39, loggerTestPath, "GreaterAt", "Comparing ", 5, " with ", 7}
+		{"Debug", _Integer, loggerTestPath, "GreaterAt", "Library function entered with ", 4, " arguments."},
+		{"Debug", _Integer, loggerTestPath, "GreaterAt", "Starting try-block, current error code: ", 0},
+		{"Warning", _Integer, loggerTestPath, "GreaterAt", "File name ", "my:file.txt", " contains a possibly problematic character \":\"."},
+		{"Debug", _Integer, loggerTestPath, "GreaterAt", "Input tensor is of type: ", 2},
+		{"Debug", _Integer, loggerTestPath, "GreaterAt", "Comparing ", 5, " with ", 7}
 	}
 	,
-	TestID->"ErrorReportingTestSuite-20190409-L8V2U9"
+	TestID -> "ErrorReportingTestSuite-20190409-L8V2U9"
 ];
 
 Test[
 	MultiThreadedLog = SafeLibraryFunction["LogsFromThreads", {Integer}, "Void"];
 	Clear[TestLogSymbol];
 	MultiThreadedLog[3];
-	And @@ (MatchQ[
-		{"Debug", 88, loggerTestPath, "LogsFromThreads", "Starting ", 3, " threads."} |
-		{"Debug", 91, loggerTestPath, "operator()" | "operator ()", "Thread ", _, " going to sleep."} |
-		{"Debug", 93, loggerTestPath, "operator()" | "operator ()", "Thread ", _, " slept for ", _, "ms."} |
-		{"Debug", 101, loggerTestPath, "LogsFromThreads", "All threads joined."}
-	] /@ TestLogSymbol)
+	And @@ (
+		MatchQ[
+			Alternatives[
+				{"Debug", _Integer, loggerTestPath, "LogsFromThreads", "Starting ", 3, " threads."},
+				{"Debug", _Integer, loggerTestPath, "operator()" | "operator ()", "Thread ", _, " going to sleep."},
+				{"Debug", _Integer, loggerTestPath, "operator()" | "operator ()", "Thread ", _, " slept for ", _, "ms."},
+				{"Debug", _Integer, loggerTestPath, "LogsFromThreads", "All threads joined."}
+			]
+		] /@ TestLogSymbol
+	)
 	&&
-	First[TestLogSymbol] === {"Debug", 88, loggerTestPath, "LogsFromThreads", "Starting ", 3, " threads."}
+	MatchQ[First[TestLogSymbol], {"Debug", _Integer, loggerTestPath, "LogsFromThreads", "Starting ", 3, " threads."}]
 	&&
-	Last[TestLogSymbol] === {"Debug", 101, loggerTestPath, "LogsFromThreads", "All threads joined."}
+	MatchQ[Last[TestLogSymbol], {"Debug", _Integer, loggerTestPath, "LogsFromThreads", "All threads joined."}]
 	,
 	True
 	,
-	TestID->"ErrorReportingTestSuite-20190415-Y8F3L2"
+	TestID -> "ErrorReportingTestSuite-20190415-Y8F3L2"
 ];
 
 TestExecute[
@@ -448,19 +454,20 @@ TestMatch[
 		Failure["TensorIndexError", <|
 			"MessageTemplate" -> "An error was caused by attempting to access a nonexistent Tensor element.",
 			"MessageParameters" -> <||>,
-			"ErrorCode" ->  n_?CppErrorCodeQ, 
+			"ErrorCode" -> n_?CppErrorCodeQ,
 			"Parameters" -> {}
 		|>], {
-			{
-				"[Debug] LoggerTest.cpp:17 (GreaterAt): Library function entered with 4 arguments.", 
-				"[Debug] LoggerTest.cpp:20 (GreaterAt): Starting try-block, current error code: 0", 
-				"[Debug] LoggerTest.cpp:26 (GreaterAt): Input tensor is of type: 2", 
-				"[Error] LoggerTest.cpp:43 (GreaterAt): Caught LLU exception TensorIndexError: Indices (-1, 3) must be positive."
-			}
+		{
+			"(GreaterAt): Library function entered with 4 arguments.",
+			"(GreaterAt): Starting try-block, current error code: 0",
+			"(GreaterAt): Input tensor is of type: 2",
+			"(GreaterAt): Caught LLU exception TensorIndexError: Indices (-1, 3) must be positive."
 		}
 	}
+	},
+	SameTest -> ResultAndLogTest
 	,
-	TestID->"ErrorReportingTestSuite-20190409-P1S6Y9"
+	TestID -> "ErrorReportingTestSuite-20190409-P1S6Y9"
 ];
 
 TestExecute[
@@ -473,7 +480,7 @@ Test[
 	,
 	{False, {}}
 	,
-	TestID->"ErrorReportingTestSuite-20190410-R2D4P1"
+	TestID -> "ErrorReportingTestSuite-20190410-R2D4P1"
 ];
 
 TestExecute[
@@ -484,9 +491,11 @@ TestExecute[
 Test[
 	Reap @ GreaterAt["my:file.txt", {5, 6, 7, 8, 9}, 1, 3]
 	,
-	{False, {{"[Warning] LoggerTest.cpp:24 (GreaterAt): File name my:file.txt contains a possibly problematic character \":\"."}}}
+	{False, {{"(GreaterAt): File name my:file.txt contains a possibly problematic character \":\"."}}}
 	,
-	TestID->"ErrorReportingTestSuite-20190410-H8S6D5"
+	SameTest -> ResultAndLogTest
+	,
+	TestID -> "ErrorReportingTestSuite-20190410-H8S6D5"
 ];
 
 TestExecute[
@@ -499,21 +508,22 @@ Test[
 	,
 	{
 		False, {
-			{
-				"[Debug] LoggerTest.cpp:20 (GreaterAt): Starting try-block, current error code: 0",
-				"[Warning] LoggerTest.cpp:24 (GreaterAt): File name my:file.txt contains a possibly problematic character \":\".",
-				"[Debug] LoggerTest.cpp:26 (GreaterAt): Input tensor is of type: 2"
-			}
+		{
+			"(GreaterAt): Starting try-block, current error code: 0",
+			"(GreaterAt): File name my:file.txt contains a possibly problematic character \":\".",
+			"(GreaterAt): Input tensor is of type: 2"
 		}
 	}
+	},
+	SameTest -> ResultAndLogTest
 	,
-	TestID->"ErrorReportingTestSuite-20190410-G6A5W4"
+	TestID -> "ErrorReportingTestSuite-20190410-G6A5W4"
 ];
 
 TestExecute[
-	libLogWarning = CCompilerDriver`CreateLibrary[FileNameJoin[{currentDirectory, #}]& /@ {"LoggerTest.cpp"},
+	libLogWarning = CCompilerDriver`CreateLibrary[FileNameJoin[{currentDirectory, "TestSources", #}]& /@ {"LoggerTest.cpp"},
 		"LogWarning", options, "Defines" -> {"LLU_LOG_WARNING"}];
-		
+
 	$InitLibraryLinkUtils = False;
 	RegisterPacletErrors[libLogWarning, <||>];
 	GreaterAtW = SafeLibraryFunction["GreaterAt", {String, {_, 1}, Integer, Integer}, "Boolean"];
@@ -523,10 +533,12 @@ Test[
 	Reap @ GreaterAtW["my:file.txt", {5, 6, 7, 8, 9}, 1, 3]
 	,
 	{
-		False, {{"[Warning] LoggerTest.cpp:24 (GreaterAt): File name my:file.txt contains a possibly problematic character \":\"."}}
+		False, {{"(GreaterAt): File name my:file.txt contains a possibly problematic character \":\"."}}
 	}
 	,
-	TestID->"ErrorReportingTestSuite-20190415-F5I9D0"
+	SameTest -> ResultAndLogTest
+	,
+	TestID -> "ErrorReportingTestSuite-20190415-F5I9D0"
 ];
 
 TestExecute[
@@ -541,30 +553,32 @@ Test[
 		False, {}
 	}
 	,
-	TestID->"ErrorReportingTestSuite-20190415-A6S8Y7"
+	TestID -> "ErrorReportingTestSuite-20190415-A6S8Y7"
 ];
 
 TestExecute[
 	`LLU`Logger`PrintLogFunctionSelector := Sow @ `LLU`Logger`LogToShortString[##]&;
 ];
 
-TestMatch[
+Test[
 	Reap @ GreaterAtW["file.txt", {5, 6, 7, 8, 9}, -1, 3]
 	,
 	{
 		Failure["TensorIndexError", <|
 			"MessageTemplate" -> "An error was caused by attempting to access a nonexistent Tensor element.",
 			"MessageParameters" -> <||>,
-			"ErrorCode" ->  n_?CppErrorCodeQ, 
+			"ErrorCode" -> n_?CppErrorCodeQ,
 			"Parameters" -> {}
 		|>], {
-			{
-				"[Error] LoggerTest.cpp:43 (GreaterAt): Caught LLU exception TensorIndexError: Indices (-1, 3) must be positive."
-			}
+		{
+			"(GreaterAt): Caught LLU exception TensorIndexError: Indices (-1, 3) must be positive."
 		}
 	}
+	}
 	,
-	TestID->"ErrorReportingTestSuite-20190415-P3C4F8"
+	SameTest -> ResultAndLogTest
+	,
+	TestID -> "ErrorReportingTestSuite-20190415-P3C4F8"
 ];
 
 TestExecute[
@@ -578,41 +592,41 @@ TestExecute[
 Test[
 	{LogDemo[1, 6, 7, 8, 9], TestLogSymbol}
 	,
-	{6,{}}
+	{6, {}}
 	,
-	TestID->"ErrorReportingTestSuite-20190415-C0D7H6"
+	TestID -> "ErrorReportingTestSuite-20190415-C0D7H6"
 ];
 
-Test[
+TestMatch[
 	{LogDemo[5, 6, 7, 8, 9], TestLogSymbol}
 	,
 	{
 		9,
 		{
-			{"Warning", 64, loggerTestPath, "LogDemo", "Index ", 5, " is too big for the number of arguments: ", 5, ". Changing to ", 4}
+			{"Warning", _Integer, loggerTestPath, "LogDemo", "Index ", 5, " is too big for the number of arguments: ", 5, ". Changing to ", 4}
 		}
 	}
 	,
-	TestID->"ErrorReportingTestSuite-20190415-J1G2K9"
+	TestID -> "ErrorReportingTestSuite-20190415-J1G2K9"
 ];
 
-Test[
+TestMatch[
 	TestLogSymbol = {};
 	{LogDemo[-1, 6, 7, 8, 9], TestLogSymbol}
 	,
 	{
-		Failure["MArgumentIndexError", 
+		Failure["MArgumentIndexError",
 			<|
-				"MessageTemplate" -> "An error was caused by an incorrect argument index.", 
-				"MessageParameters" -> <||>, 
-				"ErrorCode" -> -2, 
+				"MessageTemplate" -> "An error was caused by an incorrect argument index.",
+				"MessageParameters" -> <||>,
+				"ErrorCode" -> -2,
 				"Parameters" -> {}
 			|>
 		],
 		{
-			{"Error", 71, loggerTestPath, "LogDemo", "Caught LLU exception ", "MArgumentIndexError", ": ", "Index 4294967295 out-of-bound when accessing LibraryLink argument"}
+			{"Error", _Integer, loggerTestPath, "LogDemo", "Caught LLU exception ", "MArgumentIndexError", ": ", "Index 4294967295 out-of-bound when accessing LibraryLink argument"}
 		}
 	}
 	,
-	TestID->"ErrorReportingTestSuite-20190415-U9M7O6"
+	TestID -> "ErrorReportingTestSuite-20190415-U9M7O6"
 ];

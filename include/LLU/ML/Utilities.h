@@ -1,4 +1,4 @@
-/** 
+/**
  * @file	Utilities.h
  * @date	Nov 26, 2017
  * @author	Rafal Chojna <rafalc@wolfram.com>
@@ -13,9 +13,10 @@
 #include "mathlink.h"
 
 #include "LLU/ErrorLog/Errors.h"
+
 #include "EncodingTraits.hpp"
 
-namespace LibraryLinkUtils {
+namespace LLU {
 
 	template<ML::Encoding, ML::Encoding>
 	class MLStream;
@@ -83,7 +84,8 @@ namespace LibraryLinkUtils {
 			/**
 			 * @brief Default constructor.
 			 * The head is empty and number of arguments is set to a dummy value.
-			 * This constructor should only be used to create a Function right before calling MathLinkStream::operator>> on it, which will read a function from top-level.
+			 * This constructor should only be used to create a Function right before calling MathLinkStream::operator>> on it, which will read a function from
+			 * top-level.
 			 */
 			Function() : Function("", -1) {};
 
@@ -143,47 +145,31 @@ namespace LibraryLinkUtils {
 			Missing() : Function("Missing") {}
 			Missing(std::string r) : Function("Missing", 1), reason(std::move(r)) {}
 
-			const std::string& why() const { return reason; }
+			const std::string& why() const {
+				return reason;
+			}
+
 		private:
 			std::string reason;
 		};
 
-
-		enum class Direction : bool {
-			Get,
-			Put
-		};
+		enum class Direction : bool { Get, Put };
 
 		template<ML::Encoding EIn, ML::Encoding EOut>
 		MLStream<EIn, EOut>& NewPacket(MLStream<EIn, EOut>& ms) {
-			checkError(
-				ms.get(),
-				MLNewPacket(ms.get()),
-				LLErrorName::MLPacketHandleError,
-				"Error in MLNewPacket"
-			);
+			checkError(ms.get(), MLNewPacket(ms.get()), ErrorName::MLPacketHandleError, "Error in MLNewPacket");
 			return ms;
 		}
 
 		template<ML::Encoding EIn, ML::Encoding EOut>
 		MLStream<EIn, EOut>& EndPacket(MLStream<EIn, EOut>& ms) {
-			checkError(
-				ms.get(),
-				MLEndPacket(ms.get()),
-				LLErrorName::MLPacketHandleError,
-				"Error in MLEndPacket"
-			);
+			checkError(ms.get(), MLEndPacket(ms.get()), ErrorName::MLPacketHandleError, "Error in MLEndPacket");
 			return ms;
 		}
 
 		template<ML::Encoding EIn, ML::Encoding EOut>
 		MLStream<EIn, EOut>& Flush(MLStream<EIn, EOut>& ms) {
-			checkError(
-				ms.get(),
-				MLFlush(ms.get()),
-				LLErrorName::MLFlowControlError,
-				"Error in MLFlush"
-			);
+			checkError(ms.get(), MLFlush(ms.get()), ErrorName::MLFlowControlError, "Error in MLFlush");
 			return ms;
 		}
 
@@ -202,7 +188,6 @@ namespace LibraryLinkUtils {
 			else
 				return ms >> Symbol("Null");
 		}
-
 
 		/**
 		 * @struct BeginExpr
@@ -226,7 +211,6 @@ namespace LibraryLinkUtils {
 		 * An empty structure to indicate that current expression started with BeginExpr has ended and we can forward it to the "parent" link
 		 */
 		struct EndExpr {};
-
 
 		/**
 		 * @brief	Returns a new loopback link using MLLinkEnvironment(m) as MENV

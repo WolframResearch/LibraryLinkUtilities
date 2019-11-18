@@ -1,4 +1,4 @@
-/** 
+/**
  * @file	Release.cpp
  * @date	Nov 28, 2017
  * @author	Rafal Chojna <rafalc@wolfram.com>
@@ -8,7 +8,7 @@
 
 #include "../../include/LLU/ML/Release.h"
 
-namespace LibraryLinkUtils {
+namespace LLU {
 
 	namespace ML {
 
@@ -18,20 +18,17 @@ namespace LibraryLinkUtils {
 		template<>
 		ReleaseList<unsigned char>::Func ReleaseList<unsigned char>::Release = MLReleaseInteger8List;
 
-
 		template<>
 		ReleaseArray<short>::Func ReleaseArray<short>::Release = MLReleaseInteger16Array;
 
 		template<>
 		ReleaseList<short>::Func ReleaseList<short>::Release = MLReleaseInteger16List;
 
-
 		template<>
 		ReleaseArray<int>::Func ReleaseArray<int>::Release = MLReleaseInteger32Array;
 
 		template<>
 		ReleaseList<int>::Func ReleaseList<int>::Release = MLReleaseInteger32List;
-
 
 		template<>
 		ReleaseArray<mlint64>::Func ReleaseArray<mlint64>::Release = MLReleaseInteger64Array;
@@ -53,6 +50,6 @@ namespace LibraryLinkUtils {
 
 	}
 
-} /* namespace LibraryLinkUtils */
+} /* namespace LLU */
 
 #endif

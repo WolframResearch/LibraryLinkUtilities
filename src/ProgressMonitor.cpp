@@ -5,16 +5,12 @@
  */
 #include "LLU/ProgressMonitor.h"
 
-#include "LLU/Containers/LibDataHolder.h"
 #include "LLU/ErrorLog/ErrorManager.h"
+#include "LLU/LibraryData.h"
 
-namespace LibraryLinkUtils {
+namespace LLU {
 
-	ProgressMonitor::ProgressMonitor(Tensor<double> sharedIndicator, double step) : sharedIndicator(std::move(sharedIndicator)), step(step) {}
-
-	ProgressMonitor::~ProgressMonitor() {
-		sharedIndicator.disown();
-	}
+	ProgressMonitor::ProgressMonitor(SharedTensor sharedIndicator, double step) : sharedIndicator(std::move(sharedIndicator)), step(step) {}
 
 	double ProgressMonitor::get() const {
 		return sharedIndicator[0];
@@ -35,12 +31,8 @@ namespace LibraryLinkUtils {
 	}
 
 	void ProgressMonitor::checkAbort() {
-		auto libData = LibDataHolder::getLibraryData();
-		if (!libData) {
-			ErrorManager::throwException(LLErrorName::MArgumentLibDataError);
-		}
-		if(libData->AbortQ()) {
-			ErrorManager::throwException(LLErrorName::Aborted);
+		if (LibraryData::API()->AbortQ()) {
+			ErrorManager::throwException(ErrorName::Aborted);
 		}
 	}
 
@@ -49,7 +41,7 @@ namespace LibraryLinkUtils {
 		return *this;
 	}
 
-	ProgressMonitor& ProgressMonitor::operator +=(double progress) {
+	ProgressMonitor& ProgressMonitor::operator+=(double progress) {
 		set(sharedIndicator[0] + progress);
 		return *this;
 	}
@@ -59,7 +51,7 @@ namespace LibraryLinkUtils {
 		return *this;
 	}
 
-	ProgressMonitor& ProgressMonitor::operator -=(double progress) {
+	ProgressMonitor& ProgressMonitor::operator-=(double progress) {
 		set(sharedIndicator[0] - progress);
 		return *this;
 	}

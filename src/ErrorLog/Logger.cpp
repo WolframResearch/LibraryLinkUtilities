@@ -8,37 +8,30 @@
 #include "LLU/LLU.h"
 #include "LLU/LibraryLinkFunctionMacro.h"
 
-namespace LibraryLinkUtils {
+namespace LLU {
 
 	std::string Logger::logSymbolContext;
 
 	std::string Logger::to_string(Level l) {
 		switch (l) {
-			case Level::Debug:
-				return "Debug";
-			case Level::Warning:
-				return "Warning";
-			case Level::Error:
-				return "Error";
-			default:
-				return "Unknown";
+			case Level::Debug: return "Debug";
+			case Level::Warning: return "Warning";
+			case Level::Error: return "Error";
+			default: return "Unknown";
 		}
 	}
 
-
 	LIBRARY_LINK_FUNCTION(setLoggerContext) {
-		auto err = LLErrorCode::NoError;
+		auto err = ErrorCode::NoError;
 		try {
 			MArgumentManager mngr {libData, Argc, Args, Res};
 			auto newContext = mngr.getString(0);
 			Logger::setContext(newContext);
 			mngr.setString(Logger::getSymbol());
-		}
-		catch (LibraryLinkError& e) {
+		} catch (LibraryLinkError& e) {
 			err = e.which();
-		}
-		catch (...) {
-			err = LLErrorCode::FunctionError;
+		} catch (...) {
+			err = ErrorCode::FunctionError;
 		}
 		return err;
 	}

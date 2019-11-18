@@ -7,45 +7,18 @@
 #ifndef LLUTILS_PASSINGPOLICY_HPP
 #define LLUTILS_PASSINGPOLICY_HPP
 
-#include "WolframLibrary.h"
+#include "LLU/LibraryData.h"
 
-namespace LibraryLinkUtils {
+namespace LLU {
+	/// Namespace containing classes representing different passing modes that exist in LibraryLink
 	namespace Passing {
 
-		template<typename LLContainer>
+		/// Abstract class defining common interface and behavior for all predefined passing policies
 		class PassingPolicy {
 		public:
-			PassingPolicy(LLContainer newCont, bool ownerQ) : internalContainer(newCont), argumentOwnerQ(ownerQ) {}
-
-			PassingPolicy(const PassingPolicy&) = default;
-			PassingPolicy(PassingPolicy&&) noexcept = default;
-			PassingPolicy& operator=(const PassingPolicy&) = default;
-			PassingPolicy& operator=(PassingPolicy&&) noexcept = default;
-			virtual ~PassingPolicy() = default;
-
-			LLContainer disownInternal() const {
-				setOwner(false);
-				return getInternal();
-			}
-
-			LLContainer getInternal() const {
-				return internalContainer;
-			};
-
 			/**
-			 *	@brief 		Pass the container as a result to LibraryLink via MArgument
-			 *	@param[out]	res - MArgument that will carry the internal container
-			 **/
-			virtual void passAsResult(MArgument& res) const noexcept = 0;
-
-			/**
-			 *	@brief 		Pass the container as a result to LibraryLink via a shared MArgument
-			 *	@param[out]	res - MArgument that will carry the internal container
-			 **/
-			//virtual void passAsSharedResult(MArgument& res) noexcept = 0;
-
-			/**
-			 * 	@brief		Check whether this object owns the underlying data structure from WolframLibrary. If it does, it is responsible for freeing the resources.
+			 * 	@brief		Check whether this object owns the underlying data structure from WolframLibrary. If it does, it is responsible for freeing the
+			 * 				resources.
 			 * 	@return		true if and only if the object owns the underlying data structure from WolframLibrary
 			 */
 			bool isOwner() const {
@@ -53,35 +26,59 @@ namespace LibraryLinkUtils {
 			}
 
 			/**
-			 * 	@brief		Set the ownership of the underlying data structure from WolframLibrary.
-			 * 	@param 		argumentOwnerQ - whether the object is now the owner of the underlying data structure from WolframLibrary
+			 *	@brief 		Pass the container as result to LibraryLink function via MArgument
+			 *	@param[out]	res - MArgument that will carry the internal container
+			 **/
+			virtual void passAsResult(MArgument& res) const noexcept {
+				pass(res);
+				setOwner(false);
+			}
+
+			/// Perform necessary cleanup action. Purely virtual as only subclasses may actually know what to do.
+			virtual void cleanup() const noexcept = 0;
+
+		protected:
+			/**
+			 * @brief   Create new PassingPolicy with starting ownership status
+			 * @param   ownerQ - ownership information
+			 */
+			explicit PassingPolicy(bool ownerQ) : argumentOwnerQ(ownerQ) {}
+
+			PassingPolicy() = default;
+			PassingPolicy(const PassingPolicy&) = default;
+			PassingPolicy(PassingPolicy&&) noexcept = default;
+
+			virtual PassingPolicy& operator=(const PassingPolicy&) = default;
+			PassingPolicy& operator=(PassingPolicy&&) noexcept = default;
+			virtual ~PassingPolicy() = default;
+
+			/**
+			 * 	@brief		Set ownership of the managed data structure
+			 * 	@param 		ownerQ - whether the object is now the owner of the underlying container
 			 */
 			void setOwner(bool ownerQ) const {
 				argumentOwnerQ = ownerQ;
 			}
 
 		protected:
-			/**
-			 *   @brief 	Free internal container
-			 **/
-			virtual void freeInternal() noexcept {};
+			/// Free internal container
+			virtual void free() const noexcept = 0;
 
 			/**
-			 *   @brief 		Set internal container as result for LibraryLink.
-			 *   @param[out]	res - MArgument that will carry the internal container
-			 **/
-			virtual void passInternal(MArgument& res) const noexcept = 0;
+			 *
+			 * @brief   Pass internal container to MArgument
+			 * @param   res - MArgument which will take the internal container
+			 */
+			virtual void pass(MArgument& res) const = 0;
 
-			virtual LLContainer cloneInternal() const = 0;
+			/// Disown the internal container
+			virtual void disown() const noexcept = 0;
 
 		private:
-			LLContainer internalContainer {};
-
-			/// Determines if MArray should free the underlying container
+			/// Determines if this object owns the underlying data structure
 			mutable bool argumentOwnerQ = false;
-
 		};
 	}
 }
 
-#endif //LLUTILS_PASSINGPOLICY_HPP
+#endif	  // LLUTILS_PASSINGPOLICY_HPP

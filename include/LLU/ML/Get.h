@@ -1,4 +1,4 @@
-/** 
+/**
  * @file	Get.h
  * @date	Nov 28, 2017
  * @author	Rafal Chojna <rafalc@wolfram.com>
@@ -15,9 +15,10 @@
 
 #include "LLU/ErrorLog/Errors.h"
 #include "LLU/ML/Release.h"
+#include "LLU/ML/Utilities.h"
 #include "LLU/Utilities.hpp"
 
-namespace LibraryLinkUtils {
+namespace LLU {
 
 	namespace ML {
 		template<typename T>
@@ -35,8 +36,8 @@ namespace LibraryLinkUtils {
 				int* dims;
 				char** heads;
 				int rank;
-				checkError(m, ArrayF(m, &rawResult, &dims, &heads, &rank), LLErrorName::MLGetArrayError, ArrayFName);
-				return { rawResult, ReleaseArray<T> { m, dims, heads, rank } };
+				checkError(m, ArrayF(m, &rawResult, &dims, &heads, &rank), ErrorName::MLGetArrayError, ArrayFName);
+				return {rawResult, ReleaseArray<T> {m, dims, heads, rank}};
 			}
 
 		private:
@@ -51,8 +52,8 @@ namespace LibraryLinkUtils {
 			static ListData<T> get(MLINK m) {
 				T* rawResult;
 				int len;
-				checkError(m, ListF(m, &rawResult, &len), LLErrorName::MLGetListError, ListFName);
-				return { rawResult, ReleaseList<T> { m, len } };
+				checkError(m, ListF(m, &rawResult, &len), ErrorName::MLGetListError, ListFName);
+				return {rawResult, ReleaseList<T> {m, len}};
 			}
 
 		private:
@@ -66,7 +67,7 @@ namespace LibraryLinkUtils {
 
 			static T get(MLINK m) {
 				T rawResult;
-				checkError(m, ScalarF(m, &rawResult), LLErrorName::MLGetScalarError, ScalarFName);
+				checkError(m, ScalarF(m, &rawResult), ErrorName::MLGetScalarError, ScalarFName);
 				return rawResult;
 			}
 
@@ -75,22 +76,20 @@ namespace LibraryLinkUtils {
 			static Func ScalarF;
 		};
 
-
-
 		template<typename T>
-		typename GetArray<T>::Func GetArray<T>::ArrayF  = [] (MLINK, T**, int**, char***, int*) {
+		typename GetArray<T>::Func GetArray<T>::ArrayF = [](MLINK, T**, int**, char***, int*) {
 			static_assert(dependent_false_v<T>, "Trying to use ML::GetArray<T> for unsupported type T");
 			return 0;
 		};
 
 		template<typename T>
-		typename GetList<T>::Func GetList<T>::ListF  = [] (MLINK) {
+		typename GetList<T>::Func GetList<T>::ListF = [](MLINK) {
 			static_assert(dependent_false_v<T>, "Trying to use ML::GetList<T> for unsupported type T");
 			return 0;
 		};
 
 		template<typename T>
-		typename GetScalar<T>::Func GetScalar<T>::ScalarF = [] (MLINK, T*) {
+		typename GetScalar<T>::Func GetScalar<T>::ScalarF = [](MLINK, T*) {
 			static_assert(dependent_false_v<T>, "Trying to use ML::GetScalar<T> for unsupported type T");
 			return 0;
 		};
@@ -98,13 +97,18 @@ namespace LibraryLinkUtils {
 #ifndef _WIN32
 
 #define ML_GET_DECLARE_SPECIALIZATIONS_OF_STATIC_MEMBERS(T) \
-	template<> GetArray<T>::Func GetArray<T>::ArrayF;\
-	template<> const std::string GetArray<T>::ArrayFName;\
-	template<> GetList<T>::Func GetList<T>::ListF;\
-	template<> const std::string GetList<T>::ListFName;\
-	template<> GetScalar<T>::Func GetScalar<T>::ScalarF;\
-	template<> const std::string GetScalar<T>::ScalarFName;
-
+	template<>                                              \
+	GetArray<T>::Func GetArray<T>::ArrayF;                  \
+	template<>                                              \
+	const std::string GetArray<T>::ArrayFName;              \
+	template<>                                              \
+	GetList<T>::Func GetList<T>::ListF;                     \
+	template<>                                              \
+	const std::string GetList<T>::ListFName;                \
+	template<>                                              \
+	GetScalar<T>::Func GetScalar<T>::ScalarF;               \
+	template<>                                              \
+	const std::string GetScalar<T>::ScalarFName;
 
 		ML_GET_DECLARE_SPECIALIZATIONS_OF_STATIC_MEMBERS(unsigned char)
 		ML_GET_DECLARE_SPECIALIZATIONS_OF_STATIC_MEMBERS(short)
@@ -143,7 +147,6 @@ namespace LibraryLinkUtils {
 		template<>
 		const std::string GetScalar<unsigned char>::ScalarFName = "MLGetInteger8";
 
-
 		/* ***************************************************************** */
 		/* ******* Template specializations for  (unsigned) short  ********* */
 		/* ***************************************************************** */
@@ -171,7 +174,6 @@ namespace LibraryLinkUtils {
 
 		template<>
 		const std::string GetScalar<short>::ScalarFName = "MLGetInteger16";
-
 
 		/* ***************************************************************** */
 		/* ******** Template specializations for  (unsigned) int  ********** */
@@ -201,7 +203,6 @@ namespace LibraryLinkUtils {
 		template<>
 		const std::string GetScalar<int>::ScalarFName = "MLGetInteger32";
 
-
 		/* ***************************************************************** */
 		/* *********** Template specializations for  mlint64  ************** */
 		/* ***************************************************************** */
@@ -230,7 +231,6 @@ namespace LibraryLinkUtils {
 		template<>
 		const std::string GetScalar<mlint64>::ScalarFName = "MLGetInteger64";
 
-
 		/* ***************************************************************** */
 		/* ************ Template specializations for  float  *************** */
 		/* ***************************************************************** */
@@ -258,7 +258,6 @@ namespace LibraryLinkUtils {
 
 		template<>
 		const std::string GetScalar<float>::ScalarFName = "MLGetReal32";
-
 
 		/* ***************************************************************** */
 		/* *********** Template specializations for  double  *************** */
@@ -291,6 +290,6 @@ namespace LibraryLinkUtils {
 
 	} /* namespace ML */
 
-} /* namespace LibraryLinkUtils */
+} /* namespace LLU */
 
 #endif /* LLUTILS_ML_MLGET_H_ */

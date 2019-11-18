@@ -1,4 +1,4 @@
-/** 
+/**
  * @file	Put.cpp
  * @date	Nov 28, 2017
  * @author	Rafal Chojna <rafalc@wolfram.com>
@@ -13,7 +13,7 @@
 
 #include "../../include/LLU/Utilities.hpp"
 
-namespace LibraryLinkUtils {
+namespace LLU {
 
 	namespace ML {
 
@@ -45,7 +45,6 @@ namespace LibraryLinkUtils {
 		template<>
 		const std::string PutScalar<unsigned char>::ScalarFName = "MLPutInteger8";
 
-
 		/* ***************************************************************** */
 		/* ******* Template specializations for  (unsigned) short  ********* */
 		/* ***************************************************************** */
@@ -73,7 +72,6 @@ namespace LibraryLinkUtils {
 
 		template<>
 		const std::string PutScalar<short>::ScalarFName = "MLPutInteger16";
-
 
 		/* ***************************************************************** */
 		/* ******** Template specializations for  (unsigned) int  ********** */
@@ -103,7 +101,6 @@ namespace LibraryLinkUtils {
 		template<>
 		const std::string PutScalar<int>::ScalarFName = "MLPutInteger32";
 
-
 		/* ***************************************************************** */
 		/* *********** Template specializations for  mlint64  ************** */
 		/* ***************************************************************** */
@@ -132,7 +129,6 @@ namespace LibraryLinkUtils {
 		template<>
 		const std::string PutScalar<mlint64>::ScalarFName = "MLPutInteger64";
 
-
 		/* ***************************************************************** */
 		/* ************ Template specializations for  float  *************** */
 		/* ***************************************************************** */
@@ -160,7 +156,6 @@ namespace LibraryLinkUtils {
 
 		template<>
 		const std::string PutScalar<float>::ScalarFName = "MLPutReal32";
-
 
 		/* ***************************************************************** */
 		/* *********** Template specializations for  double  *************** */
@@ -192,6 +187,6 @@ namespace LibraryLinkUtils {
 
 	}
 
-} /* namespace LibraryLinkUtils */
+} /* namespace LLU */
 
 #endif

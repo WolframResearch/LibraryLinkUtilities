@@ -9,8 +9,9 @@
 #include <initializer_list>
 #include <mutex>
 #include <string>
+#include <utility>
 
-#include "LLU/Containers/LibDataHolder.h"
+#include "LLU/LibraryData.h"
 #include "LLU/ML/MLStream.hpp"
 
 // "Public" macros:
@@ -35,35 +36,33 @@
 // "Private" macros:
 
 #ifdef LLU_LOG_LEVEL_DEBUG
-#define LLU_DEBUG(...) LibraryLinkUtils::Logger::log<LibraryLinkUtils::Logger::Level::Debug>(__LINE__, __FILE__, __func__, __VA_ARGS__)
+#define LLU_DEBUG(...) LLU::Logger::log<LLU::Logger::Level::Debug>(__LINE__, __FILE__, __func__, __VA_ARGS__)
 #else
 #define LLU_DEBUG(...) ((void)0)
 #endif
 
 #ifdef LLU_LOG_LEVEL_WARNING
-#define LLU_WARNING(...) LibraryLinkUtils::Logger::log<LibraryLinkUtils::Logger::Level::Warning>(__LINE__, __FILE__, __func__, __VA_ARGS__)
+#define LLU_WARNING(...) LLU::Logger::log<LLU::Logger::Level::Warning>(__LINE__, __FILE__, __func__, __VA_ARGS__)
 #else
 #define LLU_WARNING(...) ((void)0)
 #endif
 
 #ifdef LLU_LOG_LEVEL_ERROR
-#define LLU_ERROR(...) LibraryLinkUtils::Logger::log<LibraryLinkUtils::Logger::Level::Error>(__LINE__, __FILE__, __func__, __VA_ARGS__)
+#define LLU_ERROR(...) LLU::Logger::log<LLU::Logger::Level::Error>(__LINE__, __FILE__, __func__, __VA_ARGS__)
 #else
 #define LLU_ERROR(...) ((void)0)
 #endif
 
-namespace LibraryLinkUtils {
+namespace LLU {
 
-
+	/**
+	 * Logger class is responsible for sending log messages via MathLink to Mathematica.
+	 * It may be more convenient to use one of the LLU_DEBUG/WARNING/ERROR macros instead of calling Logger methods directly.
+	 */
 	class Logger {
 	public:
-
 		/// Possible log severity levels
-		enum class Level {
-			Debug,
-			Warning,
-			Error
-		};
+		enum class Level { Debug, Warning, Error };
 
 		/**
 		 * @brief	Send a log message of given severity.
@@ -145,22 +144,22 @@ namespace LibraryLinkUtils {
 		}
 		std::lock_guard<std::mutex> lock(mlinkGuard);
 
-		MLStream<ML::Encoding::UTF8> mls { libData->getWSLINK(libData) };
+		MLStream<ML::Encoding::UTF8> mls {libData->getWSLINK(libData)};
 		mls << ML::Function("EvaluatePacket", 1);
 		mls << ML::Function(getSymbol(), 4 + sizeof...(T));
 		mls << L << line << fileName << function;
-		static_cast<void>(std::initializer_list<int> { (mls << args, 0)... });
+		static_cast<void>(std::initializer_list<int> {(mls << args, 0)...});
 		libData->processWSLINK(mls.get());
 		auto pkt = MLNextPacket(mls.get());
-		if ( pkt == RETURNPKT) {
+		if (pkt == RETURNPKT) {
 			mls << ML::NewPacket;
 		}
 	}
 
 	template<Logger::Level L, typename... T>
 	void Logger::log(int line, const std::string& fileName, const std::string& function, T&&... args) {
-		log<L>(LibDataHolder::getLibraryData(), line, fileName, function, std::forward<T>(args)...);
+		log<L>(LibraryData::API(), line, fileName, function, std::forward<T>(args)...);
 	}
 
 }
-#endif //LLUTILS_LOGGER_H
+#endif	  // LLUTILS_LOGGER_H

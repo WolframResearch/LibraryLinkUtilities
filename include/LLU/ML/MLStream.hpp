@@ -1,4 +1,4 @@
-/** 
+/**
  * @file	MLStream.hpp
  * @date	Nov 23, 2017
  * @author	Rafal Chojna <rafalc@wolfram.com>
@@ -19,20 +19,20 @@
 
 #include "LLU/ErrorLog/Errors.h"
 #include "LLU/Utilities.hpp"
-#include "Utilities.h"
-#include "UtilityTypeTraits.hpp"
+
 #include "Get.h"
 #include "Put.h"
 #include "Strings.h"
+#include "Utilities.h"
+#include "UtilityTypeTraits.hpp"
 
-namespace LibraryLinkUtils {
-
+namespace LLU {
 
 	/**
 	 * @class 	MLStream
 	 * @brief 	Wrapper class over MathLink with a stream-like interface.
 	 *
-	 * MLStream resides in LibraryLinkUtils namespace, whereas other MathLink-related classes can be found in LibraryLinkUtils::ML namespace.
+	 * MLStream resides in LLU namespace, whereas other MathLink-related classes can be found in LLU::ML namespace.
 	 *
 	 * @tparam	EncodingIn - default encoding to use when reading strings from MathLink
 	 * @tparam	EncodingOut - default encoding to use when writing strings to MathLink
@@ -40,7 +40,6 @@ namespace LibraryLinkUtils {
 	template<ML::Encoding EncodingIn, ML::Encoding EncodingOut = EncodingIn>
 	class MLStream {
 	public:
-
 		/**
 		 *   @brief			Constructs new MLStream
 		 *   @param[in] 	mlp - low-level object of type MLINK received from LibraryLink
@@ -55,7 +54,8 @@ namespace LibraryLinkUtils {
 		MLStream(MLINK mlp, int argc);
 
 		/**
-		 *   @brief         Constructs new MLStream and checks whether there is a function with head \c head and \c argc arguments on the LinkObject waiting to be read
+		 *   @brief         Constructs new MLStream and checks whether there is a function with head \c head and \c argc arguments on the LinkObject
+		 *   				waiting to be read
 		 *   @param[in]     mlp - low-level object of type MLINK received from LibraryLink\
 		 *   @param[in]		head - expected head of expression on the Link
 		 *   @param[in] 	argc - expected number of arguments
@@ -128,7 +128,7 @@ namespace LibraryLinkUtils {
 		 *   @brief			Sends a top-level symbol via MathLink
 		 *   @param[in] 	s - a symbol
 		 *   @see 			ML::Symbol
-		 *   @throws 		LLErrorName::MLPutSymbolError
+		 *   @throws 		ErrorName::MLPutSymbolError
 		 **/
 		MLStream& operator<<(const ML::Symbol& s);
 
@@ -136,7 +136,7 @@ namespace LibraryLinkUtils {
 		 *   @brief			Sends a top-level function via MathLink, function arguments should be send immediately after
 		 *   @param[in] 	f - a function
 		 *   @see 			ML::Function
-		 *   @throws 		LLErrorName::MLPutFunctionError
+		 *   @throws 		ErrorName::MLPutFunctionError
 		 **/
 		MLStream& operator<<(const ML::Function& f);
 
@@ -144,7 +144,7 @@ namespace LibraryLinkUtils {
 		 *   @brief			Sends a top-level expression of the form Missing["reason"]
 		 *   @param[in] 	f - ML::Missing object with a reason
 		 *   @see 			ML::Missing
-		 *   @throws 		LLErrorName::MLPutFunctionError
+		 *   @throws 		ErrorName::MLPutFunctionError
 		 **/
 		MLStream& operator<<(const ML::Missing& f);
 
@@ -170,9 +170,17 @@ namespace LibraryLinkUtils {
 		 *   @brief			Sends a boolean value via MathLink, it is translated to True or False in Mathematica
 		 *   @param[in] 	b - a boolean value
 		 *
-		 *   @throws 		LLErrorName::MLPutSymbolError
+		 *   @throws 		ErrorName::MLPutSymbolError
 		 **/
 		MLStream& operator<<(bool b);
+
+		/**
+		 *   @brief			Sends a mint value.
+		 *   @param[in] 	i - a mint value
+		 *
+		 *   @throws		ErrorName::MLPutScalarError
+		 **/
+		MLStream& operator<<(mint i);
 
 		/**
 		 *   @brief			Sends a MathLink array
@@ -180,7 +188,7 @@ namespace LibraryLinkUtils {
 		 *   @param[in] 	a - ArrayData to be sent
 		 *   @see 			ML::ArrayData<T>
 		 *   @see			http://reference.wolfram.com/language/guide/WSTPCFunctionsForExchangingMultidimensionalArrays.html
-		 *   @throws 		LLErrorName::MLPutArrayError
+		 *   @throws 		ErrorName::MLPutArrayError
 		 **/
 		template<typename T>
 		MLStream& operator<<(const ML::ArrayData<T>& a);
@@ -191,11 +199,11 @@ namespace LibraryLinkUtils {
 		 *   @param[in] 	l - ListData to be sent
 		 *   @see 			ML::ListData<T>
 		 *   @see			http://reference.wolfram.com/language/guide/WSTPCFunctionsForExchangingLists.html
-		 *   @throws 		LLErrorName::MLPutListError
+		 *   @throws 		ErrorName::MLPutListError
 		 **/
 		template<typename T>
 		MLStream& operator<<(const ML::ListData<T>& l);
-	
+
 		/**
 		 *   @brief			Sends an object owned by unique pointer
 		 *   @tparam		T - list element type
@@ -210,7 +218,7 @@ namespace LibraryLinkUtils {
 		 *   @tparam		T - vector element type, it has to be a simple type that is supported in MLPut*List
 		 *   @param[in] 	l - std::vector to be sent
 		 *
-		 *   @throws 		LLErrorName::MLPutListError
+		 *   @throws 		ErrorName::MLPutListError
 		 **/
 		template<typename T>
 		ML::ScalarSupportedTypeQ<T, MLStream&> operator<<(const std::vector<T>& l);
@@ -220,7 +228,7 @@ namespace LibraryLinkUtils {
 		 *   @tparam		T - vector element type, this overload will handle any type not supported in MLPut*List
 		 *   @param[in] 	l - std::vector to be sent
 		 *
-		 *   @throws 		LLErrorName::MLPutListError
+		 *   @throws 		ErrorName::MLPutListError
 		 **/
 		template<typename T>
 		ML::NotScalarSupportedTypeQ<T, MLStream&> operator<<(const std::vector<T>& l);
@@ -231,7 +239,7 @@ namespace LibraryLinkUtils {
 		 *   @param[in] 	s - ML::StringData to be sent
 		 *   @see 			ML::StringData<E>
 		 *   @see			http://reference.wolfram.com/language/guide/WSTPCFunctionsForExchangingStrings.html
-		 *   @throws 		LLErrorName::MLPutStringError
+		 *   @throws 		ErrorName::MLPutStringError
 		 **/
 		template<ML::Encoding E>
 		MLStream& operator<<(const ML::StringData<E>& s);
@@ -240,8 +248,9 @@ namespace LibraryLinkUtils {
 		 *   @brief			Sends all strings within a given object using specified character encoding.
 		 *
 		 *   Normally, when you send a string MLStream chooses the appropriate MathLink function based on the EncodingOut template parameter.
-		 *   Sometimes you may want to locally override the output encoding and you can do this by wrapping the object with ML::PutAs<desired encoding, wrapped type>
-		 *   (you can use ML::putAs function to construct ML::PutAs object without having to explicitly specify the second template parameter).
+		 *   Sometimes you may want to locally override the output encoding and you can do this by wrapping the object with
+		 *   ML::PutAs<desired encoding, wrapped type> (you can use ML::putAs function to construct ML::PutAs object without
+		 *   having to explicitly specify the second template parameter).
 		 *
 		 *   @code
 		 *   	MLStream<ML::Encoding::UTF8> mls { mlink }; 		// By default use UTF8
@@ -261,7 +270,7 @@ namespace LibraryLinkUtils {
 		 *   @param[in] 	s - std::basic_string<T> to be sent
 		 *
 		 *   @see			http://reference.wolfram.com/language/guide/WSTPCFunctionsForExchangingStrings.html
-		 *   @throws 		LLErrorName::MLPutStringError
+		 *   @throws 		ErrorName::MLPutStringError
 		 *
 		 **/
 		template<typename T>
@@ -274,7 +283,7 @@ namespace LibraryLinkUtils {
 		 *   @param[in] 	s - character array to be sent as String
 		 *
 		 *   @see			http://reference.wolfram.com/language/guide/WSTPCFunctionsForExchangingStrings.html
-		 *   @throws 		LLErrorName::MLPutStringError
+		 *   @throws 		ErrorName::MLPutStringError
 		 **/
 		template<typename T, std::size_t N>
 		ML::StringTypeQ<T, MLStream&> operator<<(const T (&s)[N]);
@@ -284,7 +293,7 @@ namespace LibraryLinkUtils {
 		 *   @param[in] 	s - C-string to be sent
 		 *
 		 *   @see			http://reference.wolfram.com/language/guide/WSTPCFunctionsForExchangingStrings.html
-		 *   @throws 		LLErrorName::MLPutStringError
+		 *   @throws 		ErrorName::MLPutStringError
 		 **/
 		MLStream& operator<<(const char* s);
 
@@ -294,7 +303,7 @@ namespace LibraryLinkUtils {
 		 *   @tparam		V - map value type, must be supported in MLStream
 		 *   @param[in] 	m - map to be sent as Association
 		 *
-		 *   @throws 		LLErrorName::MLPutFunctionError plus whatever can be thrown sending keys and values
+		 *   @throws 		ErrorName::MLPutFunctionError plus whatever can be thrown sending keys and values
 		 **/
 		template<typename K, typename V>
 		MLStream& operator<<(const std::map<K, V>& m);
@@ -304,7 +313,7 @@ namespace LibraryLinkUtils {
 		 *   @tparam		T - scalar type
 		 *   @param[in] 	value - numeric value to be sent
 		 *
-		 *   @throws 		LLErrorName::MLPutScalarError
+		 *   @throws 		ErrorName::MLPutScalarError
 		 **/
 		template<typename T>
 		ML::ScalarSupportedTypeQ<T, MLStream&> operator<<(T value);
@@ -327,7 +336,7 @@ namespace LibraryLinkUtils {
 		 *   @tparam		Container - type that is a collection of some elements
 		 *   @param[in] 	c - container to be sent
 		 *
-		 *   @throws 		LLErrorName::MLPutContainerError
+		 *   @throws 		ErrorName::MLPutContainerError
 		 *
 		 *   @note			Size() is not technically necessary, but needed for performance reason. Most STL containers have size() anyway.
 		 **/
@@ -354,7 +363,7 @@ namespace LibraryLinkUtils {
 		 *
 		 *   @param[in] 	s - a symbol
 		 *   @see 			ML::Symbol
-		 *   @throws 		LLErrorName::MLGetSymbolError, LLErrorName::MLTestHeadError
+		 *   @throws 		ErrorName::MLGetSymbolError, ErrorName::MLTestHeadError
 		 **/
 		MLStream& operator>>(const ML::Symbol& s);
 
@@ -366,7 +375,7 @@ namespace LibraryLinkUtils {
 		 *
 		 *   @param[in, out] 	s - a symbol
 		 *   @see 				ML::Symbol
-		 *   @throws 			LLErrorName::MLGetSymbolError, LLErrorName::MLTestHeadError
+		 *   @throws 			ErrorName::MLGetSymbolError, ErrorName::MLTestHeadError
 		 **/
 		MLStream& operator>>(ML::Symbol& s);
 
@@ -377,7 +386,7 @@ namespace LibraryLinkUtils {
 		 *
 		 *   @param[in] 	f - a function with head and argument count specified
 		 *   @see 			ML::Function
-		 *   @throws 		LLErrorName::MLGetFunctionError, LLErrorName::MLTestHeadError
+		 *   @throws 		ErrorName::MLGetFunctionError, ErrorName::MLTestHeadError
 		 **/
 		MLStream& operator>>(const ML::Function& f);
 
@@ -388,7 +397,7 @@ namespace LibraryLinkUtils {
 		 *
 		 *   @param[in, out] 	f - a function which may have head or argument count specified
 		 *   @see 				ML::Function
-		 *   @throws 			LLErrorName::MLGetFunctionError, LLErrorName::MLTestHeadError
+		 *   @throws 			ErrorName::MLGetFunctionError, ErrorName::MLTestHeadError
 		 **/
 		MLStream& operator>>(ML::Function& f);
 
@@ -396,9 +405,17 @@ namespace LibraryLinkUtils {
 		 *   @brief			Receives a True or False symbol from Mathematica and converts it to bool
 		 *   @param[out] 	b - argument to which the boolean received from MathLink will be assigned
 		 *
-		 *   @throws 		LLErrorName::MLGetSymbolError, LLErrorName::MLWrongSymbolForBool
+		 *   @throws 		ErrorName::MLGetSymbolError, ErrorName::MLWrongSymbolForBool
 		 **/
 		MLStream& operator>>(bool& b);
+
+		/**
+		 *   @brief			Receives a mint value.
+		 *   @param[in] 	i - argument to which a mint value will be assigned
+		 *
+		 *   @note		    It actually reads an mlint64 and casts to mint, as mint is not natively supported by MathLink.
+		 **/
+		MLStream& operator>>(mint& i);
 
 		/**
 		 *   @brief			Receives a MathLink array
@@ -406,7 +423,7 @@ namespace LibraryLinkUtils {
 		 *   @param[out] 	a - argument to which the ML::ArrayData received from MathLink will be assigned
 		 *   @see 			ML::ArrayData<T>
 		 *   @see			http://reference.wolfram.com/language/guide/WSTPCFunctionsForExchangingMultidimensionalArrays.html
-		 *   @throws 		LLErrorName::MLGetArrayError
+		 *   @throws 		ErrorName::MLGetArrayError
 		 **/
 		template<typename T>
 		MLStream& operator>>(ML::ArrayData<T>& a);
@@ -417,7 +434,7 @@ namespace LibraryLinkUtils {
 		 *   @param[out] 	l - argument to which the ML::ListData received from MathLink will be assigned
 		 *   @see 			ML::ListData<T>
 		 *   @see			http://reference.wolfram.com/language/guide/WSTPCFunctionsForExchangingLists.html
-		 *   @throws 		LLErrorName::MLGetListError
+		 *   @throws 		ErrorName::MLGetListError
 		 **/
 		template<typename T>
 		MLStream& operator>>(ML::ListData<T>& l);
@@ -427,7 +444,7 @@ namespace LibraryLinkUtils {
 		 *   @tparam		T - vector element type, it has to be a simple type that is supported in MLGet*List
 		 *   @param[out] 	l - argument to which the List received from MathLink will be assigned
 		 *
-		 *   @throws 		LLErrorName::MLGetListError
+		 *   @throws 		ErrorName::MLGetListError
 		 **/
 		template<typename T>
 		ML::ScalarSupportedTypeQ<T, MLStream&> operator>>(std::vector<T>& l);
@@ -437,7 +454,7 @@ namespace LibraryLinkUtils {
 		 *   @tparam		T - vector element type, it can be any type supported by MathLink
 		 *   @param[out] 	l - argument to which the List received from MathLink will be assigned
 		 *
-		 *   @throws 		LLErrorName::MLGetListError
+		 *   @throws 		ErrorName::MLGetListError
 		 **/
 		template<typename T>
 		ML::NotScalarSupportedTypeQ<T, MLStream&> operator>>(std::vector<T>& l);
@@ -448,7 +465,7 @@ namespace LibraryLinkUtils {
 		 *   @param[out] 	s - argument to which the ML::StringData received from MathLink will be assigned
 		 *   @see 			ML::StringData<T>
 		 *   @see			http://reference.wolfram.com/language/guide/WSTPCFunctionsForExchangingStrings.html
-		 *   @throws 		LLErrorName::MLGetStringError
+		 *   @throws 		ErrorName::MLGetStringError
 		 **/
 		template<ML::Encoding E = EncodingIn>
 		MLStream& operator>>(ML::StringData<E>& s);
@@ -459,7 +476,7 @@ namespace LibraryLinkUtils {
 		 *   @param[out] 	s - argument to which the std::basic_string<T> received from MathLink will be assigned
 		 *
 		 *   @see			http://reference.wolfram.com/language/guide/WSTPCFunctionsForExchangingStrings.html
-		 *   @throws 		LLErrorName::MLGetStringError
+		 *   @throws 		ErrorName::MLGetStringError
 		 *
 		 *   @note			std::string is just std::basic_string<char>
 		 **/
@@ -483,7 +500,7 @@ namespace LibraryLinkUtils {
 		 *   @tparam		V - map value type, must be supported in MLStream
 		 *   @param[out] 	m - argument to which the std::map received from MathLink will be assigned
 		 *
-		 *   @throws 		LLErrorName::MLGetFunctionError plus whatever can be thrown receiving keys and values
+		 *   @throws 		ErrorName::MLGetFunctionError plus whatever can be thrown receiving keys and values
 		 *
 		 *   @note			The top-level Association must have all values of the same type because this is how std::map works
 		 **/
@@ -495,7 +512,7 @@ namespace LibraryLinkUtils {
 		 *   @tparam		T - scalar type
 		 *   @param[out] 	value - argument to which the value received from MathLink will be assigned
 		 *
-		 *   @throws 		LLErrorName::MLGetScalarError
+		 *   @throws 		ErrorName::MLGetScalarError
 		 **/
 		template<typename T>
 		ML::ScalarSupportedTypeQ<T, MLStream&> operator>>(T& value);
@@ -514,7 +531,6 @@ namespace LibraryLinkUtils {
 		ML::ScalarNotSupportedTypeQ<T, MLStream&> operator>>(T& value);
 
 	private:
-
 		/**
 		 *   @brief			Check if the call to MathLink API succeeded, throw an exception otherwise
 		 *   @param[in] 	statusOk - error code returned from MathLink API function, usually 0 means error
@@ -530,7 +546,7 @@ namespace LibraryLinkUtils {
 		 * 	 @param[in] 	head - expression head to test for
 		 * 	 @return		Number of arguments for the next expression on the Link (only if head is correct)
 		 *
-		 * 	 @throws		LLErrorName::MLTestHeadError
+		 * 	 @throws		ErrorName::MLTestHeadError
 		 */
 		int testHead(const std::string& head);
 
@@ -539,7 +555,7 @@ namespace LibraryLinkUtils {
 		 * 	 @param[in] 	head - expression head to test for
 		 * 	 @param[in]		argc - number of arguments to test for
 		 *
-		 * 	 @throws		LLErrorName::MLTestHeadError
+		 * 	 @throws		ErrorName::MLTestHeadError
 		 */
 		void testHead(const std::string& head, int argc);
 
@@ -552,26 +568,24 @@ namespace LibraryLinkUtils {
 		/// Internal low-level handle to the currently active MathLink, it is assumed that the handle is valid.
 		MLINK m;
 
-		/// MathLink does not natively support sending expression of unknown length, so to simulate this behavior we can use a helper loopback link to store arguments
-		/// until we know how many of them there are. But to be able to send nested expressions of unknown length we need more than one helper link. The data structure
-		/// called stack seems to be the most reasonable choice.
+		/// MathLink does not natively support sending expression of unknown length, so to simulate this behavior we can use a helper loopback link to store
+		/// arguments until we know how many of them there are. But to be able to send nested expressions of unknown length we need more than one helper link.
+		/// The data structure called stack seems to be the most reasonable choice.
 		std::stack<LoopbackData> loopbackStack;
 
 		/// Boolean flag to indicate if the current expression initiated with BeginExpr has been dropped. It is needed for EndExpr to behave correctly.
 		bool currentExprDropped = false;
 	};
 
-
 	template<ML::Encoding EIn, ML::Encoding EOut>
 	MLStream<EIn, EOut>::MLStream(MLINK mlp) : m(mlp), loopbackStack(std::deque<LoopbackData> {{"", mlp}}) {
 		if (!mlp) {
-			ML::throwLLUException(LLErrorName::MLNullMlinkError);
+			ML::throwLLUException(ErrorName::MLNullMlinkError);
 		}
 	}
 
 	template<ML::Encoding EIn, ML::Encoding EOut>
-	MLStream<EIn, EOut>::MLStream(MLINK mlp, int argc) : MLStream(mlp, "List", argc) {
-	}
+	MLStream<EIn, EOut>::MLStream(MLINK mlp, int argc) : MLStream(mlp, "List", argc) {}
 
 	template<ML::Encoding EIn, ML::Encoding EOut>
 	MLStream<EIn, EOut>::MLStream(MLINK mlp, const std::string& head, int argc) : MLStream(mlp) {
@@ -591,7 +605,6 @@ namespace LibraryLinkUtils {
 		std::for_each(begin, end, [this](const auto& elem) { *this << elem; });
 	}
 
-
 	template<ML::Encoding EIn, ML::Encoding EOut>
 	void MLStream<EIn, EOut>::check(int statusOk, const std::string& errorName, const std::string& debugInfo) {
 		ML::checkError(m, statusOk, errorName, debugInfo);
@@ -600,11 +613,7 @@ namespace LibraryLinkUtils {
 	template<ML::Encoding EIn, ML::Encoding EOut>
 	int MLStream<EIn, EOut>::testHead(const std::string& head) {
 		int argcount;
-		check(
-			MLTestHead(m, head.c_str(), &argcount),
-			LLErrorName::MLTestHeadError,
-			"Expected \"" + head + "\""
-		);
+		check(MLTestHead(m, head.c_str(), &argcount), ErrorName::MLTestHeadError, "Expected \"" + head + "\"");
 		return argcount;
 	}
 
@@ -612,14 +621,14 @@ namespace LibraryLinkUtils {
 	void MLStream<EIn, EOut>::testHead(const std::string& head, int argc) {
 		int argcount = testHead(head);
 		if (argc != argcount) {
-			ML::throwLLUException(LLErrorName::MLTestHeadError, "Expected " + std::to_string(argc) + " arguments but got " + std::to_string(argcount));
+			ML::throwLLUException(ErrorName::MLTestHeadError, "Expected " + std::to_string(argc) + " arguments but got " + std::to_string(argcount));
 		}
 	}
 
 	template<ML::Encoding EIn, ML::Encoding EOut>
 	void MLStream<EIn, EOut>::refreshCurrentMLINK() {
 		if (loopbackStack.empty()) {
-			ML::throwLLUException(LLErrorName::MLLoopbackStackSizeError, "Stack is empty in refreshCurrentMLINK()");
+			ML::throwLLUException(ErrorName::MLLoopbackStackSizeError, "Stack is empty in refreshCurrentMLINK()");
 		}
 		m = std::get<MLINK>(loopbackStack.top());
 	}
@@ -640,31 +649,21 @@ namespace LibraryLinkUtils {
 
 	template<ML::Encoding EIn, ML::Encoding EOut>
 	auto MLStream<EIn, EOut>::operator<<(const ML::Symbol& s) -> MLStream& {
-		check(
-			MLPutSymbol(m, s.getHead().c_str()),
-			LLErrorName::MLPutSymbolError,
-			"Cannot put symbol: \"" + s.getHead() + "\""
-		);
+		check(MLPutSymbol(m, s.getHead().c_str()), ErrorName::MLPutSymbolError, "Cannot put symbol: \"" + s.getHead() + "\"");
 		return *this;
 	}
 
 	template<ML::Encoding EIn, ML::Encoding EOut>
 	auto MLStream<EIn, EOut>::operator<<(const ML::Function& f) -> MLStream& {
-		check(
-			MLPutFunction(m, f.getHead().c_str(), f.getArgc()),
-			LLErrorName::MLPutFunctionError,
-			"Cannot put function: \"" + f.getHead() + "\" with " + std::to_string(f.getArgc()) + " arguments"
-		);
+		check(MLPutFunction(m, f.getHead().c_str(), f.getArgc()), ErrorName::MLPutFunctionError,
+			  "Cannot put function: \"" + f.getHead() + "\" with " + std::to_string(f.getArgc()) + " arguments");
 		return *this;
 	}
 
 	template<ML::Encoding EIn, ML::Encoding EOut>
 	auto MLStream<EIn, EOut>::operator<<(const ML::Missing& f) -> MLStream& {
-		check(
-			MLPutFunction(m, f.getHead().c_str(), 1), //f.getArgc() could be 0 but we still want to send f.reason, even if it's an empty string
-			LLErrorName::MLPutFunctionError,
-			"Cannot put function: \"" + f.getHead() + "\" with 1 argument"
-		);
+		check(MLPutFunction(m, f.getHead().c_str(), 1),	   // f.getArgc() could be 0 but we still want to send f.reason, even if it's an empty string
+			  ErrorName::MLPutFunctionError, "Cannot put function: \"" + f.getHead() + "\" with 1 argument");
 		*this << f.why();
 		return *this;
 	}
@@ -691,7 +690,8 @@ namespace LibraryLinkUtils {
 	auto MLStream<EIn, EOut>::operator<<(const ML::DropExpr&) -> MLStream& {
 		// check if the stack has reasonable size
 		if (loopbackStack.size() < 2) {
-			ML::throwLLUException(LLErrorName::MLLoopbackStackSizeError, "Trying to Drop expression with loopback stack size " + std::to_string(loopbackStack.size()));
+			ML::throwLLUException(ErrorName::MLLoopbackStackSizeError,
+								  "Trying to Drop expression with loopback stack size " + std::to_string(loopbackStack.size()));
 		}
 		// we are dropping the expression so just close the link and hope that MathLink will do the cleanup
 		MLClose(std::get<MLINK>(loopbackStack.top()));
@@ -715,7 +715,8 @@ namespace LibraryLinkUtils {
 
 		// check if the stack has reasonable size
 		if (loopbackStack.size() < 2) {
-			ML::throwLLUException(LLErrorName::MLLoopbackStackSizeError, "Trying to End expression with loopback stack size " + std::to_string(loopbackStack.size()));
+			ML::throwLLUException(ErrorName::MLLoopbackStackSizeError,
+								  "Trying to End expression with loopback stack size " + std::to_string(loopbackStack.size()));
 		}
 
 		// extract active loopback link and expression head
@@ -729,11 +730,8 @@ namespace LibraryLinkUtils {
 		MLINK& exprArgs = std::get<MLINK>(currentPartialExpr);
 		auto argCnt = ML::countExpressionsInLoopbackLink(exprArgs);
 		*this << ML::Function(std::get<std::string>(currentPartialExpr), argCnt);
-		check(
-			MLTransferToEndOfLoopbackLink(m, exprArgs),
-			LLErrorName::MLTransferToLoopbackError,
-			"Could not transfer " + std::to_string(argCnt) + " expressions from Loopback Link"
-		);
+		check(MLTransferToEndOfLoopbackLink(m, exprArgs), ErrorName::MLTransferToLoopbackError,
+			  "Could not transfer " + std::to_string(argCnt) + " expressions from Loopback Link");
 		// finally, close the loopback link
 		MLClose(exprArgs);
 
@@ -742,7 +740,13 @@ namespace LibraryLinkUtils {
 
 	template<ML::Encoding EIn, ML::Encoding EOut>
 	auto MLStream<EIn, EOut>::operator<<(bool b) -> MLStream& {
-		return *this << ML::Symbol(b? "True" : "False");
+		return *this << ML::Symbol(b ? "True" : "False");
+	}
+
+	template<ML::Encoding EIn, ML::Encoding EOut>
+	auto MLStream<EIn, EOut>::operator<<(mint i) -> MLStream& {
+		ML::PutScalar<mlint64>::put(m, static_cast<mlint64>(i));
+		return *this;
 	}
 
 	template<ML::Encoding EIn, ML::Encoding EOut>
@@ -813,7 +817,7 @@ namespace LibraryLinkUtils {
 	template<ML::Encoding EIn, ML::Encoding EOut>
 	template<ML::Encoding E, typename T>
 	auto MLStream<EIn, EOut>::operator<<(const ML::PutAs<E, T>& wrp) -> MLStream& {
-		MLStream<EIn, E> tmpMLS { m };
+		MLStream<EIn, E> tmpMLS {m};
 		tmpMLS << wrp.obj;
 		return *this;
 	}
@@ -848,8 +852,6 @@ namespace LibraryLinkUtils {
 		return *this;
 	}
 
-
-
 	//
 	//	Definitions of MLStream<EIn, EOut>::operator>>
 	//
@@ -861,18 +863,17 @@ namespace LibraryLinkUtils {
 
 	template<ML::Encoding EIn, ML::Encoding EOut>
 	auto MLStream<EIn, EOut>::operator>>(const ML::Symbol& s) -> MLStream& {
-		check(MLTestSymbol(m, s.getHead().c_str()), LLErrorName::MLTestSymbolError, "Cannot get symbol: \"" + s.getHead() + "\"");
+		check(MLTestSymbol(m, s.getHead().c_str()), ErrorName::MLTestSymbolError, "Cannot get symbol: \"" + s.getHead() + "\"");
 		return *this;
 	}
 
 	template<ML::Encoding EIn, ML::Encoding EOut>
 	auto MLStream<EIn, EOut>::operator>>(ML::Symbol& s) -> MLStream& {
 		if (!s.getHead().empty()) {
-			check(MLTestSymbol(m, s.getHead().c_str()), LLErrorName::MLTestSymbolError, "Cannot get symbol: \"" + s.getHead() + "\"");
-		}
-		else {
+			check(MLTestSymbol(m, s.getHead().c_str()), ErrorName::MLTestSymbolError, "Cannot get symbol: \"" + s.getHead() + "\"");
+		} else {
 			const char* head;
-			check(MLGetSymbol(m, &head), LLErrorName::MLGetSymbolError, "Cannot get symbol");
+			check(MLGetSymbol(m, &head), ErrorName::MLGetSymbolError, "Cannot get symbol");
 			s.setHead(head);
 			MLReleaseSymbol(m, head);
 		}
@@ -890,15 +891,13 @@ namespace LibraryLinkUtils {
 		if (!f.getHead().empty()) {
 			if (f.getArgc() < 0) {
 				f.setArgc(testHead(f.getHead().c_str()));
-			}
-			else {
+			} else {
 				testHead(f.getHead().c_str(), f.getArgc());
 			}
-		}
-		else {
+		} else {
 			const char* head;
 			int argc;
-			check(MLGetFunction(m, &head, &argc), LLErrorName::MLGetFunctionError, "Cannot get function");
+			check(MLGetFunction(m, &head, &argc), ErrorName::MLGetFunctionError, "Cannot get function");
 			f.setHead(head);
 			MLReleaseSymbol(m, head);
 			f.setArgc(argc);
@@ -912,20 +911,24 @@ namespace LibraryLinkUtils {
 		*this >> boolean;
 		if (boolean.getHead() == "True") {
 			b = true;
-		}
-		else if (boolean.getHead() == "False") {
+		} else if (boolean.getHead() == "False") {
 			b = false;
+		} else {
+			ML::throwLLUException(ErrorName::MLWrongSymbolForBool, R"(Expected "True" or "False", got )" + boolean.getHead());
 		}
-		else {
-			ML::throwLLUException(LLErrorName::MLWrongSymbolForBool, R"(Expected "True" or "False", got )" + boolean.getHead());
-		}
+		return *this;
+	}
+
+	template<ML::Encoding EIn, ML::Encoding EOut>
+	auto MLStream<EIn, EOut>::operator>>(mint& i) -> MLStream& {
+		i = static_cast<mint>(ML::GetScalar<mlint64>::get(m));
 		return *this;
 	}
 
 	template<ML::Encoding EIn, ML::Encoding EOut>
 	template<ML::Encoding E, typename T>
 	auto MLStream<EIn, EOut>::operator>>(ML::GetAs<E, T> wrp) -> MLStream& {
-		MLStream<E, EOut> tmpMLS { m };
+		MLStream<E, EOut> tmpMLS {m};
 		tmpMLS >> wrp.obj;
 		return *this;
 	}
@@ -950,7 +953,7 @@ namespace LibraryLinkUtils {
 		auto list = ML::GetList<T>::get(m);
 		T* start = list.get();
 		auto listLen = list.get_deleter().getLength();
-		l = std::vector<T> { start, start + listLen };
+		l = std::vector<T> {start, start + listLen};
 		return *this;
 	}
 
@@ -960,7 +963,7 @@ namespace LibraryLinkUtils {
 		ML::List inList;
 		*this >> inList;
 		std::vector<T> res(inList.getArgc());
-		for(auto& elem : res) {
+		for (auto& elem : res) {
 			*this >> elem;
 		}
 		l = std::move(res);
@@ -1010,7 +1013,6 @@ namespace LibraryLinkUtils {
 		return *this;
 	}
 
-} /* namespace LibraryLinkUtils */
-
+} /* namespace LLU */
 
 #endif /* LLUTILS_MLSTREAM_HPP_ */

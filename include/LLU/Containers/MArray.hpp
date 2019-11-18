@@ -15,25 +15,28 @@
 #include <utility>
 #include <vector>
 
-#include "WolframLibrary.h"
-
-#include "MArrayBase.h"
+#include "LLU/LibraryData.h"
 #include "LLU/Utilities.hpp"
 
-namespace LibraryLinkUtils {
+#include "MArrayDimensions.h"
+
+namespace LLU {
 
 	/**
 	 * @class MArray
 	 * @brief This is a class template, where template parameter T is the type of data elements. MArray is the base class for NumericArray, Tensor and Image.
 	 *
-	 * Each MArray<T> is an abstract class, it provides common interface to NumericArrays, Tensors and Images. One of the biggest benefits is that this interface
-	 * contains iterators over underlying data together with begin() and end() member functions which makes it possible to use containers derived
-	 * from MArray directly in many functions from standard library \<algorithms\>.
+	 * Each MArray<T> is an abstract class, it provides common interface to NumericArrays, Tensors and Images. One of the biggest benefits is that this
+	 * interface contains iterators over underlying data together with begin() and end() member functions which makes it possible to use containers derived from
+	 * MArray directly in many functions from standard library \<algorithms\>.
 	 *
 	 * @tparam	T - type of underlying data
 	 */
 	template<typename T>
-	class MArray : public MArrayBase {
+	class MArray {
+		template<typename>
+		friend class MArray;
+
 	public:
 		/// Type of elements stored
 		using value_type = T;
@@ -53,35 +56,18 @@ namespace LibraryLinkUtils {
 		MArray() = default;
 
 		/**
-		 * 	@brief		Constructs uninitialized container with given dimensions
-		 *	@param[in]	dims - list of MArray dimensions
-		 *	@throws		LLErrorName::DimensionsError - if \c dims are invalid
-		 *	@throws		LLErrorName::FunctionError - if any of Wolfram*Library structures was not initialized
-		 **/
-		MArray(std::initializer_list<mint> dims) : MArrayBase(dims) {}
-
-		/**
-		 * 	@brief		Constructs uninitialized container with given dimensions
-		 *	@param[in]	dims - container with MArray dimensions
-		 *	@tparam		Container - any type of container that has member \b value_type and this type is convertible to mint
-		 *	@throws		LLErrorName::DimensionsError - if \c dims are invalid
-		 *	@throws		LLErrorName::FunctionError - if any of Wolfram*Library structures was not initialized
-		 **/
-		template<
-			class Container,
-			typename = disable_if_same_or_derived<MArrayBase, Container>,
-			typename = typename std::enable_if_t<std::is_integral<typename std::remove_reference_t<Container>::value_type>::value>
-		>
-		MArray(Container&& dims) : MArrayBase(std::forward<Container>(dims)) {}
-
+		 *  @brief  Create new MArray given the dimensions object
+		 *  @param  d - dimensions for the new MArray
+		 */
+		explicit MArray(MArrayDimensions d) : dims(std::move(d)) {}
 
 		/**
 		 * 	@brief		Converts given MArray of type U into MArray of type T
-		 *	@param[in]	ma2 - MArray of any type
+		 *	@param[in]	other - MArray of any type
 		 *	@tparam		U - any type convertible to T
 		 **/
 		template<typename U>
-		MArray(const MArray<U>& ma2) : MArrayBase(ma2) {}
+		explicit MArray(const MArray<U>& other) : dims(other.dims) {}
 
 		/**
 		 *	@brief Get raw pointer to underlying data
@@ -95,6 +81,41 @@ namespace LibraryLinkUtils {
 		 **/
 		const T* data() const noexcept {
 			return getData();
+		}
+
+		/**
+		 *	@brief Get total number of elements in the container
+		 **/
+		mint size() const noexcept {
+			return dims.flatCount();
+		}
+
+		/**
+		 *	@brief Get container rank
+		 **/
+		mint rank() const noexcept {
+			return dims.rank();
+		}
+
+		/**
+		 *	@brief Check whether container is empty
+		 **/
+		mint empty() const noexcept {
+			return dims.flatCount() == 0;
+		}
+
+		/**
+		 *  @brief  Get dimension value at position \p index
+		 */
+		mint dimension(mint index) const {
+			return dims.get(index);
+		}
+
+		/**
+		 *  @brief  Get a const reference to dimensions object
+		 */
+		const MArrayDimensions& dimensions() {
+			return dims;
 		}
 
 		/**
@@ -160,7 +181,7 @@ namespace LibraryLinkUtils {
 		 *	@param[in]	indices - vector with coordinates of desired data element
 		 **/
 		T& operator[](const std::vector<mint>& indices) {
-			return  (*this)[getIndex(indices)];
+			return (*this)[dims.getIndex(indices)];
 		}
 
 		/**
@@ -168,7 +189,7 @@ namespace LibraryLinkUtils {
 		 *	@param[in]	indices - vector with coordinates of desired data element
 		 **/
 		const T& operator[](const std::vector<mint>& indices) const {
-			return  (*this)[getIndex(indices)];
+			return (*this)[dims.getIndex(indices)];
 		}
 
 		/**
@@ -231,6 +252,18 @@ namespace LibraryLinkUtils {
 			return *(cend() - 1);
 		}
 
+		/**
+		 * Copy contents of the MArray to a std::vector of matching type
+		 * @return	std::vector with the same data as MArray
+		 * @note	std::vector is always 1D, so the information about dimensions of MArray is lost
+		 */
+		std::vector<T> asVector() const {
+			return std::vector<T> {cbegin(), cend()};
+		}
+
+	protected:
+		MArrayDimensions dims;
+
 	private:
 		/**
 		 *	@brief	Get raw pointer to underlying data
@@ -240,28 +273,22 @@ namespace LibraryLinkUtils {
 
 	template<typename T>
 	T& MArray<T>::at(mint index) {
-		if (index >= flattenedLength)
-			indexError();
-		return (*this)[index];
+		return (*this)[dims.getIndexChecked(index)];
 	}
 
 	template<typename T>
 	const T& MArray<T>::at(mint index) const {
-		if (index >= flattenedLength)
-			indexError();
-		return (*this)[index];
+		return (*this)[dims.getIndexChecked(index)];
 	}
 
 	template<typename T>
 	T& MArray<T>::at(const std::vector<mint>& indices) {
-		checkIndices(indices);
-		return  (*this)[getIndex(indices)];
+		return (*this)[dims.getIndexChecked(indices)];
 	}
 
 	template<typename T>
 	const T& MArray<T>::at(const std::vector<mint>& indices) const {
-		checkIndices(indices);
-		return  (*this)[getIndex(indices)];
+		return (*this)[dims.getIndexChecked(indices)];
 	}
 
 	/**
@@ -279,7 +306,6 @@ namespace LibraryLinkUtils {
 		return os;
 	}
 
-} /* namespace LibraryLinkUtils */
-
+} /* namespace LLU */
 
 #endif /* LLUTILS_MARRAY_HPP_ */

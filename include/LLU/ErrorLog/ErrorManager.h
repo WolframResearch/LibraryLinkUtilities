@@ -7,19 +7,17 @@
 #ifndef LLUTILS_ERRORMANAGER_H
 #define LLUTILS_ERRORMANAGER_H
 
+#include <algorithm>
 #include <initializer_list>
 #include <string>
-#include <vector>
-#include <algorithm>
 #include <unordered_map>
 #include <utility>
+#include <vector>
 
-#include "WolframLibrary.h"
-
-#include <LLU/Containers/LibDataHolder.h>
 #include <LLU/ErrorLog/LibraryLinkError.h>
+#include <LLU/LibraryData.h>
 
-namespace LibraryLinkUtils {
+namespace LLU {
 
 	/**
 	 * @class	ErrorManager
@@ -34,7 +32,6 @@ namespace LibraryLinkUtils {
 		using ErrorStringData = std::pair<std::string, std::string>;
 
 	public:
-
 		/**
 		 * @brief Default constructor is deleted since ErrorManager is supposed to be completely static
 		 */
@@ -56,7 +53,7 @@ namespace LibraryLinkUtils {
 		 * @tparam 	T - type template parameter pack
 		 * @param 	errorName - name of error to be thrown, must be registered beforehand
 		 * @param 	args - any number of arguments that will replace TemplateSlots (``, `1`, `xx`, etd) in the message text in top-level
-		 * @note	This function requires a copy of WolframLibraryData to be saved in WolframLibrary_initialize via LibDataHolder::setLibraryData
+		 * @note	This function requires a copy of WolframLibraryData to be saved in WolframLibrary_initialize via LibraryData::setLibraryData
 		 * 			or MArgumentManager::setLibraryData.
 		 */
 		template<typename... T>
@@ -103,7 +100,7 @@ namespace LibraryLinkUtils {
 		 * @param 	errorName - name of error to be thrown, must be registered beforehand
 		 * @param	debugInfo - additional message with debug info, this message will not be passed to top-level Failure object
 		 * @param 	args - any number of arguments that will replace TemplateSlots (``, `1`, `xx`, etd) in the message text in top-level
-		 * @note	This function requires a copy of WolframLibraryData to be saved in WolframLibrary_initialize via LibDataHolder::setLibraryData
+		 * @note	This function requires a copy of WolframLibraryData to be saved in WolframLibrary_initialize via LibraryData::setLibraryData
 		 * 			or MArgumentManager::setLibraryData.
 		 */
 		template<typename... T>
@@ -125,17 +122,17 @@ namespace LibraryLinkUtils {
 		 * @param 	args - any number of arguments that will replace TemplateSlots (``, `1`, `xx`, etd) in the message text in top-level
 		 */
 		template<typename... T>
-		[[noreturn]] static void throwExceptionWithDebugInfo(WolframLibraryData libData, const std::string& errorName, const std::string& debugInfo, T&&... args);
-
+		[[noreturn]] static void
+		throwExceptionWithDebugInfo(WolframLibraryData libData, const std::string& errorName, const std::string& debugInfo, T&&... args);
 
 		/**
-		 * @brief   Sets new value for the sendParametersImmediately flag. Pass false to make sure that exception do not send their parameters to top-level when they are thrown.
-		 * 			This is essential in multithreaded applications since the WL symbol that parameters are assigned to may be treated as a global shared resource.
-		 * 			It is recommended to use this method in WolframLibrary_initialize.
+		 * @brief   Sets new value for the sendParametersImmediately flag. Pass false to make sure that exception do not send their parameters to top-level when
+		 * they are thrown. This is essential in multithreaded applications since the WL symbol that parameters are assigned to may be treated as a global
+		 * shared resource. It is recommended to use this method in WolframLibrary_initialize.
 		 * @param 	newValue - new value for the sendParametersImmediately flag
 		 */
 		static void setSendParametersImmediately(bool newValue) {
-		  sendParametersImmediately = newValue;
+			sendParametersImmediately = newValue;
 		}
 
 		/**
@@ -143,7 +140,7 @@ namespace LibraryLinkUtils {
 		 * @return 	current value of sendParametersImmediately flag.
 		 */
 		static bool getSendParametersImmediately() {
-		  return sendParametersImmediately;
+			return sendParametersImmediately;
 		}
 
 		/**
@@ -156,7 +153,6 @@ namespace LibraryLinkUtils {
 		static void sendRegisteredErrorsViaMathlink(MLINK mlp);
 
 	private:
-
 		/// Errors are stored in a map with elements of the form { "ErrorName", immutable LibraryLinkError object }
 		using ErrorMap = std::unordered_map<std::string, const LibraryLinkError>;
 
@@ -200,7 +196,7 @@ namespace LibraryLinkUtils {
 
 	template<typename... T>
 	void ErrorManager::throwException(const std::string& errorName, T&&... args) {
-		throwException(LibDataHolder::getLibraryData(), errorName, std::forward<T>(args)...);
+		throwException(LibraryData::API(), errorName, std::forward<T>(args)...);
 	}
 
 	template<typename... T>
@@ -215,7 +211,7 @@ namespace LibraryLinkUtils {
 
 	template<typename... T>
 	void ErrorManager::throwExceptionWithDebugInfo(const std::string& errorName, const std::string& debugInfo, T&&... args) {
-		throwExceptionWithDebugInfo(LibDataHolder::getLibraryData(), errorName, debugInfo, std::forward<T>(args)...);
+		throwExceptionWithDebugInfo(LibraryData::API(), errorName, debugInfo, std::forward<T>(args)...);
 	}
 
 	template<typename... T>
@@ -231,6 +227,6 @@ namespace LibraryLinkUtils {
 		throw std::move(e);
 	}
 
-}  /* namespace LibraryLinkUtils */
+} /* namespace LLU */
 
-#endif //LLUTILS_ERRORMANAGER_H
+#endif	  // LLUTILS_ERRORMANAGER_H

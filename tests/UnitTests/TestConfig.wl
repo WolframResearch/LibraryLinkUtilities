@@ -40,13 +40,15 @@ LLErrorCodeQ[_] := False;
 CppErrorCodeQ[c_Integer] := c < 0;
 CppErrorCodeQ[_] := False;
 
+LoggerStringTest = (AllTrue[MapThread[StringEndsQ, {##}], TrueQ]&);
+
 (* Memory leak test *)
 ClearAll[MemoryLeakTest];
 SetAttributes[MemoryLeakTest, HoldAll];
 Options[MemoryLeakTest] = {"ReturnValue" -> Last};
 
 MemoryLeakTest[expression_, opts : OptionsPattern[]] :=
-    MemoryLeakTest[expression, {i, 10}, opts];
+	MemoryLeakTest[expression, {i, 10}, opts];
 
 MemoryLeakTest[expression_, repetitions_Integer?Positive, opts : OptionsPattern[]] :=
 	MemoryLeakTest[expression, {i, repetitions}, opts];
@@ -73,12 +75,12 @@ MemoryLeakTestWithMessages[expression_] :=
 	MemoryLeakTestWithMessages[expression, 10];
 
 MemoryLeakTestWithMessages[expression_, repetitions_Integer?Positive] :=
-    Block[{mem},
-	    Do[
-		    mem = MemoryInUse[];
-		    expression;
-		    Print[MemoryInUse[] - mem]
-		    ,
-		    {repetitions}
-	    ]
+	Block[{mem},
+		Do[
+			mem = MemoryInUse[];
+			expression;
+			Print[MemoryInUse[] - mem]
+			,
+			{repetitions}
+		]
 	];

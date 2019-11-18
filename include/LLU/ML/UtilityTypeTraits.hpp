@@ -1,4 +1,4 @@
-/** 
+/**
  * @file	UtilityTypeTraits.hpp
  * @date	Feb 7, 2018
  * @author	Rafal Chojna <rafalc@wolfram.com>
@@ -13,7 +13,7 @@
 
 #include "LLU/Utilities.hpp"
 
-namespace LibraryLinkUtils {
+namespace LLU {
 
 	namespace ML {
 
@@ -26,12 +26,18 @@ namespace LibraryLinkUtils {
 		struct IsSupportedInMLArithmetic : std::false_type {};
 
 		/// @cond
-		template<> struct IsSupportedInMLArithmetic<unsigned char> : std::true_type {};
-		template<> struct IsSupportedInMLArithmetic<short> : std::true_type {};
-		template<> struct IsSupportedInMLArithmetic<int> : std::true_type {};
-		template<> struct IsSupportedInMLArithmetic<mlint64> : std::true_type {};
-		template<> struct IsSupportedInMLArithmetic<float> : std::true_type {};
-		template<> struct IsSupportedInMLArithmetic<double> : std::true_type {};
+		template<>
+		struct IsSupportedInMLArithmetic<unsigned char> : std::true_type {};
+		template<>
+		struct IsSupportedInMLArithmetic<short> : std::true_type {};
+		template<>
+		struct IsSupportedInMLArithmetic<int> : std::true_type {};
+		template<>
+		struct IsSupportedInMLArithmetic<mlint64> : std::true_type {};
+		template<>
+		struct IsSupportedInMLArithmetic<float> : std::true_type {};
+		template<>
+		struct IsSupportedInMLArithmetic<double> : std::true_type {};
 		/// @endcond
 
 		template<typename T, typename U>
@@ -52,10 +58,14 @@ namespace LibraryLinkUtils {
 		struct IsSupportedInMLString : std::false_type {};
 
 		/// @cond
-		template<> struct IsSupportedInMLString<char> : std::true_type {};
-		template<> struct IsSupportedInMLString<unsigned char> : std::true_type {};
-		template<> struct IsSupportedInMLString<unsigned short> : std::true_type {};
-		template<> struct IsSupportedInMLString<unsigned int> : std::true_type {};
+		template<>
+		struct IsSupportedInMLString<char> : std::true_type {};
+		template<>
+		struct IsSupportedInMLString<unsigned char> : std::true_type {};
+		template<>
+		struct IsSupportedInMLString<unsigned short> : std::true_type {};
+		template<>
+		struct IsSupportedInMLString<unsigned int> : std::true_type {};
 		/// @endcond
 
 		template<typename T, typename U>

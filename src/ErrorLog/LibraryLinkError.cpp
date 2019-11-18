@@ -1,4 +1,4 @@
-/** 
+/**
  * @file	LibraryLinkError.cpp
  * @author	Rafal Chojna <rafalc@wolfram.com>
  *
@@ -11,8 +11,7 @@
 #include "LLU/LibraryLinkFunctionMacro.h"
 #include "LLU/ML/MLStream.hpp"
 
-
-namespace LibraryLinkUtils {
+namespace LLU {
 
 	std::string LibraryLinkError::exceptionDetailsSymbolContext;
 
@@ -37,8 +36,8 @@ namespace LibraryLinkUtils {
 		return link;
 	}
 
-	LibraryLinkError::LibraryLinkError(const LibraryLinkError& e) : std::runtime_error(e), errorId(e.errorId), type(e.type), messageTemplate(e.messageTemplate),
-												  debugInfo(e.debugInfo) {
+	LibraryLinkError::LibraryLinkError(const LibraryLinkError& e)
+		: std::runtime_error(e), errorId(e.errorId), type(e.type), messageTemplate(e.messageTemplate), debugInfo(e.debugInfo) {
 		if (e.messageParams) {
 			messageParams = openLoopback(MLLinkEnvironment(e.messageParams));
 			if (!messageParams) {
@@ -60,12 +59,12 @@ namespace LibraryLinkUtils {
 	auto LibraryLinkError::sendParameters(WolframLibraryData libData, const std::string& WLSymbol) const noexcept -> IdType {
 		try {
 			if (libData) {
-				MLStream<ML::Encoding::UTF8> mls{libData->getWSLINK(libData)};
+				MLStream<ML::Encoding::UTF8> mls {libData->getWSLINK(libData)};
 				mls << ML::Function("EvaluatePacket", 1);
 				mls << ML::Function("Set", 2);
 				mls << ML::Symbol(WLSymbol);
 				if (!MLTransferToEndOfLoopbackLink(mls.get(), messageParams)) {
-					return LLErrorCode::FunctionError;
+					return ErrorCode::FunctionError;
 				}
 				libData->processWSLINK(mls.get());
 				auto pkt = MLNextPacket(mls.get());
@@ -76,26 +75,23 @@ namespace LibraryLinkUtils {
 		} catch (const LibraryLinkError& e) {
 			return e.which();
 		} catch (...) {
-			return LLErrorCode::FunctionError;
+			return ErrorCode::FunctionError;
 		}
-		return LLErrorCode::NoError;
+		return ErrorCode::NoError;
 	}
 
 	LIBRARY_LINK_FUNCTION(setExceptionDetailsContext) {
-		auto err = LLErrorCode::NoError;
+		auto err = ErrorCode::NoError;
 		try {
 			MArgumentManager mngr {libData, Argc, Args, Res};
 			auto newContext = mngr.getString(0);
 			LibraryLinkError::setExceptionDetailsSymbolContext(std::move(newContext));
 			mngr.setString(LibraryLinkError::getExceptionDetailsSymbol());
-		}
-		catch (LibraryLinkError& e) {
+		} catch (LibraryLinkError& e) {
 			err = e.which();
-		}
-		catch (...) {
-			err = LLErrorCode::FunctionError;
+		} catch (...) {
+			err = ErrorCode::FunctionError;
 		}
 		return err;
 	}
-} /* namespace LibraryLinkUtils */
-
+} /* namespace LLU */

@@ -6,11 +6,11 @@
 
 #include "LLU/ErrorLog/Errors.h"
 
-namespace LibraryLinkUtils {
+namespace LLU {
 
-	#define LLU_DEFINE_ERROR_NAME(errorIdentifier) const std::string errorIdentifier = #errorIdentifier
+#define LLU_DEFINE_ERROR_NAME(errorIdentifier) const std::string errorIdentifier = #errorIdentifier
 
-	namespace LLErrorName {
+	namespace ErrorName {
 		LLU_DEFINE_ERROR_NAME(VersionError);
 		LLU_DEFINE_ERROR_NAME(FunctionError);
 		LLU_DEFINE_ERROR_NAME(MemoryError);
@@ -20,7 +20,8 @@ namespace LibraryLinkUtils {
 		LLU_DEFINE_ERROR_NAME(TypeError);
 		LLU_DEFINE_ERROR_NAME(NoError);
 
-		LLU_DEFINE_ERROR_NAME(MArgumentLibDataError);
+		LLU_DEFINE_ERROR_NAME(LibDataError);
+
 		LLU_DEFINE_ERROR_NAME(MArgumentIndexError);
 		LLU_DEFINE_ERROR_NAME(MArgumentNumericArrayError);
 		LLU_DEFINE_ERROR_NAME(MArgumentTensorError);
@@ -30,7 +31,6 @@ namespace LibraryLinkUtils {
 		LLU_DEFINE_ERROR_NAME(ErrorManagerThrowNameError);
 		LLU_DEFINE_ERROR_NAME(ErrorManagerCreateNameError);
 
-		LLU_DEFINE_ERROR_NAME(NumericArrayInitError);
 		LLU_DEFINE_ERROR_NAME(NumericArrayNewError);
 		LLU_DEFINE_ERROR_NAME(NumericArrayCloneError);
 		LLU_DEFINE_ERROR_NAME(NumericArrayTypeError);
@@ -38,19 +38,21 @@ namespace LibraryLinkUtils {
 		LLU_DEFINE_ERROR_NAME(NumericArrayIndexError);
 		LLU_DEFINE_ERROR_NAME(NumericArrayConversionError);
 
-		LLU_DEFINE_ERROR_NAME(TensorInitError);
 		LLU_DEFINE_ERROR_NAME(TensorNewError);
 		LLU_DEFINE_ERROR_NAME(TensorCloneError);
 		LLU_DEFINE_ERROR_NAME(TensorTypeError);
 		LLU_DEFINE_ERROR_NAME(TensorSizeError);
 		LLU_DEFINE_ERROR_NAME(TensorIndexError);
 
-		LLU_DEFINE_ERROR_NAME(ImageInitError);
 		LLU_DEFINE_ERROR_NAME(ImageNewError);
 		LLU_DEFINE_ERROR_NAME(ImageCloneError);
 		LLU_DEFINE_ERROR_NAME(ImageTypeError);
 		LLU_DEFINE_ERROR_NAME(ImageSizeError);
 		LLU_DEFINE_ERROR_NAME(ImageIndexError);
+
+		LLU_DEFINE_ERROR_NAME(CreateFromNullError);
+		LLU_DEFINE_ERROR_NAME(MArrayElementIndexError);
+		LLU_DEFINE_ERROR_NAME(MArrayDimensionIndexError);
 
 		LLU_DEFINE_ERROR_NAME(MLNullMlinkError);
 		LLU_DEFINE_ERROR_NAME(MLTestHeadError);
@@ -84,6 +86,9 @@ namespace LibraryLinkUtils {
 		LLU_DEFINE_ERROR_NAME(ArgumentAddNodeMArgument);
 
 		LLU_DEFINE_ERROR_NAME(Aborted);
+
+		LLU_DEFINE_ERROR_NAME(ManagedExprInvalidID);
+		LLU_DEFINE_ERROR_NAME(MLEDynamicTypeError);
 	}
 
-} /* namespace LibraryLinkUtils */
+} /* namespace LLU */

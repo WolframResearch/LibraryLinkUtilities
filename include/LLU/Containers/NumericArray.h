@@ -9,33 +9,50 @@
 #ifndef LLUTILS_NUMERICARRAY_H_
 #define LLUTILS_NUMERICARRAY_H_
 
-#include <type_traits>
 #include <initializer_list>
+#include <type_traits>
 
-#include "WolframLibrary.h"
-#include "WolframNumericArrayLibrary.h"
-
-#include "LLU/ErrorLog/ErrorManager.h"
-#include "MArray.hpp"
+#include "LLU/Containers/Generic/NumericArray.hpp"
+#include "LLU/Containers/MArray.hpp"
+#include "LLU/Containers/Passing/Automatic.hpp"
+#include "LLU/Containers/Passing/Manual.hpp"
+#include "LLU/Containers/Passing/PassingPolicy.hpp"
+#include "LLU/LibraryData.h"
 #include "LLU/Utilities.hpp"
 
-namespace LibraryLinkUtils {
+namespace LLU {
 
-	namespace NA {
+	/**
+	 *  @brief  Typed interface for NumericArray.
+	 *
+	 *  Provides iterators, data access and info about dimensions.
+	 *  @tparam T - type of data in NumericArray
+	 */
+	template<typename T>
+	class TypedNumericArray : public MArray<T> {
+	public:
+		using MArray<T>::MArray;
+
 		/**
-		 * @brief Possible methods of handling out-of-range data when converting a NumericArray to different type.
-		 */
-		enum class ConversionMethod {
-			Check = MNumericArray_Convert_Check,
-			ClipCheck = MNumericArray_Convert_Clip_Check,
-            Coerce = MNumericArray_Convert_Coerce,
-			ClipCoerce = MNumericArray_Convert_Clip_Coerce,
-			Round = MNumericArray_Convert_Round,
-			ClipRound = MNumericArray_Convert_Clip_Round,
-			Scale = MNumericArray_Convert_Scale,
-			ClipScale = MNumericArray_Convert_Clip_Scale,
-		};
-	}
+		 *   @brief	Return matching type of MNumericArray
+		 **/
+		static numericarray_data_t getType() noexcept {
+			return type;
+		}
+
+	private:
+		/**
+		 *   @brief Return raw pointer to underlying data
+		 **/
+		T* getData() const noexcept override {
+			return static_cast<T*>(LibraryData::NumericArrayAPI()->MNumericArray_getData(this->getInternal()));
+		}
+
+		virtual MNumericArray getInternal() const = 0;
+
+		/// NumericArray data type matching template parameter T
+		static const numericarray_data_t type;
+	};
 
 	/**
 	 * @class NumericArray
@@ -46,25 +63,9 @@ namespace LibraryLinkUtils {
 	 *
 	 * @tparam	T - type of underlying data
 	 */
-	template<typename T>
-	class NumericArray: public MArray<T> {
+	template<typename T, class PassingMode = Passing::Manual>
+	class NumericArray : public TypedNumericArray<T>, public GenericNumericArray<PassingMode> {
 	public:
-		/**
-		 *	@brief Default constructor. There is no internal MNumericArray stored.
-		 **/
-		NumericArray() = default;
-
-		/**
-		 *   @brief         Constructs flat NumericArray based on a container of elements
-		 *   @param[in]     v - container
-		 *   @tparam		Container - any container with elements convertible to type \b T
-		 *   @throws		see NumericArray<T>::NumericArray(InputIt, InputIt, std::initializer_list<mint>)
-		 *
-		 *   @warning		It is user's responsibility to make sure that length of v fits into mint!
-		 **/
-		template<typename Container, typename = disable_if_same_or_derived<NumericArray<T>, Container>>
-		NumericArray(Container&& v);
-
 		/**
 		 *   @brief         Constructs flat NumericArray based on a list of elements
 		 *   @param[in]     v - initializer list with NumericArray elements
@@ -73,6 +74,23 @@ namespace LibraryLinkUtils {
 		 *   @warning		It is user's responsibility to make sure that length of v fits into mint!
 		 **/
 		NumericArray(std::initializer_list<T> v);
+
+		/**
+		 * @brief   Constructs flat NumericArray with contents copied from a given collection of data
+		 * @tparam  Container - any iterable (begin(), end()) collection of data that has a \c value_type alias member and a size() member function
+		 * @param   c - const reference to a collection from which data will be copied to the NumericArray
+		 */
+		template<class Container, typename = std::enable_if_t<is_iterable_container_with_matching_type_v<Container, T> && has_size_v<Container>>>
+		explicit NumericArray(const Container& c) : NumericArray(c, {static_cast<mint>(c.size())}) {}
+
+		/**
+		 * @brief   Constructs a NumericArray with contents copied from a given collection of data and dimensions passed as parameter
+		 * @tparam  Container  - any iterable (begin(), end()) collection of data that has a \c value_type alias member
+		 * @param   c - const reference to a collection from which data will be copied to the NumericArray
+		 * @param   dims - dimensions of the NumericArray
+		 */
+		template<class Container, typename = std::enable_if_t<is_iterable_container_with_matching_type_v<Container, T>>>
+		NumericArray(const Container& c, MArrayDimensions dims) : NumericArray(std::begin(c), std::end(c), std::move(dims)) {}
 
 		/**
 		 *   @brief         Constructs flat NumericArray with elements from range [first, last)
@@ -91,19 +109,8 @@ namespace LibraryLinkUtils {
 		 *   @brief         Constructs the NumericArray of given shape with all elements initialized to given value
 		 *   @param[in]     init - value of type \b T to initialize all elements of the NumericArray
 		 *   @param[in]     dims - container with NumericArray dimensions
-		 *   @tparam		Container - any type of container that has member \b value_type and this type is convertible to mint
-		 *   @throws		see NumericArray<T>::createInternal() and MArray<T>::MArray(Container&&)
 		 **/
-		template<class Container, typename = enable_if_integral_elements<Container>>
-		NumericArray(T init, Container&& dims);
-
-		/**
-		 *   @brief         Constructs the NumericArray of given shape with all elements initialized to given value
-		 *   @param[in]     init - value of type \b T to initialize all elements of the NumericArray
-		 *   @param[in]     dims - initializer list with NumericArray dimensions
-		 *   @throws		see NumericArray<T>::createInternal() and MArray<T>::MArray(std::initializer_list<mint>)
-		 **/
-		NumericArray(T init, std::initializer_list<mint> dims);
+		NumericArray(T init, MArrayDimensions dims);
 
 		/**
 		 *   @brief         Constructs the NumericArray of given shape with elements from range [first, last)
@@ -111,323 +118,118 @@ namespace LibraryLinkUtils {
 		 *   @param[in]		last - iterator past the end of range
 		 *   @param[in]     dims - container with NumericArray dimensions
 		 *   @tparam		Container - any type of container that has member \b value_type and this type is convertible to mint
-		 *   @throws		LLErrorName::NumericArrayNewError - if number of elements in \c v does not match total NumericArray size indicated by \c dims
+		 *   @throws		ErrorName::NumericArrayNewError - if number of elements in \c v does not match total NumericArray size indicated by \c dims
 		 *   @throws		see NumericArray<T>::createInternal() and MArray<T>::MArray(Container&&)
 		 **/
-		template<
-			class InputIt,
-			class Container,
-			typename = enable_if_integral_elements<Container>,
-			typename = enable_if_input_iterator<InputIt>
-		>
-		NumericArray(InputIt first, InputIt last, Container&& dims);
-
-		/**
-		 *   @brief         Constructs the NumericArray of given shape with elements from range [first, last)
-		 *   @param[in]     first - iterator to the beginning of range
-		 *   @param[in]		last - iterator past the end of range
-		 *   @param[in]     dims - initializer list with NumericArray dimensions
-		 *   @throws		LLErrorName::NumericArrayNewError - if number of elements in \c v does not match total NumericArray size indicated by \c dims
-		 *   @throws		see NumericArray<T>::createInternal() and MArray<T>::MArray(const std::vector<U>&)
-		 **/
 		template<class InputIt, typename = enable_if_input_iterator<InputIt>>
-		NumericArray(InputIt first, InputIt last, std::initializer_list<mint> dims);
+		NumericArray(InputIt first, InputIt last, MArrayDimensions dims);
 
 		/**
-		 *   @brief         Constructs NumericArray based on MNumericArray
-		 *   @param[in]     na - LibraryLink structure to be wrapped
-		 *   @throws        LLErrorName::NumericArrayInitError - if structure with WolframNumericArrayLibrary functions is not initialized
-		 *   @throws		LLErrorName::NumericArrayTypeError - if template parameter \b T does not match MNumericArray data type
+		 *
+		 * @param na
+		 */
+		explicit NumericArray(MNumericArray na);
+
+		/**
+		 *   @brief     Create new NumericArray from a GenericNumericArray
+		 *   @param[in] na - generic NumericArray to be wrapped into NumericArray class
+		 *   @throws	ErrorName::NumericArrayTypeError - if the NumericArray template type \b T does not match the actual data type of the generic
+		 *NumericArray
 		 **/
-		NumericArray(const MNumericArray na);
+		explicit NumericArray(GenericNumericArray<PassingMode> na);
 
 		/**
-		 *   @brief         Create NumericArray from NumericArray of different type
-		 *   @tparam		U - data type of the NumericArray to be converted
-		 *   @param[in]     other - const reference to a NumericArray any type
+		 *   @brief         Create NumericArray from generic NumericArray
+		 *   @param[in]     other - const reference to a generic NumericArray
 		 *   @param[in]		method - conversion method to be used
-		 *   @param[in]     tolerance - undocumented parameter for NumericArray conversion that became part of the public interface
+		 *   @param[in]     param - conversion tolerance
 		 **/
-		template<typename U>
-		NumericArray(const NumericArray<U>& other, NA::ConversionMethod method, double tolerance);
+		template<class P>
+		explicit NumericArray(const GenericNumericArray<P>& other, NA::ConversionMethod method = NA::ConversionMethod::ClipRound, double param = 0.0);
 
 		/**
-		 *   @brief         Copy constructor
+		 * Default constructor, creates a "hollow" NumericArray that does not have underlying MNumericArray
+		 */
+		NumericArray() = default;
+
+		/**
+		 *   @brief        	Copy constructor
 		 *   @param[in]     other - const reference to a NumericArray of matching type
 		 **/
-		NumericArray(const NumericArray<T>& other);
-		
+		NumericArray(const NumericArray& other) = default;
+
 		/**
 		 *   @brief         Move constructor
 		 *   @param[in]     other - rvalue reference to a NumericArray of matching type
 		 **/
-		NumericArray(NumericArray<T>&& other);
-
-
-		/**
-		 *   @brief         Copy-assignment operator
-		 *   @param[in]     other - const reference to a NumericArray of matching type
-		 **/
-		void operator=(const NumericArray<T>& other);
-
-		/**
-		 *   @brief         Move-assignment operator
-		 *   @param[in]     other - rvalue reference to a NumericArray of matching type
-		 **/
-		void operator=(NumericArray<T>&& other);
-
+		NumericArray(NumericArray&& other) noexcept = default;
 
 		/**
 		 *    @brief	Free internal MNumericArray if necessary
 		 **/
-		virtual ~NumericArray();
+		~NumericArray() = default;
 
+		/// Default copy-assignment operator
+		NumericArray& operator=(const NumericArray&) = default;
 
-		/**
-		 *   @brief	Return matching type from numericarray_data_t enum
-		 **/
-		static numericarray_data_t getType() noexcept {
-			return type;
-		}
+		/// Default move-assignment operator
+		NumericArray& operator=(NumericArray&&) noexcept = default;
 
 		/**
-		 *   @brief 	Return internal MNumericArray. You should rarely need this function.
-		 *   @warning 	Do not modify MNumericArray returned from this function!
+		 *   @brief         Copy-assignment operator with passing mode change
+		 *   @param[in]     other - const reference to a NumericArray of matching type
 		 **/
-		MNumericArray getInternal() const noexcept {
-			return internalNA;
-		}
-
-		/**
-		 *   @brief 	Return share count of internal MNumericArray.
-		 *   Use this to manually manage shared MNumericArrays.
-		 *
-		 *   @note		LibraryLink does not provide any way to check whether MNumericArray was passed or will be returned as "Shared".
-		 *   Therefore passing or returning MNumericArrays as "Shared" is discouraged and if you do that you are responsible for managing MNumericArray memory.
-		 **/
-		mint shareCount() const noexcept {
-			if (internalNA == nullptr)
-				return 0;
-			return this->naFuns->MNumericArray_shareCount(internalNA);
-		}
-
-		/**
-		 *   @brief 	Disown internal MNumericArray that is shared with Mathematica.
-		 *   Use this to manually manage shared MNumericArrays.
-		 *
-		 *   @note		LibraryLink does not provide any way to check whether MNumericArray was passed or will be returned as "Shared".
-		 *   Therefore passing or returning MNumericArrays as "Shared" is discouraged and if you do that you are responsible for managing MNumericArray memory.
-		 **/
-		void disown() const noexcept {
-			this->naFuns->MNumericArray_disown(internalNA);
+		template<class P>
+		NumericArray& operator=(const NumericArray<T, P>& other) {
+			TypedNumericArray<T>::operator=(other);
+			GenericBase::operator=(other);
+			return *this;
 		}
 
 	private:
-		/**
-		 *   @brief Return raw pointer to underlying data
-		 **/
-		T* getData() const noexcept override {
-			return static_cast<T*>(this->naFuns->MNumericArray_getData(internalNA));
+		using GenericBase = GenericNumericArray<PassingMode>;
+
+		MNumericArray getInternal() const noexcept override {
+			return this->getContainer();
 		}
-
-		/**
-		 *   @brief 	Sub-class implementation of virtual void MArray<T>::indexError()
-		 *   @throws 	LibraryLinkError(LLErrorName::NumericArrayIndexError)
-		 **/
-		void indexError() const override {
-			ErrorManager::throwException(LLErrorName::NumericArrayIndexError);
-		}
-
-		/**
-		 *   @brief 	Sub-class implementation of virtual void MArray<T>::initError()
-		 *   @throws 	LibraryLinkError(LLErrorName::NumericArrayInitError)
-		 **/
-		void initError() const override {
-			ErrorManager::throwException(LLErrorName::NumericArrayInitError);
-		}
-
-		/**
-		 *   @brief 	Sub-class implementation of virtual void MArray<T>::sizeError()
-		 *   @throws 	LibraryLinkError(LLErrorName::NumericArraySizeError)
-		 **/
-		void sizeError() const override {
-			ErrorManager::throwException(LLErrorName::NumericArraySizeError);
-		}
-
-
-		/**
-		 *   @brief 	Sub-class implementation of virtual void MArray<T>::createInternal(). It creates a new flat MNumericArray.
-		 *   @throws 	LibraryLinkError(LLErrorName::NumericArrayNewError)
-		 *
-		 **/
-		void createInternal() override {
-			if (this->naFuns->MNumericArray_new(type, this->depth, this->dimensionsData(), &internalNA))
-				ErrorManager::throwException(LLErrorName::NumericArrayNewError);
-		}
-
-		/**
-		 *   @brief 	Sub-class implementation of virtual void MArray<T>::freeInternal(). It frees internal MNumericArray.
-		 **/
-		void freeInternal() noexcept override {
-			if (internalNA == nullptr)
-				return;
-			if (shareCount() > 0)
-				disown();
-			if (this->isOwner())
-				this->naFuns->MNumericArray_free(internalNA);
-		}
-
-		/**
-		 *   @brief 	Sub-class implementation of virtual void MArray<T>::passInternal(MArgument&). Passes internal MNumericArray as result to LibraryLink.
-		 **/
-		void passInternal(MArgument& res) noexcept override {
-			MArgument_setMNumericArray(res, internalNA);
-		}
-
-		/**
-		 * @brief 	Set \p na as internal container and extract properties like dimensions, depth and total length.
-		 * @param 	na - MNumericArray of matching type
-		 */
-		void extractPropertiesFromInternal(const MNumericArray na);
-
-		/// MNumericArray type matching template parameter T
-		static const numericarray_data_t type;
-
-		/// Internal container
-		MNumericArray internalNA = nullptr;
 	};
 
+	template<typename T, class PassingMode>
+	NumericArray<T, PassingMode>::NumericArray(std::initializer_list<T> v) : NumericArray(std::begin(v), std::end(v), {static_cast<mint>(v.size())}) {}
 
-
-	template<typename T>
-	template<typename Container, typename>
-	NumericArray<T>::NumericArray(Container&& v) :
-			NumericArray<T>(std::begin(v), std::end(v), { static_cast<mint>(v.size()) }) {
-	}
-
-	template<typename T>
-	NumericArray<T>::NumericArray(std::initializer_list<T> v) :
-			NumericArray<T>(std::begin(v), std::end(v), { static_cast<mint>(v.size()) }) {
-	}
-
-	template<typename T>
+	template<typename T, class PassingMode>
 	template<class InputIt, typename>
-	NumericArray<T>::NumericArray(InputIt first, InputIt last) :
-			NumericArray<T>(first, last, { static_cast<mint>(std::distance(first, last)) }) {
-	}
+	NumericArray<T, PassingMode>::NumericArray(InputIt first, InputIt last) : NumericArray(first, last, {static_cast<mint>(std::distance(first, last))}) {}
 
-	template<typename T>
-	template<class Container, typename>
-	NumericArray<T>::NumericArray(T init, Container&& dims) : MArray<T>(std::forward<Container>(dims)) {
-		createInternal();
-		this->setOwner(true);
+	template<typename T, class PassingMode>
+	NumericArray<T, PassingMode>::NumericArray(T init, MArrayDimensions dims)
+		: TypedNumericArray<T>(std::move(dims)), GenericBase(TypedNumericArray<T>::getType(), this->rank(), this->dims.data()) {
 		std::fill(this->begin(), this->end(), init);
 	}
 
-	template<typename T>
-	NumericArray<T>::NumericArray(T init, std::initializer_list<mint> dims) : MArray<T>(dims) {
-		createInternal();
-		this->setOwner(true);
-		std::fill(this->begin(), this->end(), init);
-	}
-
-	template<typename T>
-	template<class InputIt, class Container, typename, typename>
-	NumericArray<T>::NumericArray(InputIt first, InputIt last, Container&& dims) : MArray<T>(std::forward<Container>(dims)) {
-		createInternal();
-		if (std::distance(first, last) != this->flattenedLength)
-			ErrorManager::throwExceptionWithDebugInfo(LLErrorName::NumericArrayNewError, "Length of data range does not match specified dimensions");
-		this->setOwner(true);
-		std::copy(first, last, this->begin());
-	}
-
-	template<typename T>
+	template<typename T, class PassingMode>
 	template<class InputIt, typename>
-	NumericArray<T>::NumericArray(InputIt first, InputIt last, std::initializer_list<mint> dims) : MArray<T>(dims) {
-		createInternal();
-		if (std::distance(first, last) != this->flattenedLength)
-			ErrorManager::throwExceptionWithDebugInfo(LLErrorName::NumericArrayNewError, "Length of data range does not match specified dimensions");
-		this->setOwner(true);
+	NumericArray<T, PassingMode>::NumericArray(InputIt first, InputIt last, MArrayDimensions dims)
+		: TypedNumericArray<T>(std::move(dims)), GenericBase(TypedNumericArray<T>::getType(), this->rank(), this->dims.data()) {
+		if (std::distance(first, last) != this->dims.flatCount())
+			ErrorManager::throwException(ErrorName::NumericArrayNewError, "Length of data range does not match specified dimensions");
 		std::copy(first, last, this->begin());
 	}
 
-	template<typename T>
-	void NumericArray<T>::extractPropertiesFromInternal(const MNumericArray na) {
-		internalNA = na;
-		this->depth = this->naFuns->MNumericArray_getRank(internalNA);
-		this->flattenedLength = this->naFuns->MNumericArray_getFlattenedLength(internalNA);
-		const mint* rawDims = this->naFuns->MNumericArray_getDimensions(internalNA);
-		this->dims.assign(rawDims, rawDims + this->rank());
-		this->fillOffsets();
+	template<typename T, class PassingMode>
+	NumericArray<T, PassingMode>::NumericArray(GenericBase na) : TypedNumericArray<T>({na.getDimensions(), na.getRank()}), GenericBase(std::move(na)) {
+		if (TypedNumericArray<T>::getType() != GenericBase::type())
+			ErrorManager::throwException(ErrorName::NumericArrayTypeError);
 	}
 
-	template<typename T>
-	NumericArray<T>::NumericArray(const MNumericArray na) {
-		if (!this->naFuns)
-			initError();
-		if (type != this->naFuns->MNumericArray_getType(na))
-			ErrorManager::throwException(LLErrorName::NumericArrayTypeError);
-		this->setOwner(false);
-		extractPropertiesFromInternal(na);
-	}
+	template<typename T, class PassingMode>
+	NumericArray<T, PassingMode>::NumericArray(MNumericArray na) : NumericArray(GenericBase {na}) {}
 
-	template<typename T>
-	template<typename U>
-	NumericArray<T>::NumericArray(const NumericArray<U>& other, NA::ConversionMethod method, double tolerance) : MArray<T>(other)  {
-		if (!this->naFuns) {
-			initError();
-		}
-		MNumericArray newInternal = nullptr;
-		auto status = this->naFuns->MNumericArray_convertType(&newInternal, other.getInternal(), type, static_cast<numericarray_convert_method_t>(method), tolerance);
-		if (status) { // 0 means OK, but no way to learn anything more specific if conversion failed
-			ErrorManager::throwExceptionWithDebugInfo(LLErrorName::NumericArrayConversionError,
-					"Conversion from type " + std::to_string(static_cast<int>(other.getType())) + " to " + std::to_string(static_cast<int>(type)) + " failed.");
-		}
-		this->setOwner(true);
-		extractPropertiesFromInternal(newInternal);
-	}
+	template<typename T, class PassingMode>
+	template<class P>
+	NumericArray<T, PassingMode>::NumericArray(const GenericNumericArray<P>& other, NA::ConversionMethod method, double param)
+		: TypedNumericArray<T>({other.getDimensions(), other.getRank()}), GenericBase(other.convert(this->getType(), method, param)) {}
 
-	template<typename T>
-	NumericArray<T>::NumericArray(const NumericArray<T>& other) : MArray<T>(other) {
-		if (this->naFuns->MNumericArray_clone(other.internalNA, &this->internalNA)) {
-			ErrorManager::throwException(LLErrorName::NumericArrayCloneError);
-		}
-		this->setOwner(true);
-	}
-
-	template<typename T>
-	NumericArray<T>::NumericArray(NumericArray<T>&& other) :
-			MArray<T>(std::move(other)) {
-		this->internalNA = other.internalNA;
-		other.internalNA = nullptr;
-		other.setOwner(false);
-	}
-
-
-	template<typename T>
-	void NumericArray<T>::operator=(const NumericArray<T>& other) {
-		MArray<T>::operator=(other);
-		this->freeInternal();
-		if (this->naFuns->MNumericArray_clone(other.internalNA, &this->internalNA)) {
-			ErrorManager::throwException(LLErrorName::NumericArrayCloneError);
-		}
-		this->setOwner(true);
-	}
-
-	template<typename T>
-	void NumericArray<T>::operator=(NumericArray<T>&& other) {
-		MArray<T>::operator=(std::move(other));
-		this->freeInternal();
-		this->internalNA = other.internalNA;
-		this->setOwner(other.isOwner());
-		other.internalNA = nullptr;
-		other.setOwner(false);
-	}
-
-	template<typename T>
-	NumericArray<T>::~NumericArray() {
-		this->freeInternal();
-	}
-} /* namespace LibraryLinkUtils */
+} /* namespace LLU */
 
 #endif /* LLUTILS_NUMERICARRAY_H_ */

@@ -1,4 +1,4 @@
-/** 
+/**
  * @file	NoMinMaxWindows.h
  * @author	Rafal Chojna <rafalc@wolfram.com>
  * @date	3/10/2017
@@ -21,6 +21,5 @@
 #undef NOMINMAX
 
 #endif
-
 
 #endif /* LLUTILS_NOMINMAXWINDOWS_H_ */
