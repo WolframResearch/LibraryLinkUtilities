@@ -378,7 +378,10 @@ Test[
 Test[
 	IntsToNumericArray[Developer`DataStore[]]
 	,
-	{}
+	$Failed
+	(* eventually, the expected value should be {}, but for now empty NumericArrays are not supported in LibraryLink *)
+	,
+	Message[LibraryFunction::nanull, NumericArray]
 	,
 	TestID -> "DataListTestSuite-20180910-J1W7Z6"
 ];
