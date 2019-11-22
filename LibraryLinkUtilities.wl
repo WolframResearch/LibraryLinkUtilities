@@ -14,7 +14,7 @@ If[TrueQ[$InitLibraryLinkUtils],
 	$InitLibraryLinkUtils = (
 		SetPacletLibrary[libPath];
 		SafeLibraryLoad[libPath];
-		$GetCErrorCodes = SafeMathLinkFunction["sendRegisteredErrors"];
+		$GetCErrorCodes = SafeWSTPFunction["sendRegisteredErrors"];
 		$SetLoggerContext = SafeLibraryFunction["setLoggerContext", {"UTF8String"}, "UTF8String", "Optional" -> True];
 		$SetExceptionDetailsContext = SafeLibraryFunction["setExceptionDetailsContext", {"UTF8String"}, "UTF8String"];
 		SetContexts[Context[$InitLibraryLinkUtils]]; (* Tell C++ part of LLU in which context were top-level symbols loaded. *)
@@ -138,7 +138,7 @@ Options[SafeLibraryFunction] = {
 (* Decide whether given input argument to a LibraryFunction needs special treatment.
  * Currently only Managed Expressions do but this may change in the future.
  *)
-specialArgQ[a_`LLU`Managed] := True;
+specialArgQ[a_Managed] := True;
 specialArgQ[_] := False;
 
 (* Simple function expected to select all "special" arguments from a list of argument types for a LibraryFunction. *)
@@ -146,18 +146,18 @@ argumentCategorizer[argTypes_List] := Select[AssociationThread[Range[Length[#]],
 argumentCategorizer[LinkObject] = {};
 
 (* Replace special argument types with corresponding regular types that are be accepted by LibraryLink *)
-normalizeArgTypes[argTypes_List] := Replace[argTypes, `LLU`Managed[h_] :> Integer, 1];
+normalizeArgTypes[argTypes_List] := Replace[argTypes, Managed[h_] :> Integer, 1];
 
 (* Parse ManagedExpression before it is passed to a LibraryFunction. First argument is expected ManagedExpression type and the second is actual instance
  * of a MangedExpression. If the instance type does not match the expected type a paclet Failure will be thrown.
  *)
-parseManaged[`LLU`Managed[expectedHead_], expectedHead_[id_Integer]] :=
+parseManaged[Managed[expectedHead_], expectedHead_[id_Integer]] :=
     If[ManagedLibraryExpressionQ[expectedHead[id]],
 	    id
 	    ,
 	    Throw @ CreatePacletFailure["InvalidManagedExpressionID", "MessageParameters" -> <|"expr" -> expectedHead[id]|>];
     ];
-parseManaged[`LLU`Managed[expectedHead_], differentHead_[id_Integer]] :=
+parseManaged[Managed[expectedHead_], differentHead_[id_Integer]] :=
 	Throw @ CreatePacletFailure["UnexpectedManagedExpression", "MessageParameters" -> <|"expected" -> expectedHead, "actual" -> differentHead[id]|>];
 parseManaged[_, arg_] := arg;
 
@@ -196,14 +196,14 @@ Module[{errorHandler, pmSymbol, newParams, f, functionOptions, loadOptions},
     ]
 ];
 
-SafeMathLinkFunction[fname_String, opts : OptionsPattern[SafeLibraryFunction]] :=
+SafeWSTPFunction[fname_String, opts : OptionsPattern[SafeLibraryFunction]] :=
 	SafeLibraryFunction[fname, LinkObject, LinkObject, opts];
 
 LibraryMemberFunction[exprHead_][fname_String, fParams_, retType_, opts : OptionsPattern[SafeLibraryFunction]] :=
     If[fParams === LinkObject && retType === LinkObject,
-	    SafeMathLinkFunction[fname, opts]
+	    SafeWSTPFunction[fname, opts]
 	    ,
-		SafeLibraryFunction[fname, Prepend[fParams, `LLU`Managed[exprHead]], retType, opts]
+		SafeLibraryFunction[fname, Prepend[fParams, Managed[exprHead]], retType, opts]
     ];
 
 (* ::SubSection:: *)
@@ -284,12 +284,18 @@ Block[{msgParam, param, errorCode, msgTemplate, errorType},
 	]
 ]
 
+(* We need a symbol that will store values for TemplateSlots in the most recently thrown exception. Exceptions are thrown in C++ and slots values provided
+ * in ErrorManager::throwException are transferred in a List via WSTP and assigned to this symbol.
+ * Later, the error handling routine in WL, CatchLibraryFunctionError, checks this symbol and creates Failure object.
+ *)
+$LastFailureParameters;
+
 GetCCodeFailureParams[msgTemplate_String?StringQ] :=
 Block[{slotNames, slotValues, data},
 	slotNames = Cases[First @ StringTemplate[msgTemplate], TemplateSlot[s_] -> s];
 	slotNames = DeleteDuplicates[slotNames];
-	slotValues = If[ListQ[`LLU`$LastFailureParameters], `LLU`$LastFailureParameters, {}];
-	`LLU`$LastFailureParameters = {};
+	slotValues = If[ListQ[$LastFailureParameters], $LastFailureParameters, {}];
+	$LastFailureParameters = {};
  	If[MatchQ[slotNames, {_Integer..}],
 		(* for numbered slots return just a list of slot template values *)
 		slotValues
@@ -457,10 +463,10 @@ PrintLogToSymbol[LogFiltered] := DiscardLog[];
 PrintLogFunctionSelector := PrintLogToNotebook;
 
 
-(* This is a function MathLink will call from the C++ code. It all starts here. Feel free to modify/Block this symbol, see examples. *)
+(* This is a function WSTP will call from the C++ code. It all starts here. Feel free to modify/Block this symbol, see examples. *)
 LogHandler := PrintLogFunctionSelector @* LogFilterSelector;
 
-End[]; (* `LLU`Logger` *)
+End[]; (* `Logger` *)
 
 
 (************* Examples of overriding default logger behavior *************)
@@ -468,8 +474,8 @@ End[]; (* `LLU`Logger` *)
 (***
 	Make logger format logs as Association and append to a list under a symbol TestLogSymbol:
 
-		`LLU`Logger`PrintLogFunctionSelector := Block[{`LLU`Logger`FormattedLog = `LLU`Logger`LogToAssociation},
-			`LLU`Logger`PrintLogToSymbol[TestLogSymbol][##]
+		Logger`PrintLogFunctionSelector := Block[{Logger`FormattedLog = Logger`LogToAssociation},
+			Logger`PrintLogToSymbol[TestLogSymbol][##]
 		]&
 
 	after you evaluate some library function the TestLogSymbol may be a list similar this:
@@ -496,17 +502,17 @@ End[]; (* `LLU`Logger` *)
 (***
 	Log styled condensed logs to Messages window:
 
-		`LLU`Logger`PrintLogFunctionSelector := Block[{`LLU`Logger`FormattedLog = `LLU`Logger`LogToRow},
-			`LLU`Logger`PrintLogToMessagesWindow[##]
+		Logger`PrintLogFunctionSelector := Block[{Logger`FormattedLog = Logger`LogToRow},
+			Logger`PrintLogToMessagesWindow[##]
 		]&
 ***)
 
 (***
 	Sow logs formatted as short Strings instead of printing:
 
-		`LLU`Logger`PrintLogFunctionSelector :=
-			If[## =!= `LLU`Logger`LogFiltered,
-				Sow @ `LLU`Logger`LogToShortString[##]
+		Logger`PrintLogFunctionSelector :=
+			If[## =!= Logger`LogFiltered,
+				Sow @ Logger`LogToShortString[##]
 			]&;
 
 	Remember that in this case library functions must be wrapped with Reap.
@@ -552,7 +558,7 @@ LoadMemberFunction[exprHead_][memberSymbol_?Developer`SymbolQ, fname_String, fPa
 		Evaluate[ClassMember[exprHead, memberSymbol]] = LibraryMemberFunction[exprHead][fname, fParams, retType, opts];
 	);
 
-LoadMathLinkMemberFunction[exprHead_][memberSymbol_?Developer`SymbolQ, fname_String, opts : OptionsPattern[SafeLibraryFunction]] :=
+LoadWSTPMemberFunction[exprHead_][memberSymbol_?Developer`SymbolQ, fname_String, opts : OptionsPattern[SafeLibraryFunction]] :=
 	LoadMemberFunction[exprHead][memberSymbol, fname, LinkObject, LinkObject, opts];
 
 End[]; (* `LLU` *)
