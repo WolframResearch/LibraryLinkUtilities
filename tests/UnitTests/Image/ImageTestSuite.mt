@@ -36,6 +36,8 @@ TestExecute[
 	ImageColumnCount = SafeLibraryFunction["ImageColumnCount", { LibraryDataType[Image | Image3D] }, Integer ];
 	ImageRowCount = SafeLibraryFunction["ImageRowCount", { LibraryDataType[Image | Image3D] }, Integer ];
 	ImageRank = SafeLibraryFunction["ImageRank", {LibraryDataType[Image | Image3D] }, Integer ];
+	GetLargest = SafeLibraryFunction["GetLargest", {Image, {Image, "Constant"}, {Image, "Manual"}}, Integer];
+	EmptyView = SafeLibraryFunction["EmptyView", {}, {Integer, 1}];
 ];
 
 
@@ -766,4 +768,20 @@ ExactTest[
 	2
 	,
 	TestID -> "ImageRealOperations-20150805-Z0C1B7"
-]
+];
+
+ExactTest[
+	GetLargest[RandomImage[1, {100, 100}], RandomImage[1, {200, 100}], RandomImage[1, {200, 99}]]
+	,
+	1
+	,
+	TestID -> "ImageTestSuite-20191127-E8Q1B9"
+];
+
+ExactTest[
+	EmptyView[]
+	,
+	{-1, -1, -1, -1, -1}
+	,
+	TestID -> "ImageTestSuite-20191127-H2I2Z7"
+];
