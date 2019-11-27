@@ -37,9 +37,9 @@ auto getLargest(const std::vector<ImageView>& imgs) {
 }
 
 LLU_LIBRARY_FUNCTION(GetLargest) {
-	auto imgAuto = mngr.getGenericImage(0);
+	auto imgAuto = mngr.getImage<float>(0);
 	auto imgConstant = mngr.getGenericImage<LLU::Passing::Constant>(1);
-	auto imgManual = mngr.getGenericImage<LLU::Passing::Manual>(2);
+	auto imgManual = mngr.getImage<float, LLU::Passing::Manual>(2);
 	std::vector<ImageView> imgs {ImageView {imgAuto}, ImageView {imgConstant}, ImageView {imgManual}};
 	auto largest = getLargest(imgs);
 	mngr.set(static_cast<mint>(std::distance(std::cbegin(imgs), largest)));

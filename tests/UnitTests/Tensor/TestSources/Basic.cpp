@@ -223,9 +223,9 @@ auto getLargest(const std::vector<TensorView>& tens) {
 }
 
 LLU_LIBRARY_FUNCTION(GetLargest) {
-	auto tenAuto = mngr.getGenericTensor(0);
+	auto tenAuto = mngr.getTensor<mint>(0);
 	auto tenConstant = mngr.getGenericTensor<LLU::Passing::Constant>(1);
-	auto tenManual = mngr.getGenericTensor<LLU::Passing::Manual>(2);
+	auto tenManual = mngr.getTensor<double, LLU::Passing::Manual>(2);
 	std::vector<TensorView> tens {TensorView {tenAuto}, TensorView {tenConstant}, TensorView {tenManual}};
 	auto largest = getLargest(tens);
 	mngr.set(static_cast<mint>(std::distance(std::cbegin(tens), largest)));
@@ -236,6 +236,7 @@ LLU_LIBRARY_FUNCTION(GetLargest) {
 	tens[2] = iv;
 }
 
+// The following will crash, even though the same test for Image and NumericArray returns consistent results
 LLU_LIBRARY_FUNCTION(EmptyView) {
 	TensorView v;
 	LLU::Tensor<mint> t {v.getRank(), v.getFlattenedLength(), reinterpret_cast<mint>(v.rawData()), static_cast<mint>(v.type())};

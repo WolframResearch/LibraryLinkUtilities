@@ -43,6 +43,7 @@ TestExecute[
 	MeanValue = LibraryFunctionLoad[lib, "MeanValue", {{Real, 1}}, Real];
 
 	IntegerMatrixTranspose = LibraryFunctionLoad[lib, "IntegerMatrixTranspose", {{Integer, 2}}, {Integer, 2}];
+	GetLargest = LibraryFunctionLoad[lib, "GetLargest", {{_, _}, {_, _, "Constant"}, {_, _, "Manual"}}, Integer];
 ];
 
 Test[
@@ -378,6 +379,18 @@ Test[
 	{{1, 2}, {3, 4}}
 	,
 	TestID -> "TensorTestSuite-20190910-Z7H8M8"
+];
+
+ExactTest[
+	GetLargest[
+		RandomInteger[1000, {100, 100}],
+		RandomInteger[1000, {200, 100}],
+		RandomReal[1., {200, 99}]
+	]
+	,
+	1
+	,
+	TestID -> "TensorArrayTestSuite-20191127-E8Q1B9"
 ];
 
 EndRequirement[];

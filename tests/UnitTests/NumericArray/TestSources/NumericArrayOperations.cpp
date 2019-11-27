@@ -369,9 +369,9 @@ auto getLargest(const std::vector<NumericArrayView>& nas) {
 }
 
 LLU_LIBRARY_FUNCTION(GetLargest) {
-	auto naAuto = mngr.getGenericNumericArray(0);
+	auto naAuto = mngr.getNumericArray<std::uint16_t >(0);
 	auto naConstant = mngr.getGenericNumericArray<LLU::Passing::Constant>(1);
-	auto naManual = mngr.getGenericNumericArray<LLU::Passing::Manual>(2);
+	auto naManual = mngr.getNumericArray<double, LLU::Passing::Manual>(2);
 	std::vector<NumericArrayView> nas {NumericArrayView {naAuto}, NumericArrayView {naConstant}, NumericArrayView {naManual}};
 	auto largest = getLargest(nas);
 	mngr.set(static_cast<mint>(std::distance(std::cbegin(nas), largest)));
