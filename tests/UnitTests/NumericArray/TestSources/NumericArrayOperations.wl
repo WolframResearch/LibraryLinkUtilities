@@ -20,3 +20,5 @@ testDimensions = SafeLibraryFunction["TestDimensions", {{Integer, 1, "Constant"}
 testDimensions2 = SafeLibraryFunction["TestDimensions2", {}, "DataStore"];
 FlattenThroughList = SafeLibraryFunction["FlattenThroughList", {NumericArray}, NumericArray];
 CopyThroughTensor = SafeLibraryFunction["CopyThroughTensor", {NumericArray}, NumericArray];
+GetLargest = SafeLibraryFunction["GetLargest", {NumericArray, {NumericArray, "Constant"}, {NumericArray, "Manual"}}, Integer];
+EmptyView = SafeLibraryFunction["EmptyView", {}, {Integer, 1}];

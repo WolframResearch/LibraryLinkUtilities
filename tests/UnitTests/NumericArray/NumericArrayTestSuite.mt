@@ -241,4 +241,24 @@ Test[
 	TestID -> "NumericArrayTestSuite-20190910-I3D6Q7"
 ];
 
+ExactTest[
+	GetLargest[
+		NumericArray[RandomInteger[1000, {100, 100}], "UnsignedInteger16"],
+		NumericArray[RandomInteger[1000, {200, 100}], "Integer32"],
+		NumericArray[RandomReal[1., {200, 99}], "Real64"]
+	]
+	,
+	1
+	,
+	TestID -> "NumericArrayTestSuite-20191127-E8Q1B9"
+];
+
+ExactTest[
+	EmptyView[]
+	,
+	{-1, -1, 0, 0}
+	,
+	TestID -> "NumericArrayTestSuite-20191127-H2I2Z7"
+];
+
 EndRequirement[]

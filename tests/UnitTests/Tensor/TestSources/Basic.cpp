@@ -216,3 +216,28 @@ LIBRARY_LINK_FUNCTION(CopyThroughNumericArray) {
 
 	return ErrorCode::NoError;
 }
+
+auto getLargest(const std::vector<TensorView>& tens) {
+	return std::max_element(std::cbegin(tens), std::cend(tens),
+							[](const TensorView& ten1, const TensorView& ten2) { return ten1.getFlattenedLength() < ten2.getFlattenedLength(); });
+}
+
+LLU_LIBRARY_FUNCTION(GetLargest) {
+	auto tenAuto = mngr.getGenericTensor(0);
+	auto tenConstant = mngr.getGenericTensor<LLU::Passing::Constant>(1);
+	auto tenManual = mngr.getGenericTensor<LLU::Passing::Manual>(2);
+	std::vector<TensorView> tens {TensorView {tenAuto}, TensorView {tenConstant}, TensorView {tenManual}};
+	auto largest = getLargest(tens);
+	mngr.set(static_cast<mint>(std::distance(std::cbegin(tens), largest)));
+
+	// perform some random assignments and copies to see it they compile
+	std::swap(tens[0], tens[1]);
+	TensorView iv = std::move(tens[2]);
+	tens[2] = iv;
+}
+
+LLU_LIBRARY_FUNCTION(EmptyView) {
+	TensorView v;
+	LLU::Tensor<mint> t {v.getRank(), v.getFlattenedLength(), reinterpret_cast<mint>(v.rawData()), static_cast<mint>(v.type())};
+	mngr.set(t);
+}

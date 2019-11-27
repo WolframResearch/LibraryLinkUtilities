@@ -13,6 +13,7 @@ namespace ErrorCode = LLU::ErrorCode;
 using LLU::LibraryLinkError;
 using LLU::MArgumentManager;
 using LLU::NumericArray;
+using LLU::NumericArrayView;
 
 static std::unique_ptr<LLU::GenericNumericArray<LLU::Passing::Shared>> shared_numeric;
 
@@ -360,4 +361,29 @@ LIBRARY_LINK_FUNCTION(CopyThroughTensor) {
 		err = e.which();
 	}
 	return err;
+}
+
+auto getLargest(const std::vector<NumericArrayView>& nas) {
+	return std::max_element(std::cbegin(nas), std::cend(nas),
+							[](const NumericArrayView& na1, const NumericArrayView& na2) { return na1.getFlattenedLength() < na2.getFlattenedLength(); });
+}
+
+LLU_LIBRARY_FUNCTION(GetLargest) {
+	auto naAuto = mngr.getGenericNumericArray(0);
+	auto naConstant = mngr.getGenericNumericArray<LLU::Passing::Constant>(1);
+	auto naManual = mngr.getGenericNumericArray<LLU::Passing::Manual>(2);
+	std::vector<NumericArrayView> nas {NumericArrayView {naAuto}, NumericArrayView {naConstant}, NumericArrayView {naManual}};
+	auto largest = getLargest(nas);
+	mngr.set(static_cast<mint>(std::distance(std::cbegin(nas), largest)));
+
+	// perform some random assignments and copies to see it they compile
+	std::swap(nas[0], nas[1]);
+	NumericArrayView iv = std::move(nas[2]);
+	nas[2] = iv;
+}
+
+LLU_LIBRARY_FUNCTION(EmptyView) {
+	NumericArrayView v;
+	LLU::Tensor<mint> t {v.getRank(), v.getFlattenedLength(), reinterpret_cast<mint>(v.rawData()), static_cast<mint>(v.type())};
+	mngr.set(t);
 }
