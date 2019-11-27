@@ -95,8 +95,10 @@ namespace LLU {
 
 	class ImageView : public ImageInterface {
 	public:
+		ImageView() = default;
+
 		template<class Passing>
-		ImageView(const GenericImage<Passing>& gIm) : m{gIm.getContainer()} {}
+		explicit ImageView(const GenericImage<Passing>& gIm) : m{gIm.getContainer()} {}
 
 		/// @copydoc ImageInterface::colorspace
 		colorspace_t colorspace() const override {
@@ -144,7 +146,7 @@ namespace LLU {
 		}
 
 		/// @copydoc ImageInterface::getFlattenedLength
-		mint getFlattenedLength() const {
+		mint getFlattenedLength() const override {
 			return LibraryData::ImageAPI()->MImage_getFlattenedLength(m);
 		}
 
@@ -309,7 +311,7 @@ namespace LLU {
 		}
 
 		/// @copydoc ImageInterface::getFlattenedLength
-		mint getFlattenedLength() const {
+		mint getFlattenedLength() const override {
 			return LibraryData::ImageAPI()->MImage_getFlattenedLength(this->getContainer());
 		}
 
