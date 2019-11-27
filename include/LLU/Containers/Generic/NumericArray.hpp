@@ -67,7 +67,7 @@ namespace LLU {
 		NumericArrayView() = default;
 
 		template<class Passing>
-		explicit NumericArrayView(const GenericNumericArray<Passing>& gNA) : na {gNA.getContainer()} {}
+		/* implicit */ NumericArrayView(const GenericNumericArray<Passing>& gNA) : na {gNA.getContainer()} {}
 
 		/// @copydoc NumericArrayInterface::getRank()
 		mint getRank() const override {

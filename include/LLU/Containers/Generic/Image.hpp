@@ -105,7 +105,7 @@ namespace LLU {
 		ImageView() = default;
 
 		template<class Passing>
-		explicit ImageView(const GenericImage<Passing>& gIm) : m{gIm.getContainer()} {}
+		/* implicit */ ImageView(const GenericImage<Passing>& gIm) : m{gIm.getContainer()} {}
 
 		/// @copydoc ImageInterface::colorspace()
 		colorspace_t colorspace() const override {

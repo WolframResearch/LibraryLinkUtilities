@@ -66,7 +66,7 @@ namespace LLU {
 		TensorView() = default;
 
 		template<class Passing>
-		explicit TensorView(const GenericTensor<Passing>& gTen) : t {gTen.getContainer()} {}
+		/* implicit */ TensorView(const GenericTensor<Passing>& gTen) : t {gTen.getContainer()} {}
 
 		/// @copydoc TensorInterface::getRank()
 		mint getRank() const override {
