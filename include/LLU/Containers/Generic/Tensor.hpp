@@ -18,11 +18,93 @@ namespace LLU {
 	using GenericTensor = MContainer<MArgumentType::Tensor, PassingMode>;
 
 	/**
+	 *  @brief Abstract class that defines a basic set of operations on a tensor
+	 */
+	struct TensorInterface {
+		/**
+		 * @brief   Get rank
+		 * @return  number of dimensions in this tensor
+		 * @see     <http://reference.wolfram.com/language/LibraryLink/ref/callback/MTensor_getRank.html>
+		 */
+		virtual mint getRank() const = 0;
+
+		/**
+		 * @brief   Get dimensions
+		 * @return  raw pointer to dimensions of this tensor
+		 * @see     <http://reference.wolfram.com/language/LibraryLink/ref/callback/MTensor_getDimensions.html>
+		 */
+		virtual mint const* getDimensions() const = 0;
+
+		/**
+		 * @brief   Get total length
+		 * @return  total number of elements
+		 * @see     <http://reference.wolfram.com/language/LibraryLink/ref/callback/MTensor_getFlattenedLength.html>
+		 */
+		virtual mint getFlattenedLength() const = 0;
+
+		/**
+		 * @brief   Get the data type of this tensor
+		 * @return  type of elements (MType_Integer, MType_Real or MType_Complex)
+		 * @see 	<http://reference.wolfram.com/language/LibraryLink/ref/callback/MTensor_getType.html>
+		 */
+		virtual mint type() const = 0;
+
+		/**
+		 * @brief   Get raw pointer to the data of this tensor
+		 */
+		virtual void* rawData() const = 0;
+	};
+
+	/**
+	 * @brief   Simple, light-weight, non-owning wrappper over MTensor.
+	 *
+	 * Intended for use in functions that only need to access MTensor metadata, where it can alleviate the need for introducing template parameters
+	 * for MTensor passing mode (like in GenericTensor) or data type (like in Tensor class).
+	 */
+	class TensorView : public TensorInterface {
+	public:
+		TensorView() = default;
+
+		template<class Passing>
+		explicit TensorView(const GenericTensor<Passing>& gTen) : t {gTen.getContainer()} {}
+
+		/// @copydoc TensorInterface::getRank()
+		mint getRank() const override {
+			return LibraryData::API()->MTensor_getRank(t);
+		}
+
+		/// @copydoc TensorInterface::getDimensions()
+		mint const* getDimensions() const override {
+			return LibraryData::API()->MTensor_getDimensions(t);
+		}
+
+		/// @copydoc TensorInterface::getFlattenedLength()
+		mint getFlattenedLength() const override {
+			return LibraryData::API()->MTensor_getFlattenedLength(t);
+		}
+
+		/// @copydoc TensorInterface::type()
+		mint type() const override {
+			return LibraryData::API()->MTensor_getType(t);
+		}
+
+		/// @copybrief TensorInterface::rawData()
+		/// @note MTensor does not offer a type-independent function to access raw data, so we access via a function specific to real-valued tensors
+		/// and do a reinterpret_cast. Using such obtained pointer may result in undefined behavior.
+		void* rawData() const override {
+			return reinterpret_cast<void*>(LibraryData::API()->MTensor_getRealData(t));
+		}
+
+	private:
+		MTensor t = nullptr;
+	};
+	
+	/**
 	 *  @brief  MContainer specialization for MTensor
 	 *  @tparam PassingMode - passing policy
 	 */
 	template<class PassingMode>
-	class MContainer<MArgumentType::Tensor, PassingMode> : public MContainerBase<MArgumentType::Tensor, PassingMode> {
+	class MContainer<MArgumentType::Tensor, PassingMode> : public TensorInterface, public MContainerBase<MArgumentType::Tensor, PassingMode> {
 	public:
 		/// Inherit constructors from MContainerBase
 		using MContainerBase<MArgumentType::Tensor, PassingMode>::MContainerBase;
@@ -78,42 +160,32 @@ namespace LLU {
 			this->cleanup();
 		};
 
-		/**
-		 * @brief   Get the rank of this GenericTensor.
-		 * @return  number of dimensions in this GenericTensor
-		 * @see     <http://reference.wolfram.com/language/LibraryLink/ref/callback/MTensor_getRank.html>
-		 */
-		mint getRank() const noexcept {
+		/// @copydoc TensorInterface::getRank()
+		mint getRank() const override {
 			return LibraryData::API()->MTensor_getRank(this->getContainer());
 		}
 
-		/**
-		 * @brief   Get dimensions of this GenericTensor.
-		 * @return  raw pointer to dimensions of this GenericTensor
-		 * @see     <http://reference.wolfram.com/language/LibraryLink/ref/callback/MTensor_getDimensions.html>
-		 */
-		mint const* getDimensions() const {
+		/// @copydoc TensorInterface::getDimensions()
+		mint const* getDimensions() const override {
 			return LibraryData::API()->MTensor_getDimensions(this->getContainer());
 		}
 
-		/**
-		 * @brief   Get the length of this GenericTensor.
-		 * @return  total number of elements
-		 * @see     <http://reference.wolfram.com/language/LibraryLink/ref/callback/MTensor_getFlattenedLength.html>
-		 */
-		mint getFlattenedLength() const {
+		/// @copydoc TensorInterface::getFlattenedLength()
+		mint getFlattenedLength() const override {
 			return LibraryData::API()->MTensor_getFlattenedLength(this->getContainer());
 		}
 
-		/**
-		 * @brief   Get the type of this GenericTensor
-		 * @return  type of elements (MType_Integer, MType_Real or MType_Complex)
-		 * @see 	<http://reference.wolfram.com/language/LibraryLink/ref/callback/MTensor_getType.html>
-		 */
-		mint type() const {
+		/// @copydoc TensorInterface::type()
+		mint type() const override {
 			return LibraryData::API()->MTensor_getType(this->getContainer());
 		}
 
+		/// @copybrief TensorInterface::rawData()
+		/// @note MTensor does not offer a type-independent function to access raw data, so we access via a function specific to real-valued tensors
+		/// and do a reinterpret_cast. Using such obtained pointer may result in undefined behavior.
+		void* rawData() const override {
+			return reinterpret_cast<void*>(LibraryData::API()->MTensor_getRealData(this->getContainer()));
+		}
 	private:
 		using Base = MContainerBase<MArgumentType::Tensor, PassingMode>;
 		using RawContainer = typename Base::Container;
