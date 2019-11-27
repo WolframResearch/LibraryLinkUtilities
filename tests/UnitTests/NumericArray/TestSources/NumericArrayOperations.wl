@@ -22,3 +22,4 @@ FlattenThroughList = SafeLibraryFunction["FlattenThroughList", {NumericArray}, N
 CopyThroughTensor = SafeLibraryFunction["CopyThroughTensor", {NumericArray}, NumericArray];
 GetLargest = SafeLibraryFunction["GetLargest", {NumericArray, {NumericArray, "Constant"}, {NumericArray, "Manual"}}, Integer];
 EmptyView = SafeLibraryFunction["EmptyView", {}, {Integer, 1}];
+SumLargestDimensions = SafeLibraryFunction["SumLargestDimensions", {NumericArray, {NumericArray, "Constant"}}, Integer];

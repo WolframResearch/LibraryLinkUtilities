@@ -261,4 +261,15 @@ ExactTest[
 	TestID -> "NumericArrayTestSuite-20191127-H2I2Z7"
 ];
 
+ExactTest[
+	SumLargestDimensions[
+		NumericArray[RandomInteger[1000, {100, 50}], "UnsignedInteger16"],
+		NumericArray[RandomInteger[1000, {200, 100}], "Integer32"]
+	]
+	,
+	300
+	,
+	TestID -> "NumericArrayTestSuite-20191127-V8L4I2"
+];
+
 EndRequirement[]

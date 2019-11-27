@@ -387,3 +387,13 @@ LLU_LIBRARY_FUNCTION(EmptyView) {
 	LLU::Tensor<mint> t {v.getRank(), v.getFlattenedLength(), reinterpret_cast<mint>(v.rawData()), static_cast<mint>(v.type())};
 	mngr.set(t);
 }
+
+mint largestDimension(NumericArrayView na) {
+	return *std::max_element(na.getDimensions(), na.getDimensions() + na.getRank());
+}
+
+LLU_LIBRARY_FUNCTION(SumLargestDimensions) {
+	auto naAuto = mngr.getNumericArray<std::uint16_t>(0);
+	auto naConstant = mngr.getGenericNumericArray<LLU::Passing::Constant>(1);
+	mngr.set(largestDimension(naAuto) + largestDimension(naConstant));
+}
