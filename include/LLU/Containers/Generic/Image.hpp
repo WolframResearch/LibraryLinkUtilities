@@ -160,7 +160,7 @@ namespace LLU {
 			return LibraryData::ImageAPI()->MImage_getRawData(m);
 		}
 	private:
-		const MImage m = nullptr;
+		MImage m = nullptr;
 	};
 
 	/**
