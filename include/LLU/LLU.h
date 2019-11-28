@@ -17,6 +17,7 @@
 #include "LLU/Containers/Passing/Manual.hpp"
 #include "LLU/Containers/Passing/Shared.hpp"
 #include "LLU/Containers/Tensor.h"
+#include "LLU/Containers/Views/Image.hpp"
 
 /* Error reporting */
 #include "LLU/ErrorLog/ErrorManager.h"
