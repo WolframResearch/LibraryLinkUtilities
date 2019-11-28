@@ -46,7 +46,7 @@ namespace LLU {
 			return LibraryData::API()->MTensor_getType(t);
 		}
 
-		/// @copybrief TensorInterface::rawData()
+		/// @copydoc TensorInterface::rawData()
 		void* rawData() const override {
 			switch (type()) {
 				case MType_Integer: return LibraryData::API()->MTensor_getIntegerData(t);

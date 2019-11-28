@@ -99,11 +99,14 @@ namespace LLU {
 			return LibraryData::API()->MTensor_getType(this->getContainer());
 		}
 
-		/// @copybrief TensorInterface::rawData()
-		/// @note MTensor does not offer a type-independent function to access raw data, so we access via a function specific to real-valued tensors
-		/// and do a reinterpret_cast. Using such obtained pointer may result in undefined behavior.
+		/// @copydoc TensorInterface::rawData()
 		void* rawData() const override {
-			return reinterpret_cast<void*>(LibraryData::API()->MTensor_getRealData(this->getContainer()));
+			switch (type()) {
+				case MType_Integer: return LibraryData::API()->MTensor_getIntegerData(this->getContainer());
+				case MType_Real: return LibraryData::API()->MTensor_getRealData(this->getContainer());
+				case MType_Complex: return LibraryData::API()->MTensor_getComplexData(this->getContainer());
+				default: ErrorManager::throwException(ErrorName::TensorTypeError);
+			}
 		}
 	private:
 		using Base = MContainerBase<MArgumentType::Tensor, PassingMode>;
