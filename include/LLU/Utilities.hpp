@@ -185,56 +185,6 @@ namespace LLU {
 	template<numericarray_data_t rat>
 	using NumericArrayTypeFromEnum = typename NumericArrayFromEnum<rat>::type;
 
-	/**
-	 * @brief Calls an overload of \c f() with template type matching an MNumericArray type \c rat
-	 * @param raType - MNumericArray type
-	 * @param f - any callable structure
-	 * @param args - additional arguments for f::operator()
-	 * @warning This function is a prototype, has not been tested yet and is likely to change in the future.
-	 */
-	template<typename Callable, typename... Args>
-	void applyToNumericArray(numericarray_data_t raType, Callable&& f, Args&&... args) {
-		switch (raType) {
-			case MNumericArray_Type_Bit8:
-				std::forward<Callable>(f).template operator()<NumericArrayTypeFromEnum<MNumericArray_Type_Bit8>>(std::forward<Args>(args)...);
-				break;
-			case MNumericArray_Type_UBit8:
-				std::forward<Callable>(f).template operator()<NumericArrayTypeFromEnum<MNumericArray_Type_UBit8>>(std::forward<Args>(args)...);
-				break;
-			case MNumericArray_Type_Bit16:
-				std::forward<Callable>(f).template operator()<NumericArrayTypeFromEnum<MNumericArray_Type_Bit16>>(std::forward<Args>(args)...);
-				break;
-			case MNumericArray_Type_UBit16:
-				std::forward<Callable>(f).template operator()<NumericArrayTypeFromEnum<MNumericArray_Type_UBit16>>(std::forward<Args>(args)...);
-				break;
-			case MNumericArray_Type_Bit32:
-				std::forward<Callable>(f).template operator()<NumericArrayTypeFromEnum<MNumericArray_Type_Bit32>>(std::forward<Args>(args)...);
-				break;
-			case MNumericArray_Type_UBit32:
-				std::forward<Callable>(f).template operator()<NumericArrayTypeFromEnum<MNumericArray_Type_UBit32>>(std::forward<Args>(args)...);
-				break;
-			case MNumericArray_Type_Bit64:
-				std::forward<Callable>(f).template operator()<NumericArrayTypeFromEnum<MNumericArray_Type_Bit64>>(std::forward<Args>(args)...);
-				break;
-			case MNumericArray_Type_UBit64:
-				std::forward<Callable>(f).template operator()<NumericArrayTypeFromEnum<MNumericArray_Type_UBit64>>(std::forward<Args>(args)...);
-				break;
-			case MNumericArray_Type_Real32:
-				std::forward<Callable>(f).template operator()<NumericArrayTypeFromEnum<MNumericArray_Type_Real32>>(std::forward<Args>(args)...);
-				break;
-			case MNumericArray_Type_Real64:
-				std::forward<Callable>(f).template operator()<NumericArrayTypeFromEnum<MNumericArray_Type_Real64>>(std::forward<Args>(args)...);
-				break;
-			case MNumericArray_Type_Complex_Real32:
-				std::forward<Callable>(f).template operator()<NumericArrayTypeFromEnum<MNumericArray_Type_Complex_Real32>>(std::forward<Args>(args)...);
-				break;
-			case MNumericArray_Type_Complex_Real64:
-				std::forward<Callable>(f).template operator()<NumericArrayTypeFromEnum<MNumericArray_Type_Complex_Real64>>(std::forward<Args>(args)...);
-				break;
-			default: return;
-		}
-	}
-
 	/// Small namespace for NumericArray related utilities
 	namespace NA {
 		/**
@@ -271,7 +221,7 @@ namespace LLU {
 		}
 	}
 
-	/// Utility structure that matches an MImage data type with corresponding C++ type
+	/// Utility structure that matches a C++ type with a corresponding MImage data type
 	template<typename T>
 	constexpr imagedata_t ImageType = MImage_Type_Undef;
 
@@ -288,6 +238,36 @@ namespace LLU {
 	constexpr imagedata_t ImageType<double> = MImage_Type_Real;
 	/// @endcond
 
+	/// Utility structure that matches a C++ type with a corresponding MImage data type
+	template<typename T>
+	constexpr numericarray_data_t NumericArrayType = MNumericArray_Type_Undef;
+
+	/// @cond
+	template<>
+	constexpr numericarray_data_t NumericArrayType<int8_t> = MNumericArray_Type_Bit8;
+	template<>
+	constexpr numericarray_data_t NumericArrayType<uint8_t> = MNumericArray_Type_UBit8;
+	template<>
+	constexpr numericarray_data_t NumericArrayType<int16_t> = MNumericArray_Type_Bit16;
+	template<>
+	constexpr numericarray_data_t NumericArrayType<uint16_t> = MNumericArray_Type_UBit16;
+	template<>
+	constexpr numericarray_data_t NumericArrayType<int32_t> = MNumericArray_Type_Bit32;
+	template<>
+	constexpr numericarray_data_t NumericArrayType<uint32_t> = MNumericArray_Type_UBit32;
+	template<>
+	constexpr numericarray_data_t NumericArrayType<int64_t> = MNumericArray_Type_Bit64;
+	template<>
+	constexpr numericarray_data_t NumericArrayType<uint64_t> = MNumericArray_Type_UBit64;
+	template<>
+	constexpr numericarray_data_t NumericArrayType<float> = MNumericArray_Type_Real32;
+	template<>
+	constexpr numericarray_data_t NumericArrayType<double> = MNumericArray_Type_Real64;
+	template<>
+	constexpr numericarray_data_t NumericArrayType<std::complex<float>> = MNumericArray_Type_Complex_Real32;
+	template<>
+	constexpr numericarray_data_t NumericArrayType<std::complex<double>> = MNumericArray_Type_Complex_Real64;
+	/// @endcond
 } /* namespace LLU */
 
 #endif /* LLUTILS_UTILITIES_H_ */
