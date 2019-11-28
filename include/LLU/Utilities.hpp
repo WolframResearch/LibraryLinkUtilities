@@ -271,6 +271,23 @@ namespace LLU {
 		}
 	}
 
+	/// Utility structure that matches an MImage data type with corresponding C++ type
+	template<typename T>
+	constexpr imagedata_t ImageType = MImage_Type_Undef;
+
+	/// @cond
+	template<>
+	constexpr imagedata_t ImageType<int8_t> = MImage_Type_Bit;
+	template<>
+	constexpr imagedata_t ImageType<uint8_t> = MImage_Type_Bit8;
+	template<>
+	constexpr imagedata_t ImageType<uint16_t> = MImage_Type_Bit16;
+	template<>
+	constexpr imagedata_t ImageType<float> = MImage_Type_Real32;
+	template<>
+	constexpr imagedata_t ImageType<double> = MImage_Type_Real;
+	/// @endcond
+
 } /* namespace LLU */
 
 #endif /* LLUTILS_UTILITIES_H_ */
