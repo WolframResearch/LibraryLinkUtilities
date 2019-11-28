@@ -7,6 +7,7 @@
 
 #include "LLU/LLU.h"
 #include "LLU/LibraryLinkFunctionMacro.h"
+#include <LLU/Containers/Views/Tensor.hpp>
 
 using namespace LLU;
 
