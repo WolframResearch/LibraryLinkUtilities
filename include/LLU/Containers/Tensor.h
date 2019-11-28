@@ -32,21 +32,12 @@ namespace LLU {
 	class TypedTensor : public MArray<T> {
 	public:
 		using MArray<T>::MArray;
-
-		/// Return matching type of MTensor
-		static mint getType() noexcept {
-			return type;
-		}
-
 	private:
 		/// @copydoc MArray<T>::getData()
 		T* getData() const noexcept override;
 
 		/// Get the raw MTensor, must be implemented in subclasses.
 		virtual MTensor getInternal() const = 0;
-
-		/// Tensor data type matching template parameter T
-		static const mint type;
 	};
 
 	/**
@@ -195,14 +186,14 @@ namespace LLU {
 
 	template<typename T, class PassingMode>
 	Tensor<T, PassingMode>::Tensor(T init, MArrayDimensions dims)
-		: TypedTensor<T>(std::move(dims)), GenericBase(TypedTensor<T>::getType(), this->rank(), this->dims.data()) {
+		: TypedTensor<T>(std::move(dims)), GenericBase(TensorType<T>, this->rank(), this->dims.data()) {
 		std::fill(this->begin(), this->end(), init);
 	}
 
 	template<typename T, class PassingMode>
 	template<class InputIt, typename>
 	Tensor<T, PassingMode>::Tensor(InputIt first, InputIt last, MArrayDimensions dims)
-		: TypedTensor<T>(std::move(dims)), GenericBase(TypedTensor<T>::getType(), this->rank(), this->dims.data()) {
+		: TypedTensor<T>(std::move(dims)), GenericBase(TensorType<T>, this->rank(), this->dims.data()) {
 		if (std::distance(first, last) != this->getFlattenedLength())
 			ErrorManager::throwException(ErrorName::TensorNewError, "Length of data range does not match specified dimensions");
 		std::copy(first, last, this->begin());
@@ -210,7 +201,7 @@ namespace LLU {
 
 	template<typename T, class PassingMode>
 	Tensor<T, PassingMode>::Tensor(GenericBase t) : TypedTensor<T>({t.getDimensions(), t.getRank()}), GenericBase(std::move(t)) {
-		if (TypedTensor<T>::getType() != GenericBase::type())
+		if (TensorType<T> != GenericBase::type())
 			ErrorManager::throwException(ErrorName::TensorTypeError);
 	}
 

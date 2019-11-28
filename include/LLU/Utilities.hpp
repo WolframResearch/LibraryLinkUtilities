@@ -238,7 +238,7 @@ namespace LLU {
 	constexpr imagedata_t ImageType<double> = MImage_Type_Real;
 	/// @endcond
 
-	/// Utility structure that matches a C++ type with a corresponding MImage data type
+	/// Utility structure that matches a C++ type with a corresponding MNumericArray data type
 	template<typename T>
 	constexpr numericarray_data_t NumericArrayType = MNumericArray_Type_Undef;
 
@@ -267,6 +267,19 @@ namespace LLU {
 	constexpr numericarray_data_t NumericArrayType<std::complex<float>> = MNumericArray_Type_Complex_Real32;
 	template<>
 	constexpr numericarray_data_t NumericArrayType<std::complex<double>> = MNumericArray_Type_Complex_Real64;
+	/// @endcond
+
+	/// Utility structure that matches a C++ type with a corresponding MTensor data type
+	template<typename T>
+	constexpr mint TensorType = MType_Undef;
+
+	/// @cond
+	template<>
+	constexpr mint TensorType<mint> = MType_Integer;
+	template<>
+	constexpr mint TensorType<double> = MType_Real;
+	template<>
+	constexpr mint TensorType<std::complex<double>> = MType_Complex;
 	/// @endcond
 } /* namespace LLU */
 

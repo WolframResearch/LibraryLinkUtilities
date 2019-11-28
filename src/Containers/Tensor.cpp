@@ -14,13 +14,6 @@
 namespace LLU {
 	/// @cond
 	template<>
-	const mint TypedTensor<mint>::type = MType_Integer;
-	template<>
-	const mint TypedTensor<double>::type = MType_Real;
-	template<>
-	const mint TypedTensor<std::complex<double>>::type = MType_Complex;
-
-	template<>
 	mint* TypedTensor<mint>::getData() const noexcept {
 		return LibraryData::API()->MTensor_getIntegerData(this->getInternal());
 	}
