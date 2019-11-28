@@ -6,6 +6,7 @@
 #define LLU_INCLUDE_LLU_CONTAINERS_GENERIC_NUMERICARRAY
 
 #include "LLU/Containers/Generic/Base.hpp"
+#include "LLU/Containers/Interfaces.h"
 
 namespace LLU {
 
@@ -15,46 +16,6 @@ namespace LLU {
 	/// MContainer specialization for MNumericArray is called GenericNumericArray
 	template<class PassingMode>
 	using GenericNumericArray = MContainer<MArgumentType::NumericArray, PassingMode>;
-
-	/**
-	 *  @brief Abstract class that defines a basic set of operations on a numeric array
-	 */
-	struct NumericArrayInterface {
-		/**
-		 * @brief   Get rank
-		 * @return  number of dimensions in the array
-		 * @see     <http://reference.wolfram.com/language/LibraryLink/ref/callback/MNumericArray_getRank.html>
-		 */
-		virtual mint getRank() const = 0;
-
-		/**
-		 * @brief   Get dimensions
-		 * @return  raw pointer to dimensions of the array
-		 * @see     <http://reference.wolfram.com/language/LibraryLink/ref/callback/MNumericArray_getDimensions.html>
-		 */
-		virtual mint const* getDimensions() const = 0;
-
-		/**
-		 * @brief   Get length
-		 * @return  total number of elements
-		 * @see     <http://reference.wolfram.com/language/LibraryLink/ref/callback/MNumericArray_getFlattenedLength.html>
-		 */
-		virtual mint getFlattenedLength() const = 0;
-
-		/**
-		 * @brief   Get the data type of this array
-		 * @return  type of elements (see definition of \c numericarray_data_t)
-		 * @see 	<http://reference.wolfram.com/language/LibraryLink/ref/callback/MNumericArray_getDataType.html>
-		 */
-		virtual numericarray_data_t type() const = 0;
-
-		/**
-		 * @brief   Get access to the raw data. Use with caution.
-		 * @return  pointer to the raw data
-		 * @see     <http://reference.wolfram.com/language/LibraryLink/ref/callback/MNumericArray_getData.html>
-		 */
-		virtual void* rawData() const = 0;
-	};
 
 	/**
 	 * @brief   Simple, light-weight, non-owning wrappper over MNumericArray.

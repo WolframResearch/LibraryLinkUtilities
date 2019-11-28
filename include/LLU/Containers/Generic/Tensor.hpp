@@ -7,6 +7,7 @@
 #define LLU_INCLUDE_LLU_CONTAINERS_GENERIC_TENSOR
 
 #include "LLU/Containers/Generic/Base.hpp"
+#include "LLU/Containers/Interfaces.h"
 
 namespace LLU {
 
@@ -16,44 +17,6 @@ namespace LLU {
 	/// MContainer specialization for MTensor is called GenericTensor
 	template<class PassingMode>
 	using GenericTensor = MContainer<MArgumentType::Tensor, PassingMode>;
-
-	/**
-	 *  @brief Abstract class that defines a basic set of operations on a tensor
-	 */
-	struct TensorInterface {
-		/**
-		 * @brief   Get rank
-		 * @return  number of dimensions in this tensor
-		 * @see     <http://reference.wolfram.com/language/LibraryLink/ref/callback/MTensor_getRank.html>
-		 */
-		virtual mint getRank() const = 0;
-
-		/**
-		 * @brief   Get dimensions
-		 * @return  raw pointer to dimensions of this tensor
-		 * @see     <http://reference.wolfram.com/language/LibraryLink/ref/callback/MTensor_getDimensions.html>
-		 */
-		virtual mint const* getDimensions() const = 0;
-
-		/**
-		 * @brief   Get total length
-		 * @return  total number of elements
-		 * @see     <http://reference.wolfram.com/language/LibraryLink/ref/callback/MTensor_getFlattenedLength.html>
-		 */
-		virtual mint getFlattenedLength() const = 0;
-
-		/**
-		 * @brief   Get the data type of this tensor
-		 * @return  type of elements (MType_Integer, MType_Real or MType_Complex)
-		 * @see 	<http://reference.wolfram.com/language/LibraryLink/ref/callback/MTensor_getType.html>
-		 */
-		virtual mint type() const = 0;
-
-		/**
-		 * @brief   Get raw pointer to the data of this tensor
-		 */
-		virtual void* rawData() const = 0;
-	};
 
 	/**
 	 * @brief   Simple, light-weight, non-owning wrappper over MTensor.

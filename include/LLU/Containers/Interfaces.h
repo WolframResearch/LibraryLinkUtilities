@@ -12,7 +12,7 @@
 namespace LLU {
 
 	/**
- *  @brief Abstract class that defines a basic set of operations on an image
+	*  @brief Abstract class that defines a basic set of operations on an image
 	 */
 	struct ImageInterface {
 		/**
@@ -85,6 +85,84 @@ namespace LLU {
 		 * @brief   Get access to raw image data. Use with caution.
 		 * @return  pointer to the raw data
 		 * @see     <http://reference.wolfram.com/language/LibraryLink/ref/callback/MImage_getRawData.html>
+		 */
+		virtual void* rawData() const = 0;
+	};
+
+	/**
+	*  @brief Abstract class that defines a basic set of operations on a numeric array
+	*/
+	struct NumericArrayInterface {
+		/**
+		 * @brief   Get rank
+		 * @return  number of dimensions in the array
+		 * @see     <http://reference.wolfram.com/language/LibraryLink/ref/callback/MNumericArray_getRank.html>
+		 */
+		virtual mint getRank() const = 0;
+
+		/**
+		 * @brief   Get dimensions
+		 * @return  raw pointer to dimensions of the array
+		 * @see     <http://reference.wolfram.com/language/LibraryLink/ref/callback/MNumericArray_getDimensions.html>
+		 */
+		virtual mint const* getDimensions() const = 0;
+
+		/**
+		 * @brief   Get length
+		 * @return  total number of elements
+		 * @see     <http://reference.wolfram.com/language/LibraryLink/ref/callback/MNumericArray_getFlattenedLength.html>
+		 */
+		virtual mint getFlattenedLength() const = 0;
+
+		/**
+		 * @brief   Get the data type of this array
+		 * @return  type of elements (see definition of \c numericarray_data_t)
+		 * @see 	<http://reference.wolfram.com/language/LibraryLink/ref/callback/MNumericArray_getDataType.html>
+		 */
+		virtual numericarray_data_t type() const = 0;
+
+		/**
+		 * @brief   Get access to the raw data. Use with caution.
+		 * @return  pointer to the raw data
+		 * @see     <http://reference.wolfram.com/language/LibraryLink/ref/callback/MNumericArray_getData.html>
+		 */
+		virtual void* rawData() const = 0;
+	};
+
+	/**
+	*  @brief Abstract class that defines a basic set of operations on a tensor
+	*/
+	struct TensorInterface {
+		/**
+		 * @brief   Get rank
+		 * @return  number of dimensions in this tensor
+		 * @see     <http://reference.wolfram.com/language/LibraryLink/ref/callback/MTensor_getRank.html>
+		 */
+		virtual mint getRank() const = 0;
+
+		/**
+		 * @brief   Get dimensions
+		 * @return  raw pointer to dimensions of this tensor
+		 * @see     <http://reference.wolfram.com/language/LibraryLink/ref/callback/MTensor_getDimensions.html>
+		 */
+		virtual mint const* getDimensions() const = 0;
+
+		/**
+		 * @brief   Get total length
+		 * @return  total number of elements
+		 * @see     <http://reference.wolfram.com/language/LibraryLink/ref/callback/MTensor_getFlattenedLength.html>
+		 */
+		virtual mint getFlattenedLength() const = 0;
+
+		/**
+		 * @brief   Get the data type of this tensor
+		 * @return  type of elements (MType_Integer, MType_Real or MType_Complex)
+		 * @see 	<http://reference.wolfram.com/language/LibraryLink/ref/callback/MTensor_getType.html>
+		 */
+		virtual mint type() const = 0;
+
+		/**
+		 * @brief   Get raw pointer to the data of this tensor
 		 */
 		virtual void* rawData() const = 0;
 	};
