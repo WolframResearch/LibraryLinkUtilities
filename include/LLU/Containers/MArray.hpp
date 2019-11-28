@@ -56,13 +56,6 @@ namespace LLU {
 		explicit MArray(const MArray<U>& other) : dims(other.dims) {}
 
 		/**
-		 *	@brief Get total number of elements in the container
-		 **/
-		mint size() const noexcept {
-			return getSize();
-		}
-
-		/**
 		 *	@brief Get container rank
 		 **/
 		mint rank() const noexcept {

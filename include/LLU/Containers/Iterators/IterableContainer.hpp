@@ -44,6 +44,13 @@ public:
 	}
 
 	/**
+	 *	@brief Get total number of elements in the container
+	 **/
+	mint size() const noexcept {
+		return getSize();
+	}
+
+	/**
 	 *	@brief Get iterator at the beginning of underlying data
 	 **/
 	iterator begin() noexcept {
