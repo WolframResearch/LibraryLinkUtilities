@@ -32,6 +32,7 @@ TestExecute[
 	EmptyWrapper = SafeLibraryFunction["EmptyWrapper", {}, "Void" ];
 
 	ImageNegate = SafeLibraryFunction["ImageNegate", { LibraryDataType[Image | Image3D] }, LibraryDataType[Image | Image3D] ];
+	NegateImages = SafeLibraryFunction["NegateImages", { "DataStore" }, "DataStore"];
 
 	ImageColumnCount = SafeLibraryFunction["ImageColumnCount", { LibraryDataType[Image | Image3D] }, Integer ];
 	ImageRowCount = SafeLibraryFunction["ImageRowCount", { LibraryDataType[Image | Image3D] }, Integer ];
@@ -785,3 +786,14 @@ ExactTest[
 	,
 	TestID -> "ImageTestSuite-20191127-H2I2Z7"
 ];
+
+Test[
+	im1 = Image[{{0., .3, .42, .99, .67}, {0., .5, .8, .31, .2}}, "Real32"];
+	im2 = Image3D[{{{65, 0}, {34, 56}, {233, 1}}, {{255, 10}, {9, 0}, {55, 52}}}, "Byte"];
+	im3 = Image[{{0.1, 0.2, 0.3}, {0.4, 0.5, 0.6}, {0.7, 0.7, 0.9}, {0., 0.8, 0.}}, "Bit"];
+	List @@ (NegateImages @ Developer`DataStore[im1, im2, im3])
+	,
+	ColorNegate /@ {im1, im2, im3}
+	,
+	TestID -> "ImageTestSuite-20191128-C0N1O1"
+]
