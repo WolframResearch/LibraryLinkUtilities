@@ -1,7 +1,5 @@
 /**
- * @file	Image.hpp
  * @author	Rafal Chojna <rafalc@wolfram.com>
- * @date	November 28, 2019
  * @brief
  */
 #ifndef LLU_CONTAINERS_VIEWS_IMAGE_HPP

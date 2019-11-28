@@ -18,47 +18,6 @@ namespace LLU {
 	using GenericNumericArray = MContainer<MArgumentType::NumericArray, PassingMode>;
 
 	/**
-	 * @brief   Simple, light-weight, non-owning wrappper over MNumericArray.
-	 *
-	 * Intended for use in functions that only need to access MNumericArray metadata, where it can alleviate the need for introducing template parameters
-	 * for MNumericArray passing mode (like in GenericNumericArray) or data type (like in NumericArray class).
-	 */
-	class NumericArrayView : public NumericArrayInterface {
-	public:
-		NumericArrayView() = default;
-
-		template<class Passing>
-		/* implicit */ NumericArrayView(const GenericNumericArray<Passing>& gNA) : na {gNA.getContainer()} {}
-
-		/// @copydoc NumericArrayInterface::getRank()
-		mint getRank() const override {
-			return LibraryData::NumericArrayAPI()->MNumericArray_getRank(na);
-		}
-
-		/// @copydoc NumericArrayInterface::getDimensions()
-		mint const* getDimensions() const override {
-			return LibraryData::NumericArrayAPI()->MNumericArray_getDimensions(na);
-		}
-
-		/// @copydoc NumericArrayInterface::getFlattenedLength()
-		mint getFlattenedLength() const override {
-			return LibraryData::NumericArrayAPI()->MNumericArray_getFlattenedLength(na);
-		}
-
-		/// @copydoc NumericArrayInterface::type()
-		numericarray_data_t type() const override {
-			return LibraryData::NumericArrayAPI()->MNumericArray_getType(na);
-		}
-
-		/// @copydoc NumericArrayInterface::rawData()
-		void* rawData() const noexcept override {
-			return LibraryData::NumericArrayAPI()->MNumericArray_getData(na);
-		}
-	private:
-		MNumericArray na = nullptr;
-	};
-
-	/**
 	 *  @brief  MContainer specialization for MNumericArray
 	 *  @tparam PassingMode - passing policy
 	 */
