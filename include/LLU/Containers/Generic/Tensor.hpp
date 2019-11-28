@@ -17,50 +17,6 @@ namespace LLU {
 	/// MContainer specialization for MTensor is called GenericTensor
 	template<class PassingMode>
 	using GenericTensor = MContainer<MArgumentType::Tensor, PassingMode>;
-
-	/**
-	 * @brief   Simple, light-weight, non-owning wrappper over MTensor.
-	 *
-	 * Intended for use in functions that only need to access MTensor metadata, where it can alleviate the need for introducing template parameters
-	 * for MTensor passing mode (like in GenericTensor) or data type (like in Tensor class).
-	 */
-	class TensorView : public TensorInterface {
-	public:
-		TensorView() = default;
-
-		template<class Passing>
-		/* implicit */ TensorView(const GenericTensor<Passing>& gTen) : t {gTen.getContainer()} {}
-
-		/// @copydoc TensorInterface::getRank()
-		mint getRank() const override {
-			return LibraryData::API()->MTensor_getRank(t);
-		}
-
-		/// @copydoc TensorInterface::getDimensions()
-		mint const* getDimensions() const override {
-			return LibraryData::API()->MTensor_getDimensions(t);
-		}
-
-		/// @copydoc TensorInterface::getFlattenedLength()
-		mint getFlattenedLength() const override {
-			return LibraryData::API()->MTensor_getFlattenedLength(t);
-		}
-
-		/// @copydoc TensorInterface::type()
-		mint type() const override {
-			return LibraryData::API()->MTensor_getType(t);
-		}
-
-		/// @copybrief TensorInterface::rawData()
-		/// @note MTensor does not offer a type-independent function to access raw data, so we access via a function specific to real-valued tensors
-		/// and do a reinterpret_cast. Using such obtained pointer may result in undefined behavior.
-		void* rawData() const override {
-			return reinterpret_cast<void*>(LibraryData::API()->MTensor_getRealData(t));
-		}
-
-	private:
-		MTensor t = nullptr;
-	};
 	
 	/**
 	 *  @brief  MContainer specialization for MTensor
