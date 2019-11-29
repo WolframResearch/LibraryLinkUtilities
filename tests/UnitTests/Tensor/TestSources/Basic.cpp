@@ -243,3 +243,11 @@ LLU_LIBRARY_FUNCTION(EmptyView) {
 	LLU::Tensor<mint> t {v.getRank(), v.getFlattenedLength(), reinterpret_cast<mint>(v.rawData()), static_cast<mint>(v.type())};
 	mngr.set(t);
 }
+
+LLU_LIBRARY_FUNCTION(Reverse) {
+	auto naConstant = mngr.getGenericTensor<LLU::Passing::Constant>(0);
+	LLU::asTypedTensor(naConstant, [&mngr](auto&& typedNA) {
+		using T = typename std::remove_reference_t<decltype(typedNA)>::value_type;
+		mngr.set(Tensor<T>(std::crbegin(typedNA), std::crend(typedNA), LLU::MArrayDimensions{typedNA.getDimensions(), typedNA.getRank()}));
+	});
+}

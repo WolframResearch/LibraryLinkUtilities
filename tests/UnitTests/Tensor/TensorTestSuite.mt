@@ -44,6 +44,7 @@ TestExecute[
 
 	IntegerMatrixTranspose = LibraryFunctionLoad[lib, "IntegerMatrixTranspose", {{Integer, 2}}, {Integer, 2}];
 	GetLargest = LibraryFunctionLoad[lib, "GetLargest", {{_, _}, {_, _, "Constant"}, {_, _, "Manual"}}, Integer];
+	ReverseTensor = LibraryFunctionLoad[lib, "Reverse", {{_, _, "Constant"}}, {_, _}];
 ];
 
 Test[
@@ -391,6 +392,23 @@ ExactTest[
 	1
 	,
 	TestID -> "TensorArrayTestSuite-20191127-E8Q1B9"
+];
+
+Test[
+	ReverseTensor[Range[100]]
+	,
+	Reverse @ Range[100]
+	,
+	TestID -> "TensorTestSuite-20191129-A6J2D9"
+];
+
+
+Test[
+	ReverseTensor[{{1.9, 2.8}, {3.7, 4.6}}]
+	,
+	{{4.6, 3.7}, {2.8, 1.9}}
+	,
+	TestID -> "TensorTestSuite-20191129-Y2C7M0"
 ];
 
 EndRequirement[];
