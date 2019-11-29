@@ -397,3 +397,11 @@ LLU_LIBRARY_FUNCTION(SumLargestDimensions) {
 	auto naConstant = mngr.getGenericNumericArray<LLU::Passing::Constant>(1);
 	mngr.set(largestDimension(naAuto) + largestDimension(naConstant));
 }
+
+LLU_LIBRARY_FUNCTION(Reverse) {
+	auto naConstant = mngr.getGenericNumericArray<LLU::Passing::Constant>(0);
+	LLU::asTypedNumericArray(naConstant, [&mngr](auto&& typedNA) {
+		using T = typename std::remove_reference_t<decltype(typedNA)>::value_type;
+		mngr.set(NumericArray<T>(std::crbegin(typedNA), std::crend(typedNA), LLU::MArrayDimensions{typedNA.getDimensions(), typedNA.getRank()}));
+	});
+}

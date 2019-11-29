@@ -23,3 +23,4 @@ CopyThroughTensor = SafeLibraryFunction["CopyThroughTensor", {NumericArray}, Num
 GetLargest = SafeLibraryFunction["GetLargest", {NumericArray, {NumericArray, "Constant"}, {NumericArray, "Manual"}}, Integer];
 EmptyView = SafeLibraryFunction["EmptyView", {}, {Integer, 1}];
 SumLargestDimensions = SafeLibraryFunction["SumLargestDimensions", {NumericArray, {NumericArray, "Constant"}}, Integer];
+ReverseNA = SafeLibraryFunction["Reverse", {{NumericArray, "Constant"}}, NumericArray];

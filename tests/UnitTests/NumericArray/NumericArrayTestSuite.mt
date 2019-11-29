@@ -272,4 +272,21 @@ ExactTest[
 	TestID -> "NumericArrayTestSuite-20191127-V8L4I2"
 ];
 
+
+Test[
+	ReverseNA[NumericArray[Range[100], "UnsignedInteger16"]]
+	,
+	NumericArray[Reverse @ Range[100], "UnsignedInteger16"]
+	,
+	TestID -> "NumericArrayTestSuite-20191129-A6J2D9"
+];
+
+Test[
+	ReverseNA[NumericArray[{{1.9, 2.8}, {3.7, 4.6}}, "Real64"]]
+	,
+	NumericArray[{{4.6, 3.7}, {2.8, 1.9}}, "Real64"]
+	,
+	TestID -> "NumericArrayTestSuite-20191129-Y2C7M0"
+];
+
 EndRequirement[]
