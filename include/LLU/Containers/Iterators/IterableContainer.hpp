@@ -6,7 +6,8 @@
 #ifndef LLU_ITERATORS__ITERABLECONTAINER_HPP
 #define LLU_ITERATORS__ITERABLECONTAINER_HPP
 
-#include<vector>
+#include <iterator>
+#include <vector>
 
 #include "LLU/LibraryData.h"
 
@@ -21,6 +22,12 @@ public:
 
 	/// Constant iterator type
 	using const_iterator = const value_type*;
+
+	/// Reverse iterator type
+	using reverse_iterator = std::reverse_iterator<iterator>;
+
+	/// Constant reverse iterator type
+	using const_reverse_iterator = std::reverse_iterator<const_iterator>;
 
 	/// Reference type
 	using reference = value_type&;
@@ -90,6 +97,48 @@ public:
 	 **/
 	const_iterator cend() const noexcept {
 		return getData() + getSize();
+	}
+
+	/**
+	 *	@brief Get iterator at the beginning of underlying data
+	 **/
+	reverse_iterator rbegin() noexcept {
+		return std::make_reverse_iterator(end());
+	}
+
+	/**
+	 *	@brief Get constant iterator at the beginning of underlying data
+	 **/
+	const_reverse_iterator rbegin() const noexcept {
+		return std::make_reverse_iterator(end());
+	}
+
+	/**
+	 *	@brief Get constant iterator at the beginning of underlying data
+	 **/
+	const_reverse_iterator crbegin() const noexcept {
+		return std::make_reverse_iterator(cend());
+	}
+
+	/**
+	 *	@brief Get iterator after the end of underlying data
+	 **/
+	reverse_iterator rend() noexcept {
+		return std::make_reverse_iterator(begin());
+	}
+
+	/**
+	 *	@brief Get constant iterator after the end of underlying data
+	 **/
+	const_reverse_iterator rend() const noexcept {
+		return std::make_reverse_iterator(begin());
+	}
+
+	/**
+	 *	@brief Get constant iterator after the end of underlying data
+	 **/
+	const_reverse_iterator crend() const noexcept {
+		return std::make_reverse_iterator(cbegin());
 	}
 
 	/**
