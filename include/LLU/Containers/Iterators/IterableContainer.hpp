@@ -36,6 +36,15 @@ public:
 	using const_reference = const value_type&;
 
 public:
+
+	// Provide special member functions
+	IterableContainer() = default;
+	virtual ~IterableContainer() = default;
+	IterableContainer(const IterableContainer&) = default;
+	IterableContainer& operator=(const IterableContainer&) = default;
+	IterableContainer(IterableContainer&&) noexcept = default;
+	IterableContainer& operator=(IterableContainer&&) noexcept = default;
+	
 	/**
 	 *	@brief Get raw pointer to underlying data
 	 **/

@@ -78,7 +78,7 @@ namespace LLU {
 		}
 
 		/// @copydoc ImageInterface::type()
-		imagedata_t type() const override {
+		imagedata_t type() const final {
 			return LibraryData::ImageAPI()->MImage_getDataType(m);
 		}
 

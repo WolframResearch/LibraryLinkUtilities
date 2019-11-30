@@ -15,6 +15,15 @@ namespace LLU {
 	*  @brief Abstract class that defines a basic set of operations on an image
 	 */
 	struct ImageInterface {
+		
+		// Provide special member functions
+		ImageInterface() = default;
+		virtual ~ImageInterface() = default;
+		ImageInterface(const ImageInterface&) = default;
+		ImageInterface& operator=(const ImageInterface&) = default;
+		ImageInterface(ImageInterface&&) = default;
+		ImageInterface& operator=(ImageInterface&&) = default;
+		
 		/**
 		 *   @brief Get colorspace which describes how colors are represented as numbers
 		 *   @see <http://reference.wolfram.com/language/LibraryLink/ref/callback/MImage_getColorSpace.html>
@@ -93,6 +102,15 @@ namespace LLU {
 	*  @brief Abstract class that defines a basic set of operations on a numeric array
 	*/
 	struct NumericArrayInterface {
+
+		// Provide special member functions
+		NumericArrayInterface() = default;
+		virtual ~NumericArrayInterface() = default;
+		NumericArrayInterface(const NumericArrayInterface&) = default;
+		NumericArrayInterface& operator=(const NumericArrayInterface&) = default;
+		NumericArrayInterface(NumericArrayInterface&&) = default;
+		NumericArrayInterface& operator=(NumericArrayInterface&&) = default;
+
 		/**
 		 * @brief   Get rank
 		 * @return  number of dimensions in the array
@@ -133,6 +151,15 @@ namespace LLU {
 	*  @brief Abstract class that defines a basic set of operations on a tensor
 	*/
 	struct TensorInterface {
+
+		// Provide special member functions
+		TensorInterface() = default;
+		virtual ~TensorInterface() = default;
+		TensorInterface(const TensorInterface&) = default;
+		TensorInterface& operator=(const TensorInterface&) = default;
+		TensorInterface(TensorInterface&&) = default;
+		TensorInterface& operator=(TensorInterface&&) = default;
+
 		/**
 		 * @brief   Get rank
 		 * @return  number of dimensions in this tensor

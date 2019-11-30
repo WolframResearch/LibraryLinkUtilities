@@ -42,7 +42,7 @@ namespace LLU {
 		}
 
 		/// @copydoc TensorInterface::type()
-		mint type() const override {
+		mint type() const final {
 			return LibraryData::API()->MTensor_getType(t);
 		}
 

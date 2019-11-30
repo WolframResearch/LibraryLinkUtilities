@@ -42,7 +42,7 @@ namespace LLU {
 		}
 
 		/// @copydoc NumericArrayInterface::type()
-		numericarray_data_t type() const override {
+		numericarray_data_t type() const final {
 			return LibraryData::NumericArrayAPI()->MNumericArray_getType(na);
 		}
 
