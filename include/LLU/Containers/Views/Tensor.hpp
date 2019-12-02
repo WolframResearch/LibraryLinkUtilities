@@ -1,6 +1,6 @@
 /**
  * @author	Rafal Chojna <rafalc@wolfram.com>
- * @brief
+ * @brief   Definition and implementation of TensorView and TypedTensorView.
  */
 #ifndef LLU_CONTAINERS_VIEWS_TENSOR_HPP
 #define LLU_CONTAINERS_VIEWS_TENSOR_HPP

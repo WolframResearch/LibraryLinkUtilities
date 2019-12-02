@@ -1,7 +1,7 @@
 /**
  * @file	IterableContainer.hpp
  * @author	Rafal Chojna <rafalc@wolfram.com>
- * @brief
+ * @brief   Implementation of the IterableContainer class.
  */
 #ifndef LLU_ITERATORS__ITERABLECONTAINER_HPP
 #define LLU_ITERATORS__ITERABLECONTAINER_HPP
@@ -11,6 +11,10 @@
 
 #include "LLU/LibraryData.h"
 
+/**
+ * @brief   Abstract class that provides iterators (c/r/begin and c/r/end methods) and subscript operator for any contiguous container
+ * @tparam  T - underlying data type
+ */
 template<typename T>
 class IterableContainer {
 public:

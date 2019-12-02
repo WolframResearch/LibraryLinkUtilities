@@ -1,6 +1,6 @@
 /**
  * @author	Rafal Chojna <rafalc@wolfram.com>
- * @brief
+ * @brief   Definition and implementation of ImageView and TypedImageView.
  */
 #ifndef LLU_CONTAINERS_VIEWS_IMAGE_HPP
 #define LLU_CONTAINERS_VIEWS_IMAGE_HPP
