@@ -128,12 +128,12 @@ namespace LLU {
 	template<typename ImageT, typename F>
 	auto asTypedImage(ImageT&& img, F&& callable) {
 		switch (img.type()) {
-			case MImage_Type_Undef: ErrorManager::throwException(ErrorName::ImageTypeError);
 			case MImage_Type_Bit: return std::forward<F>(callable)(ImageTypedView<std::int8_t>(std::forward<ImageT>(img)));
 			case MImage_Type_Bit8: return std::forward<F>(callable)(ImageTypedView<std::uint8_t>(std::forward<ImageT>(img)));
 			case MImage_Type_Bit16: return std::forward<F>(callable)(ImageTypedView<std::uint16_t>(std::forward<ImageT>(img)));
 			case MImage_Type_Real32: return std::forward<F>(callable)(ImageTypedView<float>(std::forward<ImageT>(img)));
 			case MImage_Type_Real: return std::forward<F>(callable)(ImageTypedView<double>(std::forward<ImageT>(img)));
+			default: ErrorManager::throwException(ErrorName::ImageTypeError);
 		}
 	}
 

@@ -92,7 +92,6 @@ namespace LLU {
 	template<typename NumericArrayT, typename F>
 	auto asTypedNumericArray(NumericArrayT&& na, F&& callable) {
 		switch (na.type()) {
-			case MNumericArray_Type_Undef: ErrorManager::throwException(ErrorName::NumericArrayTypeError);
 			case MNumericArray_Type_Bit8: return std::forward<F>(callable)(NumericArrayTypedView<std::int8_t> {std::forward<NumericArrayT>(na)});
 			case MNumericArray_Type_UBit8: return std::forward<F>(callable)(NumericArrayTypedView<std::uint8_t> {std::forward<NumericArrayT>(na)});
 			case MNumericArray_Type_Bit16: return std::forward<F>(callable)(NumericArrayTypedView<std::int16_t> {std::forward<NumericArrayT>(na)});
@@ -103,8 +102,11 @@ namespace LLU {
 			case MNumericArray_Type_UBit64: return std::forward<F>(callable)(NumericArrayTypedView<std::uint64_t> {std::forward<NumericArrayT>(na)});
 			case MNumericArray_Type_Real32: return std::forward<F>(callable)(NumericArrayTypedView<float> {std::forward<NumericArrayT>(na)});
 			case MNumericArray_Type_Real64: return std::forward<F>(callable)(NumericArrayTypedView<double> {std::forward<NumericArrayT>(na)});
-			case MNumericArray_Type_Complex_Real32: return std::forward<F>(callable)(NumericArrayTypedView<std::complex<float>> {std::forward<NumericArrayT>(na)});
-			case MNumericArray_Type_Complex_Real64: return std::forward<F>(callable)(NumericArrayTypedView<std::complex<double>> {std::forward<NumericArrayT>(na)});
+			case MNumericArray_Type_Complex_Real32:
+				return std::forward<F>(callable)(NumericArrayTypedView<std::complex<float>> {std::forward<NumericArrayT>(na)});
+			case MNumericArray_Type_Complex_Real64:
+				return std::forward<F>(callable)(NumericArrayTypedView<std::complex<double>> {std::forward<NumericArrayT>(na)});
+			default: ErrorManager::throwException(ErrorName::NumericArrayTypeError);
 		}
 	}
 
