@@ -13,6 +13,7 @@ namespace ErrorCode = LLU::ErrorCode;
 using LLU::LibraryLinkError;
 using LLU::MArgumentManager;
 using LLU::NumericArray;
+using LLU::NumericArrayView;
 
 static std::unique_ptr<LLU::GenericNumericArray<LLU::Passing::Shared>> shared_numeric;
 
@@ -360,4 +361,47 @@ LIBRARY_LINK_FUNCTION(CopyThroughTensor) {
 		err = e.which();
 	}
 	return err;
+}
+
+auto getLargest(const std::vector<NumericArrayView>& nas) {
+	return std::max_element(std::cbegin(nas), std::cend(nas),
+							[](const NumericArrayView& na1, const NumericArrayView& na2) { return na1.getFlattenedLength() < na2.getFlattenedLength(); });
+}
+
+LLU_LIBRARY_FUNCTION(GetLargest) {
+	auto naAuto = mngr.getNumericArray<std::uint16_t >(0);
+	auto naConstant = mngr.getGenericNumericArray<LLU::Passing::Constant>(1);
+	auto naManual = mngr.getNumericArray<double, LLU::Passing::Manual>(2);
+	std::vector<NumericArrayView> nas {NumericArrayView {naAuto}, NumericArrayView {naConstant}, NumericArrayView {naManual}};
+	auto largest = getLargest(nas);
+	mngr.set(static_cast<mint>(std::distance(std::cbegin(nas), largest)));
+
+	// perform some random assignments and copies to see it they compile
+	std::swap(nas[0], nas[1]);
+	NumericArrayView iv = std::move(nas[2]);
+	nas[2] = iv;
+}
+
+LLU_LIBRARY_FUNCTION(EmptyView) {
+	NumericArrayView v;
+	LLU::Tensor<mint> t {v.getRank(), v.getFlattenedLength(), reinterpret_cast<mint>(v.rawData()), static_cast<mint>(v.type())};
+	mngr.set(t);
+}
+
+mint largestDimension(NumericArrayView na) {
+	return *std::max_element(na.getDimensions(), na.getDimensions() + na.getRank());
+}
+
+LLU_LIBRARY_FUNCTION(SumLargestDimensions) {
+	auto naAuto = mngr.getNumericArray<std::uint16_t>(0);
+	auto naConstant = mngr.getGenericNumericArray<LLU::Passing::Constant>(1);
+	mngr.set(largestDimension(naAuto) + largestDimension(naConstant));
+}
+
+LLU_LIBRARY_FUNCTION(Reverse) {
+	auto naConstant = mngr.getGenericNumericArray<LLU::Passing::Constant>(0);
+	LLU::asTypedNumericArray(naConstant, [&mngr](auto&& typedNA) {
+		using T = typename std::remove_reference_t<decltype(typedNA)>::value_type;
+		mngr.set(NumericArray<T>(std::crbegin(typedNA), std::crend(typedNA), LLU::MArrayDimensions{typedNA.getDimensions(), typedNA.getRank()}));
+	});
 }

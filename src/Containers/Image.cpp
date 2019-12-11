@@ -18,9 +18,6 @@ namespace LLU {
 	//
 
 	template<>
-	const imagedata_t TypedImage<int8_t>::type = MImage_Type_Bit;
-
-	template<>
 	int8_t TypedImage<int8_t>::getValueAt(mint* position, mint channel) const {
 		raw_t_bit res;
 		if (LibraryData::ImageAPI()->MImage_getBit(this->getInternal(), position, channel, &res)) {
@@ -39,9 +36,6 @@ namespace LLU {
 	//
 	//	Template specializations for Byte images
 	//
-
-	template<>
-	const imagedata_t TypedImage<uint8_t>::type = MImage_Type_Bit8;
 
 	template<>
 	uint8_t TypedImage<uint8_t>::getValueAt(mint* position, mint channel) const {
@@ -64,9 +58,6 @@ namespace LLU {
 	//
 
 	template<>
-	const imagedata_t TypedImage<uint16_t>::type = MImage_Type_Bit16;
-
-	template<>
 	uint16_t TypedImage<uint16_t>::getValueAt(mint* position, mint channel) const {
 		raw_t_ubit16 res;
 		if (LibraryData::ImageAPI()->MImage_getBit16(this->getInternal(), position, channel, &res)) {
@@ -87,9 +78,6 @@ namespace LLU {
 	//
 
 	template<>
-	const imagedata_t TypedImage<float>::type = MImage_Type_Real32;
-
-	template<>
 	float TypedImage<float>::getValueAt(mint* position, mint channel) const {
 		raw_t_real32 res;
 		if (LibraryData::ImageAPI()->MImage_getReal32(this->getInternal(), position, channel, &res)) {
@@ -108,9 +96,6 @@ namespace LLU {
 	//
 	//	Template specializations for Real images
 	//
-
-	template<>
-	const imagedata_t TypedImage<double>::type = MImage_Type_Real;
 
 	template<>
 	double TypedImage<double>::getValueAt(mint* position, mint channel) const {

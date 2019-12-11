@@ -13,7 +13,7 @@ if(APPLE AND NOT DEFINED ENV{MACOSX_DEPLOYMENT_TARGET})
 	set(CMAKE_OSX_DEPLOYMENT_TARGET "10.12" CACHE STRING "Minimum OS X deployment version")
 endif()
 
-project(LLU VERSION 2.0.0 LANGUAGES CXX)
+project(LLU VERSION 2.1.0 LANGUAGES CXX)
 
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 
@@ -76,7 +76,6 @@ if(NOT TARGET LLU)
 		${LLU_SOURCE_DIR}/ErrorLog/LibraryLinkError.cpp
 		${LLU_SOURCE_DIR}/MArgumentManager.cpp
 		${LLU_SOURCE_DIR}/Containers/MArrayDimensions.cpp
-		${LLU_SOURCE_DIR}/Containers/NumericArray.cpp
 		${LLU_SOURCE_DIR}/Containers/Tensor.cpp
 		${LLU_SOURCE_DIR}/ML/Get.cpp
 		${LLU_SOURCE_DIR}/ML/Put.cpp

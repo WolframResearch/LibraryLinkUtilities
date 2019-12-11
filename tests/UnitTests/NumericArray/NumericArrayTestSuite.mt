@@ -249,4 +249,52 @@ Test[
 	TestID -> "NumericArrayTestSuite-20190910-I3D6Q7"
 ];
 
+ExactTest[
+	GetLargest[
+		NumericArray[RandomInteger[1000, {100, 100}], "UnsignedInteger16"],
+		NumericArray[RandomInteger[1000, {200, 100}], "Integer32"],
+		NumericArray[RandomReal[1., {200, 99}], "Real64"]
+	]
+	,
+	1
+	,
+	TestID -> "NumericArrayTestSuite-20191127-E8Q1B9"
+];
+
+ExactTest[
+	EmptyView[]
+	,
+	{-1, -1, 0, 0}
+	,
+	TestID -> "NumericArrayTestSuite-20191127-H2I2Z7"
+];
+
+ExactTest[
+	SumLargestDimensions[
+		NumericArray[RandomInteger[1000, {100, 50}], "UnsignedInteger16"],
+		NumericArray[RandomInteger[1000, {200, 100}], "Integer32"]
+	]
+	,
+	300
+	,
+	TestID -> "NumericArrayTestSuite-20191127-V8L4I2"
+];
+
+
+Test[
+	ReverseNA[NumericArray[Range[100], "UnsignedInteger16"]]
+	,
+	NumericArray[Reverse @ Range[100], "UnsignedInteger16"]
+	,
+	TestID -> "NumericArrayTestSuite-20191129-A6J2D9"
+];
+
+Test[
+	ReverseNA[NumericArray[{{1.9, 2.8}, {3.7, 4.6}}, "Real64"]]
+	,
+	NumericArray[{{4.6, 3.7}, {2.8, 1.9}}, "Real64"]
+	,
+	TestID -> "NumericArrayTestSuite-20191129-Y2C7M0"
+];
+
 EndRequirement[]

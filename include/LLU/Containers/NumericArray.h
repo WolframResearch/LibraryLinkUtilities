@@ -32,14 +32,6 @@ namespace LLU {
 	class TypedNumericArray : public MArray<T> {
 	public:
 		using MArray<T>::MArray;
-
-		/**
-		 *   @brief	Return matching type of MNumericArray
-		 **/
-		static numericarray_data_t getType() noexcept {
-			return type;
-		}
-
 	private:
 		/**
 		 *   @brief Return raw pointer to underlying data
@@ -49,9 +41,6 @@ namespace LLU {
 		}
 
 		virtual MNumericArray getInternal() const = 0;
-
-		/// NumericArray data type matching template parameter T
-		static const numericarray_data_t type;
 	};
 
 	/**
@@ -203,14 +192,14 @@ namespace LLU {
 
 	template<typename T, class PassingMode>
 	NumericArray<T, PassingMode>::NumericArray(T init, MArrayDimensions dims)
-		: TypedNumericArray<T>(std::move(dims)), GenericBase(TypedNumericArray<T>::getType(), this->rank(), this->dims.data()) {
+		: TypedNumericArray<T>(std::move(dims)), GenericBase(NumericArrayType<T>, this->rank(), this->dims.data()) {
 		std::fill(this->begin(), this->end(), init);
 	}
 
 	template<typename T, class PassingMode>
 	template<class InputIt, typename>
 	NumericArray<T, PassingMode>::NumericArray(InputIt first, InputIt last, MArrayDimensions dims)
-		: TypedNumericArray<T>(std::move(dims)), GenericBase(TypedNumericArray<T>::getType(), this->rank(), this->dims.data()) {
+		: TypedNumericArray<T>(std::move(dims)), GenericBase(NumericArrayType<T>, this->rank(), this->dims.data()) {
 		if (std::distance(first, last) != this->dims.flatCount())
 			ErrorManager::throwException(ErrorName::NumericArrayNewError, "Length of data range does not match specified dimensions");
 		std::copy(first, last, this->begin());
@@ -218,7 +207,7 @@ namespace LLU {
 
 	template<typename T, class PassingMode>
 	NumericArray<T, PassingMode>::NumericArray(GenericBase na) : TypedNumericArray<T>({na.getDimensions(), na.getRank()}), GenericBase(std::move(na)) {
-		if (TypedNumericArray<T>::getType() != GenericBase::type())
+		if (NumericArrayType<T> != GenericBase::type())
 			ErrorManager::throwException(ErrorName::NumericArrayTypeError);
 	}
 
@@ -228,7 +217,7 @@ namespace LLU {
 	template<typename T, class PassingMode>
 	template<class P>
 	NumericArray<T, PassingMode>::NumericArray(const GenericNumericArray<P>& other, NA::ConversionMethod method, double param)
-		: TypedNumericArray<T>({other.getDimensions(), other.getRank()}), GenericBase(other.convert(this->getType(), method, param)) {}
+		: TypedNumericArray<T>({other.getDimensions(), other.getRank()}), GenericBase(other.convert(NumericArrayType<T>, method, param)) {}
 
 } /* namespace LLU */
 

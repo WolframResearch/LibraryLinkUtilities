@@ -20,3 +20,7 @@ testDimensions = `LLU`SafeLibraryFunction["TestDimensions", {{Integer, 1, "Const
 testDimensions2 = `LLU`SafeLibraryFunction["TestDimensions2", {}, "DataStore"];
 FlattenThroughList = `LLU`SafeLibraryFunction["FlattenThroughList", {NumericArray}, NumericArray];
 CopyThroughTensor = `LLU`SafeLibraryFunction["CopyThroughTensor", {NumericArray}, NumericArray];
+GetLargest = `LLU`SafeLibraryFunction["GetLargest", {NumericArray, {NumericArray, "Constant"}, {NumericArray, "Manual"}}, Integer];
+EmptyView = `LLU`SafeLibraryFunction["EmptyView", {}, {Integer, 1}];
+SumLargestDimensions = `LLU`SafeLibraryFunction["SumLargestDimensions", {NumericArray, {NumericArray, "Constant"}}, Integer];
+ReverseNA = `LLU`SafeLibraryFunction["Reverse", {{NumericArray, "Constant"}}, NumericArray];

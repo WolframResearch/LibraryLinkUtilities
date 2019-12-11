@@ -185,56 +185,6 @@ namespace LLU {
 	template<numericarray_data_t rat>
 	using NumericArrayTypeFromEnum = typename NumericArrayFromEnum<rat>::type;
 
-	/**
-	 * @brief Calls an overload of \c f() with template type matching an MNumericArray type \c rat
-	 * @param raType - MNumericArray type
-	 * @param f - any callable structure
-	 * @param args - additional arguments for f::operator()
-	 * @warning This function is a prototype, has not been tested yet and is likely to change in the future.
-	 */
-	template<typename Callable, typename... Args>
-	void applyToNumericArray(numericarray_data_t raType, Callable&& f, Args&&... args) {
-		switch (raType) {
-			case MNumericArray_Type_Bit8:
-				std::forward<Callable>(f).template operator()<NumericArrayTypeFromEnum<MNumericArray_Type_Bit8>>(std::forward<Args>(args)...);
-				break;
-			case MNumericArray_Type_UBit8:
-				std::forward<Callable>(f).template operator()<NumericArrayTypeFromEnum<MNumericArray_Type_UBit8>>(std::forward<Args>(args)...);
-				break;
-			case MNumericArray_Type_Bit16:
-				std::forward<Callable>(f).template operator()<NumericArrayTypeFromEnum<MNumericArray_Type_Bit16>>(std::forward<Args>(args)...);
-				break;
-			case MNumericArray_Type_UBit16:
-				std::forward<Callable>(f).template operator()<NumericArrayTypeFromEnum<MNumericArray_Type_UBit16>>(std::forward<Args>(args)...);
-				break;
-			case MNumericArray_Type_Bit32:
-				std::forward<Callable>(f).template operator()<NumericArrayTypeFromEnum<MNumericArray_Type_Bit32>>(std::forward<Args>(args)...);
-				break;
-			case MNumericArray_Type_UBit32:
-				std::forward<Callable>(f).template operator()<NumericArrayTypeFromEnum<MNumericArray_Type_UBit32>>(std::forward<Args>(args)...);
-				break;
-			case MNumericArray_Type_Bit64:
-				std::forward<Callable>(f).template operator()<NumericArrayTypeFromEnum<MNumericArray_Type_Bit64>>(std::forward<Args>(args)...);
-				break;
-			case MNumericArray_Type_UBit64:
-				std::forward<Callable>(f).template operator()<NumericArrayTypeFromEnum<MNumericArray_Type_UBit64>>(std::forward<Args>(args)...);
-				break;
-			case MNumericArray_Type_Real32:
-				std::forward<Callable>(f).template operator()<NumericArrayTypeFromEnum<MNumericArray_Type_Real32>>(std::forward<Args>(args)...);
-				break;
-			case MNumericArray_Type_Real64:
-				std::forward<Callable>(f).template operator()<NumericArrayTypeFromEnum<MNumericArray_Type_Real64>>(std::forward<Args>(args)...);
-				break;
-			case MNumericArray_Type_Complex_Real32:
-				std::forward<Callable>(f).template operator()<NumericArrayTypeFromEnum<MNumericArray_Type_Complex_Real32>>(std::forward<Args>(args)...);
-				break;
-			case MNumericArray_Type_Complex_Real64:
-				std::forward<Callable>(f).template operator()<NumericArrayTypeFromEnum<MNumericArray_Type_Complex_Real64>>(std::forward<Args>(args)...);
-				break;
-			default: return;
-		}
-	}
-
 	/// Small namespace for NumericArray related utilities
 	namespace NA {
 		/**
@@ -270,6 +220,120 @@ namespace LLU {
 			return "Undefined";
 		}
 	}
+
+	/// @cond
+	template<typename T>
+	struct ImageTypeImpl {
+		static constexpr imagedata_t type = MImage_Type_Undef;
+	};
+	template<>
+	struct ImageTypeImpl<int8_t> {
+		static constexpr imagedata_t type = MImage_Type_Bit;
+	};
+	template<>
+	struct ImageTypeImpl<uint8_t> {
+		static constexpr imagedata_t type = MImage_Type_Bit8;
+	};
+	template<>
+	struct ImageTypeImpl<uint16_t> {
+		static constexpr imagedata_t type = MImage_Type_Bit16;
+	};
+	template<>
+	struct ImageTypeImpl<float> {
+		static constexpr imagedata_t type = MImage_Type_Real32;
+	};
+	template<>
+	struct ImageTypeImpl<double> {
+		static constexpr imagedata_t type = MImage_Type_Real;
+	};
+	/// @endcond
+
+
+	/// Utility variable template that matches a C++ type with a corresponding MImage data type
+	template<typename T>
+	constexpr imagedata_t ImageType = ImageTypeImpl<T>::type;
+
+	/// @cond
+	template<typename T>
+	struct NumericArrayTypeImpl {
+		static constexpr numericarray_data_t type = MNumericArray_Type_Undef;
+	};
+	template<>
+	struct NumericArrayTypeImpl<int8_t> {
+		static constexpr numericarray_data_t type = MNumericArray_Type_Bit8;
+	};
+	template<>
+	struct NumericArrayTypeImpl<uint8_t> {
+		static constexpr numericarray_data_t type = MNumericArray_Type_UBit8;
+	};
+	template<>
+	struct NumericArrayTypeImpl<int16_t> {
+		static constexpr numericarray_data_t type = MNumericArray_Type_Bit16;
+	};
+	template<>
+	struct NumericArrayTypeImpl<uint16_t> {
+		static constexpr numericarray_data_t type = MNumericArray_Type_UBit16;
+	};
+	template<>
+	struct NumericArrayTypeImpl<int32_t> {
+		static constexpr numericarray_data_t type = MNumericArray_Type_Bit32;
+	};
+	template<>
+	struct NumericArrayTypeImpl<uint32_t> {
+		static constexpr numericarray_data_t type = MNumericArray_Type_UBit32;
+	};
+	template<>
+	struct NumericArrayTypeImpl<int64_t> {
+		static constexpr numericarray_data_t type = MNumericArray_Type_Bit64;
+	};
+	template<>
+	struct NumericArrayTypeImpl<uint64_t> {
+		static constexpr numericarray_data_t type = MNumericArray_Type_UBit64;
+	};
+	template<>
+	struct NumericArrayTypeImpl<float> {
+		static constexpr numericarray_data_t type = MNumericArray_Type_Real32;
+	};
+	template<>
+	struct NumericArrayTypeImpl<double> {
+		static constexpr numericarray_data_t type = MNumericArray_Type_Real64;
+	};
+	template<>
+	struct NumericArrayTypeImpl<std::complex<float>> {
+		static constexpr numericarray_data_t type = MNumericArray_Type_Complex_Real32;
+	};
+	template<>
+	struct NumericArrayTypeImpl<std::complex<double>> {
+		static constexpr numericarray_data_t type = MNumericArray_Type_Complex_Real64;
+	};
+	/// @endcond
+
+	/// Utility structure that matches a C++ type with a corresponding MNumericArray data type
+	template<typename T>
+	constexpr numericarray_data_t NumericArrayType = NumericArrayTypeImpl<T>::type;
+
+	/// @cond
+	template<typename T>
+	struct TensorTypeImpl {
+		static constexpr mint type = MType_Undef;
+	};
+	template<>
+	struct TensorTypeImpl<mint> {
+		static constexpr mint type = MType_Integer;
+	};
+	template<>
+	struct TensorTypeImpl<double> {
+		static constexpr mint type = MType_Real;
+	};
+	template<>
+	struct TensorTypeImpl<std::complex<double>> {
+		static constexpr mint type = MType_Complex;
+	};
+	/// @endcond
+
+	/// Utility structure that matches a C++ type with a corresponding MTensor data type
+	template<typename T>
+	constexpr mint TensorType = TensorTypeImpl<T>::type;
 
 } /* namespace LLU */
 

@@ -7,6 +7,7 @@
 
 #include "LLU/LLU.h"
 #include "LLU/LibraryLinkFunctionMacro.h"
+#include <LLU/Containers/Views/Tensor.hpp>
 
 using namespace LLU;
 
@@ -215,4 +216,38 @@ LIBRARY_LINK_FUNCTION(CopyThroughNumericArray) {
 	mngr.set(t2);
 
 	return ErrorCode::NoError;
+}
+
+auto getLargest(const std::vector<TensorView>& tens) {
+	return std::max_element(std::cbegin(tens), std::cend(tens),
+							[](const TensorView& ten1, const TensorView& ten2) { return ten1.getFlattenedLength() < ten2.getFlattenedLength(); });
+}
+
+LLU_LIBRARY_FUNCTION(GetLargest) {
+	auto tenAuto = mngr.getTensor<mint>(0);
+	auto tenConstant = mngr.getGenericTensor<LLU::Passing::Constant>(1);
+	auto tenManual = mngr.getTensor<double, LLU::Passing::Manual>(2);
+	std::vector<TensorView> tens {TensorView {tenAuto}, TensorView {tenConstant}, TensorView {tenManual}};
+	auto largest = getLargest(tens);
+	mngr.set(static_cast<mint>(std::distance(std::cbegin(tens), largest)));
+
+	// perform some random assignments and copies to see it they compile
+	std::swap(tens[0], tens[1]);
+	TensorView iv = std::move(tens[2]);
+	tens[2] = iv;
+}
+
+// The following will crash, even though the same test for Image and NumericArray returns consistent results
+LLU_LIBRARY_FUNCTION(EmptyView) {
+	TensorView v;
+	LLU::Tensor<mint> t {v.getRank(), v.getFlattenedLength(), reinterpret_cast<mint>(v.rawData()), static_cast<mint>(v.type())};
+	mngr.set(t);
+}
+
+LLU_LIBRARY_FUNCTION(Reverse) {
+	auto naConstant = mngr.getGenericTensor<LLU::Passing::Constant>(0);
+	LLU::asTypedTensor(naConstant, [&mngr](auto&& typedNA) {
+		using T = typename std::remove_reference_t<decltype(typedNA)>::value_type;
+		mngr.set(Tensor<T>(std::crbegin(typedNA), std::crend(typedNA), LLU::MArrayDimensions{typedNA.getDimensions(), typedNA.getRank()}));
+	});
 }

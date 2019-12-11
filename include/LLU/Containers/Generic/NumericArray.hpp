@@ -1,11 +1,12 @@
 /**
  * @file
- * @brief
+ * @brief GenericNumericArray definition and implementation
  */
 #ifndef LLU_INCLUDE_LLU_CONTAINERS_GENERIC_NUMERICARRAY
 #define LLU_INCLUDE_LLU_CONTAINERS_GENERIC_NUMERICARRAY
 
 #include "LLU/Containers/Generic/Base.hpp"
+#include "LLU/Containers/Interfaces.h"
 
 namespace LLU {
 
@@ -21,7 +22,7 @@ namespace LLU {
 	 *  @tparam PassingMode - passing policy
 	 */
 	template<class PassingMode>
-	class MContainer<MArgumentType::NumericArray, PassingMode> : public MContainerBase<MArgumentType::NumericArray, PassingMode> {
+	class MContainer<MArgumentType::NumericArray, PassingMode> : public NumericArrayInterface, public MContainerBase<MArgumentType::NumericArray, PassingMode> {
 	public:
 		/// Inherit constructors from MContainerBase
 		using MContainerBase<MArgumentType::NumericArray, PassingMode>::MContainerBase;
@@ -97,48 +98,28 @@ namespace LLU {
 			return newNA;
 		}
 
-		/**
-		 * @brief   Get the rank of this GenericNumericArray.
-		 * @return  number of dimensions in this GenericNumericArray
-		 * @see     <http://reference.wolfram.com/language/LibraryLink/ref/callback/MNumericArray_getRank.html>
-		 */
-		mint getRank() const noexcept {
+		/// @copydoc NumericArrayInterface::getRank()
+		mint getRank() const override {
 			return LibraryData::NumericArrayAPI()->MNumericArray_getRank(this->getContainer());
 		}
 
-		/**
-		 * @brief   Get dimensions of this GenericNumericArray.
-		 * @return  raw pointer to dimensions of this GenericNumericArray
-		 * @see     <http://reference.wolfram.com/language/LibraryLink/ref/callback/MNumericArray_getDimensions.html>
-		 */
-		mint const* getDimensions() const {
+		/// @copydoc NumericArrayInterface::getDimensions()
+		mint const* getDimensions() const override {
 			return LibraryData::NumericArrayAPI()->MNumericArray_getDimensions(this->getContainer());
 		}
 
-		/**
-		 * @brief   Get the length of this GenericNumericArray.
-		 * @return  total number of elements
-		 * @see     <http://reference.wolfram.com/language/LibraryLink/ref/callback/MNumericArray_getFlattenedLength.html>
-		 */
-		mint getFlattenedLength() const {
+		/// @copydoc NumericArrayInterface::getFlattenedLength()
+		mint getFlattenedLength() const override {
 			return LibraryData::NumericArrayAPI()->MNumericArray_getFlattenedLength(this->getContainer());
 		}
 
-		/**
-		 * @brief   Get the type of this GenericNumericArray
-		 * @return  type of elements (see definition of \c numericarray_data_t)
-		 * @see 	<http://reference.wolfram.com/language/LibraryLink/ref/callback/MNumericArray_getDataType.html>
-		 */
-		numericarray_data_t type() const {
+		/// @copydoc NumericArrayInterface::type()
+		numericarray_data_t type() const override {
 			return LibraryData::NumericArrayAPI()->MNumericArray_getType(this->getContainer());
 		}
 
-		/**
-		 * @brief   Get access to raw MNumericArray data.
-		 * @return  pointer to the raw data
-		 * @see     <http://reference.wolfram.com/language/LibraryLink/ref/callback/MNumericArray_getData.html>
-		 */
-		void* rawData() const noexcept {
+		/// @copydoc NumericArrayInterface::rawData()
+		void* rawData() const noexcept override {
 			return LibraryData::NumericArrayAPI()->MNumericArray_getData(this->getContainer());
 		}
 
