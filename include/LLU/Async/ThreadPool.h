@@ -1,4 +1,5 @@
 /**
+ * @file
  * @author	Rafal Chojna <rafalc@wolfram.com>
  * @brief   Definition of the ThreadPool class.
  */
