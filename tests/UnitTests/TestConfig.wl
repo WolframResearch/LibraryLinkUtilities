@@ -13,13 +13,21 @@ $LLULib = "LLU";
 (* Path to LibraryLinkUtilities shared resources *)
 $LLUSharedDir = FileNameJoin[{$baseDir, "install", "share"}];
 
+(* The majority of unit tests should compile with C++14. For the rest we add a global config variable to modify. *)
+$CppVersion = "c++14";
+
 (* Compilations options for all tests *)
-options = {
+options := {
 	"CleanIntermediate" -> True,
 	"IncludeDirectories" -> { $LLUIncDir },
 	"Libraries" -> { $LLULib },
 	"LibraryDirectories" -> { $LLULibDir },
-	"CompileOptions" -> If[MatchQ[$SystemID, "Windows-x86-64" | "Windows"], "/O2 /EHsc /W3 /std:c++14" , "-O2 -std=c++14 -Wall --pedantic -fvisibility=hidden"],
+	"CompileOptions" ->
+		If[MatchQ[$SystemID, "Windows-x86-64" | "Windows"],
+			"/O2 /EHsc /W3 /std:" <> $CppVersion
+			,
+			"-O2 -Wall --pedantic -fvisibility=hidden -std=" <> $CppVersion
+		],
 	"ShellOutputFunction" -> Print,
 	"ShellCommandFunction" -> Print,
 	"Language" -> "C++"
