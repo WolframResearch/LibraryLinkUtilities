@@ -12,6 +12,7 @@
 #include <functional>
 #include <future>
 #include <thread>
+#include <type_traits>
 #include <vector>
 
 #include "LLU/Async/Queue.h"
@@ -131,13 +132,15 @@ namespace LLU {
 				throw;
 			}
 		}
+
 		~GenericThreadPool() {
 			done = true;
 		}
+
 		template<typename FunctionType>
-		std::future<std::result_of_t<FunctionType()>> submit(FunctionType f) {
-			using result_type = std::result_of_t<FunctionType()>;
-			std::packaged_task<result_type()> task(f);
+		std::future<std::invoke_result_t<FunctionType>> submit(FunctionType&& f) {
+			using result_type = std::invoke_result_t<FunctionType>;
+			std::packaged_task<result_type()> task(std::forward<FunctionType>(f));
 			std::future<result_type> res(task.get_future());
 			if (localWorkQueue) {
 				localWorkQueue->push(TaskType {std::move(task)});
@@ -146,6 +149,7 @@ namespace LLU {
 			}
 			return res;
 		}
+
 		void runPendingTask() {
 			TaskType task;
 			if (popTaskFromLocalQueue(task) || popTaskFromPoolQueue(task) || popTaskFromOtherThreadQueue(task)) {

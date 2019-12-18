@@ -130,7 +130,7 @@ if(NOT TARGET LLU)
 	# tell all targets importing LLU that public part of LLU uses C++14 features
 	target_compile_features(LLU
 		PUBLIC
-			cxx_std_14
+			cxx_std_17
 	)
 
 	#add the include directory for the project
