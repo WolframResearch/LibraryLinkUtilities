@@ -27,6 +27,7 @@ TestExecute[
 
 	RegisterPacletErrors[lib, <||>];
 
+	`LLU`Logger`FormattedLog := `LLU`Logger`LogToString;
 	(* SleepyThreads[n, m, t] spawns n threads and performs m jobs on them, where each job is just sleeping t milliseconds *)
 	SleepyThreads = SafeLibraryFunction["SleepyThreads", {Integer, Integer, Integer}, "Void"]
 ];
