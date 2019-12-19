@@ -37,7 +37,7 @@ namespace LLU {
 
 	public:
 		template<typename F>
-		explicit FunctionWrapper(F&& f) : impl{std::make_unique<TypeErasedCallable<F>>(std::forward<F>(f))} {}
+		explicit FunctionWrapper(F&& f) : impl {std::make_unique<TypeErasedCallable<F>>(std::forward<F>(f))} {}
 
 		template<typename F, typename... Args>
 		explicit FunctionWrapper(F&& f, Args&&... args) {

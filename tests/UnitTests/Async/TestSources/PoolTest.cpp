@@ -17,10 +17,10 @@ namespace {
 	std::mutex logMutex;
 }
 
-#define THREADSAFE_LOG(...) \
-	{ \
+#define THREADSAFE_LOG(...)             \
+	{                                   \
 		std::lock_guard mlg {logMutex}; \
-		LLU_DEBUG(__VA_ARGS__); \
+		LLU_DEBUG(__VA_ARGS__);         \
 	}
 
 EXTERN_C DLLEXPORT int WolframLibrary_initialize(WolframLibraryData libData) {
@@ -31,7 +31,7 @@ EXTERN_C DLLEXPORT int WolframLibrary_initialize(WolframLibraryData libData) {
 LLU_LIBRARY_FUNCTION(SleepyThreads) {
 	auto numThreads = mngr.getInteger<mint>(0);
 	if (numThreads <= 0) {
-		numThreads = std::thread::hardware_concurrency() > 1? std::thread::hardware_concurrency() - 1 : 1;
+		numThreads = std::thread::hardware_concurrency() > 1 ? std::thread::hardware_concurrency() - 1 : 1;
 	}
 	THREADSAFE_LOG("Running on ", numThreads, " threads.")
 	LLU::ThreadPool tp {static_cast<unsigned int>(numThreads)};
