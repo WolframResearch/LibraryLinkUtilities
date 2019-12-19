@@ -1,7 +1,7 @@
 /**
  * @file
  * @author	Rafal Chojna <rafalc@wolfram.com>
- * @brief   Definition of the ThreadPool class.
+ * @brief   Definition of the ThreadPool class, based on A. Williams "C++ Concurrency in Action" 2nd Edition, chapter 9.
  */
 
 #ifndef LLU_ASYNC_THREADPOOL_H
@@ -123,7 +123,9 @@ namespace LLU {
 
 		explicit GenericThreadPool(unsigned threadCount) : done(false), joiner(threads) {
 			try {
-				queues.resize(threadCount);
+				for (unsigned i = 0; i < threadCount; ++i) {
+					queues.emplace_back(std::make_unique<LocalQueue>());
+				}
 				for (unsigned i = 0; i < threadCount; ++i) {
 					threads.emplace_back(&GenericThreadPool::workerThread, this, i);
 				}
@@ -137,10 +139,11 @@ namespace LLU {
 			done = true;
 		}
 
-		template<typename FunctionType>
-		std::future<std::invoke_result_t<FunctionType>> submit(FunctionType&& f) {
-			using result_type = std::invoke_result_t<FunctionType>;
-			std::packaged_task<result_type()> task(std::forward<FunctionType>(f));
+		template<typename FunctionType, typename... Args>
+		std::future<std::invoke_result_t<FunctionType, Args...>> submit(FunctionType&& f, Args&&... args) {
+			using result_type = std::invoke_result_t<FunctionType, Args...>;
+			auto boundF = std::bind(std::forward<FunctionType>(f), std::forward<Args>(args)...);
+			std::packaged_task<result_type()> task(std::move(boundF));
 			std::future<result_type> res(task.get_future());
 			if (localWorkQueue) {
 				localWorkQueue->push(TaskType {std::move(task)});
