@@ -2,6 +2,7 @@
  * @file
  * @brief
  */
+#include <numeric>
 #include <thread>
 
 #include <LLU/Async/GenericThreadPool.h>
@@ -10,6 +11,7 @@
 #include <LLU/LibraryLinkFunctionMacro.h>
 
 using namespace std::chrono_literals;
+using LLU::NumericArray;
 
 namespace {
 	std::mutex logMutex;
@@ -26,8 +28,6 @@ EXTERN_C DLLEXPORT int WolframLibrary_initialize(WolframLibraryData libData) {
 	return 0;
 }
 
-EXTERN_C DLLEXPORT void WolframLibrary_uninitialize(WolframLibraryData libData) {}
-
 LLU_LIBRARY_FUNCTION(SleepyThreads) {
 	auto numThreads = mngr.getInteger<mint>(0);
 	if (numThreads <= 0) {
@@ -42,17 +42,37 @@ LLU_LIBRARY_FUNCTION(SleepyThreads) {
 	int completedJobs = 0;
 	for (int i = 0; i < numJobs; ++i) {
 		tp.submit([&, i] {
-			THREADSAFE_LOG("Job ", i, " starts.")
 			std::this_thread::sleep_for(std::chrono::milliseconds(time));
 			std::unique_lock lg {jobCounterMutex};
 			if (++completedJobs == numJobs) {
-				//lg.unlock();
 				allJobsDone.notify_one();
 			}
 		});
 	}
 	THREADSAFE_LOG("Submitted ", numJobs, " jobs.")
 	std::unique_lock lg {jobCounterMutex};
-	allJobsDone.wait(lg, [&]{ return completedJobs == numJobs;});
+	allJobsDone.wait(lg, [&] { return completedJobs == numJobs; });
 	THREADSAFE_LOG("All jobs finished.")
+}
+
+LLU_LIBRARY_FUNCTION(Accumulate) {
+	auto data = mngr.getGenericNumericArray<LLU::Passing::Constant>(0);
+	const auto numThreads = mngr.getInteger<mint>(1);
+	const auto jobSize = mngr.getInteger<mint>(2);
+	LLU::ThreadPool tp {static_cast<unsigned int>(numThreads)};
+
+	const auto numJobs = (data.getFlattenedLength() + jobSize - 1) / jobSize;
+	LLU::asTypedNumericArray(data, [&](auto&& typedNA) {
+		using T = typename std::remove_reference_t<decltype(typedNA)>::value_type;
+		std::vector<std::future<T>> partialResults {static_cast<size_t>(numJobs) - 1};
+		auto blockBegin = std::cbegin(typedNA);
+		for (int i = 0; i < numJobs - 1; ++i) {
+			partialResults[i] = tp.submit(std::accumulate<typename NumericArray<T>::const_iterator, T>, blockBegin, blockBegin + jobSize, T {});
+			blockBegin += jobSize;
+		}
+		T remainderSum = std::accumulate(blockBegin, std::cend(typedNA), T {});
+		T totalSum =
+			std::accumulate(std::begin(partialResults), std::end(partialResults), remainderSum, [](T currentSum, auto& fut) { return currentSum + fut.get(); });
+		mngr.set(NumericArray<T> {totalSum});
+	});
 }
