@@ -63,7 +63,7 @@ Test[
 ];
 
 Test[
-	$OpenRead @ f
+	Developer`EvaluateProtected @ $OpenRead @ f
 	,
 	0
 	,
@@ -84,11 +84,11 @@ TestMatch[
 ];
 
 TestMatch[
-	$OpenWrite @ topSecretFile
+	Developer`EvaluateProtected @ $OpenWrite[topSecretFile]
 	,
-	Failure["OpenFileFailed", <|
-		"MessageTemplate" -> "Could not open file `f`.",
-		"MessageParameters" -><|"f" -> topSecretFile|>,
+	Failure["PathNotValidated", <|
+		"MessageTemplate" -> "File path `path` could not be validated under desired open mode.",
+		"MessageParameters" -><|"path" -> topSecretFile|>,
 		"ErrorCode" -> _?CppErrorCodeQ,
 		"Parameters" -> {}
 	|>]

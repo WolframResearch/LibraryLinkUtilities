@@ -48,7 +48,7 @@ namespace LLU {
 
 	void validatePath(const std::string& fileName, std::ios::openmode mode) {
 		char pathMode = (mode & std::ios::out) || (mode & std::ios::app)? 'W' : 'R';
-		if (!LibraryData::API()->validatePath(const_cast<char*>(fileName.c_str()), pathMode)) {
+		if (LibraryData::API()->validatePath(const_cast<char*>(fileName.c_str()), pathMode) == False) {
 			ErrorManager::throwException(ErrorName::PathNotValidated, fileName);
 		}
 	}
