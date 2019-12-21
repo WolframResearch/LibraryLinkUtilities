@@ -45,14 +45,31 @@ namespace LLU {
 	}
 
 	/**
+	 * @struct
+	 * @brief   Base class for shared access policies on Windows.
+	 * @details Library users are encouraged to provide their own derived classes if needed.
+	 * Implemented also on Mac and Linux to have uniform interface but does not make much sense on those platforms.
+	 */
+	struct SharePolicy {
+		virtual ~SharePolicy() = default;
+
+		/**
+		 * Default share policy - shared read access when file opened readonly, exclusive access otherwise.
+		 * @return _SH_SECURED on Windows and 0 on other platforms where it is not used anyway
+		 */
+		virtual int flag(std::ios::openmode) const;
+	};
+
+	/**
 	 * Open given file with specified mode (read, write, append, etc.).
 	 * Checks with WolframLibraryData if the path is "valid" (we don't know what that really means).
 	 * Converts file name to UTF-16 wide string on Windows. Uses open modes from std::ios.
 	 * @param   fileName - path to the input file
 	 * @param   mode - file open mode
+	 * @param   shp - shared access policy, only used on Windows
 	 * @returns Unique pointer to opened file
 	 */
-	FilePtr openFile(const std::string& fileName, std::ios::openmode mode);
+	FilePtr openFile(const std::string& fileName, std::ios::openmode mode, const SharePolicy& shp = {});
 
 }
 

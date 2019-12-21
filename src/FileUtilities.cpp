@@ -53,7 +53,15 @@ namespace LLU {
 		}
 	}
 
-	FilePtr openFile(const std::string& fileName, std::ios::openmode mode) {
+	int SharePolicy::flag(std::ios::openmode) const {
+#ifdef _WIN32
+		return _SH_SECURE;
+#else
+		return 0;
+#endif
+	}
+
+	FilePtr openFile(const std::string& fileName, std::ios::openmode mode, const SharePolicy& shp) {
 		validatePath(fileName, mode);
 
 		FILE* file = nullptr;
@@ -61,9 +69,10 @@ namespace LLU {
 #ifdef _WIN32
 		std::wstring fileNameUTF16 = fromUTF8toUTF16<wchar_t>(fileName);
 		std::wstring  modeWstr = fromUTF8toUTF16<wchar_t>(modeStr);
-		int shflag = shareFlag(mode);
-		file = _wfsopen(fileNameUTF16.c_str(), modeStr.c_str(), shflag);
+		int shareFlag = shp.flag(mode);
+		file = _wfsopen(fileNameUTF16.c_str(), modeWstr.c_str(), shareFlag);
 #else
+		Unused(shp);
 		file = std::fopen(fileName.c_str(), modeStr.c_str());
 #endif /* _WIN32 */
 		if (!file) {
