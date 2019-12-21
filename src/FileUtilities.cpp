@@ -40,6 +40,22 @@ namespace LLU {
 			}
 			return isBinary? result + "b" : result;
 		}
+
+		template<typename CharT>
+		std::basic_fstream<CharT> openFileStream(const std::string& fileName, std::ios::openmode mode) {
+			validatePath(fileName, mode);
+			std::basic_fstream<CharT> result;
+#ifdef _WIN32
+			std::wstring fileNameUTF16 = fromUTF8toUTF16<wchar_t>(fileName);
+			result = std::basic_fstream<CharT> {fileNameUTF16.c_str(), mode};
+#else
+			result = std::basic_fstream<CharT> {fileName, mode};
+#endif /* _WIN32 */
+			if (!result) {
+				ErrorManager::throwException(ErrorName::OpenFileFailed, fileName);
+			}
+			return result;
+		}
 	}
 
 	FilePtr claimFile(std::FILE* f) {
@@ -80,4 +96,9 @@ namespace LLU {
 		}
 		return claimFile(file);
 	}
+
+	std::fstream openFileStream(const std::string& fileName, std::ios::openmode mode) {
+		return openFileStream<char>(fileName, mode);
+	}
+
 }

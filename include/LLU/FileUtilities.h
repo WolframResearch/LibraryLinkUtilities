@@ -8,6 +8,7 @@
 
 #include <cstdio>
 #include <codecvt>
+#include <fstream>
 #include <ios>
 #include <locale>
 #include <memory>
@@ -71,6 +72,15 @@ namespace LLU {
 	 */
 	FilePtr openFile(const std::string& fileName, std::ios::openmode mode, const SharePolicy& shp = {});
 
+	/**
+	 * Open a file stream with specified mode (read, write, append, etc.).
+	 * Checks with WolframLibraryData if the path is "valid" (we don't know what that really means).
+	 * Converts file name to UTF-16 wide string on Windows.
+	 * @param   fileName - path to the input file
+	 * @param   mode - file open mode
+	 * @return  Valid file stream
+	 */
+	std::fstream openFileStream(const std::string& fileName, std::ios::openmode mode);
 }
 
 #endif	  // LLU_FILEUTILITIES_H
