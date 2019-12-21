@@ -32,6 +32,9 @@ TestExecute[
 	$OpenWrite = SafeLibraryFunction["OpenForWriting", {String}, Integer];
 	$OpenInvalidMode = SafeLibraryFunction["OpenInvalidMode", {String}, Integer];
 
+	$ReadStrings = SafeLibraryFunction["ReadStrings", {String}, "DataStore"];
+	$WriteStrings = SafeLibraryFunction["WriteStrings", {String, "DataStore"}, "Void"];
+
 	f = FileNameJoin[{$TemporaryDirectory, "some_file_that-hopefully-does_not_exist"}];
 
 	topSecretFile = If[$OperatingSystem === "Windows", "C:\\Windows\\system.ini", "/etc/passwd"]
@@ -94,4 +97,24 @@ TestMatch[
 	|>]
 	,
 	TestID -> "UtilitiesTestSuite-20191221-T5I6L4"
+];
+
+TestExecute[
+	words = {"upraise", "saturnalia", "phonology", "salutatory", "molester", "evolution", "hoist", "humbled", "rusty", "fluctuate"};
+];
+
+Test[
+	$WriteStrings[f, Developer`DataStore @@ words]
+	,
+	Null
+	,
+	TestID -> "UtilitiesTestSuite-20191221-I2C5M4"
+];
+
+Test[
+	$ReadStrings[f]
+	,
+	Developer`DataStore @@ words
+	,
+	TestID -> "UtilitiesTestSuite-20191221-D3K3Z9"
 ];
