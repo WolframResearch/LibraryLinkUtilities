@@ -33,7 +33,8 @@ TestExecute[
 
 	(* ParallelAccumulate[NA, n, bs] separates a NumericArray NA into blocks of bs elements and sums them in parallel on n threads.
 	 * Returns a one-element NumericArray with the sum of all elements of NA *)
-	ParallelAccumulate = SafeLibraryFunction["Accumulate", {{NumericArray, "Constant"}, Integer, Integer}, NumericArray]
+	ParallelAccumulate = SafeLibraryFunction["Accumulate", {{NumericArray, "Constant"}, Integer, Integer}, NumericArray];
+	SequentialAccumulate = SafeLibraryFunction["AccumulateSequential", {{NumericArray, "Constant"}}, NumericArray];
 ];
 
 TestMatch[
@@ -44,26 +45,50 @@ TestMatch[
 	TestID -> "AsyncTestSuite-20190718-I7S1K0"
 ];
 
-TestMatch[
-	data = NumericArray[RandomInteger[{-100, 100}, 10000000], "Integer64"];
-	{systemTime, sum} = AbsoluteTiming @ Total[data, Infinity];
-	Print["Total[] time = ", systemTime];
-	{parallelTime, parallelSum} = AbsoluteTiming @ ParallelAccumulate[data, 16, 10000];
+VerificationTest[
+	data = NumericArray[RandomInteger[{-100, 100}, 50000000], "Integer16"];
+	{systemTime, sum} = RepeatedTiming @ SequentialAccumulate[data];
+	Print["SequentialAccumulate[] time = ", systemTime];
+	{parallelTime, parallelSum} = RepeatedTiming @ ParallelAccumulate[data, 8, 50000];
 	Print["ParallelAccumulate[] time = ", parallelTime];
-	First @ Normal @ parallelSum
-	,
-	sum
+	parallelSum == sum
 	,
 	TestID -> "AsyncTestSuite-20191219-Y8B1L5"
 ];
 
 VerificationTest[
-	data = NumericArray[RandomComplex[{-100 - 100I, 100 + 100I}, 10000000], "ComplexReal64"];
-	{systemTime, sum} = AbsoluteTiming @ Total[data, Infinity];
-	Print["Total[] time = ", systemTime];
-	{parallelTime, parallelSum} = AbsoluteTiming @ ParallelAccumulate[data, 16, 10000];
+	data = NumericArray[RandomComplex[{-100 - 100I, 100 + 100I}, 50000000], "ComplexReal64"];
+	{systemTime, sum} = RepeatedTiming @ SequentialAccumulate[data];
+	Print["SequentialAccumulate[] time = ", systemTime];
+	{parallelTime, parallelSum} = RepeatedTiming @ ParallelAccumulate[data, 8, 50000];
 	Print["ParallelAccumulate[] time = ", parallelTime];
-	Abs[First @ Normal @ parallelSum - sum] < 0.0001
+	Abs[First @ Normal[parallelSum - sum]] < 0.00001
 	,
 	TestID -> "AsyncTestSuite-20191219-O4K0H1"
 ];
+
+
+(* Uncomment to see how parallel accumulate compares to Total. *)
+(*
+VerificationTest[
+	data = NumericArray[RandomInteger[{-100, 100}, 50000000], "Integer64"];
+	{systemTime, sum} = RepeatedTiming @ Total[data, Infinity];
+	Print["Total[] time = ", systemTime];
+	{parallelTime, parallelSum} = RepeatedTiming @ ParallelAccumulate[data, 8, 50000];
+	Print["ParallelAccumulate[] time = ", parallelTime];
+	First @ Normal @ parallelSum == sum
+	,
+	TestID -> "AsyncTestSuite-20191223-T8T9H1"
+];
+
+VerificationTest[
+	data = NumericArray[RandomComplex[{-100 - 100I, 100 + 100I}, 50000000], "ComplexReal64"];
+	{systemTime, sum} = RepeatedTiming @ Total[data, Infinity];
+	Print["Total[] time = ", systemTime];
+	{parallelTime, parallelSum} = RepeatedTiming @ ParallelAccumulate[data, 8, 50000];
+	Print["ParallelAccumulate[] time = ", parallelTime];
+	Abs[First @ Normal @ parallelSum - sum] < 0.00001
+	,
+	TestID -> "AsyncTestSuite-20191223-J9V5Q1"
+];
+*)

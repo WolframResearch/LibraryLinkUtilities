@@ -76,3 +76,12 @@ LLU_LIBRARY_FUNCTION(Accumulate) {
 		mngr.set(NumericArray<T> {totalSum});
 	});
 }
+
+LLU_LIBRARY_FUNCTION(AccumulateSequential) {
+	auto data = mngr.getGenericNumericArray<LLU::Passing::Constant>(0);
+	LLU::asTypedNumericArray(data, [&](auto&& typedNA) {
+		using T = typename std::remove_reference_t<decltype(typedNA)>::value_type;
+		T totalSum = std::accumulate(std::begin(typedNA), std::end(typedNA), T{});
+		mngr.set(NumericArray<T> {totalSum});
+	});
+}
