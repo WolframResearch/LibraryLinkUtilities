@@ -195,27 +195,27 @@ namespace LLU {
 	};
 
 	template<typename... T>
-	void ErrorManager::throwException(const std::string& errorName, T&&... args) {
+	[[noreturn]] void ErrorManager::throwException(const std::string& errorName, T&&... args) {
 		throwException(LibraryData::API(), errorName, std::forward<T>(args)...);
 	}
 
 	template<typename... T>
-	void ErrorManager::throwException(WolframLibraryData libData, const std::string& errorName, T&&... args) {
+	[[noreturn]] void ErrorManager::throwException(WolframLibraryData libData, const std::string& errorName, T&&... args) {
 		throwExceptionWithDebugInfo(libData, errorName, "", std::forward<T>(args)...);
 	}
 
 	template<class Error, typename... Args>
-	void ErrorManager::throwCustomException(const std::string& errorName, Args&&... args) {
+	[[noreturn]] void ErrorManager::throwCustomException(const std::string& errorName, Args&&... args) {
 		throw Error(findError(errorName), std::forward<Args>(args)...);
 	}
 
 	template<typename... T>
-	void ErrorManager::throwExceptionWithDebugInfo(const std::string& errorName, const std::string& debugInfo, T&&... args) {
+	[[noreturn]] void ErrorManager::throwExceptionWithDebugInfo(const std::string& errorName, const std::string& debugInfo, T&&... args) {
 		throwExceptionWithDebugInfo(LibraryData::API(), errorName, debugInfo, std::forward<T>(args)...);
 	}
 
 	template<typename... T>
-	void ErrorManager::throwExceptionWithDebugInfo(WolframLibraryData libData, const std::string& errorName, const std::string& debugInfo, T&&... args) {
+	[[noreturn]] void ErrorManager::throwExceptionWithDebugInfo(WolframLibraryData libData, const std::string& errorName, const std::string& debugInfo, T&&... args) {
 		auto e = findError(errorName);
 		e.setDebugInfo(debugInfo);
 		if (libData && sizeof...(args) > 0) {
