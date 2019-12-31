@@ -35,6 +35,9 @@ TestExecute[
 	$ReadStrings = SafeLibraryFunction["ReadStrings", {String}, "DataStore"];
 	$WriteStrings = SafeLibraryFunction["WriteStrings", {String, "DataStore"}, "Void"];
 
+	$OpenManagedFile = SafeLibraryFunction["OpenManagedFile", {`LLU`Managed[MyFile], String, Integer}, "Void"];
+	`LLU`Constructor[MyFile] = $OpenManagedFile;
+
 	f = FileNameJoin[{$TemporaryDirectory, "some_file_that-hopefully-does_not_exist"}];
 
 	topSecretFile = If[$OperatingSystem === "Windows", "C:\\Windows\\system.ini", "/etc/passwd"]
@@ -117,4 +120,25 @@ Test[
 	Developer`DataStore @@ words
 	,
 	TestID -> "UtilitiesTestSuite-20191221-D3K3Z9"
+];
+
+VerificationTest[
+	myFile = `LLU`NewManagedExpression[MyFile][f, 0 (* read-access*)];
+	ManagedLibraryExpressionQ[myFile] && IntegerQ[$OpenRead @ f] && IntegerQ[$OpenWrite @ f]
+	,
+	TestID -> "UtilitiesTestSuite-20191231-O4Y9S8"
+];
+
+VerificationTest[
+	myFile2 = `LLU`NewManagedExpression[MyFile][f, 1 (* write-access*)];
+	ManagedLibraryExpressionQ[myFile2] && IntegerQ[$OpenRead @ f] && FailureQ[$OpenWrite @ f]
+	,
+	TestID -> "UtilitiesTestSuite-20191231-U6M3T5"
+];
+
+VerificationTest[
+	myFile3 = `LLU`NewManagedExpression[MyFile][f, 2 (* read-write-access*)];
+	ManagedLibraryExpressionQ[myFile3] && IntegerQ[$OpenRead @ f] && FailureQ[$OpenWrite @ f]
+	,
+	TestID -> "UtilitiesTestSuite-20191231-P2D8V0"
 ];

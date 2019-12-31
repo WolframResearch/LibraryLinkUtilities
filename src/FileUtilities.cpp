@@ -80,7 +80,7 @@ namespace LLU {
 
 	int AlwaysReadExclusiveWrite::flag(std::ios::openmode m) const {
 #ifdef _WIN32
-		return (m & ios::out || m & ios::app) ? _SH_DENYWR : _SH_DENYNO;
+		return (m & std::ios::out || m & std::ios::app) ? _SH_DENYWR : _SH_DENYNO;
 #else
 		Unused(m);
 		return 0;

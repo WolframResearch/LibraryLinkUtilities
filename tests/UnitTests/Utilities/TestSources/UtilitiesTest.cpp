@@ -6,15 +6,41 @@
 #include <LLU/LLU.h>
 #include <LLU/LibraryLinkFunctionMacro.h>
 
+class File {
+public:
+	File(const std::string& path, std::ios::openmode mode) {
+		f = LLU::openFile(path, mode);
+	}
+private:
+	LLU::FilePtr f {nullptr, [](FILE*) { return 0; }};
+};
+
+DEFINE_MANAGED_STORE_AND_SPECIALIZATION(File)
 
 EXTERN_C DLLEXPORT int WolframLibrary_initialize(WolframLibraryData libData) {
 	LLU::LibraryData::setLibraryData(libData);
+	FileStore.registerType("MyFile");
 	return 0;
 }
 
 mint openFile(const std::string& path, std::ios::openmode mode) {
 	auto filePtr = LLU::openFile(path, mode);
 	return std::ftell(filePtr.get());
+}
+
+LIBRARY_LINK_FUNCTION(OpenManagedFile) {
+	auto err = LLU::ErrorCode::NoError;
+	try {
+		LLU::MArgumentManager mngr(Argc, Args, Res);
+		auto id = mngr.getInteger<mint>(0);
+		auto fname = mngr.getString(1);
+		auto modeInt = mngr.getInteger<mint>(2);
+		std::ios::openmode mode = modeInt == 0? std::ios::in : (modeInt == 1? std::ios::out : std::ios::in|std::ios::out);
+		FileStore.createInstance(id, fname, mode);
+	} catch (const LLU::LibraryLinkError& e) {
+		err = e.which();
+	}
+	return err;
 }
 
 LLU_LIBRARY_FUNCTION(OpenForReading) {
