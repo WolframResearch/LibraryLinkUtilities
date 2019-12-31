@@ -55,10 +55,19 @@ namespace LLU {
 		virtual ~SharePolicy() = default;
 
 		/**
-		 * Default share policy - shared read access when file opened readonly, exclusive access otherwise.
+		 * Base share policy - shared read access when file opened readonly, exclusive access otherwise.
 		 * @return _SH_SECURED on Windows and 0 on other platforms where it is not used anyway
 		 */
 		virtual int flag(std::ios::openmode) const;
+	};
+
+	/**
+	 * @struct
+	 * @brief   Default policy for Import/Export paclets - always allow reading, deny writing when we write.
+	 * @note    This policy allows for reading from the file when other applications are writing to it which may have unexpected consequences.
+	 */
+	struct AlwaysReadExclusiveWrite : SharePolicy {
+		int flag(std::ios::openmode m) const override;
 	};
 
 	/**
@@ -70,7 +79,7 @@ namespace LLU {
 	 * @param   shp - shared access policy, only used on Windows
 	 * @returns Unique pointer to opened file
 	 */
-	FilePtr openFile(const std::string& fileName, std::ios::openmode mode, const SharePolicy& shp = {});
+	FilePtr openFile(const std::string& fileName, std::ios::openmode mode, const SharePolicy& shp = AlwaysReadExclusiveWrite {});
 
 	/**
 	 * Open a file stream with specified mode (read, write, append, etc.).

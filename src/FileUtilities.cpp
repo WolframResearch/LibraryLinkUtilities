@@ -14,6 +14,7 @@
 
 #include <LLU/ErrorLog/ErrorManager.h>
 #include <LLU/LibraryData.h>
+#include <LLU/Utilities.hpp>
 
 namespace LLU {
 
@@ -73,6 +74,15 @@ namespace LLU {
 #ifdef _WIN32
 		return _SH_SECURE;
 #else
+		return 0;
+#endif
+	}
+
+	int AlwaysReadExclusiveWrite::flag(std::ios::openmode m) const {
+#ifdef _WIN32
+		return (m & ios::out || m & ios::app) ? _SH_DENYWR : _SH_DENYNO;
+#else
+		Unused(m);
 		return 0;
 #endif
 	}
