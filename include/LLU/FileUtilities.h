@@ -77,7 +77,7 @@ namespace LLU {
 	 * @param   fileName - path to the input file
 	 * @param   mode - file open mode
 	 * @param   shp - shared access policy, only used on Windows
-	 * @returns Unique pointer to opened file
+	 * @returns Unique pointer to opened file, throws ErrorName::OpenFileFailed if the file could not be opened
 	 */
 	FilePtr openFile(const std::string& fileName, std::ios::openmode mode, const SharePolicy& shp = AlwaysReadExclusiveWrite {});
 
