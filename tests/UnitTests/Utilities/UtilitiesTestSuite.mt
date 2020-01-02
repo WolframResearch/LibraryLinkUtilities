@@ -35,8 +35,11 @@ TestExecute[
 	$ReadStrings = SafeLibraryFunction["ReadStrings", {String}, "DataStore"];
 	$WriteStrings = SafeLibraryFunction["WriteStrings", {String, "DataStore"}, "Void"];
 
-	$OpenManagedFile = SafeLibraryFunction["OpenManagedFile", {`LLU`Managed[MyFile], String, Integer}, "Void"];
+	$OpenManagedFile = SafeLibraryFunction["OpenManagedFile", {`LLU`Managed[MyFile], String, Integer}, "Void", "Throws" -> True];
 	`LLU`Constructor[MyFile] = $OpenManagedFile;
+
+	$OpenManagedFileStream = SafeLibraryFunction["OpenManagedFileStream", {`LLU`Managed[FileStream], String, Integer}, "Void", "Throws" -> True];
+	`LLU`Constructor[FileStream] = $OpenManagedFileStream;
 
 	f = FileNameJoin[{$TemporaryDirectory, "some_file_that-hopefully-does_not_exist"}];
 
@@ -123,22 +126,50 @@ Test[
 ];
 
 VerificationTest[
-	myFile = `LLU`NewManagedExpression[MyFile][f, 0 (* read-access*)];
-	ManagedLibraryExpressionQ[myFile] && IntegerQ[$OpenRead @ f] && IntegerQ[$OpenWrite @ f]
+	Block[{myFile},
+		myFile = `LLU`NewManagedExpression[MyFile][f, 0 (* read-access*)];
+		ManagedLibraryExpressionQ[myFile] && IntegerQ[$OpenRead @ f] && IntegerQ[$OpenWrite @ f]
+	]
 	,
 	TestID -> "UtilitiesTestSuite-20191231-O4Y9S8"
 ];
 
 VerificationTest[
-	myFile2 = `LLU`NewManagedExpression[MyFile][f, 1 (* write-access*)];
-	ManagedLibraryExpressionQ[myFile2] && IntegerQ[$OpenRead @ f] && FailureQ[$OpenWrite @ f]
+	Block[{myFile},
+		myFile = `LLU`NewManagedExpression[MyFile][f, 1 (* write-access*)];
+		ManagedLibraryExpressionQ[myFile] && IntegerQ[$OpenRead @ f] && FailureQ[$OpenWrite @ f]
+	]
 	,
 	TestID -> "UtilitiesTestSuite-20191231-U6M3T5"
 ];
 
 VerificationTest[
-	myFile3 = `LLU`NewManagedExpression[MyFile][f, 2 (* read-write-access*)];
-	ManagedLibraryExpressionQ[myFile3] && IntegerQ[$OpenRead @ f] && FailureQ[$OpenWrite @ f]
+	Block[{myFile},
+		myFile = `LLU`NewManagedExpression[MyFile][f, 2 (* read-write-access*)];
+		ManagedLibraryExpressionQ[myFile] && IntegerQ[$OpenRead @ f] && FailureQ[$OpenWrite @ f]
+	]
 	,
 	TestID -> "UtilitiesTestSuite-20191231-P2D8V0"
+];
+
+VerificationTest[
+	Block[{fs, fs2, fs3},
+		fs = Catch @ `LLU`NewManagedExpression[FileStream][f, 0 (* read-access*)];
+		fs2 = Catch @ `LLU`NewManagedExpression[FileStream][f, 1 (* write-access*)];
+		fs3 = Catch @ `LLU`NewManagedExpression[FileStream][f, 0 (* read-access*)];
+		ManagedLibraryExpressionQ[fs] && FailureQ[fs2] && ManagedLibraryExpressionQ[fs3]
+	]
+	,
+	TestID -> "UtilitiesTestSuite-20200102-P6T5D6"
+];
+
+VerificationTest[
+	Block[{fs, fs2, fs3},
+		fs = Catch @ `LLU`NewManagedExpression[FileStream][f, 1 (* write-access*)];
+		fs2 = Catch @ `LLU`NewManagedExpression[FileStream][f, 1 (* write-access*)];
+		fs3 = Catch @ `LLU`NewManagedExpression[FileStream][f, 0 (* read-access*)];
+		ManagedLibraryExpressionQ[fs] && FailureQ[fs2] && FailureQ[fs3]
+	]
+	,
+	TestID -> "UtilitiesTestSuite-20200102-Z1E0R2"
 ];

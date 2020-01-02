@@ -3,23 +3,36 @@
  * @brief
  */
 
+#include <fstream>
+
 #include <LLU/LLU.h>
 #include <LLU/LibraryLinkFunctionMacro.h>
 
 class File {
 public:
 	File(const std::string& path, std::ios::openmode mode) {
-		f = LLU::openFile(path, mode);
+		f = LLU::openFile(path, mode); // open with default Import/Export policy
 	}
 private:
 	LLU::FilePtr f {nullptr, [](FILE*) { return 0; }};
 };
 
+class FileStream {
+public:
+	FileStream(const std::string& path, std::ios::openmode mode) {
+		f = LLU::openFileStream(path, mode, LLU::SharePolicy {}); // open with _SH_SECURE
+	}
+private:
+	std::fstream f;
+};
+
 DEFINE_MANAGED_STORE_AND_SPECIALIZATION(File)
+DEFINE_MANAGED_STORE_AND_SPECIALIZATION(FileStream)
 
 EXTERN_C DLLEXPORT int WolframLibrary_initialize(WolframLibraryData libData) {
 	LLU::LibraryData::setLibraryData(libData);
 	FileStore.registerType("MyFile");
+	FileStreamStore.registerType("FileStream");
 	return 0;
 }
 
@@ -28,19 +41,20 @@ mint openFile(const std::string& path, std::ios::openmode mode) {
 	return std::ftell(filePtr.get());
 }
 
-LIBRARY_LINK_FUNCTION(OpenManagedFile) {
-	auto err = LLU::ErrorCode::NoError;
-	try {
-		LLU::MArgumentManager mngr(Argc, Args, Res);
-		auto id = mngr.getInteger<mint>(0);
-		auto fname = mngr.getString(1);
-		auto modeInt = mngr.getInteger<mint>(2);
-		std::ios::openmode mode = modeInt == 0? std::ios::in : (modeInt == 1? std::ios::out : std::ios::in|std::ios::out);
-		FileStore.createInstance(id, fname, mode);
-	} catch (const LLU::LibraryLinkError& e) {
-		err = e.which();
-	}
-	return err;
+LLU_LIBRARY_FUNCTION(OpenManagedFile) {
+	auto id = mngr.getInteger<mint>(0);
+	auto fname = mngr.getString(1);
+	auto modeInt = mngr.getInteger<mint>(2);
+	std::ios::openmode mode = modeInt == 0? std::ios::in : (modeInt == 1? std::ios::out : std::ios::in|std::ios::out);
+	FileStore.createInstance(id, fname, mode);
+}
+
+LLU_LIBRARY_FUNCTION(OpenManagedFileStream) {
+	auto id = mngr.getInteger<mint>(0);
+	auto fname = mngr.getString(1);
+	auto modeInt = mngr.getInteger<mint>(2);
+	std::ios::openmode mode = modeInt == 0? std::ios::in : (modeInt == 1? std::ios::out : std::ios::in|std::ios::out);
+	FileStreamStore.createInstance(id, fname, mode);
 }
 
 LLU_LIBRARY_FUNCTION(OpenForReading) {
