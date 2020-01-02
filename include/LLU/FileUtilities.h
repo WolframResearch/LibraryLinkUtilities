@@ -37,7 +37,7 @@ namespace LLU {
 	 * Convert string from UTF8 to UTF16.
 	 * @tparam	T - character type for the result
 	 * @param	source - string in UTF8 encoding
-	 * @retun   copy of the input string converted to UTF16
+	 * @return  copy of the input string converted to UTF16
 	 */
 	template<typename T>
 	std::basic_string<T> fromUTF8toUTF16(const std::string& source) {
@@ -76,8 +76,9 @@ namespace LLU {
 	 * Converts file name to UTF-16 wide string on Windows. Uses open modes from std::ios.
 	 * @param   fileName - path to the input file
 	 * @param   mode - file open mode
-	 * @param   shp - shared access policy, only used on Windows
-	 * @returns Unique pointer to opened file, throws ErrorName::OpenFileFailed if the file could not be opened
+	 * @param   shp - shared access policy, only used on Windows. See https://docs.microsoft.com/en-us/cpp/c-runtime-library/sharing-constants
+	 * @return  Unique pointer to opened file
+	 * @throw   ErrorName::OpenFileFailed if the file could not be opened
 	 */
 	FilePtr openFile(const std::string& fileName, std::ios::openmode mode, const SharePolicy& shp = AlwaysReadExclusiveWrite {});
 
@@ -87,9 +88,11 @@ namespace LLU {
 	 * Converts file name to UTF-16 wide string on Windows.
 	 * @param   fileName - path to the input file
 	 * @param   mode - file open mode
+	 * @param   shp - shared access policy, only used on Windows. See https://docs.microsoft.com/en-us/cpp/c-runtime-library/sharing-constants
 	 * @return  Valid file stream
+	 * @throw   ErrorName::OpenFileFailed if the file could not be opened
 	 */
-	std::fstream openFileStream(const std::string& fileName, std::ios::openmode mode);
+	std::fstream openFileStream(const std::string& fileName, std::ios::openmode mode, const SharePolicy& shp = AlwaysReadExclusiveWrite {});
 }
 
 #endif	  // LLU_FILEUTILITIES_H

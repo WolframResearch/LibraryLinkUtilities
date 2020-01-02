@@ -42,13 +42,14 @@ namespace LLU {
 		}
 
 		template<typename CharT>
-		std::basic_fstream<CharT> openFileStream(const std::string& fileName, std::ios::openmode mode) {
+		std::basic_fstream<CharT> openFileStream(const std::string& fileName, std::ios::openmode mode, const SharePolicy& shp) {
 			validatePath(fileName, mode);
 			std::basic_fstream<CharT> result;
 #ifdef _WIN32
 			std::wstring fileNameUTF16 = fromUTF8toUTF16<wchar_t>(fileName);
-			result = std::basic_fstream<CharT> {fileNameUTF16.c_str(), mode};
+			result = std::basic_fstream<CharT> {fileNameUTF16.c_str(), mode, shp.flag(mode)};
 #else
+			Unused(shp);
 			result = std::basic_fstream<CharT> {fileName, mode};
 #endif /* _WIN32 */
 			if (!result) {
@@ -106,8 +107,8 @@ namespace LLU {
 		return claimFile(file);
 	}
 
-	std::fstream openFileStream(const std::string& fileName, std::ios::openmode mode) {
-		return openFileStream<char>(fileName, mode);
+	std::fstream openFileStream(const std::string& fileName, std::ios::openmode mode, const SharePolicy& shp) {
+		return openFileStream<char>(fileName, mode, shp);
 	}
 
 }
