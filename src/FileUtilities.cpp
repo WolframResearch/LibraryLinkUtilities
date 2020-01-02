@@ -5,7 +5,6 @@
  */
 
 #include <LLU/NoMinMaxWindows.h>
-
 #include <LLU/FileUtilities.h>
 
 #ifdef _WIN32
@@ -26,20 +25,20 @@ namespace LLU {
 			std::string result;
 			if (mode == ios::in) {
 				result = "r";
-			} else if (mode == ios::out || mode == (ios::out|ios::trunc)) {
+			} else if (mode == ios::out || mode == (ios::out | ios::trunc)) {
 				result = "w";
-			} else if (mode == ios::app || mode == (ios::out|ios::app)) {
+			} else if (mode == ios::app || mode == (ios::out | ios::app)) {
 				result = "a";
-			} else if (mode == (ios::out|ios::in)) {
+			} else if (mode == (ios::out | ios::in)) {
 				result = "r+";
-			} else if (mode == (ios::out|ios::in|ios::trunc)) {
+			} else if (mode == (ios::out | ios::in | ios::trunc)) {
 				result = "w+";
-			} else if (mode == (ios::out|ios::in|ios::app) || mode == (ios::in|ios::app)) {
+			} else if (mode == (ios::out | ios::in | ios::app) || mode == (ios::in | ios::app)) {
 				result = "a+";
 			} else {
 				ErrorManager::throwException(ErrorName::InvalidOpenMode);
 			}
-			return isBinary? result + "b" : result;
+			return isBinary ? result + "b" : result;
 		}
 
 		template<typename CharT>
@@ -64,7 +63,7 @@ namespace LLU {
 	}
 
 	void validatePath(const std::string& fileName, std::ios::openmode mode) {
-		char pathMode = (mode & std::ios::out) || (mode & std::ios::app)? 'W' : 'R';
+		char pathMode = (mode & std::ios::out) || (mode & std::ios::app) ? 'W' : 'R';
 		if (LibraryData::API()->validatePath(const_cast<char*>(fileName.c_str()), pathMode) == False) {
 			ErrorManager::throwException(ErrorName::PathNotValidated, fileName);
 		}
@@ -94,7 +93,7 @@ namespace LLU {
 		std::string modeStr = openModeString(mode);
 #ifdef _WIN32
 		std::wstring fileNameUTF16 = fromUTF8toUTF16<wchar_t>(fileName);
-		std::wstring  modeWstr = fromUTF8toUTF16<wchar_t>(modeStr);
+		std::wstring modeWstr = fromUTF8toUTF16<wchar_t>(modeStr);
 		int shareFlag = shp.flag(mode);
 		file = _wfsopen(fileNameUTF16.c_str(), modeWstr.c_str(), shareFlag);
 #else

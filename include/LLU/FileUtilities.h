@@ -6,8 +6,8 @@
 #ifndef LLU_FILEUTILITIES_H
 #define LLU_FILEUTILITIES_H
 
-#include <cstdio>
 #include <codecvt>
+#include <cstdio>
 #include <fstream>
 #include <ios>
 #include <locale>
@@ -39,7 +39,7 @@ namespace LLU {
 	 * @param	source - string in UTF8 encoding
 	 * @retun   copy of the input string converted to UTF16
 	 */
-	template <typename T>
+	template<typename T>
 	std::basic_string<T> fromUTF8toUTF16(const std::string& source) {
 		std::wstring_convert<std::codecvt_utf8_utf16<T>, T> convertor;
 		return convertor.from_bytes(source);
