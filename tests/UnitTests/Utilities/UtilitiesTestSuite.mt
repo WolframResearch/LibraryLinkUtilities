@@ -43,7 +43,11 @@ TestExecute[
 
 	f = FileNameJoin[{$TemporaryDirectory, "some_file_that-hopefully-does_not_exist"}];
 
-	topSecretFile = If[$OperatingSystem === "Windows", "C:\\Windows\\system.ini", "/etc/passwd"]
+	topSecretFile = If[$OperatingSystem === "Windows", "C:\\Windows\\system.ini", "/etc/passwd"];
+	
+	FailureOnWindowsIntegerOtherwiseQ[expr_] := If[$OperatingSystem == "Windows", FailureQ, IntegerQ][expr];
+	
+	FailureOnWindowsManagedExprOtherwiseQ[expr_] := If[$OperatingSystem == "Windows", FailureQ, ManagedLibraryExpressionQ][expr];
 ];
 
 TestExecute[
@@ -137,7 +141,7 @@ VerificationTest[
 VerificationTest[
 	Block[{myFile},
 		myFile = `LLU`NewManagedExpression[MyFile][f, 1 (* write-access*)];
-		ManagedLibraryExpressionQ[myFile] && IntegerQ[$OpenRead @ f] && FailureQ[$OpenWrite @ f]
+		ManagedLibraryExpressionQ[myFile] && IntegerQ[$OpenRead @ f] && FailureOnWindowsIntegerOtherwiseQ[$OpenWrite @ f]
 	]
 	,
 	TestID -> "UtilitiesTestSuite-20191231-U6M3T5"
@@ -146,7 +150,7 @@ VerificationTest[
 VerificationTest[
 	Block[{myFile},
 		myFile = `LLU`NewManagedExpression[MyFile][f, 2 (* read-write-access*)];
-		ManagedLibraryExpressionQ[myFile] && IntegerQ[$OpenRead @ f] && FailureQ[$OpenWrite @ f]
+		ManagedLibraryExpressionQ[myFile] && IntegerQ[$OpenRead @ f] && FailureOnWindowsIntegerOtherwiseQ[$OpenWrite @ f]
 	]
 	,
 	TestID -> "UtilitiesTestSuite-20191231-P2D8V0"
@@ -157,7 +161,7 @@ VerificationTest[
 		fs = Catch @ `LLU`NewManagedExpression[FileStream][f, 0 (* read-access*)];
 		fs2 = Catch @ `LLU`NewManagedExpression[FileStream][f, 1 (* write-access*)];
 		fs3 = Catch @ `LLU`NewManagedExpression[FileStream][f, 0 (* read-access*)];
-		ManagedLibraryExpressionQ[fs] && FailureQ[fs2] && ManagedLibraryExpressionQ[fs3]
+		ManagedLibraryExpressionQ[fs] && FailureOnWindowsManagedExprOtherwiseQ[fs2] && ManagedLibraryExpressionQ[fs3]
 	]
 	,
 	TestID -> "UtilitiesTestSuite-20200102-P6T5D6"
@@ -168,7 +172,7 @@ VerificationTest[
 		fs = Catch @ `LLU`NewManagedExpression[FileStream][f, 1 (* write-access*)];
 		fs2 = Catch @ `LLU`NewManagedExpression[FileStream][f, 1 (* write-access*)];
 		fs3 = Catch @ `LLU`NewManagedExpression[FileStream][f, 0 (* read-access*)];
-		ManagedLibraryExpressionQ[fs] && FailureQ[fs2] && FailureQ[fs3]
+		ManagedLibraryExpressionQ[fs] && FailureOnWindowsManagedExprOtherwiseQ[fs2] && FailureOnWindowsManagedExprOtherwiseQ[fs3]
 	]
 	,
 	TestID -> "UtilitiesTestSuite-20200102-Z1E0R2"
