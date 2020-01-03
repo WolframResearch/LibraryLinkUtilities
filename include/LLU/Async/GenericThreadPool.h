@@ -121,7 +121,7 @@ namespace LLU {
 	public:
 		GenericThreadPool() : GenericThreadPool(std::thread::hardware_concurrency()) {};
 
-		explicit GenericThreadPool(unsigned threadCount) : done(false), joiner(threads) {
+		explicit GenericThreadPool(unsigned threadCount) : joiner(threads) {
 			try {
 				for (unsigned i = 0; i < threadCount; ++i) {
 					queues.emplace_back(std::make_unique<LocalQueue>());
@@ -163,7 +163,7 @@ namespace LLU {
 		}
 
 	private:
-		std::atomic_bool done;
+		std::atomic_bool done = false;
 		PoolQueue poolWorkQueue;
 		std::vector<std::unique_ptr<LocalQueue>> queues;
 		std::vector<std::thread> threads;

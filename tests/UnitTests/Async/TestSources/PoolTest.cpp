@@ -41,7 +41,7 @@ LLU_LIBRARY_FUNCTION(SleepyThreads) {
 	std::mutex jobCounterMutex;
 	int completedJobs = 0;
 	for (int i = 0; i < numJobs; ++i) {
-		tp.submit([&, i] {
+		tp.submit([&] {
 			std::this_thread::sleep_for(std::chrono::milliseconds(time));
 			std::unique_lock lg {jobCounterMutex};
 			if (++completedJobs == numJobs) {
@@ -84,4 +84,43 @@ LLU_LIBRARY_FUNCTION(AccumulateSequential) {
 		T totalSum = std::accumulate(std::begin(typedNA), std::end(typedNA), T{});
 		mngr.set(NumericArray<T> {totalSum});
 	});
+}
+
+template<typename InputIter>
+std::uint64_t rangeLcm(InputIter first, InputIter last) {
+	std::uint64_t lcm = 1;
+	for (auto iter = first; iter != last; ++iter) {
+		lcm = std::lcm(lcm, *iter);
+	}
+	return lcm;
+}
+
+LLU_LIBRARY_FUNCTION(LcmSequential) {
+	auto data = mngr.getNumericArray<std::uint64_t, LLU::Passing::Constant>(0);
+	auto lcm = rangeLcm(std::begin(data), std::end(data));
+	mngr.set(NumericArray<std::uint64_t> {lcm});
+}
+
+template<typename InputIter>
+std::uint64_t rangeLcm([[maybe_unused]] LLU::ThreadPool& tp, mint threshold, InputIter first, InputIter last) {
+	auto dist = std::distance(first, last);
+	if (dist < threshold) {
+		return rangeLcm(first, last);
+	}
+	auto midpoint = std::next(first, dist / 2);
+	auto lcmLower = tp.submit([=, &tp]() { return rangeLcm(tp, threshold, first, midpoint); });
+	auto lcmUpper = rangeLcm(tp, threshold, midpoint, last);
+	while (lcmLower.wait_for(std::chrono::seconds(0)) == std::future_status::timeout) {
+		tp.runPendingTask();
+	}
+	return std::lcm(lcmLower.get(), lcmUpper);
+}
+
+LLU_LIBRARY_FUNCTION(LcmParallel) {
+	auto data = mngr.getNumericArray<std::uint64_t, LLU::Passing::Constant>(0);
+	const auto numThreads = mngr.getInteger<mint>(1);
+	const auto jobSize = mngr.getInteger<mint>(2);
+	LLU::ThreadPool tp {static_cast<unsigned int>(numThreads)};
+	auto lcm = rangeLcm(tp, jobSize, std::begin(data), std::end(data));
+	mngr.set(NumericArray<std::uint64_t> {lcm});
 }

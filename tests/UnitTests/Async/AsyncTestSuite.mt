@@ -35,12 +35,17 @@ TestExecute[
 	 * Returns a one-element NumericArray with the sum of all elements of NA *)
 	ParallelAccumulate = SafeLibraryFunction["Accumulate", {{NumericArray, "Constant"}, Integer, Integer}, NumericArray];
 	SequentialAccumulate = SafeLibraryFunction["AccumulateSequential", {{NumericArray, "Constant"}}, NumericArray];
+
+	(* ParallelLcm[NA, n, bs] calculates LCM of all "UnsignedIntegers64" in NA recursively, running in parallel on n threads.
+     * This function tests running async jobs on a thread pool that can themselves submit new jobs to the pool. *)
+	ParallelLcm = SafeLibraryFunction["LcmParallel", {{NumericArray, "Constant"}, Integer, Integer}, NumericArray];
+	SequentialLcm = SafeLibraryFunction["LcmSequential", {{NumericArray, "Constant"}}, NumericArray];
 ];
 
 TestMatch[
-	AbsoluteTiming[SleepyThreads[8, 160, 100]] (* sleep 100ms 160 times which totals to 16s, divided onto 8 threads, so it should take slightly more than 2s *)
+	AbsoluteTiming[SleepyThreads[8, 80, 100]] (* sleep 100ms 80 times which totals to 8s, divided onto 8 threads, so it should take slightly more than 1s *)
 	,
-	{ t_, Null } /; (t >= 2 && t < 2.5)
+	{ t_, Null } /; (t >= 1 && t < 1.5)
 	,
 	TestID -> "AsyncTestSuite-20190718-I7S1K0"
 ];
@@ -92,3 +97,14 @@ VerificationTest[
 	TestID -> "AsyncTestSuite-20191223-J9V5Q1"
 ];
 *)
+
+VerificationTest[
+	data = NumericArray[RandomInteger[{0, 40}, 50000000], "UnsignedInteger64"];
+	{systemTime, lcmSeq} = RepeatedTiming @ SequentialLcm[data];
+	Print["SequentialLcm[] time = ", systemTime];
+	{parallelTime, parallelLcm} = RepeatedTiming @ ParallelLcm[data, 12, 50000];
+	Print["ParallelLcm[] time = ", parallelTime];
+	(parallelLcm == lcmSeq) && (First @ Normal[parallelLcm] == LCM @@ Normal[data])
+	,
+	TestID -> "AsyncTestSuite-20191227-Y7R7Q4"
+];
