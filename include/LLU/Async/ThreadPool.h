@@ -168,8 +168,9 @@ namespace LLU {
 		std::vector<std::unique_ptr<LocalQueue>> queues;
 		std::vector<std::thread> threads;
 		ThreadJoiner joiner;
-		static thread_local LocalQueue* localWorkQueue;
-		static thread_local unsigned myIndex;
+		inline static thread_local LocalQueue* localWorkQueue = nullptr;
+		inline static thread_local unsigned myIndex = 0;
+
 		void workerThread(unsigned my_index_) {
 			myIndex = my_index_;
 			localWorkQueue = queues[myIndex].get();
@@ -193,12 +194,6 @@ namespace LLU {
 			return false;
 		}
 	};
-
-	template<typename PoolQueue, typename LocalQueue>
-	thread_local LocalQueue* GenericThreadPool<PoolQueue, LocalQueue>::localWorkQueue = nullptr;
-
-	template<typename PoolQueue, typename LocalQueue>
-	thread_local unsigned GenericThreadPool<PoolQueue, LocalQueue>::myIndex = 0;
 
 	using ThreadPool = GenericThreadPool<ThreadsafeQueue<FunctionWrapper>, WorkStealingQueue<std::deque<FunctionWrapper>>>;
 }

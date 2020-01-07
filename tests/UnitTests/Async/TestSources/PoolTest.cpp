@@ -5,7 +5,7 @@
 #include <numeric>
 #include <thread>
 
-#include <LLU/Async/GenericThreadPool.h>
+#include <LLU/Async/ThreadPool.h>
 #include <LLU/ErrorLog/Logger.h>
 #include <LLU/LLU.h>
 #include <LLU/LibraryLinkFunctionMacro.h>
