@@ -54,7 +54,7 @@ namespace LLU {
 
 		std::unique_lock<std::mutex> waitForData() {
 			std::unique_lock<std::mutex> head_lock(head_mutex);
-			data_cond.wait(head_lock, [&] { return head != getTail(); });
+			data_cond.wait(head_lock, [&] { return head.get() != getTail(); });
 			return std::move(head_lock);
 		}
 
@@ -127,7 +127,7 @@ namespace LLU {
 	template<typename T>
 	bool ThreadsafeQueue<T>::empty() {
 		std::lock_guard<std::mutex> head_lock(head_mutex);
-		return (head == getTail());
+		return (head.get() == getTail());
 	}
 }
 #endif	  // LLU_ASYNC_QUEUE_H
