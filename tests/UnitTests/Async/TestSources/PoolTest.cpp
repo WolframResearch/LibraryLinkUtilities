@@ -55,6 +55,35 @@ LLU_LIBRARY_FUNCTION(SleepyThreads) {
 	THREADSAFE_LOG("All jobs finished.")
 }
 
+LLU_LIBRARY_FUNCTION(SleepyThreadsWithPause) {
+	auto numThreads = mngr.getInteger<mint>(0);
+	if (numThreads <= 0) {
+		numThreads = std::thread::hardware_concurrency() > 1 ? std::thread::hardware_concurrency() - 1 : 1;
+	}
+	LLU::ThreadPool tp {static_cast<unsigned int>(numThreads)};
+	tp.pause();
+	THREADSAFE_LOG("Running on ", numThreads, " threads. Paused.")
+	const auto numJobs = mngr.getInteger<mint>(1);
+	const auto time = mngr.getInteger<mint>(2);
+	std::condition_variable allJobsDone;
+	std::mutex jobCounterMutex;
+	int completedJobs = 0;
+	for (int i = 0; i < numJobs; ++i) {
+		tp.submit([&] {
+			std::this_thread::sleep_for(std::chrono::milliseconds(time));
+			std::unique_lock lg {jobCounterMutex};
+			if (++completedJobs == numJobs) {
+				allJobsDone.notify_one();
+			}
+		});
+	}
+	std::this_thread::sleep_for(std::chrono::seconds(1));
+	THREADSAFE_LOG("Submitted ", numJobs, " jobs. Now resuming")
+	tp.resume();
+	std::unique_lock lg {jobCounterMutex};
+	allJobsDone.wait(lg, [&] { return completedJobs == numJobs; });
+}
+
 LLU_LIBRARY_FUNCTION(Accumulate) {
 	auto data = mngr.getGenericNumericArray<LLU::Passing::Constant>(0);
 	const auto numThreads = mngr.getInteger<mint>(1);

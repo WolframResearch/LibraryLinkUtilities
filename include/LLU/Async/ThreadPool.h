@@ -137,6 +137,7 @@ namespace LLU {
 
 		~GenericThreadPool() {
 			done = true;
+			resume();
 		}
 
 		template<typename FunctionType, typename... Args>
@@ -162,8 +163,20 @@ namespace LLU {
 			}
 		}
 
+		void pause() {
+			paused = true;
+		}
+
+		void resume() {
+			paused = false;
+			pausedWorkers.notify_all();
+		}
+
 	private:
 		std::atomic_bool done = false;
+		std::atomic_bool paused = false;
+		std::mutex workersMutex;
+		std::condition_variable pausedWorkers;
 		PoolQueue poolWorkQueue;
 		std::vector<std::unique_ptr<LocalQueue>> queues;
 		std::vector<std::thread> threads;
@@ -176,6 +189,10 @@ namespace LLU {
 			localWorkQueue = queues[myIndex].get();
 			while (!done) {
 				runPendingTask();
+				if (paused) {
+					std::unique_lock lck {workersMutex};
+					pausedWorkers.wait(lck, [&]() -> bool { return done || !paused; });
+				}
 			}
 		}
 		bool popTaskFromLocalQueue(TaskType& task) {

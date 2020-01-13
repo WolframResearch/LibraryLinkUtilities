@@ -30,6 +30,8 @@ TestExecute[
 	`LLU`Logger`FormattedLog := `LLU`Logger`LogToString;
 	(* SleepyThreads[n, m, t] spawns n threads and performs m jobs on them, where each job is just sleeping t milliseconds *)
 	SleepyThreads = SafeLibraryFunction["SleepyThreads", {Integer, Integer, Integer}, "Void"];
+	(* SleepyThreadsWithPause[n, m, t] works same as SleepyThreads but pauses the pool for 1 second, submits all tasks and then resumes. *)
+	SleepyThreadsWithPause = SafeLibraryFunction["SleepyThreadsWithPause", {Integer, Integer, Integer}, "Void"];
 
 	(* ParallelAccumulate[NA, n, bs] separates a NumericArray NA into blocks of bs elements and sums them in parallel on n threads.
 	 * Returns a one-element NumericArray with the sum of all elements of NA *)
@@ -48,6 +50,14 @@ TestMatch[
 	{ t_, Null } /; (t >= 1 && t < 1.5)
 	,
 	TestID -> "AsyncTestSuite-20190718-I7S1K0"
+];
+
+TestMatch[
+	AbsoluteTiming[SleepyThreadsWithPause[8, 80, 100]] (* it should take slightly more than 1s + 1s paused, so >2s *)
+	,
+	{ t_, Null } /; (t >= 2 && t < 2.5)
+	,
+	TestID -> "AsyncTestSuite-20200113-X6B2Q8"
 ];
 
 VerificationTest[
