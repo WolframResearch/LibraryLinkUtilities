@@ -79,7 +79,7 @@ namespace LLU {
 		/**
 		 *  @brief  Get a const reference to dimensions object
 		 */
-		const MArrayDimensions& dimensions() {
+		const MArrayDimensions& dimensions() const {
 			return dims;
 		}
 
