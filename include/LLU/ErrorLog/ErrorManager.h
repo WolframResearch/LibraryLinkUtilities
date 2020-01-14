@@ -196,7 +196,7 @@ namespace LLU {
 
 	template<typename... T>
 	[[noreturn]] void ErrorManager::throwException(const std::string& errorName, T&&... args) {
-		throwException(LibraryData::API(), errorName, std::forward<T>(args)...);
+		throwException(LibraryData::uncheckedAPI(), errorName, std::forward<T>(args)...);
 	}
 
 	template<typename... T>
@@ -211,7 +211,7 @@ namespace LLU {
 
 	template<typename... T>
 	[[noreturn]] void ErrorManager::throwExceptionWithDebugInfo(const std::string& errorName, const std::string& debugInfo, T&&... args) {
-		throwExceptionWithDebugInfo(LibraryData::API(), errorName, debugInfo, std::forward<T>(args)...);
+		throwExceptionWithDebugInfo(LibraryData::uncheckedAPI(), errorName, debugInfo, std::forward<T>(args)...);
 	}
 
 	template<typename... T>
