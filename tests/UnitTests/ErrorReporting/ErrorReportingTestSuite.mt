@@ -342,6 +342,20 @@ TestMatch[
 	TestID -> "ErrorReportingTestSuite-20190404-N7X5J6"
 ];
 
+TestMatch[
+	EmptyLibDataException = SafeLibraryFunction["EmptyLibDataException", {}, "Void"];
+	EmptyLibDataException[]
+	,
+	Failure["LibDataError", <|
+		"MessageTemplate" -> "WolframLibraryData is not set. Make sure to call LibraryData::setLibraryData in WolframLibrary_initialize.",
+		"MessageParameters" -> <||>,
+		"ErrorCode" -> n_?CppErrorCodeQ,
+		"Parameters" -> {}
+	|>]
+	,
+	TestID -> "ErrorReportingTestSuite-20200114-M9D6F9"
+];
+
 (*********************************************************** Logging tests **************************************************************)
 TestExecute[
 	loggerTestPath = FileNameJoin[{currentDirectory, "TestSources", "LoggerTest.cpp"}];

@@ -223,3 +223,16 @@ LIBRARY_LINK_FUNCTION(ReadDataDelayedParametersTransfer) {
 	}
 	return err;
 }
+
+EXTERN_C DLLEXPORT int EmptyLibDataException(WolframLibraryData, mint, MArgument*, MArgument) {
+	auto err = LLErrorCode::NoError;
+	try {
+		auto currentLibData = LLU::LibraryData::API();
+		LLU::LibraryData::setLibraryData(nullptr);
+		LLU::LibraryData::API(); // this should throw an exception
+		LLU::LibraryData::setLibraryData(currentLibData);
+	} catch (const LibraryLinkError& e) {
+		err = e.which();
+	}
+	return err;
+}
