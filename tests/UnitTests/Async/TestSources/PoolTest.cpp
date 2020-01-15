@@ -28,13 +28,14 @@ EXTERN_C DLLEXPORT int WolframLibrary_initialize(WolframLibraryData libData) {
 	return 0;
 }
 
-LLU_LIBRARY_FUNCTION(SleepyThreads) {
+template<typename ThreadPool>
+void sleepyThreadsInPool(LLU::MArgumentManager& mngr) {
 	auto numThreads = mngr.getInteger<mint>(0);
 	if (numThreads <= 0) {
 		numThreads = std::thread::hardware_concurrency() > 1 ? std::thread::hardware_concurrency() - 1 : 1;
 	}
 	THREADSAFE_LOG("Running on ", numThreads, " threads.")
-	LLU::ThreadPool tp {static_cast<unsigned int>(numThreads)};
+	ThreadPool tp {static_cast<unsigned int>(numThreads)};
 	const auto numJobs = mngr.getInteger<mint>(1);
 	const auto time = mngr.getInteger<mint>(2);
 	std::condition_variable allJobsDone;
@@ -53,6 +54,14 @@ LLU_LIBRARY_FUNCTION(SleepyThreads) {
 	std::unique_lock lg {jobCounterMutex};
 	allJobsDone.wait(lg, [&] { return completedJobs == numJobs; });
 	THREADSAFE_LOG("All jobs finished.")
+}
+
+LLU_LIBRARY_FUNCTION(SleepyThreads) {
+	sleepyThreadsInPool<LLU::ThreadPool>(mngr);
+}
+
+LLU_LIBRARY_FUNCTION(SleepyThreadsBasic) {
+	sleepyThreadsInPool<LLU::BasicPool>(mngr);
 }
 
 LLU_LIBRARY_FUNCTION(SleepyThreadsWithPause) {
@@ -84,7 +93,8 @@ LLU_LIBRARY_FUNCTION(SleepyThreadsWithPause) {
 	allJobsDone.wait(lg, [&] { return completedJobs == numJobs; });
 }
 
-LLU_LIBRARY_FUNCTION(Accumulate) {
+template<typename ThreadPool>
+void accumulateInPool(LLU::MArgumentManager& mngr) {
 	auto data = mngr.getGenericNumericArray<LLU::Passing::Constant>(0);
 	const auto numThreads = mngr.getInteger<mint>(1);
 	const auto jobSize = mngr.getInteger<mint>(2);
@@ -104,6 +114,14 @@ LLU_LIBRARY_FUNCTION(Accumulate) {
 			std::accumulate(std::begin(partialResults), std::end(partialResults), remainderSum, [](T currentSum, auto& fut) { return currentSum + fut.get(); });
 		mngr.set(NumericArray<T> {totalSum});
 	});
+}
+
+LLU_LIBRARY_FUNCTION(Accumulate) {
+	accumulateInPool<LLU::ThreadPool>(mngr);
+}
+
+LLU_LIBRARY_FUNCTION(AccumulateBasic) {
+	accumulateInPool<LLU::BasicPool>(mngr);
 }
 
 LLU_LIBRARY_FUNCTION(AccumulateSequential) {

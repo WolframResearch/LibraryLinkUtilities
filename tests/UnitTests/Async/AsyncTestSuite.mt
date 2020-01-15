@@ -27,16 +27,19 @@ TestExecute[
 
 	RegisterPacletErrors[lib, <||>];
 
-	`LLU`Logger`FormattedLog := `LLU`Logger`LogToString;
+	`LLU`Logger`FormattedLog := `LLU`Logger`LogToShortString;
 	(* SleepyThreads[n, m, t] spawns n threads and performs m jobs on them, where each job is just sleeping t milliseconds *)
 	SleepyThreads = SafeLibraryFunction["SleepyThreads", {Integer, Integer, Integer}, "Void"];
 	(* SleepyThreadsWithPause[n, m, t] works same as SleepyThreads but pauses the pool for 1 second, submits all tasks and then resumes. *)
 	SleepyThreadsWithPause = SafeLibraryFunction["SleepyThreadsWithPause", {Integer, Integer, Integer}, "Void"];
+	(* Same as SleepyThreads only using Basic thread pool. *)
+	SleepyThreadsBasic = SafeLibraryFunction["SleepyThreadsBasic", {Integer, Integer, Integer}, "Void"];
 
 	(* ParallelAccumulate[NA, n, bs] separates a NumericArray NA into blocks of bs elements and sums them in parallel on n threads.
 	 * Returns a one-element NumericArray with the sum of all elements of NA *)
 	ParallelAccumulate = SafeLibraryFunction["Accumulate", {{NumericArray, "Constant"}, Integer, Integer}, NumericArray];
 	SequentialAccumulate = SafeLibraryFunction["AccumulateSequential", {{NumericArray, "Constant"}}, NumericArray];
+	ParallelAccumulateBasic = SafeLibraryFunction["AccumulateBasic", {{NumericArray, "Constant"}, Integer, Integer}, NumericArray];
 
 	(* ParallelLcm[NA, n, bs] calculates LCM of all "UnsignedIntegers64" in NA recursively, running in parallel on n threads.
      * This function tests running async jobs on a thread pool that can themselves submit new jobs to the pool. *)
@@ -60,12 +63,20 @@ TestMatch[
 	TestID -> "AsyncTestSuite-20200113-X6B2Q8"
 ];
 
+TestMatch[
+	AbsoluteTiming[SleepyThreadsBasic[8, 80, 100]]
+	,
+	{ t_, Null } /; (t >= 1 && t < 1.5)
+	,
+	TestID -> "AsyncTestSuite-20200115-S8F3X4"
+];
+
 VerificationTest[
 	data = NumericArray[RandomInteger[{-100, 100}, 50000000], "Integer16"];
 	{systemTime, sum} = RepeatedTiming @ SequentialAccumulate[data];
-	Print["SequentialAccumulate[] time = ", systemTime];
+	Print["SequentialAccumulate[] time for Integer16 = ", systemTime];
 	{parallelTime, parallelSum} = RepeatedTiming @ ParallelAccumulate[data, 8, 50000];
-	Print["ParallelAccumulate[] time = ", parallelTime];
+	Print["ParallelAccumulate[] time for Integer16 = ", parallelTime];
 	parallelSum == sum
 	,
 	TestID -> "AsyncTestSuite-20191219-Y8B1L5"
@@ -74,14 +85,26 @@ VerificationTest[
 VerificationTest[
 	data = NumericArray[RandomComplex[{-100 - 100I, 100 + 100I}, 50000000], "ComplexReal64"];
 	{systemTime, sum} = RepeatedTiming @ SequentialAccumulate[data];
-	Print["SequentialAccumulate[] time = ", systemTime];
+	Print["SequentialAccumulate[] time for ComplexReal64 = ", systemTime];
 	{parallelTime, parallelSum} = RepeatedTiming @ ParallelAccumulate[data, 8, 50000];
-	Print["ParallelAccumulate[] time = ", parallelTime];
+	Print["ParallelAccumulate[] time for ComplexReal64 = ", parallelTime];
 	Abs[First @ Normal[parallelSum - sum]] < 0.00001
 	,
 	TestID -> "AsyncTestSuite-20191219-O4K0H1"
 ];
 
+VerificationTest[
+	data = NumericArray[RandomInteger[{-100, 100}, 50000000], "Integer32"];
+	{systemTime, sum} = RepeatedTiming @ SequentialAccumulate[data];
+	Print["SequentialAccumulate[] time for Integer32 = ", systemTime];
+	parallelTime = First @ RepeatedTiming @ ParallelAccumulate[data, 8, 50000];
+	Print["ParallelAccumulate[] time for Integer32 = ", parallelTime];
+	{parallelTime, parallelSum} = RepeatedTiming @ ParallelAccumulateBasic[data, 8, 50000];
+	Print["ParallelAccumulate[] with basic pool time for Integer32 = ", parallelTime];
+	parallelSum == sum
+	,
+	TestID -> "AsyncTestSuite-20200115-P8I3W8"
+];
 
 (* Uncomment to see how parallel accumulate compares to Total. *)
 (*

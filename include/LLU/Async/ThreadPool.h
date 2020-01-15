@@ -56,7 +56,7 @@ namespace LLU {
 		}
 
 	private:
-		std::unique_ptr<TypeErasedCallableBase> impl;
+		std::unique_ptr<TypeErasedCallableBase> impl = nullptr;
 	};
 
 	template<typename BaseQueue>
@@ -112,6 +112,67 @@ namespace LLU {
 			}
 		}
 	};
+
+	template<typename Queue>
+	class BasicThreadPool {
+	public:
+		using TaskType = typename Queue::value_type;
+
+	public:
+		BasicThreadPool() : BasicThreadPool(std::thread::hardware_concurrency()) {};
+
+		explicit BasicThreadPool(unsigned threadCount) : joiner(threads) {
+			try {
+				for (unsigned i = 0; i < threadCount; ++i) {
+					threads.emplace_back(&BasicThreadPool::workerThread, this, i);
+				}
+			} catch (...) {
+				done = true;
+				throw;
+			}
+		}
+
+		~BasicThreadPool() {
+			done = true;
+		}
+
+		template<typename FunctionType, typename... Args>
+		std::future<std::invoke_result_t<FunctionType, Args...>> submit(FunctionType&& f, Args&&... args) {
+			using result_type = std::invoke_result_t<FunctionType, Args...>;
+			auto boundF = std::bind(std::forward<FunctionType>(f), std::forward<Args>(args)...);
+			std::packaged_task<result_type()> task(std::move(boundF));
+			std::future<result_type> res(task.get_future());
+			workQueue.push(TaskType {std::move(task)});
+			return res;
+		}
+
+		void runPendingTask() {
+			TaskType task;
+			if (popTaskFromPoolQueue(task)) {
+				task();
+			}
+		}
+
+	private:
+		std::atomic_bool done = false;
+		std::vector<std::thread> threads;
+		ThreadJoiner joiner;
+		Queue workQueue;
+		inline static thread_local unsigned myIndex = 0;
+
+
+		void workerThread(unsigned my_index_) {
+			myIndex = my_index_;
+			while (!done) {
+				runPendingTask();
+			}
+		}
+
+		bool popTaskFromPoolQueue(TaskType& task) {
+			return workQueue.waitPop(task);
+		}
+	};
+
 
 	template<typename PoolQueue, typename LocalQueue>
 	class GenericThreadPool {
@@ -213,6 +274,7 @@ namespace LLU {
 	};
 
 	using ThreadPool = GenericThreadPool<ThreadsafeQueue<FunctionWrapper>, WorkStealingQueue<std::deque<FunctionWrapper>>>;
+	using BasicPool = BasicThreadPool<ThreadsafeQueue<FunctionWrapper>>;
 }
 
 #endif	  // LLU_ASYNC_THREADPOOL_H
