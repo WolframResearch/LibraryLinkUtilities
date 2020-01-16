@@ -16,102 +16,10 @@
 #include <vector>
 
 #include "LLU/Async/Queue.h"
+#include "LLU/Async/Utilities.h"
+#include "LLU/Async/WorkStealingQueue.h"
 
 namespace LLU {
-
-	class FunctionWrapper {
-		struct TypeErasedCallableBase {
-			virtual void call() = 0;
-			virtual ~TypeErasedCallableBase() = default;
-		};
-
-		template<typename F>
-		struct TypeErasedCallable : TypeErasedCallableBase {
-			explicit TypeErasedCallable(F&& f) : callable(std::forward<F>(f)) {}
-
-			void call() override {
-				callable();
-			}
-			F callable;
-		};
-
-	public:
-		template<typename F>
-		explicit FunctionWrapper(F&& f) : impl {std::make_unique<TypeErasedCallable<F>>(std::forward<F>(f))} {}
-
-		template<typename F, typename... Args>
-		explicit FunctionWrapper(F&& f, Args&&... args) {
-			auto boundF = std::bind(std::forward<F>(f), std::forward<Args>(args)...);
-			impl = std::make_unique<TypeErasedCallable<F>>(std::move(boundF));
-		}
-
-		FunctionWrapper() = default;
-		FunctionWrapper(FunctionWrapper&& other) noexcept = default;
-		FunctionWrapper& operator=(FunctionWrapper&& other) noexcept = default;
-		FunctionWrapper(const FunctionWrapper&) = delete;
-		FunctionWrapper& operator=(const FunctionWrapper&) = delete;
-
-		void operator()() {
-			impl->call();
-		}
-
-	private:
-		std::unique_ptr<TypeErasedCallableBase> impl = nullptr;
-	};
-
-	template<typename BaseQueue>
-	class WorkStealingQueue {
-	private:
-		using DataType = typename BaseQueue::value_type;
-		BaseQueue theQueue;
-		mutable std::mutex theMutex;
-
-	public:
-		WorkStealingQueue() = default;
-		WorkStealingQueue(const WorkStealingQueue& other) = delete;
-		WorkStealingQueue& operator=(const WorkStealingQueue& other) = delete;
-
-		void push(DataType data) {
-			std::lock_guard<std::mutex> lock(theMutex);
-			theQueue.push_front(std::move(data));
-		}
-		bool empty() const {
-			std::lock_guard<std::mutex> lock(theMutex);
-			return theQueue.empty();
-		}
-		bool tryPop(DataType& res) {
-			std::lock_guard<std::mutex> lock(theMutex);
-			if (theQueue.empty()) {
-				return false;
-			}
-			res = std::move(theQueue.front());
-			theQueue.pop_front();
-			return true;
-		}
-		bool trySteal(DataType& res) {
-			std::lock_guard<std::mutex> lock(theMutex);
-			if (theQueue.empty()) {
-				return false;
-			}
-			res = std::move(theQueue.back());
-			theQueue.pop_back();
-			return true;
-		}
-	};
-
-	class ThreadJoiner {
-		std::vector<std::thread>& threads;
-
-	public:
-		explicit ThreadJoiner(std::vector<std::thread>& threadsToJoin) : threads(threadsToJoin) {}
-		~ThreadJoiner() {
-			for (auto& t : threads) {
-				if (t.joinable()) {
-					t.join();
-				}
-			}
-		}
-	};
 
 	template<typename Queue>
 	class BasicThreadPool {
@@ -124,7 +32,7 @@ namespace LLU {
 		explicit BasicThreadPool(unsigned threadCount) : joiner(threads) {
 			try {
 				for (unsigned i = 0; i < threadCount; ++i) {
-					threads.emplace_back(&BasicThreadPool::workerThread, this, i);
+					threads.emplace_back(&BasicThreadPool::workerThread, this);
 				}
 			} catch (...) {
 				done = true;
@@ -138,17 +46,15 @@ namespace LLU {
 
 		template<typename FunctionType, typename... Args>
 		std::future<std::invoke_result_t<FunctionType, Args...>> submit(FunctionType&& f, Args&&... args) {
-			using result_type = std::invoke_result_t<FunctionType, Args...>;
-			auto boundF = std::bind(std::forward<FunctionType>(f), std::forward<Args>(args)...);
-			std::packaged_task<result_type()> task(std::move(boundF));
-			std::future<result_type> res(task.get_future());
+			auto task = getPackagedTask(std::forward<FunctionType>(f), std::forward<Args>(args)...);
+			auto res = task.get_future();
 			workQueue.push(TaskType {std::move(task)});
 			return res;
 		}
 
 		void runPendingTask() {
 			TaskType task;
-			if (popTaskFromPoolQueue(task)) {
+			if (workQueue.waitPop(task)) {
 				task();
 			}
 		}
@@ -156,26 +62,20 @@ namespace LLU {
 	private:
 		std::atomic_bool done = false;
 		std::vector<std::thread> threads;
-		ThreadJoiner joiner;
+		Async::ThreadJoiner joiner;
 		Queue workQueue;
-		inline static thread_local unsigned myIndex = 0;
 
-
-		void workerThread(unsigned my_index_) {
-			myIndex = my_index_;
+		void workerThread() {
 			while (!done) {
 				runPendingTask();
 			}
 		}
-
-		bool popTaskFromPoolQueue(TaskType& task) {
-			return workQueue.waitPop(task);
-		}
 	};
 
+	using BasicPool = BasicThreadPool<ThreadsafeQueue<Async::FunctionWrapper>>;
 
 	template<typename PoolQueue, typename LocalQueue>
-	class GenericThreadPool {
+class GenericThreadPool : public Async::Pausable {
 	public:
 		using TaskType = typename PoolQueue::value_type;
 
@@ -203,10 +103,8 @@ namespace LLU {
 
 		template<typename FunctionType, typename... Args>
 		std::future<std::invoke_result_t<FunctionType, Args...>> submit(FunctionType&& f, Args&&... args) {
-			using result_type = std::invoke_result_t<FunctionType, Args...>;
-			auto boundF = std::bind(std::forward<FunctionType>(f), std::forward<Args>(args)...);
-			std::packaged_task<result_type()> task(std::move(boundF));
-			std::future<result_type> res(task.get_future());
+			auto task = getPackagedTask(std::forward<FunctionType>(f), std::forward<Args>(args)...);
+			auto res = task.get_future();
 			if (localWorkQueue) {
 				localWorkQueue->push(TaskType {std::move(task)});
 			} else {
@@ -224,24 +122,12 @@ namespace LLU {
 			}
 		}
 
-		void pause() {
-			paused = true;
-		}
-
-		void resume() {
-			paused = false;
-			pausedWorkers.notify_all();
-		}
-
 	private:
 		std::atomic_bool done = false;
-		std::atomic_bool paused = false;
-		std::mutex workersMutex;
-		std::condition_variable pausedWorkers;
 		PoolQueue poolWorkQueue;
 		std::vector<std::unique_ptr<LocalQueue>> queues;
 		std::vector<std::thread> threads;
-		ThreadJoiner joiner;
+		Async::ThreadJoiner joiner;
 		inline static thread_local LocalQueue* localWorkQueue = nullptr;
 		inline static thread_local unsigned myIndex = 0;
 
@@ -250,10 +136,7 @@ namespace LLU {
 			localWorkQueue = queues[myIndex].get();
 			while (!done) {
 				runPendingTask();
-				if (paused) {
-					std::unique_lock lck {workersMutex};
-					pausedWorkers.wait(lck, [&]() -> bool { return done || !paused; });
-				}
+				checkPause();
 			}
 		}
 		bool popTaskFromLocalQueue(TaskType& task) {
@@ -273,8 +156,7 @@ namespace LLU {
 		}
 	};
 
-	using ThreadPool = GenericThreadPool<ThreadsafeQueue<FunctionWrapper>, WorkStealingQueue<std::deque<FunctionWrapper>>>;
-	using BasicPool = BasicThreadPool<ThreadsafeQueue<FunctionWrapper>>;
+	using ThreadPool = GenericThreadPool<ThreadsafeQueue<Async::FunctionWrapper>, WorkStealingQueue<std::deque<Async::FunctionWrapper>>>;
 }
 
 #endif	  // LLU_ASYNC_THREADPOOL_H
