@@ -42,6 +42,9 @@ namespace LLU {
 
 		~BasicThreadPool() {
 			done = true;
+			for (int i = 0; i < threads.size(); ++i) {
+				workQueue.push(TaskType {[] {}});
+			}
 		}
 
 		template<typename FunctionType, typename... Args>
@@ -54,16 +57,15 @@ namespace LLU {
 
 		void runPendingTask() {
 			TaskType task;
-			if (workQueue.waitPop(task)) {
-				task();
-			}
+			workQueue.waitPop(task);
+			task();
 		}
 
 	private:
 		std::atomic_bool done = false;
+		Queue workQueue;
 		std::vector<std::thread> threads;
 		Async::ThreadJoiner joiner;
-		Queue workQueue;
 
 		void workerThread() {
 			while (!done) {
