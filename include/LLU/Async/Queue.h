@@ -6,7 +6,6 @@
 #ifndef LLU_ASYNC_QUEUE_H
 #define LLU_ASYNC_QUEUE_H
 
-#include <atomic>
 #include <condition_variable>
 #include <memory>
 #include <mutex>
@@ -20,17 +19,13 @@ namespace LLU {
 
 	public:
 		ThreadsafeQueue() : head(new Node), tail(head.get()) {}
-		~ThreadsafeQueue() {
-			done = true;
-			data_cond.notify_all();
-		}
 		ThreadsafeQueue(const ThreadsafeQueue& other) = delete;
 		ThreadsafeQueue& operator=(const ThreadsafeQueue& other) = delete;
 
 		std::shared_ptr<value_type> tryPop();
 		bool tryPop(value_type& value);
 		std::shared_ptr<value_type> waitPop();
-		bool waitPop(value_type& value);
+		void waitPop(value_type& value);
 		void push(value_type new_value);
 		bool empty();
 
@@ -40,7 +35,6 @@ namespace LLU {
 			std::unique_ptr<Node> next;
 		};
 
-		std::atomic_bool done = false;
 		std::mutex head_mutex;
 		std::unique_ptr<Node> head;
 		std::mutex tail_mutex;
@@ -53,9 +47,6 @@ namespace LLU {
 		}
 
 		std::unique_ptr<Node> popHead() {
-			if (head.get() == getTail()) {
-				return nullptr;
-			}
 			std::unique_ptr<Node> old_head = std::move(head);
 			head = std::move(old_head->next);
 			return old_head;
@@ -63,7 +54,7 @@ namespace LLU {
 
 		std::unique_lock<std::mutex> waitForData() {
 			std::unique_lock<std::mutex> head_lock(head_mutex);
-			data_cond.wait(head_lock, [&] { return done || head.get() != getTail(); });
+			data_cond.wait(head_lock, [&] { return head.get() != getTail(); });
 			return std::move(head_lock);
 		}
 
@@ -74,9 +65,7 @@ namespace LLU {
 
 		std::unique_ptr<Node> waitPopHead(value_type& value) {
 			std::unique_lock<std::mutex> head_lock(waitForData());
-			if (head->data) {
-				value = std::move(*head->data);
-			}
+			value = std::move(*head->data);
 			return popHead();
 		}
 
@@ -115,13 +104,12 @@ namespace LLU {
 	template<typename T>
 	std::shared_ptr<T> ThreadsafeQueue<T>::waitPop() {
 		std::unique_ptr<Node> const old_head = waitPopHead();
-		return old_head? old_head->data : nullptr;
+		return old_head->data;
 	}
 
 	template<typename T>
-	bool ThreadsafeQueue<T>::waitPop(T& value) {
+	void ThreadsafeQueue<T>::waitPop(T& value) {
 		std::unique_ptr<Node> const old_head = waitPopHead(value);
-		return old_head != nullptr;
 	}
 
 	template<typename T>
