@@ -98,7 +98,7 @@ void accumulateInPool(LLU::MArgumentManager& mngr) {
 	auto data = mngr.getGenericNumericArray<LLU::Passing::Constant>(0);
 	const auto numThreads = mngr.getInteger<mint>(1);
 	const auto jobSize = mngr.getInteger<mint>(2);
-	LLU::ThreadPool tp {static_cast<unsigned int>(numThreads)};
+	ThreadPool tp {static_cast<unsigned int>(numThreads)};
 
 	const auto numJobs = (data.getFlattenedLength() + jobSize - 1) / jobSize;
 	LLU::asTypedNumericArray(data, [&](auto&& typedNA) {

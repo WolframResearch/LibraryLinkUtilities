@@ -46,7 +46,7 @@ namespace LLU {
 
 		template<typename FunctionType, typename... Args>
 		std::future<std::invoke_result_t<FunctionType, Args...>> submit(FunctionType&& f, Args&&... args) {
-			auto task = getPackagedTask(std::forward<FunctionType>(f), std::forward<Args>(args)...);
+			auto task = Async::getPackagedTask(std::forward<FunctionType>(f), std::forward<Args>(args)...);
 			auto res = task.get_future();
 			workQueue.push(TaskType {std::move(task)});
 			return res;
@@ -75,7 +75,7 @@ namespace LLU {
 	using BasicPool = BasicThreadPool<ThreadsafeQueue<Async::FunctionWrapper>>;
 
 	template<typename PoolQueue, typename LocalQueue>
-class GenericThreadPool : public Async::Pausable {
+	class GenericThreadPool : public Async::Pausable {
 	public:
 		using TaskType = typename PoolQueue::value_type;
 
@@ -103,7 +103,7 @@ class GenericThreadPool : public Async::Pausable {
 
 		template<typename FunctionType, typename... Args>
 		std::future<std::invoke_result_t<FunctionType, Args...>> submit(FunctionType&& f, Args&&... args) {
-			auto task = getPackagedTask(std::forward<FunctionType>(f), std::forward<Args>(args)...);
+			auto task = Async::getPackagedTask(std::forward<FunctionType>(f), std::forward<Args>(args)...);
 			auto res = task.get_future();
 			if (localWorkQueue) {
 				localWorkQueue->push(TaskType {std::move(task)});

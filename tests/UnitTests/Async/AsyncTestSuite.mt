@@ -17,7 +17,7 @@ TestExecute[
 
 	(* Compile the test library *)
 	lib = CCompilerDriver`CreateLibrary[
-		FileNameJoin[{currentDirectory, "TestSources", #}]& /@ {"PoolTest.cpp", "QueueTest.cpp"},
+		FileNameJoin[{currentDirectory, "TestSources", #}]& /@ {"PoolTest.cpp"},
 		"Async",
 		options,
 		"Defines" -> {"LLU_LOG_DEBUG"}
