@@ -12,21 +12,64 @@
 
 namespace LLU {
 
+	/**
+	 * @brief   ThreadsafeQueue is a linked list of nodes which supports safe concurrent access to its head (removing elements) and tail (adding new elements).
+	 * ThreadsafeQueue is described in chapter 6 of A. Williams "C++ Concurrency in Action" 2nd Edition.
+	 * This implementation contains only slight modifications and minor bugfixes.
+	 * @tparam  T - type of the data stored in the Queue
+	 */
 	template<typename T>
 	class ThreadsafeQueue {
 	public:
 		using value_type = T;
-
 	public:
+		/**
+		 * @brief   Create new empty queue.
+		 */
 		ThreadsafeQueue() : head(new Node), tail(head.get()) {}
+
+		/// The queue is non-copyable
 		ThreadsafeQueue(const ThreadsafeQueue& other) = delete;
 		ThreadsafeQueue& operator=(const ThreadsafeQueue& other) = delete;
 
+		/**
+		 * @brief   Get data from the queue if available.
+		 * If data is not available in the queue, the calling thread will not wait.
+		 * @return  Shared pointer to the data from the queue's head, nullptr if there is no data to be popped.
+		 */
 		std::shared_ptr<value_type> tryPop();
+
+		/**
+		 * @brief       Get data from the queue if available.
+		 * If data is not available in the queue, the calling thread will not wait.
+		 * @param[out]  value - reference to the data from the queue
+		 * @return      True iff there was data in the queue, otherwise the out-parameter remains unchanged.
+		 */
 		bool tryPop(value_type& value);
+
+		/**
+		 * @brief   Get data from the queue, possibly waiting for it.
+		 * @return  Shared pointer to the data from the queue's head
+		 */
 		std::shared_ptr<value_type> waitPop();
+
+		/**
+		 * @brief
+		 * @param value
+		 */
 		void waitPop(value_type& value);
+
+		/**
+		 * @brief   Push new value to the end of the queue.
+		 * This operation can be performed even with other thread popping a value from the queue at the same time.
+		 * @param   new_value - value to be pushed to the queue
+		 */
 		void push(value_type new_value);
+
+		/**
+		 * @brief   Check if the queue is empty.
+		 * @return  True iff the queue is empty i.e. has no data to be popped.
+		 */
 		bool empty();
 
 	private:
