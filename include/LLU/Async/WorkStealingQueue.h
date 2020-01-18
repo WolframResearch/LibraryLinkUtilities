@@ -11,8 +11,8 @@
 namespace LLU {
 	template<typename BaseQueue>
 	class WorkStealingQueue {
-	private:
 		using DataType = typename BaseQueue::value_type;
+
 		BaseQueue theQueue;
 		mutable std::mutex theMutex;
 

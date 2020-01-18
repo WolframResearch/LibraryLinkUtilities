@@ -54,8 +54,8 @@ namespace LLU {
 		std::shared_ptr<value_type> waitPop();
 
 		/**
-		 * @brief
-		 * @param value
+		 * @brief   Get data from the queue, possibly waiting for it.
+		 * @param   value - reference to the data from the queue
 		 */
 		void waitPop(value_type& value);
 

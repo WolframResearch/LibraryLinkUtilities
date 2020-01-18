@@ -1,7 +1,7 @@
 /**
  * @file	Utilities.h
  * @author	Rafal Chojna <rafalc@wolfram.com>
- * @brief
+ * @brief   Set of small utility classes and functions used in the Async part of LLU.
  */
 #ifndef LLU_ASYNC_UTILITIES_H
 #define LLU_ASYNC_UTILITIES_H
@@ -13,6 +13,7 @@
 #include <vector>
 
 namespace LLU::Async {
+
 	class FunctionWrapper {
 		struct TypeErasedCallableBase {
 			virtual void call() = 0;

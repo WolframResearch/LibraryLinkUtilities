@@ -1,7 +1,7 @@
 /**
  * @file
  * @author	Rafal Chojna <rafalc@wolfram.com>
- * @brief   Definition of the ThreadPool class, based on A. Williams "C++ Concurrency in Action" 2nd Edition, chapter 9.
+ * @brief   Definitions of two thread pool classes: basic with a single queue for all threads and more advanced one with local queues and work stealing.
  */
 
 #ifndef LLU_ASYNC_THREADPOOL_H
@@ -21,6 +21,10 @@
 
 namespace LLU {
 
+	/**
+	 * Simple thread pool class with a single queue. Threads block on the queue if there is no work to do.
+	 * @tparam Queue - any threadsafe queue class that provides push and waitPop methods
+	 */
 	template<typename Queue>
 	class BasicThreadPool {
 	public:
@@ -42,7 +46,7 @@ namespace LLU {
 
 		~BasicThreadPool() {
 			done = true;
-			for (int i = 0; i < threads.size(); ++i) {
+			for ([[maybe_unused]] auto& t : threads) {
 				workQueue.push(TaskType {[] {}});
 			}
 		}
@@ -74,8 +78,15 @@ namespace LLU {
 		}
 	};
 
+	/// Alias for BasicThreadPool with ThreadsafeQueue storing Async::FunctionWrappers.
+	/// Good default choice for a thread pool for any paclet.
 	using BasicPool = BasicThreadPool<ThreadsafeQueue<Async::FunctionWrapper>>;
 
+	/**
+	 * Thread pool class with support of per-thread queues and work stealing. Based on A. Williams "C++ Concurrency in Action" 2nd Edition, chapter 9.
+	 * @tparam PoolQueue - any threadsafe queue class that provides push and tryPop methods
+	 * @tparam LocalQueue - any threadsafe queue class that provides push, tryPop and trySteal methods
+	 */
 	template<typename PoolQueue, typename LocalQueue>
 	class GenericThreadPool : public Async::Pausable {
 	public:
@@ -158,6 +169,8 @@ namespace LLU {
 		}
 	};
 
+	/// Alias for GenericThreadPool with ThreadsafeQueue and WorkStealingQueue storing Async::FunctionWrappers.
+	/// Good choice for a thread pool if the tasks that will be executed involve submitting new tasks for the pool.
 	using ThreadPool = GenericThreadPool<ThreadsafeQueue<Async::FunctionWrapper>, WorkStealingQueue<std::deque<Async::FunctionWrapper>>>;
 }
 
