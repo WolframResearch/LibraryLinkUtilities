@@ -21,24 +21,24 @@ TestExecute[
 
 	Get[FileNameJoin[{$LLUSharedDir, "LibraryLinkUtilities.wl"}]];
 
-	RegisterPacletErrors[lib, <||>];
+	`LLU`RegisterPacletErrors[lib, <||>];
 
 	`LLU`Logger`PrintLogFunctionSelector := Block[{`LLU`Logger`FormattedLog = `LLU`Logger`LogToShortString},
 		`LLU`Logger`PrintLogToSymbol[LogSymbol][##]
 	]&;
 
 
-	$OpenRead = SafeLibraryFunction["OpenForReading", {String}, Integer];
-	$OpenWrite = SafeLibraryFunction["OpenForWriting", {String}, Integer];
-	$OpenInvalidMode = SafeLibraryFunction["OpenInvalidMode", {String}, Integer];
+	$OpenRead = `LLU`SafeLibraryFunction["OpenForReading", {String}, Integer];
+	$OpenWrite = `LLU`SafeLibraryFunction["OpenForWriting", {String}, Integer];
+	$OpenInvalidMode = `LLU`SafeLibraryFunction["OpenInvalidMode", {String}, Integer];
 
-	$ReadStrings = SafeLibraryFunction["ReadStrings", {String}, "DataStore"];
-	$WriteStrings = SafeLibraryFunction["WriteStrings", {String, "DataStore"}, "Void"];
+	$ReadStrings = `LLU`SafeLibraryFunction["ReadStrings", {String}, "DataStore"];
+	$WriteStrings = `LLU`SafeLibraryFunction["WriteStrings", {String, "DataStore"}, "Void"];
 
-	$OpenManagedFile = SafeLibraryFunction["OpenManagedFile", {`LLU`Managed[MyFile], String, Integer}, "Void", "Throws" -> True];
+	$OpenManagedFile = `LLU`SafeLibraryFunction["OpenManagedFile", {`LLU`Managed[MyFile], String, Integer}, "Void", "Throws" -> True];
 	`LLU`Constructor[MyFile] = $OpenManagedFile;
 
-	$OpenManagedFileStream = SafeLibraryFunction["OpenManagedFileStream", {`LLU`Managed[FileStream], String, Integer}, "Void", "Throws" -> True];
+	$OpenManagedFileStream = `LLU`SafeLibraryFunction["OpenManagedFileStream", {`LLU`Managed[FileStream], String, Integer}, "Void", "Throws" -> True];
 	`LLU`Constructor[FileStream] = $OpenManagedFileStream;
 
 	f = FileNameJoin[{$TemporaryDirectory, "some_file_that-hopefully-does_not_exist"}];

@@ -343,7 +343,7 @@ TestMatch[
 ];
 
 TestMatch[
-	EmptyLibDataException = SafeLibraryFunction["EmptyLibDataException", {}, "Void"];
+	EmptyLibDataException = `LLU`SafeLibraryFunction["EmptyLibDataException", {}, "Void"];
 	EmptyLibDataException[]
 	,
 	Failure["LibDataError", <|
