@@ -89,6 +89,10 @@ namespace LLU {
 
 		LLU_DEFINE_ERROR_NAME(ManagedExprInvalidID);
 		LLU_DEFINE_ERROR_NAME(MLEDynamicTypeError);
+
+		LLU_DEFINE_ERROR_NAME(PathNotValidated);
+		LLU_DEFINE_ERROR_NAME(InvalidOpenMode);
+		LLU_DEFINE_ERROR_NAME(OpenFileFailed);
 	}
 
 } /* namespace LLU */

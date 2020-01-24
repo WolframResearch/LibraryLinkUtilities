@@ -26,6 +26,10 @@ namespace LLU {
 		return libData;
 	}
 
+	WolframLibraryData LibraryData::uncheckedAPI() noexcept {
+		return libData;
+	}
+
 	const st_WolframNumericArrayLibrary_Functions* LibraryData::NumericArrayAPI() {
 		return API()->numericarrayLibraryFunctions;
 	}

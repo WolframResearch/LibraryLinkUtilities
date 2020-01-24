@@ -62,7 +62,7 @@ namespace LLU {
 		static bool hasLibraryData();
 
 		/**
-		 *   @brief     Get currently owned WolframLibraryData.
+		 *   @brief     Get currently owned WolframLibraryData, if any.
 		 *   @return    a non-owning pointer to current instance of st_WolframLibraryData statically stored by LibraryData
 		 *   @throws    ErrorName::LibDataError - if libData is nullptr
 		 **/
@@ -91,6 +91,12 @@ namespace LLU {
 		 * @return  a pointer to raw LibraryLink DataStore API
 		 */
 		static const st_WolframIOLibrary_Functions* DataStoreAPI();
+
+		/**
+		 * @brief   Get currently owned WolframLibraryData, even if it is a nullptr.
+		 * @return  raw pointer to st_WolframLibraryData statically stored by LibraryData
+		 */
+		static WolframLibraryData uncheckedAPI() noexcept;
 
 	private:
 		/// A copy of WolframLibraryData that will be accessible to all parts of LLU

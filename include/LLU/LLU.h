@@ -30,4 +30,7 @@
 /* MathLink */
 #include "LLU/ML/MLStream.hpp"
 
+/* Others */
+#include "LLU/FileUtilities.h"
+
 #endif /* LLUTILS_LLU_H_ */
