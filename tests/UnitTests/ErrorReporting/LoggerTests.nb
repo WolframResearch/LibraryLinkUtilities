@@ -10,10 +10,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       158,          7]
-NotebookDataLength[    215678,       4861]
-NotebookOptionsPosition[    196938,       4553]
-NotebookOutlinePosition[    197273,       4568]
-CellTagsIndexPosition[    197230,       4565]
+NotebookDataLength[    217154,       4851]
+NotebookOptionsPosition[    198539,       4546]
+NotebookOutlinePosition[    198875,       4561]
+CellTagsIndexPosition[    198832,       4558]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -156,42 +156,30 @@ Cell[BoxData[{
    3.767096533118917*^9}, 3.76830134117272*^9, {3.768302463785304*^9, 
    3.7683024770311613`*^9}, {3.768307094415729*^9, 3.768307103203546*^9}, 
    3.768307176549246*^9, {3.768307207093041*^9, 3.768307218013637*^9}, {
-   3.769499636643283*^9, 
-   3.7694996395144176`*^9}},ExpressionUUID->"99516c35-ef6b-4697-8ea5-\
-f925044510f3"],
-
-Cell[CellGroupData[{
+   3.769499636643283*^9, 3.7694996395144176`*^9}},
+ CellLabel->"In[10]:=",ExpressionUUID->"99516c35-ef6b-4697-8ea5-f925044510f3"],
 
 Cell[BoxData["\<\"/usr/bin/gcc -shared -o \
 \\\"/home/rafal/.Mathematica/SystemFiles/LibraryResources/Linux-x86-64/\
-Working-rafal-asus-29820-1460485184-2/LoggerTest.so\\\" -m64 -x c++ -fPIC -O2 \
+Working-rafal-asus-2458-1939098688-2/LoggerTest.so\\\" -m64 -x c++ -fPIC -O2 \
 -O2 -std=c++14 -Wall --pedantic -fvisibility=hidden -DLLU_LOG_DEBUG \
--I\\\"/home/rafal/Wolfram/workspace/Kern/Build/Layout/Mathematica/12.1/\
-SystemFiles/IncludeFiles/C\\\" \
--I\\\"/home/rafal/Wolfram/workspace/Kern/Build/Layout/Mathematica/12.1/\
-SystemFiles/Links/MathLink/DeveloperKit/Linux-x86-64/CompilerAdditions\\\" -I\
-\\\"/home/rafal/Wolfram/workspace/IMEX/LibraryLinkUtilities/install/include\\\
-\" \\\"/home/rafal/Wolfram/workspace/IMEX/LibraryLinkUtilities/tests/\
-UnitTests/ErrorReporting/LoggerTest.cpp\\\"  \
--L\\\"/home/rafal/Wolfram/workspace/Kern/Build/Layout/Mathematica/12.1/\
-SystemFiles/Links/MathLink/DeveloperKit/Linux-x86-64/CompilerAdditions\\\" -L\
-\\\"/home/rafal/Wolfram/workspace/Kern/Build/Layout/Mathematica/12.1/\
-SystemFiles/Libraries/Linux-x86-64\\\" \
--L\\\"/home/rafal/Wolfram/workspace/IMEX/LibraryLinkUtilities/install/lib\\\" \
- -l\\\"LLU\\\"  2>&1\"\>"], "Print",
+-I\\\"/usr/local/Wolfram/Mathematica/12.1/SystemFiles/IncludeFiles/C\\\" -I\\\
+\"/usr/local/Wolfram/Mathematica/12.1/SystemFiles/Links/MathLink/DeveloperKit/\
+Linux-x86-64/CompilerAdditions\\\" \
+-I\\\"/home/rafal/Wolfram/workspace/IMEX/LibraryLinkUtilities/install/include\
+\\\" \\\"/home/rafal/Wolfram/workspace/IMEX/LibraryLinkUtilities/tests/\
+UnitTests/ErrorReporting/TestSources/LoggerTest.cpp\\\"  \
+-L\\\"/usr/local/Wolfram/Mathematica/12.1/SystemFiles/Links/MathLink/\
+DeveloperKit/Linux-x86-64/CompilerAdditions\\\" \
+-L\\\"/usr/local/Wolfram/Mathematica/12.1/SystemFiles/Libraries/Linux-x86-64\\\
+\" -L\\\"/home/rafal/Wolfram/workspace/IMEX/LibraryLinkUtilities/install/lib\\\
+\"  -l\\\"LLU\\\"  2>&1\"\>"], "Print",
  CellChangeTimes->{{3.768307155149679*^9, 3.768307187277421*^9}, {
-  3.7683072239772882`*^9, 3.768307225789073*^9}},
+  3.7683072239772882`*^9, 3.768307225789073*^9}, {3.783354990562354*^9, 
+  3.7833549926827707`*^9}, {3.7833564269193563`*^9, 3.783356429130931*^9}},
  CellLabel->
   "During evaluation of \
-In[10]:=",ExpressionUUID->"5b1a692c-d9ad-48ea-b870-67bfaa626e3c"],
-
-Cell[BoxData["\<\"\"\>"], "Print",
- CellChangeTimes->{{3.768307155149679*^9, 3.768307187277421*^9}, {
-  3.7683072239772882`*^9, 3.7683072280573177`*^9}},
- CellLabel->
-  "During evaluation of \
-In[10]:=",ExpressionUUID->"34e83e99-a86d-4fa1-b246-8b183e454816"]
-}, Open  ]]
+In[10]:=",ExpressionUUID->"a4453f19-ee03-4693-bb7c-6b6f680fe063"]
 }, Open  ]]
 }, Open  ]],
 
@@ -236,10 +224,10 @@ Cell[BoxData[
         Rational[2, 3], 0],
       FontColor->RGBColor[0, 
         Rational[2, 3], 0],ExpressionUUID->
-      "3a0b81f7-1a37-4be2-8c28-b43f67429a69"], 
+      "1840d0a2-42ff-4be5-b0a8-725c6514acd2"], 
      TagBox[
       TooltipBox[
-       StyleBox["\<\"Line 17 in LoggerTest.cpp, function GreaterAt\"\>",
+       StyleBox["\<\"Line 19 in LoggerTest.cpp, function GreaterAt\"\>",
         StripOnInput->False,
         LineColor->RGBColor[
          0.33333333333333337`, 0.33333333333333337`, 0.33333333333333337`],
@@ -252,13 +240,13 @@ Cell[BoxData[
         FontColor->RGBColor[
          0.33333333333333337`, 0.33333333333333337`, 0.33333333333333337`]],
        "\"/home/rafal/Wolfram/workspace/IMEX/LibraryLinkUtilities/tests/\
-UnitTests/ErrorReporting/LoggerTest.cpp\"",
+UnitTests/ErrorReporting/TestSources/LoggerTest.cpp\"",
        TooltipStyle->"TextStyling"],
       Annotation[#, 
        "/home/rafal/Wolfram/workspace/IMEX/LibraryLinkUtilities/tests/\
-UnitTests/ErrorReporting/LoggerTest.cpp", "Tooltip"]& ]},
+UnitTests/ErrorReporting/TestSources/LoggerTest.cpp", "Tooltip"]& ]},
     {"\[SpanFromAbove]", Cell["Library function entered with 4 arguments.",
-      FontSize->14,ExpressionUUID->"8f62d528-6f6c-4089-ad11-88891f1e9ec6"]}
+      FontSize->14,ExpressionUUID->"62527336-2b6d-4700-b6e0-e5e16520b4cb"]}
    },
    AutoDelete->False,
    GridBoxItemSize->{"Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}],
@@ -267,10 +255,10 @@ UnitTests/ErrorReporting/LoggerTest.cpp", "Tooltip"]& ]},
   3.76717132916539*^9, 3.7671717375287323`*^9, 3.767171816279159*^9, 
   3.7683025017966022`*^9, 3.7683050399349833`*^9, 3.768305504804225*^9, 
   3.76830641876466*^9, 3.768306512178854*^9, 3.768306664109006*^9, 
-  3.7683070463582697`*^9, 3.768307231199561*^9},
+  3.7683070463582697`*^9, 3.768307231199561*^9, 3.7833564381594887`*^9},
  CellLabel->
   "During evaluation of \
-In[19]:=",ExpressionUUID->"0c5558a9-a07c-4cf1-be98-6e655ecc7b64"],
+In[19]:=",ExpressionUUID->"cf4ed6cd-5a47-43d0-a7c2-e6244d13ebdc"],
 
 Cell[BoxData[
  TagBox[GridBox[{
@@ -285,10 +273,10 @@ Cell[BoxData[
         Rational[2, 3], 0],
       FontColor->RGBColor[0, 
         Rational[2, 3], 0],ExpressionUUID->
-      "4f974847-6014-4b2d-abf7-f0bde49c66d0"], 
+      "54d83cd3-7687-4caa-8cf7-52aa4f5012f1"], 
      TagBox[
       TooltipBox[
-       StyleBox["\<\"Line 20 in LoggerTest.cpp, function GreaterAt\"\>",
+       StyleBox["\<\"Line 22 in LoggerTest.cpp, function GreaterAt\"\>",
         StripOnInput->False,
         LineColor->RGBColor[
          0.33333333333333337`, 0.33333333333333337`, 0.33333333333333337`],
@@ -301,13 +289,13 @@ Cell[BoxData[
         FontColor->RGBColor[
          0.33333333333333337`, 0.33333333333333337`, 0.33333333333333337`]],
        "\"/home/rafal/Wolfram/workspace/IMEX/LibraryLinkUtilities/tests/\
-UnitTests/ErrorReporting/LoggerTest.cpp\"",
+UnitTests/ErrorReporting/TestSources/LoggerTest.cpp\"",
        TooltipStyle->"TextStyling"],
       Annotation[#, 
        "/home/rafal/Wolfram/workspace/IMEX/LibraryLinkUtilities/tests/\
-UnitTests/ErrorReporting/LoggerTest.cpp", "Tooltip"]& ]},
+UnitTests/ErrorReporting/TestSources/LoggerTest.cpp", "Tooltip"]& ]},
     {"\[SpanFromAbove]", Cell["Starting try-block, current error code: 0",
-      FontSize->14,ExpressionUUID->"cf9ec8fa-d5cb-4314-a30d-fcf87421a239"]}
+      FontSize->14,ExpressionUUID->"6ba3c3a6-0ae6-4e28-9872-f683ee91b0aa"]}
    },
    AutoDelete->False,
    GridBoxItemSize->{"Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}],
@@ -316,10 +304,10 @@ UnitTests/ErrorReporting/LoggerTest.cpp", "Tooltip"]& ]},
   3.76717132916539*^9, 3.7671717375287323`*^9, 3.767171816279159*^9, 
   3.7683025017966022`*^9, 3.7683050399349833`*^9, 3.768305504804225*^9, 
   3.76830641876466*^9, 3.768306512178854*^9, 3.768306664109006*^9, 
-  3.7683070463582697`*^9, 3.768307231207343*^9},
+  3.7683070463582697`*^9, 3.768307231199561*^9, 3.7833564381616898`*^9},
  CellLabel->
   "During evaluation of \
-In[19]:=",ExpressionUUID->"b638aaa2-bfcf-4b18-9974-3a65fcc0c4e7"],
+In[19]:=",ExpressionUUID->"af208e1b-85e7-4e04-a928-fdf07af24a63"],
 
 Cell[BoxData[
  TagBox[GridBox[{
@@ -334,10 +322,10 @@ Cell[BoxData[
         Rational[2, 3], 0],
       FontColor->RGBColor[0, 
         Rational[2, 3], 0],ExpressionUUID->
-      "b2e48ca0-83fb-4c31-aecc-9312805d4c6a"], 
+      "e2b23983-a9f5-4ed8-87e8-9fb769361466"], 
      TagBox[
       TooltipBox[
-       StyleBox["\<\"Line 26 in LoggerTest.cpp, function GreaterAt\"\>",
+       StyleBox["\<\"Line 28 in LoggerTest.cpp, function GreaterAt\"\>",
         StripOnInput->False,
         LineColor->RGBColor[
          0.33333333333333337`, 0.33333333333333337`, 0.33333333333333337`],
@@ -350,13 +338,13 @@ Cell[BoxData[
         FontColor->RGBColor[
          0.33333333333333337`, 0.33333333333333337`, 0.33333333333333337`]],
        "\"/home/rafal/Wolfram/workspace/IMEX/LibraryLinkUtilities/tests/\
-UnitTests/ErrorReporting/LoggerTest.cpp\"",
+UnitTests/ErrorReporting/TestSources/LoggerTest.cpp\"",
        TooltipStyle->"TextStyling"],
       Annotation[#, 
        "/home/rafal/Wolfram/workspace/IMEX/LibraryLinkUtilities/tests/\
-UnitTests/ErrorReporting/LoggerTest.cpp", "Tooltip"]& ]},
+UnitTests/ErrorReporting/TestSources/LoggerTest.cpp", "Tooltip"]& ]},
     {"\[SpanFromAbove]", Cell["Input tensor is of type: 2",
-      FontSize->14,ExpressionUUID->"9a547a4f-f4c7-4eb0-983e-65a3330871ee"]}
+      FontSize->14,ExpressionUUID->"f86e36b4-18e5-4257-838c-10ddea130171"]}
    },
    AutoDelete->False,
    GridBoxItemSize->{"Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}],
@@ -365,10 +353,10 @@ UnitTests/ErrorReporting/LoggerTest.cpp", "Tooltip"]& ]},
   3.76717132916539*^9, 3.7671717375287323`*^9, 3.767171816279159*^9, 
   3.7683025017966022`*^9, 3.7683050399349833`*^9, 3.768305504804225*^9, 
   3.76830641876466*^9, 3.768306512178854*^9, 3.768306664109006*^9, 
-  3.7683070463582697`*^9, 3.768307231211187*^9},
+  3.7683070463582697`*^9, 3.768307231199561*^9, 3.7833564381640368`*^9},
  CellLabel->
   "During evaluation of \
-In[19]:=",ExpressionUUID->"8f48f5aa-d452-42de-be56-de455c27be80"],
+In[19]:=",ExpressionUUID->"47a31352-c501-486d-a92d-b5730833d76d"],
 
 Cell[BoxData[
  TagBox[GridBox[{
@@ -383,10 +371,10 @@ Cell[BoxData[
         Rational[2, 3], 0],
       FontColor->RGBColor[0, 
         Rational[2, 3], 0],ExpressionUUID->
-      "91c06d2e-f4ec-4ed6-9863-7b4296adf361"], 
+      "4e60b96c-a6b4-41f6-9910-84643ca23138"], 
      TagBox[
       TooltipBox[
-       StyleBox["\<\"Line 39 in LoggerTest.cpp, function GreaterAt\"\>",
+       StyleBox["\<\"Line 41 in LoggerTest.cpp, function GreaterAt\"\>",
         StripOnInput->False,
         LineColor->RGBColor[
          0.33333333333333337`, 0.33333333333333337`, 0.33333333333333337`],
@@ -399,13 +387,13 @@ Cell[BoxData[
         FontColor->RGBColor[
          0.33333333333333337`, 0.33333333333333337`, 0.33333333333333337`]],
        "\"/home/rafal/Wolfram/workspace/IMEX/LibraryLinkUtilities/tests/\
-UnitTests/ErrorReporting/LoggerTest.cpp\"",
+UnitTests/ErrorReporting/TestSources/LoggerTest.cpp\"",
        TooltipStyle->"TextStyling"],
       Annotation[#, 
        "/home/rafal/Wolfram/workspace/IMEX/LibraryLinkUtilities/tests/\
-UnitTests/ErrorReporting/LoggerTest.cpp", "Tooltip"]& ]},
+UnitTests/ErrorReporting/TestSources/LoggerTest.cpp", "Tooltip"]& ]},
     {"\[SpanFromAbove]", Cell["Comparing 5 with 7",
-      FontSize->14,ExpressionUUID->"1c2dbd62-6de9-44ea-b3fa-24913b0d2fe8"]}
+      FontSize->14,ExpressionUUID->"d6a99d45-b179-453c-82e8-b95f175a59e8"]}
    },
    AutoDelete->False,
    GridBoxItemSize->{"Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}],
@@ -414,10 +402,10 @@ UnitTests/ErrorReporting/LoggerTest.cpp", "Tooltip"]& ]},
   3.76717132916539*^9, 3.7671717375287323`*^9, 3.767171816279159*^9, 
   3.7683025017966022`*^9, 3.7683050399349833`*^9, 3.768305504804225*^9, 
   3.76830641876466*^9, 3.768306512178854*^9, 3.768306664109006*^9, 
-  3.7683070463582697`*^9, 3.768307231213146*^9},
+  3.7683070463582697`*^9, 3.768307231199561*^9, 3.783356438165744*^9},
  CellLabel->
   "During evaluation of \
-In[19]:=",ExpressionUUID->"3a8f974f-d377-43dc-a5bd-70a2f32f7fa7"]
+In[19]:=",ExpressionUUID->"85f801de-36c2-44e0-a736-e74b7bb81990"]
 }, Open  ]],
 
 Cell[BoxData["False"], "Output",
@@ -429,8 +417,8 @@ Cell[BoxData["False"], "Output",
    3.767171329184924*^9, 3.7671717375395813`*^9, 3.767171816295135*^9, 
    3.768302501805956*^9, 3.768305039950717*^9, 3.768305504817367*^9, 
    3.768306418775269*^9, 3.768306512193009*^9, 3.768306664117515*^9, 
-   3.768307046369478*^9, 3.768307231214861*^9},
- CellLabel->"Out[19]=",ExpressionUUID->"ce8e0b2b-6872-494c-b254-23270c8d07ca"]
+   3.768307046369478*^9, 3.768307231214861*^9, 3.7833564381675262`*^9},
+ CellLabel->"Out[19]=",ExpressionUUID->"dc0394e8-4936-4a4c-9117-9244d7c51c8d"]
 }, Open  ]],
 
 Cell[CellGroupData[{
@@ -459,10 +447,10 @@ Cell[BoxData[
         Rational[2, 3], 0],
       FontColor->RGBColor[0, 
         Rational[2, 3], 0],ExpressionUUID->
-      "00d9c4e1-4013-4816-8724-091064b9b008"], 
+      "80fc98e6-bde3-49e4-88be-70582b262421"], 
      TagBox[
       TooltipBox[
-       StyleBox["\<\"Line 17 in LoggerTest.cpp, function GreaterAt\"\>",
+       StyleBox["\<\"Line 19 in LoggerTest.cpp, function GreaterAt\"\>",
         StripOnInput->False,
         LineColor->RGBColor[
          0.33333333333333337`, 0.33333333333333337`, 0.33333333333333337`],
@@ -475,13 +463,13 @@ Cell[BoxData[
         FontColor->RGBColor[
          0.33333333333333337`, 0.33333333333333337`, 0.33333333333333337`]],
        "\"/home/rafal/Wolfram/workspace/IMEX/LibraryLinkUtilities/tests/\
-UnitTests/ErrorReporting/LoggerTest.cpp\"",
+UnitTests/ErrorReporting/TestSources/LoggerTest.cpp\"",
        TooltipStyle->"TextStyling"],
       Annotation[#, 
        "/home/rafal/Wolfram/workspace/IMEX/LibraryLinkUtilities/tests/\
-UnitTests/ErrorReporting/LoggerTest.cpp", "Tooltip"]& ]},
+UnitTests/ErrorReporting/TestSources/LoggerTest.cpp", "Tooltip"]& ]},
     {"\[SpanFromAbove]", Cell["Library function entered with 4 arguments.",
-      FontSize->14,ExpressionUUID->"afc25e8a-9393-4617-9653-e4587df22abe"]}
+      FontSize->14,ExpressionUUID->"71af3e82-feb8-4717-8d93-03d1c326feb5"]}
    },
    AutoDelete->False,
    GridBoxItemSize->{"Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}],
@@ -491,10 +479,10 @@ UnitTests/ErrorReporting/LoggerTest.cpp", "Tooltip"]& ]},
   3.767171028808817*^9, 3.767171330165317*^9, 3.767171738468384*^9, 
   3.767171816381406*^9, 3.7683050413637247`*^9, 3.768305504920608*^9, 
   3.768306418841359*^9, 3.768306512258299*^9, 3.768306664222711*^9, 
-  3.7683070464380836`*^9, 3.768307231302547*^9},
+  3.7683070464380836`*^9, 3.768307231302547*^9, 3.7833564398598223`*^9},
  CellLabel->
   "During evaluation of \
-In[20]:=",ExpressionUUID->"e7dffb65-8081-481a-b27d-ba14fea6194b"],
+In[20]:=",ExpressionUUID->"be68a513-249f-4dfd-a2d1-2c4a8720e0ff"],
 
 Cell[BoxData[
  TagBox[GridBox[{
@@ -509,10 +497,10 @@ Cell[BoxData[
         Rational[2, 3], 0],
       FontColor->RGBColor[0, 
         Rational[2, 3], 0],ExpressionUUID->
-      "18bc001e-a728-4d42-a884-ace4d81ab3f6"], 
+      "a9fe7b26-4378-4c12-a84e-890c43b768fa"], 
      TagBox[
       TooltipBox[
-       StyleBox["\<\"Line 20 in LoggerTest.cpp, function GreaterAt\"\>",
+       StyleBox["\<\"Line 22 in LoggerTest.cpp, function GreaterAt\"\>",
         StripOnInput->False,
         LineColor->RGBColor[
          0.33333333333333337`, 0.33333333333333337`, 0.33333333333333337`],
@@ -525,13 +513,13 @@ Cell[BoxData[
         FontColor->RGBColor[
          0.33333333333333337`, 0.33333333333333337`, 0.33333333333333337`]],
        "\"/home/rafal/Wolfram/workspace/IMEX/LibraryLinkUtilities/tests/\
-UnitTests/ErrorReporting/LoggerTest.cpp\"",
+UnitTests/ErrorReporting/TestSources/LoggerTest.cpp\"",
        TooltipStyle->"TextStyling"],
       Annotation[#, 
        "/home/rafal/Wolfram/workspace/IMEX/LibraryLinkUtilities/tests/\
-UnitTests/ErrorReporting/LoggerTest.cpp", "Tooltip"]& ]},
+UnitTests/ErrorReporting/TestSources/LoggerTest.cpp", "Tooltip"]& ]},
     {"\[SpanFromAbove]", Cell["Starting try-block, current error code: 0",
-      FontSize->14,ExpressionUUID->"5e760484-2446-46d9-9ba3-bd9b50d1ff31"]}
+      FontSize->14,ExpressionUUID->"b73be41a-c9c4-48bb-bd04-a85b1810d050"]}
    },
    AutoDelete->False,
    GridBoxItemSize->{"Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}],
@@ -541,10 +529,10 @@ UnitTests/ErrorReporting/LoggerTest.cpp", "Tooltip"]& ]},
   3.767171028808817*^9, 3.767171330165317*^9, 3.767171738468384*^9, 
   3.767171816381406*^9, 3.7683050413637247`*^9, 3.768305504920608*^9, 
   3.768306418841359*^9, 3.768306512258299*^9, 3.768306664222711*^9, 
-  3.7683070464380836`*^9, 3.768307231305532*^9},
+  3.7683070464380836`*^9, 3.768307231302547*^9, 3.783356439866994*^9},
  CellLabel->
   "During evaluation of \
-In[20]:=",ExpressionUUID->"3a4c1967-9987-4081-b6e3-a8bb5bc9636c"],
+In[20]:=",ExpressionUUID->"6b0c6f36-80b0-4847-a177-30950eb5203d"],
 
 Cell[BoxData[
  TagBox[GridBox[{
@@ -554,59 +542,7 @@ Cell[BoxData[
       BackFaceColor->RGBColor[1, 0.5, 0],
       GraphicsColor->RGBColor[1, 0.5, 0],
       FontColor->RGBColor[1, 0.5, 0],ExpressionUUID->
-      "b5698922-cbca-4f69-be85-4bf927994353"], 
-     TagBox[
-      TooltipBox[
-       StyleBox["\<\"Line 24 in LoggerTest.cpp, function GreaterAt\"\>",
-        StripOnInput->False,
-        LineColor->RGBColor[
-         0.33333333333333337`, 0.33333333333333337`, 0.33333333333333337`],
-        FrontFaceColor->RGBColor[
-         0.33333333333333337`, 0.33333333333333337`, 0.33333333333333337`],
-        BackFaceColor->RGBColor[
-         0.33333333333333337`, 0.33333333333333337`, 0.33333333333333337`],
-        GraphicsColor->RGBColor[
-         0.33333333333333337`, 0.33333333333333337`, 0.33333333333333337`],
-        FontColor->RGBColor[
-         0.33333333333333337`, 0.33333333333333337`, 0.33333333333333337`]],
-       "\"/home/rafal/Wolfram/workspace/IMEX/LibraryLinkUtilities/tests/\
-UnitTests/ErrorReporting/LoggerTest.cpp\"",
-       TooltipStyle->"TextStyling"],
-      Annotation[#, 
-       "/home/rafal/Wolfram/workspace/IMEX/LibraryLinkUtilities/tests/\
-UnitTests/ErrorReporting/LoggerTest.cpp", "Tooltip"]& ]},
-    {"\[SpanFromAbove]", Cell["\<\
-File name my:file.txt contains a possibly problematic character \":\".\
-\>",
-      FontSize->14,ExpressionUUID->"0dcf934e-fc8b-4aed-bd35-a982f70d1f06"]}
-   },
-   AutoDelete->False,
-   GridBoxItemSize->{"Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}],
-  "TextGrid"]], "Print",
- CellChangeTimes->{3.761654224395376*^9, 3.7639699550958967`*^9, 
-  3.7643345417603817`*^9, 3.76433491508709*^9, 3.767162716878459*^9, 
-  3.767171028808817*^9, 3.767171330165317*^9, 3.767171738468384*^9, 
-  3.767171816381406*^9, 3.7683050413637247`*^9, 3.768305504920608*^9, 
-  3.768306418841359*^9, 3.768306512258299*^9, 3.768306664222711*^9, 
-  3.7683070464380836`*^9, 3.768307231309026*^9},
- CellLabel->
-  "During evaluation of \
-In[20]:=",ExpressionUUID->"f94604dd-4a70-4caa-b189-bb7435c2aabe"],
-
-Cell[BoxData[
- TagBox[GridBox[{
-    {Cell["[Debug]",
-      LineColor->RGBColor[0, 
-        Rational[2, 3], 0],
-      FrontFaceColor->RGBColor[0, 
-        Rational[2, 3], 0],
-      BackFaceColor->RGBColor[0, 
-        Rational[2, 3], 0],
-      GraphicsColor->RGBColor[0, 
-        Rational[2, 3], 0],
-      FontColor->RGBColor[0, 
-        Rational[2, 3], 0],ExpressionUUID->
-      "9b0117ff-2dd5-4f65-aacb-e55cc05cec96"], 
+      "c158a712-7f55-483d-ade0-e041c5d1380c"], 
      TagBox[
       TooltipBox[
        StyleBox["\<\"Line 26 in LoggerTest.cpp, function GreaterAt\"\>",
@@ -622,13 +558,15 @@ Cell[BoxData[
         FontColor->RGBColor[
          0.33333333333333337`, 0.33333333333333337`, 0.33333333333333337`]],
        "\"/home/rafal/Wolfram/workspace/IMEX/LibraryLinkUtilities/tests/\
-UnitTests/ErrorReporting/LoggerTest.cpp\"",
+UnitTests/ErrorReporting/TestSources/LoggerTest.cpp\"",
        TooltipStyle->"TextStyling"],
       Annotation[#, 
        "/home/rafal/Wolfram/workspace/IMEX/LibraryLinkUtilities/tests/\
-UnitTests/ErrorReporting/LoggerTest.cpp", "Tooltip"]& ]},
-    {"\[SpanFromAbove]", Cell["Input tensor is of type: 2",
-      FontSize->14,ExpressionUUID->"743969ef-0b31-4863-8299-67b41071e8cf"]}
+UnitTests/ErrorReporting/TestSources/LoggerTest.cpp", "Tooltip"]& ]},
+    {"\[SpanFromAbove]", Cell["\<\
+File name my:file.txt contains a possibly problematic character \":\".\
+\>",
+      FontSize->14,ExpressionUUID->"e39bd165-3465-475a-ba40-bc67356eea62"]}
    },
    AutoDelete->False,
    GridBoxItemSize->{"Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}],
@@ -638,10 +576,10 @@ UnitTests/ErrorReporting/LoggerTest.cpp", "Tooltip"]& ]},
   3.767171028808817*^9, 3.767171330165317*^9, 3.767171738468384*^9, 
   3.767171816381406*^9, 3.7683050413637247`*^9, 3.768305504920608*^9, 
   3.768306418841359*^9, 3.768306512258299*^9, 3.768306664222711*^9, 
-  3.7683070464380836`*^9, 3.768307231310617*^9},
+  3.7683070464380836`*^9, 3.768307231302547*^9, 3.78335643986968*^9},
  CellLabel->
   "During evaluation of \
-In[20]:=",ExpressionUUID->"d14eb084-8203-4802-a6a1-16ece6ae4019"],
+In[20]:=",ExpressionUUID->"24f5bccc-db38-45af-bb0e-593c76306016"],
 
 Cell[BoxData[
  TagBox[GridBox[{
@@ -656,10 +594,10 @@ Cell[BoxData[
         Rational[2, 3], 0],
       FontColor->RGBColor[0, 
         Rational[2, 3], 0],ExpressionUUID->
-      "79074df3-58c0-4a35-82fd-29970c104ecb"], 
+      "6e8c5041-b91c-4af0-9729-ae688502eea3"], 
      TagBox[
       TooltipBox[
-       StyleBox["\<\"Line 39 in LoggerTest.cpp, function GreaterAt\"\>",
+       StyleBox["\<\"Line 28 in LoggerTest.cpp, function GreaterAt\"\>",
         StripOnInput->False,
         LineColor->RGBColor[
          0.33333333333333337`, 0.33333333333333337`, 0.33333333333333337`],
@@ -672,13 +610,13 @@ Cell[BoxData[
         FontColor->RGBColor[
          0.33333333333333337`, 0.33333333333333337`, 0.33333333333333337`]],
        "\"/home/rafal/Wolfram/workspace/IMEX/LibraryLinkUtilities/tests/\
-UnitTests/ErrorReporting/LoggerTest.cpp\"",
+UnitTests/ErrorReporting/TestSources/LoggerTest.cpp\"",
        TooltipStyle->"TextStyling"],
       Annotation[#, 
        "/home/rafal/Wolfram/workspace/IMEX/LibraryLinkUtilities/tests/\
-UnitTests/ErrorReporting/LoggerTest.cpp", "Tooltip"]& ]},
-    {"\[SpanFromAbove]", Cell["Comparing 5 with 7",
-      FontSize->14,ExpressionUUID->"ef8a272f-23fc-48e5-8c8d-09439f1d9d48"]}
+UnitTests/ErrorReporting/TestSources/LoggerTest.cpp", "Tooltip"]& ]},
+    {"\[SpanFromAbove]", Cell["Input tensor is of type: 2",
+      FontSize->14,ExpressionUUID->"be23b943-fcbf-4f16-b2f7-fc19a5ca528c"]}
    },
    AutoDelete->False,
    GridBoxItemSize->{"Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}],
@@ -688,10 +626,60 @@ UnitTests/ErrorReporting/LoggerTest.cpp", "Tooltip"]& ]},
   3.767171028808817*^9, 3.767171330165317*^9, 3.767171738468384*^9, 
   3.767171816381406*^9, 3.7683050413637247`*^9, 3.768305504920608*^9, 
   3.768306418841359*^9, 3.768306512258299*^9, 3.768306664222711*^9, 
-  3.7683070464380836`*^9, 3.768307231312182*^9},
+  3.7683070464380836`*^9, 3.768307231302547*^9, 3.783356439871008*^9},
  CellLabel->
   "During evaluation of \
-In[20]:=",ExpressionUUID->"6cdb442a-c783-4401-a966-95b341f3a732"]
+In[20]:=",ExpressionUUID->"957e3ac6-5958-4861-9f95-6b757dc02cfe"],
+
+Cell[BoxData[
+ TagBox[GridBox[{
+    {Cell["[Debug]",
+      LineColor->RGBColor[0, 
+        Rational[2, 3], 0],
+      FrontFaceColor->RGBColor[0, 
+        Rational[2, 3], 0],
+      BackFaceColor->RGBColor[0, 
+        Rational[2, 3], 0],
+      GraphicsColor->RGBColor[0, 
+        Rational[2, 3], 0],
+      FontColor->RGBColor[0, 
+        Rational[2, 3], 0],ExpressionUUID->
+      "335c9833-252b-4953-b972-ecbe43857ef6"], 
+     TagBox[
+      TooltipBox[
+       StyleBox["\<\"Line 41 in LoggerTest.cpp, function GreaterAt\"\>",
+        StripOnInput->False,
+        LineColor->RGBColor[
+         0.33333333333333337`, 0.33333333333333337`, 0.33333333333333337`],
+        FrontFaceColor->RGBColor[
+         0.33333333333333337`, 0.33333333333333337`, 0.33333333333333337`],
+        BackFaceColor->RGBColor[
+         0.33333333333333337`, 0.33333333333333337`, 0.33333333333333337`],
+        GraphicsColor->RGBColor[
+         0.33333333333333337`, 0.33333333333333337`, 0.33333333333333337`],
+        FontColor->RGBColor[
+         0.33333333333333337`, 0.33333333333333337`, 0.33333333333333337`]],
+       "\"/home/rafal/Wolfram/workspace/IMEX/LibraryLinkUtilities/tests/\
+UnitTests/ErrorReporting/TestSources/LoggerTest.cpp\"",
+       TooltipStyle->"TextStyling"],
+      Annotation[#, 
+       "/home/rafal/Wolfram/workspace/IMEX/LibraryLinkUtilities/tests/\
+UnitTests/ErrorReporting/TestSources/LoggerTest.cpp", "Tooltip"]& ]},
+    {"\[SpanFromAbove]", Cell["Comparing 5 with 7",
+      FontSize->14,ExpressionUUID->"247f9217-c3a4-4b34-86b1-7d8bd970c319"]}
+   },
+   AutoDelete->False,
+   GridBoxItemSize->{"Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}],
+  "TextGrid"]], "Print",
+ CellChangeTimes->{3.761654224395376*^9, 3.7639699550958967`*^9, 
+  3.7643345417603817`*^9, 3.76433491508709*^9, 3.767162716878459*^9, 
+  3.767171028808817*^9, 3.767171330165317*^9, 3.767171738468384*^9, 
+  3.767171816381406*^9, 3.7683050413637247`*^9, 3.768305504920608*^9, 
+  3.768306418841359*^9, 3.768306512258299*^9, 3.768306664222711*^9, 
+  3.7683070464380836`*^9, 3.768307231302547*^9, 3.783356439872308*^9},
+ CellLabel->
+  "During evaluation of \
+In[20]:=",ExpressionUUID->"bf272756-da97-4ed7-b4c9-2b7986dbb22b"]
 }, Open  ]],
 
 Cell[BoxData["False"], "Output",
@@ -700,8 +688,8 @@ Cell[BoxData["False"], "Output",
   3.7671710288205338`*^9, 3.767171330184931*^9, 3.767171738479671*^9, 
   3.767171816401279*^9, 3.76830504137784*^9, 3.768305504932768*^9, 
   3.7683064188537083`*^9, 3.768306512271022*^9, 3.768306664240026*^9, 
-  3.768307046451767*^9, 3.768307231313539*^9},
- CellLabel->"Out[20]=",ExpressionUUID->"2f853a31-a84b-4f4d-9db7-8f576d784afb"]
+  3.768307046451767*^9, 3.768307231313539*^9, 3.783356439873437*^9},
+ CellLabel->"Out[20]=",ExpressionUUID->"521726a7-5d32-436c-9efb-5ecb9a3573fd"]
 }, Open  ]],
 
 Cell[CellGroupData[{
@@ -730,10 +718,10 @@ Cell[BoxData[
         Rational[2, 3], 0],
       FontColor->RGBColor[0, 
         Rational[2, 3], 0],ExpressionUUID->
-      "b90755b5-93b1-4b66-9e27-173cb92bdd92"], 
+      "43d95595-a015-43ab-bc51-c669e3f2d760"], 
      TagBox[
       TooltipBox[
-       StyleBox["\<\"Line 17 in LoggerTest.cpp, function GreaterAt\"\>",
+       StyleBox["\<\"Line 19 in LoggerTest.cpp, function GreaterAt\"\>",
         StripOnInput->False,
         LineColor->RGBColor[
          0.33333333333333337`, 0.33333333333333337`, 0.33333333333333337`],
@@ -746,13 +734,13 @@ Cell[BoxData[
         FontColor->RGBColor[
          0.33333333333333337`, 0.33333333333333337`, 0.33333333333333337`]],
        "\"/home/rafal/Wolfram/workspace/IMEX/LibraryLinkUtilities/tests/\
-UnitTests/ErrorReporting/LoggerTest.cpp\"",
+UnitTests/ErrorReporting/TestSources/LoggerTest.cpp\"",
        TooltipStyle->"TextStyling"],
       Annotation[#, 
        "/home/rafal/Wolfram/workspace/IMEX/LibraryLinkUtilities/tests/\
-UnitTests/ErrorReporting/LoggerTest.cpp", "Tooltip"]& ]},
+UnitTests/ErrorReporting/TestSources/LoggerTest.cpp", "Tooltip"]& ]},
     {"\[SpanFromAbove]", Cell["Library function entered with 4 arguments.",
-      FontSize->14,ExpressionUUID->"8abb3139-0897-407f-b741-67c7b706ae2b"]}
+      FontSize->14,ExpressionUUID->"39bcbaf5-38bc-4aa9-8a15-5b6600f0fb7d"]}
    },
    AutoDelete->False,
    GridBoxItemSize->{"Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}],
@@ -762,10 +750,10 @@ UnitTests/ErrorReporting/LoggerTest.cpp", "Tooltip"]& ]},
   3.767171029846548*^9, 3.767171331806365*^9, 3.7671717402158813`*^9, 
   3.7671718164998093`*^9, 3.7683050426769323`*^9, 3.7683055049418*^9, 
   3.7683064188907967`*^9, 3.7683065123070793`*^9, 3.7683066642864647`*^9, 
-  3.768307046490775*^9, 3.768307231321662*^9},
+  3.768307046490775*^9, 3.768307231321662*^9, 3.783356441204946*^9},
  CellLabel->
   "During evaluation of \
-In[21]:=",ExpressionUUID->"ad505385-50ef-4561-a04a-1ca5f38cb434"],
+In[21]:=",ExpressionUUID->"b3d9f85a-5fa3-4659-88f9-3e9f82b6c97b"],
 
 Cell[BoxData[
  TagBox[GridBox[{
@@ -780,10 +768,10 @@ Cell[BoxData[
         Rational[2, 3], 0],
       FontColor->RGBColor[0, 
         Rational[2, 3], 0],ExpressionUUID->
-      "6f330925-12c8-4a1f-aa0c-bf35f0d4d331"], 
+      "9ae70caf-dfbd-4f3a-85d5-29cb3280f5a2"], 
      TagBox[
       TooltipBox[
-       StyleBox["\<\"Line 20 in LoggerTest.cpp, function GreaterAt\"\>",
+       StyleBox["\<\"Line 22 in LoggerTest.cpp, function GreaterAt\"\>",
         StripOnInput->False,
         LineColor->RGBColor[
          0.33333333333333337`, 0.33333333333333337`, 0.33333333333333337`],
@@ -796,13 +784,13 @@ Cell[BoxData[
         FontColor->RGBColor[
          0.33333333333333337`, 0.33333333333333337`, 0.33333333333333337`]],
        "\"/home/rafal/Wolfram/workspace/IMEX/LibraryLinkUtilities/tests/\
-UnitTests/ErrorReporting/LoggerTest.cpp\"",
+UnitTests/ErrorReporting/TestSources/LoggerTest.cpp\"",
        TooltipStyle->"TextStyling"],
       Annotation[#, 
        "/home/rafal/Wolfram/workspace/IMEX/LibraryLinkUtilities/tests/\
-UnitTests/ErrorReporting/LoggerTest.cpp", "Tooltip"]& ]},
+UnitTests/ErrorReporting/TestSources/LoggerTest.cpp", "Tooltip"]& ]},
     {"\[SpanFromAbove]", Cell["Starting try-block, current error code: 0",
-      FontSize->14,ExpressionUUID->"2b21b6aa-c0d2-44b8-b9fa-9f9b1ded7fb9"]}
+      FontSize->14,ExpressionUUID->"b823b6d0-e3b6-4e1b-b55b-a05896d82e0d"]}
    },
    AutoDelete->False,
    GridBoxItemSize->{"Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}],
@@ -812,10 +800,10 @@ UnitTests/ErrorReporting/LoggerTest.cpp", "Tooltip"]& ]},
   3.767171029846548*^9, 3.767171331806365*^9, 3.7671717402158813`*^9, 
   3.7671718164998093`*^9, 3.7683050426769323`*^9, 3.7683055049418*^9, 
   3.7683064188907967`*^9, 3.7683065123070793`*^9, 3.7683066642864647`*^9, 
-  3.768307046490775*^9, 3.768307231323821*^9},
+  3.768307046490775*^9, 3.768307231321662*^9, 3.783356441208055*^9},
  CellLabel->
   "During evaluation of \
-In[21]:=",ExpressionUUID->"95f71b57-26cd-4a89-ae85-ff23a1c03710"],
+In[21]:=",ExpressionUUID->"4238b5aa-b67a-4c15-8094-3ed671f03d98"],
 
 Cell[BoxData[
  TagBox[GridBox[{
@@ -830,10 +818,10 @@ Cell[BoxData[
         Rational[2, 3], 0],
       FontColor->RGBColor[0, 
         Rational[2, 3], 0],ExpressionUUID->
-      "cc5f148f-481f-4672-941d-9f9534d3b7df"], 
+      "a6e225f4-70dd-4f95-8499-44bf302e0429"], 
      TagBox[
       TooltipBox[
-       StyleBox["\<\"Line 26 in LoggerTest.cpp, function GreaterAt\"\>",
+       StyleBox["\<\"Line 28 in LoggerTest.cpp, function GreaterAt\"\>",
         StripOnInput->False,
         LineColor->RGBColor[
          0.33333333333333337`, 0.33333333333333337`, 0.33333333333333337`],
@@ -846,13 +834,13 @@ Cell[BoxData[
         FontColor->RGBColor[
          0.33333333333333337`, 0.33333333333333337`, 0.33333333333333337`]],
        "\"/home/rafal/Wolfram/workspace/IMEX/LibraryLinkUtilities/tests/\
-UnitTests/ErrorReporting/LoggerTest.cpp\"",
+UnitTests/ErrorReporting/TestSources/LoggerTest.cpp\"",
        TooltipStyle->"TextStyling"],
       Annotation[#, 
        "/home/rafal/Wolfram/workspace/IMEX/LibraryLinkUtilities/tests/\
-UnitTests/ErrorReporting/LoggerTest.cpp", "Tooltip"]& ]},
+UnitTests/ErrorReporting/TestSources/LoggerTest.cpp", "Tooltip"]& ]},
     {"\[SpanFromAbove]", Cell["Input tensor is of type: 2",
-      FontSize->14,ExpressionUUID->"db3daf92-719a-4e97-96be-03f684b3f117"]}
+      FontSize->14,ExpressionUUID->"f68858b8-6299-4b2c-8716-4ca4b37fcf99"]}
    },
    AutoDelete->False,
    GridBoxItemSize->{"Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}],
@@ -862,10 +850,10 @@ UnitTests/ErrorReporting/LoggerTest.cpp", "Tooltip"]& ]},
   3.767171029846548*^9, 3.767171331806365*^9, 3.7671717402158813`*^9, 
   3.7671718164998093`*^9, 3.7683050426769323`*^9, 3.7683055049418*^9, 
   3.7683064188907967`*^9, 3.7683065123070793`*^9, 3.7683066642864647`*^9, 
-  3.768307046490775*^9, 3.768307231325718*^9},
+  3.768307046490775*^9, 3.768307231321662*^9, 3.7833564412129917`*^9},
  CellLabel->
   "During evaluation of \
-In[21]:=",ExpressionUUID->"72180cf1-1c52-4809-b3fe-a6e12ecee162"],
+In[21]:=",ExpressionUUID->"abe02c29-abd7-4af3-9829-76e5dd6ab933"],
 
 Cell[BoxData[
  TagBox[GridBox[{
@@ -875,10 +863,10 @@ Cell[BoxData[
       BackFaceColor->RGBColor[1, 0, 0],
       GraphicsColor->RGBColor[1, 0, 0],
       FontColor->RGBColor[1, 0, 0],ExpressionUUID->
-      "005d5ec7-0497-4367-be9b-0fffa9177c87"], 
+      "27d78586-48ba-456c-b1f0-8bdd2e8a67e7"], 
      TagBox[
       TooltipBox[
-       StyleBox["\<\"Line 43 in LoggerTest.cpp, function GreaterAt\"\>",
+       StyleBox["\<\"Line 44 in LoggerTest.cpp, function GreaterAt\"\>",
         StripOnInput->False,
         LineColor->RGBColor[
          0.33333333333333337`, 0.33333333333333337`, 0.33333333333333337`],
@@ -891,15 +879,15 @@ Cell[BoxData[
         FontColor->RGBColor[
          0.33333333333333337`, 0.33333333333333337`, 0.33333333333333337`]],
        "\"/home/rafal/Wolfram/workspace/IMEX/LibraryLinkUtilities/tests/\
-UnitTests/ErrorReporting/LoggerTest.cpp\"",
+UnitTests/ErrorReporting/TestSources/LoggerTest.cpp\"",
        TooltipStyle->"TextStyling"],
       Annotation[#, 
        "/home/rafal/Wolfram/workspace/IMEX/LibraryLinkUtilities/tests/\
-UnitTests/ErrorReporting/LoggerTest.cpp", "Tooltip"]& ]},
+UnitTests/ErrorReporting/TestSources/LoggerTest.cpp", "Tooltip"]& ]},
     {"\[SpanFromAbove]", Cell["\<\
 Caught LLU exception TensorIndexError: Indices (-1, 3) must be positive.\
 \>",
-      FontSize->14,ExpressionUUID->"29edd5d5-629d-4455-a4ff-d7d310264fe9"]}
+      FontSize->14,ExpressionUUID->"87b829dc-56cf-4f7c-a22c-e26f7b05d7e6"]}
    },
    AutoDelete->False,
    GridBoxItemSize->{"Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}],
@@ -909,10 +897,10 @@ Caught LLU exception TensorIndexError: Indices (-1, 3) must be positive.\
   3.767171029846548*^9, 3.767171331806365*^9, 3.7671717402158813`*^9, 
   3.7671718164998093`*^9, 3.7683050426769323`*^9, 3.7683055049418*^9, 
   3.7683064188907967`*^9, 3.7683065123070793`*^9, 3.7683066642864647`*^9, 
-  3.768307046490775*^9, 3.768307231327188*^9},
+  3.768307046490775*^9, 3.768307231321662*^9, 3.783356441214752*^9},
  CellLabel->
   "During evaluation of \
-In[21]:=",ExpressionUUID->"29d12af5-8484-42dc-a37b-7b5706214189"]
+In[21]:=",ExpressionUUID->"ac720b33-8ae3-433d-8eff-3507d74ecaef"]
 }, Open  ]],
 
 Cell[BoxData[
@@ -932,9 +920,8 @@ Cell[BoxData[
               Evaluator -> Automatic, Method -> "Preemptive"], 
              Alignment -> {Center, Center}, ImageSize -> 
              Dynamic[{
-               Automatic, 
-                3.5 (CurrentValue["FontCapHeight"]/AbsoluteCurrentValue[
-                 Magnification])}]], 
+               Automatic, 3.5 CurrentValue["FontCapHeight"]/
+                AbsoluteCurrentValue[Magnification]}]], 
             FrameBox[
              StyleBox["\"\[WarningSign]\"", 
               Directive["Message", 35], StripOnInput -> False], 
@@ -980,9 +967,8 @@ nonexistent Tensor element.\"", "SummaryItem"]}},
               Evaluator -> Automatic, Method -> "Preemptive"], 
              Alignment -> {Center, Center}, ImageSize -> 
              Dynamic[{
-               Automatic, 
-                3.5 (CurrentValue["FontCapHeight"]/AbsoluteCurrentValue[
-                 Magnification])}]], 
+               Automatic, 3.5 CurrentValue["FontCapHeight"]/
+                AbsoluteCurrentValue[Magnification]}]], 
             FrameBox[
              StyleBox["\"\[WarningSign]\"", 
               Directive["Message", 35], StripOnInput -> False], 
@@ -1013,7 +999,7 @@ nonexistent Tensor element.\"", "SummaryItem"]}},
                   "SummaryItemAnnotation"], "\[InvisibleSpace]", 
                  TagBox[
                   TagBox[
-                   RowBox[{"-", "21"}], HoldForm], "SummaryItem"]}]}, {
+                   RowBox[{"-", "19"}], HoldForm], "SummaryItem"]}]}, {
                RowBox[{
                  TagBox[
                   TemplateBox[{"\"Parameters\"", "\": \""}, "RowDefault"], 
@@ -1040,7 +1026,7 @@ nonexistent Tensor element.\"", "SummaryItem"]}},
    Association[
    "MessageTemplate" -> 
     "An error was caused by attempting to access a nonexistent Tensor \
-element.", "MessageParameters" -> Association[], "ErrorCode" -> -21, 
+element.", "MessageParameters" -> Association[], "ErrorCode" -> -19, 
     "Parameters" -> {}]],
   Editable->False,
   SelectWithContents->True,
@@ -1050,8 +1036,8 @@ element.", "MessageParameters" -> Association[], "ErrorCode" -> -21,
   3.767171029982997*^9, 3.767171331936936*^9, 3.7671717403464537`*^9, 
   3.767171816664823*^9, 3.768305042821409*^9, 3.7683055050775537`*^9, 
   3.768306418997415*^9, 3.768306512418491*^9, 3.76830666440066*^9, 
-  3.7683070466225767`*^9, 3.768307231473708*^9},
- CellLabel->"Out[21]=",ExpressionUUID->"7909dfef-a8de-4aae-a0c5-2d727d986c66"]
+  3.7683070466225767`*^9, 3.768307231473708*^9, 3.783356441349794*^9},
+ CellLabel->"Out[21]=",ExpressionUUID->"2a3a8edd-1ff2-43e0-a12b-278450c97b3c"]
 }, Open  ]],
 
 Cell[CellGroupData[{
@@ -1086,10 +1072,10 @@ Cell[BoxData[
         Rational[2, 3], 0],
       FontColor->RGBColor[0, 
         Rational[2, 3], 0],ExpressionUUID->
-      "4339761e-3ed2-4057-a7e3-56ba980d1e99"], 
+      "1d99d414-c495-43ee-86ef-5a60f233bb85"], 
      TagBox[
       TooltipBox[
-       StyleBox["\<\"Line 17 in LoggerTest.cpp, function GreaterAt\"\>",
+       StyleBox["\<\"Line 19 in LoggerTest.cpp, function GreaterAt\"\>",
         StripOnInput->False,
         LineColor->RGBColor[
          0.33333333333333337`, 0.33333333333333337`, 0.33333333333333337`],
@@ -1102,13 +1088,13 @@ Cell[BoxData[
         FontColor->RGBColor[
          0.33333333333333337`, 0.33333333333333337`, 0.33333333333333337`]],
        "\"/home/rafal/Wolfram/workspace/IMEX/LibraryLinkUtilities/tests/\
-UnitTests/ErrorReporting/LoggerTest.cpp\"",
+UnitTests/ErrorReporting/TestSources/LoggerTest.cpp\"",
        TooltipStyle->"TextStyling"],
       Annotation[#, 
        "/home/rafal/Wolfram/workspace/IMEX/LibraryLinkUtilities/tests/\
-UnitTests/ErrorReporting/LoggerTest.cpp", "Tooltip"]& ]},
+UnitTests/ErrorReporting/TestSources/LoggerTest.cpp", "Tooltip"]& ]},
     {"\[SpanFromAbove]", Cell["Library function entered with 4 arguments.",
-      FontSize->14,ExpressionUUID->"451c9d85-9551-4052-b37b-c1d440c29662"]}
+      FontSize->14,ExpressionUUID->"ff48f341-a062-40b2-b1f6-fbda2e0c5657"]}
    },
    AutoDelete->False,
    GridBoxItemSize->{"Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}],
@@ -1118,10 +1104,10 @@ UnitTests/ErrorReporting/LoggerTest.cpp", "Tooltip"]& ]},
   3.767171030994624*^9, 3.7671713330695972`*^9, 3.767171741088757*^9, 
   3.7671718167488728`*^9, 3.768305044229347*^9, 3.768305505147747*^9, 
   3.768306419058256*^9, 3.768306512461101*^9, 3.768306664457255*^9, 
-  3.76830704666755*^9, 3.7683072315374527`*^9},
+  3.76830704666755*^9, 3.7683072315374527`*^9, 3.7833564431782227`*^9},
  CellLabel->
   "During evaluation of \
-In[22]:=",ExpressionUUID->"ffc4f5ef-a251-405b-bf5e-bbc52466acee"],
+In[22]:=",ExpressionUUID->"d3d29960-e234-4530-95eb-9a25fc92e951"],
 
 Cell[BoxData[
  TagBox[GridBox[{
@@ -1136,10 +1122,10 @@ Cell[BoxData[
         Rational[2, 3], 0],
       FontColor->RGBColor[0, 
         Rational[2, 3], 0],ExpressionUUID->
-      "7af99c70-870a-4921-a0ad-ab6eb2616c6c"], 
+      "ee4a2f2d-d099-4228-8411-d7864709a069"], 
      TagBox[
       TooltipBox[
-       StyleBox["\<\"Line 20 in LoggerTest.cpp, function GreaterAt\"\>",
+       StyleBox["\<\"Line 22 in LoggerTest.cpp, function GreaterAt\"\>",
         StripOnInput->False,
         LineColor->RGBColor[
          0.33333333333333337`, 0.33333333333333337`, 0.33333333333333337`],
@@ -1152,13 +1138,13 @@ Cell[BoxData[
         FontColor->RGBColor[
          0.33333333333333337`, 0.33333333333333337`, 0.33333333333333337`]],
        "\"/home/rafal/Wolfram/workspace/IMEX/LibraryLinkUtilities/tests/\
-UnitTests/ErrorReporting/LoggerTest.cpp\"",
+UnitTests/ErrorReporting/TestSources/LoggerTest.cpp\"",
        TooltipStyle->"TextStyling"],
       Annotation[#, 
        "/home/rafal/Wolfram/workspace/IMEX/LibraryLinkUtilities/tests/\
-UnitTests/ErrorReporting/LoggerTest.cpp", "Tooltip"]& ]},
+UnitTests/ErrorReporting/TestSources/LoggerTest.cpp", "Tooltip"]& ]},
     {"\[SpanFromAbove]", Cell["Starting try-block, current error code: 0",
-      FontSize->14,ExpressionUUID->"885a66a4-f5c4-419e-b85b-fac4f8b84dd0"]}
+      FontSize->14,ExpressionUUID->"23ff00b6-f1b9-406d-adfd-275a4d4ff13a"]}
    },
    AutoDelete->False,
    GridBoxItemSize->{"Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}],
@@ -1168,10 +1154,10 @@ UnitTests/ErrorReporting/LoggerTest.cpp", "Tooltip"]& ]},
   3.767171030994624*^9, 3.7671713330695972`*^9, 3.767171741088757*^9, 
   3.7671718167488728`*^9, 3.768305044229347*^9, 3.768305505147747*^9, 
   3.768306419058256*^9, 3.768306512461101*^9, 3.768306664457255*^9, 
-  3.76830704666755*^9, 3.76830723153979*^9},
+  3.76830704666755*^9, 3.7683072315374527`*^9, 3.783356443180253*^9},
  CellLabel->
   "During evaluation of \
-In[22]:=",ExpressionUUID->"64e31476-3556-4e1d-bc80-801be227e5b0"],
+In[22]:=",ExpressionUUID->"450febbe-533b-4458-b5f6-d2ecae59b596"],
 
 Cell[BoxData[
  TagBox[GridBox[{
@@ -1186,52 +1172,7 @@ Cell[BoxData[
         Rational[2, 3], 0],
       FontColor->RGBColor[0, 
         Rational[2, 3], 0],ExpressionUUID->
-      "f1dc0599-047c-453e-8d12-967f97efbbcd"], 
-     TagBox[
-      TooltipBox[
-       StyleBox["\<\"Line 26 in LoggerTest.cpp, function GreaterAt\"\>",
-        StripOnInput->False,
-        LineColor->RGBColor[
-         0.33333333333333337`, 0.33333333333333337`, 0.33333333333333337`],
-        FrontFaceColor->RGBColor[
-         0.33333333333333337`, 0.33333333333333337`, 0.33333333333333337`],
-        BackFaceColor->RGBColor[
-         0.33333333333333337`, 0.33333333333333337`, 0.33333333333333337`],
-        GraphicsColor->RGBColor[
-         0.33333333333333337`, 0.33333333333333337`, 0.33333333333333337`],
-        FontColor->RGBColor[
-         0.33333333333333337`, 0.33333333333333337`, 0.33333333333333337`]],
-       "\"/home/rafal/Wolfram/workspace/IMEX/LibraryLinkUtilities/tests/\
-UnitTests/ErrorReporting/LoggerTest.cpp\"",
-       TooltipStyle->"TextStyling"],
-      Annotation[#, 
-       "/home/rafal/Wolfram/workspace/IMEX/LibraryLinkUtilities/tests/\
-UnitTests/ErrorReporting/LoggerTest.cpp", "Tooltip"]& ]},
-    {"\[SpanFromAbove]", Cell["Input tensor is of type: 4",
-      FontSize->14,ExpressionUUID->"63f35460-585a-4c15-9add-70431e3db02a"]}
-   },
-   AutoDelete->False,
-   GridBoxItemSize->{"Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}],
-  "TextGrid"]], "Print",
- CellChangeTimes->{3.7616542606572*^9, 3.763969964562097*^9, 
-  3.764334544416862*^9, 3.7643349172906113`*^9, 3.767162719498987*^9, 
-  3.767171030994624*^9, 3.7671713330695972`*^9, 3.767171741088757*^9, 
-  3.7671718167488728`*^9, 3.768305044229347*^9, 3.768305505147747*^9, 
-  3.768306419058256*^9, 3.768306512461101*^9, 3.768306664457255*^9, 
-  3.76830704666755*^9, 3.768307231544148*^9},
- CellLabel->
-  "During evaluation of \
-In[22]:=",ExpressionUUID->"b4204c8b-eb7e-4a3c-82de-1639ff52c7b2"],
-
-Cell[BoxData[
- TagBox[GridBox[{
-    {Cell["[Error]",
-      LineColor->RGBColor[1, 0, 0],
-      FrontFaceColor->RGBColor[1, 0, 0],
-      BackFaceColor->RGBColor[1, 0, 0],
-      GraphicsColor->RGBColor[1, 0, 0],
-      FontColor->RGBColor[1, 0, 0],ExpressionUUID->
-      "6e4050d5-846f-463f-9577-883ccf8c8ceb"], 
+      "6f7b77b6-3cb6-49c4-b0b4-7979ceb4f273"], 
      TagBox[
       TooltipBox[
        StyleBox["\<\"Line 28 in LoggerTest.cpp, function GreaterAt\"\>",
@@ -1247,14 +1188,13 @@ Cell[BoxData[
         FontColor->RGBColor[
          0.33333333333333337`, 0.33333333333333337`, 0.33333333333333337`]],
        "\"/home/rafal/Wolfram/workspace/IMEX/LibraryLinkUtilities/tests/\
-UnitTests/ErrorReporting/LoggerTest.cpp\"",
+UnitTests/ErrorReporting/TestSources/LoggerTest.cpp\"",
        TooltipStyle->"TextStyling"],
       Annotation[#, 
        "/home/rafal/Wolfram/workspace/IMEX/LibraryLinkUtilities/tests/\
-UnitTests/ErrorReporting/LoggerTest.cpp", "Tooltip"]& ]},
-    {"\[SpanFromAbove]", Cell[
-     "Input tensor contains complex numbers which is not supported",
-      FontSize->14,ExpressionUUID->"4ea37f6e-5bd8-4ddc-b7b7-3206b1dc5220"]}
+UnitTests/ErrorReporting/TestSources/LoggerTest.cpp", "Tooltip"]& ]},
+    {"\[SpanFromAbove]", Cell["Input tensor is of type: 4",
+      FontSize->14,ExpressionUUID->"43db71bd-6dad-4a09-ab87-6bd3a99d69f3"]}
    },
    AutoDelete->False,
    GridBoxItemSize->{"Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}],
@@ -1264,10 +1204,56 @@ UnitTests/ErrorReporting/LoggerTest.cpp", "Tooltip"]& ]},
   3.767171030994624*^9, 3.7671713330695972`*^9, 3.767171741088757*^9, 
   3.7671718167488728`*^9, 3.768305044229347*^9, 3.768305505147747*^9, 
   3.768306419058256*^9, 3.768306512461101*^9, 3.768306664457255*^9, 
-  3.76830704666755*^9, 3.7683072315455713`*^9},
+  3.76830704666755*^9, 3.7683072315374527`*^9, 3.783356443183065*^9},
  CellLabel->
   "During evaluation of \
-In[22]:=",ExpressionUUID->"d6d11d78-f03a-4ef7-9a93-880d6b89bdaf"]
+In[22]:=",ExpressionUUID->"07b3581a-60d1-411e-b9e8-2df341c22bb4"],
+
+Cell[BoxData[
+ TagBox[GridBox[{
+    {Cell["[Error]",
+      LineColor->RGBColor[1, 0, 0],
+      FrontFaceColor->RGBColor[1, 0, 0],
+      BackFaceColor->RGBColor[1, 0, 0],
+      GraphicsColor->RGBColor[1, 0, 0],
+      FontColor->RGBColor[1, 0, 0],ExpressionUUID->
+      "8a5f7664-ce6b-49f5-b002-3819faa29b2c"], 
+     TagBox[
+      TooltipBox[
+       StyleBox["\<\"Line 30 in LoggerTest.cpp, function GreaterAt\"\>",
+        StripOnInput->False,
+        LineColor->RGBColor[
+         0.33333333333333337`, 0.33333333333333337`, 0.33333333333333337`],
+        FrontFaceColor->RGBColor[
+         0.33333333333333337`, 0.33333333333333337`, 0.33333333333333337`],
+        BackFaceColor->RGBColor[
+         0.33333333333333337`, 0.33333333333333337`, 0.33333333333333337`],
+        GraphicsColor->RGBColor[
+         0.33333333333333337`, 0.33333333333333337`, 0.33333333333333337`],
+        FontColor->RGBColor[
+         0.33333333333333337`, 0.33333333333333337`, 0.33333333333333337`]],
+       "\"/home/rafal/Wolfram/workspace/IMEX/LibraryLinkUtilities/tests/\
+UnitTests/ErrorReporting/TestSources/LoggerTest.cpp\"",
+       TooltipStyle->"TextStyling"],
+      Annotation[#, 
+       "/home/rafal/Wolfram/workspace/IMEX/LibraryLinkUtilities/tests/\
+UnitTests/ErrorReporting/TestSources/LoggerTest.cpp", "Tooltip"]& ]},
+    {"\[SpanFromAbove]", Cell[
+     "Input tensor contains complex numbers which is not supported",
+      FontSize->14,ExpressionUUID->"b4ed1561-9cd6-4a02-b0ea-6dbe5cb3da64"]}
+   },
+   AutoDelete->False,
+   GridBoxItemSize->{"Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}],
+  "TextGrid"]], "Print",
+ CellChangeTimes->{3.7616542606572*^9, 3.763969964562097*^9, 
+  3.764334544416862*^9, 3.7643349172906113`*^9, 3.767162719498987*^9, 
+  3.767171030994624*^9, 3.7671713330695972`*^9, 3.767171741088757*^9, 
+  3.7671718167488728`*^9, 3.768305044229347*^9, 3.768305505147747*^9, 
+  3.768306419058256*^9, 3.768306512461101*^9, 3.768306664457255*^9, 
+  3.76830704666755*^9, 3.7683072315374527`*^9, 3.783356443184381*^9},
+ CellLabel->
+  "During evaluation of \
+In[22]:=",ExpressionUUID->"a40300bb-3627-47fa-98f3-abe88f040fc3"]
 }, Open  ]],
 
 Cell[BoxData["False"], "Output",
@@ -1276,8 +1262,8 @@ Cell[BoxData["False"], "Output",
   3.767171031003792*^9, 3.767171333080145*^9, 3.767171741097952*^9, 
   3.7671718167724667`*^9, 3.7683050442409153`*^9, 3.76830550515746*^9, 
   3.768306419067155*^9, 3.76830651247031*^9, 3.768306664464796*^9, 
-  3.768307046677404*^9, 3.7683072315469313`*^9},
- CellLabel->"Out[22]=",ExpressionUUID->"380ac01a-547b-447c-8a7c-d8521c6bbc21"]
+  3.768307046677404*^9, 3.7683072315469313`*^9, 3.783356443185403*^9},
+ CellLabel->"Out[22]=",ExpressionUUID->"26ba1f79-3f8b-4d8a-84d2-c3ade1af7520"]
 }, Open  ]],
 
 Cell["\<\
@@ -1311,10 +1297,10 @@ Cell[BoxData[
         Rational[2, 3], 0],
       FontColor->RGBColor[0, 
         Rational[2, 3], 0],ExpressionUUID->
-      "f41dded9-cdde-4c5e-95da-f584bb6a6caf"], 
+      "306b1c1e-420c-4438-8cb7-cc30bbc0e2e0"], 
      TagBox[
       TooltipBox[
-       StyleBox["\<\"Line 88 in LoggerTest.cpp, function LogsFromThreads\"\>",
+       StyleBox["\<\"Line 87 in LoggerTest.cpp, function LogsFromThreads\"\>",
         
         StripOnInput->False,
         LineColor->RGBColor[
@@ -1328,13 +1314,13 @@ Cell[BoxData[
         FontColor->RGBColor[
          0.33333333333333337`, 0.33333333333333337`, 0.33333333333333337`]],
        "\"/home/rafal/Wolfram/workspace/IMEX/LibraryLinkUtilities/tests/\
-UnitTests/ErrorReporting/LoggerTest.cpp\"",
+UnitTests/ErrorReporting/TestSources/LoggerTest.cpp\"",
        TooltipStyle->"TextStyling"],
       Annotation[#, 
        "/home/rafal/Wolfram/workspace/IMEX/LibraryLinkUtilities/tests/\
-UnitTests/ErrorReporting/LoggerTest.cpp", "Tooltip"]& ]},
+UnitTests/ErrorReporting/TestSources/LoggerTest.cpp", "Tooltip"]& ]},
     {"\[SpanFromAbove]", Cell["Starting 3 threads.",
-      FontSize->14,ExpressionUUID->"d1e0ad59-6c39-4119-8c08-2f1ecdaf6eab"]}
+      FontSize->14,ExpressionUUID->"c40349bf-ad48-433f-a14f-8c55efb6e173"]}
    },
    AutoDelete->False,
    GridBoxItemSize->{"Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}],
@@ -1346,10 +1332,10 @@ UnitTests/ErrorReporting/LoggerTest.cpp", "Tooltip"]& ]},
    3.767171032206016*^9, 3.7671713345116873`*^9, 3.7671717427265043`*^9, 
    3.767171816827607*^9, 3.768305045499875*^9, 3.768305505203261*^9, 
    3.768306419106559*^9, 3.768306512526244*^9, 3.7683066645032377`*^9, 
-   3.768307046718514*^9, 3.768307231610683*^9},
+   3.768307046718514*^9, 3.768307231610683*^9, 3.783356446319138*^9},
  CellLabel->
   "During evaluation of \
-In[23]:=",ExpressionUUID->"a2e4f2dc-9608-4467-904a-659b9b7f1ca3"],
+In[23]:=",ExpressionUUID->"50f10dd1-79df-4916-afcb-50a30502798d"],
 
 Cell[BoxData[
  TagBox[GridBox[{
@@ -1364,7 +1350,7 @@ Cell[BoxData[
         Rational[2, 3], 0],
       FontColor->RGBColor[0, 
         Rational[2, 3], 0],ExpressionUUID->
-      "1c3e57d1-c966-4a00-902d-162e3813a3e2"], 
+      "8f20dedd-2f11-46b6-adcd-df9384670588"], 
      TagBox[
       TooltipBox[
        StyleBox["\<\"Line 91 in LoggerTest.cpp, function operator()\"\>",
@@ -1380,13 +1366,13 @@ Cell[BoxData[
         FontColor->RGBColor[
          0.33333333333333337`, 0.33333333333333337`, 0.33333333333333337`]],
        "\"/home/rafal/Wolfram/workspace/IMEX/LibraryLinkUtilities/tests/\
-UnitTests/ErrorReporting/LoggerTest.cpp\"",
+UnitTests/ErrorReporting/TestSources/LoggerTest.cpp\"",
        TooltipStyle->"TextStyling"],
       Annotation[#, 
        "/home/rafal/Wolfram/workspace/IMEX/LibraryLinkUtilities/tests/\
-UnitTests/ErrorReporting/LoggerTest.cpp", "Tooltip"]& ]},
+UnitTests/ErrorReporting/TestSources/LoggerTest.cpp", "Tooltip"]& ]},
     {"\[SpanFromAbove]", Cell["Thread 0 going to sleep.",
-      FontSize->14,ExpressionUUID->"04bf401f-cd1d-4606-86f7-e25c20e3a9a8"]}
+      FontSize->14,ExpressionUUID->"e2abf860-1d28-4652-9776-0853d07b5d48"]}
    },
    AutoDelete->False,
    GridBoxItemSize->{"Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}],
@@ -1398,10 +1384,10 @@ UnitTests/ErrorReporting/LoggerTest.cpp", "Tooltip"]& ]},
    3.767171032206016*^9, 3.7671713345116873`*^9, 3.7671717427265043`*^9, 
    3.767171816827607*^9, 3.768305045499875*^9, 3.768305505203261*^9, 
    3.768306419106559*^9, 3.768306512526244*^9, 3.7683066645032377`*^9, 
-   3.768307046718514*^9, 3.768307231613472*^9},
+   3.768307046718514*^9, 3.768307231610683*^9, 3.783356446321653*^9},
  CellLabel->
   "During evaluation of \
-In[23]:=",ExpressionUUID->"cf9cc655-4f3b-4dc8-b5f1-38eab216808e"],
+In[23]:=",ExpressionUUID->"43b81ce0-6fc1-41ab-a058-d666a7846c1a"],
 
 Cell[BoxData[
  TagBox[GridBox[{
@@ -1416,7 +1402,7 @@ Cell[BoxData[
         Rational[2, 3], 0],
       FontColor->RGBColor[0, 
         Rational[2, 3], 0],ExpressionUUID->
-      "243a2171-e478-4136-b1f8-d31b0c035121"], 
+      "196ebd32-4dcb-4837-b0c8-0b5cbab4dbad"], 
      TagBox[
       TooltipBox[
        StyleBox["\<\"Line 91 in LoggerTest.cpp, function operator()\"\>",
@@ -1432,13 +1418,13 @@ Cell[BoxData[
         FontColor->RGBColor[
          0.33333333333333337`, 0.33333333333333337`, 0.33333333333333337`]],
        "\"/home/rafal/Wolfram/workspace/IMEX/LibraryLinkUtilities/tests/\
-UnitTests/ErrorReporting/LoggerTest.cpp\"",
+UnitTests/ErrorReporting/TestSources/LoggerTest.cpp\"",
        TooltipStyle->"TextStyling"],
       Annotation[#, 
        "/home/rafal/Wolfram/workspace/IMEX/LibraryLinkUtilities/tests/\
-UnitTests/ErrorReporting/LoggerTest.cpp", "Tooltip"]& ]},
+UnitTests/ErrorReporting/TestSources/LoggerTest.cpp", "Tooltip"]& ]},
     {"\[SpanFromAbove]", Cell["Thread 2 going to sleep.",
-      FontSize->14,ExpressionUUID->"ab36ecf7-fd9d-46a7-bc74-dc966f234f7c"]}
+      FontSize->14,ExpressionUUID->"98a941c4-736c-47a6-b43a-de951bfeb678"]}
    },
    AutoDelete->False,
    GridBoxItemSize->{"Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}],
@@ -1450,10 +1436,10 @@ UnitTests/ErrorReporting/LoggerTest.cpp", "Tooltip"]& ]},
    3.767171032206016*^9, 3.7671713345116873`*^9, 3.7671717427265043`*^9, 
    3.767171816827607*^9, 3.768305045499875*^9, 3.768305505203261*^9, 
    3.768306419106559*^9, 3.768306512526244*^9, 3.7683066645032377`*^9, 
-   3.768307046718514*^9, 3.768307231619308*^9},
+   3.768307046718514*^9, 3.768307231610683*^9, 3.783356446323442*^9},
  CellLabel->
   "During evaluation of \
-In[23]:=",ExpressionUUID->"982a4808-06d8-423c-9b8c-c03f7a23b7b1"],
+In[23]:=",ExpressionUUID->"19e69b3c-09e2-4273-97fc-6b5f6adc2eac"],
 
 Cell[BoxData[
  TagBox[GridBox[{
@@ -1468,7 +1454,7 @@ Cell[BoxData[
         Rational[2, 3], 0],
       FontColor->RGBColor[0, 
         Rational[2, 3], 0],ExpressionUUID->
-      "0ac8c15b-e1df-4bfb-a16d-fe4d86210f96"], 
+      "001aa763-2dac-44f5-bdb9-c12c25e1a509"], 
      TagBox[
       TooltipBox[
        StyleBox["\<\"Line 91 in LoggerTest.cpp, function operator()\"\>",
@@ -1484,13 +1470,13 @@ Cell[BoxData[
         FontColor->RGBColor[
          0.33333333333333337`, 0.33333333333333337`, 0.33333333333333337`]],
        "\"/home/rafal/Wolfram/workspace/IMEX/LibraryLinkUtilities/tests/\
-UnitTests/ErrorReporting/LoggerTest.cpp\"",
+UnitTests/ErrorReporting/TestSources/LoggerTest.cpp\"",
        TooltipStyle->"TextStyling"],
       Annotation[#, 
        "/home/rafal/Wolfram/workspace/IMEX/LibraryLinkUtilities/tests/\
-UnitTests/ErrorReporting/LoggerTest.cpp", "Tooltip"]& ]},
+UnitTests/ErrorReporting/TestSources/LoggerTest.cpp", "Tooltip"]& ]},
     {"\[SpanFromAbove]", Cell["Thread 1 going to sleep.",
-      FontSize->14,ExpressionUUID->"89a90112-1042-46c2-9af5-f61383034c70"]}
+      FontSize->14,ExpressionUUID->"9d5c8b3d-4fe3-4ce3-9772-3531212b6e7a"]}
    },
    AutoDelete->False,
    GridBoxItemSize->{"Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}],
@@ -1502,10 +1488,10 @@ UnitTests/ErrorReporting/LoggerTest.cpp", "Tooltip"]& ]},
    3.767171032206016*^9, 3.7671713345116873`*^9, 3.7671717427265043`*^9, 
    3.767171816827607*^9, 3.768305045499875*^9, 3.768305505203261*^9, 
    3.768306419106559*^9, 3.768306512526244*^9, 3.7683066645032377`*^9, 
-   3.768307046718514*^9, 3.768307231620882*^9},
+   3.768307046718514*^9, 3.768307231610683*^9, 3.783356446324741*^9},
  CellLabel->
   "During evaluation of \
-In[23]:=",ExpressionUUID->"2707b5ba-92ba-4efd-99a2-83a4897b2f7b"],
+In[23]:=",ExpressionUUID->"b738b7f3-f57d-4cc5-a743-b2e392e9ee65"],
 
 Cell[BoxData[
  TagBox[GridBox[{
@@ -1520,7 +1506,7 @@ Cell[BoxData[
         Rational[2, 3], 0],
       FontColor->RGBColor[0, 
         Rational[2, 3], 0],ExpressionUUID->
-      "2b609901-d9b4-4c80-9a00-56b0f1831f37"], 
+      "581fc875-3183-46d1-9a19-e517d3807963"], 
      TagBox[
       TooltipBox[
        StyleBox["\<\"Line 93 in LoggerTest.cpp, function operator()\"\>",
@@ -1536,13 +1522,13 @@ Cell[BoxData[
         FontColor->RGBColor[
          0.33333333333333337`, 0.33333333333333337`, 0.33333333333333337`]],
        "\"/home/rafal/Wolfram/workspace/IMEX/LibraryLinkUtilities/tests/\
-UnitTests/ErrorReporting/LoggerTest.cpp\"",
+UnitTests/ErrorReporting/TestSources/LoggerTest.cpp\"",
        TooltipStyle->"TextStyling"],
       Annotation[#, 
        "/home/rafal/Wolfram/workspace/IMEX/LibraryLinkUtilities/tests/\
-UnitTests/ErrorReporting/LoggerTest.cpp", "Tooltip"]& ]},
-    {"\[SpanFromAbove]", Cell["Thread 0 slept for 385ms.",
-      FontSize->14,ExpressionUUID->"3645c9e1-9e9d-4462-8883-ff9102364c49"]}
+UnitTests/ErrorReporting/TestSources/LoggerTest.cpp", "Tooltip"]& ]},
+    {"\[SpanFromAbove]", Cell["Thread 2 slept for 105ms.",
+      FontSize->14,ExpressionUUID->"05bb2771-7610-4828-8110-d06056e96448"]}
    },
    AutoDelete->False,
    GridBoxItemSize->{"Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}],
@@ -1554,10 +1540,10 @@ UnitTests/ErrorReporting/LoggerTest.cpp", "Tooltip"]& ]},
    3.767171032206016*^9, 3.7671713345116873`*^9, 3.7671717427265043`*^9, 
    3.767171816827607*^9, 3.768305045499875*^9, 3.768305505203261*^9, 
    3.768306419106559*^9, 3.768306512526244*^9, 3.7683066645032377`*^9, 
-   3.768307046718514*^9, 3.768307231942576*^9},
+   3.768307046718514*^9, 3.768307231610683*^9, 3.7833564464263372`*^9},
  CellLabel->
   "During evaluation of \
-In[23]:=",ExpressionUUID->"f49d4838-9322-43c2-b3c7-49e9c05087a7"],
+In[23]:=",ExpressionUUID->"f4f80cb0-21e0-481b-bab7-81cdebb5a1d4"],
 
 Cell[BoxData[
  TagBox[GridBox[{
@@ -1572,7 +1558,7 @@ Cell[BoxData[
         Rational[2, 3], 0],
       FontColor->RGBColor[0, 
         Rational[2, 3], 0],ExpressionUUID->
-      "88c795a5-1420-4352-9bea-0a95d7e9703a"], 
+      "03fcf0a6-8e39-4bd6-a7cd-821af717cec8"], 
      TagBox[
       TooltipBox[
        StyleBox["\<\"Line 93 in LoggerTest.cpp, function operator()\"\>",
@@ -1588,13 +1574,13 @@ Cell[BoxData[
         FontColor->RGBColor[
          0.33333333333333337`, 0.33333333333333337`, 0.33333333333333337`]],
        "\"/home/rafal/Wolfram/workspace/IMEX/LibraryLinkUtilities/tests/\
-UnitTests/ErrorReporting/LoggerTest.cpp\"",
+UnitTests/ErrorReporting/TestSources/LoggerTest.cpp\"",
        TooltipStyle->"TextStyling"],
       Annotation[#, 
        "/home/rafal/Wolfram/workspace/IMEX/LibraryLinkUtilities/tests/\
-UnitTests/ErrorReporting/LoggerTest.cpp", "Tooltip"]& ]},
-    {"\[SpanFromAbove]", Cell["Thread 1 slept for 569ms.",
-      FontSize->14,ExpressionUUID->"df8f8bcb-cf77-469e-adad-3389daf4b2ad"]}
+UnitTests/ErrorReporting/TestSources/LoggerTest.cpp", "Tooltip"]& ]},
+    {"\[SpanFromAbove]", Cell["Thread 0 slept for 187ms.",
+      FontSize->14,ExpressionUUID->"97b9c9a9-b213-4969-b46b-e3e1f5ad61d4"]}
    },
    AutoDelete->False,
    GridBoxItemSize->{"Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}],
@@ -1606,10 +1592,10 @@ UnitTests/ErrorReporting/LoggerTest.cpp", "Tooltip"]& ]},
    3.767171032206016*^9, 3.7671713345116873`*^9, 3.7671717427265043`*^9, 
    3.767171816827607*^9, 3.768305045499875*^9, 3.768305505203261*^9, 
    3.768306419106559*^9, 3.768306512526244*^9, 3.7683066645032377`*^9, 
-   3.768307046718514*^9, 3.768307232128611*^9},
+   3.768307046718514*^9, 3.768307231610683*^9, 3.783356446507494*^9},
  CellLabel->
   "During evaluation of \
-In[23]:=",ExpressionUUID->"5676352d-cd19-47b8-931a-9932817f935f"],
+In[23]:=",ExpressionUUID->"2ea33593-f57c-4b59-bc76-a262c5abaf5c"],
 
 Cell[BoxData[
  TagBox[GridBox[{
@@ -1624,7 +1610,7 @@ Cell[BoxData[
         Rational[2, 3], 0],
       FontColor->RGBColor[0, 
         Rational[2, 3], 0],ExpressionUUID->
-      "12d59fd1-b8cb-4163-a4bc-346d0141d622"], 
+      "7e44cb08-8892-45b4-a409-38a175dbae76"], 
      TagBox[
       TooltipBox[
        StyleBox["\<\"Line 93 in LoggerTest.cpp, function operator()\"\>",
@@ -1640,13 +1626,13 @@ Cell[BoxData[
         FontColor->RGBColor[
          0.33333333333333337`, 0.33333333333333337`, 0.33333333333333337`]],
        "\"/home/rafal/Wolfram/workspace/IMEX/LibraryLinkUtilities/tests/\
-UnitTests/ErrorReporting/LoggerTest.cpp\"",
+UnitTests/ErrorReporting/TestSources/LoggerTest.cpp\"",
        TooltipStyle->"TextStyling"],
       Annotation[#, 
        "/home/rafal/Wolfram/workspace/IMEX/LibraryLinkUtilities/tests/\
-UnitTests/ErrorReporting/LoggerTest.cpp", "Tooltip"]& ]},
-    {"\[SpanFromAbove]", Cell["Thread 2 slept for 647ms.",
-      FontSize->14,ExpressionUUID->"6213406d-b1c1-494b-8620-3dd3950a30d0"]}
+UnitTests/ErrorReporting/TestSources/LoggerTest.cpp", "Tooltip"]& ]},
+    {"\[SpanFromAbove]", Cell["Thread 1 slept for 957ms.",
+      FontSize->14,ExpressionUUID->"767fe497-8ea5-44bf-9348-9fcff6123fd2"]}
    },
    AutoDelete->False,
    GridBoxItemSize->{"Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}],
@@ -1658,10 +1644,10 @@ UnitTests/ErrorReporting/LoggerTest.cpp", "Tooltip"]& ]},
    3.767171032206016*^9, 3.7671713345116873`*^9, 3.7671717427265043`*^9, 
    3.767171816827607*^9, 3.768305045499875*^9, 3.768305505203261*^9, 
    3.768306419106559*^9, 3.768306512526244*^9, 3.7683066645032377`*^9, 
-   3.768307046718514*^9, 3.7683072322058*^9},
+   3.768307046718514*^9, 3.768307231610683*^9, 3.783356447279669*^9},
  CellLabel->
   "During evaluation of \
-In[23]:=",ExpressionUUID->"c8afe700-5bf5-4a13-8933-57f2b05be986"],
+In[23]:=",ExpressionUUID->"17c9a5c5-d517-46e2-a0fc-4523306c753f"],
 
 Cell[BoxData[
  TagBox[GridBox[{
@@ -1676,10 +1662,10 @@ Cell[BoxData[
         Rational[2, 3], 0],
       FontColor->RGBColor[0, 
         Rational[2, 3], 0],ExpressionUUID->
-      "8b1a1fe4-dfc9-4e81-92a4-de48e550fd70"], 
+      "3865ee28-8067-4295-b32a-07bbcd1f6fdc"], 
      TagBox[
       TooltipBox[
-       StyleBox["\<\"Line 101 in LoggerTest.cpp, function LogsFromThreads\"\>",
+       StyleBox["\<\"Line 102 in LoggerTest.cpp, function LogsFromThreads\"\>",
         StripOnInput->False,
         LineColor->RGBColor[
          0.33333333333333337`, 0.33333333333333337`, 0.33333333333333337`],
@@ -1692,13 +1678,13 @@ Cell[BoxData[
         FontColor->RGBColor[
          0.33333333333333337`, 0.33333333333333337`, 0.33333333333333337`]],
        "\"/home/rafal/Wolfram/workspace/IMEX/LibraryLinkUtilities/tests/\
-UnitTests/ErrorReporting/LoggerTest.cpp\"",
+UnitTests/ErrorReporting/TestSources/LoggerTest.cpp\"",
        TooltipStyle->"TextStyling"],
       Annotation[#, 
        "/home/rafal/Wolfram/workspace/IMEX/LibraryLinkUtilities/tests/\
-UnitTests/ErrorReporting/LoggerTest.cpp", "Tooltip"]& ]},
+UnitTests/ErrorReporting/TestSources/LoggerTest.cpp", "Tooltip"]& ]},
     {"\[SpanFromAbove]", Cell["All threads joined.",
-      FontSize->14,ExpressionUUID->"143c3b80-93a9-4b75-a029-6b687de4d862"]}
+      FontSize->14,ExpressionUUID->"943463fe-a587-4d5f-b2d8-a891bb15329e"]}
    },
    AutoDelete->False,
    GridBoxItemSize->{"Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}],
@@ -1710,10 +1696,10 @@ UnitTests/ErrorReporting/LoggerTest.cpp", "Tooltip"]& ]},
    3.767171032206016*^9, 3.7671713345116873`*^9, 3.7671717427265043`*^9, 
    3.767171816827607*^9, 3.768305045499875*^9, 3.768305505203261*^9, 
    3.768306419106559*^9, 3.768306512526244*^9, 3.7683066645032377`*^9, 
-   3.768307046718514*^9, 3.768307232207708*^9},
+   3.768307046718514*^9, 3.768307231610683*^9, 3.783356447281495*^9},
  CellLabel->
   "During evaluation of \
-In[23]:=",ExpressionUUID->"7598a8a7-0d3a-4f03-8ab3-72af9fa19fb3"]
+In[23]:=",ExpressionUUID->"89555a98-7eeb-4d02-a454-3bf459bbc635"]
 }, Open  ]]
 }, Open  ]],
 
@@ -1738,7 +1724,7 @@ Cell[BoxData[
         Rational[2, 3], 0],
       FontColor->RGBColor[0, 
         Rational[2, 3], 0],ExpressionUUID->
-      "801a5097-d6d3-413e-b355-c8b03b1b2fc8"], 
+      "a2b2ee8d-df1f-4a54-91d9-492dd90c6fcc"], 
      TagBox[
       TooltipBox[
        StyleBox["\<\"Line 58 in LoggerTest.cpp, function LogDemo\"\>",
@@ -1754,13 +1740,13 @@ Cell[BoxData[
         FontColor->RGBColor[
          0.33333333333333337`, 0.33333333333333337`, 0.33333333333333337`]],
        "\"/home/rafal/Wolfram/workspace/IMEX/LibraryLinkUtilities/tests/\
-UnitTests/ErrorReporting/LoggerTest.cpp\"",
+UnitTests/ErrorReporting/TestSources/LoggerTest.cpp\"",
        TooltipStyle->"TextStyling"],
       Annotation[#, 
        "/home/rafal/Wolfram/workspace/IMEX/LibraryLinkUtilities/tests/\
-UnitTests/ErrorReporting/LoggerTest.cpp", "Tooltip"]& ]},
+UnitTests/ErrorReporting/TestSources/LoggerTest.cpp", "Tooltip"]& ]},
     {"\[SpanFromAbove]", Cell["Library function entered with 5 arguments.",
-      FontSize->14,ExpressionUUID->"1e7c6f4a-9fd0-4d37-84b3-5772845dc64f"]}
+      FontSize->14,ExpressionUUID->"0b9b5725-9755-49c7-987b-e2fe74fa1700"]}
    },
    AutoDelete->False,
    GridBoxItemSize->{"Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}],
@@ -1770,10 +1756,10 @@ UnitTests/ErrorReporting/LoggerTest.cpp", "Tooltip"]& ]},
   3.767171336557686*^9, 3.767171744135212*^9, 3.7671718177842207`*^9, 
   3.7683050476176567`*^9, 3.768305505902276*^9, 3.7683064201251507`*^9, 
   3.76830651350683*^9, 3.7683066651825533`*^9, 3.768307046972945*^9, 
-  3.768307232241744*^9},
+  3.768307232241744*^9, 3.783356448944254*^9},
  CellLabel->
   "During evaluation of \
-In[24]:=",ExpressionUUID->"8b6d0403-0529-476e-aee6-ff459d0a93df"],
+In[24]:=",ExpressionUUID->"68e1a59f-5863-44f7-88c5-3d30cd35b7fe"],
 
 Cell[BoxData["2"], "Output",
  CellChangeTimes->{3.7639709693515663`*^9, 3.764334549418644*^9, 
@@ -1781,8 +1767,8 @@ Cell[BoxData["2"], "Output",
   3.76717133655962*^9, 3.76717174413745*^9, 3.767171817786085*^9, 
   3.768305047619422*^9, 3.768305505904271*^9, 3.768306420127138*^9, 
   3.768306513508999*^9, 3.768306665184523*^9, 3.768307046975231*^9, 
-  3.768307232243848*^9},
- CellLabel->"Out[24]=",ExpressionUUID->"3f16a65c-7b84-447f-9c8a-38c73d4c9a43"]
+  3.768307232243848*^9, 3.783356448945881*^9},
+ CellLabel->"Out[24]=",ExpressionUUID->"c5600715-8ff3-496c-b91b-bc96497b054c"]
 }, Open  ]],
 
 Cell[CellGroupData[{
@@ -1808,7 +1794,7 @@ Cell[BoxData[
         Rational[2, 3], 0],
       FontColor->RGBColor[0, 
         Rational[2, 3], 0],ExpressionUUID->
-      "75ed14ad-2800-46b4-b03c-fec7d977c1af"], 
+      "6e23588a-f2ce-4db2-9ded-008dcd8af204"], 
      TagBox[
       TooltipBox[
        StyleBox["\<\"Line 58 in LoggerTest.cpp, function LogDemo\"\>",
@@ -1824,13 +1810,13 @@ Cell[BoxData[
         FontColor->RGBColor[
          0.33333333333333337`, 0.33333333333333337`, 0.33333333333333337`]],
        "\"/home/rafal/Wolfram/workspace/IMEX/LibraryLinkUtilities/tests/\
-UnitTests/ErrorReporting/LoggerTest.cpp\"",
+UnitTests/ErrorReporting/TestSources/LoggerTest.cpp\"",
        TooltipStyle->"TextStyling"],
       Annotation[#, 
        "/home/rafal/Wolfram/workspace/IMEX/LibraryLinkUtilities/tests/\
-UnitTests/ErrorReporting/LoggerTest.cpp", "Tooltip"]& ]},
+UnitTests/ErrorReporting/TestSources/LoggerTest.cpp", "Tooltip"]& ]},
     {"\[SpanFromAbove]", Cell["Library function entered with 5 arguments.",
-      FontSize->14,ExpressionUUID->"9f7bccbf-1b27-46cc-bb3c-831fa774cbcc"]}
+      FontSize->14,ExpressionUUID->"08efb5f8-8367-420c-a8dc-a5ce304180af"]}
    },
    AutoDelete->False,
    GridBoxItemSize->{"Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}],
@@ -1840,10 +1826,10 @@ UnitTests/ErrorReporting/LoggerTest.cpp", "Tooltip"]& ]},
   3.767171337887207*^9, 3.767171745479334*^9, 3.767171817832902*^9, 
   3.768305048918878*^9, 3.768305505941367*^9, 3.768306420162015*^9, 
   3.76830651354563*^9, 3.76830666522287*^9, 3.768307046981477*^9, 
-  3.768307232314968*^9},
+  3.768307232314968*^9, 3.783356449732403*^9},
  CellLabel->
   "During evaluation of \
-In[25]:=",ExpressionUUID->"e8fcb2d7-426e-456c-9e3f-19c684f96efb"],
+In[25]:=",ExpressionUUID->"8de9c0a2-3cee-47d0-80dd-953e07f6196b"],
 
 Cell[BoxData[
  TagBox[GridBox[{
@@ -1853,7 +1839,7 @@ Cell[BoxData[
       BackFaceColor->RGBColor[1, 0.5, 0],
       GraphicsColor->RGBColor[1, 0.5, 0],
       FontColor->RGBColor[1, 0.5, 0],ExpressionUUID->
-      "1d175812-2ff7-49f7-b8e5-87d07f4bcd82"], 
+      "aa9d2b5b-1f93-4387-a684-dfb6c578888f"], 
      TagBox[
       TooltipBox[
        StyleBox["\<\"Line 64 in LoggerTest.cpp, function LogDemo\"\>",
@@ -1869,15 +1855,15 @@ Cell[BoxData[
         FontColor->RGBColor[
          0.33333333333333337`, 0.33333333333333337`, 0.33333333333333337`]],
        "\"/home/rafal/Wolfram/workspace/IMEX/LibraryLinkUtilities/tests/\
-UnitTests/ErrorReporting/LoggerTest.cpp\"",
+UnitTests/ErrorReporting/TestSources/LoggerTest.cpp\"",
        TooltipStyle->"TextStyling"],
       Annotation[#, 
        "/home/rafal/Wolfram/workspace/IMEX/LibraryLinkUtilities/tests/\
-UnitTests/ErrorReporting/LoggerTest.cpp", "Tooltip"]& ]},
+UnitTests/ErrorReporting/TestSources/LoggerTest.cpp", "Tooltip"]& ]},
     {"\[SpanFromAbove]", Cell["\<\
 Index 6 is too big for the number of arguments: 5. Changing to 4\
 \>",
-      FontSize->14,ExpressionUUID->"9ff1f740-33f3-4d80-9e1c-9632069b943f"]}
+      FontSize->14,ExpressionUUID->"65dcb557-8a7d-4b1f-8831-c9226255b05b"]}
    },
    AutoDelete->False,
    GridBoxItemSize->{"Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}],
@@ -1887,10 +1873,10 @@ Index 6 is too big for the number of arguments: 5. Changing to 4\
   3.767171337887207*^9, 3.767171745479334*^9, 3.767171817832902*^9, 
   3.768305048918878*^9, 3.768305505941367*^9, 3.768306420162015*^9, 
   3.76830651354563*^9, 3.76830666522287*^9, 3.768307046981477*^9, 
-  3.768307232317025*^9},
+  3.768307232314968*^9, 3.783356449734645*^9},
  CellLabel->
   "During evaluation of \
-In[25]:=",ExpressionUUID->"359d17e5-c97b-4e22-b66f-70205266c0f1"]
+In[25]:=",ExpressionUUID->"38528207-26ce-4849-8f2d-19b285e1feff"]
 }, Open  ]],
 
 Cell[BoxData["5"], "Output",
@@ -1899,8 +1885,8 @@ Cell[BoxData["5"], "Output",
   3.7671713378996677`*^9, 3.767171745488326*^9, 3.76717181784129*^9, 
   3.768305048926632*^9, 3.7683055059477167`*^9, 3.768306420166255*^9, 
   3.768306513550458*^9, 3.768306665229596*^9, 3.768307046985264*^9, 
-  3.768307232320897*^9},
- CellLabel->"Out[25]=",ExpressionUUID->"5b5aba84-a09e-4ff1-b3a5-7b279150b15d"]
+  3.768307232320897*^9, 3.78335644973736*^9},
+ CellLabel->"Out[25]=",ExpressionUUID->"b95f7055-4fea-45f9-93b9-9df0cc521251"]
 }, Open  ]],
 
 Cell[CellGroupData[{
@@ -1928,7 +1914,7 @@ Cell[BoxData[
         Rational[2, 3], 0],
       FontColor->RGBColor[0, 
         Rational[2, 3], 0],ExpressionUUID->
-      "45535125-04e0-4f8d-9eab-5b6470c53a46"], 
+      "991b7af9-fedc-4a77-8873-5e4f72acfa2c"], 
      TagBox[
       TooltipBox[
        StyleBox["\<\"Line 58 in LoggerTest.cpp, function LogDemo\"\>",
@@ -1944,13 +1930,13 @@ Cell[BoxData[
         FontColor->RGBColor[
          0.33333333333333337`, 0.33333333333333337`, 0.33333333333333337`]],
        "\"/home/rafal/Wolfram/workspace/IMEX/LibraryLinkUtilities/tests/\
-UnitTests/ErrorReporting/LoggerTest.cpp\"",
+UnitTests/ErrorReporting/TestSources/LoggerTest.cpp\"",
        TooltipStyle->"TextStyling"],
       Annotation[#, 
        "/home/rafal/Wolfram/workspace/IMEX/LibraryLinkUtilities/tests/\
-UnitTests/ErrorReporting/LoggerTest.cpp", "Tooltip"]& ]},
+UnitTests/ErrorReporting/TestSources/LoggerTest.cpp", "Tooltip"]& ]},
     {"\[SpanFromAbove]", Cell["Library function entered with 5 arguments.",
-      FontSize->14,ExpressionUUID->"40c89a19-7da4-4e47-9787-d7bfcb24b173"]}
+      FontSize->14,ExpressionUUID->"8f83d57c-c8b7-4a1e-9953-e669b109259b"]}
    },
    AutoDelete->False,
    GridBoxItemSize->{"Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}],
@@ -1960,10 +1946,10 @@ UnitTests/ErrorReporting/LoggerTest.cpp", "Tooltip"]& ]},
   3.767171338841391*^9, 3.767171746714542*^9, 3.767171817900127*^9, 
   3.768305050323248*^9, 3.768305505985436*^9, 3.768306420200162*^9, 
   3.7683065135881433`*^9, 3.76830666526994*^9, 3.768307047064556*^9, 
-  3.768307232360179*^9},
+  3.768307232360179*^9, 3.783356450992578*^9},
  CellLabel->
   "During evaluation of \
-In[26]:=",ExpressionUUID->"bab5cf35-4b82-4a58-95ad-7fa8f68d32d4"],
+In[26]:=",ExpressionUUID->"037472a4-b895-4f61-ad0f-31e05908aed4"],
 
 Cell[BoxData[
  TagBox[GridBox[{
@@ -1973,10 +1959,10 @@ Cell[BoxData[
       BackFaceColor->RGBColor[1, 0, 0],
       GraphicsColor->RGBColor[1, 0, 0],
       FontColor->RGBColor[1, 0, 0],ExpressionUUID->
-      "6e5270ad-9d15-4c1b-a58b-61496dfbb671"], 
+      "cc98f5c7-5c52-4361-82d5-127ec652c4c0"], 
      TagBox[
       TooltipBox[
-       StyleBox["\<\"Line 71 in LoggerTest.cpp, function LogDemo\"\>",
+       StyleBox["\<\"Line 70 in LoggerTest.cpp, function LogDemo\"\>",
         StripOnInput->False,
         LineColor->RGBColor[
          0.33333333333333337`, 0.33333333333333337`, 0.33333333333333337`],
@@ -1989,16 +1975,16 @@ Cell[BoxData[
         FontColor->RGBColor[
          0.33333333333333337`, 0.33333333333333337`, 0.33333333333333337`]],
        "\"/home/rafal/Wolfram/workspace/IMEX/LibraryLinkUtilities/tests/\
-UnitTests/ErrorReporting/LoggerTest.cpp\"",
+UnitTests/ErrorReporting/TestSources/LoggerTest.cpp\"",
        TooltipStyle->"TextStyling"],
       Annotation[#, 
        "/home/rafal/Wolfram/workspace/IMEX/LibraryLinkUtilities/tests/\
-UnitTests/ErrorReporting/LoggerTest.cpp", "Tooltip"]& ]},
+UnitTests/ErrorReporting/TestSources/LoggerTest.cpp", "Tooltip"]& ]},
     {"\[SpanFromAbove]", Cell["\<\
 Caught LLU exception MArgumentIndexError: Index 4294967295 out-of-bound when \
 accessing LibraryLink argument\
 \>",
-      FontSize->14,ExpressionUUID->"8110b574-d594-4a7f-8bf6-68d9e3491dbe"]}
+      FontSize->14,ExpressionUUID->"54bab1cd-5e01-4914-857b-eafe3a3795db"]}
    },
    AutoDelete->False,
    GridBoxItemSize->{"Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}],
@@ -2008,10 +1994,10 @@ accessing LibraryLink argument\
   3.767171338841391*^9, 3.767171746714542*^9, 3.767171817900127*^9, 
   3.768305050323248*^9, 3.768305505985436*^9, 3.768306420200162*^9, 
   3.7683065135881433`*^9, 3.76830666526994*^9, 3.768307047064556*^9, 
-  3.768307232362804*^9},
+  3.768307232360179*^9, 3.783356450995672*^9},
  CellLabel->
   "During evaluation of \
-In[26]:=",ExpressionUUID->"cb0ec6ce-91b2-45c5-9e37-3e0aaf093d83"]
+In[26]:=",ExpressionUUID->"2954459f-d283-4193-ae36-244d42c68394"]
 }, Open  ]],
 
 Cell[BoxData[
@@ -2031,9 +2017,8 @@ Cell[BoxData[
               Evaluator -> Automatic, Method -> "Preemptive"], 
              Alignment -> {Center, Center}, ImageSize -> 
              Dynamic[{
-               Automatic, 
-                3.5 (CurrentValue["FontCapHeight"]/AbsoluteCurrentValue[
-                 Magnification])}]], 
+               Automatic, 3.5 CurrentValue["FontCapHeight"]/
+                AbsoluteCurrentValue[Magnification]}]], 
             FrameBox[
              StyleBox["\"\[WarningSign]\"", 
               Directive["Message", 35], StripOnInput -> False], 
@@ -2079,9 +2064,8 @@ Cell[BoxData[
               Evaluator -> Automatic, Method -> "Preemptive"], 
              Alignment -> {Center, Center}, ImageSize -> 
              Dynamic[{
-               Automatic, 
-                3.5 (CurrentValue["FontCapHeight"]/AbsoluteCurrentValue[
-                 Magnification])}]], 
+               Automatic, 3.5 CurrentValue["FontCapHeight"]/
+                AbsoluteCurrentValue[Magnification]}]], 
             FrameBox[
              StyleBox["\"\[WarningSign]\"", 
               Directive["Message", 35], StripOnInput -> False], 
@@ -2148,8 +2132,8 @@ Cell[BoxData[
   3.7671713388517523`*^9, 3.767171746723866*^9, 3.76717181791719*^9, 
   3.768305050334165*^9, 3.76830550599308*^9, 3.768306420207402*^9, 
   3.768306513595613*^9, 3.7683066652751207`*^9, 3.768307047074006*^9, 
-  3.768307232368643*^9},
- CellLabel->"Out[26]=",ExpressionUUID->"f219a841-2b79-4a1e-9ef0-90bb8d73d174"]
+  3.768307232368643*^9, 3.783356451000712*^9},
+ CellLabel->"Out[26]=",ExpressionUUID->"e2862714-b0fb-4d94-995c-9e45f669b098"]
 }, Open  ]]
 }, Open  ]],
 
@@ -2200,10 +2184,10 @@ Cell[BoxData[
   3.767171340949155*^9, 3.7671717489968348`*^9, 3.767171822957245*^9, 
   3.768305060986124*^9, 3.768305511290626*^9, 3.768306443844145*^9, 
   3.768306522012879*^9, 3.7683066693179703`*^9, 3.7683070505592117`*^9, 
-  3.768307235565716*^9},
+  3.768307235565716*^9, 3.783356454681458*^9},
  CellLabel->
   "During evaluation of \
-In[28]:=",ExpressionUUID->"2ed224ac-d888-46c0-8752-442170e4b509"],
+In[28]:=",ExpressionUUID->"1f0f9543-97e5-431b-8017-2fe11a2e6798"],
 
 Cell[BoxData["2"], "Output",
  CellChangeTimes->{3.763971444505122*^9, 3.763971659824189*^9, 
@@ -2211,8 +2195,8 @@ Cell[BoxData["2"], "Output",
   3.767171340951481*^9, 3.7671717489995832`*^9, 3.767171822959345*^9, 
   3.768305060992036*^9, 3.7683055112930393`*^9, 3.768306443846838*^9, 
   3.768306522015518*^9, 3.768306669320019*^9, 3.7683070505614557`*^9, 
-  3.768307235568809*^9},
- CellLabel->"Out[28]=",ExpressionUUID->"ba469660-119b-4560-9984-f0513edf8371"]
+  3.768307235568809*^9, 3.78335645468366*^9},
+ CellLabel->"Out[28]=",ExpressionUUID->"8331ed15-24ea-4d93-88b6-d21e49121a70"]
 }, Open  ]],
 
 Cell[CellGroupData[{
@@ -2237,10 +2221,10 @@ Cell[BoxData[
   3.767171341625839*^9, 3.76717174957889*^9, 3.767171823026678*^9, 
   3.7683050622516203`*^9, 3.768305511366884*^9, 3.768306443897004*^9, 
   3.7683065230187473`*^9, 3.768306669387807*^9, 3.768307050615168*^9, 
-  3.76830723557556*^9},
+  3.76830723557556*^9, 3.7833564554212217`*^9},
  CellLabel->
   "During evaluation of \
-In[29]:=",ExpressionUUID->"c589ec30-95e9-4e8a-aa3c-68d5c824dcdd"],
+In[29]:=",ExpressionUUID->"8a55631b-e103-465a-9fb4-4c665fc57a31"],
 
 Cell[BoxData[
  TemplateBox[{StyleBox["\"(LoggerTest.cpp:64)\"", 
@@ -2253,10 +2237,10 @@ Cell[BoxData[
   3.767171341625839*^9, 3.76717174957889*^9, 3.767171823026678*^9, 
   3.7683050622516203`*^9, 3.768305511366884*^9, 3.768306443897004*^9, 
   3.7683065230187473`*^9, 3.768306669387807*^9, 3.768307050615168*^9, 
-  3.7683072355784597`*^9},
+  3.76830723557556*^9, 3.783356455422995*^9},
  CellLabel->
   "During evaluation of \
-In[29]:=",ExpressionUUID->"06f64710-5576-4ec6-a211-3d685b10e419"]
+In[29]:=",ExpressionUUID->"94251a42-7ad1-4b16-a289-70729e55cbcd"]
 }, Open  ]],
 
 Cell[BoxData["5"], "Output",
@@ -2265,8 +2249,8 @@ Cell[BoxData["5"], "Output",
   3.7671713416340103`*^9, 3.767171749587224*^9, 3.7671718230385437`*^9, 
   3.768305062258895*^9, 3.768305511375052*^9, 3.768306443905308*^9, 
   3.768306523025654*^9, 3.768306669396802*^9, 3.768307050619854*^9, 
-  3.76830723558398*^9},
- CellLabel->"Out[29]=",ExpressionUUID->"b5fa078f-a037-4c38-bec6-a670fb872632"]
+  3.76830723558398*^9, 3.783356455427269*^9},
+ CellLabel->"Out[29]=",ExpressionUUID->"f9e11f75-049d-44d3-919e-e5b46e52ce28"]
 }, Open  ]],
 
 Cell[CellGroupData[{
@@ -2293,13 +2277,13 @@ Cell[BoxData[
   3.767171342268688*^9, 3.767171750429079*^9, 3.767171823106001*^9, 
   3.768305063112934*^9, 3.768305511455688*^9, 3.768306443958808*^9, 
   3.768306524406515*^9, 3.768306669458913*^9, 3.7683070506746187`*^9, 
-  3.768307235688932*^9},
+  3.768307235688932*^9, 3.783356456574007*^9},
  CellLabel->
   "During evaluation of \
-In[30]:=",ExpressionUUID->"82aa4ece-9b5c-4a67-ac39-0de45350077c"],
+In[30]:=",ExpressionUUID->"562a1cd9-81c8-484a-a145-cad79ed92963"],
 
 Cell[BoxData[
- TemplateBox[{StyleBox["\"(LoggerTest.cpp:71)\"", 
+ TemplateBox[{StyleBox["\"(LoggerTest.cpp:70)\"", 
     RGBColor[1, 0, 0], StripOnInput -> False],StyleBox[
    "\"Caught LLU exception MArgumentIndexError: Index 4294967295 out-of-bound \
 when accessing LibraryLink argument\"", FontSize -> Inherited, StripOnInput -> 
@@ -2310,10 +2294,10 @@ when accessing LibraryLink argument\"", FontSize -> Inherited, StripOnInput ->
   3.767171342268688*^9, 3.767171750429079*^9, 3.767171823106001*^9, 
   3.768305063112934*^9, 3.768305511455688*^9, 3.768306443958808*^9, 
   3.768306524406515*^9, 3.768306669458913*^9, 3.7683070506746187`*^9, 
-  3.7683072356919317`*^9},
+  3.768307235688932*^9, 3.783356456576974*^9},
  CellLabel->
   "During evaluation of \
-In[30]:=",ExpressionUUID->"6d07213c-1a18-4e29-9ff9-dc25098a308c"]
+In[30]:=",ExpressionUUID->"56ee2e3d-9a8f-49cf-addb-a025f2bb3455"]
 }, Open  ]],
 
 Cell[BoxData[
@@ -2333,9 +2317,8 @@ Cell[BoxData[
               Evaluator -> Automatic, Method -> "Preemptive"], 
              Alignment -> {Center, Center}, ImageSize -> 
              Dynamic[{
-               Automatic, 
-                3.5 (CurrentValue["FontCapHeight"]/AbsoluteCurrentValue[
-                 Magnification])}]], 
+               Automatic, 3.5 CurrentValue["FontCapHeight"]/
+                AbsoluteCurrentValue[Magnification]}]], 
             FrameBox[
              StyleBox["\"\[WarningSign]\"", 
               Directive["Message", 35], StripOnInput -> False], 
@@ -2381,9 +2364,8 @@ Cell[BoxData[
               Evaluator -> Automatic, Method -> "Preemptive"], 
              Alignment -> {Center, Center}, ImageSize -> 
              Dynamic[{
-               Automatic, 
-                3.5 (CurrentValue["FontCapHeight"]/AbsoluteCurrentValue[
-                 Magnification])}]], 
+               Automatic, 3.5 CurrentValue["FontCapHeight"]/
+                AbsoluteCurrentValue[Magnification]}]], 
             FrameBox[
              StyleBox["\"\[WarningSign]\"", 
               Directive["Message", 35], StripOnInput -> False], 
@@ -2450,8 +2432,8 @@ Cell[BoxData[
   3.767171342278325*^9, 3.767171750439844*^9, 3.767171823116583*^9, 
   3.7683050631222486`*^9, 3.76830551146558*^9, 3.768306443968618*^9, 
   3.7683065244175787`*^9, 3.768306669468815*^9, 3.768307050685585*^9, 
-  3.768307235699177*^9},
- CellLabel->"Out[30]=",ExpressionUUID->"4ccbb928-f13f-4e95-978b-84c9c37d3a85"]
+  3.768307235699177*^9, 3.783356456582271*^9},
+ CellLabel->"Out[30]=",ExpressionUUID->"04559d32-e7f6-4453-8e06-bca6c70c0fbc"]
 }, Open  ]],
 
 Cell[CellGroupData[{
@@ -2467,7 +2449,7 @@ Cell[BoxData[
 Cell[CellGroupData[{
 
 Cell[BoxData[
- TemplateBox[{StyleBox["\"(LoggerTest.cpp:17)\"", 
+ TemplateBox[{StyleBox["\"(LoggerTest.cpp:19)\"", 
     RGBColor[0, 
      Rational[2, 3], 0], StripOnInput -> False],StyleBox[
    "\"Library function entered with 4 arguments.\"", FontSize -> Inherited, 
@@ -2477,13 +2459,14 @@ Cell[BoxData[
   3.767162778190888*^9, 3.7671710543768044`*^9, 3.767171343922297*^9, 
   3.767171751482121*^9, 3.767171823131687*^9, 3.768305065085971*^9, 
   3.768305511557193*^9, 3.7683064440259*^9, 3.7683065252933397`*^9, 
-  3.768306669529873*^9, 3.7683070507424*^9, 3.768307235757245*^9},
+  3.768306669529873*^9, 3.7683070507424*^9, 3.768307235757245*^9, 
+  3.783356457850815*^9},
  CellLabel->
   "During evaluation of \
-In[31]:=",ExpressionUUID->"c4fd6052-cdd2-41d1-abb5-07bf363a793c"],
+In[31]:=",ExpressionUUID->"44da5c31-3721-4af6-a0dc-d2b8ba71d16b"],
 
 Cell[BoxData[
- TemplateBox[{StyleBox["\"(LoggerTest.cpp:20)\"", 
+ TemplateBox[{StyleBox["\"(LoggerTest.cpp:22)\"", 
     RGBColor[0, 
      Rational[2, 3], 0], StripOnInput -> False],StyleBox[
    "\"Starting try-block, current error code: 0\"", FontSize -> Inherited, 
@@ -2493,13 +2476,14 @@ Cell[BoxData[
   3.767162778190888*^9, 3.7671710543768044`*^9, 3.767171343922297*^9, 
   3.767171751482121*^9, 3.767171823131687*^9, 3.768305065085971*^9, 
   3.768305511557193*^9, 3.7683064440259*^9, 3.7683065252933397`*^9, 
-  3.768306669529873*^9, 3.7683070507424*^9, 3.768307235760437*^9},
+  3.768306669529873*^9, 3.7683070507424*^9, 3.768307235757245*^9, 
+  3.7833564578546247`*^9},
  CellLabel->
   "During evaluation of \
-In[31]:=",ExpressionUUID->"7215904f-ecd3-45e8-904b-ce3e3a4cbec4"],
+In[31]:=",ExpressionUUID->"d584159e-23d7-4236-9420-a7a909ea0821"],
 
 Cell[BoxData[
- TemplateBox[{StyleBox["\"(LoggerTest.cpp:26)\"", 
+ TemplateBox[{StyleBox["\"(LoggerTest.cpp:28)\"", 
     RGBColor[0, 
      Rational[2, 3], 0], StripOnInput -> False],StyleBox[
    "\"Input tensor is of type: 2\"", FontSize -> Inherited, StripOnInput -> 
@@ -2509,13 +2493,14 @@ Cell[BoxData[
   3.767162778190888*^9, 3.7671710543768044`*^9, 3.767171343922297*^9, 
   3.767171751482121*^9, 3.767171823131687*^9, 3.768305065085971*^9, 
   3.768305511557193*^9, 3.7683064440259*^9, 3.7683065252933397`*^9, 
-  3.768306669529873*^9, 3.7683070507424*^9, 3.768307235766746*^9},
+  3.768306669529873*^9, 3.7683070507424*^9, 3.768307235757245*^9, 
+  3.783356457858713*^9},
  CellLabel->
   "During evaluation of \
-In[31]:=",ExpressionUUID->"df36f183-7ab1-4c2a-b91d-ec205ec6f08b"],
+In[31]:=",ExpressionUUID->"00e6185d-1db4-4806-9fb5-ab8405a3723c"],
 
 Cell[BoxData[
- TemplateBox[{StyleBox["\"(LoggerTest.cpp:39)\"", 
+ TemplateBox[{StyleBox["\"(LoggerTest.cpp:41)\"", 
     RGBColor[0, 
      Rational[2, 3], 0], StripOnInput -> False],StyleBox[
    "\"Comparing 5 with 7\"", FontSize -> Inherited, StripOnInput -> False]},
@@ -2524,10 +2509,11 @@ Cell[BoxData[
   3.767162778190888*^9, 3.7671710543768044`*^9, 3.767171343922297*^9, 
   3.767171751482121*^9, 3.767171823131687*^9, 3.768305065085971*^9, 
   3.768305511557193*^9, 3.7683064440259*^9, 3.7683065252933397`*^9, 
-  3.768306669529873*^9, 3.7683070507424*^9, 3.7683072357684402`*^9},
+  3.768306669529873*^9, 3.7683070507424*^9, 3.768307235757245*^9, 
+  3.783356457860159*^9},
  CellLabel->
   "During evaluation of \
-In[31]:=",ExpressionUUID->"4098a0c3-ad3f-45d7-8c90-dd9d9f04f3aa"]
+In[31]:=",ExpressionUUID->"e2b2a4ed-db3a-4836-a679-b3281f871286"]
 }, Open  ]],
 
 Cell[BoxData["False"], "Output",
@@ -2535,8 +2521,9 @@ Cell[BoxData["False"], "Output",
   3.767162778204609*^9, 3.7671710543896437`*^9, 3.767171343934833*^9, 
   3.767171751496179*^9, 3.767171823143676*^9, 3.768305065099429*^9, 
   3.76830551156492*^9, 3.7683064440372953`*^9, 3.768306525305826*^9, 
-  3.7683066695376863`*^9, 3.768307050754107*^9, 3.768307235769959*^9},
- CellLabel->"Out[31]=",ExpressionUUID->"0b3ed2bf-3983-4cc4-8125-7790ae79f036"]
+  3.7683066695376863`*^9, 3.768307050754107*^9, 3.768307235769959*^9, 
+  3.783356457861553*^9},
+ CellLabel->"Out[31]=",ExpressionUUID->"e3ca3a03-de8a-436b-b719-f32177e77bbc"]
 }, Open  ]],
 
 Cell[CellGroupData[{
@@ -2553,7 +2540,7 @@ Cell[BoxData[
 Cell[CellGroupData[{
 
 Cell[BoxData[
- TemplateBox[{StyleBox["\"(LoggerTest.cpp:17)\"", 
+ TemplateBox[{StyleBox["\"(LoggerTest.cpp:19)\"", 
     RGBColor[0, 
      Rational[2, 3], 0], StripOnInput -> False],StyleBox[
    "\"Library function entered with 4 arguments.\"", FontSize -> Inherited, 
@@ -2563,13 +2550,14 @@ Cell[BoxData[
   3.767162782324628*^9, 3.767171055731963*^9, 3.767171345062208*^9, 
   3.767171752545862*^9, 3.767171823202613*^9, 3.76830506577232*^9, 
   3.768305511570936*^9, 3.768306444047821*^9, 3.768306526513008*^9, 
-  3.76830666959868*^9, 3.768307050808742*^9, 3.7683072358244762`*^9},
+  3.76830666959868*^9, 3.768307050808742*^9, 3.7683072358244762`*^9, 
+  3.783356458908927*^9},
  CellLabel->
   "During evaluation of \
-In[32]:=",ExpressionUUID->"539ceca1-33fc-435c-ad06-b65484ff95cf"],
+In[32]:=",ExpressionUUID->"c1c34414-1c30-4b23-ba32-437a18a7db07"],
 
 Cell[BoxData[
- TemplateBox[{StyleBox["\"(LoggerTest.cpp:20)\"", 
+ TemplateBox[{StyleBox["\"(LoggerTest.cpp:22)\"", 
     RGBColor[0, 
      Rational[2, 3], 0], StripOnInput -> False],StyleBox[
    "\"Starting try-block, current error code: 0\"", FontSize -> Inherited, 
@@ -2579,13 +2567,14 @@ Cell[BoxData[
   3.767162782324628*^9, 3.767171055731963*^9, 3.767171345062208*^9, 
   3.767171752545862*^9, 3.767171823202613*^9, 3.76830506577232*^9, 
   3.768305511570936*^9, 3.768306444047821*^9, 3.768306526513008*^9, 
-  3.76830666959868*^9, 3.768307050808742*^9, 3.7683072358277683`*^9},
+  3.76830666959868*^9, 3.768307050808742*^9, 3.7683072358244762`*^9, 
+  3.783356458911998*^9},
  CellLabel->
   "During evaluation of \
-In[32]:=",ExpressionUUID->"db1f7dbe-6e07-457d-a3ab-10fc4821665d"],
+In[32]:=",ExpressionUUID->"9ab2008b-0603-43ea-b75d-4eaafe6252f9"],
 
 Cell[BoxData[
- TemplateBox[{StyleBox["\"(LoggerTest.cpp:24)\"", 
+ TemplateBox[{StyleBox["\"(LoggerTest.cpp:26)\"", 
     RGBColor[1, 0.5, 0], StripOnInput -> False],StyleBox[
    "\"File name my:file.txt contains a possibly problematic character \\\":\\\
 \".\"", FontSize -> Inherited, StripOnInput -> False]},
@@ -2594,13 +2583,14 @@ Cell[BoxData[
   3.767162782324628*^9, 3.767171055731963*^9, 3.767171345062208*^9, 
   3.767171752545862*^9, 3.767171823202613*^9, 3.76830506577232*^9, 
   3.768305511570936*^9, 3.768306444047821*^9, 3.768306526513008*^9, 
-  3.76830666959868*^9, 3.768307050808742*^9, 3.768307235833778*^9},
+  3.76830666959868*^9, 3.768307050808742*^9, 3.7683072358244762`*^9, 
+  3.783356458917593*^9},
  CellLabel->
   "During evaluation of \
-In[32]:=",ExpressionUUID->"8009e0e1-796c-42d9-8e72-ebc4fc7a2c46"],
+In[32]:=",ExpressionUUID->"1564b67f-382f-401b-b2cc-805d291258a9"],
 
 Cell[BoxData[
- TemplateBox[{StyleBox["\"(LoggerTest.cpp:26)\"", 
+ TemplateBox[{StyleBox["\"(LoggerTest.cpp:28)\"", 
     RGBColor[0, 
      Rational[2, 3], 0], StripOnInput -> False],StyleBox[
    "\"Input tensor is of type: 2\"", FontSize -> Inherited, StripOnInput -> 
@@ -2610,13 +2600,14 @@ Cell[BoxData[
   3.767162782324628*^9, 3.767171055731963*^9, 3.767171345062208*^9, 
   3.767171752545862*^9, 3.767171823202613*^9, 3.76830506577232*^9, 
   3.768305511570936*^9, 3.768306444047821*^9, 3.768306526513008*^9, 
-  3.76830666959868*^9, 3.768307050808742*^9, 3.768307235835446*^9},
+  3.76830666959868*^9, 3.768307050808742*^9, 3.7683072358244762`*^9, 
+  3.783356458919245*^9},
  CellLabel->
   "During evaluation of \
-In[32]:=",ExpressionUUID->"c94c24db-fda2-415a-977d-b4ae85b825e7"],
+In[32]:=",ExpressionUUID->"6e3b1760-7d69-4ef4-a610-f440aaecb4f6"],
 
 Cell[BoxData[
- TemplateBox[{StyleBox["\"(LoggerTest.cpp:39)\"", 
+ TemplateBox[{StyleBox["\"(LoggerTest.cpp:41)\"", 
     RGBColor[0, 
      Rational[2, 3], 0], StripOnInput -> False],StyleBox[
    "\"Comparing 5 with 7\"", FontSize -> Inherited, StripOnInput -> False]},
@@ -2625,10 +2616,11 @@ Cell[BoxData[
   3.767162782324628*^9, 3.767171055731963*^9, 3.767171345062208*^9, 
   3.767171752545862*^9, 3.767171823202613*^9, 3.76830506577232*^9, 
   3.768305511570936*^9, 3.768306444047821*^9, 3.768306526513008*^9, 
-  3.76830666959868*^9, 3.768307050808742*^9, 3.768307235837031*^9},
+  3.76830666959868*^9, 3.768307050808742*^9, 3.7683072358244762`*^9, 
+  3.783356458920878*^9},
  CellLabel->
   "During evaluation of \
-In[32]:=",ExpressionUUID->"0044b864-f3ec-4f98-9efc-ba9d4f219ea0"]
+In[32]:=",ExpressionUUID->"d0307208-73a8-4f34-939c-f944b3aa0521"]
 }, Open  ]],
 
 Cell[BoxData["False"], "Output",
@@ -2636,8 +2628,9 @@ Cell[BoxData["False"], "Output",
   3.76716278234134*^9, 3.767171055746092*^9, 3.767171345076844*^9, 
   3.7671717525609503`*^9, 3.767171823217545*^9, 3.768305065792014*^9, 
   3.768305511580792*^9, 3.7683064440556307`*^9, 3.768306526530313*^9, 
-  3.768306669614318*^9, 3.768307050823141*^9, 3.7683072358386097`*^9},
- CellLabel->"Out[32]=",ExpressionUUID->"0f7abe83-f04e-4ca3-ad00-bbf876735a05"]
+  3.768306669614318*^9, 3.768307050823141*^9, 3.7683072358386097`*^9, 
+  3.783356458922361*^9},
+ CellLabel->"Out[32]=",ExpressionUUID->"65c046b2-1845-4f01-877b-4b584500572a"]
 }, Open  ]],
 
 Cell[CellGroupData[{
@@ -4551,9 +4544,9 @@ Cell[BoxData[
 }, Open  ]]
 }, Open  ]]
 },
-WindowSize->{1134, 994},
+WindowSize->{1134, 771},
 WindowMargins->{{Automatic, 78}, {0, Automatic}},
-FrontEndVersion->"12.0 for Linux x86 (64-bit) (April 17, 2019)",
+FrontEndVersion->"12.1 for Linux x86 (64-bit) (October 2, 2019)",
 StyleDefinitions->"Default.nb"
 ]
 (* End of Notebook Content *)
@@ -4568,297 +4561,294 @@ CellTagsIndex->{}
 (*NotebookFileOutline
 Notebook[{
 Cell[CellGroupData[{
-Cell[580, 22, 284, 5, 99, "Title",ExpressionUUID->"40bbd71e-31a4-4bfe-9593-efe64dd6a92b"],
-Cell[867, 29, 168, 3, 36, "Text",ExpressionUUID->"fd6e321a-5063-405e-9625-e8e982207266"],
+Cell[580, 22, 284, 5, 98, "Title",ExpressionUUID->"40bbd71e-31a4-4bfe-9593-efe64dd6a92b"],
+Cell[867, 29, 168, 3, 35, "Text",ExpressionUUID->"fd6e321a-5063-405e-9625-e8e982207266"],
 Cell[CellGroupData[{
-Cell[1060, 36, 273, 5, 46, "Subsubsection",ExpressionUUID->"e0457993-597a-48e6-b901-a5ebf44fe2a0",
+Cell[1060, 36, 273, 5, 45, "Subsubsection",ExpressionUUID->"e0457993-597a-48e6-b901-a5ebf44fe2a0",
  InitializationCell->True],
 Cell[CellGroupData[{
-Cell[1358, 45, 5339, 115, 439, "Input",ExpressionUUID->"99516c35-ef6b-4697-8ea5-f925044510f3",
+Cell[1358, 45, 5357, 114, 397, "Input",ExpressionUUID->"99516c35-ef6b-4697-8ea5-f925044510f3",
  InitializationCell->True],
-Cell[CellGroupData[{
-Cell[6722, 164, 1324, 21, 246, "Print",ExpressionUUID->"5b1a692c-d9ad-48ea-b870-67bfaa626e3c"],
-Cell[8049, 187, 258, 5, 25, "Print",ExpressionUUID->"34e83e99-a86d-4fa1-b246-8b183e454816"]
-}, Open  ]]
+Cell[6718, 161, 1314, 20, 201, "Print",ExpressionUUID->"a4453f19-ee03-4693-bb7c-6b6f680fe063"]
 }, Open  ]]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[8368, 199, 206, 4, 68, "Section",ExpressionUUID->"51a74835-fad7-4d4d-82ac-19437c5f131f"],
+Cell[8081, 187, 206, 4, 68, "Section",ExpressionUUID->"51a74835-fad7-4d4d-82ac-19437c5f131f"],
 Cell[CellGroupData[{
-Cell[8599, 207, 169, 3, 46, "Subsubsection",ExpressionUUID->"637deb44-3780-459a-8566-810bf420b4cf"],
+Cell[8312, 195, 169, 3, 45, "Subsubsection",ExpressionUUID->"637deb44-3780-459a-8566-810bf420b4cf"],
 Cell[CellGroupData[{
-Cell[8793, 214, 348, 7, 31, "Input",ExpressionUUID->"565e713a-2d4f-4bf3-bbeb-dae319175dad"],
+Cell[8506, 202, 348, 7, 29, "Input",ExpressionUUID->"565e713a-2d4f-4bf3-bbeb-dae319175dad"],
 Cell[CellGroupData[{
-Cell[9166, 225, 2107, 47, 48, "Print",ExpressionUUID->"0c5558a9-a07c-4cf1-be98-6e655ecc7b64"],
-Cell[11276, 274, 2106, 47, 48, "Print",ExpressionUUID->"b638aaa2-bfcf-4b18-9974-3a65fcc0c4e7"],
-Cell[13385, 323, 2091, 47, 48, "Print",ExpressionUUID->"8f48f5aa-d452-42de-be56-de455c27be80"],
-Cell[15479, 372, 2083, 47, 48, "Print",ExpressionUUID->"3a8f974f-d377-43dc-a5bd-70a2f32f7fa7"]
+Cell[8879, 213, 2155, 47, 47, "Print",ExpressionUUID->"cf4ed6cd-5a47-43d0-a7c2-e6244d13ebdc"],
+Cell[11037, 262, 2154, 47, 47, "Print",ExpressionUUID->"af208e1b-85e7-4e04-a928-fdf07af24a63"],
+Cell[13194, 311, 2139, 47, 47, "Print",ExpressionUUID->"47a31352-c501-486d-a92d-b5730833d76d"],
+Cell[15336, 360, 2129, 47, 47, "Print",ExpressionUUID->"85f801de-36c2-44e0-a736-e74b7bb81990"]
 }, Open  ]],
-Cell[17577, 422, 727, 10, 35, "Output",ExpressionUUID->"ce8e0b2b-6872-494c-b254-23270c8d07ca"]
-}, Open  ]],
-Cell[CellGroupData[{
-Cell[18341, 437, 351, 7, 31, "Input",ExpressionUUID->"bb240c83-2b70-4a20-9ea4-52653bdc57ac"],
-Cell[CellGroupData[{
-Cell[18717, 448, 2177, 48, 48, "Print",ExpressionUUID->"e7dffb65-8081-481a-b27d-ba14fea6194b"],
-Cell[20897, 498, 2176, 48, 48, "Print",ExpressionUUID->"3a4c1967-9987-4081-b6e3-a8bb5bc9636c"],
-Cell[23076, 548, 2115, 45, 48, "Print",ExpressionUUID->"f94604dd-4a70-4caa-b189-bb7435c2aabe"],
-Cell[25194, 595, 2161, 48, 48, "Print",ExpressionUUID->"d14eb084-8203-4802-a6a1-16ece6ae4019"],
-Cell[27358, 645, 2153, 48, 48, "Print",ExpressionUUID->"6cdb442a-c783-4401-a966-95b341f3a732"]
-}, Open  ]],
-Cell[29526, 696, 502, 7, 35, "Output",ExpressionUUID->"2f853a31-a84b-4f4d-9db7-8f576d784afb"]
+Cell[17480, 410, 751, 10, 33, "Output",ExpressionUUID->"dc0394e8-4936-4a4c-9117-9244d7c51c8d"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[30065, 708, 341, 7, 31, "Input",ExpressionUUID->"0526dceb-b8bf-4d4c-ab95-4b4bd27ffc21"],
+Cell[18268, 425, 351, 7, 29, "Input",ExpressionUUID->"bb240c83-2b70-4a20-9ea4-52653bdc57ac"],
 Cell[CellGroupData[{
-Cell[30431, 719, 2184, 48, 48, "Print",ExpressionUUID->"ad505385-50ef-4561-a04a-1ca5f38cb434"],
-Cell[32618, 769, 2183, 48, 48, "Print",ExpressionUUID->"95f71b57-26cd-4a89-ae85-ff23a1c03710"],
-Cell[34804, 819, 2168, 48, 48, "Print",ExpressionUUID->"72180cf1-1c52-4809-b3fe-a6e12ecee162"],
-Cell[36975, 869, 2112, 45, 48, "Print",ExpressionUUID->"29d12af5-8484-42dc-a37b-7b5706214189"]
+Cell[18644, 436, 2225, 48, 47, "Print",ExpressionUUID->"be68a513-249f-4dfd-a2d1-2c4a8720e0ff"],
+Cell[20872, 486, 2222, 48, 47, "Print",ExpressionUUID->"6b0c6f36-80b0-4847-a177-30950eb5203d"],
+Cell[23097, 536, 2160, 45, 47, "Print",ExpressionUUID->"24f5bccc-db38-45af-bb0e-593c76306016"],
+Cell[25260, 583, 2207, 48, 47, "Print",ExpressionUUID->"957e3ac6-5958-4861-9f95-6b757dc02cfe"],
+Cell[27470, 633, 2199, 48, 47, "Print",ExpressionUUID->"bf272756-da97-4ed7-b4c9-2b7986dbb22b"]
 }, Open  ]],
-Cell[39102, 917, 6662, 136, 67, "Output",ExpressionUUID->"7909dfef-a8de-4aae-a0c5-2d727d986c66"]
+Cell[29684, 684, 524, 7, 33, "Output",ExpressionUUID->"521726a7-5d32-436c-9efb-5ecb9a3573fd"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[45801, 1058, 575, 13, 31, "Input",ExpressionUUID->"87f86c4c-886d-4236-a621-18f30946499c"],
+Cell[30245, 696, 341, 7, 29, "Input",ExpressionUUID->"0526dceb-b8bf-4d4c-ab95-4b4bd27ffc21"],
 Cell[CellGroupData[{
-Cell[46401, 1075, 2175, 48, 48, "Print",ExpressionUUID->"ffc4f5ef-a251-405b-bf5e-bbc52466acee"],
-Cell[48579, 1125, 2171, 48, 48, "Print",ExpressionUUID->"64e31476-3556-4e1d-bc80-801be227e5b0"],
-Cell[50753, 1175, 2157, 48, 48, "Print",ExpressionUUID->"b4204c8b-eb7e-4a3c-82de-1639ff52c7b2"],
-Cell[52913, 1225, 2089, 44, 48, "Print",ExpressionUUID->"d6d11d78-f03a-4ef7-9a93-880d6b89bdaf"]
+Cell[30611, 707, 2230, 48, 47, "Print",ExpressionUUID->"b3d9f85a-5fa3-4659-88f9-3e9f82b6c97b"],
+Cell[32844, 757, 2229, 48, 47, "Print",ExpressionUUID->"4238b5aa-b67a-4c15-8094-3ed671f03d98"],
+Cell[35076, 807, 2216, 48, 47, "Print",ExpressionUUID->"abe02c29-abd7-4af3-9829-76e5dd6ab933"],
+Cell[37295, 857, 2158, 45, 47, "Print",ExpressionUUID->"ac720b33-8ae3-433d-8eff-3507d74ecaef"]
 }, Open  ]],
-Cell[55017, 1272, 508, 7, 35, "Output",ExpressionUUID->"380ac01a-547b-447c-8a7c-d8521c6bbc21"]
+Cell[39468, 905, 6644, 134, 64, "Output",ExpressionUUID->"2a3a8edd-1ff2-43e0-a12b-278450c97b3c"]
 }, Open  ]],
-Cell[55540, 1282, 281, 6, 36, "Text",ExpressionUUID->"5e5a9f1b-2e5d-4a06-87c5-4c56a86f8e5c"],
 Cell[CellGroupData[{
-Cell[55846, 1292, 266, 4, 31, "Input",ExpressionUUID->"94797182-5f44-4b42-a15a-01860f811217"],
+Cell[46149, 1044, 575, 13, 29, "Input",ExpressionUUID->"87f86c4c-886d-4236-a621-18f30946499c"],
 Cell[CellGroupData[{
-Cell[56137, 1300, 2273, 51, 48, "Print",ExpressionUUID->"a2e4f2dc-9608-4467-904a-659b9b7f1ca3"],
-Cell[58413, 1353, 2264, 50, 48, "Print",ExpressionUUID->"cf9cc655-4f3b-4dc8-b5f1-38eab216808e"],
-Cell[60680, 1405, 2264, 50, 48, "Print",ExpressionUUID->"982a4808-06d8-423c-9b8c-c03f7a23b7b1"],
-Cell[62947, 1457, 2264, 50, 48, "Print",ExpressionUUID->"2707b5ba-92ba-4efd-99a2-83a4897b2f7b"],
-Cell[65214, 1509, 2265, 50, 48, "Print",ExpressionUUID->"f49d4838-9322-43c2-b3c7-49e9c05087a7"],
-Cell[67482, 1561, 2265, 50, 48, "Print",ExpressionUUID->"5676352d-cd19-47b8-931a-9932817f935f"],
-Cell[69750, 1613, 2263, 50, 48, "Print",ExpressionUUID->"c8afe700-5bf5-4a13-8933-57f2b05be986"],
-Cell[72016, 1665, 2265, 50, 48, "Print",ExpressionUUID->"7598a8a7-0d3a-4f03-8ab3-72af9fa19fb3"]
+Cell[46749, 1061, 2223, 48, 47, "Print",ExpressionUUID->"d3d29960-e234-4530-95eb-9a25fc92e951"],
+Cell[48975, 1111, 2220, 48, 47, "Print",ExpressionUUID->"450febbe-533b-4458-b5f6-d2ecae59b596"],
+Cell[51198, 1161, 2205, 48, 47, "Print",ExpressionUUID->"07b3581a-60d1-411e-b9e8-2df341c22bb4"],
+Cell[53406, 1211, 2135, 44, 47, "Print",ExpressionUUID->"a40300bb-3627-47fa-98f3-abe88f040fc3"]
+}, Open  ]],
+Cell[55556, 1258, 530, 7, 33, "Output",ExpressionUUID->"26ba1f79-3f8b-4d8a-84d2-c3ade1af7520"]
+}, Open  ]],
+Cell[56101, 1268, 281, 6, 35, "Text",ExpressionUUID->"5e5a9f1b-2e5d-4a06-87c5-4c56a86f8e5c"],
+Cell[CellGroupData[{
+Cell[56407, 1278, 266, 4, 29, "Input",ExpressionUUID->"94797182-5f44-4b42-a15a-01860f811217"],
+Cell[CellGroupData[{
+Cell[56698, 1286, 2319, 51, 47, "Print",ExpressionUUID->"50f10dd1-79df-4916-afcb-50a30502798d"],
+Cell[59020, 1339, 2310, 50, 47, "Print",ExpressionUUID->"43b81ce0-6fc1-41ab-a058-d666a7846c1a"],
+Cell[61333, 1391, 2310, 50, 47, "Print",ExpressionUUID->"19e69b3c-09e2-4273-97fc-6b5f6adc2eac"],
+Cell[63646, 1443, 2310, 50, 47, "Print",ExpressionUUID->"b738b7f3-f57d-4cc5-a743-b2e392e9ee65"],
+Cell[65959, 1495, 2313, 50, 47, "Print",ExpressionUUID->"f4f80cb0-21e0-481b-bab7-81cdebb5a1d4"],
+Cell[68275, 1547, 2311, 50, 47, "Print",ExpressionUUID->"2ea33593-f57c-4b59-bc76-a262c5abaf5c"],
+Cell[70589, 1599, 2311, 50, 47, "Print",ExpressionUUID->"17c9a5c5-d517-46e2-a0fc-4523306c753f"],
+Cell[72903, 1651, 2311, 50, 47, "Print",ExpressionUUID->"89555a98-7eeb-4d02-a454-3bf459bbc635"]
 }, Open  ]]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[74330, 1721, 258, 4, 31, "Input",ExpressionUUID->"58a431fa-95ff-4f65-adfa-d1c827ae782f"],
-Cell[74591, 1727, 2153, 48, 48, "Print",ExpressionUUID->"8b6d0403-0529-476e-aee6-ff459d0a93df"],
-Cell[76747, 1777, 474, 7, 35, "Output",ExpressionUUID->"3f16a65c-7b84-447f-9c8a-38c73d4c9a43"]
+Cell[75263, 1707, 258, 4, 29, "Input",ExpressionUUID->"58a431fa-95ff-4f65-adfa-d1c827ae782f"],
+Cell[75524, 1713, 2199, 48, 47, "Print",ExpressionUUID->"68e1a59f-5863-44f7-88c5-3d30cd35b7fe"],
+Cell[77726, 1763, 496, 7, 33, "Output",ExpressionUUID->"c5600715-8ff3-496c-b91b-bc96497b054c"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[77258, 1789, 260, 4, 31, "Input",ExpressionUUID->"60b38b5b-faf5-4c4f-88fe-5b4388cd0482"],
+Cell[78259, 1775, 260, 4, 29, "Input",ExpressionUUID->"60b38b5b-faf5-4c4f-88fe-5b4388cd0482"],
 Cell[CellGroupData[{
-Cell[77543, 1797, 2150, 48, 48, "Print",ExpressionUUID->"e8fcb2d7-426e-456c-9e3f-19c684f96efb"],
-Cell[79696, 1847, 2082, 45, 48, "Print",ExpressionUUID->"359d17e5-c97b-4e22-b66f-70205266c0f1"]
+Cell[78544, 1783, 2196, 48, 47, "Print",ExpressionUUID->"8de9c0a2-3cee-47d0-80dd-953e07f6196b"],
+Cell[80743, 1833, 2128, 45, 47, "Print",ExpressionUUID->"38528207-26ce-4849-8f2d-19b285e1feff"]
 }, Open  ]],
-Cell[81793, 1895, 479, 7, 35, "Output",ExpressionUUID->"5b5aba84-a09e-4ff1-b3a5-7b279150b15d"]
+Cell[82886, 1881, 500, 7, 33, "Output",ExpressionUUID->"b95f7055-4fea-45f9-93b9-9df0cc521251"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[82309, 1907, 281, 6, 31, "Input",ExpressionUUID->"52bd5ade-ee4d-4015-ae8d-30a5be21eb99"],
+Cell[83423, 1893, 281, 6, 29, "Input",ExpressionUUID->"52bd5ade-ee4d-4015-ae8d-30a5be21eb99"],
 Cell[CellGroupData[{
-Cell[82615, 1917, 2147, 48, 48, "Print",ExpressionUUID->"bab5cf35-4b82-4a58-95ad-7fa8f68d32d4"],
-Cell[84765, 1967, 2112, 46, 48, "Print",ExpressionUUID->"cb0ec6ce-91b2-45c5-9e37-3e0aaf093d83"]
+Cell[83729, 1903, 2193, 48, 47, "Print",ExpressionUUID->"037472a4-b895-4f61-ad0f-31e05908aed4"],
+Cell[85925, 1953, 2158, 46, 47, "Print",ExpressionUUID->"2954459f-d283-4193-ae36-244d42c68394"]
 }, Open  ]],
-Cell[86892, 2016, 6613, 135, 67, "Output",ExpressionUUID->"f219a841-2b79-4a1e-9ef0-90bb8d73d174"]
+Cell[88098, 2002, 6595, 133, 64, "Output",ExpressionUUID->"e2862714-b0fb-4d94-995c-9e45f669b098"]
 }, Open  ]]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[93554, 2157, 341, 5, 46, "Subsubsection",ExpressionUUID->"29a1a4f1-d77a-4fcb-9794-870865940643"],
-Cell[93898, 2164, 282, 7, 36, "Text",ExpressionUUID->"fb564369-12fc-4111-9460-ae204901245f"],
-Cell[94183, 2173, 330, 7, 31, "Input",ExpressionUUID->"f7d693da-eda7-4255-9e0e-2e0681dc15ab"],
+Cell[94742, 2141, 341, 5, 45, "Subsubsection",ExpressionUUID->"29a1a4f1-d77a-4fcb-9794-870865940643"],
+Cell[95086, 2148, 282, 7, 35, "Text",ExpressionUUID->"fb564369-12fc-4111-9460-ae204901245f"],
+Cell[95371, 2157, 330, 7, 29, "Input",ExpressionUUID->"f7d693da-eda7-4255-9e0e-2e0681dc15ab"],
 Cell[CellGroupData[{
-Cell[94538, 2184, 258, 4, 31, "Input",ExpressionUUID->"1609c459-ce98-43ce-bd27-762c7ccab7b8"],
-Cell[94799, 2190, 748, 15, 25, "Print",ExpressionUUID->"2ed224ac-d888-46c0-8752-442170e4b509"],
-Cell[95550, 2207, 478, 7, 35, "Output",ExpressionUUID->"ba469660-119b-4560-9984-f0513edf8371"]
+Cell[95726, 2168, 258, 4, 29, "Input",ExpressionUUID->"1609c459-ce98-43ce-bd27-762c7ccab7b8"],
+Cell[95987, 2174, 770, 15, 23, "Print",ExpressionUUID->"1f0f9543-97e5-431b-8017-2fe11a2e6798"],
+Cell[96760, 2191, 499, 7, 33, "Output",ExpressionUUID->"8331ed15-24ea-4d93-88b6-d21e49121a70"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[96065, 2219, 260, 4, 31, "Input",ExpressionUUID->"334c2691-f5b7-4e56-9940-5c2cb7a65db4"],
+Cell[97296, 2203, 260, 4, 29, "Input",ExpressionUUID->"334c2691-f5b7-4e56-9940-5c2cb7a65db4"],
 Cell[CellGroupData[{
-Cell[96350, 2227, 746, 15, 25, "Print",ExpressionUUID->"c589ec30-95e9-4e8a-aa3c-68d5c824dcdd"],
-Cell[97099, 2244, 754, 14, 25, "Print",ExpressionUUID->"06f64710-5576-4ec6-a211-3d685b10e419"]
+Cell[97581, 2211, 770, 15, 23, "Print",ExpressionUUID->"8a55631b-e103-465a-9fb4-4c665fc57a31"],
+Cell[98354, 2228, 773, 14, 23, "Print",ExpressionUUID->"94251a42-7ad1-4b16-a289-70729e55cbcd"]
 }, Open  ]],
-Cell[97868, 2261, 477, 7, 35, "Output",ExpressionUUID->"b5fa078f-a037-4c38-bec6-a670fb872632"]
-}, Open  ]],
-Cell[CellGroupData[{
-Cell[98382, 2273, 281, 6, 31, "Input",ExpressionUUID->"694d7d9e-edd1-4916-bfd1-abb53e01847e"],
-Cell[CellGroupData[{
-Cell[98688, 2283, 748, 15, 25, "Print",ExpressionUUID->"82aa4ece-9b5c-4a67-ac39-0de45350077c"],
-Cell[99439, 2300, 798, 15, 25, "Print",ExpressionUUID->"6d07213c-1a18-4e29-9ff9-dc25098a308c"]
-}, Open  ]],
-Cell[100252, 2318, 6614, 135, 67, "Output",ExpressionUUID->"4ccbb928-f13f-4e95-978b-84c9c37d3a85"]
+Cell[99142, 2245, 499, 7, 33, "Output",ExpressionUUID->"f9e11f75-049d-44d3-919e-e5b46e52ce28"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[106903, 2458, 282, 6, 31, "Input",ExpressionUUID->"7e020d9a-6576-4d3e-ac85-25e88dca47a4"],
+Cell[99678, 2257, 281, 6, 29, "Input",ExpressionUUID->"694d7d9e-edd1-4916-bfd1-abb53e01847e"],
 Cell[CellGroupData[{
-Cell[107210, 2468, 719, 14, 25, "Print",ExpressionUUID->"c4fd6052-cdd2-41d1-abb5-07bf363a793c"],
-Cell[107932, 2484, 718, 14, 25, "Print",ExpressionUUID->"7215904f-ecd3-45e8-904b-ce3e3a4cbec4"],
-Cell[108653, 2500, 703, 14, 25, "Print",ExpressionUUID->"df36f183-7ab1-4c2a-b91d-ec205ec6f08b"],
-Cell[109359, 2516, 692, 13, 25, "Print",ExpressionUUID->"4098a0c3-ad3f-45d7-8c90-dd9d9f04f3aa"]
+Cell[99984, 2267, 770, 15, 23, "Print",ExpressionUUID->"562a1cd9-81c8-484a-a145-cad79ed92963"],
+Cell[100757, 2284, 818, 15, 23, "Print",ExpressionUUID->"56ee2e3d-9a8f-49cf-addb-a025f2bb3455"]
 }, Open  ]],
-Cell[110066, 2532, 458, 6, 35, "Output",ExpressionUUID->"0b3ed2bf-3983-4cc4-8125-7790ae79f036"]
+Cell[101590, 2302, 6596, 133, 64, "Output",ExpressionUUID->"04559d32-e7f6-4453-8e06-bca6c70c0fbc"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[110561, 2543, 351, 7, 31, "Input",ExpressionUUID->"da755575-ada5-4918-ad8f-c9e2e4873e22"],
+Cell[108223, 2440, 282, 6, 29, "Input",ExpressionUUID->"7e020d9a-6576-4d3e-ac85-25e88dca47a4"],
 Cell[CellGroupData[{
-Cell[110937, 2554, 717, 14, 25, "Print",ExpressionUUID->"539ceca1-33fc-435c-ad06-b65484ff95cf"],
-Cell[111657, 2570, 716, 14, 25, "Print",ExpressionUUID->"db1f7dbe-6e07-457d-a3ab-10fc4821665d"],
-Cell[112376, 2586, 727, 13, 25, "Print",ExpressionUUID->"8009e0e1-796c-42d9-8e72-ebc4fc7a2c46"],
-Cell[113106, 2601, 699, 14, 25, "Print",ExpressionUUID->"c94c24db-fda2-415a-977d-b4ae85b825e7"],
-Cell[113808, 2617, 686, 13, 25, "Print",ExpressionUUID->"0044b864-f3ec-4f98-9efc-ba9d4f219ea0"]
+Cell[108530, 2450, 744, 15, 23, "Print",ExpressionUUID->"44da5c31-3721-4af6-a0dc-d2b8ba71d16b"],
+Cell[109277, 2467, 745, 15, 23, "Print",ExpressionUUID->"d584159e-23d7-4236-9420-a7a909ea0821"],
+Cell[110025, 2484, 728, 15, 23, "Print",ExpressionUUID->"00e6185d-1db4-4806-9fb5-ab8405a3723c"],
+Cell[110756, 2501, 715, 14, 23, "Print",ExpressionUUID->"e2b2a4ed-db3a-4836-a679-b3281f871286"]
 }, Open  ]],
-Cell[114509, 2633, 458, 6, 35, "Output",ExpressionUUID->"0f7abe83-f04e-4ca3-ad00-bbf876735a05"]
-}, Open  ]],
-Cell[CellGroupData[{
-Cell[115004, 2644, 341, 7, 31, "Input",ExpressionUUID->"b41c2434-5986-44c5-954d-b4aeb1de4517"],
-Cell[CellGroupData[{
-Cell[115370, 2655, 488, 11, 25, "Print",ExpressionUUID->"8f86f63e-44fe-4766-b616-b11fc29ac9e0"],
-Cell[115861, 2668, 487, 11, 25, "Print",ExpressionUUID->"8c16f2e5-7a83-4b3f-a981-781567d08aaf"],
-Cell[116351, 2681, 472, 11, 25, "Print",ExpressionUUID->"e7c422be-ec27-4c9e-b375-14e6dbd37382"],
-Cell[116826, 2694, 496, 10, 25, "Print",ExpressionUUID->"12184b12-33fd-48b1-891d-884cfcd42448"]
-}, Open  ]],
-Cell[117337, 2707, 6383, 132, 67, "Output",ExpressionUUID->"44784ad9-8a9c-4f3e-9f6d-aedadee09aff"]
+Cell[111486, 2518, 483, 7, 33, "Output",ExpressionUUID->"e3ca3a03-de8a-436b-b719-f32177e77bbc"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[123757, 2844, 575, 13, 31, "Input",ExpressionUUID->"bdffe631-4cb8-4c0e-953b-1335e7bda639"],
+Cell[112006, 2530, 351, 7, 29, "Input",ExpressionUUID->"da755575-ada5-4918-ad8f-c9e2e4873e22"],
 Cell[CellGroupData[{
-Cell[124357, 2861, 490, 11, 25, "Print",ExpressionUUID->"e6ae8f2a-9ec9-4808-a807-a648dad8fbfe"],
-Cell[124850, 2874, 489, 11, 25, "Print",ExpressionUUID->"5463ca96-c2b5-4046-8b0f-e0ec17e6d23c"],
-Cell[125342, 2887, 474, 11, 25, "Print",ExpressionUUID->"ccc101f0-682f-4e1b-b620-5c62c4b59a54"],
-Cell[125819, 2900, 489, 10, 25, "Print",ExpressionUUID->"496af2e2-9519-428a-b855-bb4f4d88c7ca"]
+Cell[112382, 2541, 742, 15, 23, "Print",ExpressionUUID->"c1c34414-1c30-4b23-ba32-437a18a7db07"],
+Cell[113127, 2558, 741, 15, 23, "Print",ExpressionUUID->"9ab2008b-0603-43ea-b75d-4eaafe6252f9"],
+Cell[113871, 2575, 754, 14, 23, "Print",ExpressionUUID->"1564b67f-382f-401b-b2cc-805d291258a9"],
+Cell[114628, 2591, 726, 15, 23, "Print",ExpressionUUID->"6e3b1760-7d69-4ef4-a610-f440aaecb4f6"],
+Cell[115357, 2608, 713, 14, 23, "Print",ExpressionUUID->"d0307208-73a8-4f34-939c-f944b3aa0521"]
 }, Open  ]],
-Cell[126323, 2913, 226, 3, 35, "Output",ExpressionUUID->"8ca0ce73-026c-4079-8696-74b3467d9f6f"]
+Cell[116085, 2625, 483, 7, 33, "Output",ExpressionUUID->"65c046b2-1845-4f01-877b-4b584500572a"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[116605, 2637, 341, 7, 29, "Input",ExpressionUUID->"b41c2434-5986-44c5-954d-b4aeb1de4517"],
+Cell[CellGroupData[{
+Cell[116971, 2648, 488, 11, 23, "Print",ExpressionUUID->"8f86f63e-44fe-4766-b616-b11fc29ac9e0"],
+Cell[117462, 2661, 487, 11, 23, "Print",ExpressionUUID->"8c16f2e5-7a83-4b3f-a981-781567d08aaf"],
+Cell[117952, 2674, 472, 11, 23, "Print",ExpressionUUID->"e7c422be-ec27-4c9e-b375-14e6dbd37382"],
+Cell[118427, 2687, 496, 10, 23, "Print",ExpressionUUID->"12184b12-33fd-48b1-891d-884cfcd42448"]
+}, Open  ]],
+Cell[118938, 2700, 6383, 132, 64, "Output",ExpressionUUID->"44784ad9-8a9c-4f3e-9f6d-aedadee09aff"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[125358, 2837, 575, 13, 29, "Input",ExpressionUUID->"bdffe631-4cb8-4c0e-953b-1335e7bda639"],
+Cell[CellGroupData[{
+Cell[125958, 2854, 490, 11, 23, "Print",ExpressionUUID->"e6ae8f2a-9ec9-4808-a807-a648dad8fbfe"],
+Cell[126451, 2867, 489, 11, 23, "Print",ExpressionUUID->"5463ca96-c2b5-4046-8b0f-e0ec17e6d23c"],
+Cell[126943, 2880, 474, 11, 23, "Print",ExpressionUUID->"ccc101f0-682f-4e1b-b620-5c62c4b59a54"],
+Cell[127420, 2893, 489, 10, 23, "Print",ExpressionUUID->"496af2e2-9519-428a-b855-bb4f4d88c7ca"]
+}, Open  ]],
+Cell[127924, 2906, 226, 3, 33, "Output",ExpressionUUID->"8ca0ce73-026c-4079-8696-74b3467d9f6f"]
 }, Open  ]]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[126598, 2922, 206, 3, 46, "Subsubsection",ExpressionUUID->"ec1c1d22-6e79-4678-b74d-51536e747e82"],
-Cell[126807, 2927, 173, 3, 36, "Text",ExpressionUUID->"4ce03a75-9a4e-4a3b-a71e-6081a7973711"],
-Cell[126983, 2932, 605, 10, 31, "Input",ExpressionUUID->"e9322f8e-deb6-4a34-9df2-1f02748e87c3"],
-Cell[127591, 2944, 556, 10, 31, "Input",ExpressionUUID->"f4c59552-547f-4b8e-b6c8-8a4451eaaf69"],
+Cell[128199, 2915, 206, 3, 45, "Subsubsection",ExpressionUUID->"ec1c1d22-6e79-4678-b74d-51536e747e82"],
+Cell[128408, 2920, 173, 3, 35, "Text",ExpressionUUID->"4ce03a75-9a4e-4a3b-a71e-6081a7973711"],
+Cell[128584, 2925, 605, 10, 29, "Input",ExpressionUUID->"e9322f8e-deb6-4a34-9df2-1f02748e87c3"],
+Cell[129192, 2937, 556, 10, 29, "Input",ExpressionUUID->"f4c59552-547f-4b8e-b6c8-8a4451eaaf69"],
 Cell[CellGroupData[{
-Cell[128172, 2958, 282, 6, 31, "Input",ExpressionUUID->"d32198f3-8f80-4a08-b1d8-e6d037f240f3"],
-Cell[128457, 2966, 437, 6, 35, "Output",ExpressionUUID->"dc3aeb8a-6319-45b8-b5e8-773f6499ab59"]
+Cell[129773, 2951, 282, 6, 29, "Input",ExpressionUUID->"d32198f3-8f80-4a08-b1d8-e6d037f240f3"],
+Cell[130058, 2959, 437, 6, 33, "Output",ExpressionUUID->"dc3aeb8a-6319-45b8-b5e8-773f6499ab59"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[128931, 2977, 351, 7, 31, "Input",ExpressionUUID->"ac9c6d4f-fe3c-49f1-a0bc-19bf9ad6b300"],
-Cell[129285, 2986, 433, 6, 35, "Output",ExpressionUUID->"3c767c9d-1dd5-430c-8f46-e3085504eecc"]
+Cell[130532, 2970, 351, 7, 29, "Input",ExpressionUUID->"ac9c6d4f-fe3c-49f1-a0bc-19bf9ad6b300"],
+Cell[130886, 2979, 433, 6, 33, "Output",ExpressionUUID->"3c767c9d-1dd5-430c-8f46-e3085504eecc"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[129755, 2997, 341, 7, 31, "Input",ExpressionUUID->"c816e334-7630-4f1d-899e-b379fde5fdb2"],
-Cell[130099, 3006, 6594, 135, 67, "Output",ExpressionUUID->"f28b8685-8e13-40e2-be48-677bf317eb55"]
+Cell[131356, 2990, 341, 7, 29, "Input",ExpressionUUID->"c816e334-7630-4f1d-899e-b379fde5fdb2"],
+Cell[131700, 2999, 6594, 135, 64, "Output",ExpressionUUID->"f28b8685-8e13-40e2-be48-677bf317eb55"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[136730, 3146, 575, 13, 31, "Input",ExpressionUUID->"1a2f83fa-97bf-4be4-b81c-cd62caae01ca"],
-Cell[137308, 3161, 438, 6, 35, "Output",ExpressionUUID->"088252b0-57f3-4dfb-a3f7-d3776f8c6fb2"]
+Cell[138331, 3139, 575, 13, 29, "Input",ExpressionUUID->"1a2f83fa-97bf-4be4-b81c-cd62caae01ca"],
+Cell[138909, 3154, 438, 6, 33, "Output",ExpressionUUID->"088252b0-57f3-4dfb-a3f7-d3776f8c6fb2"]
 }, Open  ]],
-Cell[137761, 3170, 310, 6, 31, "Input",ExpressionUUID->"cd6e7350-bcd0-4f4f-96a9-ba526c944c02"]
-}, Open  ]],
-Cell[CellGroupData[{
-Cell[138108, 3181, 166, 3, 46, "Subsubsection",ExpressionUUID->"337d23cf-b23b-4540-aa2c-d6c3de462b26"],
-Cell[138277, 3186, 254, 6, 36, "Text",ExpressionUUID->"bd7ce241-9e43-426b-bd67-dd9bb1a344a2"],
-Cell[138534, 3194, 1055, 21, 101, "Input",ExpressionUUID->"60c6a7c0-d462-4746-809f-c68de2339acb"],
-Cell[139592, 3217, 308, 7, 31, "Input",ExpressionUUID->"8d3ea525-c546-4b34-9eff-cc55a2b0eb80"],
-Cell[139903, 3226, 305, 7, 31, "Input",ExpressionUUID->"491369db-10c9-4cdb-b5a7-af06dffdf7a1"],
-Cell[140211, 3235, 327, 8, 31, "Input",ExpressionUUID->"de3d02ec-3f39-49df-a732-c58639711e04"],
-Cell[CellGroupData[{
-Cell[140563, 3247, 177, 2, 31, "Input",ExpressionUUID->"75542ed9-718e-44ce-8cd5-d4f0b66ea83f"],
-Cell[140743, 3251, 1176, 20, 151, "Output",ExpressionUUID->"9e2c35eb-eef4-41f1-88c5-01b160d1327f"]
+Cell[139362, 3163, 310, 6, 29, "Input",ExpressionUUID->"cd6e7350-bcd0-4f4f-96a9-ba526c944c02"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[141956, 3276, 241, 4, 31, "Input",ExpressionUUID->"c3acded6-9a4e-4852-a78d-81814c51e4b1"],
-Cell[142200, 3282, 410, 6, 35, "Output",ExpressionUUID->"aa3c9c18-529f-4083-9bc6-a6c75440d255"]
+Cell[139709, 3174, 166, 3, 45, "Subsubsection",ExpressionUUID->"337d23cf-b23b-4540-aa2c-d6c3de462b26"],
+Cell[139878, 3179, 254, 6, 35, "Text",ExpressionUUID->"bd7ce241-9e43-426b-bd67-dd9bb1a344a2"],
+Cell[140135, 3187, 1055, 21, 92, "Input",ExpressionUUID->"60c6a7c0-d462-4746-809f-c68de2339acb"],
+Cell[141193, 3210, 308, 7, 29, "Input",ExpressionUUID->"8d3ea525-c546-4b34-9eff-cc55a2b0eb80"],
+Cell[141504, 3219, 305, 7, 29, "Input",ExpressionUUID->"491369db-10c9-4cdb-b5a7-af06dffdf7a1"],
+Cell[141812, 3228, 327, 8, 29, "Input",ExpressionUUID->"de3d02ec-3f39-49df-a732-c58639711e04"],
+Cell[CellGroupData[{
+Cell[142164, 3240, 177, 2, 29, "Input",ExpressionUUID->"75542ed9-718e-44ce-8cd5-d4f0b66ea83f"],
+Cell[142344, 3244, 1176, 20, 117, "Output",ExpressionUUID->"9e2c35eb-eef4-41f1-88c5-01b160d1327f"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[143557, 3269, 241, 4, 29, "Input",ExpressionUUID->"c3acded6-9a4e-4852-a78d-81814c51e4b1"],
+Cell[143801, 3275, 410, 6, 33, "Output",ExpressionUUID->"aa3c9c18-529f-4083-9bc6-a6c75440d255"]
 }, Open  ]]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[142659, 3294, 175, 3, 46, "Subsubsection",ExpressionUUID->"d7969249-b2eb-4708-8cf5-afaa724d461f"],
-Cell[142837, 3299, 252, 5, 36, "Text",ExpressionUUID->"af772b9a-0571-428a-86f7-338884cea70e"],
-Cell[143092, 3306, 450, 8, 31, "Input",ExpressionUUID->"a249de37-a8ed-4343-8d13-9e068bccf006"],
-Cell[143545, 3316, 465, 9, 31, "Input",ExpressionUUID->"85beee0b-09ed-4a69-bf7e-d5ef1bdf1e79"],
+Cell[144260, 3287, 175, 3, 45, "Subsubsection",ExpressionUUID->"d7969249-b2eb-4708-8cf5-afaa724d461f"],
+Cell[144438, 3292, 252, 5, 35, "Text",ExpressionUUID->"af772b9a-0571-428a-86f7-338884cea70e"],
+Cell[144693, 3299, 450, 8, 29, "Input",ExpressionUUID->"a249de37-a8ed-4343-8d13-9e068bccf006"],
+Cell[145146, 3309, 465, 9, 29, "Input",ExpressionUUID->"85beee0b-09ed-4a69-bf7e-d5ef1bdf1e79"],
 Cell[CellGroupData[{
-Cell[144035, 3329, 192, 3, 31, "Input",ExpressionUUID->"cc438452-2b75-4fac-945a-50589e5d1112"],
-Cell[144230, 3334, 628, 9, 35, "Output",ExpressionUUID->"b9d040bc-54df-4ab1-b58b-724d4953686e"]
+Cell[145636, 3322, 192, 3, 29, "Input",ExpressionUUID->"cc438452-2b75-4fac-945a-50589e5d1112"],
+Cell[145831, 3327, 628, 9, 33, "Output",ExpressionUUID->"b9d040bc-54df-4ab1-b58b-724d4953686e"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[144895, 3348, 285, 6, 31, "Input",ExpressionUUID->"ed4c1265-02d1-4de3-98c8-f8ed4834a90d"],
-Cell[145183, 3356, 608, 8, 35, "Output",ExpressionUUID->"46aae12d-7096-4d38-9d86-7d5520abe1cc"]
+Cell[146496, 3341, 285, 6, 29, "Input",ExpressionUUID->"ed4c1265-02d1-4de3-98c8-f8ed4834a90d"],
+Cell[146784, 3349, 608, 8, 33, "Output",ExpressionUUID->"46aae12d-7096-4d38-9d86-7d5520abe1cc"]
 }, Open  ]],
-Cell[145806, 3367, 160, 3, 36, "Text",ExpressionUUID->"2180839a-5157-482a-90dd-d829c732ad6b"],
-Cell[145969, 3372, 285, 6, 31, "Input",ExpressionUUID->"6b92cc6b-dc00-44c7-a224-ffece6cd780f"],
-Cell[146257, 3380, 591, 11, 55, "Input",ExpressionUUID->"737d36e5-4721-4784-ad9c-b24f6a2f2b50"],
+Cell[147407, 3360, 160, 3, 35, "Text",ExpressionUUID->"2180839a-5157-482a-90dd-d829c732ad6b"],
+Cell[147570, 3365, 285, 6, 29, "Input",ExpressionUUID->"6b92cc6b-dc00-44c7-a224-ffece6cd780f"],
+Cell[147858, 3373, 591, 11, 29, "Input",ExpressionUUID->"737d36e5-4721-4784-ad9c-b24f6a2f2b50"],
 Cell[CellGroupData[{
-Cell[146873, 3395, 192, 3, 31, "Input",ExpressionUUID->"71b92022-12a9-4cbe-b208-a3c3611ef915"],
-Cell[147068, 3400, 2043, 45, 48, "Print",ExpressionUUID->"f01f8389-cc39-4d12-87a5-66ef1e7b56eb"],
-Cell[149114, 3447, 680, 9, 35, "Output",ExpressionUUID->"c39302a5-268a-449c-b347-d314a67f7954"]
-}, Open  ]],
-Cell[CellGroupData[{
-Cell[149831, 3461, 285, 6, 31, "Input",ExpressionUUID->"76ddd073-4630-4f71-ad57-4cd4910afddd"],
-Cell[150119, 3469, 2027, 44, 48, "Print",ExpressionUUID->"05638d4b-9896-47a9-aa28-01860f925956"],
-Cell[152149, 3515, 516, 7, 35, "Output",ExpressionUUID->"d3ff17d1-2623-4ed3-ad38-a7b0cd41cd0b"]
-}, Open  ]],
-Cell[152680, 3525, 192, 3, 36, "Text",ExpressionUUID->"7df056ed-d481-47fc-8023-36576201fb0d"],
-Cell[152875, 3530, 423, 8, 31, "Input",ExpressionUUID->"ce68c18a-2efe-4443-9954-2fc462e03ce4"],
-Cell[CellGroupData[{
-Cell[153323, 3542, 192, 3, 31, "Input",ExpressionUUID->"793a669c-e982-4df0-a63d-5068c57e82a5"],
-Cell[CellGroupData[{
-Cell[153540, 3549, 2038, 46, 48, "Print",ExpressionUUID->"56d30fc5-6700-42eb-a520-547b2009f443"],
-Cell[155581, 3597, 1970, 43, 48, "Print",ExpressionUUID->"916b84aa-785b-4a92-a045-c0638a59a4a6"]
-}, Open  ]],
-Cell[157566, 3643, 358, 5, 35, "Output",ExpressionUUID->"9ebebb2f-39dc-4b9d-a4f6-8ca7a038000a"]
+Cell[148474, 3388, 192, 3, 29, "Input",ExpressionUUID->"71b92022-12a9-4cbe-b208-a3c3611ef915"],
+Cell[148669, 3393, 2043, 45, 47, "Print",ExpressionUUID->"f01f8389-cc39-4d12-87a5-66ef1e7b56eb"],
+Cell[150715, 3440, 680, 9, 33, "Output",ExpressionUUID->"c39302a5-268a-449c-b347-d314a67f7954"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[157961, 3653, 285, 6, 31, "Input",ExpressionUUID->"6b633a7b-5668-4534-989c-16450541520e"],
-Cell[CellGroupData[{
-Cell[158271, 3663, 2039, 46, 48, "Print",ExpressionUUID->"eac25038-2c80-4345-a571-64556977a261"],
-Cell[160313, 3711, 1978, 43, 48, "Print",ExpressionUUID->"17393130-a836-4d5e-b2f1-812e366bb232"],
-Cell[162294, 3756, 2024, 46, 48, "Print",ExpressionUUID->"e22d11d9-f344-49bf-ac7c-172b0c873460"]
+Cell[151432, 3454, 285, 6, 29, "Input",ExpressionUUID->"76ddd073-4630-4f71-ad57-4cd4910afddd"],
+Cell[151720, 3462, 2027, 44, 47, "Print",ExpressionUUID->"05638d4b-9896-47a9-aa28-01860f925956"],
+Cell[153750, 3508, 516, 7, 33, "Output",ExpressionUUID->"d3ff17d1-2623-4ed3-ad38-a7b0cd41cd0b"]
 }, Open  ]],
-Cell[164333, 3805, 363, 5, 35, "Output",ExpressionUUID->"b155e6a7-15c2-4aa1-8ca1-6d2ce0bedc69"]
+Cell[154281, 3518, 192, 3, 35, "Text",ExpressionUUID->"7df056ed-d481-47fc-8023-36576201fb0d"],
+Cell[154476, 3523, 423, 8, 29, "Input",ExpressionUUID->"ce68c18a-2efe-4443-9954-2fc462e03ce4"],
+Cell[CellGroupData[{
+Cell[154924, 3535, 192, 3, 29, "Input",ExpressionUUID->"793a669c-e982-4df0-a63d-5068c57e82a5"],
+Cell[CellGroupData[{
+Cell[155141, 3542, 2038, 46, 47, "Print",ExpressionUUID->"56d30fc5-6700-42eb-a520-547b2009f443"],
+Cell[157182, 3590, 1970, 43, 47, "Print",ExpressionUUID->"916b84aa-785b-4a92-a045-c0638a59a4a6"]
+}, Open  ]],
+Cell[159167, 3636, 358, 5, 33, "Output",ExpressionUUID->"9ebebb2f-39dc-4b9d-a4f6-8ca7a038000a"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[159562, 3646, 285, 6, 29, "Input",ExpressionUUID->"6b633a7b-5668-4534-989c-16450541520e"],
+Cell[CellGroupData[{
+Cell[159872, 3656, 2039, 46, 47, "Print",ExpressionUUID->"eac25038-2c80-4345-a571-64556977a261"],
+Cell[161914, 3704, 1978, 43, 47, "Print",ExpressionUUID->"17393130-a836-4d5e-b2f1-812e366bb232"],
+Cell[163895, 3749, 2024, 46, 47, "Print",ExpressionUUID->"e22d11d9-f344-49bf-ac7c-172b0c873460"]
+}, Open  ]],
+Cell[165934, 3798, 363, 5, 33, "Output",ExpressionUUID->"b155e6a7-15c2-4aa1-8ca1-6d2ce0bedc69"]
 }, Open  ]]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[164745, 3816, 168, 3, 46, "Subsubsection",ExpressionUUID->"14c445a3-7156-4e42-b8c3-03f51129cdb7"],
-Cell[164916, 3821, 179, 3, 36, "Text",ExpressionUUID->"15fda11a-2c88-4613-b49f-7e54d2d8cf39"],
+Cell[166346, 3809, 168, 3, 45, "Subsubsection",ExpressionUUID->"14c445a3-7156-4e42-b8c3-03f51129cdb7"],
+Cell[166517, 3814, 179, 3, 35, "Text",ExpressionUUID->"15fda11a-2c88-4613-b49f-7e54d2d8cf39"],
 Cell[CellGroupData[{
-Cell[165120, 3828, 689, 18, 55, "Input",ExpressionUUID->"84e2759d-b961-4871-8455-c4d02b5c4685"],
+Cell[166721, 3821, 689, 18, 51, "Input",ExpressionUUID->"84e2759d-b961-4871-8455-c4d02b5c4685"],
 Cell[CellGroupData[{
-Cell[165834, 3850, 1553, 24, 246, "Print",ExpressionUUID->"a7a4a5c2-22a5-4254-9382-44384623b619"],
-Cell[167390, 3876, 482, 8, 25, "Print",ExpressionUUID->"f40f2ea7-15f3-4780-8001-be684cddbd3e"]
+Cell[167435, 3843, 1553, 24, 201, "Print",ExpressionUUID->"a7a4a5c2-22a5-4254-9382-44384623b619"],
+Cell[168991, 3869, 482, 8, 23, "Print",ExpressionUUID->"f40f2ea7-15f3-4780-8001-be684cddbd3e"]
 }, Open  ]]
 }, Open  ]],
-Cell[167899, 3888, 1854, 45, 147, "Input",ExpressionUUID->"cc3ab4f3-444b-40a7-8ddf-34bae0e876ce"],
-Cell[169756, 3935, 191, 3, 36, "Text",ExpressionUUID->"51f7971c-e8c9-4d85-bd21-1fe639d476e2"],
+Cell[169500, 3881, 1854, 45, 133, "Input",ExpressionUUID->"cc3ab4f3-444b-40a7-8ddf-34bae0e876ce"],
+Cell[171357, 3928, 191, 3, 35, "Text",ExpressionUUID->"51f7971c-e8c9-4d85-bd21-1fe639d476e2"],
 Cell[CellGroupData[{
-Cell[169972, 3942, 377, 8, 31, "Input",ExpressionUUID->"06ec23d0-11b3-47df-beae-0678db808702"],
-Cell[170352, 3952, 661, 9, 35, "Output",ExpressionUUID->"4325e0a8-472f-4bee-839f-1c648d36b4dc"]
+Cell[171573, 3935, 377, 8, 29, "Input",ExpressionUUID->"06ec23d0-11b3-47df-beae-0678db808702"],
+Cell[171953, 3945, 661, 9, 33, "Output",ExpressionUUID->"4325e0a8-472f-4bee-839f-1c648d36b4dc"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[171050, 3966, 378, 8, 31, "Input",ExpressionUUID->"da6fec3c-59b6-4d19-9c68-4f8baeff490f"],
-Cell[171431, 3976, 1812, 41, 48, "Print",ExpressionUUID->"bff033fa-9015-4aeb-8946-1f6fa44208fd"],
-Cell[173246, 4019, 200, 3, 35, "Output",ExpressionUUID->"145388eb-0955-4074-a4ce-0be36041784e"]
+Cell[172651, 3959, 378, 8, 29, "Input",ExpressionUUID->"da6fec3c-59b6-4d19-9c68-4f8baeff490f"],
+Cell[173032, 3969, 1812, 41, 47, "Print",ExpressionUUID->"bff033fa-9015-4aeb-8946-1f6fa44208fd"],
+Cell[174847, 4012, 200, 3, 33, "Output",ExpressionUUID->"145388eb-0955-4074-a4ce-0be36041784e"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[173483, 4027, 364, 7, 31, "Input",ExpressionUUID->"458f6cf7-e26a-402c-ab30-77211f3c5366"],
-Cell[173850, 4036, 1753, 40, 48, "Print",ExpressionUUID->"7218b0e7-3907-45d4-9170-0d705ddf690d"],
-Cell[175606, 4078, 6363, 132, 67, "Output",ExpressionUUID->"84898f09-0049-4a1d-b416-e90c728f89e3"]
+Cell[175084, 4020, 364, 7, 29, "Input",ExpressionUUID->"458f6cf7-e26a-402c-ab30-77211f3c5366"],
+Cell[175451, 4029, 1753, 40, 47, "Print",ExpressionUUID->"7218b0e7-3907-45d4-9170-0d705ddf690d"],
+Cell[177207, 4071, 6363, 132, 64, "Output",ExpressionUUID->"84898f09-0049-4a1d-b416-e90c728f89e3"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[182006, 4215, 598, 13, 31, "Input",ExpressionUUID->"1f961290-a860-4176-8484-332a27e54f8b"],
-Cell[182607, 4230, 1763, 39, 48, "Print",ExpressionUUID->"78152e47-56c9-4193-8a06-e883a349cb3c"],
-Cell[184373, 4271, 177, 2, 35, "Output",ExpressionUUID->"09ffc4f9-e363-456e-804e-3e95e88a2e81"]
+Cell[183607, 4208, 598, 13, 29, "Input",ExpressionUUID->"1f961290-a860-4176-8484-332a27e54f8b"],
+Cell[184208, 4223, 1763, 39, 47, "Print",ExpressionUUID->"78152e47-56c9-4193-8a06-e883a349cb3c"],
+Cell[185974, 4264, 177, 2, 33, "Output",ExpressionUUID->"09ffc4f9-e363-456e-804e-3e95e88a2e81"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[184587, 4278, 285, 5, 31, "Input",ExpressionUUID->"a27c821e-a957-43be-863d-fa5770b365e0"],
-Cell[184875, 4285, 453, 6, 35, "Output",ExpressionUUID->"4072ab92-f853-4ee5-bee0-7bebcafedec9"]
+Cell[186188, 4271, 285, 5, 29, "Input",ExpressionUUID->"a27c821e-a957-43be-863d-fa5770b365e0"],
+Cell[186476, 4278, 453, 6, 33, "Output",ExpressionUUID->"4072ab92-f853-4ee5-bee0-7bebcafedec9"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[185365, 4296, 287, 5, 31, "Input",ExpressionUUID->"3e710875-8cd6-4cf7-a05c-34b5f836147a"],
-Cell[185655, 4303, 2032, 44, 48, "Print",ExpressionUUID->"b4f0e67b-ebfc-4847-9902-28dfd1022b7e"],
-Cell[187690, 4349, 436, 6, 35, "Output",ExpressionUUID->"3b8856f1-bad7-4da5-bcd2-b5b89d2e91f3"]
+Cell[186966, 4289, 287, 5, 29, "Input",ExpressionUUID->"3e710875-8cd6-4cf7-a05c-34b5f836147a"],
+Cell[187256, 4296, 2032, 44, 47, "Print",ExpressionUUID->"b4f0e67b-ebfc-4847-9902-28dfd1022b7e"],
+Cell[189291, 4342, 436, 6, 33, "Output",ExpressionUUID->"3b8856f1-bad7-4da5-bcd2-b5b89d2e91f3"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[188163, 4360, 310, 7, 31, "Input",ExpressionUUID->"6545ed1b-4c25-45e0-90f3-3bae5d29327d"],
-Cell[188476, 4369, 1839, 42, 48, "Print",ExpressionUUID->"26785b11-773d-494f-89a5-f855298d1c31"],
-Cell[190318, 4413, 6568, 134, 67, "Output",ExpressionUUID->"d18ca90a-0732-4281-98a1-c2ce6b597c08"]
+Cell[189764, 4353, 310, 7, 29, "Input",ExpressionUUID->"6545ed1b-4c25-45e0-90f3-3bae5d29327d"],
+Cell[190077, 4362, 1839, 42, 47, "Print",ExpressionUUID->"26785b11-773d-494f-89a5-f855298d1c31"],
+Cell[191919, 4406, 6568, 134, 64, "Output",ExpressionUUID->"d18ca90a-0732-4281-98a1-c2ce6b597c08"]
 }, Open  ]]
 }, Open  ]]
 }, Open  ]]

@@ -17,21 +17,21 @@ TestExecute[
 
 	Get[FileNameJoin[{$LLUSharedDir, "LibraryLinkUtilities.wl"}]];
 
-	RegisterPacletErrors[lib, <||>];
+	`LLU`RegisterPacletErrors[lib, <||>];
 
-	PassDataStore = SafeLibraryFunction["PassDataStore", {"DataStore", "Boolean"}, "DataStore"];
-	JoinDataStores = SafeLibraryFunction["JoinDataStores", {"DataStore", "DataStore", "Boolean"}, "DataStore"];
-	TestSelfReferencialDataStore = SafeLibraryFunction["TestSelfReferencialDataStore", {"DataStore"}, "DataStore"];
-	ReverseListOfStringsMathLink = SafeMathLinkFunction["ReverseListOfStringsMathLink"];
-	ReverseListOfStringsLibraryLink = SafeLibraryFunction["ReverseListOfStringsLibraryLink", {"DataStore"}, "DataStore"];
-	ReverseListOfStrings = SafeLibraryFunction["ReverseListOfStrings", {"DataStore"}, "DataStore"];
-	SeparateKeysAndValues = SafeLibraryFunction["SeparateKeysAndValues", {"DataStore"}, "DataStore"];
-	GetKeys = SafeLibraryFunction["GetKeys", {"DataStore"}, "DataStore"];
-	GetValuesReversed = SafeLibraryFunction["GetValuesReversed", {"DataStore"}, "DataStore"];
-	FrameDims = SafeLibraryFunction["FrameDims", {"DataStore"}, NumericArray];
-	StringsThroughVectorReversed = SafeLibraryFunction["StringsThroughVectorReversed", {"DataStore"}, "DataStore"];
-	IntsToNumericArray = SafeLibraryFunction["IntsToNumericArray", {"DataStore"}, NumericArray];
-	GetLength = SafeLibraryFunction["GetLength", {"DataStore"}, Integer];
+	PassDataStore = `LLU`SafeLibraryFunction["PassDataStore", {"DataStore", "Boolean"}, "DataStore"];
+	JoinDataStores = `LLU`SafeLibraryFunction["JoinDataStores", {"DataStore", "DataStore", "Boolean"}, "DataStore"];
+	TestSelfReferencialDataStore = `LLU`SafeLibraryFunction["TestSelfReferencialDataStore", {"DataStore"}, "DataStore"];
+	ReverseListOfStringsMathLink = `LLU`SafeWSTPFunction["ReverseListOfStringsMathLink"];
+	ReverseListOfStringsLibraryLink = `LLU`SafeLibraryFunction["ReverseListOfStringsLibraryLink", {"DataStore"}, "DataStore"];
+	ReverseListOfStrings = `LLU`SafeLibraryFunction["ReverseListOfStrings", {"DataStore"}, "DataStore"];
+	SeparateKeysAndValues = `LLU`SafeLibraryFunction["SeparateKeysAndValues", {"DataStore"}, "DataStore"];
+	GetKeys = `LLU`SafeLibraryFunction["GetKeys", {"DataStore"}, "DataStore"];
+	GetValuesReversed = `LLU`SafeLibraryFunction["GetValuesReversed", {"DataStore"}, "DataStore"];
+	FrameDims = `LLU`SafeLibraryFunction["FrameDims", {"DataStore"}, NumericArray];
+	StringsThroughVectorReversed = `LLU`SafeLibraryFunction["StringsThroughVectorReversed", {"DataStore"}, "DataStore"];
+	IntsToNumericArray = `LLU`SafeLibraryFunction["IntsToNumericArray", {"DataStore"}, NumericArray];
+	GetLength = `LLU`SafeLibraryFunction["GetLength", {"DataStore"}, Integer];
 
 	(* Test data used across multiple tests *)
 	bool = True;
@@ -64,7 +64,7 @@ Test[
 (* Basic tests *)
 
 Test[
-	EmptyDataStore = SafeLibraryFunction["EmptyDataStore", {}, "DataStore"];
+	EmptyDataStore = `LLU`SafeLibraryFunction["EmptyDataStore", {}, "DataStore"];
 	EmptyDataStore[]
 	,
 	Developer`DataStore[]
@@ -378,7 +378,10 @@ Test[
 Test[
 	IntsToNumericArray[Developer`DataStore[]]
 	,
-	{}
+	$Failed
+	(* eventually, the expected value should be {}, but for now empty NumericArrays are not supported in LibraryLink *)
+	,
+	Message[LibraryFunction::nanull, NumericArray]
 	,
 	TestID -> "DataListTestSuite-20180910-J1W7Z6"
 ];
@@ -463,7 +466,7 @@ Test[
 
 Test[
 	LibraryFunctionUnload[Last @ PassDataStore];
-	PassDataStore = SafeLibraryFunction["PassDataStore", {{"DataStore", "Manual"}, "Boolean"}, "DataStore"];
+	PassDataStore = `LLU`SafeLibraryFunction["PassDataStore", {{"DataStore", "Manual"}, "Boolean"}, "DataStore"];
 	MemoryLeakTest[PassDataStore[ds0, #]] & /@ {False, True}
 	,
 	{ 0, n_ } /; n > 0  (* when copy is made we expect a leak, because the C++ code is not aware of the "Manual" passing of the input DataStore *)

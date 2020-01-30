@@ -29,8 +29,8 @@ TestExecute[
 	]&;
 
 
-	$CreateNewMyExpression = SafeLibraryFunction["OpenManagedMyExpression", {`LLU`Managed[MyExpression], String}, "Void"];
-	$CreateNewMyChildExpression = SafeLibraryFunction["OpenManagedMyChildExpression", {`LLU`Managed[MyExpression], String}, "Void"];
+	$CreateNewMyExpression = `LLU`SafeLibraryFunction["OpenManagedMyExpression", {`LLU`Managed[MyExpression], String}, "Void"];
+	$CreateNewMyChildExpression = `LLU`SafeLibraryFunction["OpenManagedMyChildExpression", {`LLU`Managed[MyExpression], String}, "Void"];
 
 	(* Register a constructor for new Managed Expression. This step could be more automated if we agree that for each class X that shall be managed there is
 	 * an interface function "OpenManagedX" defined in the library.
@@ -42,13 +42,13 @@ TestExecute[
 	(* Load library functions that wrap MyExpression member functions *)
 	`LLU`LoadMemberFunction[MyExpression][getText, "GetText", {}, String];
 	`LLU`LoadMemberFunction[MyExpression][setText, "SetText", {String}, "Void"];
-	`LLU`LoadMathLinkMemberFunction[MyExpression][setTextML, "SetTextML"];
+	`LLU`LoadWSTPMemberFunction[MyExpression][setTextML, "SetTextML"];
 	`LLU`LoadMemberFunction[MyExpression][getCounter, "GetCounter", {}, Integer]; (* this member only works with MLEs that are of type MyChildExpression in C++ *)
 
 	(* Load other library functions *)
-	joinText = SafeLibraryFunction["JoinText", {`LLU`Managed[MyExpression], `LLU`Managed[MyExpression]}, String];
-	getMyExpressionStoreName = SafeLibraryFunction["GetMyExpressionStoreName", {}, String];
-	swapText = SafeMathLinkFunction["SwapText"];
+	joinText = `LLU`SafeLibraryFunction["JoinText", {`LLU`Managed[MyExpression], `LLU`Managed[MyExpression]}, String];
+	getMyExpressionStoreName = `LLU`SafeLibraryFunction["GetMyExpressionStoreName", {}, String];
+	swapText = `LLU`SafeWSTPFunction["SwapText"];
 
 	ManagedMyExprQ = `LLU`ManagedQ[MyExpression];
 	ManagedMyExprIDQ = `LLU`ManagedIDQ[MyExpression];
