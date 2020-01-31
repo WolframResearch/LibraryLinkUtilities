@@ -2,7 +2,7 @@
  * @file	Get.h
  * @date	Nov 28, 2017
  * @author	Rafal Chojna <rafalc@wolfram.com>
- * @brief	Header file with classes related to reading data from MathLink.
+ * @brief	Header file with classes related to reading data from WSTP.
  */
 #ifndef LLUTILS_ML_MLGET_H_
 #define LLUTILS_ML_MLGET_H_
@@ -11,7 +11,7 @@
 #include <memory>
 #include <string>
 
-#include "mathlink.h"
+#include "wstp.h"
 
 #include "LLU/ErrorLog/Errors.h"
 #include "LLU/ML/Release.h"

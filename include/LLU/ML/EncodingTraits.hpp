@@ -18,7 +18,7 @@ namespace LLU {
 
 		/**
 		 * @enum Encoding
-		 * List of all string encodings supported by MathLink
+		 * List of all string encodings supported by WSTP
 		 */
 		enum class Encoding : std::uint8_t {
 			Undefined,	  //!< Undefined, can be used to denote that certain function is not supposed to deal with strings
@@ -85,7 +85,7 @@ namespace LLU {
 		/**
 		 * @brief Check whether character type T is compatible with encoding E (i.e. if it can be more or less safely used with MLPut/Get\<E\>String)
 		 *
-		 * Each MathLink function MLPut/Get*String works with only one specific character type (see CharType<E>). In C++, on the other hand,
+		 * Each WSTP function MLPut/Get*String works with only one specific character type (see CharType<E>). In C++, on the other hand,
 		 * there is no notion of encoding so std::string (with character type being \c char) can be used to store strings of any encoding.
 		 *
 		 * We say that character type T is compatible with encoding E as long as the size of T is the same as size of CharType<E>.
@@ -208,7 +208,7 @@ namespace LLU {
 		 *
 		 *	@code
 		 *		MLStream<ML::Encoding::Byte> mls { mlink }; // mls will receive all strings as if they were ascii-encoded by default
-		 *		std::string stringWithNonAsciiChars;  		// we expect a string with non-ascii characters to come from MathLink
+		 *		std::string stringWithNonAsciiChars;  		// we expect a string with non-ascii characters to come from WSTP
 		 *		mls << ML::getAs<ML::Encoding::UTF8>(stringWithNonAsciiChars);   	// this will use UTF8 encoding when receiving the string
 		 *	@endcode
 		 */
@@ -221,7 +221,7 @@ namespace LLU {
 			 */
 			explicit GetAs(T& o) : obj(o) {}
 
-			/// A reference to which later a resulting value from MathLink function will be assigned
+			/// A reference to which later a resulting value from WSTP function will be assigned
 			T& obj;
 		};
 

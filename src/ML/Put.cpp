@@ -2,14 +2,14 @@
  * @file	Put.cpp
  * @date	Nov 28, 2017
  * @author	Rafal Chojna <rafalc@wolfram.com>
- * @brief	Implementation file with classes related to sending data through MathLink.
+ * @brief	Implementation file with classes related to sending data through WSTP.
  */
 
 #ifndef _WIN32
 
 #include "../../include/LLU/ML/Put.h"
 
-#include "mathlink.h"
+#include "wstp.h"
 
 #include "../../include/LLU/Utilities.hpp"
 

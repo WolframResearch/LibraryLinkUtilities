@@ -9,14 +9,14 @@
 
 #include <memory>
 
-/* If mathlink.h has already been included we just include WolframLibrary.h because there will be no conflict. */
+/* If wstp.h has already been included we just include WolframLibrary.h because there will be no conflict. */
 #ifdef _MATHLINK_H
 
 #include "WolframLibrary.h"
 
 #else
 
-/* If mathlink.h has not been included before WolframLibrary.h, we need to detect if we are dealing with WL 12.0- or 12.1+.
+/* If wstp.h has not been included before WolframLibrary.h, we need to detect if we are dealing with WL 12.0- or 12.1+.
  * To achieve this we include a small header file dllexport.h which defines DLLIMPORT macro only since 12.1. */
 
 #pragma push_macro("DLLIMPORT") /* Although unlikely, DLLIMPORT might have been defined elsewhere, so save it and temporarily undefine. */
@@ -24,10 +24,10 @@
 
 #include "dllexport.h"
 
-#ifndef DLLIMPORT	/* We are dealing with WL 12.0-, restore DLLIMPORT macro and include mathlink.h even though we don't really need it at this point. */
+#ifndef DLLIMPORT	/* We are dealing with WL 12.0-, restore DLLIMPORT macro and include wstp.h even though we don't really need it at this point. */
 #pragma pop_macro("DLLIMPORT")
 
-#include "mathlink.h"
+#include "wstp.h"
 
 #endif	/* DLLIMPORT */
 

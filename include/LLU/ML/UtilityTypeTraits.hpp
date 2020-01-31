@@ -9,7 +9,7 @@
 
 #include <type_traits>
 
-#include "mathlink.h"
+#include "wstp.h"
 
 #include "LLU/Utilities.hpp"
 

@@ -83,21 +83,21 @@ namespace LLU {
 		extern const std::string MArrayElementIndexError;	   ///< attempting to access MArray element at invalid index
 		extern const std::string MArrayDimensionIndexError;	   ///< attempting to access MArray dimension at invalid index
 
-		// MathLink errors:
+		// WSTP errors:
 		extern const std::string MLNullMlinkError;			   ///< Trying to create MLStream with NULL MLINK
 		extern const std::string MLTestHeadError;			   ///< MLTestHead failed (wrong head or number of arguments)
 		extern const std::string MLPutSymbolError;			   ///< MLPutSymbol failed
 		extern const std::string MLPutFunctionError;		   ///< MLPutFunction failed
 		extern const std::string MLTestSymbolError;			   ///< MLTestSymbol failed (different symbol on the link than expected)
 		extern const std::string MLWrongSymbolForBool;		   ///< Tried to read something else than "True" or "False" as boolean
-		extern const std::string MLGetListError;			   ///< Could not get list from MathLink
-		extern const std::string MLGetScalarError;			   ///< Could not get scalar from MathLink
-		extern const std::string MLGetStringError;			   ///< Could not get string from MathLink
-		extern const std::string MLGetArrayError;			   ///< Could not get array from MathLink
-		extern const std::string MLPutListError;			   ///< Could not send list via MathLink
-		extern const std::string MLPutScalarError;			   ///< Could not send scalar via MathLink
-		extern const std::string MLPutStringError;			   ///< Could not send string via MathLink
-		extern const std::string MLPutArrayError;			   ///< Could not send array via MathLink
+		extern const std::string MLGetListError;			   ///< Could not get list from WSTP
+		extern const std::string MLGetScalarError;			   ///< Could not get scalar from WSTP
+		extern const std::string MLGetStringError;			   ///< Could not get string from WSTP
+		extern const std::string MLGetArrayError;			   ///< Could not get array from WSTP
+		extern const std::string MLPutListError;			   ///< Could not send list via WSTP
+		extern const std::string MLPutScalarError;			   ///< Could not send scalar via WSTP
+		extern const std::string MLPutStringError;			   ///< Could not send string via WSTP
+		extern const std::string MLPutArrayError;			   ///< Could not send array via WSTP
 		extern const std::string MLGetSymbolError;			   ///< MLGetSymbol failed
 		extern const std::string MLGetFunctionError;		   ///< MLGetFunction failed
 		extern const std::string MLPacketHandleError;		   ///< One of the packet handling functions failed

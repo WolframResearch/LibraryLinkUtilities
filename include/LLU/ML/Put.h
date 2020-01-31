@@ -2,14 +2,14 @@
  * @file	Put.h
  * @date	Nov 28, 2017
  * @author	Rafal Chojna <rafalc@wolfram.com>
- * @brief	Header file with classes related to sending data through MathLink.
+ * @brief	Header file with classes related to sending data through WSTP.
  */
 #ifndef LLUTILS_ML_MLPUT_H_
 #define LLUTILS_ML_MLPUT_H_
 
 #include <functional>
 
-#include "mathlink.h"
+#include "wstp.h"
 
 #include "LLU/ErrorLog/Errors.h"
 #include "LLU/ML/Utilities.h"

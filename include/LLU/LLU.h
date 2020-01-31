@@ -27,7 +27,7 @@
 /* Library function arguments */
 #include "LLU/MArgumentManager.h"
 
-/* MathLink */
+/* WSTP */
 #include "LLU/ML/MLStream.hpp"
 
 /* Others */

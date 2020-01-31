@@ -2,7 +2,7 @@
  * @file	Strings.h
  * @date	Mar 22, 2018
  * @author	Rafal Chojna <rafalc@wolfram.com>
- * @brief	Definitions of multiple structures and type aliases related to string handling in MathLink
+ * @brief	Definitions of multiple structures and type aliases related to string handling in WSTP
  */
 #ifndef LLUTILS_ML_STRINGS_H_
 #define LLUTILS_ML_STRINGS_H_
@@ -11,7 +11,7 @@
 #include <functional>
 #include <memory>
 
-#include "mathlink.h"
+#include "wstp.h"
 
 #include "LLU/ErrorLog/Errors.h"
 #include "LLU/ML/EncodingTraits.hpp"

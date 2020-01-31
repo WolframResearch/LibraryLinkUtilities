@@ -56,7 +56,7 @@
 namespace LLU {
 
 	/**
-	 * Logger class is responsible for sending log messages via MathLink to Mathematica.
+	 * Logger class is responsible for sending log messages via WSTP to Mathematica.
 	 * It may be more convenient to use one of the LLU_DEBUG/WARNING/ERROR macros instead of calling Logger methods directly.
 	 */
 	class Logger {
@@ -67,13 +67,13 @@ namespace LLU {
 		/**
 		 * @brief	Send a log message of given severity.
 		 * @tparam 	L - log level, severity of the log
-		 * @tparam 	T - any number of mathlink-supported types
+		 * @tparam 	T - any number of WSTP-supported types
 		 * @param 	libData - WolframLibraryData, if nullptr - no logging happens
 		 * @param 	line - line number where the log was called
 		 * @param 	fileName - name of the file in which the log was called
 		 * @param 	function - function in which the log was called
 		 * @param 	args - additional parameters carrying the actual log message contents
-		 * @warning This function communicates with MathLink and if this communication goes wrong, MLStream may throw
+		 * @warning This function communicates with WSTP and if this communication goes wrong, MLStream may throw
 		 * 			so be careful when logging in destructors.
 		 */
 		template<Level L, typename... T>
@@ -82,12 +82,12 @@ namespace LLU {
 		/**
 		 * @brief	Send a log message of given severity.
 		 * @tparam 	L - log level, severity of the log
-		 * @tparam 	T - any number of mathlink-supported types
+		 * @tparam 	T - any number of WSTP-supported types
 		 * @param 	line - line number where the log was called
 		 * @param 	fileName - name of the file in which the log was called
 		 * @param 	function - function in which the log was called
 		 * @param 	args - additional parameters carrying the actual log message contents
-		 * @warning This function communicates with MathLink and if this communication goes wrong, MLStream may throw
+		 * @warning This function communicates with WSTP and if this communication goes wrong, MLStream may throw
 		 * 			so be careful when logging in destructors.
 		 */
 		template<Level L, typename... T>
@@ -117,7 +117,7 @@ namespace LLU {
 		}
 
 	private:
-		/// Name of the WL function, to which log elements will be sent as arguments via MathLink.
+		/// Name of the WL function, to which log elements will be sent as arguments via WSTP.
 		static constexpr const char* topLevelLogCallback = "Logger`LogHandler";
 
 		static std::string logSymbolContext;

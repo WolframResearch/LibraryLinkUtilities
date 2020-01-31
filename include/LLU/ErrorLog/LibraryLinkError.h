@@ -134,8 +134,8 @@ namespace LLU {
 			: std::runtime_error(t), errorId(which), type(std::move(t)), messageTemplate(std::move(msg)) {}
 
 		/**
-		 * @brief	Helper functions that opens a loopback link given a MathLink environment
-		 * @param 	env - MathLink environment
+		 * @brief	Helper functions that opens a loopback link given a WSTP environment
+		 * @param 	env - WSTP environment
 		 * @return 	a loopback link (may be nullptr if function failed to create the link)
 		 */
 		static MLINK openLoopback(MLENV env);

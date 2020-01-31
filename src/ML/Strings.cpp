@@ -2,7 +2,7 @@
  * @file	Strings.cpp
  * @date	Mar 23, 2018
  * @author	Rafal Chojna <rafalc@wolfram.com>
- * @brief	Implementation file for all the functionality related to Strings in MathLink
+ * @brief	Implementation file for all the functionality related to Strings in WSTP
  */
 
 #include "LLU/ML/Strings.h"

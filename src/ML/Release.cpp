@@ -2,7 +2,7 @@
  * @file	Release.cpp
  * @date	Nov 28, 2017
  * @author	Rafal Chojna <rafalc@wolfram.com>
- * @brief	Implementation file with classes responsible for releasing memory allocated by MathLink when receiving data.
+ * @brief	Implementation file with classes responsible for releasing memory allocated by WSTP when receiving data.
  */
 #ifndef _WIN32
 

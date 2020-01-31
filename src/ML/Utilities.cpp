@@ -2,12 +2,12 @@
  * @file	Utilities.h
  * @date	Nov 26, 2017
  * @author	Rafal Chojna <rafalc@wolfram.com>
- * @brief	Implementation file with miscellaneous definitions used throughout the MathLink-related part of LibraryLinkUtilities
+ * @brief	Implementation file with miscellaneous definitions used throughout the WSTP-related part of LibraryLinkUtilities
  */
 
 #include <string>
 
-#include "mathlink.h"
+#include "wstp.h"
 
 #include <LLU/ErrorLog/ErrorManager.h>
 #include <LLU/ML/Utilities.h>
@@ -33,7 +33,7 @@ namespace LLU {
 		}
 
 		std::string getMLErrorText(MLINK mlp) {
-			std::string err = "Error code reported by MathLink: " + std::to_string(MLError(mlp)) + "\n";
+			std::string err = "Error code reported by WSTP: " + std::to_string(MLError(mlp)) + "\n";
 			auto mlErrorMsg = MLErrorMessage(mlp);
 			if (mlErrorMsg) {
 				err += "\"" + std::string(mlErrorMsg) + "\"";

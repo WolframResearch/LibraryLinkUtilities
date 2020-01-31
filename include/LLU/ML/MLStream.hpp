@@ -15,7 +15,7 @@
 #include <utility>
 #include <vector>
 
-#include "mathlink.h"
+#include "wstp.h"
 
 #include "LLU/ErrorLog/Errors.h"
 #include "LLU/Utilities.hpp"
@@ -30,12 +30,12 @@ namespace LLU {
 
 	/**
 	 * @class 	MLStream
-	 * @brief 	Wrapper class over MathLink with a stream-like interface.
+	 * @brief 	Wrapper class over WSTP with a stream-like interface.
 	 *
-	 * MLStream resides in LLU namespace, whereas other MathLink-related classes can be found in LLU::ML namespace.
+	 * MLStream resides in LLU namespace, whereas other WSTP-related classes can be found in LLU::ML namespace.
 	 *
-	 * @tparam	EncodingIn - default encoding to use when reading strings from MathLink
-	 * @tparam	EncodingOut - default encoding to use when writing strings to MathLink
+	 * @tparam	EncodingIn - default encoding to use when reading strings from WSTP
+	 * @tparam	EncodingOut - default encoding to use when writing strings to WSTP
 	 */
 	template<ML::Encoding EncodingIn, ML::Encoding EncodingOut = EncodingIn>
 	class MLStream {
@@ -71,7 +71,7 @@ namespace LLU {
 		~MLStream() = default;
 
 		/**
-		 *   @brief Returns a reference to underlying low-level MathLink handle
+		 *   @brief Returns a reference to underlying low-level WSTP handle
 		 **/
 		MLINK& get() noexcept {
 			return m;
@@ -99,10 +99,10 @@ namespace LLU {
 		void sendRange(Iterator begin, Iterator end, const std::string& head);
 
 	public:
-		/// Type of elements that can be send via MathLink with no arguments, for example ML::Flush
+		/// Type of elements that can be send via WSTP with no arguments, for example ML::Flush
 		using StreamToken = MLStream& (*)(MLStream&);
 
-		/// Type of elements that can be either send or received via MathLink with no arguments, for example ML::Rule
+		/// Type of elements that can be either send or received via WSTP with no arguments, for example ML::Rule
 		using BidirStreamToken = MLStream& (*)(MLStream&, ML::Direction);
 
 		/// Type of data stored on the stack to facilitate sending expressions of a priori unknown length
@@ -113,19 +113,19 @@ namespace LLU {
 		//
 
 		/**
-		 *   @brief			Sends a stream token via MathLink
-		 *   @param[in] 	f - a stream token, i.e. an element that can be send via MathLink with no arguments, for example ML::Flush
+		 *   @brief			Sends a stream token via WSTP
+		 *   @param[in] 	f - a stream token, i.e. an element that can be send via WSTP with no arguments, for example ML::Flush
 		 **/
 		MLStream& operator<<(StreamToken f);
 
 		/**
-		 *   @brief			Sends a bidirectional stream token via MathLink
-		 *   @param[in] 	f - an element that can be either send or received via MathLink with no arguments, for example ML::Rule
+		 *   @brief			Sends a bidirectional stream token via WSTP
+		 *   @param[in] 	f - an element that can be either send or received via WSTP with no arguments, for example ML::Rule
 		 **/
 		MLStream& operator<<(BidirStreamToken f);
 
 		/**
-		 *   @brief			Sends a top-level symbol via MathLink
+		 *   @brief			Sends a top-level symbol via WSTP
 		 *   @param[in] 	s - a symbol
 		 *   @see 			ML::Symbol
 		 *   @throws 		ErrorName::MLPutSymbolError
@@ -133,7 +133,7 @@ namespace LLU {
 		MLStream& operator<<(const ML::Symbol& s);
 
 		/**
-		 *   @brief			Sends a top-level function via MathLink, function arguments should be send immediately after
+		 *   @brief			Sends a top-level function via WSTP, function arguments should be send immediately after
 		 *   @param[in] 	f - a function
 		 *   @see 			ML::Function
 		 *   @throws 		ErrorName::MLPutFunctionError
@@ -167,7 +167,7 @@ namespace LLU {
 		MLStream& operator<<(const ML::EndExpr& expr);
 
 		/**
-		 *   @brief			Sends a boolean value via MathLink, it is translated to True or False in Mathematica
+		 *   @brief			Sends a boolean value via WSTP, it is translated to True or False in Mathematica
 		 *   @param[in] 	b - a boolean value
 		 *
 		 *   @throws 		ErrorName::MLPutSymbolError
@@ -183,7 +183,7 @@ namespace LLU {
 		MLStream& operator<<(mint i);
 
 		/**
-		 *   @brief			Sends a MathLink array
+		 *   @brief			Sends a WSTP array
 		 *   @tparam		T - array element type
 		 *   @param[in] 	a - ArrayData to be sent
 		 *   @see 			ML::ArrayData<T>
@@ -194,7 +194,7 @@ namespace LLU {
 		MLStream& operator<<(const ML::ArrayData<T>& a);
 
 		/**
-		 *   @brief			Sends a MathLink list
+		 *   @brief			Sends a WSTP list
 		 *   @tparam		T - list element type
 		 *   @param[in] 	l - ListData to be sent
 		 *   @see 			ML::ListData<T>
@@ -214,7 +214,7 @@ namespace LLU {
 		MLStream& operator<<(const std::unique_ptr<T, D>& p);
 
 		/**
-		 *   @brief			Sends a std::vector via MathLink, it is interpreted as a List in Mathematica
+		 *   @brief			Sends a std::vector via WSTP, it is interpreted as a List in Mathematica
 		 *   @tparam		T - vector element type, it has to be a simple type that is supported in MLPut*List
 		 *   @param[in] 	l - std::vector to be sent
 		 *
@@ -224,7 +224,7 @@ namespace LLU {
 		ML::ScalarSupportedTypeQ<T, MLStream&> operator<<(const std::vector<T>& l);
 
 		/**
-		 *   @brief			Sends a std::vector via MathLink, it is interpreted as a List in Mathematica
+		 *   @brief			Sends a std::vector via WSTP, it is interpreted as a List in Mathematica
 		 *   @tparam		T - vector element type, this overload will handle any type not supported in MLPut*List
 		 *   @param[in] 	l - std::vector to be sent
 		 *
@@ -234,7 +234,7 @@ namespace LLU {
 		ML::NotScalarSupportedTypeQ<T, MLStream&> operator<<(const std::vector<T>& l);
 
 		/**
-		 *   @brief			Sends a MathLink string
+		 *   @brief			Sends a WSTP string
 		 *   @tparam		E - encoding of the string (it determines which function from MLPut*String family to use)
 		 *   @param[in] 	s - ML::StringData to be sent
 		 *   @see 			ML::StringData<E>
@@ -247,7 +247,7 @@ namespace LLU {
 		/**
 		 *   @brief			Sends all strings within a given object using specified character encoding.
 		 *
-		 *   Normally, when you send a string MLStream chooses the appropriate MathLink function based on the EncodingOut template parameter.
+		 *   Normally, when you send a string MLStream chooses the appropriate WSTP function based on the EncodingOut template parameter.
 		 *   Sometimes you may want to locally override the output encoding and you can do this by wrapping the object with
 		 *   ML::PutAs<desired encoding, wrapped type> (you can use ML::putAs function to construct ML::PutAs object without
 		 *   having to explicitly specify the second template parameter).
@@ -298,7 +298,7 @@ namespace LLU {
 		MLStream& operator<<(const char* s);
 
 		/**
-		 *   @brief			Sends a std::map via MathLink, it is translated to an Association in Mathematica
+		 *   @brief			Sends a std::map via WSTP, it is translated to an Association in Mathematica
 		 *   @tparam		K - map key type, must be supported in MLStream
 		 *   @tparam		V - map value type, must be supported in MLStream
 		 *   @param[in] 	m - map to be sent as Association
@@ -319,12 +319,12 @@ namespace LLU {
 		ML::ScalarSupportedTypeQ<T, MLStream&> operator<<(T value);
 
 		/**
-		 *   @brief			Overload for scalar values that cannot be sent via MathLink without conversion
+		 *   @brief			Overload for scalar values that cannot be sent via WSTP without conversion
 		 *   @tparam		T - scalar type
 		 *   @param[in] 	value - numeric value
 		 *
 		 *   @note			Trying to use this overload will always trigger compilation error.
-		 *   If you need to send value of type not supported by MathLink (like unsigned int) you must either explicitly cast
+		 *   If you need to send value of type not supported by WSTP (like unsigned int) you must either explicitly cast
 		 *   or provide your own overload.
 		 *
 		 **/
@@ -351,15 +351,15 @@ namespace LLU {
 		//
 
 		/**
-		 *   @brief			Receives a bidirectional stream token via MathLink
-		 *   @param[in] 	f - an element that can be either send or received via MathLink with no arguments, for example ML::Rule
+		 *   @brief			Receives a bidirectional stream token via WSTP
+		 *   @param[in] 	f - an element that can be either send or received via WSTP with no arguments, for example ML::Rule
 		 **/
 		MLStream& operator>>(BidirStreamToken f);
 
 		/**
-		 *   @brief			Receives a symbol from MathLink.
+		 *   @brief			Receives a symbol from WSTP.
 		 *
-		 *   Parameter \c s must have head specified and it has to match the head that was read from MathLink
+		 *   Parameter \c s must have head specified and it has to match the head that was read from WSTP
 		 *
 		 *   @param[in] 	s - a symbol
 		 *   @see 			ML::Symbol
@@ -368,9 +368,9 @@ namespace LLU {
 		MLStream& operator>>(const ML::Symbol& s);
 
 		/**
-		 *   @brief				Receives a symbol from MathLink.
+		 *   @brief				Receives a symbol from WSTP.
 		 *
-		 *   If the parameter \c s has head specified, than it has to match the head that was read from MathLink, otherwise the head read from MathLink
+		 *   If the parameter \c s has head specified, than it has to match the head that was read from WSTP, otherwise the head read from WSTP
 		 *   will be assigned to s
 		 *
 		 *   @param[in, out] 	s - a symbol
@@ -380,9 +380,9 @@ namespace LLU {
 		MLStream& operator>>(ML::Symbol& s);
 
 		/**
-		 *   @brief			Receives a function from MathLink.
+		 *   @brief			Receives a function from WSTP.
 		 *
-		 *   Parameter \c f must have head and argument count specified and they need to match the head and argument count that was read from MathLink
+		 *   Parameter \c f must have head and argument count specified and they need to match the head and argument count that was read from WSTP
 		 *
 		 *   @param[in] 	f - a function with head and argument count specified
 		 *   @see 			ML::Function
@@ -391,9 +391,9 @@ namespace LLU {
 		MLStream& operator>>(const ML::Function& f);
 
 		/**
-		 *   @brief				Receives a function from MathLink.
+		 *   @brief				Receives a function from WSTP.
 		 *
-		 *   If the parameter \c f has head or argument count set, than it has to match the head or argument count that was read from MathLink
+		 *   If the parameter \c f has head or argument count set, than it has to match the head or argument count that was read from WSTP
 		 *
 		 *   @param[in, out] 	f - a function which may have head or argument count specified
 		 *   @see 				ML::Function
@@ -403,7 +403,7 @@ namespace LLU {
 
 		/**
 		 *   @brief			Receives a True or False symbol from Mathematica and converts it to bool
-		 *   @param[out] 	b - argument to which the boolean received from MathLink will be assigned
+		 *   @param[out] 	b - argument to which the boolean received from WSTP will be assigned
 		 *
 		 *   @throws 		ErrorName::MLGetSymbolError, ErrorName::MLWrongSymbolForBool
 		 **/
@@ -413,14 +413,14 @@ namespace LLU {
 		 *   @brief			Receives a mint value.
 		 *   @param[in] 	i - argument to which a mint value will be assigned
 		 *
-		 *   @note		    It actually reads an mlint64 and casts to mint, as mint is not natively supported by MathLink.
+		 *   @note		    It actually reads an mlint64 and casts to mint, as mint is not natively supported by WSTP.
 		 **/
 		MLStream& operator>>(mint& i);
 
 		/**
-		 *   @brief			Receives a MathLink array
+		 *   @brief			Receives a WSTP array
 		 *   @tparam		T - array element type
-		 *   @param[out] 	a - argument to which the ML::ArrayData received from MathLink will be assigned
+		 *   @param[out] 	a - argument to which the ML::ArrayData received from WSTP will be assigned
 		 *   @see 			ML::ArrayData<T>
 		 *   @see			http://reference.wolfram.com/language/guide/WSTPCFunctionsForExchangingMultidimensionalArrays.html
 		 *   @throws 		ErrorName::MLGetArrayError
@@ -429,9 +429,9 @@ namespace LLU {
 		MLStream& operator>>(ML::ArrayData<T>& a);
 
 		/**
-		 *   @brief			Receives a MathLink list
+		 *   @brief			Receives a WSTP list
 		 *   @tparam		T - list element type
-		 *   @param[out] 	l - argument to which the ML::ListData received from MathLink will be assigned
+		 *   @param[out] 	l - argument to which the ML::ListData received from WSTP will be assigned
 		 *   @see 			ML::ListData<T>
 		 *   @see			http://reference.wolfram.com/language/guide/WSTPCFunctionsForExchangingLists.html
 		 *   @throws 		ErrorName::MLGetListError
@@ -440,9 +440,9 @@ namespace LLU {
 		MLStream& operator>>(ML::ListData<T>& l);
 
 		/**
-		 *   @brief			Receives a List from MathLink and assigns it to std::vector
+		 *   @brief			Receives a List from WSTP and assigns it to std::vector
 		 *   @tparam		T - vector element type, it has to be a simple type that is supported in MLGet*List
-		 *   @param[out] 	l - argument to which the List received from MathLink will be assigned
+		 *   @param[out] 	l - argument to which the List received from WSTP will be assigned
 		 *
 		 *   @throws 		ErrorName::MLGetListError
 		 **/
@@ -450,9 +450,9 @@ namespace LLU {
 		ML::ScalarSupportedTypeQ<T, MLStream&> operator>>(std::vector<T>& l);
 
 		/**
-		 *   @brief			Receives a List from MathLink and assigns it to std::vector
-		 *   @tparam		T - vector element type, it can be any type supported by MathLink
-		 *   @param[out] 	l - argument to which the List received from MathLink will be assigned
+		 *   @brief			Receives a List from WSTP and assigns it to std::vector
+		 *   @tparam		T - vector element type, it can be any type supported by WSTP
+		 *   @param[out] 	l - argument to which the List received from WSTP will be assigned
 		 *
 		 *   @throws 		ErrorName::MLGetListError
 		 **/
@@ -460,9 +460,9 @@ namespace LLU {
 		ML::NotScalarSupportedTypeQ<T, MLStream&> operator>>(std::vector<T>& l);
 
 		/**
-		 *   @brief			Receives a MathLink string
+		 *   @brief			Receives a WSTP string
 		 *   @tparam		T - string character type
-		 *   @param[out] 	s - argument to which the ML::StringData received from MathLink will be assigned
+		 *   @param[out] 	s - argument to which the ML::StringData received from WSTP will be assigned
 		 *   @see 			ML::StringData<T>
 		 *   @see			http://reference.wolfram.com/language/guide/WSTPCFunctionsForExchangingStrings.html
 		 *   @throws 		ErrorName::MLGetStringError
@@ -473,7 +473,7 @@ namespace LLU {
 		/**
 		 *   @brief			Receives std::basic_string
 		 *   @tparam		T - string character type supported in any of MLGet*String
-		 *   @param[out] 	s - argument to which the std::basic_string<T> received from MathLink will be assigned
+		 *   @param[out] 	s - argument to which the std::basic_string<T> received from WSTP will be assigned
 		 *
 		 *   @see			http://reference.wolfram.com/language/guide/WSTPCFunctionsForExchangingStrings.html
 		 *   @throws 		ErrorName::MLGetStringError
@@ -485,7 +485,7 @@ namespace LLU {
 
 		/**
 		 *	 @brief			Receives a value of type T
-		 *	 @tparam		E - encoding to be used when reading value from MathLink
+		 *	 @tparam		E - encoding to be used when reading value from WSTP
 		 *	 @tparam		T - value type
 		 *	 @param 		wrp - reference to object of type T wrapped in ML::GetAs structure
 		 *
@@ -495,10 +495,10 @@ namespace LLU {
 		MLStream& operator>>(ML::GetAs<E, T> wrp);
 
 		/**
-		 *   @brief			Receives a std::map via MathLink
+		 *   @brief			Receives a std::map via WSTP
 		 *   @tparam		K - map key type, must be supported in MLStream
 		 *   @tparam		V - map value type, must be supported in MLStream
-		 *   @param[out] 	m - argument to which the std::map received from MathLink will be assigned
+		 *   @param[out] 	m - argument to which the std::map received from WSTP will be assigned
 		 *
 		 *   @throws 		ErrorName::MLGetFunctionError plus whatever can be thrown receiving keys and values
 		 *
@@ -510,7 +510,7 @@ namespace LLU {
 		/**
 		 *   @brief			Receives a scalar value (int, float, double, etc)
 		 *   @tparam		T - scalar type
-		 *   @param[out] 	value - argument to which the value received from MathLink will be assigned
+		 *   @param[out] 	value - argument to which the value received from WSTP will be assigned
 		 *
 		 *   @throws 		ErrorName::MLGetScalarError
 		 **/
@@ -518,12 +518,12 @@ namespace LLU {
 		ML::ScalarSupportedTypeQ<T, MLStream&> operator>>(T& value);
 
 		/**
-		 *   @brief			Overload for scalar values that cannot be received via MathLink without conversion
+		 *   @brief			Overload for scalar values that cannot be received via WSTP without conversion
 		 *   @tparam		T - scalar type
 		 *   @param[in] 	value - numeric value
 		 *
 		 *   @note			Trying to use this overload will always trigger compilation error.
-		 *   If you need to receive value of type not supported by MathLink (like unsigned int) you must either explicitly cast
+		 *   If you need to receive value of type not supported by WSTP (like unsigned int) you must either explicitly cast
 		 *   or provide your own overload.
 		 *
 		 **/
@@ -532,8 +532,8 @@ namespace LLU {
 
 	private:
 		/**
-		 *   @brief			Check if the call to MathLink API succeeded, throw an exception otherwise
-		 *   @param[in] 	statusOk - error code returned from MathLink API function, usually 0 means error
+		 *   @brief			Check if the call to WSTP API succeeded, throw an exception otherwise
+		 *   @param[in] 	statusOk - error code returned from WSTP API function, usually 0 means error
 		 *   @param[in]		errorName - which exception to throw
 		 *   @param[in]		debugInfo - additional information to include in the exception, should it be thrown
 		 *
@@ -542,7 +542,7 @@ namespace LLU {
 		void check(int statusOk, const std::string& errorName, const std::string& debugInfo = "");
 
 		/**
-		 * 	 @brief			Test if the next expression to be read from MathLink has given head
+		 * 	 @brief			Test if the next expression to be read from WSTP has given head
 		 * 	 @param[in] 	head - expression head to test for
 		 * 	 @return		Number of arguments for the next expression on the Link (only if head is correct)
 		 *
@@ -551,7 +551,7 @@ namespace LLU {
 		int testHead(const std::string& head);
 
 		/**
-		 * 	 @brief			Test if the next expression to be read from MathLink has given head and given number of arguments
+		 * 	 @brief			Test if the next expression to be read from WSTP has given head and given number of arguments
 		 * 	 @param[in] 	head - expression head to test for
 		 * 	 @param[in]		argc - number of arguments to test for
 		 *
@@ -565,7 +565,7 @@ namespace LLU {
 		void refreshCurrentMLINK();
 
 	private:
-		/// Internal low-level handle to the currently active MathLink, it is assumed that the handle is valid.
+		/// Internal low-level handle to the currently active WSTP, it is assumed that the handle is valid.
 		MLINK m;
 
 		/// MathLink does not natively support sending expression of unknown length, so to simulate this behavior we can use a helper loopback link to store

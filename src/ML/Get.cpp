@@ -2,13 +2,13 @@
  * @file	Get.cpp
  * @date	Nov 28, 2017
  * @author	Rafal Chojna <rafalc@wolfram.com>
- * @brief	Implementation file with classes related to reading data from MathLink.
+ * @brief	Implementation file with classes related to reading data from WSTP.
  */
 #ifndef _WIN32
 
 #include "LLU/ML/Get.h"
 
-#include "mathlink.h"
+#include "wstp.h"
 
 namespace LLU {
 

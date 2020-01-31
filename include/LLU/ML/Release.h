@@ -2,14 +2,14 @@
  * @file	Release.h
  * @date	Nov 28, 2017
  * @author	Rafal Chojna <rafalc@wolfram.com>
- * @brief	Header file with classes responsible for releasing memory allocated by MathLink when receiving data.
+ * @brief	Header file with classes responsible for releasing memory allocated by WSTP when receiving data.
  */
 #ifndef LLUTILS_ML_MLRELEASE_H_
 #define LLUTILS_ML_MLRELEASE_H_
 
 #include <functional>
 
-#include "mathlink.h"
+#include "wstp.h"
 
 #include "LLU/Utilities.hpp"
 

@@ -2,7 +2,7 @@
  * @file	Utilities.h
  * @date	Nov 26, 2017
  * @author	Rafal Chojna <rafalc@wolfram.com>
- * @brief	Header file with miscellaneous utilities used throughout the MathLink-related part of LibraryLinkUtilities
+ * @brief	Header file with miscellaneous utilities used throughout the WSTP-related part of LibraryLinkUtilities
  */
 #ifndef LLUTILS_ML_UTILITIES_H_
 #define LLUTILS_ML_UTILITIES_H_
@@ -10,7 +10,7 @@
 #include <cstring>
 #include <string>
 
-#include "mathlink.h"
+#include "wstp.h"
 
 #include "LLU/ErrorLog/Errors.h"
 
@@ -22,15 +22,15 @@ namespace LLU {
 	class MLStream;
 
 	/**
-	 * @brief Contains definitions related to MathLink functionality in LLU
+	 * @brief Contains definitions related to WSTP functionality in LLU
 	 */
 	namespace ML {
 
 		/**
-		 * @brief 		Checks if MathLink operation was successful and throws appropriate exception otherwise
+		 * @brief 		Checks if WSTP operation was successful and throws appropriate exception otherwise
 		 * @param[in] 	m - low-level object of type MLINK received from LibraryLink
-		 * @param[in] 	statusOk - status code return from a MathLink function
-		 * @param[in] 	errorName - what error name to put in the exception if MathLink function failed
+		 * @param[in] 	statusOk - status code return from a WSTP function
+		 * @param[in] 	errorName - what error name to put in the exception if WSTP function failed
 		 * @param[in] 	debugInfo - additional info to be attached to the exception
 		 */
 		void checkError(MLINK m, int statusOk, const std::string& errorName, const std::string& debugInfo = "");
