@@ -25,26 +25,26 @@ TestExecute[
 
 	Get[FileNameJoin[{$LLUSharedDir, "LibraryLinkUtilities.wl"}]];
 
-	RegisterPacletErrors[lib, <||>];
+	`LLU`RegisterPacletErrors[lib, <||>];
 
 	`LLU`Logger`FormattedLog := `LLU`Logger`LogToShortString;
 	(* SleepyThreads[n, m, t] spawns n threads and performs m jobs on them, where each job is just sleeping t milliseconds *)
-	SleepyThreads = SafeLibraryFunction["SleepyThreads", {Integer, Integer, Integer}, "Void"];
+	SleepyThreads = `LLU`SafeLibraryFunction["SleepyThreads", {Integer, Integer, Integer}, "Void"];
 	(* SleepyThreadsWithPause[n, m, t] works same as SleepyThreads but pauses the pool for 1 second, submits all tasks and then resumes. *)
-	SleepyThreadsWithPause = SafeLibraryFunction["SleepyThreadsWithPause", {Integer, Integer, Integer}, "Void"];
+	SleepyThreadsWithPause = `LLU`SafeLibraryFunction["SleepyThreadsWithPause", {Integer, Integer, Integer}, "Void"];
 	(* Same as SleepyThreads only using Basic thread pool. *)
-	SleepyThreadsBasic = SafeLibraryFunction["SleepyThreadsBasic", {Integer, Integer, Integer}, "Void"];
+	SleepyThreadsBasic = `LLU`SafeLibraryFunction["SleepyThreadsBasic", {Integer, Integer, Integer}, "Void"];
 
 	(* ParallelAccumulate[NA, n, bs] separates a NumericArray NA into blocks of bs elements and sums them in parallel on n threads.
 	 * Returns a one-element NumericArray with the sum of all elements of NA *)
-	ParallelAccumulate = SafeLibraryFunction["Accumulate", {{NumericArray, "Constant"}, Integer, Integer}, NumericArray];
-	SequentialAccumulate = SafeLibraryFunction["AccumulateSequential", {{NumericArray, "Constant"}}, NumericArray];
-	ParallelAccumulateBasic = SafeLibraryFunction["AccumulateBasic", {{NumericArray, "Constant"}, Integer, Integer}, NumericArray];
+	ParallelAccumulate = `LLU`SafeLibraryFunction["Accumulate", {{NumericArray, "Constant"}, Integer, Integer}, NumericArray];
+	SequentialAccumulate = `LLU`SafeLibraryFunction["AccumulateSequential", {{NumericArray, "Constant"}}, NumericArray];
+	ParallelAccumulateBasic = `LLU`SafeLibraryFunction["AccumulateBasic", {{NumericArray, "Constant"}, Integer, Integer}, NumericArray];
 
 	(* ParallelLcm[NA, n, bs] calculates LCM of all "UnsignedIntegers64" in NA recursively, running in parallel on n threads.
      * This function tests running async jobs on a thread pool that can themselves submit new jobs to the pool. *)
-	ParallelLcm = SafeLibraryFunction["LcmParallel", {{NumericArray, "Constant"}, Integer, Integer}, NumericArray];
-	SequentialLcm = SafeLibraryFunction["LcmSequential", {{NumericArray, "Constant"}}, NumericArray];
+	ParallelLcm = `LLU`SafeLibraryFunction["LcmParallel", {{NumericArray, "Constant"}, Integer, Integer}, NumericArray];
+	SequentialLcm = `LLU`SafeLibraryFunction["LcmSequential", {{NumericArray, "Constant"}}, NumericArray];
 ];
 
 TestMatch[
