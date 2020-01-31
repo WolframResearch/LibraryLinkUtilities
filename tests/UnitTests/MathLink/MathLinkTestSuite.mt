@@ -42,7 +42,7 @@ Test[
 
 (* Scalars *)
 Test[
-	SameInts = SafeMathLinkFunction["SameInts"];
+	SameInts = `LLU`SafeWSTPFunction["SameInts"];
 	SameInts[0, -1, -1, -1] (* Integer8 is actually UnsignedInteger8 in MathLink, so send 0 insted of -1. Other integer types are signed *)
 	,
 	{0, -1, -1, -1}
@@ -59,7 +59,7 @@ Test[
 ]
 
 Test[
-	MaxInts = SafeMathLinkFunction["MaxInts"];
+	MaxInts = `LLU`SafeWSTPFunction["MaxInts"];
 	MaxInts[RandomInteger[i8Range], RandomInteger[i16Range], RandomInteger[i32Range], RandomInteger[i64Range]]
 	,
 	{2^8 - 1, 2^15 - 1, 2^31 - 1, 2^63 - 1}
@@ -68,7 +68,7 @@ Test[
 ]
 
 Test[
-	WriteMint = SafeMathLinkFunction["WriteMint"];
+	WriteMint = `LLU`SafeWSTPFunction["WriteMint"];
 	WriteMint[]
 	,
 	-1
@@ -77,7 +77,7 @@ Test[
 ]
 
 Test[
-	SameFloats = SafeMathLinkFunction["SameFloats"];
+	SameFloats = `LLU`SafeWSTPFunction["SameFloats"];
 	{pi, e} = SameFloats[N[Pi], N[E]];
 	(Abs[Pi - pi] < 10^-4) && (E == e)
 	,
@@ -87,7 +87,7 @@ Test[
 ]
 
 Test[
-	BoolAnd = SafeMathLinkFunction["BoolAnd"];
+	BoolAnd = `LLU`SafeWSTPFunction["BoolAnd"];
 	BoolAnd[True, True, True, False]
 	,
 	False
@@ -120,7 +120,7 @@ Test[
 
 (* Lists *)
 Test[
-	GetReversed = SafeMathLinkFunction["GetReversed8"];
+	GetReversed = `LLU`SafeWSTPFunction["GetReversed8"];
 	GetReversed[m = RandomInteger[i8Range, 100000]]
 	,
 	Reverse[m]
@@ -129,7 +129,7 @@ Test[
 ]
 
 Test[
-	GetReversed = SafeMathLinkFunction["GetReversed16"];
+	GetReversed = `LLU`SafeWSTPFunction["GetReversed16"];
 	GetReversed[m = RandomInteger[i16Range, 10000]]
 	,
 	Reverse[m]
@@ -138,7 +138,7 @@ Test[
 ]
 
 Test[
-	GetReversed = SafeMathLinkFunction["GetReversed32"];
+	GetReversed = `LLU`SafeWSTPFunction["GetReversed32"];
 	GetReversed[m = RandomInteger[i32Range, 1000]]
 	,
 	Reverse[m]
@@ -147,7 +147,7 @@ Test[
 ]
 
 Test[
-	GetReversed = SafeMathLinkFunction["GetReversed64"];
+	GetReversed = `LLU`SafeWSTPFunction["GetReversed64"];
 	GetReversed[m = RandomInteger[i64Range, 100]]
 	,
 	Reverse[m]
@@ -156,7 +156,7 @@ Test[
 ]
 
 Test[
-	GetReversed = SafeMathLinkFunction["GetReversedDouble"];
+	GetReversed = `LLU`SafeWSTPFunction["GetReversedDouble"];
 	GetReversed[m = RandomReal[1., 100]]
 	,
 	Reverse[m]
@@ -165,7 +165,7 @@ Test[
 ]
 
 Test[
-	GetFloatList = SafeMathLinkFunction["GetFloatList"];
+	GetFloatList = `LLU`SafeWSTPFunction["GetFloatList"];
 	f = GetFloatList[r = RandomReal[1., 100]];
 	Max[Abs[f - r]] < 10^-4
 	,
@@ -177,8 +177,8 @@ Test[
 (* Arrays *)
 
 Test[
-	GetSame = SafeMathLinkFunction["GetSame8"];
-	Reshape = SafeMathLinkFunction["Reshape8"];
+	GetSame = `LLU`SafeWSTPFunction["GetSame8"];
+	Reshape = `LLU`SafeWSTPFunction["Reshape8"];
 	s = GetSame[m = RandomInteger[i8Range, {10, 10, 10, 20, 5}]];
 	r = Reshape[m];
 	ArrayReshape[s, {10, 10, 10, 5, 20}]
@@ -189,8 +189,8 @@ Test[
 ]
 
 Test[
-	GetSame = SafeMathLinkFunction["GetSame16"];
-	Reshape = SafeMathLinkFunction["Reshape16"];
+	GetSame = `LLU`SafeWSTPFunction["GetSame16"];
+	Reshape = `LLU`SafeWSTPFunction["Reshape16"];
 	s = GetSame[m = RandomInteger[i16Range, {10, 10, 20, 5}]];
 	r = Reshape[m];
 	ArrayReshape[s, {10, 10, 5, 20}]
@@ -201,8 +201,8 @@ Test[
 ]
 
 Test[
-	GetSame = SafeMathLinkFunction["GetSame32"];
-	Reshape = SafeMathLinkFunction["Reshape32"];
+	GetSame = `LLU`SafeWSTPFunction["GetSame32"];
+	Reshape = `LLU`SafeWSTPFunction["Reshape32"];
 	s = GetSame[m = RandomInteger[i32Range, {10, 20, 5}]];
 	r = Reshape[m];
 	ArrayReshape[s, {10, 5, 20}]
@@ -213,8 +213,8 @@ Test[
 ]
 
 Test[
-	GetSame = SafeMathLinkFunction["GetSame64"];
-	Reshape = SafeMathLinkFunction["Reshape64"];
+	GetSame = `LLU`SafeWSTPFunction["GetSame64"];
+	Reshape = `LLU`SafeWSTPFunction["Reshape64"];
 	s = GetSame[m = RandomInteger[i64Range, {20, 5}]];
 	r = Reshape[m];
 	ArrayReshape[s, {5, 20}]
@@ -225,8 +225,8 @@ Test[
 ]
 
 Test[
-	GetSame = SafeMathLinkFunction["GetSameDouble"];
-	Reshape = SafeMathLinkFunction["ReshapeDouble"];
+	GetSame = `LLU`SafeWSTPFunction["GetSameDouble"];
+	Reshape = `LLU`SafeWSTPFunction["ReshapeDouble"];
 	s = GetSame[m = RandomReal[1., {20, 5}]];
 	r = Reshape[m];
 	ArrayReshape[s, {5, 20}]
@@ -237,7 +237,7 @@ Test[
 ]
 
 Test[
-	ToList = SafeMathLinkFunction["ComplexToList"];
+	ToList = `LLU`SafeWSTPFunction["ComplexToList"];
 	c = RandomComplex[1 + I, {7, 8, 9}];
 	ToList[c]
 	,
@@ -247,7 +247,7 @@ Test[
 ]
 
 Test[ (* Test if releasing memory works, if not the memory usage should drastically increase after this test *)
-	ReceiveAndFreeArray = SafeMathLinkFunction["ReceiveAndFreeArray"];
+	ReceiveAndFreeArray = `LLU`SafeWSTPFunction["ReceiveAndFreeArray"];
 	r = RandomReal[1., {1000, 1000, 100}];
 	Do[ReceiveAndFreeArray[r], 50];
 	Clear[r];
@@ -261,7 +261,7 @@ Test[ (* Test if releasing memory works, if not the memory usage should drastica
 Test[
 	testString = FromCharacterCode[{97, 261, 322, 945, 63488, 63264}]; (* "a\:0105\[LSlash]\[Alpha]\[FormalA]\[Wolf]" *)
 	expected = StringRepeat[testString, 2];
-	RepeatString = SafeMathLinkFunction["RepeatString"];
+	RepeatString = `LLU`SafeWSTPFunction["RepeatString"];
 	RepeatString[testString]
 	,
 	expected
@@ -270,7 +270,7 @@ Test[
 ]
 
 Test[
-	RepeatUTF8 = SafeMathLinkFunction["RepeatUTF8"];
+	RepeatUTF8 = `LLU`SafeWSTPFunction["RepeatUTF8"];
 	RepeatUTF8[testString]
 	,
 	expected
@@ -279,7 +279,7 @@ Test[
 ]
 
 Test[
-	RepeatUTF16 = SafeMathLinkFunction["RepeatUTF16"];
+	RepeatUTF16 = `LLU`SafeWSTPFunction["RepeatUTF16"];
 	RepeatUTF16[testString]
 	,
 	expected
@@ -288,7 +288,7 @@ Test[
 ]
 
 Test[
-	RepeatUTF32 = SafeMathLinkFunction["RepeatUTF32"];
+	RepeatUTF32 = `LLU`SafeWSTPFunction["RepeatUTF32"];
 	RepeatUTF32[testString]
 	,
 	expected
@@ -299,7 +299,7 @@ Test[
 Test[
 	testString = "\\+\\\\+\"+\n+\t+?";  (* ToCharacterCode = {92, 43, 92, 92, 43, 34, 43, 10, 43, 9, 43, 63} *)
 	expected = testString <> FromCharacterCode[{7, 8, 12, 13, 10, 9, 11, 92, 39, 34, 63}];
-	AppendString = SafeMathLinkFunction["AppendString"]; (* following string is appended in the C++ code: "\a\b\f\r\n\t\v\\\'\"\?" *)
+	AppendString = `LLU`SafeWSTPFunction["AppendString"]; (* following string is appended in the C++ code: "\a\b\f\r\n\t\v\\\'\"\?" *)
 	ToCharacterCode @ AppendString[testString]
 	,
 	ToCharacterCode @ expected
@@ -308,7 +308,7 @@ Test[
 ]
 
 Test[
-	AppendUTF8 = SafeMathLinkFunction["AppendUTF8"];
+	AppendUTF8 = `LLU`SafeWSTPFunction["AppendUTF8"];
 	ToCharacterCode @ AppendUTF8[testString]
 	,
 	ToCharacterCode @ expected
@@ -317,7 +317,7 @@ Test[
 ]
 
 Test[
-	AppendUTF16 = SafeMathLinkFunction["AppendUTF16"];
+	AppendUTF16 = `LLU`SafeWSTPFunction["AppendUTF16"];
 	ToCharacterCode @ AppendUTF16[testString]
 	,
 	ToCharacterCode @ expected
@@ -326,7 +326,7 @@ Test[
 ]
 
 Test[
-	AppendUTF32 = SafeMathLinkFunction["AppendUTF32"];
+	AppendUTF32 = `LLU`SafeWSTPFunction["AppendUTF32"];
 	ToCharacterCode @ AppendUTF32[testString]
 	,
 	ToCharacterCode @ expected
@@ -335,7 +335,7 @@ Test[
 ]
 
 Test[ (* Test if releasing strings works, if not the memory usage should drastically increase after this test *)
-	ReceiveAndFreeString = SafeMathLinkFunction["ReceiveAndFreeString"];
+	ReceiveAndFreeString = `LLU`SafeWSTPFunction["ReceiveAndFreeString"];
 	s = StringJoin[RandomChoice[CharacterRange["A", "z"], 10000]];
 	Do[ReceiveAndFreeString[s], 100]
 	,
@@ -345,7 +345,7 @@ Test[ (* Test if releasing strings works, if not the memory usage should drastic
 ]
 
 Test[
-	GetAndPutUTF8 = SafeMathLinkFunction["GetAndPutUTF8"];
+	GetAndPutUTF8 = `LLU`SafeWSTPFunction["GetAndPutUTF8"];
 	testStr = "\:0105\:0119\[AE]\[Copyright]\\/";
 	GetAndPutUTF8[testStr, testStr]
 	,
@@ -355,7 +355,7 @@ Test[
 ]
 
 Test[
-	NestedPutAs = SafeMathLinkFunction["NestedPutAs"];
+	NestedPutAs = `LLU`SafeWSTPFunction["NestedPutAs"];
 	testStr = "\:0105\:0119\[AE]\[Copyright]\\/";
 	NestedPutAs[testStr]
 	,
@@ -365,7 +365,7 @@ Test[
 ]
 
 Test[
-	CharacterCodes = SafeMathLinkFunction["CharacterCodes"];
+	CharacterCodes = `LLU`SafeWSTPFunction["CharacterCodes"];
 	testStr = "\:0105\:0119\[AE]\[Copyright]\\/";
 	CharacterCodes[testStr]
 	,
@@ -382,7 +382,7 @@ Test[
 ]
 
 Test[
-	AllEncodingsRoundtrip = SafeMathLinkFunction["AllEncodingsRoundtrip"];
+	AllEncodingsRoundtrip = `LLU`SafeWSTPFunction["AllEncodingsRoundtrip"];
 	testStrs = {"abcde", "\[Integral]\[Wolf]\[DifferentialD]\[Xi]", "ab\[CAcute]\[Eth]\:0119", "\\+\\\\+\"+\n+\t+?"};
 	MapThread[Map[Function[assocElem, #2 == assocElem], #1] &, {AllEncodingsRoundtrip /@ testStrs, testStrs}]
 	,
@@ -398,7 +398,7 @@ Test[
 
 (* Symbols and Arbitrary Functions *)
 Test[
-	GetList = SafeMathLinkFunction["GetList"];
+	GetList = `LLU`SafeWSTPFunction["GetList"];
 	GetList[]
 	,
 	{{1, 2, 3}, Missing[""], {1.5, 2.5, 3.5}, "Hello!", Missing["Deal with it"]}
@@ -434,7 +434,7 @@ Test[
 ]
 
 Test[
-	GetSet = SafeMathLinkFunction["GetSet"];
+	GetSet = `LLU`SafeWSTPFunction["GetSet"];
 	GetSet[{"lorem", "ipsum", "dolor", "sit", "amet"}, "StringJoin"]
 	,
 	StringJoin @ AlphabeticSort[{"lorem", "ipsum", "dolor", "sit", "amet"}]
@@ -453,7 +453,7 @@ Test[
 
 (* Associations/Maps *)
 Test[
-	ReadNestedMap = SafeMathLinkFunction["ReadNestedMap"];
+	ReadNestedMap = `LLU`SafeWSTPFunction["ReadNestedMap"];
 	r = RandomReal[{-Pi, Pi}, 10];
 	Sort @ ReadNestedMap[<|
 		"Multiply" -> <|3 -> r, 0 -> r, -3 -> r|>,
@@ -475,7 +475,7 @@ Test[
 
 (* Local Loopback Link *)
 Test[
-	IntList = SafeMathLinkFunction["UnknownLengthList"];
+	IntList = `LLU`SafeWSTPFunction["UnknownLengthList"];
 	modulus = 123;
 	l = IntList[modulus];
 	VectorQ[l, (IntegerQ[#] && 0 <= # <= 1000000 && !Divisible[#, modulus])&]
@@ -486,7 +486,7 @@ Test[
 ]
 
 Test[
-	Ragged = SafeMathLinkFunction["RaggedArray"];
+	Ragged = `LLU`SafeWSTPFunction["RaggedArray"];
 	length = 15;
 	Ragged[length]
 	,
@@ -496,7 +496,7 @@ Test[
 ]
 
 Test[
-	Factors = SafeMathLinkFunction["FactorsOrFailed"];
+	Factors = `LLU`SafeWSTPFunction["FactorsOrFailed"];
 	l = RandomInteger[{1, 123456}, 20];
 	Factors[l]
 	,
@@ -510,7 +510,7 @@ Test[
 ]
 
 Test[
-	GetEmpty = SafeMathLinkFunction["Empty"];
+	GetEmpty = `LLU`SafeWSTPFunction["Empty"];
 	GetEmpty["Association"]
 	,
 	<||>
@@ -535,7 +535,7 @@ Test[
 ]
 
 Test[
-	ListOfStrings = SafeMathLinkFunction["ListOfStringsTiming"];
+	ListOfStrings = `LLU`SafeWSTPFunction["ListOfStringsTiming"];
 	los = RandomWord["CommonWords", 1000];
 	{timeNormal, r1} = RepeatedTiming[ListOfStrings[los, False]];
 	{timeBeginEnd, r2} = RepeatedTiming[ListOfStrings[los, True]];

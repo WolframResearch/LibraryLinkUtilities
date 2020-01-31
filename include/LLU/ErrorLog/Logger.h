@@ -118,7 +118,7 @@ namespace LLU {
 
 	private:
 		/// Name of the WL function, to which log elements will be sent as arguments via MathLink.
-		static constexpr const char* topLevelLogCallback = "LLU`Logger`LogHandler";
+		static constexpr const char* topLevelLogCallback = "Logger`LogHandler";
 		static std::mutex mlinkGuard;
 		static std::string logSymbolContext;
 	};

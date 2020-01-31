@@ -106,6 +106,11 @@ namespace LLU {
 			// ManagedExpression errors:
 			{ErrorName::ManagedExprInvalidID, "Given number is not an ID of any existing managed expression."},
 			{ErrorName::MLEDynamicTypeError, "Invalid dynamic type requested for a Managed Library Expression"},
+
+			// FileUtilities errors:
+			{ErrorName::PathNotValidated, "File path `path` could not be validated under desired open mode."},
+			{ErrorName::InvalidOpenMode, "Specified open mode is invalid."},
+			{ErrorName::OpenFileFailed,	"Could not open file `f`."},
 		});
 		return errMap;
 	}

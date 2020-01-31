@@ -29,6 +29,7 @@ set(TEST_MODULES
         "Scalar"
         "String"
         "Tensor"
+        "Utilities"
         )
 
 set(CMAKE_FIND_APPBUNDLE NEVER)
