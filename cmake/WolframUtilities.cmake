@@ -135,6 +135,28 @@ function(get_mathlink_library_name MATHLINK_INTERFACE_VERSION MATHLINK_LIB_NAME)
 	set(${MATHLINK_LIB_NAME} "${MATHLINK_LIBRARY}" PARENT_SCOPE)
 endfunction()
 
+#set WSTP library name depending on the platform
+# TODO merge with get_mathlink_library_name to avoid code duplication
+function(get_wstp_library_name WSTP_INTERFACE_VERSION WSTP_LIB_NAME)
+
+	detect_system_id(SYSTEM_ID)
+
+	set(WSTP_LIBRARY NOTFOUND)
+	if(SYSTEM_ID STREQUAL "MacOSX-x86-64")
+		set(WSTP_LIBRARY "WSTPi${WSTP_INTERFACE_VERSION}")
+	elseif(SYSTEM_ID STREQUAL "Linux" OR SYSTEM_ID STREQUAL "Linux-ARM" OR SYSTEM_ID STREQUAL "Windows")
+		set(WSTP_LIBRARY "WSTP32i${WSTP_INTERFACE_VERSION}")
+	elseif(SYSTEM_ID STREQUAL "Linux-x86-64" OR SYSTEM_ID STREQUAL "Windows-x86-64")
+		set(WSTP_LIBRARY "WSTP64i${WSTP_INTERFACE_VERSION}")
+	endif()
+
+	if(NOT WSTP_LIBRARY)
+		message(FATAL_ERROR "Unable to determine WSTP library name for system: ${SYSTEM_ID}")
+	endif()
+
+	set(${WSTP_LIB_NAME} "${WSTP_LIBRARY}" PARENT_SCOPE)
+endfunction()
+
 # not sure if this one is needed, keep it just in case
 function(additional_paclet_dependencies SYSTEM_ID EXTRA_LIBS)
 	if (${SYSTEM_ID} STREQUAL "MacOSX-x86-64")
