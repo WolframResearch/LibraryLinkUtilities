@@ -164,12 +164,12 @@ Cell[BoxData["\<\"/usr/bin/gcc -shared -o \
 Working-rafal-asus-2458-1939098688-2/LoggerTest.so\\\" -m64 -x c++ -fPIC -O2 \
 -O2 -std=c++14 -Wall --pedantic -fvisibility=hidden -DLLU_LOG_DEBUG \
 -I\\\"/usr/local/Wolfram/Mathematica/12.1/SystemFiles/IncludeFiles/C\\\" -I\\\
-\"/usr/local/Wolfram/Mathematica/12.1/SystemFiles/Links/MathLink/DeveloperKit/\
+\"/usr/local/Wolfram/Mathematica/12.1/SystemFiles/Links/WSTP/DeveloperKit/\
 Linux-x86-64/CompilerAdditions\\\" \
 -I\\\"/home/rafal/Wolfram/workspace/IMEX/LibraryLinkUtilities/install/include\
 \\\" \\\"/home/rafal/Wolfram/workspace/IMEX/LibraryLinkUtilities/tests/\
 UnitTests/ErrorReporting/TestSources/LoggerTest.cpp\\\"  \
--L\\\"/usr/local/Wolfram/Mathematica/12.1/SystemFiles/Links/MathLink/\
+-L\\\"/usr/local/Wolfram/Mathematica/12.1/SystemFiles/Links/WSTP/\
 DeveloperKit/Linux-x86-64/CompilerAdditions\\\" \
 -L\\\"/usr/local/Wolfram/Mathematica/12.1/SystemFiles/Libraries/Linux-x86-64\\\
 \" -L\\\"/home/rafal/Wolfram/workspace/IMEX/LibraryLinkUtilities/install/lib\\\
@@ -3848,12 +3848,12 @@ Working-rafal-asus-29820-1460485184-3/LoggerTestW.so\\\" -m64 -x c++ -fPIC \
 -I\\\"/home/rafal/Wolfram/workspace/Kern/Build/Layout/Mathematica/12.1/\
 SystemFiles/IncludeFiles/C\\\" \
 -I\\\"/home/rafal/Wolfram/workspace/Kern/Build/Layout/Mathematica/12.1/\
-SystemFiles/Links/MathLink/DeveloperKit/Linux-x86-64/CompilerAdditions\\\" -I\
+SystemFiles/Links/WSTP/DeveloperKit/Linux-x86-64/CompilerAdditions\\\" -I\
 \\\"/home/rafal/Wolfram/workspace/IMEX/LibraryLinkUtilities/install/include\\\
 \" \\\"/home/rafal/Wolfram/workspace/IMEX/LibraryLinkUtilities/tests/\
 UnitTests/ErrorReporting/LoggerTest.cpp\\\"  \
 -L\\\"/home/rafal/Wolfram/workspace/Kern/Build/Layout/Mathematica/12.1/\
-SystemFiles/Links/MathLink/DeveloperKit/Linux-x86-64/CompilerAdditions\\\" -L\
+SystemFiles/Links/WSTP/DeveloperKit/Linux-x86-64/CompilerAdditions\\\" -L\
 \\\"/home/rafal/Wolfram/workspace/Kern/Build/Layout/Mathematica/12.1/\
 SystemFiles/Libraries/Linux-x86-64\\\" \
 -L\\\"/home/rafal/Wolfram/workspace/IMEX/LibraryLinkUtilities/install/lib\\\" \

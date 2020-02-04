@@ -2,7 +2,7 @@
 TestRequirement[$VersionNumber >= 12.0]
 (***************************************************************************************************************************************)
 (*
-	Set of test cases to test LLU functionality related to MathLink
+	Set of test cases to test LLU functionality related to WSTP
 *)
 (***************************************************************************************************************************************)
 TestExecute[
@@ -22,7 +22,7 @@ TestExecute[
 	PassDataStore = `LLU`SafeLibraryFunction["PassDataStore", {"DataStore", "Boolean"}, "DataStore"];
 	JoinDataStores = `LLU`SafeLibraryFunction["JoinDataStores", {"DataStore", "DataStore", "Boolean"}, "DataStore"];
 	TestSelfReferencialDataStore = `LLU`SafeLibraryFunction["TestSelfReferencialDataStore", {"DataStore"}, "DataStore"];
-	ReverseListOfStringsMathLink = `LLU`SafeWSTPFunction["ReverseListOfStringsMathLink"];
+	ReverseListOfStringsWSTP = `LLU`SafeWSTPFunction["ReverseListOfStringsWSTP"];
 	ReverseListOfStringsLibraryLink = `LLU`SafeLibraryFunction["ReverseListOfStringsLibraryLink", {"DataStore"}, "DataStore"];
 	ReverseListOfStrings = `LLU`SafeLibraryFunction["ReverseListOfStrings", {"DataStore"}, "DataStore"];
 	SeparateKeysAndValues = `LLU`SafeLibraryFunction["SeparateKeysAndValues", {"DataStore"}, "DataStore"];
@@ -415,10 +415,10 @@ Test[
 Test[
 	los = RandomWord["CommonWords", 300000];
 	ds = Developer`DataStore @@ los;
-	{timeMathLink, r1} = RepeatedTiming[ReverseListOfStringsMathLink[los]];
+	{timeWSTP, r1} = RepeatedTiming[ReverseListOfStringsWSTP[los]];
 	{timeDataStore, r2} = RepeatedTiming[ReverseListOfStringsLibraryLink[ds]];
 	{timeDataList, r3} = RepeatedTiming[ReverseListOfStrings[ds]];
-	Print["Time when sending list via MathLink: " <> ToString[timeMathLink] <> "s."];
+	Print["Time when sending list via WSTP: " <> ToString[timeWSTP] <> "s."];
 	Print["Time when sending list via DataStore: " <> ToString[timeDataStore] <> "s."];
 	Print["Time when sending list via DataList: " <> ToString[timeDataList] <> "s."];
 	r1

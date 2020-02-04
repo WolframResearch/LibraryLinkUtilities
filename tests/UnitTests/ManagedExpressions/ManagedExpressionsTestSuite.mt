@@ -45,7 +45,7 @@ TestExecute[
 	(* Load library functions that wrap MyExpression member functions *)
 	`LLU`LoadMemberFunction[MyExpression][getText, "GetText", {}, String];
 	`LLU`LoadMemberFunction[MyExpression][setText, "SetText", {String}, "Void"];
-	`LLU`LoadWSTPMemberFunction[MyExpression][setTextML, "SetTextML"];
+	`LLU`LoadWSTPMemberFunction[MyExpression][setTextWS, "SetTextWS"];
 	`LLU`LoadMemberFunction[MyExpression][getCounter, "GetCounter", {}, Integer]; (* this member only works with MLEs that are of type MyChildExpression in C++ *)
 
 	(* Load other library functions *)
@@ -259,7 +259,7 @@ Test[
 ];
 
 Test[
-	expr1 @ setTextML["My new text"];
+	expr1 @ setTextWS["My new text"];
 	expr1 @ getText[]
 	,
 	"My new text"
