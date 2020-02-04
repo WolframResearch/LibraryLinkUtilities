@@ -10,7 +10,7 @@
 #include <memory>
 
 /* If wstp.h has already been included we just include WolframLibrary.h because there will be no conflict. */
-#ifdef _MATHLINK_H
+#ifdef _WSTP_H
 
 #include "WolframLibrary.h"
 
@@ -33,7 +33,7 @@
 
 #include "WolframLibrary.h"
 
-#endif	/* _MATHLINK_H */
+#endif	/* _WSTP_H */
 
 #include "WolframIOLibraryFunctions.h"
 #include "WolframImageLibrary.h"

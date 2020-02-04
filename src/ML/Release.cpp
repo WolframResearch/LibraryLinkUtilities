@@ -6,47 +6,47 @@
  */
 #ifndef _WIN32
 
-#include "../../include/LLU/ML/Release.h"
+#include "../../include/LLU/WSTP/Release.h"
 
 namespace LLU {
 
-	namespace ML {
+	namespace WS {
 
 		template<>
-		ReleaseArray<unsigned char>::Func ReleaseArray<unsigned char>::Release = MLReleaseInteger8Array;
+		ReleaseArray<unsigned char>::Func ReleaseArray<unsigned char>::Release = WSReleaseInteger8Array;
 
 		template<>
-		ReleaseList<unsigned char>::Func ReleaseList<unsigned char>::Release = MLReleaseInteger8List;
+		ReleaseList<unsigned char>::Func ReleaseList<unsigned char>::Release = WSReleaseInteger8List;
 
 		template<>
-		ReleaseArray<short>::Func ReleaseArray<short>::Release = MLReleaseInteger16Array;
+		ReleaseArray<short>::Func ReleaseArray<short>::Release = WSReleaseInteger16Array;
 
 		template<>
-		ReleaseList<short>::Func ReleaseList<short>::Release = MLReleaseInteger16List;
+		ReleaseList<short>::Func ReleaseList<short>::Release = WSReleaseInteger16List;
 
 		template<>
-		ReleaseArray<int>::Func ReleaseArray<int>::Release = MLReleaseInteger32Array;
+		ReleaseArray<int>::Func ReleaseArray<int>::Release = WSReleaseInteger32Array;
 
 		template<>
-		ReleaseList<int>::Func ReleaseList<int>::Release = MLReleaseInteger32List;
+		ReleaseList<int>::Func ReleaseList<int>::Release = WSReleaseInteger32List;
 
 		template<>
-		ReleaseArray<mlint64>::Func ReleaseArray<mlint64>::Release = MLReleaseInteger64Array;
+		ReleaseArray<wsint64>::Func ReleaseArray<wsint64>::Release = WSReleaseInteger64Array;
 
 		template<>
-		ReleaseList<mlint64>::Func ReleaseList<mlint64>::Release = MLReleaseInteger64List;
+		ReleaseList<wsint64>::Func ReleaseList<wsint64>::Release = WSReleaseInteger64List;
 
 		template<>
-		ReleaseArray<float>::Func ReleaseArray<float>::Release = MLReleaseReal32Array;
+		ReleaseArray<float>::Func ReleaseArray<float>::Release = WSReleaseReal32Array;
 
 		template<>
-		ReleaseList<float>::Func ReleaseList<float>::Release = MLReleaseReal32List;
+		ReleaseList<float>::Func ReleaseList<float>::Release = WSReleaseReal32List;
 
 		template<>
-		ReleaseArray<double>::Func ReleaseArray<double>::Release = MLReleaseReal64Array;
+		ReleaseArray<double>::Func ReleaseArray<double>::Release = WSReleaseReal64Array;
 
 		template<>
-		ReleaseList<double>::Func ReleaseList<double>::Release = MLReleaseReal64List;
+		ReleaseList<double>::Func ReleaseList<double>::Release = WSReleaseReal64List;
 
 	}
 

@@ -28,7 +28,7 @@
 #include "LLU/MArgumentManager.h"
 
 /* WSTP */
-#include "LLU/ML/MLStream.hpp"
+#include "LLU/WSTP/WSStream.hpp"
 
 /* Others */
 #include "LLU/FileUtilities.h"

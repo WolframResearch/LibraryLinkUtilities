@@ -84,27 +84,27 @@ namespace LLU {
 		extern const std::string MArrayDimensionIndexError;	   ///< attempting to access MArray dimension at invalid index
 
 		// WSTP errors:
-		extern const std::string MLNullMlinkError;			   ///< Trying to create MLStream with NULL MLINK
-		extern const std::string MLTestHeadError;			   ///< MLTestHead failed (wrong head or number of arguments)
-		extern const std::string MLPutSymbolError;			   ///< MLPutSymbol failed
-		extern const std::string MLPutFunctionError;		   ///< MLPutFunction failed
-		extern const std::string MLTestSymbolError;			   ///< MLTestSymbol failed (different symbol on the link than expected)
-		extern const std::string MLWrongSymbolForBool;		   ///< Tried to read something else than "True" or "False" as boolean
-		extern const std::string MLGetListError;			   ///< Could not get list from WSTP
-		extern const std::string MLGetScalarError;			   ///< Could not get scalar from WSTP
-		extern const std::string MLGetStringError;			   ///< Could not get string from WSTP
-		extern const std::string MLGetArrayError;			   ///< Could not get array from WSTP
-		extern const std::string MLPutListError;			   ///< Could not send list via WSTP
-		extern const std::string MLPutScalarError;			   ///< Could not send scalar via WSTP
-		extern const std::string MLPutStringError;			   ///< Could not send string via WSTP
-		extern const std::string MLPutArrayError;			   ///< Could not send array via WSTP
-		extern const std::string MLGetSymbolError;			   ///< MLGetSymbol failed
-		extern const std::string MLGetFunctionError;		   ///< MLGetFunction failed
-		extern const std::string MLPacketHandleError;		   ///< One of the packet handling functions failed
-		extern const std::string MLFlowControlError;		   ///< One of the flow control functions failed
-		extern const std::string MLTransferToLoopbackError;	   ///< Something went wrong when transferring expressions from loopback link
-		extern const std::string MLCreateLoopbackError;		   ///< Could not create a new loopback link
-		extern const std::string MLLoopbackStackSizeError;	   ///< Loopback stack size too small to perform desired action
+		extern const std::string WSNullMlinkError;			   ///< Trying to create WSStream with NULL WSLINK
+		extern const std::string WSTestHeadError;			   ///< WSTestHead failed (wrong head or number of arguments)
+		extern const std::string WSPutSymbolError;			   ///< WSPutSymbol failed
+		extern const std::string WSPutFunctionError;		   ///< WSPutFunction failed
+		extern const std::string WSTestSymbolError;			   ///< WSTestSymbol failed (different symbol on the link than expected)
+		extern const std::string WSWrongSymbolForBool;		   ///< Tried to read something else than "True" or "False" as boolean
+		extern const std::string WSGetListError;			   ///< Could not get list from WSTP
+		extern const std::string WSGetScalarError;			   ///< Could not get scalar from WSTP
+		extern const std::string WSGetStringError;			   ///< Could not get string from WSTP
+		extern const std::string WSGetArrayError;			   ///< Could not get array from WSTP
+		extern const std::string WSPutListError;			   ///< Could not send list via WSTP
+		extern const std::string WSPutScalarError;			   ///< Could not send scalar via WSTP
+		extern const std::string WSPutStringError;			   ///< Could not send string via WSTP
+		extern const std::string WSPutArrayError;			   ///< Could not send array via WSTP
+		extern const std::string WSGetSymbolError;			   ///< WSGetSymbol failed
+		extern const std::string WSGetFunctionError;		   ///< WSGetFunction failed
+		extern const std::string WSPacketHandleError;		   ///< One of the packet handling functions failed
+		extern const std::string WSFlowControlError;		   ///< One of the flow control functions failed
+		extern const std::string WSTransferToLoopbackError;	   ///< Something went wrong when transferring expressions from loopback link
+		extern const std::string WSCreateLoopbackError;		   ///< Could not create a new loopback link
+		extern const std::string WSLoopbackStackSizeError;	   ///< Loopback stack size too small to perform desired action
 
 		// DataList errors:
 		extern const std::string DLNullRawNode;			 ///< DataStoreNode passed to Node wrapper was null

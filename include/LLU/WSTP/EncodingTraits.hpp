@@ -4,8 +4,8 @@
  * @author	Rafal Chojna <rafalc@wolfram.com>
  * @brief	Defines possible encodings together with their properties and related types.
  */
-#ifndef LLUTILS_ML_ENCODINGTRAITS_HPP_
-#define LLUTILS_ML_ENCODINGTRAITS_HPP_
+#ifndef LLU_WSTP_ENCODINGTRAITS_HPP_
+#define LLU_WSTP_ENCODINGTRAITS_HPP_
 
 #include <cstdint>
 #include <string>
@@ -14,7 +14,7 @@
 
 namespace LLU {
 
-	namespace ML {
+	namespace WS {
 
 		/**
 		 * @enum Encoding
@@ -22,12 +22,12 @@ namespace LLU {
 		 */
 		enum class Encoding : std::uint8_t {
 			Undefined,	  //!< Undefined, can be used to denote that certain function is not supposed to deal with strings
-			Native,		  //!< Use MLGetString for reading and MLPutString for writing strings
-			Byte,		  //!< Use MLGetByteString for reading and MLPutByteString for writing strings
-			UTF8,		  //!< Use MLGetUTF8String for reading and MLPutUTF8String for writing strings
-			UTF16,		  //!< Use MLGetUTF16String for reading and MLPutUTF16String for writing strings
-			UCS2,		  //!< Use MLGetUCS2String for reading and MLPutUCS2String for writing strings
-			UTF32		  //!< Use MLGetUTF32String for reading and MLPutUTF32String for writing strings
+			Native,		  //!< Use WSGetString for reading and WSPutString for writing strings
+			Byte,		  //!< Use WSGetByteString for reading and WSPutByteString for writing strings
+			UTF8,		  //!< Use WSGetUTF8String for reading and WSPutUTF8String for writing strings
+			UTF16,		  //!< Use WSGetUTF16String for reading and WSPutUTF16String for writing strings
+			UCS2,		  //!< Use WSGetUCS2String for reading and WSPutUCS2String for writing strings
+			UTF32		  //!< Use WSGetUTF32String for reading and WSPutUTF32String for writing strings
 		};
 
 		/**
@@ -44,7 +44,7 @@ namespace LLU {
 		};
 
 		/**
-		 * Specializations of CharTypeStruct, encoding E has assigned type T iff MLPutEString takes const T* as second parameter
+		 * Specializations of CharTypeStruct, encoding E has assigned type T iff WSPutEString takes const T* as second parameter
 		 * @cond
 		 */
 		template<>
@@ -83,9 +83,9 @@ namespace LLU {
 		using CharType = typename CharTypeStruct<E>::type;
 
 		/**
-		 * @brief Check whether character type T is compatible with encoding E (i.e. if it can be more or less safely used with MLPut/Get\<E\>String)
+		 * @brief Check whether character type T is compatible with encoding E (i.e. if it can be more or less safely used with WSPut/Get\<E\>String)
 		 *
-		 * Each WSTP function MLPut/Get*String works with only one specific character type (see CharType<E>). In C++, on the other hand,
+		 * Each WSTP function WSPut/Get*String works with only one specific character type (see CharType<E>). In C++, on the other hand,
 		 * there is no notion of encoding so std::string (with character type being \c char) can be used to store strings of any encoding.
 		 *
 		 * We say that character type T is compatible with encoding E as long as the size of T is the same as size of CharType<E>.
@@ -115,7 +115,7 @@ namespace LLU {
 
 		/**
 		 * Get the name of encoding
-		 * @param e - value of ML::Encoding enum
+		 * @param e - value of WS::Encoding enum
 		 * @return C-string containing the name of encoding e
 		 */
 		constexpr const char* getEncodingName(Encoding e) {
@@ -136,16 +136,16 @@ namespace LLU {
 		 *	@tparam E - desired encoding
 		 *	@tparam T - actual type of the expression
 		 *
-		 *	@brief	Utility structure used to enforce sending given value with encoding E via MLStream.
+		 *	@brief	Utility structure used to enforce sending given value with encoding E via WSStream.
 		 *
-		 *	This structure is only supposed to be used as a wrapper for arguments to MLStream::operator<<
+		 *	This structure is only supposed to be used as a wrapper for arguments to WSStream::operator<<
 		 *
-		 *	@note	It's recommended not to use ML::PutAs constructor directly, but rather utilize a helper function ML::putAs.
+		 *	@note	It's recommended not to use WS::PutAs constructor directly, but rather utilize a helper function WS::putAs.
 		 *
 		 *	@code
-		 *		MLStream<ML::Encoding::Byte> mls { mlink }; // mls will send all strings as if they were ascii-encoded by default
+		 *		WSStream<WS::Encoding::Byte> mls { mlink }; // mls will send all strings as if they were ascii-encoded by default
 		 *		std::string stringWithNonAsciiChars = ...;  // oops, now we have to use different encoding
-		 *		mls << ML::putAs<ML::Encoding::UTF8>(stringWithNonAsciiChars);   	// this will use UTF8 encoding when sending the string
+		 *		mls << WS::putAs<WS::Encoding::UTF8>(stringWithNonAsciiChars);   	// this will use UTF8 encoding when sending the string
 		 *	@endcode
 		 */
 		template<Encoding E, typename T, bool = std::is_lvalue_reference<T>::value>
@@ -153,7 +153,7 @@ namespace LLU {
 
 		/**
 		 * @cond
-		 * Explicit specialization of ML::PutAs for lvalues
+		 * Explicit specialization of WS::PutAs for lvalues
 		 */
 		template<Encoding E, typename T>
 		struct PutAs<E, T, true> {
@@ -164,12 +164,12 @@ namespace LLU {
 			 */
 			explicit PutAs(const T& o) : obj(o) {}
 
-			/// Reference to an object which will be later passed to appropriate MLStream::operator<<
+			/// Reference to an object which will be later passed to appropriate WSStream::operator<<
 			const T& obj;
 		};
 
 		/**
-		 * Explicit specialization of ML::PutAs for rvalues
+		 * Explicit specialization of WS::PutAs for rvalues
 		 */
 		template<Encoding E, typename T>
 		struct PutAs<E, T, false> {
@@ -180,13 +180,13 @@ namespace LLU {
 			 */
 			explicit PutAs(T&& o) : obj(std::move(o)) {}
 
-			/// An object which will be later passed to appropriate MLStream::operator<<
+			/// An object which will be later passed to appropriate WSStream::operator<<
 			T obj;
 		};
 		/// @endcond
 
 		/**
-		 * This is a helper function to facilitate constructing ML::PutAs wrapper.
+		 * This is a helper function to facilitate constructing WS::PutAs wrapper.
 		 * @param obj - forwarding reference to object of type T
 		 * @return a PutAs wrapper
 		 */
@@ -200,16 +200,16 @@ namespace LLU {
 		 *	@tparam E - desired encoding
 		 *	@tparam T - actual type of the expression
 		 *
-		 *	@brief	Utility structure used to enforce receiving given value via MLStream with encoding E.
+		 *	@brief	Utility structure used to enforce receiving given value via WSStream with encoding E.
 		 *
-		 *	This structure is only supposed to be used as a wrapper for arguments to MLStream::operator>>
+		 *	This structure is only supposed to be used as a wrapper for arguments to WSStream::operator>>
 		 *
-		 *	@note	It's recommended not to use ML::GetAs constructor directly, but rather utilize a helper function ML::getAs.
+		 *	@note	It's recommended not to use WS::GetAs constructor directly, but rather utilize a helper function WS::getAs.
 		 *
 		 *	@code
-		 *		MLStream<ML::Encoding::Byte> mls { mlink }; // mls will receive all strings as if they were ascii-encoded by default
+		 *		WSStream<WS::Encoding::Byte> mls { mlink }; // mls will receive all strings as if they were ascii-encoded by default
 		 *		std::string stringWithNonAsciiChars;  		// we expect a string with non-ascii characters to come from WSTP
-		 *		mls << ML::getAs<ML::Encoding::UTF8>(stringWithNonAsciiChars);   	// this will use UTF8 encoding when receiving the string
+		 *		mls << WS::getAs<WS::Encoding::UTF8>(stringWithNonAsciiChars);   	// this will use UTF8 encoding when receiving the string
 		 *	@endcode
 		 */
 		template<Encoding E, typename T>
@@ -217,7 +217,7 @@ namespace LLU {
 
 			/**
 			 * Constructor that takes a reference to value of type T and stores it
-			 * @param o - reference to the object to be read from MLStream
+			 * @param o - reference to the object to be read from WSStream
 			 */
 			explicit GetAs(T& o) : obj(o) {}
 
@@ -226,7 +226,7 @@ namespace LLU {
 		};
 
 		/**
-		 * This is a helper function to facilitate constructing ML::GetAs wrapper.
+		 * This is a helper function to facilitate constructing WS::GetAs wrapper.
 		 * @param obj - a reference to value of type T
 		 * @return a GetAs wrapper
 		 */
@@ -234,8 +234,8 @@ namespace LLU {
 		GetAs<E, T> getAs(T& obj) {
 			return GetAs<E, T>(obj);
 		}
-	} /* namespace ML */
+	} /* namespace WS */
 
 } /* namespace LLU */
 
-#endif /* LLUTILS_ML_ENCODINGTRAITS_HPP_ */
+#endif /* LLU_WSTP_ENCODINGTRAITS_HPP_ */

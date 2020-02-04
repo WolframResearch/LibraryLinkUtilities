@@ -4,8 +4,8 @@
  * @author	Rafal Chojna <rafalc@wolfram.com>
  * @brief	Header file with miscellaneous utilities used throughout the WSTP-related part of LibraryLinkUtilities
  */
-#ifndef LLUTILS_ML_UTILITIES_H_
-#define LLUTILS_ML_UTILITIES_H_
+#ifndef LLU_WSTP_UTILITIES_H_
+#define LLU_WSTP_UTILITIES_H_
 
 #include <cstring>
 #include <string>
@@ -18,25 +18,25 @@
 
 namespace LLU {
 
-	template<ML::Encoding, ML::Encoding>
-	class MLStream;
+	template<WS::Encoding, WS::Encoding>
+	class WSStream;
 
 	/**
 	 * @brief Contains definitions related to WSTP functionality in LLU
 	 */
-	namespace ML {
+	namespace WS {
 
 		/**
 		 * @brief 		Checks if WSTP operation was successful and throws appropriate exception otherwise
-		 * @param[in] 	m - low-level object of type MLINK received from LibraryLink
+		 * @param[in] 	m - low-level object of type WSLINK received from LibraryLink
 		 * @param[in] 	statusOk - status code return from a WSTP function
 		 * @param[in] 	errorName - what error name to put in the exception if WSTP function failed
 		 * @param[in] 	debugInfo - additional info to be attached to the exception
 		 */
-		void checkError(MLINK m, int statusOk, const std::string& errorName, const std::string& debugInfo = "");
+		void checkError(WSLINK m, int statusOk, const std::string& errorName, const std::string& debugInfo = "");
 
 		/**
-		 * @brief	Simple wrapper over ErrorManager::throwException used to break dependency cycle between MLStream and ErrorManager.
+		 * @brief	Simple wrapper over ErrorManager::throwException used to break dependency cycle between WSStream and ErrorManager.
 		 * @param 	errorName - what error name to put in the exception
 		 * @param 	debugInfo - additional info to be attached to the exception
 		 */
@@ -49,7 +49,7 @@ namespace LLU {
 		struct Symbol {
 			/**
 			 * @brief Default constructor.
-			 * The head is empty and such Symbol can be used as argument of MathLinkStream::operator>>, so to read a Symbol from top-level.
+			 * The head is empty and such Symbol can be used as argument of WSStream::operator>>, so to read a Symbol from top-level.
 			 */
 			Symbol() = default;
 
@@ -84,14 +84,14 @@ namespace LLU {
 			/**
 			 * @brief Default constructor.
 			 * The head is empty and number of arguments is set to a dummy value.
-			 * This constructor should only be used to create a Function right before calling MathLinkStream::operator>> on it, which will read a function from
+			 * This constructor should only be used to create a Function right before calling WSStream::operator>> on it, which will read a function from
 			 * top-level.
 			 */
 			Function() : Function("", -1) {};
 
 			/**
 			 * @brief Create a Function with given head but unknown number of arguments.
-			 * You can later call MathLinkStream::operator>> on such constructed Function to populate argument count with a value read from top-level.
+			 * You can later call WSStream::operator>> on such constructed Function to populate argument count with a value read from top-level.
 			 * @param h - function head
 			 */
 			explicit Function(const std::string& h) : Function(h, -1) {}
@@ -155,34 +155,34 @@ namespace LLU {
 
 		enum class Direction : bool { Get, Put };
 
-		template<ML::Encoding EIn, ML::Encoding EOut>
-		MLStream<EIn, EOut>& NewPacket(MLStream<EIn, EOut>& ms) {
-			checkError(ms.get(), MLNewPacket(ms.get()), ErrorName::MLPacketHandleError, "Error in MLNewPacket");
+		template<WS::Encoding EIn, WS::Encoding EOut>
+		WSStream<EIn, EOut>& NewPacket(WSStream<EIn, EOut>& ms) {
+			checkError(ms.get(), WSNewPacket(ms.get()), ErrorName::WSPacketHandleError, "Error in WSNewPacket");
 			return ms;
 		}
 
-		template<ML::Encoding EIn, ML::Encoding EOut>
-		MLStream<EIn, EOut>& EndPacket(MLStream<EIn, EOut>& ms) {
-			checkError(ms.get(), MLEndPacket(ms.get()), ErrorName::MLPacketHandleError, "Error in MLEndPacket");
+		template<WS::Encoding EIn, WS::Encoding EOut>
+		WSStream<EIn, EOut>& EndPacket(WSStream<EIn, EOut>& ms) {
+			checkError(ms.get(), WSEndPacket(ms.get()), ErrorName::WSPacketHandleError, "Error in WSEndPacket");
 			return ms;
 		}
 
-		template<ML::Encoding EIn, ML::Encoding EOut>
-		MLStream<EIn, EOut>& Flush(MLStream<EIn, EOut>& ms) {
-			checkError(ms.get(), MLFlush(ms.get()), ErrorName::MLFlowControlError, "Error in MLFlush");
+		template<WS::Encoding EIn, WS::Encoding EOut>
+		WSStream<EIn, EOut>& Flush(WSStream<EIn, EOut>& ms) {
+			checkError(ms.get(), WSFlush(ms.get()), ErrorName::WSFlowControlError, "Error in WSFlush");
 			return ms;
 		}
 
-		template<ML::Encoding EIn, ML::Encoding EOut>
-		MLStream<EIn, EOut>& Rule(MLStream<EIn, EOut>& ms, Direction dir) {
+		template<WS::Encoding EIn, WS::Encoding EOut>
+		WSStream<EIn, EOut>& Rule(WSStream<EIn, EOut>& ms, Direction dir) {
 			if (dir == Direction::Put)
 				return ms << Function("Rule", 2);
 			else
 				return ms >> Function("Rule", 2);
 		}
 
-		template<ML::Encoding EIn, ML::Encoding EOut>
-		MLStream<EIn, EOut>& Null(MLStream<EIn, EOut>& ms, Direction dir) {
+		template<WS::Encoding EIn, WS::Encoding EOut>
+		WSStream<EIn, EOut>& Null(WSStream<EIn, EOut>& ms, Direction dir) {
 			if (dir == Direction::Put)
 				return ms << Symbol("Null");
 			else
@@ -213,19 +213,19 @@ namespace LLU {
 		struct EndExpr {};
 
 		/**
-		 * @brief	Returns a new loopback link using MLLinkEnvironment(m) as MENV
-		 * @param 	m - valid MLINK
+		 * @brief	Returns a new loopback link using WSLinkEnvironment(m) as MENV
+		 * @param 	m - valid WSLINK
 		 * @return 	a brand new Loopback Link
 		 */
-		MLINK getNewLoopback(MLINK m);
+		WSLINK getNewLoopback(WSLINK m);
 
 		/**
 		 * @brief	Get the number of expressions stored in the loopback link
-		 * @param	lpbckLink - a reference to the loopback link, after expressions are counted this argument will be assigned a different MLINK
+		 * @param	lpbckLink - a reference to the loopback link, after expressions are counted this argument will be assigned a different WSLINK
 		 * @return	a number of expression stored in the loopback link
 		 */
-		int countExpressionsInLoopbackLink(MLINK& lpbckLink);
+		int countExpressionsInLoopbackLink(WSLINK& lpbckLink);
 	}
 }
 
-#endif /* LLUTILS_ML_UTILITIES_H_ */
+#endif /* LLU_WSTP_UTILITIES_H_ */

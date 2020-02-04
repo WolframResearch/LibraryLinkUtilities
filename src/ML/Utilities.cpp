@@ -10,11 +10,11 @@
 #include "wstp.h"
 
 #include <LLU/ErrorLog/ErrorManager.h>
-#include <LLU/ML/Utilities.h>
+#include <LLU/WSTP/Utilities.h>
 
 namespace LLU {
 
-	namespace ML {
+	namespace WS {
 
 		const std::string& Symbol::getHead() const {
 			return head;
@@ -32,20 +32,20 @@ namespace LLU {
 			argc = newArgc;
 		}
 
-		std::string getMLErrorText(MLINK mlp) {
-			std::string err = "Error code reported by WSTP: " + std::to_string(MLError(mlp)) + "\n";
-			auto mlErrorMsg = MLErrorMessage(mlp);
+		std::string getWSErrorText(WSLINK mlp) {
+			std::string err = "Error code reported by WSTP: " + std::to_string(WSError(mlp)) + "\n";
+			auto mlErrorMsg = WSErrorMessage(mlp);
 			if (mlErrorMsg) {
 				err += "\"" + std::string(mlErrorMsg) + "\"";
-				MLReleaseErrorMessage(mlp, mlErrorMsg);
+				WSReleaseErrorMessage(mlp, mlErrorMsg);
 			}
-			MLClearError(mlp);
+			WSClearError(mlp);
 			return err;
 		}
 
-		void checkError(MLINK m, int statusOk, const std::string& errorName, const std::string& debugInfo) {
+		void checkError(WSLINK m, int statusOk, const std::string& errorName, const std::string& debugInfo) {
 			if (!statusOk) {
-				ErrorManager::throwExceptionWithDebugInfo(errorName, getMLErrorText(m) + "\nDebug info: " + debugInfo);
+				ErrorManager::throwExceptionWithDebugInfo(errorName, getWSErrorText(m) + "\nDebug info: " + debugInfo);
 			}
 		}
 
@@ -53,21 +53,21 @@ namespace LLU {
 			ErrorManager::throwExceptionWithDebugInfo(errorName, debugInfo);
 		}
 
-		MLINK getNewLoopback(MLINK m) {
+		WSLINK getNewLoopback(WSLINK m) {
 			int err = 0;
-			auto loopback = MLLoopbackOpen(MLLinkEnvironment(m), &err);
-			if (loopback == static_cast<MLINK>(0) || err != MLEOK) {
-				ErrorManager::throwExceptionWithDebugInfo(ErrorName::MLCreateLoopbackError, "Error code: " + std::to_string(err));
+			auto loopback = WSLoopbackOpen(WSLinkEnvironment(m), &err);
+			if (loopback == static_cast<WSLINK>(0) || err != WSEOK) {
+				ErrorManager::throwExceptionWithDebugInfo(ErrorName::WSCreateLoopbackError, "Error code: " + std::to_string(err));
 			}
 			return loopback;
 		}
 
-		int countExpressionsInLoopbackLink(MLINK& lpbckLink) {
+		int countExpressionsInLoopbackLink(WSLINK& lpbckLink) {
 			auto helperLink = getNewLoopback(lpbckLink);
 			int exprCnt = 0;
-			while (MLTransferExpression(helperLink, lpbckLink))
+			while (WSTransferExpression(helperLink, lpbckLink))
 				exprCnt++;
-			MLClose(lpbckLink);
+			WSClose(lpbckLink);
 			lpbckLink = helperLink;
 			return exprCnt;
 		}

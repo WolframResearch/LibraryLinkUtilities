@@ -1,18 +1,123 @@
 /**
- * @file	Get.cpp
+ * @file	Get.h
  * @date	Nov 28, 2017
  * @author	Rafal Chojna <rafalc@wolfram.com>
- * @brief	Implementation file with classes related to reading data from WSTP.
+ * @brief	Header file with classes related to reading data from WSTP.
  */
-#ifndef _WIN32
+#ifndef LLU_WSTP_WSGET_H_
+#define LLU_WSTP_WSGET_H_
 
-#include "LLU/WSTP/Get.h"
+#include <functional>
+#include <memory>
+#include <string>
 
 #include "wstp.h"
+
+#include "LLU/ErrorLog/Errors.h"
+#include "LLU/WSTP/Release.h"
+#include "LLU/WSTP/Utilities.h"
+#include "LLU/Utilities.hpp"
 
 namespace LLU {
 
 	namespace WS {
+		template<typename T>
+		using ListData = std::unique_ptr<T[], ReleaseList<T>>;
+
+		template<typename T>
+		using ArrayData = std::unique_ptr<T[], ReleaseArray<T>>;
+
+		template<typename T>
+		struct GetArray {
+			using Func = std::function<int(WSLINK, T**, int**, char***, int*)>;
+
+			static ArrayData<T> get(WSLINK m) {
+				T* rawResult;
+				int* dims;
+				char** heads;
+				int rank;
+				checkError(m, ArrayF(m, &rawResult, &dims, &heads, &rank), ErrorName::WSGetArrayError, ArrayFName);
+				return {rawResult, ReleaseArray<T> {m, dims, heads, rank}};
+			}
+
+		private:
+			static const std::string ArrayFName;
+			static Func ArrayF;
+		};
+
+		template<typename T>
+		struct GetList {
+			using Func = std::function<int(WSLINK, T**, int*)>;
+
+			static ListData<T> get(WSLINK m) {
+				T* rawResult;
+				int len;
+				checkError(m, ListF(m, &rawResult, &len), ErrorName::WSGetListError, ListFName);
+				return {rawResult, ReleaseList<T> {m, len}};
+			}
+
+		private:
+			static const std::string ListFName;
+			static Func ListF;
+		};
+
+		template<typename T>
+		struct GetScalar {
+			using Func = std::function<int(WSLINK, T*)>;
+
+			static T get(WSLINK m) {
+				T rawResult;
+				checkError(m, ScalarF(m, &rawResult), ErrorName::WSGetScalarError, ScalarFName);
+				return rawResult;
+			}
+
+		private:
+			static const std::string ScalarFName;
+			static Func ScalarF;
+		};
+
+		template<typename T>
+		typename GetArray<T>::Func GetArray<T>::ArrayF = [](WSLINK, T**, int**, char***, int*) {
+			static_assert(dependent_false_v<T>, "Trying to use WS::GetArray<T> for unsupported type T");
+			return 0;
+		};
+
+		template<typename T>
+		typename GetList<T>::Func GetList<T>::ListF = [](WSLINK) {
+			static_assert(dependent_false_v<T>, "Trying to use WS::GetList<T> for unsupported type T");
+			return 0;
+		};
+
+		template<typename T>
+		typename GetScalar<T>::Func GetScalar<T>::ScalarF = [](WSLINK, T*) {
+			static_assert(dependent_false_v<T>, "Trying to use WS::GetScalar<T> for unsupported type T");
+			return 0;
+		};
+
+#ifndef _WIN32
+
+#define WS_GET_DECLARE_SPECIALIZATIONS_OF_STATIC_MEMBERS(T) \
+	template<>                                              \
+	GetArray<T>::Func GetArray<T>::ArrayF;                  \
+	template<>                                              \
+	const std::string GetArray<T>::ArrayFName;              \
+	template<>                                              \
+	GetList<T>::Func GetList<T>::ListF;                     \
+	template<>                                              \
+	const std::string GetList<T>::ListFName;                \
+	template<>                                              \
+	GetScalar<T>::Func GetScalar<T>::ScalarF;               \
+	template<>                                              \
+	const std::string GetScalar<T>::ScalarFName;
+
+		WS_GET_DECLARE_SPECIALIZATIONS_OF_STATIC_MEMBERS(unsigned char)
+		WS_GET_DECLARE_SPECIALIZATIONS_OF_STATIC_MEMBERS(short)
+		WS_GET_DECLARE_SPECIALIZATIONS_OF_STATIC_MEMBERS(int)
+		WS_GET_DECLARE_SPECIALIZATIONS_OF_STATIC_MEMBERS(wsint64)
+		WS_GET_DECLARE_SPECIALIZATIONS_OF_STATIC_MEMBERS(float)
+		WS_GET_DECLARE_SPECIALIZATIONS_OF_STATIC_MEMBERS(double)
+
+#else
 
 		/* ***************************************************************** */
 		/* ********* Template specializations for  unsigned char  ********** */
@@ -181,9 +286,10 @@ namespace LLU {
 
 		template<>
 		const std::string GetScalar<double>::ScalarFName = "WSGetReal64";
+#endif
 
-	}
+	} /* namespace WS */
 
 } /* namespace LLU */
 
-#endif
+#endif /* LLU_WSTP_WSGET_H_ */

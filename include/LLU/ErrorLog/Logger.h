@@ -12,7 +12,7 @@
 #include <utility>
 
 #include "LLU/LibraryData.h"
-#include "LLU/ML/MLStream.hpp"
+#include "LLU/WSTP/WSStream.hpp"
 
 // "Public" macros:
 
@@ -73,7 +73,7 @@ namespace LLU {
 		 * @param 	fileName - name of the file in which the log was called
 		 * @param 	function - function in which the log was called
 		 * @param 	args - additional parameters carrying the actual log message contents
-		 * @warning This function communicates with WSTP and if this communication goes wrong, MLStream may throw
+		 * @warning This function communicates with WSTP and if this communication goes wrong, WSStream may throw
 		 * 			so be careful when logging in destructors.
 		 */
 		template<Level L, typename... T>
@@ -87,7 +87,7 @@ namespace LLU {
 		 * @param 	fileName - name of the file in which the log was called
 		 * @param 	function - function in which the log was called
 		 * @param 	args - additional parameters carrying the actual log message contents
-		 * @warning This function communicates with WSTP and if this communication goes wrong, MLStream may throw
+		 * @warning This function communicates with WSTP and if this communication goes wrong, WSStream may throw
 		 * 			so be careful when logging in destructors.
 		 */
 		template<Level L, typename... T>
@@ -124,15 +124,15 @@ namespace LLU {
 	};
 
 	/**
-	 * Sends a Logger::Level value via MLStream
-	 * @tparam 	EIn - MLStream input encoding
-	 * @tparam 	EOut - MLStream output encoding
-	 * @param 	ms - reference to the MLStream object
+	 * Sends a Logger::Level value via WSStream
+	 * @tparam 	EIn - WSStream input encoding
+	 * @tparam 	EOut - WSStream output encoding
+	 * @param 	ms - reference to the WSStream object
 	 * @param 	l - log level
 	 * @return	reference to the input stream
 	 */
-	template<ML::Encoding EIn, ML::Encoding EOut>
-	static MLStream<EIn, EOut>& operator<<(MLStream<EIn, EOut>& ms, Logger::Level l) {
+	template<WS::Encoding EIn, WS::Encoding EOut>
+	static WSStream<EIn, EOut>& operator<<(WSStream<EIn, EOut>& ms, Logger::Level l) {
 		return ms << Logger::to_string(l);
 	}
 
@@ -144,15 +144,15 @@ namespace LLU {
 		}
 		std::lock_guard<std::mutex> lock(mlinkGuard);
 
-		MLStream<ML::Encoding::UTF8> mls {libData->getWSLINK(libData)};
-		mls << ML::Function("EvaluatePacket", 1);
-		mls << ML::Function(getSymbol(), 4 + sizeof...(T));
+		WSStream<WS::Encoding::UTF8> mls {libData->getWSLINK(libData)};
+		mls << WS::Function("EvaluatePacket", 1);
+		mls << WS::Function(getSymbol(), 4 + sizeof...(T));
 		mls << L << line << fileName << function;
 		static_cast<void>(std::initializer_list<int> {(mls << args, 0)...});
 		libData->processWSLINK(mls.get());
-		auto pkt = MLNextPacket(mls.get());
+		auto pkt = WSNextPacket(mls.get());
 		if (pkt == RETURNPKT) {
-			mls << ML::NewPacket;
+			mls << WS::NewPacket;
 		}
 	}
 

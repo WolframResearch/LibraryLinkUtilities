@@ -5,14 +5,14 @@
  * @brief	Implementation file for all the functionality related to Strings in WSTP
  */
 
-#include "LLU/ML/Strings.h"
+#include "LLU/WSTP/Strings.h"
 
 #include <algorithm>
 #include <type_traits>
 
 namespace LLU {
 
-	namespace ML {
+	namespace WS {
 
 		/// Definitions of configuration parameters, see header file for detailed description
 		namespace EncodingConfig {
@@ -22,89 +22,89 @@ namespace LLU {
 
 #ifndef _WIN32
 		template<>
-		GetStringFuncT<CharType<Encoding::Native>> String<Encoding::Native>::Get = [](MLINK m, const char** strData, int* len, int* charCnt) {
+		GetStringFuncT<CharType<Encoding::Native>> String<Encoding::Native>::Get = [](WSLINK m, const char** strData, int* len, int* charCnt) {
 			*len = *charCnt = -1;
-			return MLGetString(m, strData);
+			return WSGetString(m, strData);
 		};
 		template<>
-		PutStringFuncT<CharType<Encoding::Native>> String<Encoding::Native>::Put = [](MLINK m, const char* strData, int) { return MLPutString(m, strData); };
+		PutStringFuncT<CharType<Encoding::Native>> String<Encoding::Native>::Put = [](WSLINK m, const char* strData, int) { return WSPutString(m, strData); };
 		template<>
 		ReleaseStringFuncT<CharType<Encoding::Native>>
-			String<Encoding::Native>::Release = [](MLINK m, const char* strData, int) { MLReleaseString(m, strData); };
+			String<Encoding::Native>::Release = [](WSLINK m, const char* strData, int) { WSReleaseString(m, strData); };
 		template<>
-		const std::string String<Encoding::Native>::GetFName = "MLGetString";
+		const std::string String<Encoding::Native>::GetFName = "WSGetString";
 		template<>
-		const std::string String<Encoding::Native>::PutFName = "MLPutString";
+		const std::string String<Encoding::Native>::PutFName = "WSPutString";
 
 		template<>
-		GetStringFuncT<CharType<Encoding::Byte>> String<Encoding::Byte>::Get = [](MLINK m, const unsigned char** strData, int* len, int* charCnt) {
+		GetStringFuncT<CharType<Encoding::Byte>> String<Encoding::Byte>::Get = [](WSLINK m, const unsigned char** strData, int* len, int* charCnt) {
 			*charCnt = -1;
-			return MLGetByteString(m, strData, len, EncodingConfig::substituteCodeForByteEncoding);
+			return WSGetByteString(m, strData, len, EncodingConfig::substituteCodeForByteEncoding);
 		};
 		template<>
-		PutStringFuncT<CharType<Encoding::Byte>> String<Encoding::Byte>::Put = MLPutByteString;
+		PutStringFuncT<CharType<Encoding::Byte>> String<Encoding::Byte>::Put = WSPutByteString;
 		template<>
-		ReleaseStringFuncT<CharType<Encoding::Byte>> String<Encoding::Byte>::Release = MLReleaseByteString;
+		ReleaseStringFuncT<CharType<Encoding::Byte>> String<Encoding::Byte>::Release = WSReleaseByteString;
 		template<>
-		const std::string String<Encoding::Byte>::GetFName = "MLGetByteString";
+		const std::string String<Encoding::Byte>::GetFName = "WSGetByteString";
 		template<>
-		const std::string String<Encoding::Byte>::PutFName = "MLPutByteString";
+		const std::string String<Encoding::Byte>::PutFName = "WSPutByteString";
 
 		template<>
-		GetStringFuncT<CharType<Encoding::UTF8>> String<Encoding::UTF8>::Get = MLGetUTF8String;
+		GetStringFuncT<CharType<Encoding::UTF8>> String<Encoding::UTF8>::Get = WSGetUTF8String;
 		template<>
-		PutStringFuncT<CharType<Encoding::UTF8>> String<Encoding::UTF8>::Put = [](MLINK m, const unsigned char* strData, int len) {
+		PutStringFuncT<CharType<Encoding::UTF8>> String<Encoding::UTF8>::Put = [](WSLINK m, const unsigned char* strData, int len) {
 			if (EncodingConfig::useFastUTF8 && std::all_of(strData, strData + len, [](unsigned char strChar) { return strChar <= 127; })) {
-				return MLPutByteString(m, strData, len);
+				return WSPutByteString(m, strData, len);
 			} else {
-				return MLPutUTF8String(m, strData, len);
+				return WSPutUTF8String(m, strData, len);
 			}
 		};
 		template<>
-		ReleaseStringFuncT<CharType<Encoding::UTF8>> String<Encoding::UTF8>::Release = MLReleaseUTF8String;
+		ReleaseStringFuncT<CharType<Encoding::UTF8>> String<Encoding::UTF8>::Release = WSReleaseUTF8String;
 		template<>
-		const std::string String<Encoding::UTF8>::GetFName = "MLGetUTF8String";
+		const std::string String<Encoding::UTF8>::GetFName = "WSGetUTF8String";
 		template<>
-		const std::string String<Encoding::UTF8>::PutFName = "MLPut(UTF8/Byte)String";
+		const std::string String<Encoding::UTF8>::PutFName = "WSPut(UTF8/Byte)String";
 
 		template<>
-		GetStringFuncT<CharType<Encoding::UTF16>> String<Encoding::UTF16>::Get = MLGetUTF16String;
+		GetStringFuncT<CharType<Encoding::UTF16>> String<Encoding::UTF16>::Get = WSGetUTF16String;
 		template<>
-		PutStringFuncT<CharType<Encoding::UTF16>> String<Encoding::UTF16>::Put = MLPutUTF16String;
+		PutStringFuncT<CharType<Encoding::UTF16>> String<Encoding::UTF16>::Put = WSPutUTF16String;
 		template<>
-		ReleaseStringFuncT<CharType<Encoding::UTF16>> String<Encoding::UTF16>::Release = MLReleaseUTF16String;
+		ReleaseStringFuncT<CharType<Encoding::UTF16>> String<Encoding::UTF16>::Release = WSReleaseUTF16String;
 		template<>
-		const std::string String<Encoding::UTF16>::GetFName = "MLGetUTF16String";
+		const std::string String<Encoding::UTF16>::GetFName = "WSGetUTF16String";
 		template<>
-		const std::string String<Encoding::UTF16>::PutFName = "MLPutUTF16String";
+		const std::string String<Encoding::UTF16>::PutFName = "WSPutUTF16String";
 
 		template<>
-		GetStringFuncT<CharType<Encoding::UCS2>> String<Encoding::UCS2>::Get = [](MLINK m, const unsigned short** strData, int* len, int* charCnt) {
+		GetStringFuncT<CharType<Encoding::UCS2>> String<Encoding::UCS2>::Get = [](WSLINK m, const unsigned short** strData, int* len, int* charCnt) {
 			*charCnt = -1;
-			return MLGetUCS2String(m, strData, len);
+			return WSGetUCS2String(m, strData, len);
 		};
 		template<>
-		PutStringFuncT<CharType<Encoding::UCS2>> String<Encoding::UCS2>::Put = MLPutUCS2String;
+		PutStringFuncT<CharType<Encoding::UCS2>> String<Encoding::UCS2>::Put = WSPutUCS2String;
 		template<>
-		ReleaseStringFuncT<CharType<Encoding::UCS2>> String<Encoding::UCS2>::Release = MLReleaseUCS2String;
+		ReleaseStringFuncT<CharType<Encoding::UCS2>> String<Encoding::UCS2>::Release = WSReleaseUCS2String;
 		template<>
-		const std::string String<Encoding::UCS2>::GetFName = "MLGetUCS2String";
+		const std::string String<Encoding::UCS2>::GetFName = "WSGetUCS2String";
 		template<>
-		const std::string String<Encoding::UCS2>::PutFName = "MLPutUCS2String";
+		const std::string String<Encoding::UCS2>::PutFName = "WSPutUCS2String";
 
 		template<>
-		GetStringFuncT<CharType<Encoding::UTF32>> String<Encoding::UTF32>::Get = [](MLINK m, const unsigned int** strData, int* len, int* charCnt) {
+		GetStringFuncT<CharType<Encoding::UTF32>> String<Encoding::UTF32>::Get = [](WSLINK m, const unsigned int** strData, int* len, int* charCnt) {
 			*charCnt = -1;
-			return MLGetUTF32String(m, strData, len);
+			return WSGetUTF32String(m, strData, len);
 		};
 		template<>
-		PutStringFuncT<CharType<Encoding::UTF32>> String<Encoding::UTF32>::Put = MLPutUTF32String;
+		PutStringFuncT<CharType<Encoding::UTF32>> String<Encoding::UTF32>::Put = WSPutUTF32String;
 		template<>
-		ReleaseStringFuncT<CharType<Encoding::UTF32>> String<Encoding::UTF32>::Release = MLReleaseUTF32String;
+		ReleaseStringFuncT<CharType<Encoding::UTF32>> String<Encoding::UTF32>::Release = WSReleaseUTF32String;
 		template<>
-		const std::string String<Encoding::UTF32>::GetFName = "MLGetUTF32String";
+		const std::string String<Encoding::UTF32>::GetFName = "WSGetUTF32String";
 		template<>
-		const std::string String<Encoding::UTF32>::PutFName = "MLPutUTF32String";
+		const std::string String<Encoding::UTF32>::PutFName = "WSPutUTF32String";
 #endif
 
 	}

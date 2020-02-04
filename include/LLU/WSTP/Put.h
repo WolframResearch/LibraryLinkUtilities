@@ -1,21 +1,109 @@
 /**
- * @file	Put.cpp
+ * @file	Put.h
  * @date	Nov 28, 2017
  * @author	Rafal Chojna <rafalc@wolfram.com>
- * @brief	Implementation file with classes related to sending data through WSTP.
+ * @brief	Header file with classes related to sending data through WSTP.
  */
+#ifndef LLU_WSTP_WSPUT_H_
+#define LLU_WSTP_WSPUT_H_
 
-#ifndef _WIN32
-
-#include "../../include/LLU/WSTP/Put.h"
+#include <functional>
 
 #include "wstp.h"
 
-#include "../../include/LLU/Utilities.hpp"
+#include "LLU/ErrorLog/Errors.h"
+#include "LLU/WSTP/Utilities.h"
+#include "LLU/Utilities.hpp"
 
 namespace LLU {
 
 	namespace WS {
+
+		template<typename T>
+		struct PutArray {
+			using Func = std::function<int(WSLINK, const T*, const int*, const char**, int)>;
+
+			static void put(WSLINK m, const T* array, const int* dims, const char** heads, int len) {
+				checkError(m, ArrayF(m, array, dims, heads, len), ErrorName::WSPutArrayError, ArrayFName);
+			}
+
+			static void put(WSLINK m, const T* array, const int* dims, char** heads, int len) {
+				checkError(m, ArrayF(m, array, dims, const_cast<const char**>(heads), len), ErrorName::WSPutArrayError, ArrayFName);
+			}
+
+		private:
+			static const std::string ArrayFName;
+			static Func ArrayF;
+		};
+
+		template<typename T>
+		struct PutList {
+			using Func = std::function<int(WSLINK, const T*, int)>;
+
+			static void put(WSLINK m, const T* list, int len) {
+				checkError(m, ListF(m, list, len), ErrorName::WSPutListError, ListFName);
+			}
+
+		private:
+			static const std::string ListFName;
+			static Func ListF;
+		};
+
+		template<typename T>
+		struct PutScalar {
+			using Func = std::function<int(WSLINK, T)>;
+
+			static void put(WSLINK m, T scalar) {
+				checkError(m, ScalarF(m, scalar), ErrorName::WSPutScalarError, ScalarFName);
+			}
+
+		private:
+			static const std::string ScalarFName;
+			static Func ScalarF;
+		};
+
+		template<typename T>
+		typename PutArray<T>::Func PutArray<T>::ArrayF = [](WSLINK, const T*, const int*, const char**, int) {
+			static_assert(dependent_false_v<T>, "Trying to use WS::PutArray<T> for unsupported type T");
+			return 0;
+		};
+
+		template<typename T>
+		typename PutList<T>::Func PutList<T>::ListF = [](WSLINK, const T*, int) {
+			static_assert(dependent_false_v<T>, "Trying to use WS::PutList<T> for unsupported type T");
+			return 0;
+		};
+
+		template<typename T>
+		typename PutScalar<T>::Func PutScalar<T>::ScalarF = [](WSLINK, T) {
+			static_assert(dependent_false_v<T>, "Trying to use WS::PutScalar<T> for unsupported type T");
+			return 0;
+		};
+
+#ifndef _WIN32
+
+#define WS_PUT_DECLARE_SPECIALIZATIONS_OF_STATIC_MEMBERS(T) \
+	template<>                                              \
+	PutArray<T>::Func PutArray<T>::ArrayF;                  \
+	template<>                                              \
+	const std::string PutArray<T>::ArrayFName;              \
+	template<>                                              \
+	PutList<T>::Func PutList<T>::ListF;                     \
+	template<>                                              \
+	const std::string PutList<T>::ListFName;                \
+	template<>                                              \
+	PutScalar<T>::Func PutScalar<T>::ScalarF;               \
+	template<>                                              \
+	const std::string PutScalar<T>::ScalarFName;
+
+		WS_PUT_DECLARE_SPECIALIZATIONS_OF_STATIC_MEMBERS(unsigned char)
+		WS_PUT_DECLARE_SPECIALIZATIONS_OF_STATIC_MEMBERS(short)
+		WS_PUT_DECLARE_SPECIALIZATIONS_OF_STATIC_MEMBERS(int)
+		WS_PUT_DECLARE_SPECIALIZATIONS_OF_STATIC_MEMBERS(wsint64)
+		WS_PUT_DECLARE_SPECIALIZATIONS_OF_STATIC_MEMBERS(float)
+		WS_PUT_DECLARE_SPECIALIZATIONS_OF_STATIC_MEMBERS(double)
+
+#else
 
 		/* ***************************************************************** */
 		/* ********* Template specializations for  unsigned char  ********** */
@@ -185,8 +273,9 @@ namespace LLU {
 		template<>
 		const std::string PutScalar<double>::ScalarFName = "WSPutReal64";
 
-	}
+#endif
+	} /* namespace WS */
 
 } /* namespace LLU */
 
-#endif
+#endif /* LLU_WSTP_WSPUT_H_ */

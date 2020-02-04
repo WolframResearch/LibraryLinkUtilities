@@ -7,8 +7,8 @@
 #include "LLU/ErrorLog/ErrorManager.h"
 
 #include "LLU/LibraryData.h"
-#include "LLU/ML/MLStream.hpp"
-#include "LLU/ML/Utilities.h"
+#include "LLU/WSTP/WSStream.hpp"
+#include "LLU/WSTP/Utilities.h"
 #include "LLU/Utilities.hpp"
 
 namespace LLU {
@@ -67,27 +67,27 @@ namespace LLU {
 			{ErrorName::MArrayElementIndexError, "Attempting to access MArray dimension `d` which does not exist."},
 
 			// WSTP errors:
-			{ErrorName::MLNullMlinkError, "Trying to create MLStream with NULL MLINK"},
-			{ErrorName::MLTestHeadError, "MLTestHead failed (wrong head or number of arguments)."},
-			{ErrorName::MLPutSymbolError, "MLPutSymbol failed."},
-			{ErrorName::MLPutFunctionError, "MLPutFunction failed."},
-			{ErrorName::MLTestSymbolError, "MLTestSymbol failed (different symbol on the link than expected)."},
-			{ErrorName::MLWrongSymbolForBool, R"(Tried to read something else than "True" or "False" as boolean.)"},
-			{ErrorName::MLGetListError, "Could not get list from WSTP."},
-			{ErrorName::MLGetScalarError, "Could not get scalar from WSTP."},
-			{ErrorName::MLGetStringError, "Could not get string from WSTP."},
-			{ErrorName::MLGetArrayError, "Could not get array from WSTP."},
-			{ErrorName::MLPutListError, "Could not send list via WSTP."},
-			{ErrorName::MLPutScalarError, "Could not send scalar via WSTP."},
-			{ErrorName::MLPutStringError, "Could not send string via WSTP."},
-			{ErrorName::MLPutArrayError, "Could not send array via WSTP."},
-			{ErrorName::MLGetSymbolError, "MLGetSymbol failed."},
-			{ErrorName::MLGetFunctionError, "MLGetFunction failed."},
-			{ErrorName::MLPacketHandleError, "One of the packet handling functions failed."},
-			{ErrorName::MLFlowControlError, "One of the flow control functions failed."},
-			{ErrorName::MLTransferToLoopbackError, "Something went wrong when transferring expressions from loopback link."},
-			{ErrorName::MLCreateLoopbackError, "Could not create a new loopback link."},
-			{ErrorName::MLLoopbackStackSizeError, "Loopback stack size too small to perform desired action."},
+			{ErrorName::WSNullMlinkError, "Trying to create WSStream with NULL WSLINK"},
+			{ErrorName::WSTestHeadError, "WSTestHead failed (wrong head or number of arguments)."},
+			{ErrorName::WSPutSymbolError, "WSPutSymbol failed."},
+			{ErrorName::WSPutFunctionError, "WSPutFunction failed."},
+			{ErrorName::WSTestSymbolError, "WSTestSymbol failed (different symbol on the link than expected)."},
+			{ErrorName::WSWrongSymbolForBool, R"(Tried to read something else than "True" or "False" as boolean.)"},
+			{ErrorName::WSGetListError, "Could not get list from WSTP."},
+			{ErrorName::WSGetScalarError, "Could not get scalar from WSTP."},
+			{ErrorName::WSGetStringError, "Could not get string from WSTP."},
+			{ErrorName::WSGetArrayError, "Could not get array from WSTP."},
+			{ErrorName::WSPutListError, "Could not send list via WSTP."},
+			{ErrorName::WSPutScalarError, "Could not send scalar via WSTP."},
+			{ErrorName::WSPutStringError, "Could not send string via WSTP."},
+			{ErrorName::WSPutArrayError, "Could not send array via WSTP."},
+			{ErrorName::WSGetSymbolError, "WSGetSymbol failed."},
+			{ErrorName::WSGetFunctionError, "WSGetFunction failed."},
+			{ErrorName::WSPacketHandleError, "One of the packet handling functions failed."},
+			{ErrorName::WSFlowControlError, "One of the flow control functions failed."},
+			{ErrorName::WSTransferToLoopbackError, "Something went wrong when transferring expressions from loopback link."},
+			{ErrorName::WSCreateLoopbackError, "Could not create a new loopback link."},
+			{ErrorName::WSLoopbackStackSizeError, "Loopback stack size too small to perform desired action."},
 
 			// DataList errors:
 			{ErrorName::DLNullRawNode, "DataStoreNode passed to Node wrapper was null"},
@@ -167,23 +167,23 @@ namespace LLU {
 		return exception->second;
 	}
 
-	void ErrorManager::sendRegisteredErrorsViaMathlink(MLINK mlp) {
-		MLStream<ML::Encoding::UTF8> ms(mlp, "List", 0);
+	void ErrorManager::sendRegisteredErrorsViaWSTP(WSLINK mlp) {
+		WSStream<WS::Encoding::UTF8> ms(mlp, "List", 0);
 
-		ms << ML::NewPacket << ML::Association(static_cast<int>(errors().size()));
+		ms << WS::NewPacket << WS::Association(static_cast<int>(errors().size()));
 
 		for (const auto& err : errors()) {
-			ms << ML::Rule << err.first << ML::List(2) << err.second.id() << err.second.message();
+			ms << WS::Rule << err.first << WS::List(2) << err.second.id() << err.second.message();
 		}
 
-		ms << ML::EndPacket << ML::Flush;
+		ms << WS::EndPacket << WS::Flush;
 	}
 
-	EXTERN_C DLLEXPORT int sendRegisteredErrors(WolframLibraryData libData, MLINK mlp) {
+	EXTERN_C DLLEXPORT int sendRegisteredErrors(WolframLibraryData libData, WSLINK mlp) {
 		Unused(libData);
 		auto err = ErrorCode::NoError;
 		try {
-			ErrorManager::sendRegisteredErrorsViaMathlink(mlp);
+			ErrorManager::sendRegisteredErrorsViaWSTP(mlp);
 		} catch (LibraryLinkError& e) {
 			err = e.which();
 		} catch (...) {
