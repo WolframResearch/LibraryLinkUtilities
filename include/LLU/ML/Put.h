@@ -1,4 +1,4 @@
-/** 
+/**
  * @file	Put.h
  * @date	Nov 28, 2017
  * @author	Rafal Chojna <rafalc@wolfram.com>
@@ -12,6 +12,7 @@
 #include "mathlink.h"
 
 #include "LLU/ErrorLog/Errors.h"
+#include "LLU/ML/Utilities.h"
 #include "LLU/Utilities.hpp"
 
 namespace LLU {
@@ -61,21 +62,20 @@ namespace LLU {
 			static Func ScalarF;
 		};
 
-
 		template<typename T>
-		typename PutArray<T>::Func PutArray<T>::ArrayF = [] (MLINK, const T*, const int*, const char**, int) {
+		typename PutArray<T>::Func PutArray<T>::ArrayF = [](MLINK, const T*, const int*, const char**, int) {
 			static_assert(dependent_false_v<T>, "Trying to use ML::PutArray<T> for unsupported type T");
 			return 0;
 		};
 
 		template<typename T>
-		typename PutList<T>::Func PutList<T>::ListF = [] (MLINK, const T*, int) {
+		typename PutList<T>::Func PutList<T>::ListF = [](MLINK, const T*, int) {
 			static_assert(dependent_false_v<T>, "Trying to use ML::PutList<T> for unsupported type T");
 			return 0;
 		};
 
 		template<typename T>
-		typename PutScalar<T>::Func PutScalar<T>::ScalarF = [] (MLINK, T) {
+		typename PutScalar<T>::Func PutScalar<T>::ScalarF = [](MLINK, T) {
 			static_assert(dependent_false_v<T>, "Trying to use ML::PutScalar<T> for unsupported type T");
 			return 0;
 		};
@@ -83,13 +83,18 @@ namespace LLU {
 #ifndef _WIN32
 
 #define ML_PUT_DECLARE_SPECIALIZATIONS_OF_STATIC_MEMBERS(T) \
-	template<> PutArray<T>::Func PutArray<T>::ArrayF;\
-	template<> const std::string PutArray<T>::ArrayFName;\
-	template<> PutList<T>::Func PutList<T>::ListF;\
-	template<> const std::string PutList<T>::ListFName;\
-	template<> PutScalar<T>::Func PutScalar<T>::ScalarF;\
-	template<> const std::string PutScalar<T>::ScalarFName;
-
+	template<>                                              \
+	PutArray<T>::Func PutArray<T>::ArrayF;                  \
+	template<>                                              \
+	const std::string PutArray<T>::ArrayFName;              \
+	template<>                                              \
+	PutList<T>::Func PutList<T>::ListF;                     \
+	template<>                                              \
+	const std::string PutList<T>::ListFName;                \
+	template<>                                              \
+	PutScalar<T>::Func PutScalar<T>::ScalarF;               \
+	template<>                                              \
+	const std::string PutScalar<T>::ScalarFName;
 
 		ML_PUT_DECLARE_SPECIALIZATIONS_OF_STATIC_MEMBERS(unsigned char)
 		ML_PUT_DECLARE_SPECIALIZATIONS_OF_STATIC_MEMBERS(short)
@@ -97,7 +102,6 @@ namespace LLU {
 		ML_PUT_DECLARE_SPECIALIZATIONS_OF_STATIC_MEMBERS(mlint64)
 		ML_PUT_DECLARE_SPECIALIZATIONS_OF_STATIC_MEMBERS(float)
 		ML_PUT_DECLARE_SPECIALIZATIONS_OF_STATIC_MEMBERS(double)
-
 
 #else
 
@@ -129,7 +133,6 @@ namespace LLU {
 		template<>
 		const std::string PutScalar<unsigned char>::ScalarFName = "MLPutInteger8";
 
-
 		/* ***************************************************************** */
 		/* ******* Template specializations for  (unsigned) short  ********* */
 		/* ***************************************************************** */
@@ -157,7 +160,6 @@ namespace LLU {
 
 		template<>
 		const std::string PutScalar<short>::ScalarFName = "MLPutInteger16";
-
 
 		/* ***************************************************************** */
 		/* ******** Template specializations for  (unsigned) int  ********** */
@@ -187,7 +189,6 @@ namespace LLU {
 		template<>
 		const std::string PutScalar<int>::ScalarFName = "MLPutInteger32";
 
-
 		/* ***************************************************************** */
 		/* *********** Template specializations for  mlint64  ************** */
 		/* ***************************************************************** */
@@ -216,7 +217,6 @@ namespace LLU {
 		template<>
 		const std::string PutScalar<mlint64>::ScalarFName = "MLPutInteger64";
 
-
 		/* ***************************************************************** */
 		/* ************ Template specializations for  float  *************** */
 		/* ***************************************************************** */
@@ -244,7 +244,6 @@ namespace LLU {
 
 		template<>
 		const std::string PutScalar<float>::ScalarFName = "MLPutReal32";
-
 
 		/* ***************************************************************** */
 		/* *********** Template specializations for  double  *************** */
@@ -275,7 +274,7 @@ namespace LLU {
 		const std::string PutScalar<double>::ScalarFName = "MLPutReal64";
 
 #endif
-	}  /* namespace ML */
+	} /* namespace ML */
 
 } /* namespace LLU */
 

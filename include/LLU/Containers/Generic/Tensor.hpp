@@ -1,12 +1,13 @@
 /**
  * @file
- * @brief
+ * @brief   GenericTensor definition and implementation
  */
 
 #ifndef LLU_INCLUDE_LLU_CONTAINERS_GENERIC_TENSOR
 #define LLU_INCLUDE_LLU_CONTAINERS_GENERIC_TENSOR
 
 #include "LLU/Containers/Generic/Base.hpp"
+#include "LLU/Containers/Interfaces.h"
 
 namespace LLU {
 
@@ -16,18 +17,18 @@ namespace LLU {
 	/// MContainer specialization for MTensor is called GenericTensor
 	template<class PassingMode>
 	using GenericTensor = MContainer<MArgumentType::Tensor, PassingMode>;
-
+	
 	/**
 	 *  @brief  MContainer specialization for MTensor
 	 *  @tparam PassingMode - passing policy
 	 */
 	template<class PassingMode>
-	class MContainer<MArgumentType::Tensor, PassingMode> : public MContainerBase<MArgumentType::Tensor, PassingMode> {
+	class MContainer<MArgumentType::Tensor, PassingMode> : public TensorInterface, public MContainerBase<MArgumentType::Tensor, PassingMode> {
 	public:
 		/// Inherit constructors from MContainerBase
 		using MContainerBase<MArgumentType::Tensor, PassingMode>::MContainerBase;
 
-		///Default constructor, the MContainer does not manage any instance of MTensor.
+		/// Default constructor, the MContainer does not manage any instance of MTensor.
 		MContainer() = default;
 
 		/**
@@ -51,8 +52,7 @@ namespace LLU {
 		 * @param   mc - different GenericTensor
 		 */
 		template<class P>
-		explicit MContainer(const MContainer<MArgumentType::Tensor, P>& mc) : Base(mc) {
-		}
+		explicit MContainer(const MContainer<MArgumentType::Tensor, P>& mc) : Base(mc) {}
 
 		MContainer(const MContainer& mc) = default;
 
@@ -60,7 +60,7 @@ namespace LLU {
 
 		MContainer& operator=(const MContainer&) = default;
 
-		MContainer &operator=(MContainer &&mc) noexcept = default;
+		MContainer& operator=(MContainer&& mc) noexcept = default;
 
 		/**
 		 * @brief   Assign a GenericTensor with different passing mode.
@@ -79,42 +79,35 @@ namespace LLU {
 			this->cleanup();
 		};
 
-		/**
-		 * @brief   Get the rank of this GenericTensor.
-		 * @return  number of dimensions in this GenericTensor
-		 * @see     <http://reference.wolfram.com/language/LibraryLink/ref/callback/MTensor_getRank.html>
-		 */
-		mint getRank() const noexcept {
+		/// @copydoc TensorInterface::getRank()
+		mint getRank() const override {
 			return LibraryData::API()->MTensor_getRank(this->getContainer());
 		}
 
-		/**
-		 * @brief   Get dimensions of this GenericTensor.
-		 * @return  raw pointer to dimensions of this GenericTensor
-		 * @see     <http://reference.wolfram.com/language/LibraryLink/ref/callback/MTensor_getDimensions.html>
-		 */
-		mint const* getDimensions() const {
+		/// @copydoc TensorInterface::getDimensions()
+		mint const* getDimensions() const override {
 			return LibraryData::API()->MTensor_getDimensions(this->getContainer());
 		}
 
-		/**
-		 * @brief   Get the length of this GenericTensor.
-		 * @return  total number of elements
-		 * @see     <http://reference.wolfram.com/language/LibraryLink/ref/callback/MTensor_getFlattenedLength.html>
-		 */
-		mint getFlattenedLength() const {
+		/// @copydoc TensorInterface::getFlattenedLength()
+		mint getFlattenedLength() const override {
 			return LibraryData::API()->MTensor_getFlattenedLength(this->getContainer());
 		}
 
-		/**
-		 * @brief   Get the type of this GenericTensor
-		 * @return  type of elements (MType_Integer, MType_Real or MType_Complex)
-		 * @see 	<http://reference.wolfram.com/language/LibraryLink/ref/callback/MTensor_getType.html>
-		 */
-		mint type() const {
+		/// @copydoc TensorInterface::type()
+		mint type() const override {
 			return LibraryData::API()->MTensor_getType(this->getContainer());
 		}
 
+		/// @copydoc TensorInterface::rawData()
+		void* rawData() const override {
+			switch (type()) {
+				case MType_Integer: return LibraryData::API()->MTensor_getIntegerData(this->getContainer());
+				case MType_Real: return LibraryData::API()->MTensor_getRealData(this->getContainer());
+				case MType_Complex: return LibraryData::API()->MTensor_getComplexData(this->getContainer());
+				default: ErrorManager::throwException(ErrorName::TensorTypeError);
+			}
+		}
 	private:
 		using Base = MContainerBase<MArgumentType::Tensor, PassingMode>;
 		using RawContainer = typename Base::Container;
@@ -165,4 +158,4 @@ namespace LLU {
 
 }
 
-#endif //LLU_INCLUDE_LLU_CONTAINERS_GENERIC_TENSOR
+#endif	  // LLU_INCLUDE_LLU_CONTAINERS_GENERIC_TENSOR

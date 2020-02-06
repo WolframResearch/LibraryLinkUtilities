@@ -76,7 +76,6 @@ if(NOT TARGET LLU)
 		${LLU_SOURCE_DIR}/ErrorLog/LibraryLinkError.cpp
 		${LLU_SOURCE_DIR}/MArgumentManager.cpp
 		${LLU_SOURCE_DIR}/Containers/MArrayDimensions.cpp
-		${LLU_SOURCE_DIR}/Containers/NumericArray.cpp
 		${LLU_SOURCE_DIR}/Containers/Tensor.cpp
 		${LLU_SOURCE_DIR}/ML/Get.cpp
 		${LLU_SOURCE_DIR}/ML/Put.cpp
@@ -88,7 +87,7 @@ if(NOT TARGET LLU)
         ${LLU_SOURCE_DIR}/ErrorLog/ErrorManager.cpp
 		${LLU_SOURCE_DIR}/ErrorLog/Errors.cpp
 		${LLU_SOURCE_DIR}/ErrorLog/Logger.cpp
-	)
+		${LLU_SOURCE_DIR}/FileUtilities.cpp)
 
 	#add the main library
 	add_library(LLU ${LLU_SOURCE_FILES})
@@ -238,5 +237,11 @@ if(NOT TARGET LLU)
 		COMMAND
 			"${CMAKE_COMMAND}" -E env CTEST_OUTPUT_ON_FAILURE=1 ${CMAKE_CTEST_COMMAND} -C ${CMAKE_BUILD_TYPE}
 	)
+
+    ##############################################
+    ## Create target for Sphinx documentation build
+
+    add_subdirectory("docs")
+
 endif() #end IF NOT TARGET LLU
 

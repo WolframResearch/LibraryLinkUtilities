@@ -43,14 +43,16 @@ TestExecute[
 	MeanValue = LibraryFunctionLoad[lib, "MeanValue", {{Real, 1}}, Real];
 
 	IntegerMatrixTranspose = LibraryFunctionLoad[lib, "IntegerMatrixTranspose", {{Integer, 2}}, {Integer, 2}];
+	GetLargest = LibraryFunctionLoad[lib, "GetLargest", {{_, _}, {_, _, "Constant"}, {_, _, "Manual"}}, Integer];
+	ReverseTensor = LibraryFunctionLoad[lib, "Reverse", {{_, _, "Constant"}}, {_, _}];
 ];
 
 Test[
-	EchoTensor[{1,2,3}]
+	EchoTensor[{1, 2, 3}]
 	,
-	{1,2,3}
+	{1, 2, 3}
 	,
-	TestID->"TensorOperations-20150817-O6E3O4"
+	TestID -> "TensorOperations-20150817-O6E3O4"
 ];
 
 Test[
@@ -58,7 +60,7 @@ Test[
 	,
 	{}
 	,
-	TestID->"TensorTestSuite-20190703-L8P5C2"
+	TestID -> "TensorTestSuite-20190703-L8P5C2"
 ];
 
 Test[
@@ -82,7 +84,7 @@ Test[
 	,
 	1
 	,
-	TestID->"TensorTestSuite-20181121-O5M3H2"
+	TestID -> "TensorTestSuite-20181121-O5M3H2"
 ];
 
 Test[
@@ -90,7 +92,7 @@ Test[
 	,
 	3
 	,
-	TestID->"TensorTestSuite-20181121-W3H7Z7"
+	TestID -> "TensorTestSuite-20181121-W3H7Z7"
 ];
 
 Test[
@@ -99,7 +101,7 @@ Test[
 	,
 	r[[4, 1, 13]]
 	,
-	TestID->"TensorTestSuite-20181121-W3gsdfgs"
+	TestID -> "TensorTestSuite-20181121-W3gsdfgs"
 ];
 
 TestMatch[
@@ -108,15 +110,15 @@ TestMatch[
 	,
 	LibraryFunctionError["LIBRARY_USER_ERROR", n_?IntegerQ]
 	,
-	TestID->"TensorTestSuite-20181121-asdgsdf"
+	TestID -> "TensorTestSuite-20181121-asdgsdf"
 ];
 
 Test[
-	CreateMatrix[3,4]
+	CreateMatrix[3, 4]
 	,
 	{{1, 2, 3, 4}, {5, 6, 7, 8}, {9, 10, 11, 12}}
 	,
-	TestID->"TensorOperations-20150811-Y4J6R0"
+	TestID -> "TensorOperations-20150811-Y4J6R0"
 ];
 
 Test[
@@ -201,19 +203,19 @@ Test[
 
 
 ExactTest[
-	MeanValue[{2.2,3.3,4.4}]
+	MeanValue[{2.2, 3.3, 4.4}]
 	,
 	3.3
 	,
-	TestID->"TensorOperations-20150817-A4F7C6"
+	TestID -> "TensorOperations-20150817-A4F7C6"
 ];
 
 Test[
-	IntegerMatrixTranspose[{{1,2,3},{4,5,6}}]
+	IntegerMatrixTranspose[{{1, 2, 3}, {4, 5, 6}}]
 	,
-	{{1,4},{2,5},{3,6}}
+	{{1, 4}, {2, 5}, {3, 6}}
 	,
-	TestID->"TensorOperations-20150817-L0F1J5"
+	TestID -> "TensorOperations-20150817-L0F1J5"
 ];
 
 
@@ -230,37 +232,37 @@ TestExecute[
 ];
 
 Test[
-	getNthRealFromTR1[{1,2,3,4.7},4]
+	getNthRealFromTR1[{1, 2, 3, 4.7}, 4]
 	,
 	4.7
 	,
-	TestID->"TensorOperations-20150817-F9U7F4"
+	TestID -> "TensorOperations-20150817-F9U7F4"
 ];
 
 TestMatch[
-	getNthRealFromTR1[{1,2,3,4.7},100]
+	getNthRealFromTR1[{1, 2, 3, 4.7}, 100]
 	,
 	LibraryFunctionError["LIBRARY_USER_ERROR", n_] /; n < 0 (* even though we know what the error is, we cannot predict the error code *)
 	,
 	LibraryFunction::rterr
 	,
-	TestID->"TensorOperations-20150817-Z2M1Q2"
+	TestID -> "TensorOperations-20150817-Z2M1Q2"
 ];
 
 ExactTest[
-	getNthRealFromTR2[{{1,2,3},{4,5,6}},1,3]
+	getNthRealFromTR2[{{1, 2, 3}, {4, 5, 6}}, 1, 3]
 	,
 	3.
 	,
-	TestID->"TensorOperations-20150817-N1I3G8"
+	TestID -> "TensorOperations-20150817-N1I3G8"
 ];
 
 ExactTest[
-	getNthIntegerFromTR2[{{1,2,3},{4,5,6}},1,3]
+	getNthIntegerFromTR2[{{1, 2, 3}, {4, 5, 6}}, 1, 3]
 	,
 	3
 	,
-	TestID->"TensorOperations-20150817-J6E5K2"
+	TestID -> "TensorOperations-20150817-J6E5K2"
 ];
 
 Test[
@@ -268,7 +270,7 @@ Test[
 	,
 	{2, 4, 6, 8, 10, 12, 14}
 	,
-	TestID->"TensorOperations-20150818-Y6F8K2"
+	TestID -> "TensorOperations-20150818-Y6F8K2"
 ];
 
 
@@ -285,19 +287,19 @@ TestExecute[
 ];
 
 Test[
-	loadRealArray[Developer`ToPackedArray[{2.3,4.5}]];
+	loadRealArray[Developer`ToPackedArray[{2.3, 4.5}]];
 	getRealArray[]
 	,
-	{2.3,4.5}
+	{2.3, 4.5}
 	,
-	TestID->"TensorOperations-20150819-F5H0C3"
+	TestID -> "TensorOperations-20150819-F5H0C3"
 ];
 
 TestMatch[
 	loadRealArray[Range[10]];
 	getRealArray[]
 	,
-	{2.3,4.5}
+	{2.3, 4.5}
 	,
 	{LibraryFunction::rterr}
 	,
@@ -307,9 +309,9 @@ TestMatch[
 Test[
 	doubleRealArray[]
 	,
-	{4.6,9.}
+	{4.6, 9.}
 	,
-	TestID->"TensorOperations-20150819-R4E5S2"
+	TestID -> "TensorOperations-20150819-R4E5S2"
 ];
 
 Test[
@@ -317,7 +319,7 @@ Test[
 	,
 	1
 	,
-	TestID->"TensorOperations-20150819-D8C1Y0"
+	TestID -> "TensorOperations-20150819-D8C1Y0"
 ];
 
 Test[
@@ -329,7 +331,7 @@ Test[
 	,
 	oldT + 1.
 	,
-	TestID->"TensorOperations-20150831-LGONV3"
+	TestID -> "TensorOperations-20150831-LGONV3"
 ];
 
 Test[
@@ -337,7 +339,7 @@ Test[
 	,
 	110
 	,
-	TestID->"TensorOperations-20150831-L0U3V3"
+	TestID -> "TensorOperations-20150831-L0U3V3"
 ];
 
 Test[
@@ -345,7 +347,7 @@ Test[
 	,
 	{{3, 5}, {7, 9}}
 	,
-	TestID->"TensorTestSuite-20190906-N0T6L8"
+	TestID -> "TensorTestSuite-20190906-N0T6L8"
 ];
 
 Test[
@@ -357,7 +359,7 @@ Test[
 ];
 
 Test[
-	FlattenThroughVector[{{1,2}, {3,4}}]
+	FlattenThroughVector[{{1, 2}, {3, 4}}]
 	,
 	{1, 2, 3, 4}
 	,
@@ -378,6 +380,35 @@ Test[
 	{{1, 2}, {3, 4}}
 	,
 	TestID -> "TensorTestSuite-20190910-Z7H8M8"
+];
+
+ExactTest[
+	GetLargest[
+		RandomInteger[1000, {100, 100}],
+		RandomInteger[1000, {200, 100}],
+		RandomReal[1., {200, 99}]
+	]
+	,
+	1
+	,
+	TestID -> "TensorArrayTestSuite-20191127-E8Q1B9"
+];
+
+Test[
+	ReverseTensor[Range[100]]
+	,
+	Reverse @ Range[100]
+	,
+	TestID -> "TensorTestSuite-20191129-A6J2D9"
+];
+
+
+Test[
+	ReverseTensor[{{1.9, 2.8}, {3.7, 4.6}}]
+	,
+	{{4.6, 3.7}, {2.8, 1.9}}
+	,
+	TestID -> "TensorTestSuite-20191129-Y2C7M0"
 ];
 
 EndRequirement[];

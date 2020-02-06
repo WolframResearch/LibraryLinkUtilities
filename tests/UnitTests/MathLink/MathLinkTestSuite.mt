@@ -1,29 +1,29 @@
 (* Wolfram Language Test file *)
 TestRequirement[$VersionNumber > 10.3]
 (***************************************************************************************************************************************)
-				(*
-					Set of test cases to test LLU functionality related to MathLink
-				*)
+(*
+	Set of test cases to test LLU functionality related to MathLink
+*)
 (***************************************************************************************************************************************)
 TestExecute[
 	Needs["CCompilerDriver`"];
 	currentDirectory = DirectoryName[$CurrentFile];
-	
+
 	(* Get configuration (path to LLU sources, compilation options, etc.) *)
 	Get[FileNameJoin[{ParentDirectory[currentDirectory], "TestConfig.wl"}]];
 
 	(* Compile the test library *)
 	lib = CCompilerDriver`CreateLibrary[FileNameJoin[{currentDirectory, "TestSources", #}]& /@ {"MLTest.cpp", "MLEncodings.cpp"}, "MLTest", options];
-	
+
 	Get[FileNameJoin[{$LLUSharedDir, "LibraryLinkUtilities.wl"}]];
-	
+
 	RegisterPacletErrors[lib, <||>];
-	
+
 	i8Range = {0, 255};
-	i16Range = {-2^15, 2^15-1};
-	i32Range = {-2^31, 2^31-1};
-	i64Range = {-2^63, 2^63-1};
-	
+	i16Range = {-2^15, 2^15 - 1};
+	i32Range = {-2^31, 2^31 - 1};
+	i64Range = {-2^63, 2^63 - 1};
+
 	Off[General::stop]; (* because we want to see all error messages from CreateLibrary *)
 ]
 
@@ -36,63 +36,63 @@ Test[
 	,
 	{CreateLibrary::cmperr..} (* On Linux there should be 6 errors, but MSVC does not like generic lambdas so it spits out more errors *)
 	,
-	TestID->"MathLinkTestSuite-20171129-U5Q3L8"
+	TestID -> "MathLinkTestSuite-20171129-U5Q3L8"
 ]
 
 
 (* Scalars *)
 Test[
-	SameInts = SafeMathLinkFunction["SameInts"];
+	SameInts = `LLU`SafeWSTPFunction["SameInts"];
 	SameInts[0, -1, -1, -1] (* Integer8 is actually UnsignedInteger8 in MathLink, so send 0 insted of -1. Other integer types are signed *)
 	,
 	{0, -1, -1, -1}
 	,
-	TestID->"MathLinkTestSuite-20171129-U4Q3L8"
+	TestID -> "MathLinkTestSuite-20171129-U4Q3L8"
 ]
 
 Test[
-	SameInts[2^7-1, 2^15-1, 2^31-1, 2^63-1]
+	SameInts[2^7 - 1, 2^15 - 1, 2^31 - 1, 2^63 - 1]
 	,
-	{2^7-1, 2^15-1, 2^31-1, 2^63-1}
+	{2^7 - 1, 2^15 - 1, 2^31 - 1, 2^63 - 1}
 	,
-	TestID->"MathLinkTestSuite-20171201-Z2N4U1"
+	TestID -> "MathLinkTestSuite-20171201-Z2N4U1"
 ]
 
 Test[
-	MaxInts = SafeMathLinkFunction["MaxInts"];
+	MaxInts = `LLU`SafeWSTPFunction["MaxInts"];
 	MaxInts[RandomInteger[i8Range], RandomInteger[i16Range], RandomInteger[i32Range], RandomInteger[i64Range]]
 	,
-	{2^8-1, 2^15-1, 2^31-1, 2^63-1}
+	{2^8 - 1, 2^15 - 1, 2^31 - 1, 2^63 - 1}
 	,
-	TestID->"MathLinkTestSuite-20171201-O7D3B0"
+	TestID -> "MathLinkTestSuite-20171201-O7D3B0"
 ]
 
 Test[
-	WriteMint = SafeMathLinkFunction["WriteMint"];
+	WriteMint = `LLU`SafeWSTPFunction["WriteMint"];
 	WriteMint[]
 	,
 	-1
 	,
-	TestID->"MathLinkTestSuite-20190718-U5N0F1"
+	TestID -> "MathLinkTestSuite-20190718-U5N0F1"
 ]
 
 Test[
-	SameFloats = SafeMathLinkFunction["SameFloats"];
+	SameFloats = `LLU`SafeWSTPFunction["SameFloats"];
 	{pi, e} = SameFloats[N[Pi], N[E]];
-	(Abs[Pi-pi] < 10^-4) && (E == e)
+	(Abs[Pi - pi] < 10^-4) && (E == e)
 	,
 	True
 	,
-	TestID->"MathLinkTestSuite-20171201-X6F6R7"
+	TestID -> "MathLinkTestSuite-20171201-X6F6R7"
 ]
 
 Test[
-	BoolAnd = SafeMathLinkFunction["BoolAnd"];
+	BoolAnd = `LLU`SafeWSTPFunction["BoolAnd"];
 	BoolAnd[True, True, True, False]
 	,
 	False
 	,
-	TestID->"MathLinkTestSuite-20171201-F3S0Q7"
+	TestID -> "MathLinkTestSuite-20171201-F3S0Q7"
 ]
 
 Test[
@@ -100,319 +100,319 @@ Test[
 	,
 	True
 	,
-	TestID->"MathLinkTestSuite-20171201-P0O0A8"
+	TestID -> "MathLinkTestSuite-20171201-P0O0A8"
 ]
 
 Test[
 	BoolAnd[True, True, True, True, Pi]
 	,
 	Failure["MLWrongSymbolForBool", <|
-		"MessageTemplate" -> "Tried to read something else than \"True\" or \"False\" as boolean.", 
-		"MessageParameters" -> <||>, 
-		"ErrorCode" -> n_, 
+		"MessageTemplate" -> "Tried to read something else than \"True\" or \"False\" as boolean.",
+		"MessageParameters" -> <||>,
+		"ErrorCode" -> n_,
 		"Parameters" -> {}
-	|>]/; n < 0
+	|>] /; n < 0
 	,
 	SameTest -> MatchQ
 	,
-	TestID->"MathLinkTestSuite-20171201-L1W7O4"
+	TestID -> "MathLinkTestSuite-20171201-L1W7O4"
 ]
 
 (* Lists *)
 Test[
-	GetReversed = SafeMathLinkFunction["GetReversed8"];
+	GetReversed = `LLU`SafeWSTPFunction["GetReversed8"];
 	GetReversed[m = RandomInteger[i8Range, 100000]]
 	,
 	Reverse[m]
 	,
-	TestID->"MathLinkTestSuite-20171201-T0E6W4"
+	TestID -> "MathLinkTestSuite-20171201-T0E6W4"
 ]
 
 Test[
-	GetReversed = SafeMathLinkFunction["GetReversed16"];
+	GetReversed = `LLU`SafeWSTPFunction["GetReversed16"];
 	GetReversed[m = RandomInteger[i16Range, 10000]]
 	,
 	Reverse[m]
 	,
-	TestID->"MathLinkTestSuite-20171205-H1L8Z6"
+	TestID -> "MathLinkTestSuite-20171205-H1L8Z6"
 ]
 
 Test[
-	GetReversed = SafeMathLinkFunction["GetReversed32"];
+	GetReversed = `LLU`SafeWSTPFunction["GetReversed32"];
 	GetReversed[m = RandomInteger[i32Range, 1000]]
 	,
 	Reverse[m]
 	,
-	TestID->"MathLinkTestSuite-20171205-V3M5Z6"
+	TestID -> "MathLinkTestSuite-20171205-V3M5Z6"
 ]
 
 Test[
-	GetReversed = SafeMathLinkFunction["GetReversed64"];
+	GetReversed = `LLU`SafeWSTPFunction["GetReversed64"];
 	GetReversed[m = RandomInteger[i64Range, 100]]
 	,
 	Reverse[m]
 	,
-	TestID->"MathLinkTestSuite-20171205-L4B1P5"
+	TestID -> "MathLinkTestSuite-20171205-L4B1P5"
 ]
 
 Test[
-	GetReversed = SafeMathLinkFunction["GetReversedDouble"];
+	GetReversed = `LLU`SafeWSTPFunction["GetReversedDouble"];
 	GetReversed[m = RandomReal[1., 100]]
 	,
 	Reverse[m]
 	,
-	TestID->"MathLinkTestSuite-20171205-I4G4U8"
+	TestID -> "MathLinkTestSuite-20171205-I4G4U8"
 ]
 
 Test[
-	GetFloatList = SafeMathLinkFunction["GetFloatList"];
+	GetFloatList = `LLU`SafeWSTPFunction["GetFloatList"];
 	f = GetFloatList[r = RandomReal[1., 100]];
 	Max[Abs[f - r]] < 10^-4
 	,
 	True
 	,
-	TestID->"MathLinkTestSuite-20171205-D5X3H2"
+	TestID -> "MathLinkTestSuite-20171205-D5X3H2"
 ]
 
 (* Arrays *)
 
 Test[
-	GetSame = SafeMathLinkFunction["GetSame8"];
-	Reshape = SafeMathLinkFunction["Reshape8"];
+	GetSame = `LLU`SafeWSTPFunction["GetSame8"];
+	Reshape = `LLU`SafeWSTPFunction["Reshape8"];
 	s = GetSame[m = RandomInteger[i8Range, {10, 10, 10, 20, 5}]];
 	r = Reshape[m];
 	ArrayReshape[s, {10, 10, 10, 5, 20}]
 	,
 	r
 	,
-	TestID->"MathLinkTestSuite-20171205-K0X1L2"
+	TestID -> "MathLinkTestSuite-20171205-K0X1L2"
 ]
 
 Test[
-	GetSame = SafeMathLinkFunction["GetSame16"];
-	Reshape = SafeMathLinkFunction["Reshape16"];
+	GetSame = `LLU`SafeWSTPFunction["GetSame16"];
+	Reshape = `LLU`SafeWSTPFunction["Reshape16"];
 	s = GetSame[m = RandomInteger[i16Range, {10, 10, 20, 5}]];
 	r = Reshape[m];
 	ArrayReshape[s, {10, 10, 5, 20}]
 	,
 	r
 	,
-	TestID->"MathLinkTestSuite-20171205-V8W4L1"
+	TestID -> "MathLinkTestSuite-20171205-V8W4L1"
 ]
 
 Test[
-	GetSame = SafeMathLinkFunction["GetSame32"];
-	Reshape = SafeMathLinkFunction["Reshape32"];
+	GetSame = `LLU`SafeWSTPFunction["GetSame32"];
+	Reshape = `LLU`SafeWSTPFunction["Reshape32"];
 	s = GetSame[m = RandomInteger[i32Range, {10, 20, 5}]];
 	r = Reshape[m];
 	ArrayReshape[s, {10, 5, 20}]
 	,
 	r
 	,
-	TestID->"MathLinkTestSuite-20171205-X6T1G7"
+	TestID -> "MathLinkTestSuite-20171205-X6T1G7"
 ]
 
 Test[
-	GetSame = SafeMathLinkFunction["GetSame64"];
-	Reshape = SafeMathLinkFunction["Reshape64"];
+	GetSame = `LLU`SafeWSTPFunction["GetSame64"];
+	Reshape = `LLU`SafeWSTPFunction["Reshape64"];
 	s = GetSame[m = RandomInteger[i64Range, {20, 5}]];
 	r = Reshape[m];
 	ArrayReshape[s, {5, 20}]
 	,
 	r
 	,
-	TestID->"MathLinkTestSuite-20171205-K5D5R0"
+	TestID -> "MathLinkTestSuite-20171205-K5D5R0"
 ]
 
 Test[
-	GetSame = SafeMathLinkFunction["GetSameDouble"];
-	Reshape = SafeMathLinkFunction["ReshapeDouble"];
+	GetSame = `LLU`SafeWSTPFunction["GetSameDouble"];
+	Reshape = `LLU`SafeWSTPFunction["ReshapeDouble"];
 	s = GetSame[m = RandomReal[1., {20, 5}]];
 	r = Reshape[m];
 	ArrayReshape[s, {5, 20}]
 	,
 	r
 	,
-	TestID->"MathLinkTestSuite-20171205-Z8T6P5"
+	TestID -> "MathLinkTestSuite-20171205-Z8T6P5"
 ]
 
 Test[
-	ToList = SafeMathLinkFunction["ComplexToList"];
+	ToList = `LLU`SafeWSTPFunction["ComplexToList"];
 	c = RandomComplex[1 + I, {7, 8, 9}];
 	ToList[c]
 	,
 	c /. Complex[x_, y_] -> {x, y}
 	,
-	TestID->"MathLinkTestSuite-20171205-W6B3U7"
+	TestID -> "MathLinkTestSuite-20171205-W6B3U7"
 ]
 
 Test[ (* Test if releasing memory works, if not the memory usage should drastically increase after this test *)
-	ReceiveAndFreeArray = SafeMathLinkFunction["ReceiveAndFreeArray"];
+	ReceiveAndFreeArray = `LLU`SafeWSTPFunction["ReceiveAndFreeArray"];
 	r = RandomReal[1., {1000, 1000, 100}];
 	Do[ReceiveAndFreeArray[r], 50];
 	Clear[r];
 	,
 	Null
 	,
-	TestID->"MathLinkTestSuite-20171205-D4D6S4"
+	TestID -> "MathLinkTestSuite-20171205-D4D6S4"
 ]
 
 (* Strings *)
 Test[
 	testString = FromCharacterCode[{97, 261, 322, 945, 63488, 63264}]; (* "a\:0105\[LSlash]\[Alpha]\[FormalA]\[Wolf]" *)
 	expected = StringRepeat[testString, 2];
-	RepeatString = SafeMathLinkFunction["RepeatString"];
+	RepeatString = `LLU`SafeWSTPFunction["RepeatString"];
 	RepeatString[testString]
 	,
 	expected
 	,
-	TestID->"MathLinkTestSuite-20171205-C3X0I2"
+	TestID -> "MathLinkTestSuite-20171205-C3X0I2"
 ]
 
 Test[
-	RepeatUTF8 = SafeMathLinkFunction["RepeatUTF8"];
+	RepeatUTF8 = `LLU`SafeWSTPFunction["RepeatUTF8"];
 	RepeatUTF8[testString]
 	,
 	expected
 	,
-	TestID->"MathLinkTestSuite-20171205-F0A7B0"
+	TestID -> "MathLinkTestSuite-20171205-F0A7B0"
 ]
 
 Test[
-	RepeatUTF16 = SafeMathLinkFunction["RepeatUTF16"];
+	RepeatUTF16 = `LLU`SafeWSTPFunction["RepeatUTF16"];
 	RepeatUTF16[testString]
 	,
 	expected
 	,
-	TestID->"MathLinkTestSuite-20171205-M2B7E4"
+	TestID -> "MathLinkTestSuite-20171205-M2B7E4"
 ]
 
 Test[
-	RepeatUTF32 = SafeMathLinkFunction["RepeatUTF32"];
+	RepeatUTF32 = `LLU`SafeWSTPFunction["RepeatUTF32"];
 	RepeatUTF32[testString]
 	,
 	expected
 	,
-	TestID->"MathLinkTestSuite-20171205-S9R5Q1"
+	TestID -> "MathLinkTestSuite-20171205-S9R5Q1"
 ]
 
 Test[
 	testString = "\\+\\\\+\"+\n+\t+?";  (* ToCharacterCode = {92, 43, 92, 92, 43, 34, 43, 10, 43, 9, 43, 63} *)
 	expected = testString <> FromCharacterCode[{7, 8, 12, 13, 10, 9, 11, 92, 39, 34, 63}];
-	AppendString = SafeMathLinkFunction["AppendString"]; (* following string is appended in the C++ code: "\a\b\f\r\n\t\v\\\'\"\?" *)
+	AppendString = `LLU`SafeWSTPFunction["AppendString"]; (* following string is appended in the C++ code: "\a\b\f\r\n\t\v\\\'\"\?" *)
 	ToCharacterCode @ AppendString[testString]
 	,
 	ToCharacterCode @ expected
 	,
-	TestID->"MathLinkTestSuite-20180202-Q8H8K0"
+	TestID -> "MathLinkTestSuite-20180202-Q8H8K0"
 ]
 
 Test[
-	AppendUTF8 = SafeMathLinkFunction["AppendUTF8"];
+	AppendUTF8 = `LLU`SafeWSTPFunction["AppendUTF8"];
 	ToCharacterCode @ AppendUTF8[testString]
 	,
 	ToCharacterCode @ expected
 	,
-	TestID->"MathLinkTestSuite-20180202-Y8D5D1"
+	TestID -> "MathLinkTestSuite-20180202-Y8D5D1"
 ]
 
 Test[
-	AppendUTF16 = SafeMathLinkFunction["AppendUTF16"];
+	AppendUTF16 = `LLU`SafeWSTPFunction["AppendUTF16"];
 	ToCharacterCode @ AppendUTF16[testString]
 	,
 	ToCharacterCode @ expected
 	,
-	TestID->"MathLinkTestSuite-20180202-Q6K1Y5"
+	TestID -> "MathLinkTestSuite-20180202-Q6K1Y5"
 ]
 
 Test[
-	AppendUTF32 = SafeMathLinkFunction["AppendUTF32"];
+	AppendUTF32 = `LLU`SafeWSTPFunction["AppendUTF32"];
 	ToCharacterCode @ AppendUTF32[testString]
 	,
 	ToCharacterCode @ expected
 	,
-	TestID->"MathLinkTestSuite-20180202-S0Q4U6"
+	TestID -> "MathLinkTestSuite-20180202-S0Q4U6"
 ]
 
 Test[ (* Test if releasing strings works, if not the memory usage should drastically increase after this test *)
-	ReceiveAndFreeString = SafeMathLinkFunction["ReceiveAndFreeString"];
+	ReceiveAndFreeString = `LLU`SafeWSTPFunction["ReceiveAndFreeString"];
 	s = StringJoin[RandomChoice[CharacterRange["A", "z"], 10000]];
 	Do[ReceiveAndFreeString[s], 100]
 	,
 	Null
 	,
-	TestID->"MathLinkTestSuite-20171205-T6V1J3"
+	TestID -> "MathLinkTestSuite-20171205-T6V1J3"
 ]
 
 Test[
-	GetAndPutUTF8 = SafeMathLinkFunction["GetAndPutUTF8"];
+	GetAndPutUTF8 = `LLU`SafeWSTPFunction["GetAndPutUTF8"];
 	testStr = "\:0105\:0119\[AE]\[Copyright]\\/";
 	GetAndPutUTF8[testStr, testStr]
 	,
 	"This will be sent as UTF8 encoded string. No need to escape backslashes \\o/. Some weird characters: " <> FromCharacterCode[{196, 133, 194, 169, 197, 130, 195, 179, 195, 159, 194, 181}, "UTF8"]
 	,
-	TestID->"MathLinkTestSuite-20180207-C6Z9T4"
+	TestID -> "MathLinkTestSuite-20180207-C6Z9T4"
 ]
 
 Test[
-	NestedPutAs = SafeMathLinkFunction["NestedPutAs"];
+	NestedPutAs = `LLU`SafeWSTPFunction["NestedPutAs"];
 	testStr = "\:0105\:0119\[AE]\[Copyright]\\/";
 	NestedPutAs[testStr]
 	,
 	testStr
 	,
-	TestID->"MathLinkTestSuite-20180403-P4U4Q4"
+	TestID -> "MathLinkTestSuite-20180403-P4U4Q4"
 ]
 
 Test[
-	CharacterCodes = SafeMathLinkFunction["CharacterCodes"];
+	CharacterCodes = `LLU`SafeWSTPFunction["CharacterCodes"];
 	testStr = "\:0105\:0119\[AE]\[Copyright]\\/";
 	CharacterCodes[testStr]
 	,
 	<|
 		"Native" -> {92, 58, 48, 49, 48, 53, 92, 58, 48, 49, 49, 57, 92, 51, 52, 54, 92, 50, 53, 49, 92, 92, 47}, (* "\:0105\:0119\346\251\\/" *)
-		"Byte" -> {26, 26, 230, 169, 92, 47}, 
-		"UTF8" -> {196, 133, 196, 153, 195, 166, 194, 169, 92, 47}, 
+		"Byte" -> {26, 26, 230, 169, 92, 47},
+		"UTF8" -> {196, 133, 196, 153, 195, 166, 194, 169, 92, 47},
 		"UTF16" -> {65279, 261, 281, 230, 169, 92, 47}, (* 65279 is BOM *)
-		"UCS2" -> {261, 281, 230, 169, 92, 47}, 
+		"UCS2" -> {261, 281, 230, 169, 92, 47},
 		"UTF32" -> {65279, 261, 281, 230, 169, 92, 47}
 	|>
 	,
-	TestID->"MathLinkTestSuite-20180403-H9X4X4"
+	TestID -> "MathLinkTestSuite-20180403-H9X4X4"
 ]
 
 Test[
-	AllEncodingsRoundtrip = SafeMathLinkFunction["AllEncodingsRoundtrip"];
+	AllEncodingsRoundtrip = `LLU`SafeWSTPFunction["AllEncodingsRoundtrip"];
 	testStrs = {"abcde", "\[Integral]\[Wolf]\[DifferentialD]\[Xi]", "ab\[CAcute]\[Eth]\:0119", "\\+\\\\+\"+\n+\t+?"};
 	MapThread[Map[Function[assocElem, #2 == assocElem], #1] &, {AllEncodingsRoundtrip /@ testStrs, testStrs}]
 	,
 	{
-		<|"Native" -> True, "Byte" -> True, "UTF8" -> True, "UTF16" -> True, "UCS2" -> True, "UTF32" -> True|>, 
-		<|"Native" -> True, "Byte" -> False, "UTF8" -> True, "UTF16" -> True, "UCS2" -> True, "UTF32" -> True|>, 
-		<|"Native" -> True, "Byte" -> False, "UTF8" -> True, "UTF16" -> True, "UCS2" -> True, "UTF32" -> True|>, 
+		<|"Native" -> True, "Byte" -> True, "UTF8" -> True, "UTF16" -> True, "UCS2" -> True, "UTF32" -> True|>,
+		<|"Native" -> True, "Byte" -> False, "UTF8" -> True, "UTF16" -> True, "UCS2" -> True, "UTF32" -> True|>,
+		<|"Native" -> True, "Byte" -> False, "UTF8" -> True, "UTF16" -> True, "UCS2" -> True, "UTF32" -> True|>,
 		<|"Native" -> True, "Byte" -> True, "UTF8" -> True, "UTF16" -> True, "UCS2" -> True, "UTF32" -> True|>
 	}
 	,
-	TestID->"MathLinkTestSuite-20180403-P1E4U8"
+	TestID -> "MathLinkTestSuite-20180403-P1E4U8"
 ]
 
 (* Symbols and Arbitrary Functions *)
 Test[
-	GetList = SafeMathLinkFunction["GetList"];
+	GetList = `LLU`SafeWSTPFunction["GetList"];
 	GetList[]
 	,
 	{{1, 2, 3}, Missing[""], {1.5, 2.5, 3.5}, "Hello!", Missing["Deal with it"]}
 	,
-	TestID->"MathLinkTestSuite-20171205-A4D8U2"
+	TestID -> "MathLinkTestSuite-20171205-A4D8U2"
 ]
 
 Test[
 	ReverseSymbolsOrder = LibraryFunctionLoad[lib, "ReverseSymbolsOrder", LinkObject, LinkObject];
 	ReverseSymbolsOrder[Pi, E, GoldenRatio, x] (* Things like I or Infinity are not symbols *)
-	, 
+	,
 	{x, GoldenRatio, E, Pi}
 	,
-	TestID->"MathLinkTestSuite-20171214-Q8O4B9"
+	TestID -> "MathLinkTestSuite-20171214-Q8O4B9"
 ]
 
 Test[
@@ -421,7 +421,7 @@ Test[
 	,
 	ReverseSymbolsOrder
 	,
-	TestID->"MathLinkTestSuite-20171214-N1Z1H6"
+	TestID -> "MathLinkTestSuite-20171214-N1Z1H6"
 ]
 
 Test[
@@ -430,16 +430,16 @@ Test[
 	,
 	{x, GoldenRatio, E, Pi}
 	,
-	TestID->"MathLinkTestSuite-20171214-K6Z5T3"
+	TestID -> "MathLinkTestSuite-20171214-K6Z5T3"
 ]
 
 Test[
-	GetSet = SafeMathLinkFunction["GetSet"];
+	GetSet = `LLU`SafeWSTPFunction["GetSet"];
 	GetSet[{"lorem", "ipsum", "dolor", "sit", "amet"}, "StringJoin"]
 	,
 	StringJoin @ AlphabeticSort[{"lorem", "ipsum", "dolor", "sit", "amet"}]
 	,
-	TestID->"MathLinkTestSuite-20171214-F6N1C7"
+	TestID -> "MathLinkTestSuite-20171214-F6N1C7"
 ]
 
 Test[
@@ -447,13 +447,13 @@ Test[
 	,
 	AlphabeticSort[{"lorem", "ipsum", "dolor", "sit", "amet"}]
 	,
-	TestID->"MathLinkTestSuite-20171227-V7Z8S6"
+	TestID -> "MathLinkTestSuite-20171227-V7Z8S6"
 ]
 
 
 (* Associations/Maps *)
 Test[
-	ReadNestedMap = SafeMathLinkFunction["ReadNestedMap"];
+	ReadNestedMap = `LLU`SafeWSTPFunction["ReadNestedMap"];
 	r = RandomReal[{-Pi, Pi}, 10];
 	Sort @ ReadNestedMap[<|
 		"Multiply" -> <|3 -> r, 0 -> r, -3 -> r|>,
@@ -469,53 +469,53 @@ Test[
 		"Add" -> <|-5 -> r - 5|>
 	|>
 	,
-	TestID->"MathLinkTestSuite-20171227-V4J6Y2"
+	TestID -> "MathLinkTestSuite-20171227-V4J6Y2"
 ]
 
 
 (* Local Loopback Link *)
 Test[
-	IntList = SafeMathLinkFunction["UnknownLengthList"];
+	IntList = `LLU`SafeWSTPFunction["UnknownLengthList"];
 	modulus = 123;
 	l = IntList[modulus];
 	VectorQ[l, (IntegerQ[#] && 0 <= # <= 1000000 && !Divisible[#, modulus])&]
 	,
 	True
 	,
-	TestID->"MathLinkTestSuite-20180619-G8D1H1"
+	TestID -> "MathLinkTestSuite-20180619-G8D1H1"
 ]
 
 Test[
-	Ragged = SafeMathLinkFunction["RaggedArray"];
+	Ragged = `LLU`SafeWSTPFunction["RaggedArray"];
 	length = 15;
 	Ragged[length]
 	,
 	Table[Drop[Range[0, i], -1], {i, 0, length - 1}]
 	,
-	TestID->"MathLinkTestSuite-20180619-W3E7I4"
+	TestID -> "MathLinkTestSuite-20180619-W3E7I4"
 ]
 
 Test[
-	Factors = SafeMathLinkFunction["FactorsOrFailed"];
+	Factors = `LLU`SafeWSTPFunction["FactorsOrFailed"];
 	l = RandomInteger[{1, 123456}, 20];
 	Factors[l]
 	,
 	AssociationMap[
- 		With[{d = Divisors[#]}, 
- 			If[Length[d] > 15, $Failed, d]
- 		]&
- 	, l]
+		With[{d = Divisors[#]},
+			If[Length[d] > 15, $Failed, d]
+		]&
+		, l]
 	,
-	TestID->"MathLinkTestSuite-20180619-L6X0P3"
+	TestID -> "MathLinkTestSuite-20180619-L6X0P3"
 ]
 
 Test[
-	GetEmpty = SafeMathLinkFunction["Empty"];
+	GetEmpty = `LLU`SafeWSTPFunction["Empty"];
 	GetEmpty["Association"]
 	,
 	<||>
 	,
-	TestID->"MathLinkTestSuite-20180622-Z8V8N3"
+	TestID -> "MathLinkTestSuite-20180622-Z8V8N3"
 ]
 
 Test[
@@ -523,7 +523,7 @@ Test[
 	,
 	{}
 	,
-	TestID->"MathLinkTestSuite-20180622-S5A9U6"
+	TestID -> "MathLinkTestSuite-20180622-S5A9U6"
 ]
 
 Test[
@@ -531,11 +531,11 @@ Test[
 	,
 	NoSuchHead[]
 	,
-	TestID->"MathLinkTestSuite-20180622-S7D2R7"
+	TestID -> "MathLinkTestSuite-20180622-S7D2R7"
 ]
 
 Test[
-	ListOfStrings = SafeMathLinkFunction["ListOfStringsTiming"];
+	ListOfStrings = `LLU`SafeWSTPFunction["ListOfStringsTiming"];
 	los = RandomWord["CommonWords", 1000];
 	{timeNormal, r1} = RepeatedTiming[ListOfStrings[los, False]];
 	{timeBeginEnd, r2} = RepeatedTiming[ListOfStrings[los, True]];
@@ -545,5 +545,5 @@ Test[
 	,
 	True
 	,
-	TestID->"MathLinkTestSuite-20180622-S6K4T4"
+	TestID -> "MathLinkTestSuite-20180622-S6K4T4"
 ]

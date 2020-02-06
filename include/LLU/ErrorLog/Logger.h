@@ -9,6 +9,7 @@
 #include <initializer_list>
 #include <mutex>
 #include <string>
+#include <utility>
 
 #include "LLU/LibraryData.h"
 #include "LLU/ML/MLStream.hpp"
@@ -60,13 +61,8 @@ namespace LLU {
 	 */
 	class Logger {
 	public:
-
 		/// Possible log severity levels
-		enum class Level {
-			Debug,
-			Warning,
-			Error
-		};
+		enum class Level { Debug, Warning, Error };
 
 		/**
 		 * @brief	Send a log message of given severity.
@@ -122,7 +118,7 @@ namespace LLU {
 
 	private:
 		/// Name of the WL function, to which log elements will be sent as arguments via MathLink.
-		static constexpr const char* topLevelLogCallback = "LLU`Logger`LogHandler";
+		static constexpr const char* topLevelLogCallback = "Logger`LogHandler";
 
 		static std::string logSymbolContext;
 	};
@@ -148,14 +144,14 @@ namespace LLU {
 		}
 		std::lock_guard<std::mutex> lock(mlinkGuard);
 
-		MLStream<ML::Encoding::UTF8> mls { libData->getWSLINK(libData) };
+		MLStream<ML::Encoding::UTF8> mls {libData->getWSLINK(libData)};
 		mls << ML::Function("EvaluatePacket", 1);
 		mls << ML::Function(getSymbol(), 4 + sizeof...(T));
 		mls << L << line << fileName << function;
-		static_cast<void>(std::initializer_list<int> { (mls << args, 0)... });
+		static_cast<void>(std::initializer_list<int> {(mls << args, 0)...});
 		libData->processWSLINK(mls.get());
 		auto pkt = MLNextPacket(mls.get());
-		if ( pkt == RETURNPKT) {
+		if (pkt == RETURNPKT) {
 			mls << ML::NewPacket;
 		}
 	}
@@ -166,4 +162,4 @@ namespace LLU {
 	}
 
 }
-#endif //LLUTILS_LOGGER_H
+#endif	  // LLUTILS_LOGGER_H

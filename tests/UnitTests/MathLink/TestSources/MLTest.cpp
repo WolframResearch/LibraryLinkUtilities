@@ -1,4 +1,4 @@
-/** 
+/**
  * @file	MLTest.cpp
  * @date	Nov 23, 2017
  * @author	rafalc
@@ -17,11 +17,13 @@
 #include <vector>
 
 #include "mathlink.h"
+
 #include "WolframLibrary.h"
 
+#include "LLU/ErrorLog/LibraryLinkError.h"
 #include "LLU/LibraryLinkFunctionMacro.h"
 #include "LLU/ML/MLStream.hpp"
-#include "LLU/ErrorLog/LibraryLinkError.h"
+
 
 using namespace LLU;
 using MathLinkStream = MLStream<ML::Encoding::UTF8>;
@@ -37,7 +39,7 @@ template<typename T>
 void readAndWriteScalarMax(MathLinkStream& m) {
 	T x;
 	m >> x;
-	m << std::numeric_limits<T>::max();
+	m << (std::numeric_limits<T>::max)();
 }
 
 //
@@ -52,11 +54,9 @@ EXTERN_C DLLEXPORT int SameInts(WolframLibraryData libData, MLINK mlp) {
 		readAndWriteScalar<short>(m);
 		readAndWriteScalar<int>(m);
 		readAndWriteScalar<mlint64>(m);
-	}
-	catch (const LibraryLinkError& e) {
+	} catch (const LibraryLinkError& e) {
 		err = e.which();
-	}
-	catch (...) {
+	} catch (...) {
 		err = ErrorCode::FunctionError;
 	}
 	return err;
@@ -71,11 +71,9 @@ EXTERN_C DLLEXPORT int MaxInts(WolframLibraryData libData, MLINK mlp) {
 		readAndWriteScalarMax<short>(m);
 		readAndWriteScalarMax<int>(m);
 		readAndWriteScalarMax<mlint64>(m);
-	}
-	catch (const LibraryLinkError& e) {
+	} catch (const LibraryLinkError& e) {
 		err = e.which();
-	}
-	catch (...) {
+	} catch (...) {
 		err = ErrorCode::FunctionError;
 	}
 	return err;
@@ -89,11 +87,9 @@ EXTERN_C DLLEXPORT int WriteMint(WolframLibraryData libData, MLINK mlp) {
 		m >> l;
 		mint i = -1;
 		m << i;
-	}
-	catch (const LibraryLinkError& e) {
+	} catch (const LibraryLinkError& e) {
 		err = e.which();
-	}
-	catch (...) {
+	} catch (...) {
 		err = ErrorCode::FunctionError;
 	}
 	return err;
@@ -106,11 +102,9 @@ EXTERN_C DLLEXPORT int SameFloats(WolframLibraryData libData, MLINK mlp) {
 		m << ML::List(2);
 		readAndWriteScalar<float>(m);
 		readAndWriteScalar<double>(m);
-	}
-	catch (const LibraryLinkError& e) {
+	} catch (const LibraryLinkError& e) {
 		err = e.which();
-	}
-	catch (...) {
+	} catch (...) {
 		err = ErrorCode::FunctionError;
 	}
 	return err;
@@ -133,22 +127,17 @@ EXTERN_C DLLEXPORT int BoolAnd(WolframLibraryData libData, MLINK mlp) {
 		}
 
 		ml << ML::NewPacket << res << ML::EndPacket;
-	}
-	catch (const LibraryLinkError& e) {
+	} catch (const LibraryLinkError& e) {
 		err = e.which();
-	}
-	catch (...) {
+	} catch (...) {
 		err = ErrorCode::FunctionError;
 	}
 	return err;
 }
 
-
-
 //
 // Lists
 //
-
 
 template<class T>
 void getAndPut(MathLinkStream& m) {
@@ -156,7 +145,6 @@ void getAndPut(MathLinkStream& m) {
 	m >> t;
 	m << t;
 }
-
 
 template<typename T>
 void reverseList(MathLinkStream& m) {
@@ -174,11 +162,9 @@ EXTERN_C DLLEXPORT int GetReversed8(WolframLibraryData libData, MLINK mlp) {
 	try {
 		MathLinkStream ml(mlp, "List", 1);
 		reverseList<unsigned char>(ml);
-	}
-	catch (const LibraryLinkError& e) {
+	} catch (const LibraryLinkError& e) {
 		err = e.which();
-	}
-	catch (...) {
+	} catch (...) {
 		err = ErrorCode::FunctionError;
 	}
 	return err;
@@ -189,11 +175,9 @@ EXTERN_C DLLEXPORT int GetReversed16(WolframLibraryData libData, MLINK mlp) {
 	try {
 		MathLinkStream ml(mlp, "List", 1);
 		reverseList<short>(ml);
-	}
-	catch (const LibraryLinkError& e) {
+	} catch (const LibraryLinkError& e) {
 		err = e.which();
-	}
-	catch (...) {
+	} catch (...) {
 		err = ErrorCode::FunctionError;
 	}
 	return err;
@@ -204,11 +188,9 @@ EXTERN_C DLLEXPORT int GetReversed32(WolframLibraryData libData, MLINK mlp) {
 	try {
 		MathLinkStream ml(mlp, "List", 1);
 		reverseList<int>(ml);
-	}
-	catch (const LibraryLinkError& e) {
+	} catch (const LibraryLinkError& e) {
 		err = e.which();
-	}
-	catch (...) {
+	} catch (...) {
 		err = ErrorCode::FunctionError;
 	}
 	return err;
@@ -219,11 +201,9 @@ EXTERN_C DLLEXPORT int GetReversed64(WolframLibraryData libData, MLINK mlp) {
 	try {
 		MathLinkStream ml(mlp, "List", 1);
 		reverseList<mlint64>(ml);
-	}
-	catch (const LibraryLinkError& e) {
+	} catch (const LibraryLinkError& e) {
 		err = e.which();
-	}
-	catch (...) {
+	} catch (...) {
 		err = ErrorCode::FunctionError;
 	}
 	return err;
@@ -234,11 +214,9 @@ EXTERN_C DLLEXPORT int GetReversedDouble(WolframLibraryData libData, MLINK mlp) 
 	try {
 		MathLinkStream ml(mlp, "List", 1);
 		reverseList<double>(ml);
-	}
-	catch (const LibraryLinkError& e) {
+	} catch (const LibraryLinkError& e) {
 		err = e.which();
-	}
-	catch (...) {
+	} catch (...) {
 		err = ErrorCode::FunctionError;
 	}
 	return err;
@@ -249,16 +227,13 @@ EXTERN_C DLLEXPORT int GetFloatList(WolframLibraryData libData, MLINK mlp) {
 	try {
 		MathLinkStream ml(mlp, "List", 1);
 		getAndPut<ML::ListData<float>>(ml);
-	}
-	catch (const LibraryLinkError& e) {
+	} catch (const LibraryLinkError& e) {
 		err = e.which();
-	}
-	catch (...) {
+	} catch (...) {
 		err = ErrorCode::FunctionError;
 	}
 	return err;
 }
-
 
 //
 // Arrays
@@ -269,11 +244,9 @@ EXTERN_C DLLEXPORT int GetSame8(WolframLibraryData libData, MLINK mlp) {
 	try {
 		MathLinkStream ml(mlp, "List", 1);
 		getAndPut<ML::ArrayData<unsigned char>>(ml);
-	}
-	catch (const LibraryLinkError& e) {
+	} catch (const LibraryLinkError& e) {
 		err = e.which();
-	}
-	catch (...) {
+	} catch (...) {
 		err = ErrorCode::FunctionError;
 	}
 	return err;
@@ -284,11 +257,9 @@ EXTERN_C DLLEXPORT int GetSame16(WolframLibraryData libData, MLINK mlp) {
 	try {
 		MathLinkStream ml(mlp, "List", 1);
 		getAndPut<ML::ArrayData<short>>(ml);
-	}
-	catch (const LibraryLinkError& e) {
+	} catch (const LibraryLinkError& e) {
 		err = e.which();
-	}
-	catch (...) {
+	} catch (...) {
 		err = ErrorCode::FunctionError;
 	}
 	return err;
@@ -299,11 +270,9 @@ EXTERN_C DLLEXPORT int GetSame32(WolframLibraryData libData, MLINK mlp) {
 	try {
 		MathLinkStream ml(mlp, "List", 1);
 		getAndPut<ML::ArrayData<int>>(ml);
-	}
-	catch (const LibraryLinkError& e) {
+	} catch (const LibraryLinkError& e) {
 		err = e.which();
-	}
-	catch (...) {
+	} catch (...) {
 		err = ErrorCode::FunctionError;
 	}
 	return err;
@@ -314,11 +283,9 @@ EXTERN_C DLLEXPORT int GetSame64(WolframLibraryData libData, MLINK mlp) {
 	try {
 		MathLinkStream ml(mlp, "List", 1);
 		getAndPut<ML::ArrayData<mlint64>>(ml);
-	}
-	catch (const LibraryLinkError& e) {
+	} catch (const LibraryLinkError& e) {
 		err = e.which();
-	}
-	catch (...) {
+	} catch (...) {
 		err = ErrorCode::FunctionError;
 	}
 	return err;
@@ -329,11 +296,9 @@ EXTERN_C DLLEXPORT int GetSameDouble(WolframLibraryData libData, MLINK mlp) {
 	try {
 		MathLinkStream ml(mlp, "List", 1);
 		getAndPut<ML::ArrayData<double>>(ml);
-	}
-	catch (const LibraryLinkError& e) {
+	} catch (const LibraryLinkError& e) {
 		err = e.which();
-	}
-	catch (...) {
+	} catch (...) {
 		err = ErrorCode::FunctionError;
 	}
 	return err;
@@ -357,11 +322,9 @@ EXTERN_C DLLEXPORT int Reshape8(WolframLibraryData libData, MLINK mlp) {
 	try {
 		MathLinkStream ml(mlp, "List", 1);
 		reshapeArray<unsigned char>(ml);
-	}
-	catch (const LibraryLinkError& e) {
+	} catch (const LibraryLinkError& e) {
 		err = e.which();
-	}
-	catch (...) {
+	} catch (...) {
 		err = ErrorCode::FunctionError;
 	}
 	return err;
@@ -372,11 +335,9 @@ EXTERN_C DLLEXPORT int Reshape16(WolframLibraryData libData, MLINK mlp) {
 	try {
 		MathLinkStream ml(mlp, "List", 1);
 		reshapeArray<short>(ml);
-	}
-	catch (const LibraryLinkError& e) {
+	} catch (const LibraryLinkError& e) {
 		err = e.which();
-	}
-	catch (...) {
+	} catch (...) {
 		err = ErrorCode::FunctionError;
 	}
 	return err;
@@ -387,11 +348,9 @@ EXTERN_C DLLEXPORT int Reshape32(WolframLibraryData libData, MLINK mlp) {
 	try {
 		MathLinkStream ml(mlp, "List", 1);
 		reshapeArray<int>(ml);
-	}
-	catch (const LibraryLinkError& e) {
+	} catch (const LibraryLinkError& e) {
 		err = e.which();
-	}
-	catch (...) {
+	} catch (...) {
 		err = ErrorCode::FunctionError;
 	}
 	return err;
@@ -402,11 +361,9 @@ EXTERN_C DLLEXPORT int Reshape64(WolframLibraryData libData, MLINK mlp) {
 	try {
 		MathLinkStream ml(mlp, "List", 1);
 		reshapeArray<mlint64>(ml);
-	}
-	catch (const LibraryLinkError& e) {
+	} catch (const LibraryLinkError& e) {
 		err = e.which();
-	}
-	catch (...) {
+	} catch (...) {
 		err = ErrorCode::FunctionError;
 	}
 	return err;
@@ -417,11 +374,9 @@ EXTERN_C DLLEXPORT int ReshapeDouble(WolframLibraryData libData, MLINK mlp) {
 	try {
 		MathLinkStream ml(mlp, "List", 1);
 		reshapeArray<double>(ml);
-	}
-	catch (const LibraryLinkError& e) {
+	} catch (const LibraryLinkError& e) {
 		err = e.which();
-	}
-	catch (...) {
+	} catch (...) {
 		err = ErrorCode::FunctionError;
 	}
 	return err;
@@ -445,11 +400,9 @@ EXTERN_C DLLEXPORT int ComplexToList(WolframLibraryData libData, MLINK mlp) {
 		} else {
 			ml << a;
 		}
-	}
-	catch (const LibraryLinkError& e) {
+	} catch (const LibraryLinkError& e) {
 		err = e.which();
-	}
-	catch (...) {
+	} catch (...) {
 		err = ErrorCode::FunctionError;
 	}
 	return err;
@@ -462,16 +415,13 @@ EXTERN_C DLLEXPORT int ReceiveAndFreeArray(WolframLibraryData libData, MLINK mlp
 		ML::ArrayData<double> a;
 		ml >> a;
 		ml << ML::Null << ML::EndPacket;
-	}
-	catch (const LibraryLinkError& e) {
+	} catch (const LibraryLinkError& e) {
 		err = e.which();
-	}
-	catch (...) {
+	} catch (...) {
 		err = ErrorCode::FunctionError;
 	}
 	return err;
 }
-
 
 //
 // Strings
@@ -506,11 +456,9 @@ EXTERN_C DLLEXPORT int RepeatString(WolframLibraryData libData, MLINK mlp) {
 	try {
 		MLStream<ML::Encoding::Native> ml(mlp, "List", 1);
 		repeatString(ml);
-	}
-	catch (const LibraryLinkError& e) {
+	} catch (const LibraryLinkError& e) {
 		err = e.which();
-	}
-	catch (...) {
+	} catch (...) {
 		err = ErrorCode::FunctionError;
 	}
 	return err;
@@ -521,11 +469,9 @@ EXTERN_C DLLEXPORT int RepeatUTF8(WolframLibraryData libData, MLINK mlp) {
 	try {
 		MLStream<ML::Encoding::UTF8> ml(mlp, "List", 1);
 		repeatString(ml);
-	}
-	catch (const LibraryLinkError& e) {
+	} catch (const LibraryLinkError& e) {
 		err = e.which();
-	}
-	catch (...) {
+	} catch (...) {
 		err = ErrorCode::FunctionError;
 	}
 	return err;
@@ -536,11 +482,9 @@ EXTERN_C DLLEXPORT int RepeatUTF16(WolframLibraryData libData, MLINK mlp) {
 	try {
 		MLStream<ML::Encoding::UTF16> ml(mlp, "List", 1);
 		repeatString(ml);
-	}
-	catch (const LibraryLinkError& e) {
+	} catch (const LibraryLinkError& e) {
 		err = e.which();
-	}
-	catch (...) {
+	} catch (...) {
 		err = ErrorCode::FunctionError;
 	}
 	return err;
@@ -551,11 +495,9 @@ EXTERN_C DLLEXPORT int RepeatUTF32(WolframLibraryData libData, MLINK mlp) {
 	try {
 		MLStream<ML::Encoding::UTF32> ml(mlp, "List", 1);
 		repeatString(ml);
-	}
-	catch (const LibraryLinkError& e) {
+	} catch (const LibraryLinkError& e) {
 		err = e.which();
-	}
-	catch (...) {
+	} catch (...) {
 		err = ErrorCode::FunctionError;
 	}
 	return err;
@@ -582,11 +524,9 @@ EXTERN_C DLLEXPORT int AppendString(WolframLibraryData libData, MLINK mlp) {
 	try {
 		MLStream<ML::Encoding::Native> ml(mlp, "List", 1);
 		appendString(ml);
-	}
-	catch (const LibraryLinkError& e) {
+	} catch (const LibraryLinkError& e) {
 		err = e.which();
-	}
-	catch (std::runtime_error& e) {
+	} catch (std::runtime_error& e) {
 		std::cout << e.what() << std::endl;
 		err = ErrorCode::FunctionError;
 	}
@@ -598,11 +538,9 @@ EXTERN_C DLLEXPORT int AppendUTF8(WolframLibraryData libData, MLINK mlp) {
 	try {
 		MLStream<ML::Encoding::UTF8> ml(mlp, "List", 1);
 		appendString(ml);
-	}
-	catch (const LibraryLinkError& e) {
+	} catch (const LibraryLinkError& e) {
 		err = e.which();
-	}
-	catch (...) {
+	} catch (...) {
 		err = ErrorCode::FunctionError;
 	}
 	return err;
@@ -613,11 +551,9 @@ EXTERN_C DLLEXPORT int AppendUTF16(WolframLibraryData libData, MLINK mlp) {
 	try {
 		MLStream<ML::Encoding::UTF16> ml(mlp, "List", 1);
 		appendString(ml);
-	}
-	catch (const LibraryLinkError& e) {
+	} catch (const LibraryLinkError& e) {
 		err = e.which();
-	}
-	catch (...) {
+	} catch (...) {
 		err = ErrorCode::FunctionError;
 	}
 	return err;
@@ -628,11 +564,9 @@ EXTERN_C DLLEXPORT int AppendUTF32(WolframLibraryData libData, MLINK mlp) {
 	try {
 		MLStream<ML::Encoding::UTF32> ml(mlp, "List", 1);
 		appendString(ml);
-	}
-	catch (const LibraryLinkError& e) {
+	} catch (const LibraryLinkError& e) {
 		err = e.which();
-	}
-	catch (...) {
+	} catch (...) {
 		err = ErrorCode::FunctionError;
 	}
 	return err;
@@ -645,11 +579,9 @@ EXTERN_C DLLEXPORT int ReceiveAndFreeString(WolframLibraryData libData, MLINK ml
 		ML::StringData<ML::Encoding::Native> s;
 		ml >> s;
 		ml << ML::Null << ML::EndPacket;
-	}
-	catch (const LibraryLinkError& e) {
+	} catch (const LibraryLinkError& e) {
 		err = e.which();
-	}
-	catch (...) {
+	} catch (...) {
 		err = ErrorCode::FunctionError;
 	}
 	return err;
@@ -676,16 +608,13 @@ EXTERN_C DLLEXPORT int GetAndPutUTF8(WolframLibraryData libData, MLINK mlp) {
 
 		ml << R"(This will be sent as UTF8 encoded string. No need to escape backslashes \o/. Some weird characters: ą©łóßµ)" << ML::EndPacket;
 
-	}
-	catch (const LibraryLinkError& e) {
+	} catch (const LibraryLinkError& e) {
 		err = e.which();
-	}
-	catch (...) {
+	} catch (...) {
 		err = ErrorCode::FunctionError;
 	}
 	return err;
 }
-
 
 //
 // Symbols and Arbitrary Functions
@@ -696,17 +625,12 @@ EXTERN_C DLLEXPORT int GetList(WolframLibraryData libData, MLINK mlp) {
 	try {
 		MLStream<ML::Encoding::Byte> ml(mlp, "List", 0);
 		ml << ML::List(5);
-		ml << std::vector<int> { 1, 2, 3 }
-			<< ML::Missing()
-			<< ML::putAs<ML::Encoding::UTF8>(std::vector<float> { 1.5, 2.5, 3.5 })
-			<< ML::putAs<ML::Encoding::UTF8>("Hello!")
-			<< ML::Missing("Deal with it");
+		ml << std::vector<int> {1, 2, 3} << ML::Missing() << ML::putAs<ML::Encoding::UTF8>(std::vector<float> {1.5, 2.5, 3.5})
+		   << ML::putAs<ML::Encoding::UTF8>("Hello!") << ML::Missing("Deal with it");
 		ml << ML::EndPacket;
-	}
-	catch (const LibraryLinkError& e) {
+	} catch (const LibraryLinkError& e) {
 		err = e.which();
-	}
-	catch (...) {
+	} catch (...) {
 		err = ErrorCode::FunctionError;
 	}
 	return err;
@@ -719,7 +643,7 @@ EXTERN_C DLLEXPORT int ReverseSymbolsOrder(WolframLibraryData libData, MLINK mlp
 		ML::List l;
 		ml >> l;
 
-		//use unique_ptr only to test if MathLinkStream handles it correctly
+		// use unique_ptr only to test if MathLinkStream handles it correctly
 		std::vector<std::unique_ptr<ML::Symbol>> v;
 
 		// Read all symbols in a loop
@@ -734,22 +658,19 @@ EXTERN_C DLLEXPORT int ReverseSymbolsOrder(WolframLibraryData libData, MLINK mlp
 			ml << *it;
 		}
 		ml << ML::EndPacket;
-	}
-	catch (const LibraryLinkError& e) {
+	} catch (const LibraryLinkError& e) {
 		err = e.which();
-	}
-	catch (...) {
+	} catch (...) {
 		err = ErrorCode::FunctionError;
 	}
 	return err;
 }
 
-
 EXTERN_C DLLEXPORT int TakeLibraryFunction(WolframLibraryData libData, MLINK mlp) {
 	auto err = ErrorCode::NoError;
 	try {
 		MLStream<ML::Encoding::UTF8> ml(mlp, "List", 1);
-		ML::Function llf { "LibraryFunction", 3 };
+		ML::Function llf {"LibraryFunction", 3};
 		ml >> llf;
 
 		std::string libDir;
@@ -758,15 +679,13 @@ EXTERN_C DLLEXPORT int TakeLibraryFunction(WolframLibraryData libData, MLINK mlp
 		std::string fname;
 		ml >> fname;
 
-		ML::Symbol s { "LinkObject" };
+		ML::Symbol s {"LinkObject"};
 		ml >> s;
 
 		ml << ML::NewPacket << llf << libDir << "ReverseSymbolsOrder" << s << ML::EndPacket;
-	}
-	catch (const LibraryLinkError& e) {
+	} catch (const LibraryLinkError& e) {
 		err = e.which();
-	}
-	catch (...) {
+	} catch (...) {
 		err = ErrorCode::FunctionError;
 	}
 	return err;
@@ -789,7 +708,7 @@ EXTERN_C DLLEXPORT int GetSet(WolframLibraryData libData, MLINK mlp) {
 			ss.insert(std::move(s));
 		}
 
-		if (l.getArgc() == 2) { // send with custom head
+		if (l.getArgc() == 2) {	   // send with custom head
 			std::string head;
 			ml >> head;
 			ml.sendRange(ss.cbegin(), ss.cend(), head);
@@ -798,11 +717,9 @@ EXTERN_C DLLEXPORT int GetSet(WolframLibraryData libData, MLINK mlp) {
 		}
 
 		ml << ML::EndPacket;
-	}
-	catch (const LibraryLinkError& e) {
+	} catch (const LibraryLinkError& e) {
 		err = e.which();
-	}
-	catch (...) {
+	} catch (...) {
 		err = ErrorCode::FunctionError;
 	}
 	return err;
@@ -837,16 +754,13 @@ LIBRARY_MATHLINK_FUNCTION(ReadNestedMap) {
 		}
 
 		ml << ML::putAs<ML::Encoding::UTF8>(myNestedMap);
-	}
-	catch (const LibraryLinkError& e) {
+	} catch (const LibraryLinkError& e) {
 		err = e.which();
-	}
-	catch (...) {
+	} catch (...) {
 		err = ErrorCode::FunctionError;
 	}
 	return err;
 }
-
 
 //
 // BeginExpr - DropExpr - EndExpr
@@ -861,7 +775,7 @@ LIBRARY_MATHLINK_FUNCTION(UnknownLengthList) {
 		ml >> modulus;
 
 		std::random_device rd;
-		std::mt19937 gen { rd() };
+		std::mt19937 gen {rd()};
 		std::uniform_int_distribution<> distr(0, std::max(1'000'000, modulus + 1));
 
 		ml << ML::BeginExpr("List");
@@ -872,12 +786,10 @@ LIBRARY_MATHLINK_FUNCTION(UnknownLengthList) {
 		}
 		ml << ML::EndExpr();
 
-	}
-	catch (const LibraryLinkError& e) {
+	} catch (const LibraryLinkError& e) {
 		err = e.which();
 		std::cout << e.what() << std::endl;
-	}
-	catch (...) {
+	} catch (...) {
 		err = ErrorCode::FunctionError;
 	}
 	return err;
@@ -901,11 +813,9 @@ LIBRARY_MATHLINK_FUNCTION(RaggedArray) {
 		}
 		ml << ML::EndExpr();
 
-	}
-	catch (const LibraryLinkError& e) {
+	} catch (const LibraryLinkError& e) {
 		err = e.which();
-	}
-	catch (...) {
+	} catch (...) {
 		err = ErrorCode::FunctionError;
 	}
 	return err;
@@ -931,7 +841,7 @@ LIBRARY_MATHLINK_FUNCTION(FactorsOrFailed) {
 						divisors++;
 					} else {
 						ml << ML::DropExpr();
-						ml << ML::Symbol("$Failed"); // $Failed is now sent to the "parent" loopback link
+						ml << ML::Symbol("$Failed");	// $Failed is now sent to the "parent" loopback link
 						break;
 					}
 				}
@@ -940,16 +850,13 @@ LIBRARY_MATHLINK_FUNCTION(FactorsOrFailed) {
 		}
 		ml << ML::EndExpr();
 
-	}
-	catch (const LibraryLinkError& e) {
+	} catch (const LibraryLinkError& e) {
 		err = e.which();
-	}
-	catch (...) {
+	} catch (...) {
 		err = ErrorCode::FunctionError;
 	}
 	return err;
 }
-
 
 LIBRARY_MATHLINK_FUNCTION(Empty) {
 	auto err = ErrorCode::NoError;
@@ -962,16 +869,13 @@ LIBRARY_MATHLINK_FUNCTION(Empty) {
 		ml << ML::BeginExpr(head);
 		ml << ML::EndExpr();
 
-	}
-	catch (const LibraryLinkError& e) {
+	} catch (const LibraryLinkError& e) {
 		err = e.which();
-	}
-	catch (...) {
+	} catch (...) {
 		err = ErrorCode::FunctionError;
 	}
 	return err;
 }
-
 
 LIBRARY_MATHLINK_FUNCTION(ListOfStringsTiming) {
 	auto err = ErrorCode::NoError;
@@ -985,7 +889,7 @@ LIBRARY_MATHLINK_FUNCTION(ListOfStringsTiming) {
 		bool useBeginExpr;
 		ml >> useBeginExpr;
 
-		useBeginExpr? (ml << ML::BeginExpr("List")) : (ml << ML::List(static_cast<int>(repetitions * listOfStrings.size())));
+		useBeginExpr ? (ml << ML::BeginExpr("List")) : (ml << ML::List(static_cast<int>(repetitions * listOfStrings.size())));
 
 		for (int i = 0; i < repetitions; ++i) {
 			for (auto&& s : listOfStrings)
@@ -997,11 +901,9 @@ LIBRARY_MATHLINK_FUNCTION(ListOfStringsTiming) {
 		}
 
 		ml << ML::EndPacket;
-	}
-	catch (const LibraryLinkError& e) {
+	} catch (const LibraryLinkError& e) {
 		err = e.which();
-	}
-	catch (...) {
+	} catch (...) {
 		err = ErrorCode::FunctionError;
 	}
 	return err;

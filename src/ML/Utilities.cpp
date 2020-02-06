@@ -1,17 +1,16 @@
-/** 
+/**
  * @file	Utilities.h
  * @date	Nov 26, 2017
  * @author	Rafal Chojna <rafalc@wolfram.com>
  * @brief	Implementation file with miscellaneous definitions used throughout the MathLink-related part of LibraryLinkUtilities
  */
 
-#include <LLU/ML/Utilities.h>
-
 #include <string>
 
 #include "mathlink.h"
 
 #include <LLU/ErrorLog/ErrorManager.h>
+#include <LLU/ML/Utilities.h>
 
 namespace LLU::ML {
 
@@ -63,11 +62,10 @@ namespace LLU::ML {
     int countExpressionsInLoopbackLink(MLINK& lpbckLink) {
         auto helperLink = getNewLoopback(lpbckLink);
         int exprCnt = 0;
-        while (MLTransferExpression(helperLink, lpbckLink)) exprCnt++;
+        while (MLTransferExpression(helperLink, lpbckLink))
+				exprCnt++;
         MLClose(lpbckLink);
         lpbckLink = helperLink;
         return exprCnt;
     }
 }
-
-

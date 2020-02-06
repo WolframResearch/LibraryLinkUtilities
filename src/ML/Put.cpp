@@ -1,4 +1,4 @@
-/** 
+/**
  * @file	Put.cpp
  * @date	Nov 28, 2017
  * @author	Rafal Chojna <rafalc@wolfram.com>

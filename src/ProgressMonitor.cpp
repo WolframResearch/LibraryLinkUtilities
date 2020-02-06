@@ -5,8 +5,8 @@
  */
 #include "LLU/ProgressMonitor.h"
 
-#include "LLU/LibraryData.h"
 #include "LLU/ErrorLog/ErrorManager.h"
+#include "LLU/LibraryData.h"
 
 namespace LLU {
 
@@ -31,7 +31,7 @@ namespace LLU {
 	}
 
 	void ProgressMonitor::checkAbort() {
-		if(LibraryData::API()->AbortQ()) {
+		if (LibraryData::API()->AbortQ()) {
 			ErrorManager::throwException(ErrorName::Aborted);
 		}
 	}
@@ -41,7 +41,7 @@ namespace LLU {
 		return *this;
 	}
 
-	ProgressMonitor& ProgressMonitor::operator +=(double progress) {
+	ProgressMonitor& ProgressMonitor::operator+=(double progress) {
 		set(sharedIndicator[0] + progress);
 		return *this;
 	}
@@ -51,7 +51,7 @@ namespace LLU {
 		return *this;
 	}
 
-	ProgressMonitor& ProgressMonitor::operator -=(double progress) {
+	ProgressMonitor& ProgressMonitor::operator-=(double progress) {
 		set(sharedIndicator[0] - progress);
 		return *this;
 	}

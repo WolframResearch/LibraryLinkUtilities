@@ -1,11 +1,11 @@
 /**
  * @file	Real.cpp
- * @brief	
+ * @brief
  */
 
 #include "LLU/MArgumentManager.h"
 
-EXTERN_C DLLEXPORT int RealAdd(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
+EXTERN_C DLLEXPORT int RealAdd(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument Res) {
 	LLU::MArgumentManager mngr(libData, Argc, Args, Res);
 
 	auto in1 = mngr.getReal(0);
@@ -15,7 +15,7 @@ EXTERN_C DLLEXPORT int RealAdd(WolframLibraryData libData, mint Argc, MArgument 
 	return LIBRARY_NO_ERROR;
 }
 
-EXTERN_C DLLEXPORT int RealTimes(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
+EXTERN_C DLLEXPORT int RealTimes(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument Res) {
 	LLU::MArgumentManager mngr(libData, Argc, Args, Res);
 
 	auto in1 = mngr.getReal(0);

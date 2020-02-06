@@ -1,4 +1,4 @@
-/** 
+/**
  * @file	Image.h
  * @author	Rafal Chojna <rafalc@wolfram.com>
  * @date	18/04/2017
@@ -11,11 +11,11 @@
 
 #include <array>
 
-#include "LLU/Containers/MArray.hpp"
 #include "LLU/Containers/Generic/Image.hpp"
-#include "LLU/Containers/Passing/PassingPolicy.hpp"
+#include "LLU/Containers/MArray.hpp"
 #include "LLU/Containers/Passing/Automatic.hpp"
 #include "LLU/Containers/Passing/Manual.hpp"
+#include "LLU/Containers/Passing/PassingPolicy.hpp"
 
 namespace LLU {
 
@@ -26,7 +26,7 @@ namespace LLU {
 	 *  @tparam T - type of data in Image
 	 */
 	template<typename T>
-	class 	TypedImage : public MArray<T> {
+	class TypedImage : public MArray<T> {
 	public:
 		using MArray<T>::MArray;
 
@@ -38,7 +38,7 @@ namespace LLU {
 		 *   @throws		ErrorName::ImageIndexError - if the specified coordinates are out-of-bound
 		 **/
 		T get(mint row, mint col, mint channel) const {
-			std::array<mint, 2> pos { { row, col } };
+			std::array<mint, 2> pos {{row, col}};
 			return getValueAt(pos.data(), channel);
 		}
 
@@ -51,7 +51,7 @@ namespace LLU {
 		 *   @throws		ErrorName::ImageIndexError - if the specified coordinates are out-of-bound
 		 **/
 		T get(mint slice, mint row, mint col, mint channel) const {
-			std::array<mint, 3> pos { { slice, row, col } };
+			std::array<mint, 3> pos {{slice, row, col}};
 			return getValueAt(pos.data(), channel);
 		}
 
@@ -64,7 +64,7 @@ namespace LLU {
 		 *   @throws		ErrorName::ImageIndexError - if the specified coordinates are out-of-bound
 		 **/
 		void set(mint row, mint col, mint channel, T newValue) {
-			std::array<mint, 2> pos { { row, col } };
+			std::array<mint, 2> pos {{row, col}};
 			setValueAt(pos.data(), channel, newValue);
 		}
 
@@ -78,13 +78,8 @@ namespace LLU {
 		 *   @throws		ErrorName::ImageIndexError - if the specified coordinates are out-of-bound
 		 **/
 		void set(mint slice, mint row, mint col, mint channel, T newValue) {
-			std::array<mint, 3> pos { { slice, row, col } };
+			std::array<mint, 3> pos {{slice, row, col}};
 			setValueAt(pos.data(), channel, newValue);
-		}
-
-		/// Return matching type of MImage
-		static imagedata_t getType() noexcept {
-			return type;
 		}
 
 	private:
@@ -119,9 +114,6 @@ namespace LLU {
 		 * @param   newValue - new value for the specified channel
 		 */
 		void setValueAt(mint* pos, mint channel, T newValue);
-
-		/// Image data type matching template parameter T
-		static const imagedata_t type;
 	};
 
 	/**
@@ -134,7 +126,7 @@ namespace LLU {
 	 * @tparam	T - type of underlying data
 	 */
 	template<typename T, class PassingMode = Passing::Manual>
-	class Image: public TypedImage<T>, public GenericImage<PassingMode> {
+	class Image : public TypedImage<T>, public GenericImage<PassingMode> {
 	public:
 		/**
 		 *   @brief         Constructs new 2D Image
@@ -157,7 +149,6 @@ namespace LLU {
 		 *   @throws		ErrorName::ImageNewError - if internal MImage creation failed
 		 **/
 		Image(mint nFrames, mint w, mint h, mint channels, colorspace_t cs, bool interleavingQ);
-
 
 		/**
 		 *   @brief         Create new Image from a GenericImage
@@ -199,7 +190,7 @@ namespace LLU {
 		 *   @param[in]     other - const reference to an Image
 		 **/
 		template<class P>
-		explicit Image(const Image<T, P> &other) : TypedImage<T>(other), GenericImage<PassingMode>(other) {}
+		explicit Image(const Image<T, P>& other) : TypedImage<T>(other), GenericImage<PassingMode>(other) {}
 
 		/**
 		 *   @brief         Copy constructor with type conversion
@@ -223,11 +214,12 @@ namespace LLU {
 		 *   @param[in]     other - const reference to an Image of matching type
 		 **/
 		template<class P>
-		Image& operator=(const Image <T, P>& other) {
+		Image& operator=(const Image<T, P>& other) {
 			TypedImage<T>::operator=(other);
 			GenericBase::operator=(other);
 			return *this;
 		}
+
 	private:
 		using GenericBase = MContainer<MArgumentType::Image, PassingMode>;
 
@@ -250,38 +242,32 @@ namespace LLU {
 	};
 
 	template<typename T, class PassingMode>
-	Image<T, PassingMode>::Image(mint w, mint h, mint channels, colorspace_t cs, bool interleavingQ) : Image(0, w, h, channels, cs, interleavingQ) {
-	}
+	Image<T, PassingMode>::Image(mint w, mint h, mint channels, colorspace_t cs, bool interleavingQ) : Image(0, w, h, channels, cs, interleavingQ) {}
 
 	template<typename T, class PassingMode>
 	Image<T, PassingMode>::Image(GenericBase im) : TypedImage<T>(dimensionsFromGenericImage(im)), GenericBase(std::move(im)) {
-		if (TypedImage<T>::getType() != GenericBase::type()) {
+		if (ImageType<T> != GenericBase::type()) {
 			ErrorManager::throwException(ErrorName::ImageTypeError);
 		}
 	}
 
 	template<typename T, class PassingMode>
-	Image<T, PassingMode>::Image(mint nFrames, mint w, mint h, mint channels, colorspace_t cs, bool interleavingQ) :
-			Image(GenericBase {nFrames, w, h, channels, this->getType(), cs, interleavingQ})  {
-	}
+	Image<T, PassingMode>::Image(mint nFrames, mint w, mint h, mint channels, colorspace_t cs, bool interleavingQ)
+		: Image(GenericBase {nFrames, w, h, channels, ImageType<T>, cs, interleavingQ}) {}
 
 	template<typename T, class PassingMode>
-	Image<T, PassingMode>::Image(MImage mi) : Image(GenericBase {mi}) {
-	}
-
-    template<typename T, class PassingMode>
-    template<typename U, class P>
-    Image<T, PassingMode>::Image(const Image<U, P> &i2) : Image(i2, i2.interleavedQ()) {
-    }
-
-    template<typename T, class PassingMode>
-    template<typename U, class P>
-    Image<T, PassingMode>::Image(const Image<U, P> &i2, bool interleavedQ) : TypedImage<T>(i2), GenericBase(i2.convert(this->getType(),
-    		interleavedQ)) {
-    }
+	Image<T, PassingMode>::Image(MImage mi) : Image(GenericBase {mi}) {}
 
 	template<typename T, class PassingMode>
-	MArrayDimensions Image<T, PassingMode>::dimensionsFromGenericImage(const GenericBase &im) {
+	template<typename U, class P>
+	Image<T, PassingMode>::Image(const Image<U, P>& i2) : Image(i2, i2.interleavedQ()) {}
+
+	template<typename T, class PassingMode>
+	template<typename U, class P>
+	Image<T, PassingMode>::Image(const Image<U, P>& i2, bool interleavedQ) : TypedImage<T>(i2), GenericBase(i2.convert(ImageType<T>, interleavedQ)) {}
+
+	template<typename T, class PassingMode>
+	MArrayDimensions Image<T, PassingMode>::dimensionsFromGenericImage(const GenericBase& im) {
 		std::vector<mint> dims;
 		if (!im.getContainer()) {
 			return dims;
@@ -292,19 +278,18 @@ namespace LLU {
 		} else {
 			dims = {im.rows(), im.columns()};
 		}
-        if (im.channels() > 1) {
-            if (im.interleavedQ()) {
+		if (im.channels() > 1) {
+			if (im.interleavedQ()) {
 				dims.push_back(im.channels());
-            } else {
+			} else {
 				dims.insert(dims.begin(), im.channels());
-            }
-        }
+			}
+		}
 		if (dims.size() != static_cast<std::make_unsigned_t<mint>>(depth)) {
 			sizeError();
 		}
 		return MArrayDimensions {dims};
 	}
 } /* namespace LLU */
-
 
 #endif /* LLUTILS_IMAGE_H_ */

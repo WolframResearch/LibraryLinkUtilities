@@ -7,7 +7,7 @@
 #ifndef LLUTILS_PASSINGPOLICY_HPP
 #define LLUTILS_PASSINGPOLICY_HPP
 
-#include "WolframLibrary.h"
+#include "LLU/LibraryData.h"
 
 namespace LLU {
 	/// Namespace containing classes representing different passing modes that exist in LibraryLink
@@ -16,9 +16,9 @@ namespace LLU {
 		/// Abstract class defining common interface and behavior for all predefined passing policies
 		class PassingPolicy {
 		public:
-
 			/**
-			 * 	@brief		Check whether this object owns the underlying data structure from WolframLibrary. If it does, it is responsible for freeing the resources.
+			 * 	@brief		Check whether this object owns the underlying data structure from WolframLibrary. If it does, it is responsible for freeing the
+			 * 				resources.
 			 * 	@return		true if and only if the object owns the underlying data structure from WolframLibrary
 			 */
 			bool isOwner() const {
@@ -38,7 +38,6 @@ namespace LLU {
 			virtual void cleanup() const noexcept = 0;
 
 		protected:
-
 			/**
 			 * @brief   Create new PassingPolicy with starting ownership status
 			 * @param   ownerQ - ownership information
@@ -61,9 +60,9 @@ namespace LLU {
 				argumentOwnerQ = ownerQ;
 			}
 
-        protected:
+		protected:
 			/// Free internal container
-            virtual void free() const noexcept = 0;
+			virtual void free() const noexcept = 0;
 
 			/**
 			 *
@@ -73,13 +72,13 @@ namespace LLU {
 			virtual void pass(MArgument& res) const = 0;
 
 			/// Disown the internal container
-            virtual void disown() const noexcept = 0;
+			virtual void disown() const noexcept = 0;
 
-        private:
+		private:
 			/// Determines if this object owns the underlying data structure
 			mutable bool argumentOwnerQ = false;
 		};
 	}
 }
 
-#endif //LLUTILS_PASSINGPOLICY_HPP
+#endif	  // LLUTILS_PASSINGPOLICY_HPP

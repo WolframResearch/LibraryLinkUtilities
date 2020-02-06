@@ -1,4 +1,4 @@
-/** 
+/**
  * @file	MLStringEncodings.cpp
  * @date	Mar 30, 2018
  * @author	Rafal Chojna <rafalc@wolfram.com>
@@ -34,12 +34,10 @@ LIBRARY_MATHLINK_FUNCTION(NestedPutAs) {
 
 		ml >> ML::getAs<ML::Encoding::UTF8>(s);
 
-		ml << ML::putAs<ML::Encoding::UTF16>(ML::putAs<ML::Encoding::UTF8>(s)); // the most nested encoding should be the one used
-	}
-	catch (LibraryLinkError& e) {
+		ml << ML::putAs<ML::Encoding::UTF16>(ML::putAs<ML::Encoding::UTF8>(s));	   // the most nested encoding should be the one used
+	} catch (LibraryLinkError& e) {
 		err = e.which();
-	}
-	catch (...) {
+	} catch (...) {
 		err = ErrorCode::FunctionError;
 	}
 	return err;
@@ -67,14 +65,12 @@ LIBRARY_MATHLINK_FUNCTION(CharacterCodes) {
 	try {
 		MLStream<ML::Encoding::Byte> ml(mlp, 1);
 		auto mark = MLCreateMark(mlp);
-		ml << ML::Association(6); // there are 6 encodings available
+		ml << ML::Association(6);	 // there are 6 encodings available
 		forAllEncodingsDo<StringToCharCodes>(ml, mark);
 
-	}
-	catch (LibraryLinkError& e) {
+	} catch (LibraryLinkError& e) {
 		err = e.which();
-	}
-	catch (...) {
+	} catch (...) {
 		err = ErrorCode::FunctionError;
 	}
 	return err;
@@ -96,15 +92,12 @@ LIBRARY_MATHLINK_FUNCTION(AllEncodingsRoundtrip) {
 	try {
 		MLStream<ML::Encoding::Byte> ml(mlp, 1);
 		auto mark = MLCreateMark(mlp);
-		ml << ML::Association(6); // there are 6 encodings available
+		ml << ML::Association(6);	 // there are 6 encodings available
 		forAllEncodingsDo<EncodingRoundtrip>(ml, mark);
-	}
-	catch (LibraryLinkError& e) {
+	} catch (LibraryLinkError& e) {
 		err = e.which();
-	}
-	catch (...) {
+	} catch (...) {
 		err = ErrorCode::FunctionError;
 	}
 	return err;
 }
-

@@ -7,17 +7,15 @@
 #ifndef LLUTILS_ERRORMANAGER_H
 #define LLUTILS_ERRORMANAGER_H
 
+#include <algorithm>
 #include <initializer_list>
 #include <string>
-#include <vector>
-#include <algorithm>
 #include <unordered_map>
 #include <utility>
+#include <vector>
 
-#include "WolframLibrary.h"
-
-#include <LLU/LibraryData.h>
 #include <LLU/ErrorLog/LibraryLinkError.h>
+#include <LLU/LibraryData.h>
 
 namespace LLU {
 
@@ -34,7 +32,6 @@ namespace LLU {
 		using ErrorStringData = std::pair<std::string, std::string>;
 
 	public:
-
 		/**
 		 * @brief Default constructor is deleted since ErrorManager is supposed to be completely static
 		 */
@@ -56,7 +53,7 @@ namespace LLU {
 		 * @tparam 	T - type template parameter pack
 		 * @param 	errorName - name of error to be thrown, must be registered beforehand
 		 * @param 	args - any number of arguments that will replace TemplateSlots (``, `1`, `xx`, etd) in the message text in top-level
-		 * @note	This function requires a copy of WolframLibraryData to be saved in WolframLibrary_initialize via LibDataHolder::setLibraryData
+		 * @note	This function requires a copy of WolframLibraryData to be saved in WolframLibrary_initialize via LibraryData::setLibraryData
 		 * 			or MArgumentManager::setLibraryData.
 		 */
 		template<typename... T>
@@ -103,7 +100,7 @@ namespace LLU {
 		 * @param 	errorName - name of error to be thrown, must be registered beforehand
 		 * @param	debugInfo - additional message with debug info, this message will not be passed to top-level Failure object
 		 * @param 	args - any number of arguments that will replace TemplateSlots (``, `1`, `xx`, etd) in the message text in top-level
-		 * @note	This function requires a copy of WolframLibraryData to be saved in WolframLibrary_initialize via LibDataHolder::setLibraryData
+		 * @note	This function requires a copy of WolframLibraryData to be saved in WolframLibrary_initialize via LibraryData::setLibraryData
 		 * 			or MArgumentManager::setLibraryData.
 		 */
 		template<typename... T>
@@ -125,17 +122,17 @@ namespace LLU {
 		 * @param 	args - any number of arguments that will replace TemplateSlots (``, `1`, `xx`, etd) in the message text in top-level
 		 */
 		template<typename... T>
-		[[noreturn]] static void throwExceptionWithDebugInfo(WolframLibraryData libData, const std::string& errorName, const std::string& debugInfo, T&&... args);
-
+		[[noreturn]] static void
+		throwExceptionWithDebugInfo(WolframLibraryData libData, const std::string& errorName, const std::string& debugInfo, T&&... args);
 
 		/**
-		 * @brief   Sets new value for the sendParametersImmediately flag. Pass false to make sure that exception do not send their parameters to top-level when they are thrown.
-		 * 			This is essential in multithreaded applications since the WL symbol that parameters are assigned to may be treated as a global shared resource.
-		 * 			It is recommended to use this method in WolframLibrary_initialize.
+		 * @brief   Sets new value for the sendParametersImmediately flag. Pass false to make sure that exception do not send their parameters to top-level when
+		 * they are thrown. This is essential in multithreaded applications since the WL symbol that parameters are assigned to may be treated as a global
+		 * shared resource. It is recommended to use this method in WolframLibrary_initialize.
 		 * @param 	newValue - new value for the sendParametersImmediately flag
 		 */
 		static void setSendParametersImmediately(bool newValue) {
-		  sendParametersImmediately = newValue;
+			sendParametersImmediately = newValue;
 		}
 
 		/**
@@ -143,7 +140,7 @@ namespace LLU {
 		 * @return 	current value of sendParametersImmediately flag.
 		 */
 		static bool getSendParametersImmediately() {
-		  return sendParametersImmediately;
+			return sendParametersImmediately;
 		}
 
 		/**
@@ -156,7 +153,6 @@ namespace LLU {
 		static void sendRegisteredErrorsViaMathlink(MLINK mlp);
 
 	private:
-
 		/// Errors are stored in a map with elements of the form { "ErrorName", immutable LibraryLinkError object }
 		using ErrorMap = std::unordered_map<std::string, const LibraryLinkError>;
 
@@ -199,27 +195,27 @@ namespace LLU {
 	};
 
 	template<typename... T>
-	void ErrorManager::throwException(const std::string& errorName, T&&... args) {
-		throwException(LibraryData::API(), errorName, std::forward<T>(args)...);
+	[[noreturn]] void ErrorManager::throwException(const std::string& errorName, T&&... args) {
+		throwException(LibraryData::uncheckedAPI(), errorName, std::forward<T>(args)...);
 	}
 
 	template<typename... T>
-	void ErrorManager::throwException(WolframLibraryData libData, const std::string& errorName, T&&... args) {
+	[[noreturn]] void ErrorManager::throwException(WolframLibraryData libData, const std::string& errorName, T&&... args) {
 		throwExceptionWithDebugInfo(libData, errorName, "", std::forward<T>(args)...);
 	}
 
 	template<class Error, typename... Args>
-	void ErrorManager::throwCustomException(const std::string& errorName, Args&&... args) {
+	[[noreturn]] void ErrorManager::throwCustomException(const std::string& errorName, Args&&... args) {
 		throw Error(findError(errorName), std::forward<Args>(args)...);
 	}
 
 	template<typename... T>
-	void ErrorManager::throwExceptionWithDebugInfo(const std::string& errorName, const std::string& debugInfo, T&&... args) {
-		throwExceptionWithDebugInfo(LibraryData::API(), errorName, debugInfo, std::forward<T>(args)...);
+	[[noreturn]] void ErrorManager::throwExceptionWithDebugInfo(const std::string& errorName, const std::string& debugInfo, T&&... args) {
+		throwExceptionWithDebugInfo(LibraryData::uncheckedAPI(), errorName, debugInfo, std::forward<T>(args)...);
 	}
 
 	template<typename... T>
-	void ErrorManager::throwExceptionWithDebugInfo(WolframLibraryData libData, const std::string& errorName, const std::string& debugInfo, T&&... args) {
+	[[noreturn]] void ErrorManager::throwExceptionWithDebugInfo(WolframLibraryData libData, const std::string& errorName, const std::string& debugInfo, T&&... args) {
 		auto e = findError(errorName);
 		e.setDebugInfo(debugInfo);
 		if (libData && sizeof...(args) > 0) {
@@ -231,6 +227,6 @@ namespace LLU {
 		throw std::move(e);
 	}
 
-}  /* namespace LLU */
+} /* namespace LLU */
 
-#endif //LLUTILS_ERRORMANAGER_H
+#endif	  // LLUTILS_ERRORMANAGER_H

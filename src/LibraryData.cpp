@@ -26,19 +26,23 @@ namespace LLU {
 		return libData;
 	}
 
-	const st_WolframNumericArrayLibrary_Functions * LibraryData::NumericArrayAPI() {
+	WolframLibraryData LibraryData::uncheckedAPI() noexcept {
+		return libData;
+	}
+
+	const st_WolframNumericArrayLibrary_Functions* LibraryData::NumericArrayAPI() {
 		return API()->numericarrayLibraryFunctions;
 	}
 
-	const st_WolframSparseLibrary_Functions * LibraryData::SparseArrayAPI() {
+	const st_WolframSparseLibrary_Functions* LibraryData::SparseArrayAPI() {
 		return API()->sparseLibraryFunctions;
 	}
 
-	const st_WolframImageLibrary_Functions * LibraryData::ImageAPI() {
+	const st_WolframImageLibrary_Functions* LibraryData::ImageAPI() {
 		return API()->imageLibraryFunctions;
 	}
 
-	const st_WolframIOLibrary_Functions * LibraryData::DataStoreAPI() {
+	const st_WolframIOLibrary_Functions* LibraryData::DataStoreAPI() {
 		return API()->ioLibraryFunctions;
 	}
 

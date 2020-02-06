@@ -11,9 +11,9 @@
 
 #include <algorithm>
 
-#include "LLU/LibraryData.h"
 #include "LLU/Containers/MArray.hpp"
 #include "LLU/Containers/Passing/Shared.hpp"
+#include "LLU/LibraryData.h"
 
 namespace LLU {
 
@@ -23,13 +23,11 @@ namespace LLU {
 
 	/* Constructors */
 
-	MArgumentManager::MArgumentManager(mint Argc, MArgument* Args, MArgument& Res) :
-			argc(Argc), args(Args), res(Res) {
+	MArgumentManager::MArgumentManager(mint Argc, MArgument* Args, MArgument& Res) : argc(Argc), args(Args), res(Res) {
 		initStringArgs();
 	}
 
-	MArgumentManager::MArgumentManager(WolframLibraryData ld, mint Argc, MArgument* Args, MArgument& Res) :
-			argc(Argc), args(Args), res(Res) {
+	MArgumentManager::MArgumentManager(WolframLibraryData ld, mint Argc, MArgument* Args, MArgument& Res) : argc(Argc), args(Args), res(Res) {
 		LibraryData::setLibraryData(ld);
 		initStringArgs();
 	}
@@ -77,7 +75,7 @@ namespace LLU {
 	}
 
 	void MArgumentManager::setBoolean(bool result) const noexcept {
-		MArgument_setBoolean(res, result? True : False);
+		MArgument_setBoolean(res, result ? True : False);
 	}
 
 	void MArgumentManager::setReal(double result) const noexcept {
@@ -90,11 +88,11 @@ namespace LLU {
 
 	std::complex<double> MArgumentManager::getComplex(unsigned int index) const {
 		auto* mc = MArgument_getComplexAddress(getArgs(index));
-		return { mc->ri[0], mc->ri[1] };
+		return {mc->ri[0], mc->ri[1]};
 	}
 
 	void MArgumentManager::setComplex(std::complex<double> c) const noexcept {
-		mcomplex mc { { c.real(), c.imag() } };
+		mcomplex mc {{c.real(), c.imag()}};
 		MArgument_setComplex(res, mc);
 	}
 
@@ -126,7 +124,7 @@ namespace LLU {
 		MArgument_setMImage(res, mi);
 	}
 
-	void MArgumentManager::setDataStore(DataStore ds){
+	void MArgumentManager::setDataStore(DataStore ds) {
 		MArgument_setDataStore(res, ds);
 	}
 
@@ -151,7 +149,8 @@ namespace LLU {
 
 	MArgument MArgumentManager::getArgs(unsigned int index) const {
 		if (index >= argc)
-			ErrorManager::throwExceptionWithDebugInfo(ErrorName::MArgumentIndexError, "Index " + std::to_string(index) + " out-of-bound when accessing LibraryLink argument");
+			ErrorManager::throwExceptionWithDebugInfo(ErrorName::MArgumentIndexError,
+													  "Index " + std::to_string(index) + " out-of-bound when accessing LibraryLink argument");
 		return args[index];
 	}
 
@@ -166,9 +165,9 @@ namespace LLU {
 		if (argc < 1) {
 			ErrorManager::throwExceptionWithDebugInfo(ErrorName::MArgumentIndexError, "Index too small when accessing ProgressMonitor.");
 		}
-		auto pmIndex = static_cast<unsigned>(argc - 1); // shared Tensor will be passed as the last argument
+		auto pmIndex = static_cast<unsigned>(argc - 1);	   // shared Tensor will be passed as the last argument
 		auto sharedIndicator = getTensor<double, Passing::Shared>(pmIndex);
-		return ProgressMonitor { std::move(sharedIndicator), step };
+		return ProgressMonitor {std::move(sharedIndicator), step};
 	}
 
 } /* namespace LLU */

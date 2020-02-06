@@ -15,10 +15,11 @@
 #include <utility>
 #include <vector>
 
-#include "WolframLibrary.h"
+#include "LLU/Containers/Iterators/IterableContainer.hpp"
+#include "LLU/LibraryData.h"
+#include "LLU/Utilities.hpp"
 
 #include "MArrayDimensions.h"
-#include "LLU/Utilities.hpp"
 
 namespace LLU {
 
@@ -26,32 +27,18 @@ namespace LLU {
 	 * @class MArray
 	 * @brief This is a class template, where template parameter T is the type of data elements. MArray is the base class for NumericArray, Tensor and Image.
 	 *
-	 * Each MArray<T> is an abstract class, it provides common interface to NumericArrays, Tensors and Images. One of the biggest benefits is that this interface
-	 * contains iterators over underlying data together with begin() and end() member functions which makes it possible to use containers derived
-	 * from MArray directly in many functions from standard library \<algorithms\>.
+	 * Each MArray<T> is an abstract class, it provides common interface to NumericArrays, Tensors and Images. One of the biggest benefits is that this
+	 * interface contains iterators over underlying data together with begin() and end() member functions which makes it possible to use containers derived from
+	 * MArray directly in many functions from standard library \<algorithms\>.
 	 *
 	 * @tparam	T - type of underlying data
 	 */
 	template<typename T>
-	class MArray {
+	class MArray : public IterableContainer<T> {
 		template<typename>
 		friend class MArray;
+
 	public:
-		/// Type of elements stored
-		using value_type = T;
-
-		/// Iterator type
-		using iterator = value_type*;
-
-		/// Constant iterator type
-		using const_iterator = const value_type*;
-
-		/// Reference type
-		using reference = value_type&;
-
-		/// Constant reference type
-		using const_reference = const value_type&;
-
 		MArray() = default;
 
 		/**
@@ -67,27 +54,6 @@ namespace LLU {
 		 **/
 		template<typename U>
 		explicit MArray(const MArray<U>& other) : dims(other.dims) {}
-
-		/**
-		 *	@brief Get raw pointer to underlying data
-		 **/
-		T* data() noexcept {
-			return getData();
-		}
-
-		/**
-		 *	@brief Get raw pointer to const underlying data
-		 **/
-		const T* data() const noexcept {
-			return getData();
-		}
-
-		/**
-		 *	@brief Get total number of elements in the container
-		 **/
-		mint size() const noexcept {
-			return dims.flatCount();
-		}
 
 		/**
 		 *	@brief Get container rank
@@ -106,81 +72,25 @@ namespace LLU {
 		/**
 		 *  @brief  Get dimension value at position \p index
 		 */
-		mint dimension(mint index) {
+		mint dimension(mint index) const {
 			return dims.get(index);
 		}
 
 		/**
 		 *  @brief  Get a const reference to dimensions object
 		 */
-		const MArrayDimensions& dimensions() {
+		const MArrayDimensions& dimensions() const {
 			return dims;
 		}
 
-		/**
-		 *	@brief Get iterator at the beginning of underlying data
-		 **/
-		iterator begin() noexcept {
-			return getData();
-		}
-
-		/**
-		 *	@brief Get constant iterator at the beginning of underlying data
-		 **/
-		const_iterator begin() const noexcept {
-			return getData();
-		}
-
-		/**
-		 *	@brief Get constant iterator at the beginning of underlying data
-		 **/
-		const_iterator cbegin() const noexcept {
-			return getData();
-		}
-
-		/**
-		 *	@brief Get iterator after the end of underlying data
-		 **/
-		iterator end() noexcept {
-			return getData() + size();
-		}
-
-		/**
-		 *	@brief Get constant iterator after the end of underlying data
-		 **/
-		const_iterator end() const noexcept {
-			return getData() + size();
-		}
-
-		/**
-		 *	@brief Get constant iterator after the end of underlying data
-		 **/
-		const_iterator cend() const noexcept {
-			return getData() + size();
-		}
-
-		/**
-		 *	@brief 		Get a reference to the data element at given position
-		 *	@param[in]	index - position of desired data element
-		 **/
-		T& operator[](mint index) {
-			return *(begin() + index);
-		}
-
-		/**
-		 *	@brief 		Get a constant reference to the data element at given position
-		 *	@param[in]	index - position of desired data element
-		 **/
-		const T& operator[](mint index) const {
-			return *(cbegin() + index);
-		}
+		using IterableContainer<T>::operator[];
 
 		/**
 		 *	@brief 		Get a reference to the data element at given position in a multidimensional container
 		 *	@param[in]	indices - vector with coordinates of desired data element
 		 **/
 		T& operator[](const std::vector<mint>& indices) {
-			return  (*this)[dims.getIndex(indices)];
+			return (*this)[dims.getIndex(indices)];
 		}
 
 		/**
@@ -188,7 +98,7 @@ namespace LLU {
 		 *	@param[in]	indices - vector with coordinates of desired data element
 		 **/
 		const T& operator[](const std::vector<mint>& indices) const {
-			return  (*this)[dims.getIndex(indices)];
+			return (*this)[dims.getIndex(indices)];
 		}
 
 		/**
@@ -219,55 +129,13 @@ namespace LLU {
 		 **/
 		const T& at(const std::vector<mint>& indices) const;
 
-		/**
-		 * @brief 	Get reference to the first element.
-		 * @note 	For empty container the behavior is undefined.
-		 */
-		reference front() {
-			return *begin();
-		}
-
-		/**
-		 * @brief 	Get constant reference to the first element.
-		 * @note 	For empty container the behavior is undefined.
-		 */
-		const_reference front() const {
-			return *cbegin();
-		}
-
-		/**
-		 * @brief 	Get reference to the last element.
-		 * @note 	For empty container the behavior is undefined.
-		 */
-		reference back() {
-			return *(end() - 1);
-		}
-
-		/**
-		 * @brief 	Get constant reference to the last element.
-		 * @note 	For empty container the behavior is undefined.
-		 */
-		const_reference back() const {
-			return *(cend() - 1);
-		}
-
-		/**
-		 * Copy contents of the MArray to a std::vector of matching type
-		 * @return	std::vector with the same data as MArray
-		 * @note	std::vector is always 1D, so the information about dimensions of MArray is lost
-		 */
-		std::vector<T> asVector() const {
-			return std::vector<T> { cbegin(), cend() };
-		}
-
 	protected:
 		MArrayDimensions dims;
 
 	private:
-		/**
-		 *	@brief	Get raw pointer to underlying data
-		 **/
-		virtual T* getData() const noexcept = 0;
+		mint getSize() const noexcept override {
+			return dims.flatCount();
+		}
 	};
 
 	template<typename T>
@@ -306,6 +174,5 @@ namespace LLU {
 	}
 
 } /* namespace LLU */
-
 
 #endif /* LLUTILS_MARRAY_HPP_ */

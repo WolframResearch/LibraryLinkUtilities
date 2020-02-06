@@ -14,18 +14,19 @@
 #include <limits>
 #include <memory>
 #include <string>
+#include <utility>
 #include <vector>
 
-#include "LLU/ErrorLog/ErrorManager.h"
 #include "LLU/Containers/DataList.h"
 #include "LLU/Containers/Image.h"
 #include "LLU/Containers/NumericArray.h"
-#include "LLU/Containers/Tensor.h"
 #include "LLU/Containers/Passing/Automatic.hpp"
+#include "LLU/Containers/Tensor.h"
+#include "LLU/ErrorLog/ErrorManager.h"
+#include "LLU/LibraryData.h"
 #include "LLU/MArgument.h"
+#include "LLU/ManagedExpression.hpp"
 #include "LLU/ProgressMonitor.h"
-
-#include "WolframLibrary.h"
 
 namespace LLU {
 
@@ -38,7 +39,6 @@ namespace LLU {
 	 **/
 	class MArgumentManager {
 	public:
-
 		/**
 		 *   @brief         Constructor
 		 *   @param[in]     Argc - number of MArguments provided
@@ -60,7 +60,6 @@ namespace LLU {
 		 *   @brief Default destructor
 		 **/
 		virtual ~MArgumentManager() = default;
-
 
 		/************************************ MArgument "getters" ************************************/
 
@@ -106,7 +105,7 @@ namespace LLU {
 		 *
 		 *   @note			MArgumentManager is responsible for disowning string arguments. Do not call free() or delete() on resulting pointer.
 		 **/
-		char *getCString(unsigned int index) const;
+		char* getCString(unsigned int index) const;
 
 		/**
 		 *   @brief         Get value of MArgument of type \b "UTF8String" at position \c index
@@ -232,6 +231,28 @@ namespace LLU {
 		 **/
 		DataStore getDataStore(unsigned int index) const;
 
+		/**
+		 * @brief   Get a reference to an instance of Managed Expression that was sent from Wolfram Language as argument to a library function
+		 * @tparam  ManagedExpr - registered Managed Expression class
+		 * @tparam  DynamicType - actual type of Managed Expression, this must be ManagedExpr or its subclass
+		 * @param   index - position of desired argument in \c Args
+		 * @param   store - Managed Expression store that manages expressions of type ManagedExpr
+		 * @return  a reference to the Managed Expression
+		 */
+		template<class ManagedExpr, class DynamicType = ManagedExpr>
+		DynamicType& getManagedExpression(unsigned int index, ManagedExpressionStore<ManagedExpr>& store) const;
+
+		/**
+		 * @brief   Get a shared pointer to an instance of Managed Expression that was sent from Wolfram Language as argument to a library function
+		 * @tparam  ManagedExpr - registered Managed Expression class
+		 * @tparam  DynamicType - actual type of Managed Expression, this must be ManagedExpr or its subclass
+		 * @param   index - position of desired argument in \c Args
+		 * @param   store - Managed Expression store that manages expressions of type ManagedExpr
+		 * @return  a shared pointer to the Managed Expression
+		 */
+		template<class ManagedExpr, class DynamicType = ManagedExpr>
+		std::shared_ptr<DynamicType> getManagedExpressionPtr(unsigned int index, ManagedExpressionStore<ManagedExpr>& store) const;
+
 		/************************************ MArgument "setters" ************************************/
 
 		/**
@@ -284,7 +305,7 @@ namespace LLU {
 		 *   @tparam		T - NumericArray data type
 		 *   @param[in]     na - reference to NumericArray which should pass its internal MNumericArray to LibraryLink
 		 **/
-		template<typename T, class PassingMode >
+		template<typename T, class PassingMode>
 		void setNumericArray(const NumericArray<T, PassingMode>& na);
 
 		/**
@@ -344,29 +365,45 @@ namespace LLU {
 		/************************************ generic setters ************************************/
 
 		/// @copydoc setBoolean
-		void set(bool result) noexcept { setBoolean(result); }
+		void set(bool result) noexcept {
+			setBoolean(result);
+		}
 
 		/// @copydoc setReal
-		void set(double result) noexcept { setReal(result); }
+		void set(double result) noexcept {
+			setReal(result);
+		}
 
 		/// @copydoc setInteger
-		void set(mint result) noexcept { setInteger(result); }
+		void set(mint result) noexcept {
+			setInteger(result);
+		}
 
 		/// @copydoc setComplex
-		void set(std::complex<double> c) noexcept { setComplex(c); }
+		void set(std::complex<double> c) noexcept {
+			setComplex(c);
+		}
 
 		/// @copydoc setString
-		void set(const std::string& str) { setString(str); }
+		void set(const std::string& str) {
+			setString(str);
+		}
 
 		/// @copydoc setString
-		void set(const char* str) { setString(str); }
+		void set(const char* str) {
+			setString(str);
+		}
 
 		/// @copydoc setString
-		void set(std::string&& str) { setString(std::move(str)); }
+		void set(std::string&& str) {
+			setString(std::move(str));
+		}
 
 		/// @copydoc setNumericArray
 		template<typename T, class PassingMode>
-		void set(const NumericArray<T, PassingMode>& na) { setNumericArray(na); }
+		void set(const NumericArray<T, PassingMode>& na) {
+			setNumericArray(na);
+		}
 
 		/**
 		 *  Set MNumericArray wrapped by \c na as output MArgument
@@ -374,11 +411,15 @@ namespace LLU {
 		 *  @param[in]  na - reference to generic NumericArray which should pass its internal MNumericArray to LibraryLink
 		 */
 		template<class PassingMode>
-		void set(const GenericNumericArray<PassingMode>& na) { na.passAsResult(res); }
+		void set(const GenericNumericArray<PassingMode>& na) {
+			na.passAsResult(res);
+		}
 
 		/// @copydoc setTensor
 		template<typename T, class PassingMode>
-		void set(const Tensor<T, PassingMode>& ten) { setTensor(ten); }
+		void set(const Tensor<T, PassingMode>& ten) {
+			setTensor(ten);
+		}
 
 		/**
 		 *  Set MTensor wrapped by \c t as output MArgument
@@ -386,11 +427,15 @@ namespace LLU {
 		 *  @param[in]  t - reference to generic Tensor which should pass its internal MTensor to LibraryLink
 		 */
 		template<class PassingMode>
-		void set(const GenericTensor<PassingMode>& t) { t.passAsResult(res); }
+		void set(const GenericTensor<PassingMode>& t) {
+			t.passAsResult(res);
+		}
 
 		/// @copydoc setImage
 		template<typename T, class PassingMode>
-		void set(const Image<T, PassingMode>& im) { setImage(im); }
+		void set(const Image<T, PassingMode>& im) {
+			setImage(im);
+		}
 
 		/**
 		 *  Set MImage wrapped by \c im as output MArgument
@@ -398,11 +443,15 @@ namespace LLU {
 		 *  @param[in]  im - reference to generic Image which should pass its internal MImage to LibraryLink
 		 */
 		template<class PassingMode>
-		void set(const GenericImage<PassingMode>& im) { im.passAsResult(res); }
+		void set(const GenericImage<PassingMode>& im) {
+			im.passAsResult(res);
+		}
 
 		/// @copydoc setDataList
 		template<MArgumentType T, class PassingMode>
-		void set(const DataList<T, PassingMode>& ds) { setDataList(ds); }
+		void set(const DataList<T, PassingMode>& ds) {
+			setDataList(ds);
+		}
 
 		/**
 		 *  Set DataStore wrapped by \c ds as output MArgument
@@ -410,7 +459,9 @@ namespace LLU {
 		 *  @param[in]  ds - reference to generic DataStore which should pass its internal DataStore to LibraryLink
 		 */
 		template<class PassingMode>
-		void set(const GenericDataList<PassingMode>& ds) { ds.passAsResult(res); }
+		void set(const GenericDataList<PassingMode>& ds) {
+			ds.passAsResult(res);
+		}
 
 		/************************************ utility functions ************************************/
 
@@ -441,8 +492,8 @@ namespace LLU {
 		 *   @throws        ErrorName::MArgumentIndexError - if \c index is out-of-bounds
 		 *   @warning		Operator::operator() has to be a template that takes a const NumericArray<T>& as first argument
 		 **/
-		template<class PassingMode, class Operator, class ... OpArgs>
-		void operateOnNumericArray(unsigned int index, OpArgs &&... opArgs);
+		template<class PassingMode, class Operator, class... OpArgs>
+		void operateOnNumericArray(unsigned int index, OpArgs&&... opArgs);
 
 		/**
 		 *   @brief         Perform operation on NumericArray created from MNumericArray argument at position \p index in \c Args
@@ -453,7 +504,7 @@ namespace LLU {
 		 *   @throws        ErrorName::MArgumentIndexError - if \c index is out-of-bounds
 		 **/
 		template<class PassingMode = Passing::Automatic, class Operator>
-		void operateOnNumericArray(unsigned int index, Operator &&op);
+		void operateOnNumericArray(unsigned int index, Operator&& op);
 
 		/**
 		 *   @brief         Get type of MTensor at position \c index in \c Args
@@ -474,8 +525,8 @@ namespace LLU {
 		 *   @throws        ErrorName::MArgumentTensorError - if MTensor argument has incorrect type
 		 *   @warning		Operator::operator() has to be a template that takes a const Tensor<T>& as first argument
 		 **/
-		template<class PassingMode, class Operator, class ... Args>
-		void operateOnTensor(unsigned int index, Args &&... opArgs);
+		template<class PassingMode, class Operator, class... Args>
+		void operateOnTensor(unsigned int index, Args&&... opArgs);
 
 		/**
 		 *   @brief         Perform operation on Tensor created from MTensor argument at position \p index in \c Args
@@ -487,7 +538,7 @@ namespace LLU {
 		 *   @throws        ErrorName::MArgumentTensorError - if MTensor argument has incorrect type
 		 **/
 		template<class PassingMode = Passing::Automatic, class Operator>
-		void operateOnTensor(unsigned int index, Operator &&op);
+		void operateOnTensor(unsigned int index, Operator&& op);
 
 		/**
 		 *   @brief         Get type of MImage at position \c index in \c Args
@@ -508,8 +559,8 @@ namespace LLU {
 		 *   @throws        ErrorName::MArgumentImageError - if MImage argument has incorrect type
 		 *   @warning		Operator::operator() has to be a template that takes a const Image<T>& as first argument
 		 **/
-		template<class PassingMode, class Operator, class ... Args>
-		void operateOnImage(unsigned int index, Args &&... opArgs);
+		template<class PassingMode, class Operator, class... Args>
+		void operateOnImage(unsigned int index, Args&&... opArgs);
 
 		/**
 		 *   @brief         Perform operation on Image created from MImage argument at position \p index in \c Args
@@ -521,7 +572,7 @@ namespace LLU {
 		 *   @throws        ErrorName::MArgumentImageError - if MImage argument has incorrect type
 		 **/
 		template<class PassingMode = Passing::Automatic, class Operator>
-		void operateOnImage(unsigned int index, Operator &&op);
+		void operateOnImage(unsigned int index, Operator&& op);
 
 	private:
 		// Efficient and memory-safe type for storing string arguments from LibraryLink
@@ -565,7 +616,7 @@ namespace LLU {
 		mint argc;
 
 		/// "Array" of input arguments from LibraryLink
-		MArgument *args;
+		MArgument* args;
 
 		/// Output argument for LibraryLink
 		MArgument& res;
@@ -586,16 +637,13 @@ namespace LLU {
 		if (result >= MINT_MAX) {
 			setInteger(MINT_MAX);
 			return true;
+		} else if (result <= MINT_MIN) {
+			setInteger(MINT_MIN);
+			return true;
+		} else {
+			setInteger(result);
+			return false;
 		}
-		else
-			if (result <= MINT_MIN) {
-				setInteger(MINT_MIN);
-				return true;
-			}
-			else {
-				setInteger(result);
-				return false;
-			}
 	}
 
 	template<typename T, class PassingMode>
@@ -608,92 +656,46 @@ namespace LLU {
 		na.passAsResult(res);
 	}
 
-	template<class PassingMode, class Operator, class ... Args>
-	void MArgumentManager::operateOnNumericArray(unsigned int index,  Args&&... opArgs) {
+	template<class PassingMode, class Operator, class... Args>
+	void MArgumentManager::operateOnNumericArray(unsigned int index, Args&&... opArgs) {
 		Operator op;
 		switch (getNumericArrayType(index)) {
-			case MNumericArray_Type_Bit8:
-				op(this->getNumericArray<int8_t, PassingMode>(index), std::forward<Args>(opArgs)...);
-				break;
-			case MNumericArray_Type_UBit8:
-				op(this->getNumericArray<uint8_t, PassingMode>(index), std::forward<Args>(opArgs)...);
-				break;
-			case MNumericArray_Type_Bit16:
-				op(this->getNumericArray<int16_t, PassingMode>(index), std::forward<Args>(opArgs)...);
-				break;
-			case MNumericArray_Type_UBit16:
-				op(this->getNumericArray<uint16_t, PassingMode>(index), std::forward<Args>(opArgs)...);
-				break;
-			case MNumericArray_Type_Bit32:
-				op(this->getNumericArray<int32_t, PassingMode>(index), std::forward<Args>(opArgs)...);
-				break;
-			case MNumericArray_Type_UBit32:
-				op(this->getNumericArray<uint32_t, PassingMode>(index), std::forward<Args>(opArgs)...);
-				break;
-			case MNumericArray_Type_Bit64:
-				op(this->getNumericArray<int64_t, PassingMode>(index), std::forward<Args>(opArgs)...);
-				break;
-			case MNumericArray_Type_UBit64:
-				op(this->getNumericArray<uint64_t, PassingMode>(index), std::forward<Args>(opArgs)...);
-				break;
-			case MNumericArray_Type_Real32:
-				op(this->getNumericArray<float, PassingMode>(index), std::forward<Args>(opArgs)...);
-				break;
-			case MNumericArray_Type_Real64:
-				op(this->getNumericArray<double, PassingMode>(index), std::forward<Args>(opArgs)...);
-				break;
-			case MNumericArray_Type_Complex_Real32:
-				op(this->getNumericArray<std::complex<float>, PassingMode>(index), std::forward<Args>(opArgs)...);
-				break;
-			case MNumericArray_Type_Complex_Real64:
-				op(this->getNumericArray<std::complex<double>, PassingMode>(index), std::forward<Args>(opArgs)...);
-				break;
+			case MNumericArray_Type_Bit8: op(this->getNumericArray<int8_t, PassingMode>(index), std::forward<Args>(opArgs)...); break;
+			case MNumericArray_Type_UBit8: op(this->getNumericArray<uint8_t, PassingMode>(index), std::forward<Args>(opArgs)...); break;
+			case MNumericArray_Type_Bit16: op(this->getNumericArray<int16_t, PassingMode>(index), std::forward<Args>(opArgs)...); break;
+			case MNumericArray_Type_UBit16: op(this->getNumericArray<uint16_t, PassingMode>(index), std::forward<Args>(opArgs)...); break;
+			case MNumericArray_Type_Bit32: op(this->getNumericArray<int32_t, PassingMode>(index), std::forward<Args>(opArgs)...); break;
+			case MNumericArray_Type_UBit32: op(this->getNumericArray<uint32_t, PassingMode>(index), std::forward<Args>(opArgs)...); break;
+			case MNumericArray_Type_Bit64: op(this->getNumericArray<int64_t, PassingMode>(index), std::forward<Args>(opArgs)...); break;
+			case MNumericArray_Type_UBit64: op(this->getNumericArray<uint64_t, PassingMode>(index), std::forward<Args>(opArgs)...); break;
+			case MNumericArray_Type_Real32: op(this->getNumericArray<float, PassingMode>(index), std::forward<Args>(opArgs)...); break;
+			case MNumericArray_Type_Real64: op(this->getNumericArray<double, PassingMode>(index), std::forward<Args>(opArgs)...); break;
+			case MNumericArray_Type_Complex_Real32: op(this->getNumericArray<std::complex<float>, PassingMode>(index), std::forward<Args>(opArgs)...); break;
+			case MNumericArray_Type_Complex_Real64: op(this->getNumericArray<std::complex<double>, PassingMode>(index), std::forward<Args>(opArgs)...); break;
 			default:
-				ErrorManager::throwExceptionWithDebugInfo(ErrorName::MArgumentNumericArrayError, "Incorrect type of NumericArray argument. Argument index: " + std::to_string(index));
+				ErrorManager::throwExceptionWithDebugInfo(ErrorName::MArgumentNumericArrayError,
+														  "Incorrect type of NumericArray argument. Argument index: " + std::to_string(index));
 		}
 	}
 
 	template<class PassingMode, class Operator>
 	void MArgumentManager::operateOnNumericArray(unsigned int index, Operator&& op) {
 		switch (getNumericArrayType(index)) {
-			case MNumericArray_Type_Bit8:
-				op(this->getNumericArray<int8_t, PassingMode>(index));
-				break;
-			case MNumericArray_Type_UBit8:
-				op(this->getNumericArray<uint8_t, PassingMode>(index));
-				break;
-			case MNumericArray_Type_Bit16:
-				op(this->getNumericArray<int16_t, PassingMode>(index));
-				break;
-			case MNumericArray_Type_UBit16:
-				op(this->getNumericArray<uint16_t, PassingMode>(index));
-				break;
-			case MNumericArray_Type_Bit32:
-				op(this->getNumericArray<int32_t, PassingMode>(index));
-				break;
-			case MNumericArray_Type_UBit32:
-				op(this->getNumericArray<uint32_t, PassingMode>(index));
-				break;
-			case MNumericArray_Type_Bit64:
-				op(this->getNumericArray<int64_t, PassingMode>(index));
-				break;
-			case MNumericArray_Type_UBit64:
-				op(this->getNumericArray<uint64_t, PassingMode>(index));
-				break;
-			case MNumericArray_Type_Real32:
-				op(this->getNumericArray<float, PassingMode>(index));
-				break;
-			case MNumericArray_Type_Real64:
-				op(this->getNumericArray<double, PassingMode>(index));
-				break;
-			case MNumericArray_Type_Complex_Real32:
-				op(this->getNumericArray<std::complex<float>, PassingMode>(index));
-				break;
-			case MNumericArray_Type_Complex_Real64:
-				op(this->getNumericArray<std::complex<double>, PassingMode>(index));
-				break;
+			case MNumericArray_Type_Bit8: op(this->getNumericArray<int8_t, PassingMode>(index)); break;
+			case MNumericArray_Type_UBit8: op(this->getNumericArray<uint8_t, PassingMode>(index)); break;
+			case MNumericArray_Type_Bit16: op(this->getNumericArray<int16_t, PassingMode>(index)); break;
+			case MNumericArray_Type_UBit16: op(this->getNumericArray<uint16_t, PassingMode>(index)); break;
+			case MNumericArray_Type_Bit32: op(this->getNumericArray<int32_t, PassingMode>(index)); break;
+			case MNumericArray_Type_UBit32: op(this->getNumericArray<uint32_t, PassingMode>(index)); break;
+			case MNumericArray_Type_Bit64: op(this->getNumericArray<int64_t, PassingMode>(index)); break;
+			case MNumericArray_Type_UBit64: op(this->getNumericArray<uint64_t, PassingMode>(index)); break;
+			case MNumericArray_Type_Real32: op(this->getNumericArray<float, PassingMode>(index)); break;
+			case MNumericArray_Type_Real64: op(this->getNumericArray<double, PassingMode>(index)); break;
+			case MNumericArray_Type_Complex_Real32: op(this->getNumericArray<std::complex<float>, PassingMode>(index)); break;
+			case MNumericArray_Type_Complex_Real64: op(this->getNumericArray<std::complex<double>, PassingMode>(index)); break;
 			default:
-				ErrorManager::throwExceptionWithDebugInfo(ErrorName::MArgumentNumericArrayError, "Incorrect type of NumericArray argument. Argument index: " + std::to_string(index));
+				ErrorManager::throwExceptionWithDebugInfo(ErrorName::MArgumentNumericArrayError,
+														  "Incorrect type of NumericArray argument. Argument index: " + std::to_string(index));
 		}
 	}
 
@@ -707,43 +709,30 @@ namespace LLU {
 		ten.passAsResult(res);
 	}
 
-
 	template<class PassingMode, class Operator, class... Args>
 	void MArgumentManager::operateOnTensor(unsigned int index, Args&&... opArgs) {
 		Operator op;
 		switch (getTensorType(index)) {
-			case MType_Integer:
-				op(this->getTensor<mint, PassingMode>(index), std::forward<Args>(opArgs)...);
-				break;
-			case MType_Real:
-				op(this->getTensor<double, PassingMode>(index), std::forward<Args>(opArgs)...);
-				break;
-			case MType_Complex:
-				op(this->getTensor<std::complex<double>, PassingMode>(index), std::forward<Args>(opArgs)...);
-				break;
+			case MType_Integer: op(this->getTensor<mint, PassingMode>(index), std::forward<Args>(opArgs)...); break;
+			case MType_Real: op(this->getTensor<double, PassingMode>(index), std::forward<Args>(opArgs)...); break;
+			case MType_Complex: op(this->getTensor<std::complex<double>, PassingMode>(index), std::forward<Args>(opArgs)...); break;
 			default:
-				ErrorManager::throwExceptionWithDebugInfo(ErrorName::MArgumentTensorError, "Incorrect type of Tensor argument. Argument index: " + std::to_string(index));
+				ErrorManager::throwExceptionWithDebugInfo(ErrorName::MArgumentTensorError,
+														  "Incorrect type of Tensor argument. Argument index: " + std::to_string(index));
 		}
 	}
-
 
 	template<class PassingMode, class Operator>
 	void MArgumentManager::operateOnTensor(unsigned int index, Operator&& op) {
 		switch (getTensorType(index)) {
-			case MType_Integer:
-				op(this->getTensor<mint, PassingMode>(index));
-				break;
-			case MType_Real:
-				op(this->getTensor<double, PassingMode>(index));
-				break;
-			case MType_Complex:
-				op(this->getTensor<std::complex<double>, PassingMode>(index));
-				break;
+			case MType_Integer: op(this->getTensor<mint, PassingMode>(index)); break;
+			case MType_Real: op(this->getTensor<double, PassingMode>(index)); break;
+			case MType_Complex: op(this->getTensor<std::complex<double>, PassingMode>(index)); break;
 			default:
-				ErrorManager::throwExceptionWithDebugInfo(ErrorName::MArgumentTensorError, "Incorrect type of Tensor argument. Argument index: " + std::to_string(index));
+				ErrorManager::throwExceptionWithDebugInfo(ErrorName::MArgumentTensorError,
+														  "Incorrect type of Tensor argument. Argument index: " + std::to_string(index));
 		}
 	}
-
 
 	template<typename T, class PassingMode>
 	Image<T, PassingMode> MArgumentManager::getImage(unsigned int index) const {
@@ -759,49 +748,30 @@ namespace LLU {
 	void MArgumentManager::operateOnImage(unsigned int index, Args&&... opArgs) {
 		Operator op;
 		switch (getImageType(index)) {
-			case MImage_Type_Bit:
-				op(this->getImage<int8_t, PassingMode>(index), std::forward<Args>(opArgs)...);
-				break;
-			case MImage_Type_Bit8:
-				op(this->getImage<uint8_t, PassingMode>(index), std::forward<Args>(opArgs)...);
-				break;
-			case MImage_Type_Bit16:
-				op(this->getImage<uint16_t, PassingMode>(index), std::forward<Args>(opArgs)...);
-				break;
-			case MImage_Type_Real32:
-				op(this->getImage<float, PassingMode>(index), std::forward<Args>(opArgs)...);
-				break;
-			case MImage_Type_Real:
-				op(this->getImage<double, PassingMode>(index), std::forward<Args>(opArgs)...);
-				break;
+			case MImage_Type_Bit: op(this->getImage<int8_t, PassingMode>(index), std::forward<Args>(opArgs)...); break;
+			case MImage_Type_Bit8: op(this->getImage<uint8_t, PassingMode>(index), std::forward<Args>(opArgs)...); break;
+			case MImage_Type_Bit16: op(this->getImage<uint16_t, PassingMode>(index), std::forward<Args>(opArgs)...); break;
+			case MImage_Type_Real32: op(this->getImage<float, PassingMode>(index), std::forward<Args>(opArgs)...); break;
+			case MImage_Type_Real: op(this->getImage<double, PassingMode>(index), std::forward<Args>(opArgs)...); break;
 			default:
-				ErrorManager::throwExceptionWithDebugInfo(ErrorName::MArgumentImageError, "Incorrect type of Image argument. Argument index: " + std::to_string(index));
+				ErrorManager::throwExceptionWithDebugInfo(ErrorName::MArgumentImageError,
+														  "Incorrect type of Image argument. Argument index: " + std::to_string(index));
 		}
 	}
 
 	template<class PassingMode, class Operator>
 	void MArgumentManager::operateOnImage(unsigned int index, Operator&& op) {
 		switch (getImageType(index)) {
-			case MImage_Type_Bit:
-				op(std::move(this->getImage<int8_t, PassingMode>(index)));
-				break;
-			case MImage_Type_Bit8:
-				op(this->getImage<uint8_t, PassingMode>(index));
-				break;
-			case MImage_Type_Bit16:
-				op(this->getImage<uint16_t, PassingMode>(index));
-				break;
-			case MImage_Type_Real32:
-				op(this->getImage<float, PassingMode>(index));
-				break;
-			case MImage_Type_Real:
-				op(this->getImage<double, PassingMode>(index));
-				break;
+			case MImage_Type_Bit: op(std::move(this->getImage<int8_t, PassingMode>(index))); break;
+			case MImage_Type_Bit8: op(this->getImage<uint8_t, PassingMode>(index)); break;
+			case MImage_Type_Bit16: op(this->getImage<uint16_t, PassingMode>(index)); break;
+			case MImage_Type_Real32: op(this->getImage<float, PassingMode>(index)); break;
+			case MImage_Type_Real: op(this->getImage<double, PassingMode>(index)); break;
 			default:
-				ErrorManager::throwExceptionWithDebugInfo(ErrorName::MArgumentImageError, "Incorrect type of Image argument. Argument index: " + std::to_string(index));
+				ErrorManager::throwExceptionWithDebugInfo(ErrorName::MArgumentImageError,
+														  "Incorrect type of Image argument. Argument index: " + std::to_string(index));
 		}
 	}
-
 
 	template<MArgumentType T, class PassingMode>
 	DataList<T, PassingMode> MArgumentManager::getDataList(unsigned int index) const {
@@ -833,7 +803,22 @@ namespace LLU {
 		return getDataStore(index);
 	}
 
-} /* namespace LLU */
+	template<class ManagedExpr, class DynamicType>
+	DynamicType& MArgumentManager::getManagedExpression(unsigned int index, ManagedExpressionStore<ManagedExpr>& store) const {
+		auto ptr = getManagedExpressionPtr<ManagedExpr, DynamicType>(index, store);
+		if (!ptr) {
+			ErrorManager::throwException(ErrorName::MLEDynamicTypeError);
+		}
+		return *ptr;
+	}
 
+	template<class ManagedExpr, class DynamicType>
+	std::shared_ptr<DynamicType> MArgumentManager::getManagedExpressionPtr(unsigned int index, ManagedExpressionStore<ManagedExpr>& store) const {
+		auto exprID = getInteger<mint>(index);
+		auto baseClassPtr = store.getInstancePointer(exprID);
+		return std::dynamic_pointer_cast<DynamicType>(baseClassPtr);
+	}
+
+} /* namespace LLU */
 
 #endif /* LLUTILS_MARGUMENTMANAGER_H_ */

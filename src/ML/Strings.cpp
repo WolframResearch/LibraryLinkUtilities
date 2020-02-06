@@ -1,14 +1,14 @@
-/** 
+/**
  * @file	Strings.cpp
  * @date	Mar 23, 2018
  * @author	Rafal Chojna <rafalc@wolfram.com>
  * @brief	Implementation file for all the functionality related to Strings in MathLink
  */
 
+#include "LLU/ML/Strings.h"
+
 #include <algorithm>
 #include <type_traits>
-
-#include "LLU/ML/Strings.h"
 
 namespace LLU::ML {
 
@@ -26,8 +26,8 @@ namespace LLU::ML {
     };
     template<>
     PutStringFuncT<CharType<Encoding::Native>> String<Encoding::Native>::Put = [](MLINK m, const char* strData, int) {
-        return MLPutString(m, strData);
-    };
+        return MLPutString(m, strData);};
+
     template<>
     ReleaseStringFuncT<CharType<Encoding::Native>> String<Encoding::Native>::Release = [](MLINK m, const char* strData, int) {
         MLReleaseString(m, strData);

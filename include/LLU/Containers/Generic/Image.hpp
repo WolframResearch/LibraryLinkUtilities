@@ -1,11 +1,12 @@
 /**
  * @file
- * @brief
+ * @brief GenericImage definition and implementation
  */
 #ifndef LLU_INCLUDE_LLU_CONTAINERS_GENERIC_IMAGE
 #define LLU_INCLUDE_LLU_CONTAINERS_GENERIC_IMAGE
 
 #include "LLU/Containers/Generic/Base.hpp"
+#include "LLU/Containers/Interfaces.h"
 
 namespace LLU {
 
@@ -21,7 +22,7 @@ namespace LLU {
 	 *  @tparam PassingMode - passing policy
 	 */
 	template<class PassingMode>
-	class MContainer<MArgumentType::Image, PassingMode> : public MContainerBase<MArgumentType::Image, PassingMode> {
+	class MContainer<MArgumentType::Image, PassingMode> : public ImageInterface, public MContainerBase<MArgumentType::Image, PassingMode> {
 	public:
 		/// Inherit constructors from MContainerBase
 		using MContainerBase<MArgumentType::Image, PassingMode>::MContainerBase;
@@ -38,9 +39,8 @@ namespace LLU {
 		 * @param colorSpace - image color space
 		 * @param interleaving - whether the image data should be interleaved or not
 		 */
-		MContainer(mint width, mint height, mint channels, imagedata_t type, colorspace_t colorSpace, mbool interleaving) :
-				MContainer(0, width, height, channels, type, colorSpace, interleaving) {
-		}
+		MContainer(mint width, mint height, mint channels, imagedata_t type, colorspace_t colorSpace, mbool interleaving)
+			: MContainer(0, width, height, channels, type, colorSpace, interleaving) {}
 
 		/**
 		 * @brief Create new 2D or 3D MImage based on given parameters
@@ -54,8 +54,8 @@ namespace LLU {
 		 */
 		MContainer(mint slices, mint width, mint height, mint channels, imagedata_t type, colorspace_t colorSpace, mbool interleaving) {
 			RawContainer tmp {};
-			if (slices ? LibraryData::ImageAPI()->MImage_new3D(slices, width, height, channels, type, colorSpace, interleaving, &tmp) :
-			    LibraryData::ImageAPI()->MImage_new2D(width, height, channels, type, colorSpace, interleaving, &tmp)) {
+			if (slices ? LibraryData::ImageAPI()->MImage_new3D(slices, width, height, channels, type, colorSpace, interleaving, &tmp)
+					   : LibraryData::ImageAPI()->MImage_new2D(width, height, channels, type, colorSpace, interleaving, &tmp)) {
 				ErrorManager::throwException(ErrorName::ImageNewError);
 			}
 			this->setContainer(tmp);
@@ -67,16 +67,15 @@ namespace LLU {
 		 * @param   mc - different GenericImage
 		 */
 		template<class P>
-		explicit MContainer(const MContainer<MArgumentType::Image, P>& mc) : Base(mc) {
-		}
+		explicit MContainer(const MContainer<MArgumentType::Image, P>& mc) : Base(mc) {}
 
 		MContainer(const MContainer& mc) = default;
 
 		MContainer(MContainer&& mc) noexcept = default;
 
-		MContainer &operator=(const MContainer &) = default;
+		MContainer& operator=(const MContainer&) = default;
 
-		MContainer &operator=(MContainer &&) noexcept = default;
+		MContainer& operator=(MContainer&&) noexcept = default;
 
 		/**
 		 * @brief   Assign a GenericImage with different passing mode.
@@ -120,105 +119,65 @@ namespace LLU {
 			return convert(t, interleavedQ());
 		}
 
-		/**
-		 *   @brief Get colorspace of internal MImage
-		 *   @see <http://reference.wolfram.com/language/LibraryLink/ref/callback/MImage_getColorSpace.html>
-		 **/
-		colorspace_t colorspace() const noexcept {
+		/// @copydoc ImageInterface::colorspace()
+		colorspace_t colorspace() const override {
 			return LibraryData::ImageAPI()->MImage_getColorSpace(this->getContainer());
 		}
 
-		/**
-		 *   @brief Get number of rows in internal MImage
-		 *   @see <http://reference.wolfram.com/language/LibraryLink/ref/callback/MImage_getRowCount.html>
-		 **/
-		mint rows() const noexcept {
+		/// @copydoc ImageInterface::rows()
+		mint rows() const override {
 			return LibraryData::ImageAPI()->MImage_getRowCount(this->getContainer());
 		}
 
-		/**
-		 *   @brief Get number of columns in internal MImage
-		 *   @see <http://reference.wolfram.com/language/LibraryLink/ref/callback/MImage_getColumnCount.html>
-		 **/
-		mint columns() const noexcept {
+		/// @copydoc ImageInterface::columns()
+		mint columns() const override {
 			return LibraryData::ImageAPI()->MImage_getColumnCount(this->getContainer());
 		}
 
-		/**
-		 *   @brief Get number of slices in internal MImage
-		 *   @see <http://reference.wolfram.com/language/LibraryLink/ref/callback/MImage_getSliceCount.html>
-		 **/
-		mint slices() const noexcept {
+		/// @copydoc ImageInterface::slices()
+		mint slices() const override {
 			return LibraryData::ImageAPI()->MImage_getSliceCount(this->getContainer());
 		}
 
-		/**
-		 *   @brief Get number of channels in internal MImage
-		 *   @see <http://reference.wolfram.com/language/LibraryLink/ref/callback/MImage_getChannels.html>
-		 **/
-		mint channels() const noexcept {
+		/// @copydoc ImageInterface::channels()
+		mint channels() const override {
 			return LibraryData::ImageAPI()->MImage_getChannels(this->getContainer());
 		}
 
-		/**
-		 *   @brief Check if there is an alpha channel in internal MImage
-		 *   @see <http://reference.wolfram.com/language/LibraryLink/ref/callback/MImage_alphaChannelQ.html>
-		 **/
-		bool alphaChannelQ() const noexcept {
+		/// @copydoc ImageInterface::alphaChannelQ()
+		bool alphaChannelQ() const override {
 			return LibraryData::ImageAPI()->MImage_alphaChannelQ(this->getContainer());
 		}
 
-		/**
-		 *   @brief Check if internal MImage is interleaved
-		 *   @see <http://reference.wolfram.com/language/LibraryLink/ref/callback/MImage_interleavedQ.html>
-		 **/
-		bool interleavedQ() const noexcept {
+		/// @copydoc ImageInterface::interleavedQ()
+		bool interleavedQ() const override {
 			return LibraryData::ImageAPI()->MImage_interleavedQ(this->getContainer());
 		}
 
-		/**
-		 *   @brief Check if internal MImage is 3D
-		 **/
-		bool is3D() const noexcept {
+		/// @copydoc ImageInterface::is3D()
+		bool is3D() const override {
 			return LibraryData::ImageAPI()->MImage_getRank(this->getContainer()) == 3;
 		}
 
-		/**
-		 * @brief   Get the rank of this GenericImage.
-		 * @return  number of dimensions in this GenericImage
-		 * @see     <http://reference.wolfram.com/language/LibraryLink/ref/callback/MImage_getRank.html>
-		 */
-		mint getRank() const noexcept {
+		/// @copydoc ImageInterface::getRank()
+		mint getRank() const override {
 			return LibraryData::ImageAPI()->MImage_getRank(this->getContainer());
 		}
 
-		/**
-		 * @brief   Get the length of this GenericImage.
-		 * @return  total number of elements
-		 * @see     <http://reference.wolfram.com/language/LibraryLink/ref/callback/MImage_getFlattenedLength.html>
-		 */
-		mint getFlattenedLength() const {
+		/// @copydoc ImageInterface::getFlattenedLength()
+		mint getFlattenedLength() const override {
 			return LibraryData::ImageAPI()->MImage_getFlattenedLength(this->getContainer());
 		}
 
-		/**
-		 * @brief   Get the type of this GenericImage
-		 * @return  type of elements (see definition of \c imagedata_t)
-		 * @see 	<http://reference.wolfram.com/language/LibraryLink/ref/callback/MImage_getDataType.html>
-		 */
-		imagedata_t type() const noexcept {
+		/// @copydoc ImageInterface::type()
+		imagedata_t type() const override {
 			return LibraryData::ImageAPI()->MImage_getDataType(this->getContainer());
 		}
 
-		/**
-		 * @brief   Get access to raw MImage data.
-		 * @return  pointer to the raw data
-		 * @see     <http://reference.wolfram.com/language/LibraryLink/ref/callback/MImage_getRawData.html>
-		 */
-		void* rawData() const noexcept {
+		/// @copydoc ImageInterface::rawData()
+		void* rawData() const override {
 			return LibraryData::ImageAPI()->MImage_getRawData(this->getContainer());
 		}
-
 	private:
 		using Base = MContainerBase<MArgumentType::Image, PassingMode>;
 		using RawContainer = typename Base::Container;
@@ -265,9 +224,8 @@ namespace LLU {
 		void passImpl(MArgument& res) const noexcept override {
 			MArgument_setMImage(res, this->getContainer());
 		}
-
 	};
 
 }
 
-#endif //LLU_INCLUDE_LLU_CONTAINERS_GENERIC_IMAGE
+#endif	  // LLU_INCLUDE_LLU_CONTAINERS_GENERIC_IMAGE

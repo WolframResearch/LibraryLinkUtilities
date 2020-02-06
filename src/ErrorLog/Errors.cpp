@@ -8,7 +8,7 @@
 
 namespace LLU {
 
-	#define LLU_DEFINE_ERROR_NAME(errorIdentifier) const std::string errorIdentifier = #errorIdentifier
+#define LLU_DEFINE_ERROR_NAME(errorIdentifier) const std::string errorIdentifier = #errorIdentifier
 
 	namespace ErrorName {
 		LLU_DEFINE_ERROR_NAME(VersionError);
@@ -86,6 +86,13 @@ namespace LLU {
 		LLU_DEFINE_ERROR_NAME(ArgumentAddNodeMArgument);
 
 		LLU_DEFINE_ERROR_NAME(Aborted);
+
+		LLU_DEFINE_ERROR_NAME(ManagedExprInvalidID);
+		LLU_DEFINE_ERROR_NAME(MLEDynamicTypeError);
+
+		LLU_DEFINE_ERROR_NAME(PathNotValidated);
+		LLU_DEFINE_ERROR_NAME(InvalidOpenMode);
+		LLU_DEFINE_ERROR_NAME(OpenFileFailed);
 	}
 
 } /* namespace LLU */

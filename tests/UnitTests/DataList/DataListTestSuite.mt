@@ -1,37 +1,37 @@
 (* Wolfram Language Test file *)
 TestRequirement[$VersionNumber >= 12.0]
 (***************************************************************************************************************************************)
-				(*
-					Set of test cases to test LLU functionality related to MathLink
-				*)
+(*
+	Set of test cases to test LLU functionality related to MathLink
+*)
 (***************************************************************************************************************************************)
 TestExecute[
 	Needs["CCompilerDriver`"];
 	currentDirectory = DirectoryName[$CurrentFile];
-	
+
 	(* Get configuration (path to LLU sources, compilation options, etc.) *)
 	Get[FileNameJoin[{ParentDirectory[currentDirectory], "TestConfig.wl"}]];
 
 	(* Compile the test library *)
 	lib = CCompilerDriver`CreateLibrary[FileNameJoin[{currentDirectory, "TestSources", #}]& /@ {"DataListTest.cpp"}, "DataListTest", options];
-	
-	Get[FileNameJoin[{$LLUSharedDir, "LibraryLinkUtilities.wl"}]];
-	
-	RegisterPacletErrors[lib, <||>];
 
-	PassDataStore = SafeLibraryFunction["PassDataStore", {"DataStore", "Boolean"}, "DataStore"];
-	JoinDataStores = SafeLibraryFunction["JoinDataStores", {"DataStore", "DataStore", "Boolean"}, "DataStore"];
-	TestSelfReferencialDataStore = SafeLibraryFunction["TestSelfReferencialDataStore", {"DataStore"}, "DataStore"];
-	ReverseListOfStringsMathLink = SafeMathLinkFunction["ReverseListOfStringsMathLink"];
-	ReverseListOfStringsLibraryLink = SafeLibraryFunction["ReverseListOfStringsLibraryLink", {"DataStore"}, "DataStore"];
-	ReverseListOfStrings = SafeLibraryFunction["ReverseListOfStrings", {"DataStore"}, "DataStore"];
-	SeparateKeysAndValues = SafeLibraryFunction["SeparateKeysAndValues", {"DataStore"}, "DataStore"];
-	GetKeys = SafeLibraryFunction["GetKeys", {"DataStore"}, "DataStore"];
-	GetValuesReversed = SafeLibraryFunction["GetValuesReversed", {"DataStore"}, "DataStore"];
-	FrameDims = SafeLibraryFunction["FrameDims", {"DataStore"}, NumericArray];
-	StringsThroughVectorReversed = SafeLibraryFunction["StringsThroughVectorReversed", {"DataStore"}, "DataStore"];
-	IntsToNumericArray = SafeLibraryFunction["IntsToNumericArray", {"DataStore"}, NumericArray];
-	GetLength = SafeLibraryFunction["GetLength", {"DataStore"}, Integer];
+	Get[FileNameJoin[{$LLUSharedDir, "LibraryLinkUtilities.wl"}]];
+
+	`LLU`RegisterPacletErrors[lib, <||>];
+
+	PassDataStore = `LLU`SafeLibraryFunction["PassDataStore", {"DataStore", "Boolean"}, "DataStore"];
+	JoinDataStores = `LLU`SafeLibraryFunction["JoinDataStores", {"DataStore", "DataStore", "Boolean"}, "DataStore"];
+	TestSelfReferencialDataStore = `LLU`SafeLibraryFunction["TestSelfReferencialDataStore", {"DataStore"}, "DataStore"];
+	ReverseListOfStringsMathLink = `LLU`SafeWSTPFunction["ReverseListOfStringsMathLink"];
+	ReverseListOfStringsLibraryLink = `LLU`SafeLibraryFunction["ReverseListOfStringsLibraryLink", {"DataStore"}, "DataStore"];
+	ReverseListOfStrings = `LLU`SafeLibraryFunction["ReverseListOfStrings", {"DataStore"}, "DataStore"];
+	SeparateKeysAndValues = `LLU`SafeLibraryFunction["SeparateKeysAndValues", {"DataStore"}, "DataStore"];
+	GetKeys = `LLU`SafeLibraryFunction["GetKeys", {"DataStore"}, "DataStore"];
+	GetValuesReversed = `LLU`SafeLibraryFunction["GetValuesReversed", {"DataStore"}, "DataStore"];
+	FrameDims = `LLU`SafeLibraryFunction["FrameDims", {"DataStore"}, NumericArray];
+	StringsThroughVectorReversed = `LLU`SafeLibraryFunction["StringsThroughVectorReversed", {"DataStore"}, "DataStore"];
+	IntsToNumericArray = `LLU`SafeLibraryFunction["IntsToNumericArray", {"DataStore"}, NumericArray];
+	GetLength = `LLU`SafeLibraryFunction["GetLength", {"DataStore"}, Integer];
 
 	(* Test data used across multiple tests *)
 	bool = True;
@@ -58,48 +58,48 @@ Test[
 	,
 	{CreateLibrary::cmperr..} (* On Linux there should be 6 errors, but MSVC does not like generic lambdas so it spits out more errors *)
 	,
-	TestID->"DataListTestSuite-20180903-Y8Z5P1"
+	TestID -> "DataListTestSuite-20180903-Y8Z5P1"
 ];
 
 (* Basic tests *)
 
 Test[
-	EmptyDataStore = SafeLibraryFunction["EmptyDataStore", {}, "DataStore"];
+	EmptyDataStore = `LLU`SafeLibraryFunction["EmptyDataStore", {}, "DataStore"];
 	EmptyDataStore[]
 	,
 	Developer`DataStore[]
 	,
-	TestID->"DataListTestSuite-20180907-E5N8N9"
+	TestID -> "DataListTestSuite-20180907-E5N8N9"
 ];
 
 Test[
 	PassDataStore[foo, True]
 	,
-	LibraryFunction[lib, "PassDataStore", {"DataStore", True|False}, "DataStore"][foo, True]
+	LibraryFunction[lib, "PassDataStore", {"DataStore", True | False}, "DataStore"][foo, True]
 	,
 	{Message[LibraryFunction::cfsa, foo, 1, "DataStore object"]}
 	,
-	TestID->"DataListTestSuite-20180903-O2B2Y6"
+	TestID -> "DataListTestSuite-20180903-O2B2Y6"
 ];
 
 Test[
 	PassDataStore[{}, True]
 	,
-	LibraryFunction[lib, "PassDataStore", {"DataStore", True|False}, "DataStore"][{}, True]
+	LibraryFunction[lib, "PassDataStore", {"DataStore", True | False}, "DataStore"][{}, True]
 	,
 	{Message[LibraryFunction::cfsa, {}, 1, "DataStore object"]}
 	,
-	TestID->"DataListTestSuite-20180903-B6P7O2"
+	TestID -> "DataListTestSuite-20180903-B6P7O2"
 ];
 
 Test[
 	PassDataStore[Developer`DataStore[{1, "a"}], True]
 	,
-	LibraryFunction[lib, "PassDataStore", {"DataStore", True|False}, "DataStore"][Developer`DataStore[{1, "a"}], True]
+	LibraryFunction[lib, "PassDataStore", {"DataStore", True | False}, "DataStore"][Developer`DataStore[{1, "a"}], True]
 	,
 	{Message[LibraryFunction::cfsa, Developer`DataStore[{1, "a"}], 1, "DataStore object"]}
 	,
-	TestID->"DataListTestSuite-20180903-M6K4Z6"
+	TestID -> "DataListTestSuite-20180903-M6K4Z6"
 ];
 
 Test[
@@ -107,7 +107,7 @@ Test[
 	,
 	Developer`DataStore[{1, 2, 3}]
 	,
-	TestID->"DataListTestSuite-20180903-Y4V3P7"
+	TestID -> "DataListTestSuite-20180903-Y4V3P7"
 ];
 
 Test[
@@ -115,7 +115,7 @@ Test[
 	,
 	Developer`DataStore[1, 2, 3]
 	,
-	TestID->"DataListTestSuite-20180903-S2C1I6"
+	TestID -> "DataListTestSuite-20180903-S2C1I6"
 ];
 
 Test[
@@ -123,31 +123,31 @@ Test[
 	,
 	Developer`DataStore[1, 2, "a"]
 	,
-	TestID->"DataListTestSuite-20180903-Y5Y7L3"
+	TestID -> "DataListTestSuite-20180903-Y5Y7L3"
 ];
 
 Test[
-	PassDataStore[Developer`DataStore[Developer`DataStore[1, 2, 3]],True]
+	PassDataStore[Developer`DataStore[Developer`DataStore[1, 2, 3]], True]
 	,
 	Developer`DataStore[Developer`DataStore[1, 2, 3]]
 	,
-	TestID->"DataListTestSuite-20180903-N9I8U3"
+	TestID -> "DataListTestSuite-20180903-N9I8U3"
 ];
 
 Test[
-	PassDataStore[Developer`DataStore["ąę"->"ąę"],True]
+	PassDataStore[Developer`DataStore["ąę" -> "ąę"], True]
 	,
-	Developer`DataStore["ąę"->"ąę"]
+	Developer`DataStore["ąę" -> "ąę"]
 	,
-	TestID->"DataListTestSuite-20180903-E8X1M1"
+	TestID -> "DataListTestSuite-20180903-E8X1M1"
 ];
 
 Test[
-	PassDataStore[Developer`DataStore["" -> { -3.14 }],True]
+	PassDataStore[Developer`DataStore["" -> { -3.14 }], True]
 	,
 	Developer`DataStore[{ -3.14 }]
 	,
-	TestID->"DataListTestSuite-20180903-T8C7S4"
+	TestID -> "DataListTestSuite-20180903-T8C7S4"
 ];
 
 Test[
@@ -155,7 +155,7 @@ Test[
 	,
 	{ Developer`DataStore[], Developer`DataStore[] }
 	,
-	TestID->"DataListTestSuite-20180903-X7K0J0"
+	TestID -> "DataListTestSuite-20180903-X7K0J0"
 ];
 
 Test[
@@ -163,7 +163,7 @@ Test[
 	,
 	{ ds0, ds0 }
 	,
-	TestID->"DataListTestSuite-20180903-K0Y6L5"
+	TestID -> "DataListTestSuite-20180903-K0Y6L5"
 ];
 
 Test[
@@ -171,7 +171,7 @@ Test[
 	,
 	{ ds1, ds1 }
 	,
-	TestID->"DataListTestSuite-20180903-T7W2E4"
+	TestID -> "DataListTestSuite-20180903-T7W2E4"
 ];
 
 Test[
@@ -179,7 +179,7 @@ Test[
 	,
 	{ ds2, ds2 }
 	,
-	TestID->"DataListTestSuite-20180903-Y3R9B8"
+	TestID -> "DataListTestSuite-20180903-Y3R9B8"
 ];
 
 Test[
@@ -187,7 +187,7 @@ Test[
 	,
 	{ ds3, ds3 }
 	,
-	TestID->"DataListTestSuite-20180903-N7Z2V6"
+	TestID -> "DataListTestSuite-20180903-N7Z2V6"
 ];
 
 Test[
@@ -195,7 +195,7 @@ Test[
 	,
 	{Developer`DataStore[Developer`DataStore[], Developer`DataStore[]], Developer`DataStore[Developer`DataStore[], Developer`DataStore[]]}
 	,
-	TestID->"DataListTestSuite-20180904-Z4Q5M1"
+	TestID -> "DataListTestSuite-20180904-Z4Q5M1"
 ];
 
 Test[
@@ -203,7 +203,7 @@ Test[
 	,
 	{Developer`DataStore[ds0, Reverse[ds0]], Developer`DataStore[ds0, Reverse[ds0]]}
 	,
-	TestID->"DataListTestSuite-20180904-N5U8F0"
+	TestID -> "DataListTestSuite-20180904-N5U8F0"
 ];
 
 Test[
@@ -211,7 +211,7 @@ Test[
 	,
 	{Developer`DataStore[ds1, Reverse[ds1]], Developer`DataStore[ds1, Reverse[ds1]]}
 	,
-	TestID->"DataListTestSuite-20180904-I2U6H7"
+	TestID -> "DataListTestSuite-20180904-I2U6H7"
 ];
 
 Test[
@@ -219,7 +219,7 @@ Test[
 	,
 	{Developer`DataStore[ds2, Reverse[ds2]], Developer`DataStore[ds2, Reverse[ds2]]}
 	,
-	TestID->"DataListTestSuite-20180904-J7W2N2"
+	TestID -> "DataListTestSuite-20180904-J7W2N2"
 ];
 
 Test[
@@ -227,7 +227,7 @@ Test[
 	,
 	{Developer`DataStore[ds3, Reverse[ds3]], Developer`DataStore[ds3, Reverse[ds3]]}
 	,
-	TestID->"DataListTestSuite-20180904-U9J2V6"
+	TestID -> "DataListTestSuite-20180904-U9J2V6"
 ];
 
 (* Self referential DataStore *)
@@ -238,7 +238,7 @@ Test[
 	,
 	{Message[LibraryFunction::dsself]}
 	,
-	TestID->"DataListTestSuite-20180906-R1F1D5"
+	TestID -> "DataListTestSuite-20180906-R1F1D5"
 ];
 
 Test[
@@ -248,7 +248,7 @@ Test[
 	,
 	{Message[LibraryFunction::dsself]}
 	,
-	TestID->"DataListTestSuite-20180906-E3A3S7"
+	TestID -> "DataListTestSuite-20180906-E3A3S7"
 ];
 
 Test[
@@ -258,7 +258,7 @@ Test[
 	,
 	{Message[LibraryFunction::dsself]}
 	,
-	TestID->"DataListTestSuite-20180906-X6P9H5"
+	TestID -> "DataListTestSuite-20180906-X6P9H5"
 ];
 
 Test[
@@ -268,7 +268,7 @@ Test[
 	,
 	{Message[LibraryFunction::dsself]}
 	,
-	TestID->"DataListTestSuite-20180906-A6C8C9"
+	TestID -> "DataListTestSuite-20180906-A6C8C9"
 ];
 
 
@@ -276,13 +276,13 @@ TestMatch[
 	ReverseListOfStrings[Developer`DataStore["aaaa", "b", 2]]
 	,
 	Failure["DLInvalidNodeType", <|
-		"MessageTemplate" -> "DataStoreNode passed to Node wrapper carries data of invalid type", 
-		"MessageParameters" -> <||>, 
-		"ErrorCode" -> n_?IntegerQ, 
+		"MessageTemplate" -> "DataStoreNode passed to Node wrapper carries data of invalid type",
+		"MessageParameters" -> <||>,
+		"ErrorCode" -> n_?IntegerQ,
 		"Parameters" -> {}
 	|>]
 	,
-	TestID->"DataListTestSuite-20180906-Z7K0I0"
+	TestID -> "DataListTestSuite-20180906-Z7K0I0"
 ];
 
 Test[
@@ -290,15 +290,15 @@ Test[
 	,
 	Developer`DataStore[]
 	,
-	TestID->"DataListTestSuite-20180907-X0G8X3"
+	TestID -> "DataListTestSuite-20180907-X0G8X3"
 ];
 
 Test[
-	SeparateKeysAndValues[Developer`DataStore["a" -> 1 + 2.5*I, "b" -> -3. - 6.I, 2I]]
+	SeparateKeysAndValues[Developer`DataStore["a" -> 1 + 2.5 * I, "b" -> -3. - 6.I, 2I]]
 	,
-	Developer`DataStore["Keys" -> Developer`DataStore["a", "b", ""], "Values" -> Developer`DataStore[1. + 2.5*I, -3. - 6.I, 2.I]]
+	Developer`DataStore["Keys" -> Developer`DataStore["a", "b", ""], "Values" -> Developer`DataStore[1. + 2.5 * I, -3. - 6.I, 2.I]]
 	,
-	TestID->"DataListTestSuite-20180907-U7I7O8"
+	TestID -> "DataListTestSuite-20180907-U7I7O8"
 ];
 
 Test[
@@ -306,7 +306,7 @@ Test[
 	,
 	Developer`DataStore[]
 	,
-	TestID->"DataListTestSuite-20180908-S5C4D2"
+	TestID -> "DataListTestSuite-20180908-S5C4D2"
 ];
 
 Test[
@@ -314,7 +314,7 @@ Test[
 	,
 	Developer`DataStore[""]
 	,
-	TestID->"DataListTestSuite-20180908-J2I0I5"
+	TestID -> "DataListTestSuite-20180908-J2I0I5"
 ];
 
 Test[
@@ -322,7 +322,7 @@ Test[
 	,
 	Developer`DataStore["x", "x", "y"]
 	,
-	TestID->"DataListTestSuite-20180908-S5H9Z0"
+	TestID -> "DataListTestSuite-20180908-S5H9Z0"
 ];
 
 
@@ -331,23 +331,23 @@ Test[
 	,
 	Developer`DataStore[]
 	,
-	TestID->"DataListTestSuite-20180908-T1U8K8"
+	TestID -> "DataListTestSuite-20180908-T1U8K8"
 ];
 
 Test[
-	GetValuesReversed[Developer`DataStore["a" -> 1 + 2.5*I, "b" -> -3. - 6.I, 2I]]
+	GetValuesReversed[Developer`DataStore["a" -> 1 + 2.5 * I, "b" -> -3. - 6.I, 2I]]
 	,
 	Developer`DataStore[2.I, -3. - 6.I, 1. + 2.5I]
 	,
-	TestID->"DataListTestSuite-20180908-S4T6Z9"
+	TestID -> "DataListTestSuite-20180908-S4T6Z9"
 ];
 
 Test[
-	GetValuesReversed[Developer`DataStore["a" -> 1, NumericArray[{3,5,7}]]]
+	GetValuesReversed[Developer`DataStore["a" -> 1, NumericArray[{3, 5, 7}]]]
 	,
-	Developer`DataStore[NumericArray[{3,5,7}, "UnsignedInteger8"], 1]
+	Developer`DataStore[NumericArray[{3, 5, 7}, "UnsignedInteger8"], 1]
 	,
-	TestID->"DataListTestSuite-20180908-C7I2J6"
+	TestID -> "DataListTestSuite-20180908-C7I2J6"
 ];
 
 Test[
@@ -363,7 +363,7 @@ Test[
 	,
 	NumericArray[{{100, 100}, {300, 300}, {200, 200}}, "UnsignedInteger64"]
 	,
-	TestID->"DataListTestSuite-20180907-J9A6U6"
+	TestID -> "DataListTestSuite-20180907-J9A6U6"
 ];
 
 Test[
@@ -371,7 +371,7 @@ Test[
 	,
 	Developer`DataStore[]
 	,
-	TestID->"DataListTestSuite-20180910-I1U7A9"
+	TestID -> "DataListTestSuite-20180910-I1U7A9"
 ];
 
 Test[
@@ -380,15 +380,18 @@ Test[
 	,
 	Reverse[los]
 	,
-	TestID->"DataListTestSuite-20180910-Q5U3A6"
+	TestID -> "DataListTestSuite-20180910-Q5U3A6"
 ];
 
 Test[
 	IntsToNumericArray[Developer`DataStore[]]
 	,
-	{}
+	$Failed
+	(* eventually, the expected value should be {}, but for now empty NumericArrays are not supported in LibraryLink *)
 	,
-	TestID->"DataListTestSuite-20180910-J1W7Z6"
+	Message[LibraryFunction::nanull, NumericArray]
+	,
+	TestID -> "DataListTestSuite-20180910-J1W7Z6"
 ];
 
 Test[
@@ -397,7 +400,7 @@ Test[
 	,
 	NumericArray[ints, If[Developer`$MaxMachineInteger > 2^32, "Integer64", "Integer32"]]
 	,
-	TestID->"DataListTestSuite-20180910-P0I5K7"
+	TestID -> "DataListTestSuite-20180910-P0I5K7"
 ];
 
 Test[
@@ -430,7 +433,7 @@ Test[
 	,
 	List @@ r3
 	,
-	TestID->"DataListTestSuite-20180906-W5N4V0"
+	TestID -> "DataListTestSuite-20180906-W5N4V0"
 ];
 
 
@@ -442,7 +445,7 @@ Test[
 	,
 	{ 0, 0 }
 	,
-	TestID->"DataListTestSuite-20180904-J9J5U5"
+	TestID -> "DataListTestSuite-20180904-J9J5U5"
 ];
 
 Test[
@@ -450,7 +453,7 @@ Test[
 	,
 	{ 0, 0 }
 	,
-	TestID->"DataListTestSuite-20180908-B6X4I7"
+	TestID -> "DataListTestSuite-20180908-B6X4I7"
 ];
 
 Test[
@@ -458,7 +461,7 @@ Test[
 	,
 	{ 0, 0 }
 	,
-	TestID->"DataListTestSuite-20180908-S3Q1N7"
+	TestID -> "DataListTestSuite-20180908-S3Q1N7"
 ];
 
 Test[
@@ -466,17 +469,17 @@ Test[
 	,
 	{ 0, 0 }
 	,
-	TestID->"DataListTestSuite-20180908-S4C7Q2"
+	TestID -> "DataListTestSuite-20180908-S4C7Q2"
 ];
 
 Test[
 	LibraryFunctionUnload[Last @ PassDataStore];
-	PassDataStore = SafeLibraryFunction["PassDataStore", {{"DataStore", "Manual"}, "Boolean"}, "DataStore"];
+	PassDataStore = `LLU`SafeLibraryFunction["PassDataStore", {{"DataStore", "Manual"}, "Boolean"}, "DataStore"];
 	MemoryLeakTest[PassDataStore[ds0, #]] & /@ {False, True}
 	,
-	{ 0, n_ }/; n > 0  (* when copy is made we expect a leak, because the C++ code is not aware of the "Manual" passing of the input DataStore *)
+	{ 0, n_ } /; n > 0  (* when copy is made we expect a leak, because the C++ code is not aware of the "Manual" passing of the input DataStore *)
 	,
-	TestID->"DataListTestSuite-20180908-C4W5X3"
+	TestID -> "DataListTestSuite-20180908-C4W5X3"
 	,
 	SameTest -> MatchQ
 ];
@@ -484,9 +487,9 @@ Test[
 Test[
 	MemoryLeakTest[PassDataStore[ds1, #]] & /@ {False, True}
 	,
-	{ 0, n_ }/; n > 0
+	{ 0, n_ } /; n > 0
 	,
-	TestID->"DataListTestSuite-20180908-R9U2G0"
+	TestID -> "DataListTestSuite-20180908-R9U2G0"
 	,
 	SameTest -> MatchQ
 ];
@@ -494,9 +497,9 @@ Test[
 Test[
 	MemoryLeakTest[PassDataStore[ds2, #]] & /@ {False, True}
 	,
-	{ 0, n_ }/; n > 0
+	{ 0, n_ } /; n > 0
 	,
-	TestID->"DataListTestSuite-20180908-K7W7L1"
+	TestID -> "DataListTestSuite-20180908-K7W7L1"
 	,
 	SameTest -> MatchQ
 ];
@@ -504,9 +507,9 @@ Test[
 Test[
 	MemoryLeakTest[PassDataStore[ds3, #]] & /@ {False, True}
 	,
-	{ 0, n_ }/; n > 0
+	{ 0, n_ } /; n > 0
 	,
-	TestID->"DataListTestSuite-20180908-Z1Y1Q5"
+	TestID -> "DataListTestSuite-20180908-Z1Y1Q5"
 	,
 	SameTest -> MatchQ
 ];

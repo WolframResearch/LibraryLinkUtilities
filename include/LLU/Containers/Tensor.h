@@ -1,4 +1,4 @@
-/** 
+/**
  * @file	Tensor.h
  * @author	Rafal Chojna <rafalc@wolfram.com>
  * @date	6/07/2017
@@ -12,13 +12,12 @@
 #include <initializer_list>
 #include <type_traits>
 
-#include "WolframLibrary.h"
-
-#include "LLU/Containers/MArray.hpp"
 #include "LLU/Containers/Generic/Tensor.hpp"
-#include "LLU/Containers/Passing/PassingPolicy.hpp"
+#include "LLU/Containers/MArray.hpp"
 #include "LLU/Containers/Passing/Automatic.hpp"
 #include "LLU/Containers/Passing/Manual.hpp"
+#include "LLU/Containers/Passing/PassingPolicy.hpp"
+#include "LLU/LibraryData.h"
 #include "LLU/Utilities.hpp"
 
 namespace LLU {
@@ -29,26 +28,17 @@ namespace LLU {
 	 *  Provides iterators, data access and info about dimensions.
 	 *  @tparam T - type of data in Tensor
 	 */
-    template<typename T>
-    class TypedTensor : public MArray<T> {
-    public:
-        using MArray<T>::MArray;
-
-        /// Return matching type of MTensor
-        static mint getType() noexcept {
-            return type;
-        }
-
-    private:
+	template<typename T>
+	class TypedTensor : public MArray<T> {
+	public:
+		using MArray<T>::MArray;
+	private:
 		/// @copydoc MArray<T>::getData()
-        T* getData() const noexcept override;
+		T* getData() const noexcept override;
 
-        /// Get the raw MTensor, must be implemented in subclasses.
-        virtual MTensor getInternal() const = 0;
-
-        /// Tensor data type matching template parameter T
-        static const mint type;
-    };
+		/// Get the raw MTensor, must be implemented in subclasses.
+		virtual MTensor getInternal() const = 0;
+	};
 
 	/**
 	 * @class Tensor
@@ -60,9 +50,8 @@ namespace LLU {
 	 * @tparam	T - type of underlying data
 	 */
 	template<typename T, class PassingMode = Passing::Manual>
-	class Tensor: public TypedTensor<T>, public GenericTensor<PassingMode> {
+	class Tensor : public TypedTensor<T>, public GenericTensor<PassingMode> {
 	public:
-
 		/**
 		 *   @brief         Constructs flat Tensor based on a list of elements
 		 *   @param[in]     v - initializer list with Tensor elements
@@ -78,7 +67,7 @@ namespace LLU {
 		 * @param   c - const reference to a collection from which data will be copied to the Tensor
 		 */
 		template<class Container, typename = std::enable_if_t<is_iterable_container_with_matching_type_v<Container, T> && has_size_v<Container>>>
-		explicit Tensor(const Container& c) : Tensor(c, {static_cast<mint>(c.size()) }) {}
+		explicit Tensor(const Container& c) : Tensor(c, {static_cast<mint>(c.size())}) {}
 
 		/**
 		 * @brief   Constructs a Tensor with contents copied from a given collection of data and dimensions passed as parameter
@@ -139,7 +128,7 @@ namespace LLU {
 		 **/
 		template<class P>
 		explicit Tensor(const Tensor<T, P>& other);
-		
+
 		/**
 		 *  @brief  Default constructor, creates a Tensor that does not wrap over any raw MTensor
 		 */
@@ -183,33 +172,28 @@ namespace LLU {
 		using GenericBase = MContainer<MArgumentType::Tensor, PassingMode>;
 
 		/// @copydoc MContainerBase::getContainer()
-        MTensor getInternal() const noexcept override {
-            return this->getContainer();
-        }
+		MTensor getInternal() const noexcept override {
+			return this->getContainer();
+		}
 	};
 
 	template<typename T, class PassingMode>
-	Tensor<T, PassingMode>::Tensor(std::initializer_list<T> v) :
-			Tensor(std::begin(v), std::end(v), { static_cast<mint>(v.size()) }) {
-	}
-
+	Tensor<T, PassingMode>::Tensor(std::initializer_list<T> v) : Tensor(std::begin(v), std::end(v), {static_cast<mint>(v.size())}) {}
 
 	template<typename T, class PassingMode>
 	template<class InputIt, typename>
-	Tensor<T, PassingMode>::Tensor(InputIt first, InputIt last)  :
-			Tensor(first, last, { static_cast<mint>(std::distance(first, last)) }) {
-	}
+	Tensor<T, PassingMode>::Tensor(InputIt first, InputIt last) : Tensor(first, last, {static_cast<mint>(std::distance(first, last))}) {}
 
 	template<typename T, class PassingMode>
-	Tensor<T, PassingMode>::Tensor(T init, MArrayDimensions dims) : TypedTensor<T>(std::move(dims)),
-	            GenericBase(TypedTensor<T>::getType(), this->rank(), this->dims.data()) {
+	Tensor<T, PassingMode>::Tensor(T init, MArrayDimensions dims)
+		: TypedTensor<T>(std::move(dims)), GenericBase(TensorType<T>, this->rank(), this->dims.data()) {
 		std::fill(this->begin(), this->end(), init);
 	}
 
 	template<typename T, class PassingMode>
 	template<class InputIt, typename>
-	Tensor<T, PassingMode>::Tensor(InputIt first, InputIt last, MArrayDimensions dims) : TypedTensor<T>(std::move(dims)),
-	        GenericBase(TypedTensor<T>::getType(), this->rank(), this->dims.data()) {
+	Tensor<T, PassingMode>::Tensor(InputIt first, InputIt last, MArrayDimensions dims)
+		: TypedTensor<T>(std::move(dims)), GenericBase(TensorType<T>, this->rank(), this->dims.data()) {
 		if (std::distance(first, last) != this->getFlattenedLength())
 			ErrorManager::throwException(ErrorName::TensorNewError, "Length of data range does not match specified dimensions");
 		std::copy(first, last, this->begin());
@@ -217,17 +201,16 @@ namespace LLU {
 
 	template<typename T, class PassingMode>
 	Tensor<T, PassingMode>::Tensor(GenericBase t) : TypedTensor<T>({t.getDimensions(), t.getRank()}), GenericBase(std::move(t)) {
-		if (TypedTensor<T>::getType() != GenericBase::type())
+		if (TensorType<T> != GenericBase::type())
 			ErrorManager::throwException(ErrorName::TensorTypeError);
 	}
 
 	template<typename T, class PassingMode>
 	template<class P>
-	Tensor<T, PassingMode>::Tensor(const Tensor<T, P>& other) : TypedTensor<T>(other), GenericBase(other) {
-	}
+	Tensor<T, PassingMode>::Tensor(const Tensor<T, P>& other) : TypedTensor<T>(other), GenericBase(other) {}
 
 	template<typename T, class PassingMode>
-	Tensor<T, PassingMode>::Tensor(MTensor t) : Tensor(GenericBase{ t }) {}
+	Tensor<T, PassingMode>::Tensor(MTensor t) : Tensor(GenericBase {t}) {}
 
 } /* namespace LLU */
 

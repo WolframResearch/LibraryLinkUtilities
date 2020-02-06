@@ -7,23 +7,19 @@
 
 #ifndef LLUTILS_DATALIST_H
 #define LLUTILS_DATALIST_H
-#include <iostream>
-
 #include <cstddef>
+#include <iostream>
 #include <iterator>
 #include <list>
 #include <type_traits>
 #include <utility>
 
-#include "WolframLibrary.h"
-#include "WolframIOLibraryFunctions.h"
-
-#include "LLU/ErrorLog/ErrorManager.h"
-#include "LLU/MArgument.h"
-#include "LLU/LibraryData.h"
+#include "LLU/Containers/Generic/DataStore.hpp"
 #include "LLU/Containers/Passing/Automatic.hpp"
 #include "LLU/Containers/Passing/Manual.hpp"
-#include "LLU/Containers/Generic/DataStore.hpp"
+#include "LLU/ErrorLog/ErrorManager.h"
+#include "LLU/LibraryData.h"
+#include "LLU/MArgument.h"
 
 namespace LLU {
 
@@ -95,12 +91,11 @@ namespace LLU {
 		DataStoreNode rawNode {};
 	};
 
-
 	/**
 	 * @class	DataList
 	 * @brief 	Top-level wrapper over LibraryLink's DataStore.
-	 * 			Designed to be strongly typed i.e. to wrap only homogeneous DataStores but by passing MArgumentType::MArgument as template parameter it will work with
-	 * 			arbitrary DataStores.
+	 * 			Designed to be strongly typed i.e. to wrap only homogeneous DataStores but by passing MArgumentType::MArgument as template parameter it will
+	 * work with arbitrary DataStores.
 	 * @tparam 	T - type of data stored in each node, see the enum type \c MArgumentType
 	 * @tparam 	PassingMode - policy for memory management of the internal container
 	 */
@@ -136,11 +131,11 @@ namespace LLU {
 		 */
 		explicit DataList(DataStore ds);
 
-        /**
-         * @brief	Create DataList wrapping around an existing GenericDataStore with matching passing policy
-         * @param 	gds - GenericDataStore
-         */
-        explicit DataList(GenericDataStore gds);
+		/**
+		 * @brief	Create DataList wrapping around an existing GenericDataStore with matching passing policy
+		 * @param 	gds - GenericDataStore
+		 */
+		explicit DataList(GenericDataStore gds);
 
 		/**
 		 * @brief	Create DataList from list of values. Keys will be set to empty strings.
@@ -281,7 +276,6 @@ namespace LLU {
 			return proxyList.rend();
 		}
 
-
 		/**
 		 * @brief 	Add new node to the DataList of type MArgument. This overload is considered only for "generic" DataLists.
 		 * @tparam 	U - dummy template parameter, should never be explicitly specified
@@ -323,12 +317,12 @@ namespace LLU {
 
 
 		template<MArgumentType MArgT, class P>
-		void push_back(const MContainer<MArgT, P> &nodeData) {
+		void push_back(const MContainer<MArgT, P>& nodeData) {
 			push_back("", nodeData);
 		}
 
 		template<MArgumentType MArgT, class P>
-		void push_back(const std::string &name, const MContainer<MArgT, P> &nodeData) {
+		void push_back(const std::string& name, const MContainer<MArgT, P>& nodeData) {
 			if constexpr (ValidNodeTypeQ<MArgT>) {
 				push_back<MArgT>(name, nodeData.abandonContainer());
 			} else {
@@ -350,13 +344,11 @@ namespace LLU {
 		void push_back(const std::string& name, const value_type& nodeData);
 
 	private:
-
 		/**
 		 * @brief 	Recreate private proxy list from the internal DataStore
 		 */
 		void makeProxy();
 	};
-
 
 	/* Definitions od DataNode methods */
 
@@ -388,30 +380,30 @@ namespace LLU {
 		makeProxy();
 	}
 
-    template<MArgumentType T, class PassingMode>
-    DataList<T, PassingMode>::DataList(GenericDataStore gds) : GenericDataStore(std::move(gds)) {
-        if (!this->getContainer()) {
-            ErrorManager::throwException(ErrorName::DLNullRawDataStore);
-        }
-        makeProxy();
-    }
+	template<MArgumentType T, class PassingMode>
+	DataList<T, PassingMode>::DataList(GenericDataStore gds) : GenericDataStore(std::move(gds)) {
+		if (!this->getContainer()) {
+			ErrorManager::throwException(ErrorName::DLNullRawDataStore);
+		}
+		makeProxy();
+	}
 
 	template<MArgumentType T, class PassingMode>
 	DataList<T, PassingMode>::DataList(std::initializer_list<value_type> initList) : DataList() {
-		for(auto&& elem : initList) {
+		for (auto&& elem : initList) {
 			push_back(elem);
 		}
 	}
 
 	template<MArgumentType T, class PassingMode>
 	DataList<T, PassingMode>::DataList(std::initializer_list<std::pair<std::string, value_type>> initList) : DataList() {
-		for(auto&& elem : initList) {
+		for (auto&& elem : initList) {
 			push_back(elem.first, elem.second);
 		}
 	}
 
 	template<MArgumentType T, class PassingMode>
-	auto DataList<T, PassingMode>::operator=(DataList&& other) noexcept -> DataList&  {
+	auto DataList<T, PassingMode>::operator=(DataList&& other) noexcept -> DataList& {
 		GenericDataStore::operator=(std::move(other));
 		proxyList = std::move(other.proxyList);
 		return *this;
@@ -429,13 +421,13 @@ namespace LLU {
 
 	template<MArgumentType T, class PassingMode>
 	template<MArgumentType U>
-	auto DataList<T, PassingMode>::push_back(MArgument& nodeData, MArgumentType MArgT) -> IsMArgument<U>  {
+	auto DataList<T, PassingMode>::push_back(MArgument& nodeData, MArgumentType MArgT) -> IsMArgument<U> {
 		push_back("", nodeData, MArgT);
 	}
 
 	template<MArgumentType T, class PassingMode>
 	template<MArgumentType U>
-	auto DataList<T, PassingMode>::push_back(const std::string& name, MArgument& nodeData, MArgumentType MArgT) -> IsMArgument<U>  {
+	auto DataList<T, PassingMode>::push_back(const std::string& name, MArgument& nodeData, MArgumentType MArgT) -> IsMArgument<U> {
 		Argument<MArgumentType::MArgument>(nodeData).addToDataStore(this->getContainer(), name, MArgT);
 	}
 
@@ -478,4 +470,4 @@ namespace LLU {
 
 }
 
-#endif //LLUTILS_DATALIST_H
+#endif	  // LLUTILS_DATALIST_H
