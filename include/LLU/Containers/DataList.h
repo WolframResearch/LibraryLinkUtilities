@@ -330,7 +330,7 @@ namespace LLU {
 		template<MArgumentType MArgT, class P>
 		void push_back(const std::string &name, const MContainer<MArgT, P> &nodeData) {
 			if constexpr (ValidNodeTypeQ<MArgT>) {
-				push_back(name, nodeData.abandonContainer());
+				push_back<MArgT>(name, nodeData.abandonContainer());
 			} else {
 				static_assert(alwaysFalse<MArgT>, "Trying to add DataList node of incorrect type.");
 			}
