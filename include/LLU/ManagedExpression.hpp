@@ -47,7 +47,12 @@ namespace LLU {
 	 * @tparam T - managed class
 	 */
 	template<typename T>
-	struct ManagedExpressionStore {
+	class ManagedExpressionStore {
+		using iterator = typename std::unordered_map<mint, std::shared_ptr<T>>::iterator;
+		using const_iterator = typename std::unordered_map<mint, std::shared_ptr<T>>::const_iterator;
+		using size_type = typename std::unordered_map<mint, std::shared_ptr<T>>::size_type;
+
+	public:
 		/**
 		 * Function that will actually be called by LibraryLink when an instance of Managed Expression is created or deleted
 		 *
@@ -79,6 +84,20 @@ namespace LLU {
 			return *store[id];
 		}
 
+		size_type releaseInstance(mint id) {
+			LibraryData::API()->releaseManagedLibraryExpression(expressionName.c_str(), id);
+			return store.erase(id);
+		}
+
+		/**
+		 * Check if instance with given \p id is present in the store.
+		 * @param id - id to be checked
+		 * @return true iff the instance with given id is in the store
+		 */
+		bool hasInstance(mint id) const {
+			return store.count(id);
+		}
+
 		/**
 		 * Get managed instance with given \p id. Throw if the \p id is invalid.
 		 * @param id - id of instance of interest
@@ -103,8 +122,40 @@ namespace LLU {
 		 * Get symbol name that is used in the WL to represent Managed Expressions stored in this Store
 		 * @return symbol name
 		 */
-		const std::string& getExpressionName() const {
+		const std::string& getExpressionName() const noexcept {
 			return expressionName;
+		}
+
+		/**
+		 * Get the number of currently managed expressions.
+		 * @return size of the store
+		 */
+		size_type size() const noexcept {
+			return store.size();
+		}
+
+		iterator begin() noexcept {
+			return store.begin();
+		}
+
+		const_iterator begin() const noexcept {
+			return store.cbegin();
+		}
+
+		const_iterator cbegin() const noexcept {
+			return store.cbegin();
+		}
+
+		iterator end() noexcept {
+			return store.end();
+		}
+
+		const_iterator end() const noexcept {
+			return store.end();
+		}
+
+		const_iterator cend() const noexcept {
+			return store.cend();
 		}
 
 		/**
@@ -113,7 +164,7 @@ namespace LLU {
 		 * @param libData - optionally specify WolframLibraryData instance
 		 * @note This function should typically be called in \c WolframLibrary_initialize
 		 */
-		void registerType(std::string name, WolframLibraryData libData = LibraryData::API()) {
+		void registerType(std::string name, WolframLibraryData libData = LibraryData::API()) noexcept {
 			expressionName = std::move(name);
 			libData->registerLibraryExpressionManager(expressionName.c_str(), manageInstanceCallback<T>);
 		}
@@ -123,7 +174,7 @@ namespace LLU {
 		 * @param libData - optionally specify WolframLibraryData instance
 		 * @note This function should typically be called in \c WolframLibrary_uninitialize
 		 */
-		void unregisterType(WolframLibraryData libData = LibraryData::API()) const {
+		void unregisterType(WolframLibraryData libData = LibraryData::API()) const noexcept {
 			libData->unregisterLibraryExpressionManager(expressionName.c_str());
 		}
 
@@ -133,7 +184,7 @@ namespace LLU {
 		 * @param id - id to be checked
 		 */
 		void checkID(mint id) const {
-			if (store.count(id) == 0) {
+			if (!hasInstance(id)) {
 				ErrorManager::throwException(ErrorName::ManagedExprInvalidID);
 			}
 		}
