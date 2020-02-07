@@ -84,9 +84,8 @@ namespace LLU {
 			return *store[id];
 		}
 
-		size_type releaseInstance(mint id) {
-			LibraryData::API()->releaseManagedLibraryExpression(expressionName.c_str(), id);
-			return store.erase(id);
+		int releaseInstance(mint id) {
+			return LibraryData::API()->releaseManagedLibraryExpression(expressionName.c_str(), id);
 		}
 
 		/**
