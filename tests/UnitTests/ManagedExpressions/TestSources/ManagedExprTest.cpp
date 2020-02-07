@@ -49,6 +49,18 @@ EXTERN_C DLLEXPORT void WolframLibrary_uninitialize(WolframLibraryData libData) 
 	MyExpressionStore.unregisterType(libData);
 }
 
+LLU_LIBRARY_FUNCTION(GetManagedExpressionCount) {
+	mngr.set(static_cast<mint>(MyExpressionStore.size()));
+}
+
+LLU_LIBRARY_FUNCTION(GetManagedExpressionTexts) {
+	LLU::DataList<LLU::MArgumentType::UTF8String> texts;
+	for (const auto& expr : MyExpressionStore) {
+		texts.push_back(std::to_string(expr.first), const_cast<char*>(expr.second->getText().c_str()));
+	}
+	mngr.set(texts);
+}
+
 LIBRARY_LINK_FUNCTION(OpenManagedMyExpression) {
 	auto err = LLU::ErrorCode::NoError;
 	try {
@@ -60,6 +72,11 @@ LIBRARY_LINK_FUNCTION(OpenManagedMyExpression) {
 		err = e.which();
 	}
 	return err;
+}
+
+LLU_LIBRARY_FUNCTION(ReleaseExpression) {
+	auto id = mngr.getInteger<mint>(0);
+	mngr.set(static_cast<mint>(MyExpressionStore.releaseInstance(id)));
 }
 
 LIBRARY_LINK_FUNCTION(GetText) {
