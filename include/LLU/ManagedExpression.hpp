@@ -84,6 +84,11 @@ namespace LLU {
 			return *store[id];
 		}
 
+		/**
+		 * Release an instance managed by this Store.
+		 * @param id - id of the instance to be released
+		 * @return 0 if the id was correct and the operation succeeded, non-negative integer otherwise
+		 */
 		int releaseInstance(mint id) {
 			return LibraryData::API()->releaseManagedLibraryExpression(expressionName.c_str(), id);
 		}
@@ -133,26 +138,44 @@ namespace LLU {
 			return store.size();
 		}
 
+		/**
+		 * Get the iterator to the first element of the Store
+		 */
 		iterator begin() noexcept {
 			return store.begin();
 		}
 
+		/**
+		 * Get the const iterator to the first element of the Store
+		 */
 		const_iterator begin() const noexcept {
 			return store.cbegin();
 		}
 
+		/**
+		 * Get the const iterator to the first element of the Store
+		 */
 		const_iterator cbegin() const noexcept {
 			return store.cbegin();
 		}
 
+		/**
+		 * Get the iterator past the last element of the Store
+		 */
 		iterator end() noexcept {
 			return store.end();
 		}
 
+		/**
+		 * Get the const iterator past the last element of the Store
+		 */
 		const_iterator end() const noexcept {
 			return store.end();
 		}
 
+		/**
+		 * Get the const iterator past the last element of the Store
+		 */
 		const_iterator cend() const noexcept {
 			return store.cend();
 		}
