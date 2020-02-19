@@ -1,4 +1,4 @@
-find_package(Doxygen 1.8.15 REQUIRED dot)
+find_package(Doxygen 1.8.15 REQUIRED OPTIONAL_COMPONENTS dot)
 
 set(DOCUMENTATION_SOURCE ${CMAKE_CURRENT_SOURCE_DIR})
 
@@ -33,25 +33,18 @@ add_custom_command(
 # Custom target for generating documentation
 add_custom_target(doxygen DEPENDS ${DOXYGEN_OUTPUT_INDEX})
 
+# Helper macro for locating dependencies for Breathe+Sphinx documentation build. If they are missing we just return and create only the "doxygen" target.
+macro(find_or_exit DEPENDENCY)
+	find_package(${DEPENDENCY})
+	if(NOT ${DEPENDENCY}_FOUND)
+		message(WARNING "Could not find ${DEPENDENCY}. You will not be able to generate Breathe+Sphinx documentation but you can still generate Doxygen.")
+		return()
+	endif()
+endmacro()
 
-find_package(Python REQUIRED COMPONENTS Interpreter)
-find_package(Sphinx REQUIRED)
-
-# Find the Breathe module
-if (NOT BREATHE_MODULE_LOCATION)
-	execute_process(
-			COMMAND "${Python_EXECUTABLE}" "-c"
-			"from __future__ import print_function; import re, breathe; print(re.compile('/__init__.py.*').sub('', breathe.__file__))"
-			RESULT_VARIABLE _BREATHE_STATUS
-			OUTPUT_VARIABLE _BREATHE_LOCATION
-			ERROR_QUIET
-			OUTPUT_STRIP_TRAILING_WHITESPACE)
-	if (NOT _BREATHE_STATUS)
-		set(BREATHE_MODULE_LOCATION ${_BREATHE_LOCATION} CACHE STRING "Location of Breathe")
-		mark_as_advanced(BREATHE_MODULE_LOCATION)
-	endif ()
-endif ()
-find_package_handle_standard_args(Breathe DEFAULT_MSG BREATHE_MODULE_LOCATION)
+find_or_exit(Python)
+find_or_exit(Sphinx)
+find_or_exit(Breathe)
 
 # Determine Sphinx theme for the docs. Use the following variables:
 #   SPHINX_THEME - this should be one of the built-in Sphinx themes, see https://www.sphinx-doc.org/en/master/usage/theming.html

@@ -33,6 +33,4 @@ find_program(SPHINX_EXECUTABLE
 
 # Let FindPackageHandleStandardArgs do the rest
 include(FindPackageHandleStandardArgs)
-find_package_handle_standard_args(Sphinx
-        "Could not find sphinx-build."
-        SPHINX_EXECUTABLE)
+find_package_handle_standard_args(Sphinx DEFAULT_MSG SPHINX_EXECUTABLE)
