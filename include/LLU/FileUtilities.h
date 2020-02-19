@@ -46,7 +46,6 @@ namespace LLU {
 	}
 
 	/**
-	 * @struct
 	 * @brief   Base class for shared access policies on Windows.
 	 * @details Library users are encouraged to provide their own derived classes if needed.
 	 * Implemented also on Mac and Linux to have uniform interface but does not make much sense on those platforms.
@@ -62,7 +61,6 @@ namespace LLU {
 	};
 
 	/**
-	 * @struct
 	 * @brief   Default policy for Import/Export paclets - always allow reading, deny writing when we write.
 	 * @note    This policy allows for reading from the file when other applications are writing to it which may have unexpected consequences.
 	 */

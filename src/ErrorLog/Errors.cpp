@@ -8,6 +8,7 @@
 
 namespace LLU {
 
+/// Helper macro for defining new errors so that for each error we have a std::string variable equal to the error name.
 #define LLU_DEFINE_ERROR_NAME(errorIdentifier) const std::string errorIdentifier = #errorIdentifier
 
 	namespace ErrorName {
