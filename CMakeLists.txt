@@ -5,7 +5,6 @@
 ###### Author: Rafal Chojna - rafalc@wolfram.com
 #################################################################################
 
-
 cmake_minimum_required(VERSION 3.8.0)
 
 #set minimum MacOS target version if not defined as environment variable
@@ -238,10 +237,13 @@ if(NOT TARGET LLU)
 			"${CMAKE_COMMAND}" -E env CTEST_OUTPUT_ON_FAILURE=1 ${CMAKE_CTEST_COMMAND} -C ${CMAKE_BUILD_TYPE}
 	)
 
-    ##############################################
-    ## Create target for Sphinx documentation build
+    ################################################################
+    ## Create target for Sphinx documentation build if requested
 
-    add_subdirectory("docs")
+	option(BUILD_DOCS "Create target for generating LLU documentation." OFF)
+	if (BUILD_DOCS)
+		add_subdirectory("docs")
+	endif()
 
 endif() #end IF NOT TARGET LLU
 
