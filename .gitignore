@@ -11,6 +11,3 @@ Debug/
 lib/
 build*/
 install/
-
-docs/xml
-docs/LibraryLinkUtilities
