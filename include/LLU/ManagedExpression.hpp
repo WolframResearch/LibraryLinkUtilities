@@ -88,6 +88,9 @@ namespace LLU {
 		 * Release an instance managed by this Store.
 		 * @param id - id of the instance to be released
 		 * @return 0 if the id was correct and the operation succeeded, non-negative integer otherwise
+		 * @note Normally, every instance in the Store has a corresponding WL expression and the instance is released as soon as the corresponding expression
+		 * goes out of scope (its reference count hits 0). This function can be used to force immediate release of a managed instance.
+		 * @see https://reference.wolfram.com/language/LibraryLink/ref/callback/releaseManagedLibraryExpression.html
 		 */
 		int releaseInstance(mint id) {
 			return LibraryData::API()->releaseManagedLibraryExpression(expressionName.c_str(), id);
