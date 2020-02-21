@@ -99,10 +99,10 @@ namespace LLU {
 		void sendRange(Iterator begin, Iterator end, const std::string& head);
 
 	public:
-		/// Type of elements that can be send via WSTP with no arguments, for example WS::Flush
+		/// Type of elements that can be sent via WSTP with no arguments, for example WS::Flush
 		using StreamToken = WSStream& (*)(WSStream&);
 
-		/// Type of elements that can be either send or received via WSTP with no arguments, for example WS::Rule
+		/// Type of elements that can be either sent or received via WSTP with no arguments, for example WS::Rule
 		using BidirStreamToken = WSStream& (*)(WSStream&, WS::Direction);
 
 		/// Type of data stored on the stack to facilitate sending expressions of a priori unknown length
@@ -114,13 +114,13 @@ namespace LLU {
 
 		/**
 		 *   @brief			Sends a stream token via WSTP
-		 *   @param[in] 	f - a stream token, i.e. an element that can be send via WSTP with no arguments, for example WS::Flush
+		 *   @param[in] 	f - a stream token, i.e. an element that can be sent via WSTP with no arguments, for example WS::Flush
 		 **/
 		WSStream& operator<<(StreamToken f);
 
 		/**
 		 *   @brief			Sends a bidirectional stream token via WSTP
-		 *   @param[in] 	f - an element that can be either send or received via WSTP with no arguments, for example WS::Rule
+		 *   @param[in] 	f - an element that can be either sent or received via WSTP with no arguments, for example WS::Rule
 		 **/
 		WSStream& operator<<(BidirStreamToken f);
 
@@ -133,7 +133,7 @@ namespace LLU {
 		WSStream& operator<<(const WS::Symbol& s);
 
 		/**
-		 *   @brief			Sends a top-level function via WSTP, function arguments should be send immediately after
+		 *   @brief			Sends a top-level function via WSTP, function arguments should be sent immediately after
 		 *   @param[in] 	f - a function
 		 *   @see 			WS::Function
 		 *   @throws 		ErrorName::WSPutFunctionError
@@ -352,7 +352,7 @@ namespace LLU {
 
 		/**
 		 *   @brief			Receives a bidirectional stream token via WSTP
-		 *   @param[in] 	f - an element that can be either send or received via WSTP with no arguments, for example WS::Rule
+		 *   @param[in] 	f - an element that can be either sent or received via WSTP with no arguments, for example WS::Rule
 		 **/
 		WSStream& operator>>(BidirStreamToken f);
 
@@ -370,7 +370,7 @@ namespace LLU {
 		/**
 		 *   @brief				Receives a symbol from WSTP.
 		 *
-		 *   If the parameter \c s has head specified, than it has to match the head that was read from WSTP, otherwise the head read from WSTP
+		 *   If the parameter \c s has head specified, then it has to match the head that was read from WSTP, otherwise the head read from WSTP
 		 *   will be assigned to s
 		 *
 		 *   @param[in, out] 	s - a symbol
@@ -580,7 +580,7 @@ namespace LLU {
 	template<WS::Encoding EIn, WS::Encoding EOut>
 	WSStream<EIn, EOut>::WSStream(WSLINK mlp) : m(mlp), loopbackStack(std::deque<LoopbackData> {{"", mlp}}) {
 		if (!mlp) {
-			WS::throwLLUException(ErrorName::WSNullMlinkError);
+			WS::throwLLUException(ErrorName::WSNullWSLinkError);
 		}
 	}
 

@@ -67,7 +67,7 @@ namespace LLU {
 			{ErrorName::MArrayElementIndexError, "Attempting to access MArray dimension `d` which does not exist."},
 
 			// WSTP errors:
-			{ErrorName::WSNullMlinkError, "Trying to create WSStream with NULL WSLINK"},
+			{ErrorName::WSNullWSLinkError, "Trying to create WSStream with NULL WSLINK"},
 			{ErrorName::WSTestHeadError, "WSTestHead failed (wrong head or number of arguments)."},
 			{ErrorName::WSPutSymbolError, "WSPutSymbol failed."},
 			{ErrorName::WSPutFunctionError, "WSPutFunction failed."},

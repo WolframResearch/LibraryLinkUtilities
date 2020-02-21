@@ -54,7 +54,7 @@ namespace LLU {
 		LLU_DEFINE_ERROR_NAME(MArrayElementIndexError);
 		LLU_DEFINE_ERROR_NAME(MArrayDimensionIndexError);
 
-		LLU_DEFINE_ERROR_NAME(WSNullMlinkError);
+		LLU_DEFINE_ERROR_NAME(WSNullWSLinkError);
 		LLU_DEFINE_ERROR_NAME(WSTestHeadError);
 		LLU_DEFINE_ERROR_NAME(WSPutSymbolError);
 		LLU_DEFINE_ERROR_NAME(WSPutFunctionError);

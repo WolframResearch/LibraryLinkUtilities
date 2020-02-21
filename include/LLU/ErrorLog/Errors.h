@@ -84,7 +84,7 @@ namespace LLU {
 		extern const std::string MArrayDimensionIndexError;	   ///< attempting to access MArray dimension at invalid index
 
 		// WSTP errors:
-		extern const std::string WSNullMlinkError;			   ///< Trying to create WSStream with NULL WSLINK
+		extern const std::string WSNullWSLinkError;			   ///< Trying to create WSStream with NULL WSLINK
 		extern const std::string WSTestHeadError;			   ///< WSTestHead failed (wrong head or number of arguments)
 		extern const std::string WSPutSymbolError;			   ///< WSPutSymbol failed
 		extern const std::string WSPutFunctionError;		   ///< WSPutFunction failed
