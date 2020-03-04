@@ -77,11 +77,11 @@ if(NOT TARGET LLU)
 		${LLU_SOURCE_DIR}/MArgumentManager.cpp
 		${LLU_SOURCE_DIR}/Containers/MArrayDimensions.cpp
 		${LLU_SOURCE_DIR}/Containers/Tensor.cpp
-		${LLU_SOURCE_DIR}/ML/Get.cpp
-		${LLU_SOURCE_DIR}/ML/Put.cpp
-		${LLU_SOURCE_DIR}/ML/Release.cpp
-		${LLU_SOURCE_DIR}/ML/Strings.cpp
-		${LLU_SOURCE_DIR}/ML/Utilities.cpp
+		${LLU_SOURCE_DIR}/WSTP/Get.cpp
+		${LLU_SOURCE_DIR}/WSTP/Put.cpp
+		${LLU_SOURCE_DIR}/WSTP/Release.cpp
+		${LLU_SOURCE_DIR}/WSTP/Strings.cpp
+		${LLU_SOURCE_DIR}/WSTP/Utilities.cpp
 		${LLU_SOURCE_DIR}/MArgument.cpp
 		${LLU_SOURCE_DIR}/ProgressMonitor.cpp
         ${LLU_SOURCE_DIR}/ErrorLog/ErrorManager.cpp
