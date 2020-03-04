@@ -132,22 +132,22 @@ LIBRARY_LINK_FUNCTION(GetMyExpressionStoreName) {
  * Read managed MyExpression via WSTP to a shared pointer.
  */
 template<LLU::WS::Encoding EIn, LLU::WS::Encoding EOut>
-LLU::WSStream<EIn, EOut>& operator>>(LLU::WSStream<EIn, EOut>& ml, std::shared_ptr<MyExpression>& myExp) {
-	ml >> LLU::WS::Function("MyExpression", 1);
+LLU::WSStream<EIn, EOut>& operator>>(LLU::WSStream<EIn, EOut>& ws, std::shared_ptr<MyExpression>& myExp) {
+	ws >> LLU::WS::Function("MyExpression", 1);
 	mint myExprID {};
-	ml >> myExprID;
+	ws >> myExprID;
 	myExp = MyExpressionStore.getInstancePointer(myExprID);
-	return ml;
+	return ws;
 }
 
 /**
  * Get a reference to a managed MyExpression passed via WSTP
  */
 template<LLU::WS::Encoding EIn, LLU::WS::Encoding EOut>
-MyExpression& getFromWSTP(LLU::WSStream<EIn, EOut>& ml) {
-	ml >> LLU::WS::Function("MyExpression", 1);	   // Watch out for context here!
+MyExpression& getFromWSTP(LLU::WSStream<EIn, EOut>& ws) {
+	ws >> LLU::WS::Function("MyExpression", 1);	   // Watch out for context here!
 	mint myExprID {};							   // In paclets the function head will usually be XXXTools`Private`MyExpression
-	ml >> myExprID;
+	ws >> myExprID;
 	return MyExpressionStore.getInstance(myExprID);
 }
 
@@ -156,14 +156,14 @@ LIBRARY_WSTP_FUNCTION(SwapText) {
 	namespace WS = LLU::WS;
 	auto err = LLU::ErrorCode::NoError;
 	try {
-		LLU::WSStream<WS::Encoding::UTF8> ml(mlp, 2);
+		LLU::WSStream<WS::Encoding::UTF8> ws(mlp, 2);
 		std::shared_ptr<MyExpression> firstExpr;
-		ml >> firstExpr;
-		auto& secondExpr = getFromWSTP(ml);
+		ws >> firstExpr;
+		auto& secondExpr = getFromWSTP(ws);
 		auto tempText = firstExpr->getText();
 		firstExpr->setText(secondExpr.getText());
 		secondExpr.setText(std::move(tempText));
-		ml << WS::Null << WS::EndPacket;
+		ws << WS::Null << WS::EndPacket;
 	} catch (const LLU::LibraryLinkError& e) {
 		err = e.which();
 	}
@@ -174,12 +174,12 @@ LIBRARY_WSTP_FUNCTION(SetTextWS) {
 	namespace WS = LLU::WS;
 	auto err = LLU::ErrorCode::NoError;
 	try {
-		LLU::WSStream<WS::Encoding::UTF8> ml(mlp, 2);
-		auto& myExpr = getFromWSTP(ml);
+		LLU::WSStream<WS::Encoding::UTF8> ws(mlp, 2);
+		auto& myExpr = getFromWSTP(ws);
 		std::string newText;
-		ml >> newText;
+		ws >> newText;
 		myExpr.setText(std::move(newText));
-		ml << WS::Null << WS::EndPacket;
+		ws << WS::Null << WS::EndPacket;
 	} catch (const LLU::LibraryLinkError& e) {
 		err = e.which();
 	}
