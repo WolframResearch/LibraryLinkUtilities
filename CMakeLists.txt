@@ -200,7 +200,6 @@ if(NOT TARGET LLU)
 	install(FILES
 		${CMAKE_CURRENT_LIST_DIR}/cmake/FindWolframLibrary.cmake
 		${CMAKE_CURRENT_LIST_DIR}/cmake/FindWSTP.cmake
-		${CMAKE_CURRENT_LIST_DIR}/cmake/FindMathLink.cmake
 		${CMAKE_CURRENT_LIST_DIR}/cmake/WolframUtilities.cmake
 		${CMAKE_CURRENT_BINARY_DIR}/LLUConfig.cmake
 		${CMAKE_CURRENT_BINARY_DIR}/LLUConfigVersion.cmake
@@ -218,7 +217,6 @@ if(NOT TARGET LLU)
 	configure_file(${CMAKE_CURRENT_LIST_DIR}/cmake/WolframUtilities.cmake ${CMAKE_CURRENT_BINARY_DIR}/WolframUtilities.cmake COPYONLY)
 	configure_file(${CMAKE_CURRENT_LIST_DIR}/cmake/FindWolframLibrary.cmake ${CMAKE_CURRENT_BINARY_DIR}/FindWolframLibrary.cmake COPYONLY)
 	configure_file(${CMAKE_CURRENT_LIST_DIR}/cmake/FindWSTP.cmake ${CMAKE_CURRENT_BINARY_DIR}/FindWSTP.cmake COPYONLY)
-	configure_file(${CMAKE_CURRENT_LIST_DIR}/cmake/FindMathLink.cmake ${CMAKE_CURRENT_BINARY_DIR}/FindMathLink.cmake COPYONLY)
 
 	export(EXPORT LLU-targets
 		FILE ${CMAKE_CURRENT_BINARY_DIR}/LLUTargets.cmake
