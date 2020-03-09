@@ -22,6 +22,7 @@ set(TEST_MODULES
         "ErrorReporting"
         "Image"
         "ManagedExpressions"
+        "MArgumentManager"
         "MathLink"
         "NumericArray"
         "GenericContainers"

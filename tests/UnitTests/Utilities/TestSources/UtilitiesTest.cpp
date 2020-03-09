@@ -42,9 +42,10 @@ mint openFile(const std::string& path, std::ios::openmode mode) {
 }
 
 LLU_LIBRARY_FUNCTION(OpenManagedFile) {
-	auto id = mngr.getInteger<mint>(0);
-	auto fname = mngr.getString(1);
-	auto modeInt = mngr.getInteger<mint>(2);
+	auto args = mngr.get<mint, std::string, mint>();
+	auto id = std::get<0>(args);
+	auto fname = std::get<1>(args);
+	auto modeInt = std::get<2>(args);
 	std::ios::openmode mode = modeInt == 0? std::ios::in : (modeInt == 1? std::ios::out : std::ios::in|std::ios::out);
 	FileStore.createInstance(id, fname, mode);
 }
