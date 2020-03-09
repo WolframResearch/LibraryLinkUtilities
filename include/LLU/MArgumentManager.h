@@ -39,6 +39,8 @@ namespace LLU {
 	 **/
 	class MArgumentManager {
 	public:
+		using size_type = std::size_t;
+	public:
 		/**
 		 *   @brief         Constructor
 		 *   @param[in]     Argc - number of MArguments provided
@@ -69,7 +71,7 @@ namespace LLU {
 		 *   @returns       MArgument of type \b bool at position \c index
 		 *   @throws        ErrorName::MArgumentIndexError - if \c index is out-of-bounds
 		 **/
-		bool getBoolean(unsigned int index) const;
+		bool getBoolean(size_type index) const;
 
 		/**
 		 *   @brief         Get MArgument of type \b mreal at position \c index
@@ -77,7 +79,7 @@ namespace LLU {
 		 *   @returns       MArgument of type \b double at position \c index
 		 *   @throws        ErrorName::MArgumentIndexError - if \c index is out-of-bounds
 		 **/
-		double getReal(unsigned int index) const;
+		double getReal(size_type index) const;
 
 		/**
 		 *   @brief         Get MArgument of type \b mint at position \c index with extra static_cast if needed
@@ -87,7 +89,7 @@ namespace LLU {
 		 *   @throws        ErrorName::MArgumentIndexError - if \c index is out-of-bounds
 		 **/
 		template<typename T>
-		T getInteger(unsigned int index) const;
+		T getInteger(size_type index) const;
 
 		/**
 		 *   @brief         Get MArgument of type \b mcomplex at position \c index
@@ -95,7 +97,7 @@ namespace LLU {
 		 *   @returns       MArgument value at position \c index converted to \b std::complex<double>
 		 *   @throws        ErrorName::MArgumentIndexError - if \c index is out-of-bounds
 		 **/
-		std::complex<double> getComplex(unsigned int index) const;
+		std::complex<double> getComplex(size_type index) const;
 
 		/**
 		 *   @brief         Get value of MArgument of type \b "UTF8String" at position \c index
@@ -105,7 +107,7 @@ namespace LLU {
 		 *
 		 *   @note			MArgumentManager is responsible for disowning string arguments. Do not call free() or delete() on resulting pointer.
 		 **/
-		char* getCString(unsigned int index) const;
+		char* getCString(size_type index) const;
 
 		/**
 		 *   @brief         Get value of MArgument of type \b "UTF8String" at position \c index
@@ -113,7 +115,7 @@ namespace LLU {
 		 *   @returns       \b std::string which is created from MArgument at position \c index
 		 *   @throws        LLErrorCode::MArgumentIndexError - if \c index is out-of-bounds
 		 **/
-		std::string getString(unsigned int index) const;
+		std::string getString(size_type index) const;
 
 		/**
 		 *   @brief         Get MArgument of type MNumericArray at position \p index and wrap it into NumericArray
@@ -124,7 +126,7 @@ namespace LLU {
 		 *   @see			NumericArray<T>::NumericArray(const MNumericArray);
 		 **/
 		template<typename T, class PassingMode = Passing::Automatic>
-		NumericArray<T, PassingMode> getNumericArray(unsigned int index) const;
+		NumericArray<T, PassingMode> getNumericArray(size_type index) const;
 
 		/**
 		 *	@brief		Get MArgument of type MNumericArray at position \p index and wrap it into generic MContainer wrapper
@@ -133,7 +135,7 @@ namespace LLU {
 		 * 	@return		MContainer wrapper of MNumericArray with given passing policy
 		 */
 		template<class PassingMode = Passing::Automatic>
-		GenericNumericArray<PassingMode> getGenericNumericArray(unsigned int index) const;
+		GenericNumericArray<PassingMode> getGenericNumericArray(size_type index) const;
 
 		/**
 		 *   @brief         Get MArgument of type MNumericArray at position \c index
@@ -142,7 +144,7 @@ namespace LLU {
 		 *   @returns       MArgument at position \c index interpreted as MNumericArray
 		 *   @throws        ErrorName::MArgumentIndexError - if \c index is out-of-bounds
 		 **/
-		MNumericArray getMNumericArray(unsigned int index) const;
+		MNumericArray getMNumericArray(size_type index) const;
 
 		/**
 		 *   @brief         Get MArgument of type MTensor at position \p index and wrap it into Tensor object
@@ -153,7 +155,7 @@ namespace LLU {
 		 *   @see			Tensor<T>::Tensor(const MTensor);
 		 **/
 		template<typename T, class PassingMode = Passing::Automatic>
-		Tensor<T, PassingMode> getTensor(unsigned int index) const;
+		Tensor<T, PassingMode> getTensor(size_type index) const;
 
 		/**
 		 *	@brief		Get MArgument of type MTensor at position \p index and wrap it into generic MContainer wrapper
@@ -162,7 +164,7 @@ namespace LLU {
 		 * 	@return		MContainer wrapper of MTensor with given passing policy
 		 */
 		template<class PassingMode = Passing::Automatic>
-		GenericTensor<PassingMode> getGenericTensor(unsigned int index) const;
+		GenericTensor<PassingMode> getGenericTensor(size_type index) const;
 
 		/**
 		 *   @brief         Get MArgument of type MTensor at position \c index.
@@ -171,7 +173,7 @@ namespace LLU {
 		 *   @returns       MTensor of MArgument at position \c index
 		 *   @throws        ErrorName::MArgumentIndexError - if \c index is out-of-bounds
 		 **/
-		MTensor getMTensor(unsigned int index) const;
+		MTensor getMTensor(size_type index) const;
 
 		/**
 		 *   @brief         Get MArgument of type MImage at position \p index and wrap it into Image object
@@ -182,7 +184,7 @@ namespace LLU {
 		 *   @see			Image<T>::Image(const MImage ra);
 		 **/
 		template<typename T, class PassingMode = Passing::Automatic>
-		Image<T, PassingMode> getImage(unsigned int index) const;
+		Image<T, PassingMode> getImage(size_type index) const;
 
 		/**
 		 *	@brief		Get MArgument of type MImage at position \p index and wrap it into generic MContainer wrapper
@@ -191,7 +193,7 @@ namespace LLU {
 		 * 	@return		MContainer wrapper of MImage with given passing policy
 		 */
 		template<class PassingMode = Passing::Automatic>
-		GenericImage<PassingMode> getGenericImage(unsigned int index) const;
+		GenericImage<PassingMode> getGenericImage(size_type index) const;
 
 		/**
 		 *   @brief         Get MArgument of type MImage at position \c index.
@@ -200,7 +202,7 @@ namespace LLU {
 		 *   @returns       MImage of MArgument at position \c index
 		 *   @throws        ErrorName::MArgumentIndexError - if \c index is out-of-bounds
 		 **/
-		MImage getMImage(unsigned int index) const;
+		MImage getMImage(size_type index) const;
 
 		/**
 		 *   @brief         Get DataStore with all nodes of the same type from MArgument at position \c index
@@ -211,7 +213,7 @@ namespace LLU {
 		 *   @see			DataList<T>::DataList(DataStore ds);
 		 **/
 		template<MArgumentType T, class PassingMode = Passing::Automatic>
-		DataList<T, PassingMode> getDataList(unsigned int index) const;
+		DataList<T, PassingMode> getDataList(size_type index) const;
 
 		/**
 		 *	@brief		Get MArgument of type DataStore at position \p index and wrap it into generic MContainer wrapper
@@ -220,7 +222,7 @@ namespace LLU {
 		 * 	@return		MContainer wrapper of DataStore with given passing policy
 		 */
 		template<class PassingMode = Passing::Automatic>
-		GenericDataList<PassingMode> getGenericDataList(unsigned int index) const;
+		GenericDataList<PassingMode> getGenericDataList(size_type index) const;
 
 		/**
 		 *   @brief         Get MArgument of type DataStore at position \c index.
@@ -229,7 +231,7 @@ namespace LLU {
 		 *   @returns       DataStore of MArgument at position \c index
 		 *   @throws        ErrorName::MArgumentIndexError - if \c index is out-of-bounds
 		 **/
-		DataStore getDataStore(unsigned int index) const;
+		DataStore getDataStore(size_type index) const;
 
 		/**
 		 * @brief   Get a reference to an instance of Managed Expression that was sent from Wolfram Language as argument to a library function
@@ -240,7 +242,7 @@ namespace LLU {
 		 * @return  a reference to the Managed Expression
 		 */
 		template<class ManagedExpr, class DynamicType = ManagedExpr>
-		DynamicType& getManagedExpression(unsigned int index, ManagedExpressionStore<ManagedExpr>& store) const;
+		DynamicType& getManagedExpression(size_type index, ManagedExpressionStore<ManagedExpr>& store) const;
 
 		/**
 		 * @brief   Get a shared pointer to an instance of Managed Expression that was sent from Wolfram Language as argument to a library function
@@ -474,7 +476,7 @@ namespace LLU {
 		 *   @returns       MNumericArray type
 		 *   @throws        ErrorName::MArgumentIndexError - if \c index is out-of-bounds
 		 **/
-		numericarray_data_t getNumericArrayType(unsigned int index) const;
+		numericarray_data_t getNumericArrayType(size_type index) const;
 
 		/**
 		 *   @brief         Perform operation on NumericArray created from MNumericArray argument at position \p index in \c Args
@@ -487,7 +489,7 @@ namespace LLU {
 		 *   @warning		Operator::operator() has to be a template that takes a const NumericArray<T>& as first argument
 		 **/
 		template<class PassingMode, class Operator, class... OpArgs>
-		void operateOnNumericArray(unsigned int index, OpArgs&&... opArgs);
+		void operateOnNumericArray(size_type index, OpArgs&&... opArgs);
 
 		/**
 		 *   @brief         Perform operation on NumericArray created from MNumericArray argument at position \p index in \c Args
@@ -498,7 +500,7 @@ namespace LLU {
 		 *   @throws        ErrorName::MArgumentIndexError - if \c index is out-of-bounds
 		 **/
 		template<class PassingMode = Passing::Automatic, class Operator>
-		void operateOnNumericArray(unsigned int index, Operator&& op);
+		void operateOnNumericArray(size_type index, Operator&& op);
 
 		/**
 		 *   @brief         Get type of MTensor at position \c index in \c Args
@@ -506,7 +508,7 @@ namespace LLU {
 		 *   @returns       MTensor type
 		 *   @throws        ErrorName::MArgumentIndexError - if \c index is out-of-bounds
 		 **/
-		unsigned char getTensorType(unsigned int index) const;
+		unsigned char getTensorType(size_type index) const;
 
 		/**
 		 *   @brief         Perform operation on Tensor created from MTensor argument at position \p index in \c Args
@@ -520,7 +522,7 @@ namespace LLU {
 		 *   @warning		Operator::operator() has to be a template that takes a const Tensor<T>& as first argument
 		 **/
 		template<class PassingMode, class Operator, class... Args>
-		void operateOnTensor(unsigned int index, Args&&... opArgs);
+		void operateOnTensor(size_type index, Args&&... opArgs);
 
 		/**
 		 *   @brief         Perform operation on Tensor created from MTensor argument at position \p index in \c Args
@@ -532,7 +534,7 @@ namespace LLU {
 		 *   @throws        ErrorName::MArgumentTensorError - if MTensor argument has incorrect type
 		 **/
 		template<class PassingMode = Passing::Automatic, class Operator>
-		void operateOnTensor(unsigned int index, Operator&& op);
+		void operateOnTensor(size_type index, Operator&& op);
 
 		/**
 		 *   @brief         Get type of MImage at position \c index in \c Args
@@ -540,7 +542,7 @@ namespace LLU {
 		 *   @returns       MImage type
 		 *   @throws        ErrorName::MArgumentIndexError - if \c index is out-of-bounds
 		 **/
-		imagedata_t getImageType(unsigned int index) const;
+		imagedata_t getImageType(size_type index) const;
 
 		/**
 		 *   @brief         Perform operation on Image created from MImage argument at position \p index in \c Args
@@ -554,7 +556,7 @@ namespace LLU {
 		 *   @warning		Operator::operator() has to be a template that takes a const Image<T>& as first argument
 		 **/
 		template<class PassingMode, class Operator, class... Args>
-		void operateOnImage(unsigned int index, Args&&... opArgs);
+		void operateOnImage(size_type index, Args&&... opArgs);
 
 		/**
 		 *   @brief         Perform operation on Image created from MImage argument at position \p index in \c Args
@@ -566,7 +568,7 @@ namespace LLU {
 		 *   @throws        ErrorName::MArgumentImageError - if MImage argument has incorrect type
 		 **/
 		template<class PassingMode = Passing::Automatic, class Operator>
-		void operateOnImage(unsigned int index, Operator&& op);
+		void operateOnImage(size_type index, Operator&& op);
 
 	private:
 		// Efficient and memory-safe type for storing string arguments from LibraryLink
@@ -578,7 +580,7 @@ namespace LLU {
 		 *   @param[in]		index - position of desired MArgument in \c Args
 		 *   @throws		ErrorName::MArgumentIndexError - if \c index is out-of-bounds
 		 **/
-		MArgument getArgs(unsigned int index) const;
+		MArgument getArgs(size_type index) const;
 
 		/**
 		 * @brief Helper function to initialize string arguments vector
@@ -593,7 +595,7 @@ namespace LLU {
 		 *
 		 * @param index - position of desired MArgument in \c Args
 		 */
-		void acquireUTF8String(unsigned int index) const;
+		void acquireUTF8String(size_type index) const;
 
 		/// Here we store a string that was most recently returned to LibraryLink
 		/// [LLDocs]: https://reference.wolfram.com/language/LibraryLink/tutorial/InteractionWithMathematica.html#262826223 "LibraryLink docs"
@@ -622,7 +624,7 @@ namespace LLU {
 	};
 
 	template<typename T>
-	T MArgumentManager::getInteger(unsigned int index) const {
+	T MArgumentManager::getInteger(size_type index) const {
 		return static_cast<T>(MArgument_getInteger(getArgs(index)));
 	}
 
@@ -641,7 +643,7 @@ namespace LLU {
 	}
 
 	template<typename T, class PassingMode>
-	NumericArray<T, PassingMode> MArgumentManager::getNumericArray(unsigned int index) const {
+	NumericArray<T, PassingMode> MArgumentManager::getNumericArray(size_type index) const {
 		return NumericArray<T, PassingMode>(MArgument_getMNumericArray(getArgs(index)));
 	}
 
@@ -651,7 +653,7 @@ namespace LLU {
 	}
 
 	template<class PassingMode, class Operator, class... Args>
-	void MArgumentManager::operateOnNumericArray(unsigned int index, Args&&... opArgs) {
+	void MArgumentManager::operateOnNumericArray(size_type index, Args&&... opArgs) {
 		Operator op;
 		switch (getNumericArrayType(index)) {
 			case MNumericArray_Type_Bit8: op(this->getNumericArray<int8_t, PassingMode>(index), std::forward<Args>(opArgs)...); break;
@@ -673,7 +675,7 @@ namespace LLU {
 	}
 
 	template<class PassingMode, class Operator>
-	void MArgumentManager::operateOnNumericArray(unsigned int index, Operator&& op) {
+	void MArgumentManager::operateOnNumericArray(size_type index, Operator&& op) {
 		switch (getNumericArrayType(index)) {
 			case MNumericArray_Type_Bit8: op(this->getNumericArray<int8_t, PassingMode>(index)); break;
 			case MNumericArray_Type_UBit8: op(this->getNumericArray<uint8_t, PassingMode>(index)); break;
@@ -694,7 +696,7 @@ namespace LLU {
 	}
 
 	template<typename T, class PassingMode>
-	Tensor<T, PassingMode> MArgumentManager::getTensor(unsigned int index) const {
+	Tensor<T, PassingMode> MArgumentManager::getTensor(size_type index) const {
 		return Tensor<T, PassingMode>(MArgument_getMTensor(getArgs(index)));
 	}
 
@@ -704,7 +706,7 @@ namespace LLU {
 	}
 
 	template<class PassingMode, class Operator, class... Args>
-	void MArgumentManager::operateOnTensor(unsigned int index, Args&&... opArgs) {
+	void MArgumentManager::operateOnTensor(size_type index, Args&&... opArgs) {
 		Operator op;
 		switch (getTensorType(index)) {
 			case MType_Integer: op(this->getTensor<mint, PassingMode>(index), std::forward<Args>(opArgs)...); break;
@@ -717,7 +719,7 @@ namespace LLU {
 	}
 
 	template<class PassingMode, class Operator>
-	void MArgumentManager::operateOnTensor(unsigned int index, Operator&& op) {
+	void MArgumentManager::operateOnTensor(size_type index, Operator&& op) {
 		switch (getTensorType(index)) {
 			case MType_Integer: op(this->getTensor<mint, PassingMode>(index)); break;
 			case MType_Real: op(this->getTensor<double, PassingMode>(index)); break;
@@ -729,7 +731,7 @@ namespace LLU {
 	}
 
 	template<typename T, class PassingMode>
-	Image<T, PassingMode> MArgumentManager::getImage(unsigned int index) const {
+	Image<T, PassingMode> MArgumentManager::getImage(size_type index) const {
 		return Image<T, PassingMode>(MArgument_getMImage(getArgs(index)));
 	}
 
@@ -739,7 +741,7 @@ namespace LLU {
 	}
 
 	template<class PassingMode, class Operator, class... Args>
-	void MArgumentManager::operateOnImage(unsigned int index, Args&&... opArgs) {
+	void MArgumentManager::operateOnImage(size_type index, Args&&... opArgs) {
 		Operator op;
 		switch (getImageType(index)) {
 			case MImage_Type_Bit: op(this->getImage<int8_t, PassingMode>(index), std::forward<Args>(opArgs)...); break;
@@ -754,7 +756,7 @@ namespace LLU {
 	}
 
 	template<class PassingMode, class Operator>
-	void MArgumentManager::operateOnImage(unsigned int index, Operator&& op) {
+	void MArgumentManager::operateOnImage(size_type index, Operator&& op) {
 		switch (getImageType(index)) {
 			case MImage_Type_Bit: op(std::move(this->getImage<int8_t, PassingMode>(index))); break;
 			case MImage_Type_Bit8: op(this->getImage<uint8_t, PassingMode>(index)); break;
@@ -768,7 +770,7 @@ namespace LLU {
 	}
 
 	template<MArgumentType T, class PassingMode>
-	DataList<T, PassingMode> MArgumentManager::getDataList(unsigned int index) const {
+	DataList<T, PassingMode> MArgumentManager::getDataList(size_type index) const {
 		return DataList<T, PassingMode>(MArgument_getDataStore(getArgs(index)));
 	}
 
@@ -778,27 +780,27 @@ namespace LLU {
 	}
 
 	template<class PassingMode>
-	GenericNumericArray<PassingMode> MArgumentManager::getGenericNumericArray(unsigned int index) const {
+	GenericNumericArray<PassingMode> MArgumentManager::getGenericNumericArray(size_type index) const {
 		return getMNumericArray(index);
 	}
 
 	template<class PassingMode>
-	GenericTensor<PassingMode> MArgumentManager::getGenericTensor(unsigned int index) const {
+	GenericTensor<PassingMode> MArgumentManager::getGenericTensor(size_type index) const {
 		return getMTensor(index);
 	}
 
 	template<class PassingMode>
-	GenericImage<PassingMode> MArgumentManager::getGenericImage(unsigned int index) const {
+	GenericImage<PassingMode> MArgumentManager::getGenericImage(size_type index) const {
 		return getMImage(index);
 	}
 
 	template<class PassingMode>
-	GenericDataList<PassingMode> MArgumentManager::getGenericDataList(unsigned int index) const {
+	GenericDataList<PassingMode> MArgumentManager::getGenericDataList(size_type index) const {
 		return getDataStore(index);
 	}
 
 	template<class ManagedExpr, class DynamicType>
-	DynamicType& MArgumentManager::getManagedExpression(unsigned int index, ManagedExpressionStore<ManagedExpr>& store) const {
+	DynamicType& MArgumentManager::getManagedExpression(size_type index, ManagedExpressionStore<ManagedExpr>& store) const {
 		auto ptr = getManagedExpressionPtr<ManagedExpr, DynamicType>(index, store);
 		if (!ptr) {
 			ErrorManager::throwException(ErrorName::MLEDynamicTypeError);
@@ -807,7 +809,7 @@ namespace LLU {
 	}
 
 	template<class ManagedExpr, class DynamicType>
-	std::shared_ptr<DynamicType> MArgumentManager::getManagedExpressionPtr(unsigned int index, ManagedExpressionStore<ManagedExpr>& store) const {
+	std::shared_ptr<DynamicType> MArgumentManager::getManagedExpressionPtr(size_type index, ManagedExpressionStore<ManagedExpr>& store) const {
 		auto exprID = getInteger<mint>(index);
 		auto baseClassPtr = store.getInstancePointer(exprID);
 		return std::dynamic_pointer_cast<DynamicType>(baseClassPtr);

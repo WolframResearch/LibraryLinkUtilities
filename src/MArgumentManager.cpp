@@ -34,27 +34,27 @@ namespace LLU {
 
 	/* Other member functions */
 
-	bool MArgumentManager::getBoolean(unsigned int index) const {
+	bool MArgumentManager::getBoolean(size_type index) const {
 		return (MArgument_getBoolean(getArgs(index)) != False);
 	}
 
-	double MArgumentManager::getReal(unsigned int index) const {
+	double MArgumentManager::getReal(size_type index) const {
 		return static_cast<double>(MArgument_getReal(getArgs(index)));
 	}
 
-	void MArgumentManager::acquireUTF8String(unsigned int index) const {
+	void MArgumentManager::acquireUTF8String(size_type index) const {
 		if (!stringArgs.at(index)) {
 			char* strArg = MArgument_getUTF8String(getArgs(index));
 			stringArgs[index].reset(strArg);
 		}
 	}
 
-	char* MArgumentManager::getCString(unsigned int index) const {
+	char* MArgumentManager::getCString(size_type index) const {
 		acquireUTF8String(index);
 		return stringArgs[index].get();
 	}
 
-	std::string MArgumentManager::getString(unsigned int index) const {
+	std::string MArgumentManager::getString(size_type index) const {
 		acquireUTF8String(index);
 		return stringArgs[index].get();
 	}
@@ -86,7 +86,7 @@ namespace LLU {
 		MArgument_setInteger(res, result);
 	}
 
-	std::complex<double> MArgumentManager::getComplex(unsigned int index) const {
+	std::complex<double> MArgumentManager::getComplex(size_type index) const {
 		auto* mc = MArgument_getComplexAddress(getArgs(index));
 		return {mc->ri[0], mc->ri[1]};
 	}
@@ -96,19 +96,19 @@ namespace LLU {
 		MArgument_setComplex(res, mc);
 	}
 
-	MNumericArray MArgumentManager::getMNumericArray(unsigned int index) const {
+	MNumericArray MArgumentManager::getMNumericArray(size_type index) const {
 		return MArgument_getMNumericArray(getArgs(index));
 	}
 
-	MTensor MArgumentManager::getMTensor(unsigned int index) const {
+	MTensor MArgumentManager::getMTensor(size_type index) const {
 		return MArgument_getMTensor(getArgs(index));
 	}
 
-	MImage MArgumentManager::getMImage(unsigned int index) const {
+	MImage MArgumentManager::getMImage(size_type index) const {
 		return MArgument_getMImage(getArgs(index));
 	}
 
-	DataStore MArgumentManager::getDataStore(unsigned int index) const {
+	DataStore MArgumentManager::getDataStore(size_type index) const {
 		return MArgument_getDataStore(getArgs(index));
 	}
 
@@ -128,23 +128,23 @@ namespace LLU {
 		MArgument_setDataStore(res, ds);
 	}
 
-	numericarray_data_t MArgumentManager::getNumericArrayType(unsigned int index) const {
+	numericarray_data_t MArgumentManager::getNumericArrayType(size_type index) const {
 		MNumericArray tmp = MArgument_getMNumericArray(getArgs(index));
 		return LibraryData::NumericArrayAPI()->MNumericArray_getType(tmp);
 	}
 
-	unsigned char MArgumentManager::getTensorType(unsigned int index) const {
+	unsigned char MArgumentManager::getTensorType(size_type index) const {
 		MTensor tmp = MArgument_getMTensor(getArgs(index));
 		return static_cast<unsigned char>(LibraryData::API()->MTensor_getType(tmp));
 	}
 
-	imagedata_t MArgumentManager::getImageType(unsigned int index) const {
+	imagedata_t MArgumentManager::getImageType(size_type index) const {
 		MImage tmp = MArgument_getMImage(getArgs(index));
 		return LibraryData::ImageAPI()->MImage_getDataType(tmp);
 	}
 
-	MArgument MArgumentManager::getArgs(unsigned int index) const {
-		if (index >= argc)
+	MArgument MArgumentManager::getArgs(size_type index) const {
+		if (index >= static_cast<size_type >(argc))
 			ErrorManager::throwExceptionWithDebugInfo(ErrorName::MArgumentIndexError,
 													  "Index " + std::to_string(index) + " out-of-bound when accessing LibraryLink argument");
 		return args[index];
@@ -161,7 +161,7 @@ namespace LLU {
 		if (argc < 1) {
 			ErrorManager::throwExceptionWithDebugInfo(ErrorName::MArgumentIndexError, "Index too small when accessing ProgressMonitor.");
 		}
-		auto pmIndex = static_cast<unsigned>(argc - 1);	   // shared Tensor will be passed as the last argument
+		auto pmIndex = static_cast<size_type>(argc - 1);	   // shared Tensor will be passed as the last argument
 		auto sharedIndicator = getTensor<double, Passing::Shared>(pmIndex);
 		return ProgressMonitor {std::move(sharedIndicator), step};
 	}
