@@ -25,16 +25,26 @@ TestExecute[
 
 	`LLU`RegisterPacletErrors[lib, <||>];
 
+	(* Person expression takes 3 arguments: name, age and height e.g. Person["James", 20, 1.75],
+	 * so it decays to 3 LibraryLink arguments: String, Integer and Real. *)
+	`LLU`MArgumentType[Person, {String, Integer, Real}, (Sequence @@ #) &];
+	`LLU`MArgumentType[
+		Couple,
+		`LLU`MArgumentCustomType /@ {Person, Person},
+		(Sequence @@ (`LLU`MArgumentTransform[Person] /@ #)) &
+	];
+
 	$DescribePerson = `LLU`SafeLibraryFunction["DescribePerson", {String, Integer, Real}, String];
-	$DescribePerson2 = `LLU`SafeLibraryFunction["DescribePerson2", {String, Integer, Real}, String];
-	$ComparePeople = `LLU`SafeLibraryFunction["ComparePeople", {String, Integer, Real, String, Integer, Real}, String];
+	$DescribePerson2 = `LLU`SafeLibraryFunction["DescribePerson2", {Person}, String];
+	$ComparePeople = `LLU`SafeLibraryFunction["ComparePeople", {Couple}, String];
 
 	$RepeatString = `LLU`SafeLibraryFunction["LL_repeatString", {String, Integer}, String];
 	$DoNothing = `LLU`SafeLibraryFunction["LL_doNothing", {}, "Void"];
 
-	$GetPersonDescription = `LLU`SafeLibraryFunction["GetPersonDescription", {String, Integer, Real}, String];
+	$GetPersonDescription = `LLU`SafeLibraryFunction["GetPersonDescription", {Person}, String];
 
-	LLU`CustomArgument[Person] = {String, Integer, Real};
+	john = Person["John", 42, 1.83];
+	james = Person["James", 43, 1.73];
 ];
 
 
@@ -52,25 +62,70 @@ TestExecute[
 (* Basic tests *)
 
 Test[
-	$DescribePerson["John", 42, 1.83]
+	`LLU`argumentCategorizer[{`LLU`Managed[x], String, "UTF8String"}]
 	,
-	"John is 42 years old and 1.830000m tall."
+	<|1 -> `LLU`Managed[x]|>
 	,
 	TestID -> "MArgumentManagerTestSuite-20191221-I2C5M4"
 ];
 
 Test[
-	$DescribePerson2["James", 43, 1.83]
+	`LLU`argumentCategorizer[{String, Person, {_, _}, NotRegisteredSoNotSpecialArg, Couple}]
 	,
-	"James is 43 years old and 1.830000m tall."
+	<|2 -> Person, 5 -> Couple|>
+	,
+	TestID -> "MArgumentManagerTestSuite-20200309-T6P9I5"
+];
+
+Test[
+	args = `LLU`argumentCategorizer[{String, Person, {_, _}, Couple}];
+	{`LLU`argumentParser[args]["hello", john, Range[7], Couple[james, john]]}
+	,
+	{"hello", "John", 42, 1.83, {1, 2, 3, 4, 5, 6, 7}, "James", 43, 1.73, "John", 42, 1.83}
+	,
+	TestID -> "MArgumentManagerTestSuite-20200309-P1B5S5"
+];
+
+Test[
+	$DescribePerson["John", 42, 1.83]
+	,
+	"John is 42 years old and 1.830000m tall."
+	,
+	TestID -> "MArgumentManagerTestSuite-20200309-R1Y5I7"
+];
+
+TestMatch[
+	$DescribePerson[james] (* should fail because this function is not registered to handle Person expression *)
+	,
+	LibraryFunction[_?StringQ, "DescribePerson", {"UTF8String", Integer, Real}, "UTF8String"][Person["James", 43, 1.73]]
+	,
+	{Message[LibraryFunction::cfct, 1, 3]}
+	,
+	TestID -> "MArgumentManagerTestSuite-20200309-T0B1C4"
+];
+
+Test[
+	$DescribePerson2[james]
+	,
+	"James is 43 years old and 1.730000m tall."
 	,
 	TestID -> "MArgumentManagerTestSuite-20200307-Y7N4C9"
 ];
 
 Test[
-	$ComparePeople["John", 42, 1.73, "James", 43, 1.83]
+	$DescribePerson2["John", 42, 1.83]
+	(* this only works because MArgumentTransform[Person] does not validate if the input expression is actually a Person *)
 	,
-	"John is not taller than James."
+	"John is 42 years old and 1.830000m tall."
+	,
+	TestID -> "MArgumentManagerTestSuite-20200309-D8Q9D8"
+];
+
+Test[
+	c = Couple[john, Person["Alicia", 27, 1.74]];
+	$ComparePeople @ c
+	,
+	"John is taller than Alicia."
 	,
 	TestID -> "MArgumentManagerTestSuite-20200307-F6Z9C4"
 ];
@@ -92,7 +147,7 @@ Test[
 ];
 
 Test[
-	$GetPersonDescription["John", 42, 1.83]
+	$GetPersonDescription @ john
 	,
 	"John is 42 years old and 1.830000m tall."
 	,

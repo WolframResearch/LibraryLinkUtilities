@@ -116,7 +116,7 @@ SafeLibraryFunctionLoad[fname_?StringQ, fParams_, retType_, opts : OptionsPatter
 				If[Length @ specialArgs > 0,
 					(* If the function that we are registering takes special arguments, we need to compose it with argumentParser function,
 					 * which will parse input arguments before every call, so that they are accepted by LibraryLink.*)
-					LibraryFunctionLoad[$PacletLibrary, fname, normalizeArgTypes @ fParams, retType] @* argumentParser[specialArgs]
+					LibraryFunctionLoad[$PacletLibrary, fname, MArgumentCustomType /@ fParams, retType] @* argumentParser[specialArgs]
 					,
 					LibraryFunctionLoad[$PacletLibrary, fname, fParams, retType]
 				]
@@ -145,29 +145,37 @@ specialArgQ[_] := False;
 argumentCategorizer[argTypes_List] := Select[AssociationThread[Range[Length[#]], #]& @ argTypes, specialArgQ];
 argumentCategorizer[LinkObject] = {};
 
-(* Replace special argument types with corresponding regular types that are be accepted by LibraryLink *)
-normalizeArgTypes[argTypes_List] := Replace[argTypes, Managed[h_] :> Integer, 1];
 
 (* Parse ManagedExpression before it is passed to a LibraryFunction. First argument is expected ManagedExpression type and the second is actual instance
  * of a MangedExpression. If the instance type does not match the expected type a paclet Failure will be thrown.
  *)
-parseManaged[Managed[expectedHead_], expectedHead_[id_Integer]] :=
-    If[ManagedLibraryExpressionQ[expectedHead[id]],
-	    id
-	    ,
-	    Throw @ CreatePacletFailure["InvalidManagedExpressionID", "MessageParameters" -> <|"expr" -> expectedHead[id]|>];
-    ];
-parseManaged[Managed[expectedHead_], differentHead_[id_Integer]] :=
-	Throw @ CreatePacletFailure["UnexpectedManagedExpression", "MessageParameters" -> <|"expected" -> expectedHead, "actual" -> differentHead[id]|>];
-parseManaged[_, arg_] := arg;
+MArgumentTransform[Managed[expectedHead_]] := Replace[{
+	expectedHead[id_Integer] :> If[ManagedLibraryExpressionQ[expectedHead[id]],
+		id
+		,
+
+		Throw @ CreatePacletFailure["InvalidManagedExpressionID", "MessageParameters" -> <|"expr" -> expectedHead[id]|>]
+	]
+	,
+	e_ :> Throw @ CreatePacletFailure["UnexpectedManagedExpression", "MessageParameters" -> <|"expected" -> expectedHead, "actual" -> e|>]
+}];
+MArgumentTransform[_] := Identity;
 
 (* Parse special arguments before they are passed to a LibraryFunction. Currently the only implemented type of special arguments are ManagedExpressions, so
  * just call parseManaged directly but in the future this implementation might need to be generalised.
  *
  * NOTE: This function is invoked before every call to a LibraryFunction so efficiency is top concern here!
  *)
-argumentParser[specialArgs_?AssociationQ] := Sequence @@ MapIndexed[parseManaged[specialArgs[First @ #2], #1]&, {##}]&;
+argumentParser[specialArgs_?AssociationQ] := Sequence @@ MapIndexed[MArgumentTransform[specialArgs[First @ #2]][#1] &, {##}]&;
 
+MArgumentCustomType[_Managed] := Integer;
+MArgumentCustomType[t_] := t;
+
+MArgumentType[pattern_, actualType_, transformation_] := (
+	specialArgQ[pattern] := True;
+	MArgumentCustomType[pattern] := Sequence @@ actualType;
+	MArgumentTransform[pattern] := transformation;
+);
 
 holdSet[Hold[sym_], rhs_] := sym = rhs;
 
