@@ -14,6 +14,7 @@
 #include <limits>
 #include <memory>
 #include <string>
+#include <type_traits>
 #include <utility>
 #include <vector>
 
@@ -253,7 +254,27 @@ namespace LLU {
 		 * @return  a shared pointer to the Managed Expression
 		 */
 		template<class ManagedExpr, class DynamicType = ManagedExpr>
-		std::shared_ptr<DynamicType> getManagedExpressionPtr(unsigned int index, ManagedExpressionStore<ManagedExpr>& store) const;
+		std::shared_ptr<DynamicType> getManagedExpressionPtr(size_type index, ManagedExpressionStore<ManagedExpr>& store) const;
+
+		template<typename T, std::enable_if_t<std::is_integral<T>::value, int> = 0>
+		T get(size_type index) const {
+			return getInteger<T>(index);
+		}
+
+		template<typename T, std::enable_if_t<!std::is_integral<T>::value, int> = 0>
+		T get(size_type index) const {
+			return MArgGetter<T>::get(*this, index);
+		}
+
+		template<typename... ArgTypes>
+		std::tuple<ArgTypes...> get() const {
+			return MArgPackGetter<ArgTypes...>::template getImpl(*this, std::index_sequence_for<ArgTypes...>{});
+		}
+
+		template<typename... ArgTypes>
+		std::tuple<ArgTypes...> get(std::array<size_type, sizeof...(ArgTypes)> indices) const {
+			return MArgPackGetter<ArgTypes...>::template getImpl(*this, indices, std::index_sequence_for<ArgTypes...>{});
+		}
 
 		/************************************ MArgument "setters" ************************************/
 
@@ -575,6 +596,32 @@ namespace LLU {
 		using LLStringPtr = std::unique_ptr<char[], decltype(st_WolframLibraryData::UTF8String_disown)>;
 
 	private:
+		template<typename... ArgTypes>
+		struct MArgPackGetter {
+			template<size_type... Indices>
+			static std::tuple<ArgTypes...> getImpl(const MArgumentManager& mngr, std::index_sequence<Indices...>) {
+				if (sizeof...(ArgTypes) > static_cast<size_type>(mngr.argc)) {
+					ErrorManager::throwException(ErrorName::MArgumentIndexError);
+				}
+				return {mngr.get<ArgTypes>(Indices)...};
+			}
+			template<size_type... Indices>
+			static std::tuple<ArgTypes...> getImpl(const MArgumentManager& mngr, std::array<size_type, sizeof...(ArgTypes)> inds, std::index_sequence<Indices...>) {
+				if (sizeof...(ArgTypes) > static_cast<size_type>(mngr.argc)) {
+					ErrorManager::throwException(ErrorName::MArgumentIndexError);
+				}
+				return {mngr.get<ArgTypes>(inds[Indices])...};
+			}
+		};
+
+		template<typename T>
+		struct MArgGetter {
+			static T get(const MArgumentManager&, size_type) {
+				static_assert(dependent_false_v<T>, "Trying to use unspecialized MArgumentManager::get");
+				return {};
+			}
+		};
+
 		/**
 		 *   @brief			Get MArgument at position \c index
 		 *   @param[in]		index - position of desired MArgument in \c Args
@@ -627,6 +674,41 @@ namespace LLU {
 	T MArgumentManager::getInteger(size_type index) const {
 		return static_cast<T>(MArgument_getInteger(getArgs(index)));
 	}
+
+#define MARGUMENTMANAGER_GENERATE_GET_SPECIALIZATION(type, getFunction) \
+	template<>\
+	inline type MArgumentManager::get<type>(size_type index) const {\
+		return getFunction(index);\
+	}
+
+	MARGUMENTMANAGER_GENERATE_GET_SPECIALIZATION(bool, getBoolean)
+	MARGUMENTMANAGER_GENERATE_GET_SPECIALIZATION(double, getReal)
+	MARGUMENTMANAGER_GENERATE_GET_SPECIALIZATION(std::string, getString)
+	MARGUMENTMANAGER_GENERATE_GET_SPECIALIZATION(const char*, getCString)
+	MARGUMENTMANAGER_GENERATE_GET_SPECIALIZATION(std::complex<double>, getComplex)
+
+#undef MARGUMENTMANAGER_GENERATE_GET_SPECIALIZATION
+
+#define MARGUMENTMANAGER_GENERATE_GET_SPECIALIZATION_FOR_CONTAINER(Container, tmplParameterCategory) \
+	template<tmplParameterCategory T, class PassingMode>\
+	struct MArgumentManager::MArgGetter<Container<T, PassingMode>> {\
+		static Container<T, PassingMode> get(const MArgumentManager& mngr, size_type index) {\
+			return mngr.get##Container<T, PassingMode>(index);\
+		}\
+	};\
+	template<class PassingMode>\
+	struct MArgumentManager::MArgGetter<Generic##Container<PassingMode>> {\
+		static Generic##Container<PassingMode> get(const MArgumentManager& mngr, size_type index) {\
+			return mngr.getGeneric##Container<PassingMode>(index);\
+		}\
+	};
+
+	MARGUMENTMANAGER_GENERATE_GET_SPECIALIZATION_FOR_CONTAINER(NumericArray, typename)
+	MARGUMENTMANAGER_GENERATE_GET_SPECIALIZATION_FOR_CONTAINER(Tensor, typename)
+	MARGUMENTMANAGER_GENERATE_GET_SPECIALIZATION_FOR_CONTAINER(Image, typename)
+	MARGUMENTMANAGER_GENERATE_GET_SPECIALIZATION_FOR_CONTAINER(DataList, MArgumentType)
+
+#undef MARGUMENTMANAGER_GENERATE_GET_SPECIALIZATION_FOR_CONTAINER
 
 	template<typename T>
 	bool MArgumentManager::setMintAndCheck(T result) const noexcept {
