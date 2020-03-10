@@ -9,7 +9,7 @@ message(STATUS "Creating test targets.")
 
 # Unit tests are split into independent modules. You can run them separately, for example:
 #
-#   ctest -R MathLink
+#   ctest -R WSTP
 #
 # or all at once:
 #
@@ -23,7 +23,7 @@ set(TEST_MODULES
         "ErrorReporting"
         "Image"
         "ManagedExpressions"
-        "MathLink"
+        "WSTP"
         "NumericArray"
         "GenericContainers"
         "Scalar"

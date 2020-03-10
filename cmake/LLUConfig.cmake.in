@@ -8,7 +8,7 @@ include(CMakeFindDependencyMacro)
 list(APPEND CMAKE_MODULE_PATH ${LLU_CMAKE_DIR})
 
 find_dependency(WolframLibrary)
-find_dependency(MathLink)
+find_dependency(WSTP)
 
 if(NOT TARGET LLU::LLU)
 	include("${LLU_CMAKE_DIR}/LLUTargets.cmake")

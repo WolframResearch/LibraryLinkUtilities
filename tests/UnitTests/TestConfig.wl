@@ -30,7 +30,8 @@ options := {
 		],
 	"ShellOutputFunction" -> Print,
 	"ShellCommandFunction" -> Print,
-	"Language" -> "C++"
+	"Language" -> "C++",
+	"TransferProtocolLibrary" -> "WSTP"
 };
 
 (* If dynamic version of LLU was built, we want to load it to Mathematica before test libs are loaded *)

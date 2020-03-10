@@ -5,9 +5,9 @@ WSTP support
 LibraryLink allows a LinkObject to be passed as an argument which may then exchange data between your library and the Kernel using
 Wolfram Symbolic Transfer Protocol (**WSTP**, also known as **MathLink**).
 The original WSTP API is in old C style with error codes, macros, manual memory management, etc.
-LLU provides a wrapper for the LinkObject called `MLStream`.
+LLU provides a wrapper for the LinkObject called `WSStream`.
 
-`MLStream` is actually a class template parameterized by the default encoding to be used for strings, but for the sake of clarity,
+`WSStream` is actually a class template parameterized by the default encoding to be used for strings, but for the sake of clarity,
 the template parameter is skipped in the remainder of this text.
 
 
@@ -28,7 +28,7 @@ Sample debug info looks like this::
 
 	Error code reported by MathLink: 48
 	"Unable to convert from given character encoding to MathLink encoding"
-	Additional debug info: MLPutUTF8String
+	Additional debug info: WSPutUTF8String
 
 
 Memory cleanup
@@ -39,7 +39,7 @@ WSRelease* no longer needs to be called on the data received from WSTP. The LLU 
 Automated handling of common data types
 --------------------------------------------------
 
-Some sophisticated types can be sent to Mathematica directly via an MLStream class. For example nested maps:
+Some sophisticated types can be sent to Mathematica directly via an WSStream class. For example nested maps:
 
 .. code-block:: cpp
 
@@ -49,7 +49,7 @@ Some sophisticated types can be sent to Mathematica directly via an MLStream cla
 Just write `ms << myNestedMap` and a nested Association will be returned. It works in the other direction too.
 Obviously, for the above to work, key and value type in the map must be supported by WSTP.
 
-If you have any particular type that you think should be directly supported by MLStream, please let me know.
+If you have any particular type that you think should be directly supported by WSStream, please let me know.
 
 User-defined classes
 ----------------------------------------
@@ -71,123 +71,123 @@ It is enough to overload `operator<<` like this:
    :linenos:
    :dedent: 1
 
-	MLStream& operator<<(MLStream& ms, const Color& c) {
-	    return ms << ML::Function("RGBColor", 3) << c.red << c.green << c.blue;
+	WSStream& operator<<(WSStream& ms, const Color& c) {
+	    return ms << WS::Function("RGBColor", 3) << c.red << c.green << c.blue;
 	}
 
 
-Objects of class `Color` can now be sent directly via MLStream.
+Objects of class `Color` can now be sent directly via WSStream.
 
 
 Example
 =============
 
-Let's compare the same piece of code written in plain LibraryLink with one written with LLU and MLStream. Here is the plain LibraryLink code:
+Let's compare the same piece of code written in plain LibraryLink with one written with LLU and WSStream. Here is the plain LibraryLink code:
 
 .. code-block:: cpp
    :dedent: 1
 
-	if (!MLNewPacket(mlp)) {
+	if (!WSNewPacket(mlp)) {
 	    wsErr = -1;
 	    goto cleanup;
 	}
-	if (!MLPutFunction(mlp, "List", nframes)) {
+	if (!WSPutFunction(mlp, "List", nframes)) {
 	    wsErr = -1;
 	    goto cleanup;
 	}
 	for (auto& f : extractedFrames) {
-	    if (!MLPutFunction(mlp, "List", 7)) {
+	    if (!WSPutFunction(mlp, "List", 7)) {
 	        wsErr = -1;
 	        goto cleanup;
 	    }
-	    if (!MLPutFunction(mlp, "Rule", 2)) {
+	    if (!WSPutFunction(mlp, "Rule", 2)) {
 	        wsErr = -1;
 	        goto cleanup;
 	    }
-	    if (!MLPutString(mlp, "ImageSize")) {
+	    if (!WSPutString(mlp, "ImageSize")) {
 	        wsErr = -1;
 	        goto cleanup;
 	    }
-	    if (!MLPutFunction(mlp, "List", 2)) {
+	    if (!WSPutFunction(mlp, "List", 2)) {
 	        wsErr = -1;
 	        goto cleanup;
 	    }
-	    if (!MLPutInteger64(mlp, f->width)) {
+	    if (!WSPutInteger64(mlp, f->width)) {
 	        wsErr = -1;
 	        goto cleanup;
 	    }
-	    if (!MLPutInteger64(mlp, f->height)) {
-	        wsErr = -1;
-	        goto cleanup;
-	    }
-	    // ...
-	    if (!MLPutFunction(mlp, "Rule", 2)) {
-	        wsErr = -1;
-	        goto cleanup;
-	    }
-	    if (!MLPutString(mlp, "ImageOffset")) {
-	        wsErr = -1;
-	        goto cleanup;
-	    }
-	    if (!MLPutFunction(mlp, "List", 2)) {
-	        wsErr = -1;
-	        goto cleanup;
-	    }
-	    if (!MLPutInteger64(mlp, f->left)) {
-	        wsErr = -1;
-	        goto cleanup;
-	    }
-	    if (!MLPutInteger64(mlp, f->top)) {
+	    if (!WSPutInteger64(mlp, f->height)) {
 	        wsErr = -1;
 	        goto cleanup;
 	    }
 	    // ...
-	    if (!MLPutFunction(mlp, "Rule", 2)) {
+	    if (!WSPutFunction(mlp, "Rule", 2)) {
 	        wsErr = -1;
 	        goto cleanup;
 	    }
-	    if (!MLPutString(mlp, "UserInputFlag")) {
+	    if (!WSPutString(mlp, "ImageOffset")) {
 	        wsErr = -1;
 	        goto cleanup;
 	    }
-	    if (!MLPutSymbol(mlp, f->userInputFlag == true ? "True" : "False")) {
+	    if (!WSPutFunction(mlp, "List", 2)) {
+	        wsErr = -1;
+	        goto cleanup;
+	    }
+	    if (!WSPutInteger64(mlp, f->left)) {
+	        wsErr = -1;
+	        goto cleanup;
+	    }
+	    if (!WSPutInteger64(mlp, f->top)) {
+	        wsErr = -1;
+	        goto cleanup;
+	    }
+	    // ...
+	    if (!WSPutFunction(mlp, "Rule", 2)) {
+	        wsErr = -1;
+	        goto cleanup;
+	    }
+	    if (!WSPutString(mlp, "UserInputFlag")) {
+	        wsErr = -1;
+	        goto cleanup;
+	    }
+	    if (!WSPutSymbol(mlp, f->userInputFlag == true ? "True" : "False")) {
 	        wsErr = -1;
 	        goto cleanup;
 	    }
 	}
-	if (!MLEndPacket(mlp)) {
+	if (!WSEndPacket(mlp)) {
 		/* unable to send the end-of-packet sequence to mlp */
 	}
-	if (!MLFlush(mlp)){
+	if (!WSFlush(mlp)){
 		/* unable to flush any buffered output data in mlp */
 	}
 
-and now the same code using MLStream:
+and now the same code using WSStream:
 
 .. code-block:: cpp
    :dedent: 1
 
-	MLStream ms(mlp);
+	WSStream ms(mlp);
 
-	ms << ML::NewPacket;
-	ms << ML::List(nframes);
+	ms << WS::NewPacket;
+	ms << WS::List(nframes);
 
 	for (auto& f : extractedFrames) {
-	    ms << ML::List(7)
-	        << ML::Rule
+	    ms << WS::List(7)
+	        << WS::Rule
 	            << "ImageSize"
-	            << ML::List(2) << f->width << f->height
+	            << WS::List(2) << f->width << f->height
 	        // ...
-	        << ML::Rule
+	        << WS::Rule
 	            << "ImageOffset"
-	            << ML::List(2) << f->left << f->top
+	            << WS::List(2) << f->left << f->top
 	        // ...
-	        << ML::Rule
+	        << WS::Rule
 	            << "UserInputFlag"
 	            << f->userInputFlag
 	}
 
-	ms << ML::EndPacket << ML::Flush;
+	ms << WS::EndPacket << WS::Flush;
 
 
 Expressions of unknown length
@@ -199,29 +199,29 @@ for example when an unknown number of contents are being read from a file.
 As a workaround, one can create a temporary loopback link, accumulate all the arguments there (without the head),
 count the arguments, and then send everything to the "main" link as usual.
 
-The same strategy has been incorporated into MLStream so that developers do not have to implement it. Now you can send a `List` like this:
+The same strategy has been incorporated into WSStream so that developers do not have to implement it. Now you can send a `List` like this:
 
 .. code-block:: cpp
    :linenos:
    :dedent: 1
 
-	MLStream ms(mlp);
+	WSStream ms(mlp);
 
-	ms << ML::BeginExpr("List");
+	ms << WS::BeginExpr("List");
 	while (dataFromFile != EOF) {
-		// process data from file and send to MLStream
+		// process data from file and send to WSStream
 	}
-	ms << ML::EndExpr();
+	ms << WS::EndExpr();
 
 
 .. warning::
 
 	This feature should only be used if necessary since it requires a temporary link and makes extra copies
-	of data. Simple benchmarks showed a ~2x slowdown compared to the usual `MLPutFunction`.
+	of data. Simple benchmarks showed a ~2x slowdown compared to the usual `WSPutFunction`.
 
 
 API reference
 ================
 
-.. doxygenclass:: LLU::MLStream
+.. doxygenclass:: LLU::WSStream
    :members:
