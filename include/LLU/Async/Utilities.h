@@ -86,10 +86,10 @@ namespace LLU::Async {
 				pausedWorkers.wait(lck, [&]() -> bool { return !pausedQ; });
 			}
 		}
-		void pause() {
+		void pause() noexcept {
 			pausedQ = true;
 		}
-		void resume() {
+		void resume() noexcept {
 			pausedQ = false;
 			pausedWorkers.notify_all();
 		}
