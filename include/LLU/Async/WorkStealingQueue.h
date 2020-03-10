@@ -17,10 +17,6 @@ namespace LLU {
 		mutable std::mutex theMutex;
 
 	public:
-		WorkStealingQueue() = default;
-		WorkStealingQueue(const WorkStealingQueue& other) = delete;
-		WorkStealingQueue& operator=(const WorkStealingQueue& other) = delete;
-
 		void push(DataType data) {
 			std::lock_guard<std::mutex> lock(theMutex);
 			theQueue.push_front(std::move(data));
