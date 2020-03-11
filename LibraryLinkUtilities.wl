@@ -99,7 +99,7 @@ SafeLibraryLoad[lib_] :=
 			,
 			Throw @ CreatePacletFailure["LibraryLoadFailure", "MessageParameters" -> <|"LibraryName" -> lib|>];
 		]
-	]
+	];
 
 Options[SafeLibraryFunctionLoad] = {
 	"Optional" -> False
@@ -156,6 +156,8 @@ MArgumentTransform[Managed[expectedHead_]] := Replace[{
 
 		Throw @ CreatePacletFailure["InvalidManagedExpressionID", "MessageParameters" -> <|"expr" -> expectedHead[id]|>]
 	]
+	,
+	id_Integer :> id (* Passing bare IDs of Managed Expressions is supported but may be more error prone than passing proper MLEs *)
 	,
 	e_ :> Throw @ CreatePacletFailure["UnexpectedManagedExpression", "MessageParameters" -> <|"expected" -> expectedHead, "actual" -> e|>]
 }];
@@ -247,10 +249,10 @@ Block[{cErrorCodes, max},
 			]
 		];
 	];
-]
+];
 
 RegisterPacletErrors[___] :=
-	Throw @ CreatePacletFailure["RegisterFailure"]
+	Throw @ CreatePacletFailure["RegisterFailure"];
 
 
 (* ::SubSection:: *)
@@ -290,7 +292,7 @@ Block[{msgParam, param, errorCode, msgTemplate, errorType},
 			"Parameters" -> param
 		|>
 	]
-]
+];
 
 (* We need a symbol that will store values for TemplateSlots in the most recently thrown exception. Exceptions are thrown in C++ and slots values provided
  * in ErrorManager::throwException are transferred in a List via WSTP and assigned to this symbol.
@@ -342,7 +344,7 @@ With[{result = Quiet[f, {
 		, (* else *)
 		result
 	]
-]
+];
 
 CatchAndThrowLibraryFunctionError[f_] :=
 With[{result = Quiet[f, {
@@ -360,7 +362,7 @@ With[{result = Quiet[f, {
 		, (* else *)
 		result
 	]
-]
+];
 
 
 (* ::SubSection:: *)
