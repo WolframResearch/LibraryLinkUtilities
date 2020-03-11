@@ -70,7 +70,7 @@ namespace LLU {
 		 * @brief   Check if the queue is empty.
 		 * @return  True iff the queue is empty i.e. has no data to be popped.
 		 */
-		bool empty();
+		[[nodiscard]] bool empty() const;
 
 	private:
 		struct Node {
@@ -78,13 +78,13 @@ namespace LLU {
 			std::unique_ptr<Node> next;
 		};
 
-		std::mutex head_mutex;
+		mutable std::mutex head_mutex;
 		std::unique_ptr<Node> head;
-		std::mutex tail_mutex;
+		mutable std::mutex tail_mutex;
 		Node* tail;
 		std::condition_variable data_cond;
 
-		Node* getTail() {
+		const Node* getTail() const {
 			std::lock_guard<std::mutex> tail_lock(tail_mutex);
 			return tail;
 		}
@@ -168,7 +168,7 @@ namespace LLU {
 	}
 
 	template<typename T>
-	bool ThreadsafeQueue<T>::empty() {
+	bool ThreadsafeQueue<T>::empty() const {
 		std::lock_guard<std::mutex> head_lock(head_mutex);
 		return (head.get() == getTail());
 	}
