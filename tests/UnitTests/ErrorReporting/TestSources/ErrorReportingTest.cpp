@@ -8,7 +8,7 @@
 #include <string>
 #include <vector>
 
-#include "mathlink.h"
+#include "wstp.h"
 
 #include <LLU/LLU.h>
 #include <LLU/LibraryLinkFunctionMacro.h>
@@ -32,7 +32,7 @@ EXTERN_C DLLEXPORT int ReadData(WolframLibraryData, mint Argc, MArgument* Args, 
 	try {
 		LLU::MArgumentManager mngr(Argc, Args, Res);
 		auto fileName = mngr.getString(0);
-		auto fileNameLen = static_cast<mlint64>(fileName.length());
+		auto fileNameLen = static_cast<wsint64>(fileName.length());
 		ErrorManager::throwException("DataFileError", fileName, fileNameLen, "data type is not supported");
 	} catch (const LibraryLinkError& e) {
 		err = e.which();
@@ -47,7 +47,7 @@ LIBRARY_LINK_FUNCTION(ReadDataLocalWLD) {
 	try {
 		LLU::MArgumentManager mngr(Argc, Args, Res);
 		auto fileName = mngr.getString(0);
-		auto fileNameLen = static_cast<mlint64>(fileName.length());
+		auto fileNameLen = static_cast<wsint64>(fileName.length());
 		ErrorManager::throwException(libData, "DataFileError", fileName, fileNameLen, "data type is not supported");
 	} catch (const LibraryLinkError& e) {
 		err = e.which();
@@ -161,7 +161,7 @@ LIBRARY_LINK_FUNCTION(ReadDataWithLoggingError) {
 		if (fileName.find(':') != std::string::npos) {
 			THROW_LOGGING_ERROR("DataFileError", fileName, 0, R"(file name contains a possibly problematic character ":")");
 		}
-		auto fileNameLen = static_cast<mlint64>(fileName.length());
+		auto fileNameLen = static_cast<wsint64>(fileName.length());
 		if (fileNameLen > 16) {
 			THROW_LOGGING_ERROR("DataFileError", fileName, fileNameLen, "file name is too long");
 		}
@@ -213,7 +213,7 @@ LIBRARY_LINK_FUNCTION(ReadDataDelayedParametersTransfer) {
 	try {
 		LLU::MArgumentManager mngr(Argc, Args, Res);
 		auto fileName = mngr.getString(0);
-		auto fileNameLen = static_cast<mlint64>(fileName.length());
+		auto fileNameLen = static_cast<wsint64>(fileName.length());
 		ErrorManager::throwException("DataFileError", fileName, fileNameLen, "data type is not supported");
 	} catch (const LibraryLinkError& e) {
 		err = e.which();

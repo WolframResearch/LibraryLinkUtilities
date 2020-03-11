@@ -9,7 +9,7 @@
 
 #include "LLU/LLU.h"
 #include "LLU/LibraryLinkFunctionMacro.h"
-#include "LLU/ML/MLStream.hpp"
+#include "LLU/WSTP/WSStream.hpp"
 
 namespace LLU {
 
@@ -27,10 +27,10 @@ namespace LLU {
 		return exceptionDetailsSymbolContext + exceptionDetailsSymbol;
 	}
 
-	MLINK LibraryLinkError::openLoopback(MLENV env) {
-		int err = MLEUNKNOWN;
-		auto link = MLLoopbackOpen(env, &err);
-		if (err != MLEOK) {
+	WSLINK LibraryLinkError::openLoopback(WSENV env) {
+		int err = WSEUNKNOWN;
+		auto link = WSLoopbackOpen(env, &err);
+		if (err != WSEOK) {
 			link = nullptr;
 		}
 		return link;
@@ -39,37 +39,37 @@ namespace LLU {
 	LibraryLinkError::LibraryLinkError(const LibraryLinkError& e)
 		: std::runtime_error(e), errorId(e.errorId), type(e.type), messageTemplate(e.messageTemplate), debugInfo(e.debugInfo) {
 		if (e.messageParams) {
-			messageParams = openLoopback(MLLinkEnvironment(e.messageParams));
+			messageParams = openLoopback(WSLinkEnvironment(e.messageParams));
 			if (!messageParams) {
 				return;
 			}
-			auto mark = MLCreateMark(e.messageParams);
-			MLTransferToEndOfLoopbackLink(messageParams, e.messageParams);
-			MLSeekMark(e.messageParams, mark, 0);
-			MLDestroyMark(e.messageParams, mark);
+			auto mark = WSCreateMark(e.messageParams);
+			WSTransferToEndOfLoopbackLink(messageParams, e.messageParams);
+			WSSeekMark(e.messageParams, mark, 0);
+			WSDestroyMark(e.messageParams, mark);
 		}
 	}
 
 	LibraryLinkError::~LibraryLinkError() {
 		if (messageParams) {
-			MLClose(messageParams);
+			WSClose(messageParams);
 		}
 	}
 
 	auto LibraryLinkError::sendParameters(WolframLibraryData libData, const std::string& WLSymbol) const noexcept -> IdType {
 		try {
 			if (libData) {
-				MLStream<ML::Encoding::UTF8> mls {libData->getWSLINK(libData)};
-				mls << ML::Function("EvaluatePacket", 1);
-				mls << ML::Function("Set", 2);
-				mls << ML::Symbol(WLSymbol);
-				if (!MLTransferToEndOfLoopbackLink(mls.get(), messageParams)) {
+				WSStream<WS::Encoding::UTF8> mls {libData->getWSLINK(libData)};
+				mls << WS::Function("EvaluatePacket", 1);
+				mls << WS::Function("Set", 2);
+				mls << WS::Symbol(WLSymbol);
+				if (!WSTransferToEndOfLoopbackLink(mls.get(), messageParams)) {
 					return ErrorCode::FunctionError;
 				}
 				libData->processWSLINK(mls.get());
-				auto pkt = MLNextPacket(mls.get());
+				auto pkt = WSNextPacket(mls.get());
 				if (pkt == RETURNPKT) {
-					mls << ML::NewPacket;
+					mls << WS::NewPacket;
 				}
 			}
 		} catch (const LibraryLinkError& e) {
