@@ -113,6 +113,9 @@ if(NOT TARGET LLU)
 			PRIVATE "$<$<CONFIG:Debug>:/Zi>"
 			PRIVATE "$<$<NOT:$<CONFIG:Debug>>:/O2>"
 		)
+		target_compile_definitions(LLU
+			PRIVATE _SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING
+		)
 	else()
 		target_compile_options(LLU
 			PRIVATE "-Wall"
