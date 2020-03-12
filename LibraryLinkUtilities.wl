@@ -110,15 +110,22 @@ SafeLibraryFunctionLoad[fname_?StringQ, fParams_, retType_, opts : OptionsPatter
 		Check[
 			(* There are 2 categories of function arguments:
 			 * - regular - supported by LibraryLink (String, Integer, NumericArray, etc.)
-			 * - special - extensions added by LLU that need extra parsing before they can be passed to LibraryLink, for example Managed Expressions
+			 * - special - extensions added by LLU or paclet developers that need extra parsing before they can be passed to LibraryLink,
+			 *              for example Managed Expressions
 			 *)
-			Block[{specialArgs = argumentCategorizer[fParams]},
-				If[Length @ specialArgs > 0,
+			Block[{specialArgs = argumentCategorizer[fParams], specialRetQ = CustomMResultTypeQ[retType], actualRetType, libFunction},
+				actualRetType = If[specialRetQ, MResultCustomType[retType], retType];
+				libFunction = If[Length @ specialArgs > 0,
 					(* If the function that we are registering takes special arguments, we need to compose it with argumentParser function,
 					 * which will parse input arguments before every call, so that they are accepted by LibraryLink.*)
-					LibraryFunctionLoad[$PacletLibrary, fname, MArgumentCustomType /@ fParams, retType] @* argumentParser[specialArgs]
+					LibraryFunctionLoad[$PacletLibrary, fname, MArgumentCustomType /@ fParams, actualRetType] @* argumentParser[specialArgs]
 					,
-					LibraryFunctionLoad[$PacletLibrary, fname, fParams, retType]
+					LibraryFunctionLoad[$PacletLibrary, fname, fParams, actualRetType]
+				];
+				If[specialRetQ,
+					MResultTransform[retType] @* libFunction
+					,
+					libFunction
 				]
 			]
 			,
@@ -138,11 +145,13 @@ Options[SafeLibraryFunction] = {
 (* Decide whether given input argument to a LibraryFunction needs special treatment.
  * Currently only Managed Expressions do but this may change in the future.
  *)
-specialArgQ[a_Managed] := True;
-specialArgQ[_] := False;
+CustomMArgumentTypeQ[a_Managed] := True;
+CustomMArgumentTypeQ[_] := False;
+
+CustomMResultTypeQ[_] := False;
 
 (* Simple function expected to select all "special" arguments from a list of argument types for a LibraryFunction. *)
-argumentCategorizer[argTypes_List] := Select[AssociationThread[Range[Length[#]], #]& @ argTypes, specialArgQ];
+argumentCategorizer[argTypes_List] := Select[AssociationThread[Range[Length[#]], #]& @ argTypes, CustomMArgumentTypeQ];
 argumentCategorizer[LinkObject] = {};
 
 
@@ -173,10 +182,19 @@ argumentParser[specialArgs_?AssociationQ] := Sequence @@ MapIndexed[MArgumentTra
 MArgumentCustomType[_Managed] := Integer;
 MArgumentCustomType[t_] := t;
 
-MArgumentType[pattern_, actualType_, transformation_] := (
-	specialArgQ[pattern] := True;
-	MArgumentCustomType[pattern] := Sequence @@ actualType;
-	MArgumentTransform[pattern] := transformation;
+MResultCustomType[t_] := t;
+MResultTransform[_] := Identity;
+
+MArgumentType[customType_, actualType_, transformation_] := (
+	CustomMArgumentTypeQ[customType] := True;
+	MArgumentCustomType[customType] := Sequence @@ actualType;
+	MArgumentTransform[customType] := transformation;
+);
+
+MResultType[customType_, actualType_, transformation_] := (
+	CustomMResultTypeQ[customType] := True;
+	MResultCustomType[customType] := actualType;
+	MResultTransform[customType] := transformation;
 );
 
 holdSet[Hold[sym_], rhs_] := sym = rhs;

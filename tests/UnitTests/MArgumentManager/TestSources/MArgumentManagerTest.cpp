@@ -39,7 +39,17 @@ namespace LLU {
 	Person MArgumentManager::get<Person>(size_type index) const {
 		return std::make_from_tuple<Person>(get<std::string, uint8_t, double>({index, index + 1, index + 2}));
 	}
+
+	template<>
+	void MArgumentManager::set<Person>(const Person& p) {
+		DataList<MArgumentType::MArgument> personDS;
+		personDS.push_back<MArgumentType::UTF8String>(const_cast<char*>(p.name.c_str()));
+		personDS.push_back<MArgumentType::Integer>(p.age);
+		personDS.push_back<MArgumentType::Real>(p.height);
+		set(personDS);
+	}
 }
+
 LLU_LIBRARY_FUNCTION(DescribePerson2) {
 	auto person = mngr.get<Person>(0);
 	mngr.set(person.description());
@@ -50,6 +60,12 @@ LLU_LIBRARY_FUNCTION(ComparePeople) {
 	auto personA = mngr.get<Person>(0);
 	auto personB = mngr.get<Person>(3);
 	mngr.set(personA.name + " is" + (personA.height > personB.height? ""s : " not"s) + " taller than " + personB.name + ".");
+}
+
+LLU_LIBRARY_FUNCTION(PredictChild) {
+	auto personA = mngr.get<Person>(0);
+	auto personB = mngr.get<Person>(3);
+	mngr.set(Person {personA.name + " Junior", 0, (personA.height + personB.height) / 2});
 }
 
 template<typename R, typename... Args>

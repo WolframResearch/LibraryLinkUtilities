@@ -45,6 +45,9 @@ TestExecute[
 
 	john = Person["John", 42, 1.83];
 	james = Person["James", 43, 1.73];
+
+	`LLU`MResultType[Person, "DataStore", (Person @@ #)&];
+	$PredictChild = `LLU`SafeLibraryFunction["PredictChild", {Couple}, Person];
 ];
 
 
@@ -154,6 +157,14 @@ Test[
 	TestID -> "MArgumentManagerTestSuite-20200307-B4B3M7"
 ];
 
+Test[
+	alicia = Person["Alicia", 27, 1.74];
+	$PredictChild @ Couple[john, alicia]
+	,
+	Person["John Junior", 0, (john[[3]] + alicia[[3]]) / 2]
+	,
+	TestID -> "MArgumentManagerTestSuite-20200312-D9T9H8"
+];
 (*Test[*)
 (*	MemoryLeakTest[PassDataStore[ds3, #]] & /@ {False, True}*)
 (*	,*)

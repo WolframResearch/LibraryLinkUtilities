@@ -480,6 +480,11 @@ namespace LLU {
 			ds.passAsResult(res);
 		}
 
+		template<typename T>
+		void set(const T&) {
+			static_assert(dependent_false_v<T>, "MArgumentManager::set has not been specialized for this type.");
+		}
+
 		/************************************ utility functions ************************************/
 
 		/**
