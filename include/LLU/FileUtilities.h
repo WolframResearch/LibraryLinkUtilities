@@ -35,7 +35,7 @@ namespace LLU {
 
 	/**
 	 * Convert string from UTF8 to UTF16.
-	 * @tparam	T - character type for the result
+	 * @tparam	T - character type for the result, supported types are char16_t, char32_t, or wchar_t
 	 * @param	source - string in UTF8 encoding
 	 * @return  copy of the input string converted to UTF16
 	 */
@@ -43,6 +43,18 @@ namespace LLU {
 	std::basic_string<T> fromUTF8toUTF16(const std::string& source) {
 		std::wstring_convert<std::codecvt_utf8_utf16<T>, T> convertor;
 		return convertor.from_bytes(source);
+	}
+
+	/**
+	 * Convert string from UTF16 to UTF8.
+	 * @tparam  T - character type of the UTF16 string, supported types are char16_t, char32_t, or wchar_t
+	 * @param   source - string in UTF16 encoding
+	 * @return  copy of the input string converted to UTF8
+	 */
+	template<typename T>
+	std::string fromUTF16toUTF8(const std::basic_string<T>& source) {
+		std::wstring_convert<std::codecvt_utf8_utf16<T>, T> convertor;
+		return convertor.to_bytes(source);
 	}
 
 	/**

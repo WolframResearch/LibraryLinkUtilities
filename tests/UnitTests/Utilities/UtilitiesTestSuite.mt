@@ -34,6 +34,7 @@ TestExecute[
 
 	$ReadStrings = `LLU`SafeLibraryFunction["ReadStrings", {String}, "DataStore"];
 	$WriteStrings = `LLU`SafeLibraryFunction["WriteStrings", {String, "DataStore"}, "Void"];
+	$TestEncodingConversion = `LLU`SafeLibraryFunction["TestEncodingConversion", {}, "Boolean"];
 
 	$OpenManagedFile = `LLU`SafeLibraryFunction["OpenManagedFile", {`LLU`Managed[MyFile], String, Integer}, "Void", "Throws" -> True];
 	`LLU`Constructor[MyFile] = $OpenManagedFile;
@@ -176,4 +177,10 @@ VerificationTest[
 	]
 	,
 	TestID -> "UtilitiesTestSuite-20200102-Z1E0R2"
+];
+
+VerificationTest[
+	$TestEncodingConversion[]
+	,
+	TestID -> "UtilitiesTestSuite-20200313-U7T5E2"
 ];
