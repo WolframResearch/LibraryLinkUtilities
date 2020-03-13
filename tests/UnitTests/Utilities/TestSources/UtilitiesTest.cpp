@@ -96,7 +96,7 @@ LLU_LIBRARY_FUNCTION(TestEncodingConversion) {
 	std::string u8 = u8"z\u00df\u6c34\U0001f34c";
 	std::u16string u16 = u"z\u00df\u6c34\U0001f34c";
 
-	bool isU8ToU16ok = (u8 == LLU::fromUTF16toUTF8(u16));
-	bool isU16ToU8ok = (u16 == LLU::fromUTF8toUTF16<char16_t>(u8));
+	bool isU16ToU8ok = (u8 == LLU::fromUTF16toUTF8(u16));
+	bool isU8ToU16ok = (u16 == LLU::fromUTF8toUTF16<char16_t>(u8));
 	mngr.set(isU8ToU16ok && isU16ToU8ok);
 }
