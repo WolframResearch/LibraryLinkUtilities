@@ -84,9 +84,62 @@ SetContexts[loggerContext_?StringQ, exceptionContext_?StringQ] := (
 (* ------------------------------------------------------------------------- *)
 (* ------------------------------------------------------------------------- *)
 
+(* ::SubSection:: *)
+(* User-defined library function argument types *)
+(* ------------------------------------------------------------------------- *)
+(* ------------------------------------------------------------------------- *)
+
+(* Function to extend the set of basic LibraryLink argument types. Developers can register their custom types. Three parameters must be provided:
+ * - customType - new argument type, can be a Symbol, String, or some other expression
+ * - actualType - a type or a list of basic LibraryLink argument types that correspond to a single argument of customType
+ * - transformation - a function that takes a single expression of customType and returns a sequence of corresponding values of actualType
+ *)
+MArgumentType[customType_, actualType_, transformation_] := (
+	CustomMArgumentTypeQ[customType] := True;
+	MArgumentCustomType[customType] := Sequence @@ actualType;
+	MArgumentTransform[customType] := transformation;
+);
+
+(* Function to extend the set of basic LibraryLink return types. Developers can register their custom types. Three parameters must be provided:
+ * - customType - new return type, can be a Symbol, String, or some other expression
+ * - actualType - a single basic LibraryLink type that corresponds to an expression of customType
+ * - transformation - a function that takes an expression of actualType and returns a value of customType
+ *)
+MResultType[customType_, actualType_, transformation_] := (
+	CustomMResultTypeQ[customType] := True;
+	MResultCustomType[customType] := actualType;
+	MResultTransform[customType] := transformation;
+);
+
+(* Decide whether given LibraryFunction argument/return type is a user-defined type and needs special treatment.
+ * Downvalues for these symbols can be provided by developers either directly or by calling MArgumentType/MResultType
+ *)
+CustomMArgumentTypeQ[_] := False;
+CustomMResultTypeQ[_] := False;
+
+(* Get basic LibraryLink type(s) corresponding to a given user-defined type.
+ * Downvalues for these symbols can be provided by developers either directly or by calling MArgumentType/MResultType
+ *)
+MArgumentCustomType[t_] := t;
+MResultCustomType[t_] := t;
+
+(* Get transformation function for user-defined argument/return type.
+ * Downvalues for these symbols can be provided by developers either directly or by calling MArgumentType/MResultType
+ *)
+MArgumentTransform[_] := Identity;
+MResultTransform[_] := Identity;
+
+(* Simple function expected to select all user-defined arguments from a list of argument types for a LibraryFunction. *)
+SelectSpecialArgs[argTypes_List] := Select[AssociationThread[Range[Length[#]], #]& @ argTypes, CustomMArgumentTypeQ];
+SelectSpecialArgs[LinkObject] = {};
+
+(* Parse user-defined arguments before they are passed to a LibraryFunction. Parsing is based on MArgumentTransform function.
+ * NOTE: This function is invoked before every call to a LibraryFunction so efficiency is top concern here!
+ *)
+ArgumentParser[specialArgs_?AssociationQ] := Sequence @@ MapIndexed[MArgumentTransform[specialArgs[First @ #2]][#1] &, {##}]&;
 
 (* ::SubSection:: *)
-(* SafeLibrary* *)
+(* Library and library functions loading *)
 (* ------------------------------------------------------------------------- *)
 (* ------------------------------------------------------------------------- *)
 
@@ -113,12 +166,12 @@ SafeLibraryFunctionLoad[fname_?StringQ, fParams_, retType_, opts : OptionsPatter
 			 * - special - extensions added by LLU or paclet developers that need extra parsing before they can be passed to LibraryLink,
 			 *              for example Managed Expressions
 			 *)
-			Block[{specialArgs = argumentCategorizer[fParams], specialRetQ = CustomMResultTypeQ[retType], actualRetType, libFunction},
+			Block[{specialArgs = SelectSpecialArgs[fParams], specialRetQ = CustomMResultTypeQ[retType], actualRetType, libFunction},
 				actualRetType = If[specialRetQ, MResultCustomType[retType], retType];
 				libFunction = If[Length @ specialArgs > 0,
 					(* If the function that we are registering takes special arguments, we need to compose it with argumentParser function,
 					 * which will parse input arguments before every call, so that they are accepted by LibraryLink.*)
-					LibraryFunctionLoad[$PacletLibrary, fname, MArgumentCustomType /@ fParams, actualRetType] @* argumentParser[specialArgs]
+					LibraryFunctionLoad[$PacletLibrary, fname, MArgumentCustomType /@ fParams, actualRetType] @* ArgumentParser[specialArgs]
 					,
 					LibraryFunctionLoad[$PacletLibrary, fname, fParams, actualRetType]
 				];
@@ -141,61 +194,6 @@ Options[SafeLibraryFunction] = {
 	"ProgressMonitor" -> None,
 	"Throws" -> False
 };
-
-(* Decide whether given input argument to a LibraryFunction needs special treatment.
- * Currently only Managed Expressions do but this may change in the future.
- *)
-CustomMArgumentTypeQ[a_Managed] := True;
-CustomMArgumentTypeQ[_] := False;
-
-CustomMResultTypeQ[_] := False;
-
-(* Simple function expected to select all "special" arguments from a list of argument types for a LibraryFunction. *)
-argumentCategorizer[argTypes_List] := Select[AssociationThread[Range[Length[#]], #]& @ argTypes, CustomMArgumentTypeQ];
-argumentCategorizer[LinkObject] = {};
-
-
-(* Parse ManagedExpression before it is passed to a LibraryFunction. First argument is expected ManagedExpression type and the second is actual instance
- * of a MangedExpression. If the instance type does not match the expected type a paclet Failure will be thrown.
- *)
-MArgumentTransform[Managed[expectedHead_]] := Replace[{
-	expectedHead[id_Integer] :> If[ManagedLibraryExpressionQ[expectedHead[id]],
-		id
-		,
-
-		Throw @ CreatePacletFailure["InvalidManagedExpressionID", "MessageParameters" -> <|"expr" -> expectedHead[id]|>]
-	]
-	,
-	id_Integer :> id (* Passing bare IDs of Managed Expressions is supported but may be more error prone than passing proper MLEs *)
-	,
-	e_ :> Throw @ CreatePacletFailure["UnexpectedManagedExpression", "MessageParameters" -> <|"expected" -> expectedHead, "actual" -> e|>]
-}];
-MArgumentTransform[_] := Identity;
-
-(* Parse special arguments before they are passed to a LibraryFunction. Currently the only implemented type of special arguments are ManagedExpressions, so
- * just call parseManaged directly but in the future this implementation might need to be generalised.
- *
- * NOTE: This function is invoked before every call to a LibraryFunction so efficiency is top concern here!
- *)
-argumentParser[specialArgs_?AssociationQ] := Sequence @@ MapIndexed[MArgumentTransform[specialArgs[First @ #2]][#1] &, {##}]&;
-
-MArgumentCustomType[_Managed] := Integer;
-MArgumentCustomType[t_] := t;
-
-MResultCustomType[t_] := t;
-MResultTransform[_] := Identity;
-
-MArgumentType[customType_, actualType_, transformation_] := (
-	CustomMArgumentTypeQ[customType] := True;
-	MArgumentCustomType[customType] := Sequence @@ actualType;
-	MArgumentTransform[customType] := transformation;
-);
-
-MResultType[customType_, actualType_, transformation_] := (
-	CustomMResultTypeQ[customType] := True;
-	MResultCustomType[customType] := actualType;
-	MResultTransform[customType] := transformation;
-);
 
 holdSet[Hold[sym_], rhs_] := sym = rhs;
 
@@ -557,6 +555,28 @@ End[]; (* `Logger` *)
 (* Managed Expressions *)
 (* ------------------------------------------------------------------------- *)
 (* ------------------------------------------------------------------------- *)
+
+(* Register Managed Expressions as custom argument type *)
+CustomMArgumentTypeQ[a_Managed] := True;
+
+(* When ManagedExpression is passed to a library function it will be translated to an Integer *)
+MArgumentCustomType[_Managed] := Integer;
+
+(* Parse ManagedExpression before it is passed to a LibraryFunction. First argument is expected ManagedExpression type and the second is actual instance
+ * of a MangedExpression. If the instance type does not match the expected type a paclet Failure will be thrown.
+ *)
+MArgumentTransform[Managed[expectedHead_]] := Replace[{
+	expectedHead[id_Integer] :> If[ManagedLibraryExpressionQ[expectedHead[id]],
+		id
+		,
+		Throw @ CreatePacletFailure["InvalidManagedExpressionID", "MessageParameters" -> <|"expr" -> expectedHead[id]|>]
+	]
+	,
+	id_Integer :> id (* Passing bare IDs of Managed Expressions is supported but may be more error prone than passing proper MLEs *)
+	,
+	e_ :> Throw @ CreatePacletFailure["UnexpectedManagedExpression", "MessageParameters" -> <|"expected" -> expectedHead, "actual" -> e|>]
+}];
+
 Constructor;
 
 NewManagedExpression[exprHead_][args___] :=
