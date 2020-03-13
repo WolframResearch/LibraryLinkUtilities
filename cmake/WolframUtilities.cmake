@@ -114,25 +114,25 @@ function(detect_build_platform DETECTED_BUILD_PLATFORM)
 	set(${DETECTED_BUILD_PLATFORM} "${BUILD_PLATFORM}" PARENT_SCOPE)
 endfunction()
 
-#set MathLink library name depending on the platform
-function(get_mathlink_library_name MATHLINK_INTERFACE_VERSION MATHLINK_LIB_NAME)
+#set WSTP library name depending on the platform
+function(get_wstp_library_name WSTP_INTERFACE_VERSION WSTP_LIB_NAME)
 
 	detect_system_id(SYSTEM_ID)
 
-	set(MATHLINK_LIBRARY NOTFOUND)
+	set(WSTP_LIBRARY NOTFOUND)
 	if(SYSTEM_ID STREQUAL "MacOSX-x86-64")
-		set(MATHLINK_LIBRARY "MLi${MATHLINK_INTERFACE_VERSION}")
+		set(WSTP_LIBRARY "WSTPi${WSTP_INTERFACE_VERSION}")
 	elseif(SYSTEM_ID STREQUAL "Linux" OR SYSTEM_ID STREQUAL "Linux-ARM" OR SYSTEM_ID STREQUAL "Windows")
-		set(MATHLINK_LIBRARY "ML32i${MATHLINK_INTERFACE_VERSION}")
+		set(WSTP_LIBRARY "WSTP32i${WSTP_INTERFACE_VERSION}")
 	elseif(SYSTEM_ID STREQUAL "Linux-x86-64" OR SYSTEM_ID STREQUAL "Windows-x86-64")
-		set(MATHLINK_LIBRARY "ML64i${MATHLINK_INTERFACE_VERSION}")
+		set(WSTP_LIBRARY "WSTP64i${WSTP_INTERFACE_VERSION}")
 	endif()
 
-	if(NOT MATHLINK_LIBRARY)
-		message(FATAL_ERROR "Unable to determine MathLink library name for system: ${SYSTEM_ID}")
+	if(NOT WSTP_LIBRARY)
+		message(FATAL_ERROR "Unable to determine WSTP library name for system: ${SYSTEM_ID}")
 	endif()
 
-	set(${MATHLINK_LIB_NAME} "${MATHLINK_LIBRARY}" PARENT_SCOPE)
+	set(${WSTP_LIB_NAME} "${WSTP_LIBRARY}" PARENT_SCOPE)
 endfunction()
 
 # not sure if this one is needed, keep it just in case

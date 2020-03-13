@@ -28,6 +28,9 @@ TestExecute[
 		`LLU`Logger`PrintLogToSymbol[LogSymbol][##]
 	]&;
 
+	GetManagedExpressionCount = `LLU`SafeLibraryFunction["GetManagedExpressionCount", {}, Integer];
+	GetManagedExpressionTexts = `LLU`SafeLibraryFunction["GetManagedExpressionTexts", {}, "DataStore"];
+	ReleaseExpression = `LLU`SafeLibraryFunction["ReleaseExpression", {`LLU`Managed[MyExpression]}, Integer];
 
 	$CreateNewMyExpression = `LLU`SafeLibraryFunction["OpenManagedMyExpression", {`LLU`Managed[MyExpression], String}, "Void"];
 	$CreateNewMyChildExpression = `LLU`SafeLibraryFunction["OpenManagedMyChildExpression", {`LLU`Managed[MyExpression], String}, "Void"];
@@ -42,7 +45,7 @@ TestExecute[
 	(* Load library functions that wrap MyExpression member functions *)
 	`LLU`LoadMemberFunction[MyExpression][getText, "GetText", {}, String];
 	`LLU`LoadMemberFunction[MyExpression][setText, "SetText", {String}, "Void"];
-	`LLU`LoadWSTPMemberFunction[MyExpression][setTextML, "SetTextML"];
+	`LLU`LoadWSTPMemberFunction[MyExpression][setTextWS, "SetTextWS"];
 	`LLU`LoadMemberFunction[MyExpression][getCounter, "GetCounter", {}, Integer]; (* this member only works with MLEs that are of type MyChildExpression in C++ *)
 
 	(* Load other library functions *)
@@ -64,7 +67,7 @@ Test[
 	,
 	SameTest -> LoggerStringTest
 	,
-	TestID -> "ManagedExpressionsTestSuite-20190718-I7S1K0"
+	TestID -> "ManagedExpressionsTestSuite-20200207-I4S3H8"
 ];
 
 TestExecute[
@@ -76,7 +79,7 @@ Test[
 	,
 	True
 	,
-	TestID -> "ManagedExpressionsTestSuite-20190916-R3H6L8"
+	TestID -> "ManagedExpressionsTestSuite-20200207-C2I7L1"
 ];
 
 Test[
@@ -84,7 +87,7 @@ Test[
 	,
 	False
 	,
-	TestID -> "ManagedExpressionsTestSuite-20190916-L9C5S2"
+	TestID -> "ManagedExpressionsTestSuite-20200207-F6S3U8"
 ];
 
 Test[
@@ -92,7 +95,15 @@ Test[
 	,
 	True
 	,
-	TestID -> "ManagedExpressionsTestSuite-20190916-A0B2P8"
+	TestID -> "ManagedExpressionsTestSuite-20200207-N2E7N8"
+];
+
+Test[
+	GetManagedExpressionCount[]
+	,
+	1
+	,
+	TestID -> "ManagedExpressionsTestSuite-20200207-W8B4N0"
 ];
 
 Test[
@@ -100,7 +111,7 @@ Test[
 	,
 	False
 	,
-	TestID -> "ManagedExpressionsTestSuite-20190916-X6Z9M9"
+	TestID -> "ManagedExpressionsTestSuite-20200207-C4I6E1"
 ];
 
 Test[
@@ -112,7 +123,7 @@ Test[
 	,
 	"I will die when this test ends"
 	,
-	TestID -> "ManagedExpressionsTestSuite-20190718-O7N0B8"
+	TestID -> "ManagedExpressionsTestSuite-20200207-O5L3L4"
 ];
 
 Test[
@@ -125,7 +136,7 @@ Test[
 	,
 	SameTest -> LoggerStringTest
 	,
-	TestID -> "ManagedExpressionsTestSuite-20190718-J5J8Q0"
+	TestID -> "ManagedExpressionsTestSuite-20200207-A1A1A7"
 ];
 
 Test[
@@ -133,7 +144,7 @@ Test[
 	,
 	"I will live through all tests"
 	,
-	TestID -> "ManagedExpressionsTestSuite-20190718-A4Y1E1"
+	TestID -> "ManagedExpressionsTestSuite-20200207-I9S8M8"
 ];
 
 Test[
@@ -141,7 +152,7 @@ Test[
 	,
 	Null
 	,
-	TestID -> "ManagedExpressionsTestSuite-20190821-K9R3V7"
+	TestID -> "ManagedExpressionsTestSuite-20200207-W1J2D0"
 ];
 
 Test[
@@ -149,7 +160,7 @@ Test[
 	,
 	"New text for global expr."
 	,
-	TestID -> "ManagedExpressionsTestSuite-20190821-T2J8J8"
+	TestID -> "ManagedExpressionsTestSuite-20200207-H6Q5E0"
 ];
 
 Test[
@@ -157,7 +168,7 @@ Test[
 	,
 	Null
 	,
-	TestID -> "ManagedExpressionsTestSuite-20190821-B3M7R5"
+	TestID -> "ManagedExpressionsTestSuite-20200207-R2G7I3"
 ];
 
 Test[
@@ -172,7 +183,7 @@ Test[
 		|>
 	]
 	,
-	TestID -> "ManagedExpressionsTestSuite-20190718-B1C1K7"
+	TestID -> "ManagedExpressionsTestSuite-20200207-A2Z1W4"
 ];
 
 Test[
@@ -187,7 +198,7 @@ Test[
 		|>
 	]
 	,
-	TestID -> "ManagedExpressionsTestSuite-20190718-E0M9X3"
+	TestID -> "ManagedExpressionsTestSuite-20200207-J0C3H4"
 ];
 
 Test[
@@ -195,7 +206,7 @@ Test[
 	,
 	NotMyExpression[1] @ getText[]
 	,
-	TestID -> "ManagedExpressionsTestSuite-20190821-Z2D6S7"
+	TestID -> "ManagedExpressionsTestSuite-20200207-R0O9X0"
 ];
 
 Test[
@@ -204,7 +215,7 @@ Test[
 	,
 	"I will live through all testsI'm just a temporary"
 	,
-	TestID -> "ManagedExpressionsTestSuite-20190821-M2R9F3"
+	TestID -> "ManagedExpressionsTestSuite-20200207-X1O7K8"
 ];
 
 Test[
@@ -217,7 +228,7 @@ Test[
 	,
 	SameTest -> LoggerStringTest
 	,
-	TestID -> "ManagedExpressionsTestSuite-20190821-W5W6N0"
+	TestID -> "ManagedExpressionsTestSuite-20200207-U9Z0V1"
 ];
 
 Test[
@@ -228,16 +239,32 @@ Test[
 	,
 	{"World", "Hello"}
 	,
-	TestID -> "ManagedExpressionsTestSuite-20190903-A5G8P0"
+	TestID -> "ManagedExpressionsTestSuite-20200207-L1P4L1"
 ];
 
 Test[
-	expr1 @ setTextML["My new text"];
+	GetManagedExpressionCount[]
+	,
+	3
+	,
+	TestID -> "ManagedExpressionsTestSuite-20200207-I4N3P3"
+];
+
+Test[
+	Association @@ GetManagedExpressionTexts[] // KeySort
+	,
+	<|"1" -> "I will live through all tests", "4" -> "World", "5" -> "Hello"|>
+	,
+	TestID -> "ManagedExpressionsTestSuite-20200207-W2B5W1"
+];
+
+Test[
+	expr1 @ setTextWS["My new text"];
 	expr1 @ getText[]
 	,
 	"My new text"
 	,
-	TestID -> "ManagedExpressionsTestSuite-20190903-J6R4H9"
+	TestID -> "ManagedExpressionsTestSuite-20200207-M3K8R7"
 ];
 
 Test[
@@ -245,7 +272,7 @@ Test[
 	,
 	ToString @ Head @ globalExpr
 	,
-	TestID -> "ManagedExpressionsTestSuite-20190904-E2I7L4"
+	TestID -> "ManagedExpressionsTestSuite-20200207-F8G3J3"
 ];
 
 TestExecute[
@@ -265,7 +292,46 @@ Test[
 	,
 	SameTest -> LoggerStringTest
 	,
-	TestID -> "ManagedExpressionsTestSuite-20190911-U4H9A5"
+	TestID -> "ManagedExpressionsTestSuite-20200207-I5D4C3"
+];
+
+Test[
+	ReleaseExpression[expr1]
+	,
+	0
+	,
+	TestID -> "ManagedExpressionsTestSuite-20200207-O1W5W3"
+];
+
+Test[
+	Catch @ ReleaseExpression @ MyExpression[500]
+	,
+	Failure["InvalidManagedExpressionID",
+		<|
+			"MessageTemplate" -> "`expr` is not a valid ManagedExpression.",
+			"MessageParameters" -> <|"expr" -> MyExpression[500]|>,
+			"ErrorCode" -> 25,
+			"Parameters" -> {}
+		|>
+	]
+	,
+	TestID -> "ManagedExpressionsTestSuite-20200207-O6Q1L6"
+];
+
+Test[
+	ReleaseExpression[-1]
+	,
+	0 (* likely a bug in releaseManagedLibraryExpression - it is documented to return a non-zero code for invalid ID *)
+	,
+	TestID -> "ManagedExpressionsTestSuite-20200207-E5H4U0"
+];
+
+Test[
+	GetManagedExpressionCount[]
+	,
+	2
+	,
+	TestID -> "ManagedExpressionsTestSuite-20200207-S7D4T4"
 ];
 
 Test[

@@ -49,6 +49,18 @@ EXTERN_C DLLEXPORT void WolframLibrary_uninitialize(WolframLibraryData libData) 
 	MyExpressionStore.unregisterType(libData);
 }
 
+LLU_LIBRARY_FUNCTION(GetManagedExpressionCount) {
+	mngr.set(static_cast<mint>(MyExpressionStore.size()));
+}
+
+LLU_LIBRARY_FUNCTION(GetManagedExpressionTexts) {
+	LLU::DataList<LLU::MArgumentType::UTF8String> texts;
+	for (const auto& expr : MyExpressionStore) {
+		texts.push_back(std::to_string(expr.first), const_cast<char*>(expr.second->getText().c_str()));
+	}
+	mngr.set(texts);
+}
+
 LIBRARY_LINK_FUNCTION(OpenManagedMyExpression) {
 	auto err = LLU::ErrorCode::NoError;
 	try {
@@ -60,6 +72,11 @@ LIBRARY_LINK_FUNCTION(OpenManagedMyExpression) {
 		err = e.which();
 	}
 	return err;
+}
+
+LLU_LIBRARY_FUNCTION(ReleaseExpression) {
+	auto id = mngr.getInteger<mint>(0);
+	mngr.set(static_cast<mint>(MyExpressionStore.releaseInstance(id)));
 }
 
 LIBRARY_LINK_FUNCTION(GetText) {
@@ -112,57 +129,57 @@ LIBRARY_LINK_FUNCTION(GetMyExpressionStoreName) {
 }
 
 /**
- * Read managed MyExpression via MathLink to a shared pointer.
+ * Read managed MyExpression via WSTP to a shared pointer.
  */
-template<LLU::ML::Encoding EIn, LLU::ML::Encoding EOut>
-LLU::MLStream<EIn, EOut>& operator>>(LLU::MLStream<EIn, EOut>& ml, std::shared_ptr<MyExpression>& myExp) {
-	ml >> LLU::ML::Function("MyExpression", 1);
+template<LLU::WS::Encoding EIn, LLU::WS::Encoding EOut>
+LLU::WSStream<EIn, EOut>& operator>>(LLU::WSStream<EIn, EOut>& ws, std::shared_ptr<MyExpression>& myExp) {
+	ws >> LLU::WS::Function("MyExpression", 1);
 	mint myExprID {};
-	ml >> myExprID;
+	ws >> myExprID;
 	myExp = MyExpressionStore.getInstancePointer(myExprID);
-	return ml;
+	return ws;
 }
 
 /**
- * Get a reference to a managed MyExpression passed via MathLink
+ * Get a reference to a managed MyExpression passed via WSTP
  */
-template<LLU::ML::Encoding EIn, LLU::ML::Encoding EOut>
-MyExpression& getFromMathLink(LLU::MLStream<EIn, EOut>& ml) {
-	ml >> LLU::ML::Function("MyExpression", 1);	   // Watch out for context here!
+template<LLU::WS::Encoding EIn, LLU::WS::Encoding EOut>
+MyExpression& getFromWSTP(LLU::WSStream<EIn, EOut>& ws) {
+	ws >> LLU::WS::Function("MyExpression", 1);	   // Watch out for context here!
 	mint myExprID {};							   // In paclets the function head will usually be XXXTools`Private`MyExpression
-	ml >> myExprID;
+	ws >> myExprID;
 	return MyExpressionStore.getInstance(myExprID);
 }
 
-/// Get two managed MyExpressions via MathLink and swap texts in them
-LIBRARY_MATHLINK_FUNCTION(SwapText) {
-	namespace ML = LLU::ML;
+/// Get two managed MyExpressions via WSTP and swap texts in them
+LIBRARY_WSTP_FUNCTION(SwapText) {
+	namespace WS = LLU::WS;
 	auto err = LLU::ErrorCode::NoError;
 	try {
-		LLU::MLStream<ML::Encoding::UTF8> ml(mlp, 2);
+		LLU::WSStream<WS::Encoding::UTF8> ws(mlp, 2);
 		std::shared_ptr<MyExpression> firstExpr;
-		ml >> firstExpr;
-		auto& secondExpr = getFromMathLink(ml);
+		ws >> firstExpr;
+		auto& secondExpr = getFromWSTP(ws);
 		auto tempText = firstExpr->getText();
 		firstExpr->setText(secondExpr.getText());
 		secondExpr.setText(std::move(tempText));
-		ml << ML::Null << ML::EndPacket;
+		ws << WS::Null << WS::EndPacket;
 	} catch (const LLU::LibraryLinkError& e) {
 		err = e.which();
 	}
 	return err;
 }
 
-LIBRARY_MATHLINK_FUNCTION(SetTextML) {
-	namespace ML = LLU::ML;
+LIBRARY_WSTP_FUNCTION(SetTextWS) {
+	namespace WS = LLU::WS;
 	auto err = LLU::ErrorCode::NoError;
 	try {
-		LLU::MLStream<ML::Encoding::UTF8> ml(mlp, 2);
-		auto& myExpr = getFromMathLink(ml);
+		LLU::WSStream<WS::Encoding::UTF8> ws(mlp, 2);
+		auto& myExpr = getFromWSTP(ws);
 		std::string newText;
-		ml >> newText;
+		ws >> newText;
 		myExpr.setText(std::move(newText));
-		ml << ML::Null << ML::EndPacket;
+		ws << WS::Null << WS::EndPacket;
 	} catch (const LLU::LibraryLinkError& e) {
 		err = e.which();
 	}

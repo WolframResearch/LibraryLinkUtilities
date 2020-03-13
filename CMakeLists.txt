@@ -51,10 +51,10 @@ if(NOT TARGET LLU)
 	set(SYSTEMID ${DEFAULT_SYSTEMID} CACHE STRING "Wolfram System ID")
 
 	#=============================================
-	#=========== WOLFRAM MATHLINK ================
+	#================== WSTP =====================
 	#=============================================
 
-	find_package(MathLink 4.25 REQUIRED MODULE)
+	find_package(WSTP 4.25 REQUIRED MODULE)
 
 	#=============================================
 	#=============== LIBRARYLINK =================
@@ -77,11 +77,11 @@ if(NOT TARGET LLU)
 		${LLU_SOURCE_DIR}/MArgumentManager.cpp
 		${LLU_SOURCE_DIR}/Containers/MArrayDimensions.cpp
 		${LLU_SOURCE_DIR}/Containers/Tensor.cpp
-		${LLU_SOURCE_DIR}/ML/Get.cpp
-		${LLU_SOURCE_DIR}/ML/Put.cpp
-		${LLU_SOURCE_DIR}/ML/Release.cpp
-		${LLU_SOURCE_DIR}/ML/Strings.cpp
-		${LLU_SOURCE_DIR}/ML/Utilities.cpp
+		${LLU_SOURCE_DIR}/WSTP/Get.cpp
+		${LLU_SOURCE_DIR}/WSTP/Put.cpp
+		${LLU_SOURCE_DIR}/WSTP/Release.cpp
+		${LLU_SOURCE_DIR}/WSTP/Strings.cpp
+		${LLU_SOURCE_DIR}/WSTP/Utilities.cpp
 		${LLU_SOURCE_DIR}/MArgument.cpp
 		${LLU_SOURCE_DIR}/ProgressMonitor.cpp
         ${LLU_SOURCE_DIR}/ErrorLog/ErrorManager.cpp
@@ -145,7 +145,7 @@ if(NOT TARGET LLU)
 	#link libraries
 	target_link_libraries(LLU
 		PUBLIC
-			MathLink::MathLink
+			WSTP::WSTP
 			WolframLibrary::WolframLibrary
 	)
 
@@ -199,7 +199,7 @@ if(NOT TARGET LLU)
 	#Install the config, configversion and custom find modules
 	install(FILES
 		${CMAKE_CURRENT_LIST_DIR}/cmake/FindWolframLibrary.cmake
-		${CMAKE_CURRENT_LIST_DIR}/cmake/FindMathLink.cmake
+		${CMAKE_CURRENT_LIST_DIR}/cmake/FindWSTP.cmake
 		${CMAKE_CURRENT_LIST_DIR}/cmake/WolframUtilities.cmake
 		${CMAKE_CURRENT_BINARY_DIR}/LLUConfig.cmake
 		${CMAKE_CURRENT_BINARY_DIR}/LLUConfigVersion.cmake
@@ -216,7 +216,7 @@ if(NOT TARGET LLU)
 
 	configure_file(${CMAKE_CURRENT_LIST_DIR}/cmake/WolframUtilities.cmake ${CMAKE_CURRENT_BINARY_DIR}/WolframUtilities.cmake COPYONLY)
 	configure_file(${CMAKE_CURRENT_LIST_DIR}/cmake/FindWolframLibrary.cmake ${CMAKE_CURRENT_BINARY_DIR}/FindWolframLibrary.cmake COPYONLY)
-	configure_file(${CMAKE_CURRENT_LIST_DIR}/cmake/FindMathLink.cmake ${CMAKE_CURRENT_BINARY_DIR}/FindMathLink.cmake COPYONLY)
+	configure_file(${CMAKE_CURRENT_LIST_DIR}/cmake/FindWSTP.cmake ${CMAKE_CURRENT_BINARY_DIR}/FindWSTP.cmake COPYONLY)
 
 	export(EXPORT LLU-targets
 		FILE ${CMAKE_CURRENT_BINARY_DIR}/LLUTargets.cmake

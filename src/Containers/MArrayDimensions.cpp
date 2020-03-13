@@ -28,7 +28,7 @@ namespace LLU {
 
 	mint MArrayDimensions::getIndexChecked(const std::vector<mint>& indices) const {
 		if (indices.size() > dims.size()) {
-			ErrorManager::throwException(ErrorName::MArrayDimensionIndexError, static_cast<mlint64>(indices.size()));
+			ErrorManager::throwException(ErrorName::MArrayDimensionIndexError, static_cast<wsint64>(indices.size()));
 		}
 		auto dimsIt = dims.cbegin();
 		for (auto idx : indices) {

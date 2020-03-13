@@ -17,10 +17,10 @@ Since the source code uses C++14 features, you have to make sure your compiler s
 Plus:
 
  * **CMake** >= 3.8.0
- * **MathLink** interface version 4 or later
+ * **WSTP** interface version 4 or later
  * **WolframLibrary** >= 5
 
-MathLink library and WolframLibrary header files can be found in any Mathematica installation. For testing, ``wolframscript`` must be available on the system.
+WSTP library and WolframLibrary header files can be found in any Mathematica installation. For testing, ``wolframscript`` must be available on the system.
 
 1. Get source code
 =========================================
@@ -37,10 +37,10 @@ Alternatively, a zip package can be downloaded from GitHub containing a snapshot
 Dependencies
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-LLU depends on MathLink and WolframLibrary so both must be installed on your system.
+LLU depends on WSTP and WolframLibrary so both must be installed on your system.
 Below is a quick overview of CMake variables which you can use to customize build process. Let's consider a number of possible scenarios:
 
-1. Use MathLink and WolframLibrary from a standard Mathematica installation:
+1. Use WSTP and WolframLibrary from a standard Mathematica installation:
 
    If you have Mathematica **12.1** installed in a default location, the build configuration step should succeed out of the box without setting any variables.
    If you have other versions of Mathematica installed in a default location you only need to specify ``MATHEMATICA_VERSION``, for example:
@@ -49,19 +49,19 @@ Below is a quick overview of CMake variables which you can use to customize buil
 
       cmake -DMATHEMATICA_VERSION=12.0 ..
 
-2. Use MathLink and WolframLibrary from a non-standard Mathematica installation:
+2. Use WSTP and WolframLibrary from a non-standard Mathematica installation:
 
    .. code-block:: bash
 
       cmake -DMATHEMATICA_INSTALL_DIR=/home/jerome/path/to/Mathematica ..
 
-3. Use MathLink and WolframLibrary from arbitrary locations
+3. Use WSTP and WolframLibrary from arbitrary locations
 
-   If MathLink and WolframLibrary are not located in a Mathematica installation, two paths must be passed to CMake:
+   If WSTP and WolframLibrary are not located in a Mathematica installation, two paths must be passed to CMake:
 
    .. code-block:: bash
 
-      cmake -DWOLFRAM_LIBRARY_PATH=/path/to/WolframLibrary -DWOLFRAM_MATHLINK_PATH=/my/own/MathLink/installation ..
+      cmake -DWOLFRAM_LIBRARY_PATH=/path/to/WolframLibrary -DWOLFRAM_WSTP_PATH=/my/own/WSTP/installation ..
 
 Other Options
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -84,7 +84,7 @@ When you have the library installed you may want to run unit tests to confirm th
 - ErrorReporting
 - GenericContainers
 - Image
-- MathLink
+- WSTP
 - NumericArray
 - ProgressMonitor
 - Scalar
@@ -95,7 +95,7 @@ You can run all of them with :code:`make test` or :code:`ctest`. It is possible 
 
 .. code-block:: bash
 
-	ctest -R MathLink
+	ctest -R WSTP
 
 Test targets actually call :code:`wolframscript` under the hood, it must be installed in your system. This means that :code:`make test` will not show individual test failures.
 

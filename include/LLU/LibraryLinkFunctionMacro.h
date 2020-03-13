@@ -17,9 +17,9 @@
 	EXTERN_C DLLEXPORT int name(WolframLibraryData, mint, MArgument*, MArgument); \
 	int name([[maybe_unused]] WolframLibraryData libData, mint Argc, MArgument* Args, MArgument Res)
 
-#define LIBRARY_MATHLINK_FUNCTION(name)                     \
-	EXTERN_C DLLEXPORT int name(WolframLibraryData, MLINK); \
-	int name([[maybe_unused]] WolframLibraryData libData, MLINK mlp)
+#define LIBRARY_WSTP_FUNCTION(name)                     \
+	EXTERN_C DLLEXPORT int name(WolframLibraryData, WSLINK); \
+	int name([[maybe_unused]] WolframLibraryData libData, WSLINK mlp)
 
 #define LLU_LIBRARY_FUNCTION(name)                                      \
 	void impl_##name(LLU::MArgumentManager&); /* forward declaration */ \
