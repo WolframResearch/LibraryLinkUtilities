@@ -256,6 +256,12 @@ namespace LLU {
 		template<class ManagedExpr, class DynamicType = ManagedExpr>
 		std::shared_ptr<DynamicType> getManagedExpressionPtr(size_type index, ManagedExpressionStore<ManagedExpr>& store) const;
 
+		/**
+		 * @brief   Extract library function argument at given index and convert it from MArgument to a desired type.
+		 * @tparam  T - any type, for types not supported by default developers may specialize this function template
+		 * @param   index - position of desired argument in \c Args
+		 * @return  a value of type T created from the specified input argument
+		 */
 		template<typename T, std::enable_if_t<std::is_integral<T>::value, int> = 0>
 		T get(size_type index) const {
 			return getInteger<T>(index);
@@ -266,11 +272,22 @@ namespace LLU {
 			return MArgGetter<T>::get(*this, index);
 		}
 
+		/**
+		 * @brief   Extract arguments from the Manager and return them as values of given types.
+		 * @tparam  ArgTypes - types that determine how each extracted argument will be returned
+		 * @return  a tuple of function arguments
+		 */
 		template<typename... ArgTypes>
 		std::tuple<ArgTypes...> get() const {
 			return MArgPackGetter<ArgTypes...>::template getImpl(*this, std::index_sequence_for<ArgTypes...>{});
 		}
 
+		/**
+		 * @brief   Extract arguments from the Manager at given positions and return them as values of given types.
+		 * @tparam  ArgTypes - types that determine how each extracted argument will be returned
+		 * @param   indices - position of desired arguments, need not be sorted, may contain repeated values
+		 * @return  a tuple of function arguments
+		 */
 		template<typename... ArgTypes>
 		std::tuple<ArgTypes...> get(std::array<size_type, sizeof...(ArgTypes)> indices) const {
 			return MArgPackGetter<ArgTypes...>::template getImpl(*this, indices, std::index_sequence_for<ArgTypes...>{});
@@ -480,6 +497,10 @@ namespace LLU {
 			ds.passAsResult(res);
 		}
 
+		/**
+		 *  @brief  Set given value as a result of the library function
+		 *  @tparam T - any type, for types not supported by default developers are encouraged to specialize this function template
+		 */
 		template<typename T>
 		void set(const T&) {
 			static_assert(dependent_false_v<T>, "MArgumentManager::set has not been specialized for this type.");
