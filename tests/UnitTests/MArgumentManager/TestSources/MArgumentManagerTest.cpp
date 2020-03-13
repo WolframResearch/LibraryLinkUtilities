@@ -68,6 +68,12 @@ LLU_LIBRARY_FUNCTION(PredictChild) {
 	mngr.set(Person {personA.name + " Junior", 0, (personA.height + personB.height) / 2});
 }
 
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/// Experimental functionality for automatic generation of library functions from regular functions.
+/// Not mature enough to be included in LLU, but paclets may copy and use this code (with caution).
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 template<typename R, typename... Args>
 void runAsLibraryFunction(LLU::MArgumentManager& mngr, std::function<R(Args...)> f) {
 	mngr.set(std::apply(std::move(f), mngr.get<Args...>()));
