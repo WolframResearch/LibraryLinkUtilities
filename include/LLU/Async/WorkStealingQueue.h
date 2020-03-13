@@ -9,6 +9,13 @@
 #include <mutex>
 
 namespace LLU {
+
+	/**
+	 * @brief Wrapper class around a queue, that provides the interface for work stealing.
+	 * Work stealing is when one thread pops a task from another thread's queue. In WorkStealingQueue tasks are popped from the front
+	 * and stolen from the back.
+	 * @tparam BaseQueue - any class implementing a queue with push_front, push_back, pop_front, pop_back, empty, front and back methods.
+	 */
 	template<typename BaseQueue>
 	class WorkStealingQueue {
 		using DataType = typename BaseQueue::value_type;
