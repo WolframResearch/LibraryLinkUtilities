@@ -52,20 +52,21 @@ TestExecute[
 
 
 (* Compile-time errors *)
-(*Test[*)
-(*	CCompilerDriver`CreateLibrary[{FileNameJoin[{currentDirectory, "TestSources", "MArgumentManagerCompilationErrors.cpp"}]}, "MArgumentManagerErrors", options]*)
-(*	,*)
-(*	$Failed*)
-(*	,*)
-(*	{CreateLibrary::cmperr..} *)(* On Linux there should be 6 errors, but MSVC does not like generic lambdas so it spits out more errors *)
-(*	,*)
-(*	TestID -> "MArgumentManagerTestSuite-20180903-Y8Z5P1"*)
-(*];*)
+TestMatch[
+	Off[General::stop];
+	CCompilerDriver`CreateLibrary[{FileNameJoin[{currentDirectory, "TestSources", "MArgumentManagerCompilationErrors.cpp"}]}, "MArgumentManagerErrors", options]
+	,
+	$Failed
+	,
+	{Repeated[CreateLibrary::cmperr, {4}]}
+	,
+	TestID -> "MArgumentManagerTestSuite-20180903-Y8Z5P1"
+];
 
 (* Basic tests *)
 
 Test[
-	`LLU`argumentCategorizer[{`LLU`Managed[x], String, "UTF8String"}]
+	`LLU`SelectSpecialArgs[{`LLU`Managed[x], String, "UTF8String"}]
 	,
 	<|1 -> `LLU`Managed[x]|>
 	,
@@ -73,7 +74,7 @@ Test[
 ];
 
 Test[
-	`LLU`argumentCategorizer[{String, Person, {_, _}, NotRegisteredSoNotSpecialArg, Couple}]
+	`LLU`SelectSpecialArgs[{String, Person, {_, _}, NotRegisteredSoNotSpecialArg, Couple}]
 	,
 	<|2 -> Person, 5 -> Couple|>
 	,
@@ -81,8 +82,8 @@ Test[
 ];
 
 Test[
-	args = `LLU`argumentCategorizer[{String, Person, {_, _}, Couple}];
-	{`LLU`argumentParser[args]["hello", john, Range[7], Couple[james, john]]}
+	args = `LLU`SelectSpecialArgs[{String, Person, {_, _}, Couple}];
+	{`LLU`ArgumentParser[args]["hello", john, Range[7], Couple[james, john]]}
 	,
 	{"hello", "John", 42, 1.83, {1, 2, 3, 4, 5, 6, 7}, "James", 43, 1.73, "John", 42, 1.83}
 	,
@@ -165,12 +166,3 @@ Test[
 	,
 	TestID -> "MArgumentManagerTestSuite-20200312-D9T9H8"
 ];
-(*Test[*)
-(*	MemoryLeakTest[PassDataStore[ds3, #]] & /@ {False, True}*)
-(*	,*)
-(*	{ 0, n_ } /; n > 0*)
-(*	,*)
-(*	TestID -> "MArgumentManagerTestSuite-20180908-Z1Y1Q5"*)
-(*	,*)
-(*	SameTest -> MatchQ*)
-(*];*)

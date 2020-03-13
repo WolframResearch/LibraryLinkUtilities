@@ -24,7 +24,6 @@ set(TEST_MODULES
         "ManagedExpressions"
         "MArgumentManager"
         "WSTP"
-        "MathLink"
         "NumericArray"
         "GenericContainers"
         "Scalar"
