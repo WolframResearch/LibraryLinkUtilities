@@ -92,11 +92,19 @@ LLU_LIBRARY_FUNCTION(ReadStrings) {
 	mngr.set(wordList);
 }
 
+static std::wstring toWideStr(const std::u16string& u16) {
+	return {u16.begin(), u16.end()};
+}
+
 LLU_LIBRARY_FUNCTION(TestEncodingConversion) {
 	std::string u8 = u8"z\u00df\u6c34\U0001f34c";
-	std::wstring u16 = L"z\u00df\u6c34\U0001f34c";
+	std::wstring u16wide = toWideStr(u"z\u00df\u6c34\U0001f34c");
 
-	bool isU16ToU8ok = (u8 == LLU::fromUTF16toUTF8(u16));
-	bool isU8ToU16ok = (u16 == LLU::fromUTF8toUTF16<wchar_t>(u8));
+	auto u16to8 = LLU::fromUTF16toUTF8(u16wide);
+	bool isU16ToU8ok = (u8 == u16to8);
+
+	auto u8to16 = LLU::fromUTF8toUTF16<wchar_t>(u8);
+	bool isU8ToU16ok = (u16wide == u8to16);
+
 	mngr.set(isU8ToU16ok && isU16ToU8ok);
 }
