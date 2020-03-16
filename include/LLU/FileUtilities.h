@@ -38,6 +38,7 @@ namespace LLU {
 	 * @tparam	T - character type for the result, supported types are char16_t, char32_t, or wchar_t
 	 * @param	source - string in UTF8 encoding
 	 * @return  copy of the input string converted to UTF16
+	 * @note    char16_t and char32_t as template parameter are not supported on Windows in VS2017
 	 */
 	template<typename T>
 	std::basic_string<T> fromUTF8toUTF16(const std::string& source) {
@@ -50,6 +51,7 @@ namespace LLU {
 	 * @tparam  T - character type of the UTF16 string, supported types are char16_t, char32_t, or wchar_t
 	 * @param   source - string in UTF16 encoding
 	 * @return  copy of the input string converted to UTF8
+	 * @note    char16_t and char32_t as template parameter are not supported on Windows in VS2017
 	 */
 	template<typename T>
 	std::string fromUTF16toUTF8(const std::basic_string<T>& source) {
