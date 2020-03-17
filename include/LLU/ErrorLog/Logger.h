@@ -119,7 +119,7 @@ namespace LLU {
 	private:
 		/// Name of the WL function, to which log elements will be sent as arguments via WSTP.
 		static constexpr const char* topLevelLogCallback = "Logger`LogHandler";
-
+		static std::mutex mlinkGuard;
 		static std::string logSymbolContext;
 	};
 
@@ -138,7 +138,6 @@ namespace LLU {
 
 	template<Logger::Level L, typename... T>
 	void Logger::log(WolframLibraryData libData, int line, const std::string& fileName, const std::string& function, T&&... args) {
-		static std::mutex mlinkGuard;
 		if (!libData) {
 			return;
 		}
