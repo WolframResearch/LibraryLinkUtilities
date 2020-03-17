@@ -9,7 +9,7 @@
 #include "LLU/LibraryLinkFunctionMacro.h"
 
 namespace LLU {
-
+	std::mutex Logger::mlinkGuard;
 	std::string Logger::logSymbolContext;
 
 	std::string Logger::to_string(Level l) {
