@@ -18,6 +18,7 @@ message(STATUS "Creating test targets.")
 # One helpful option for ctest is --verbose. It shows more output from wolframscript.
 
 set(TEST_MODULES
+        "Async"
         "DataList"
         "ErrorReporting"
         "Image"
