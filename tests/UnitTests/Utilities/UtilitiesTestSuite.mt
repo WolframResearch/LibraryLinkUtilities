@@ -12,6 +12,8 @@ TestExecute[
 	(* Get configuration (path to LLU sources, compilation options, etc.) *)
 	Get[FileNameJoin[{ParentDirectory[currentDirectory], "TestConfig.wl"}]];
 
+	$CppVersion = "c++17";
+
 	(* Compile the test library *)
 	lib = CCompilerDriver`CreateLibrary[
 		FileNameJoin[{currentDirectory, "TestSources", #}]& /@ {"UtilitiesTest.cpp"},

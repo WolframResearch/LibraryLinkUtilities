@@ -24,7 +24,7 @@ options := {
 	"LibraryDirectories" -> { $LLULibDir },
 	"CompileOptions" ->
 		If[MatchQ[$SystemID, "Windows-x86-64" | "Windows"],
-			"/O2 /EHsc /W3 /std:" <> $CppVersion
+			"/O2 /EHsc /W3 /std:" <> $CppVersion <> " /D_SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING"
 			,
 			"-O2 -Wall --pedantic -fvisibility=hidden -std=" <> $CppVersion
 		],

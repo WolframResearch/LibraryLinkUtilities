@@ -48,11 +48,13 @@ namespace LLU {
 		if constexpr (!std::is_same_v<T, wchar_t>) {
 			std::wstring tmp = convertor.from_bytes(source);
 			return std::basic_string<T> { std::begin(tmp), std::end(tmp) };
+		} else {
+			return convertor.from_bytes(source);
 		}
 #else
 		std::wstring_convert<std::codecvt_utf8_utf16<T>, T> convertor;
-#endif
 		return convertor.from_bytes(source);
+#endif
 	}
 
 	/**
@@ -69,11 +71,13 @@ namespace LLU {
 		std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>, wchar_t> convertor;
 		if constexpr (!std::is_same_v<T, wchar_t>) {
 			return convertor.to_bytes(std::wstring { std::begin(source), std::end(source) });
+		} else {
+			return convertor.to_bytes(source);
 		}
 #else
 		std::wstring_convert<std::codecvt_utf8_utf16<T>, T> convertor;
-#endif
 		return convertor.to_bytes(source);
+#endif
 	}
 
 	/**
