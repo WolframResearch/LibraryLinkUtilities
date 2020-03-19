@@ -34,7 +34,6 @@ TestExecute[
 
 	$ReadStrings = `LLU`SafeLibraryFunction["ReadStrings", {String}, "DataStore"];
 	$WriteStrings = `LLU`SafeLibraryFunction["WriteStrings", {String, "DataStore"}, "Void"];
-	$TestEncodingConversion = `LLU`SafeLibraryFunction["TestEncodingConversion", {}, "Boolean"];
 
 	$OpenManagedFile = `LLU`SafeLibraryFunction["OpenManagedFile", {`LLU`Managed[MyFile], String, Integer}, "Void", "Throws" -> True];
 	`LLU`Constructor[MyFile] = $OpenManagedFile;
@@ -49,6 +48,12 @@ TestExecute[
 	FailureOnWindowsIntegerOtherwiseQ[expr_] := If[$OperatingSystem == "Windows", FailureQ, IntegerQ][expr];
 	
 	FailureOnWindowsManagedExprOtherwiseQ[expr_] := If[$OperatingSystem == "Windows", FailureQ, ManagedLibraryExpressionQ][expr];
+
+	(* UTF conversion utilities *)
+	$WideStringUTF8UTF16Conversion = `LLU`SafeLibraryFunction["WideStringUTF8UTF16Conversion", {}, "Boolean"];
+	$Char16UTF8UTF16Conversion = `LLU`SafeLibraryFunction["Char16UTF8UTF16Conversion", {}, "Boolean"];
+	$StringToUTF16Bytes = `LLU`SafeLibraryFunction["UTF8ToUTF16Bytes", {String}, NumericArray];
+	$UTF16BytesToString = `LLU`SafeLibraryFunction["UTF16BytesToUTF8", {NumericArray}, String];
 ];
 
 TestExecute[
@@ -180,7 +185,29 @@ VerificationTest[
 ];
 
 VerificationTest[
-	$TestEncodingConversion[]
+	$WideStringUTF8UTF16Conversion[]
 	,
 	TestID -> "UtilitiesTestSuite-20200313-U7T5E2"
+];
+
+VerificationTest[
+	$Char16UTF8UTF16Conversion[]
+	,
+	TestID -> "UtilitiesTestSuite-20200319-O6X5L7"
+];
+
+Test[
+	$StringToUTF16Bytes[FromCharacterCode[{97, 98, 99, 65, 66, 67, 206, 177, 206, 178, 206, 179}, "UTF8"]]
+	,
+	NumericArray[{97, 98, 99, 65, 66, 67, 945, 946, 947}, "UnsignedInteger16"]
+	,
+	TestID -> "UtilitiesTestSuite-20200319-C7S3X2"
+];
+
+Test[
+	$UTF16BytesToString[NumericArray[{97, 98, 99, 65, 66, 67, 945, 946, 947}, "UnsignedInteger16"]]
+	,
+	FromCharacterCode[{97, 98, 99, 65, 66, 67, 206, 177, 206, 178, 206, 179}, "UTF8"]
+	,
+	TestID -> "UtilitiesTestSuite-20200319-S9X8R6"
 ];

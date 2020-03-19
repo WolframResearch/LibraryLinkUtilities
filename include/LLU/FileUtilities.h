@@ -38,11 +38,20 @@ namespace LLU {
 	 * @tparam	T - character type for the result, supported types are char16_t, char32_t, or wchar_t
 	 * @param	source - string in UTF8 encoding
 	 * @return  copy of the input string converted to UTF16
-	 * @note    char16_t and char32_t as template parameter are not supported on Windows in VS2017
+	 * @note    char16_t and char32_t strings on Windows will be converted to a temporary std::wstring first due to a bug in VS2017
 	 */
 	template<typename T>
 	std::basic_string<T> fromUTF8toUTF16(const std::string& source) {
+#ifdef _WIN32
+		// On Windows with VS2017 only conversion to wchar_t is supported, so we have no choice here
+		std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>, wchar_t> convertor;
+		if constexpr (!std::is_same_v<T, wchar_t>) {
+			std::wstring tmp = convertor.from_bytes(source);
+			return std::basic_string<T> { std::begin(tmp), std::end(tmp) };
+		}
+#else
 		std::wstring_convert<std::codecvt_utf8_utf16<T>, T> convertor;
+#endif
 		return convertor.from_bytes(source);
 	}
 
@@ -51,11 +60,19 @@ namespace LLU {
 	 * @tparam  T - character type of the UTF16 string, supported types are char16_t, char32_t, or wchar_t
 	 * @param   source - string in UTF16 encoding
 	 * @return  copy of the input string converted to UTF8
-	 * @note    char16_t and char32_t as template parameter are not supported on Windows in VS2017
+	 * @note    char16_t and char32_t strings on Windows will be converted to std::wstring before encoding conversion due to a bug in VS2017
 	 */
 	template<typename T>
 	std::string fromUTF16toUTF8(const std::basic_string<T>& source) {
+#ifdef _WIN32
+		// On Windows with VS2017 only conversion from wchar_t is supported, so we have no choice here
+		std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>, wchar_t> convertor;
+		if constexpr (!std::is_same_v<T, wchar_t>) {
+			return convertor.to_bytes(std::wstring { std::begin(source), std::end(source) });
+		}
+#else
 		std::wstring_convert<std::codecvt_utf8_utf16<T>, T> convertor;
+#endif
 		return convertor.to_bytes(source);
 	}
 
