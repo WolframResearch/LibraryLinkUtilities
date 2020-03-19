@@ -56,6 +56,9 @@ TestExecute[
 	$Char16UTF8UTF16Conversion = `LLU`SafeLibraryFunction["Char16UTF8UTF16Conversion", {}, "Boolean"];
 	$StringToUTF16Bytes = `LLU`SafeLibraryFunction["UTF8ToUTF16Bytes", {String}, NumericArray];
 	$UTF16BytesToString = `LLU`SafeLibraryFunction["UTF16BytesToUTF8", {NumericArray}, String];
+	$Char32UTF8UTF32Conversion = `LLU`SafeLibraryFunction["Char32UTF8UTF32Conversion", {}, "Boolean"];
+	$StringToUTF32Bytes = `LLU`SafeLibraryFunction["UTF8ToUTF32Bytes", {String}, NumericArray];
+	$UTF32BytesToString = `LLU`SafeLibraryFunction["UTF32BytesToUTF8", {NumericArray}, String];
 ];
 
 TestExecute[
@@ -212,4 +215,28 @@ Test[
 	FromCharacterCode[{97, 98, 99, 65, 66, 67, 206, 177, 206, 178, 206, 179}, "UTF8"]
 	,
 	TestID -> "UtilitiesTestSuite-20200319-S9X8R6"
+];
+
+VerificationTest[
+	$Char32UTF8UTF32Conversion[]
+	,
+	TestID -> "UtilitiesTestSuite-20200319-B7Y3D9"
+];
+
+
+Test[
+	$StringToUTF32Bytes[FromCharacterCode[{122, 195, 159, 230, 176, 180, 240, 159, 141, 140}, "UTF8"]]
+	,
+	NumericArray[{122, 223, 27700, 127820}, "UnsignedInteger32"]
+	,
+	TestID -> "UtilitiesTestSuite-20200319-V9K7W3"
+];
+
+
+Test[
+	$UTF32BytesToString[NumericArray[{122, 223, 27700, 127820}, "UnsignedInteger32"]]
+	,
+	FromCharacterCode[{122, 195, 159, 230, 176, 180, 240, 159, 141, 140}, "UTF8"]
+	,
+	TestID -> "UtilitiesTestSuite-20200319-B4O4E2"
 ];

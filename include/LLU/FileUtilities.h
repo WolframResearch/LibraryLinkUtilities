@@ -81,6 +81,51 @@ namespace LLU {
 	}
 
 	/**
+	 * Convert string from UTF8 to UTF32.
+	 * @tparam  T - character type for the result
+	 * @param   source - string in UTF8 encoding
+	 * @return  copy of the input string converted to UTF32
+	 */
+	template<typename T>
+	std::basic_string<T> fromUTF8toUTF32(const std::string& source) {
+#ifdef _WIN32
+		// On Windows with VS2017 we always convert to uint32_t
+		std::wstring_convert<std::codecvt_utf8<uint32_t>, uint32_t> convertor;
+		if constexpr (!std::is_same_v<T, uint32_t>) {
+			std::basic_string<uint32_t> tmp = convertor.from_bytes(source);
+			return std::basic_string<T> { std::begin(tmp), std::end(tmp) };
+		} else {
+			return convertor.from_bytes(source);
+		}
+#else
+		std::wstring_convert<std::codecvt_utf8<T>, T> convertor;
+		return convertor.from_bytes(source);
+#endif
+	}
+
+	/**
+	 * Convert string from UTF32 to UTF8.
+	 * @tparam  T - character type of the UTF32 string
+	 * @param   source - string in UTF32 encoding
+	 * @return  copy of the input string converted to UTF8
+	 */
+	template<typename T>
+	std::string fromUTF32toUTF8(const std::basic_string<T>& source) {
+#ifdef _WIN32
+		// On Windows with VS2017 we always convert from uint32_t
+		std::wstring_convert<std::codecvt_utf8<uint32_t>, uint32_t> convertor;
+		if constexpr (!std::is_same_v<T, uint32_t>) {
+			return convertor.to_bytes(std::basic_string<uint32_t> { std::begin(source), std::end(source) });
+		} else {
+			return convertor.to_bytes(source);
+		}
+#else
+		std::wstring_convert<std::codecvt_utf8<T>, T> convertor;
+		return convertor.to_bytes(source.data());
+#endif
+	}
+
+	/**
 	 * @struct
 	 * @brief   Base class for shared access policies on Windows.
 	 * @details Library users are encouraged to provide their own derived classes if needed.

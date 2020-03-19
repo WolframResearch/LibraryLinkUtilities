@@ -125,7 +125,7 @@ LLU_LIBRARY_FUNCTION(Char16UTF8UTF16Conversion) {
 LLU_LIBRARY_FUNCTION(UTF8ToUTF16Bytes) {
 	auto u8str = mngr.getString(0);
 	std::u16string u16str = LLU::fromUTF8toUTF16<char16_t>(u8str);
-	LLU::NumericArray<std::uint16_t> u16bytes {reinterpret_cast<const std::uint16_t*>(u16str.data()), reinterpret_cast<const std::uint16_t*>(u16str.data() + u16str.length())};
+	LLU::NumericArray<uint16_t> u16bytes {reinterpret_cast<const uint16_t*>(u16str.data()), reinterpret_cast<const uint16_t*>(u16str.data() + u16str.length())};
 	mngr.set(u16bytes);
 }
 
@@ -136,5 +136,35 @@ LLU_LIBRARY_FUNCTION(UTF16BytesToUTF8) {
 		return static_cast<wchar_t>(cp);
 	});
 	std::string u8str = LLU::fromUTF16toUTF8<wchar_t>(u16wideStr);
+	mngr.set(u8str);
+}
+
+LLU_LIBRARY_FUNCTION(Char32UTF8UTF32Conversion) {
+	std::string u8 = u8"z\u00df\u6c34\U0001f34c";
+	std::u32string u32 = U"z\u00df\u6c34\U0001f34c";
+
+	auto u32to8 = LLU::fromUTF32toUTF8(u32);
+	bool isU32ToU8ok = (u8 == u32to8);
+
+	auto u8to32 = LLU::fromUTF8toUTF32<char32_t>(u8);
+	bool isU8ToU32ok = (u32 == u8to32);
+
+	mngr.set(isU8ToU32ok && isU32ToU8ok);
+}
+
+LLU_LIBRARY_FUNCTION(UTF8ToUTF32Bytes) {
+	auto u8str = mngr.getString(0);
+	std::u32string u32str = LLU::fromUTF8toUTF32<char32_t>(u8str);
+	LLU::NumericArray<uint32_t> u32bytes {reinterpret_cast<const uint32_t*>(u32str.data()), reinterpret_cast<const uint32_t*>(u32str.data() + u32str.length())};
+	mngr.set(u32bytes);
+}
+
+LLU_LIBRARY_FUNCTION(UTF32BytesToUTF8) {
+	auto u32bytes = mngr.getNumericArray<uint32_t>(0);
+	std::u32string u32str;
+	std::transform(u32bytes.cbegin(), u32bytes.cend(), std::back_inserter(u32str), [](uint32_t cp) {
+		return static_cast<char32_t>(cp);
+	});
+	std::string u8str = LLU::fromUTF32toUTF8(u32str);
 	mngr.set(u8str);
 }
