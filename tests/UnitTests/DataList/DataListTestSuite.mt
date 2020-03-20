@@ -17,7 +17,7 @@ TestExecute[
 
 	Get[FileNameJoin[{$LLUSharedDir, "LibraryLinkUtilities.wl"}]];
 
-	`LLU`RegisterPacletErrors[lib, <||>];
+	`LLU`InitializeLLU[lib];
 
 	PassDataStore = `LLU`SafeLibraryFunction["PassDataStore", {"DataStore", "Boolean"}, "DataStore"];
 	JoinDataStores = `LLU`SafeLibraryFunction["JoinDataStores", {"DataStore", "DataStore", "Boolean"}, "DataStore"];

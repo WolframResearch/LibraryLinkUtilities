@@ -18,11 +18,7 @@ TestExecute[
 
 	Get[FileNameJoin[{$LLUSharedDir, "LibraryLinkUtilities.wl"}]];
 
-	RegisterPacletErrors[lib, <|
-		"StaticTopLevelError" -> "This top-level error has a static error message.",
-		"TopLevelNamedSlotsError" -> "Hi `name`! Error occurred `when`.",
-		"TopLevelNumberedSlotsError" -> "Slot number one: `1`, number two: `2`."
-	|>];
+	`LLU`InitializeLLU[lib];
 
 	Off[General::stop]; (* because we want to see all error messages from CreateLibrary *)
 

@@ -22,7 +22,7 @@ TestExecute[
 
 	Get[FileNameJoin[{$LLUSharedDir, "LibraryLinkUtilities.wl"}]];
 
-	RegisterPacletErrors[lib, <||>];
+	`LLU`InitializeLLU[lib];
 
 	`LLU`Logger`PrintLogFunctionSelector := Block[{`LLU`Logger`FormattedLog = `LLU`Logger`LogToShortString},
 		`LLU`Logger`PrintLogToSymbol[LogSymbol][##]

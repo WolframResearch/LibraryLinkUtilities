@@ -19,9 +19,8 @@ TestExecute[
 		options (* defined in TestConfig.wl *)
 	];
 
-
 	Get[FileNameJoin[{$LLUSharedDir, "LibraryLinkUtilities.wl"}]];
-	RegisterPacletErrors[lib, <||>];
+	InitializeLLU[lib];
 
 	EchoImage1 = SafeLibraryFunction["EchoImage1", { LibraryDataType[Image | Image3D] }, LibraryDataType[Image | Image3D] ];
 	EchoImage2 = SafeLibraryFunction["EchoImage2", { LibraryDataType[Image | Image3D] }, LibraryDataType[Image | Image3D] ];

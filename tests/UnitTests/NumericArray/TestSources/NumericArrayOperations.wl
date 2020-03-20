@@ -1,7 +1,7 @@
 Needs["CCompilerDriver`"]
 lib = CreateLibrary[{"NumericArrayOperations.cpp"}, "NumericArrayOperations", options, "Defines" -> {"LLU_LOG_DEBUG"}];
 Get[FileNameJoin[{$LLUSharedDir, "LibraryLinkUtilities.wl"}]];
-`LLU`RegisterPacletErrors[lib, <||>];
+`LLU`InitializeLLU[lib];
 
 emptyVector = `LLU`SafeLibraryFunction["CreateEmptyVector", {}, NumericArray];
 emptyMatrix = `LLU`SafeLibraryFunction["CreateEmptyMatrix", {}, NumericArray];

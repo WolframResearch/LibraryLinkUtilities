@@ -16,8 +16,7 @@ TestExecute[
 	lib = CCompilerDriver`CreateLibrary[FileNameJoin[{currentDirectory, "TestSources", #}]& /@ {"WSTest.cpp", "WSEncodings.cpp"}, "WSTest", options];
 
 	Get[FileNameJoin[{$LLUSharedDir, "LibraryLinkUtilities.wl"}]];
-
-	RegisterPacletErrors[lib, <||>];
+	`LLU`InitializeLLU[lib];
 
 	i8Range = {0, 255};
 	i16Range = {-2^15, 2^15 - 1};

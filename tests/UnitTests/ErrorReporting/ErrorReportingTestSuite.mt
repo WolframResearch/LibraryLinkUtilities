@@ -18,7 +18,8 @@ TestExecute[
 
 	Get[FileNameJoin[{$LLUSharedDir, "LibraryLinkUtilities.wl"}]];
 
-	`LLU`RegisterPacletErrors[lib, <|
+	`LLU`InitializeLLU[lib];
+	`LLU`RegisterPacletErrors[<|
 		"StaticTopLevelError" -> "This top-level error has a static error message.",
 		"TopLevelNamedSlotsError" -> "Hi `name`! Error occurred `when`.",
 		"TopLevelNumberedSlotsError" -> "Slot number one: `1`, number two: `2`."
@@ -362,7 +363,7 @@ TestExecute[
 	libLogDebug = CCompilerDriver`CreateLibrary[{loggerTestPath}, "LogDebug", options, "Defines" -> {"LLU_LOG_DEBUG"}];
 
 	`LLU`$InitLibraryLinkUtils = False;
-	`LLU`RegisterPacletErrors[libLogDebug, <||>];
+	`LLU`InitializeLLU[libLogDebug];
 
 	`LLU`Logger`PrintLogFunctionSelector := Block[{`LLU`Logger`FormattedLog = `LLU`Logger`LogToAssociation},
 		`LLU`Logger`PrintLogToSymbol[TestLogSymbol][##]
@@ -539,7 +540,7 @@ TestExecute[
 		"LogWarning", options, "Defines" -> {"LLU_LOG_WARNING"}];
 
 	`LLU`$InitLibraryLinkUtils = False;
-	`LLU`RegisterPacletErrors[libLogWarning, <||>];
+	`LLU`InitializeLLU[libLogWarning];
 	GreaterAtW = `LLU`SafeLibraryFunction["GreaterAt", {String, {_, 1}, Integer, Integer}, "Boolean"];
 ];
 
@@ -557,7 +558,7 @@ Test[
 
 TestExecute[
 	Get[FileNameJoin[{$LLUSharedDir, "LibraryLinkUtilities.wl"}]];
-	`LLU`RegisterPacletErrors[libLogWarning, <||>];
+	`LLU`RegisterPacletErrors[libLogWarning];
 ];
 
 Test[
