@@ -5,23 +5,53 @@ Begin["`LLU`"];
 (* ------------------------------------------------------------------------- *)
 (* ------------------------------------------------------------------------- *)
 
-$InitLibraryLinkUtils = False;
+$InitializeLLU = False;
 
-InitLibraryLinkUtils[libPath_?StringQ] :=
-If[TrueQ[$InitLibraryLinkUtils],
-	$InitLibraryLinkUtils
-	, (* else *)
-	$InitLibraryLinkUtils = (
-		SetPacletLibrary[libPath];
-		SafeLibraryLoad[libPath];
-		$GetCErrorCodes = SafeWSTPFunction["sendRegisteredErrors"];
-		$SetLoggerContext = SafeLibraryFunction["setLoggerContext", {"UTF8String"}, "UTF8String", "Optional" -> True];
-		$SetExceptionDetailsContext = SafeLibraryFunction["setExceptionDetailsContext", {"UTF8String"}, "UTF8String"];
-		SetContexts[Context[$InitLibraryLinkUtils]]; (* Tell C++ part of LLU in which context were top-level symbols loaded. *)
-		True
-	)
-];
+(* The following pattern is very common in paclets to ensure the initialization only runs once:
+ * $MyPacletInit = False;
+ * InitMyPaclet[] := If[TrueQ[$MyPacletInit],
+ *      $MyPacletInit
+ *      ,
+ *      <actual initialization done here, returns True if succeeded>
+ * ]
+ * CallOnceIfSucceeded is a small utility function to standardize this approach.
+ *)
+SetAttributes[CallOnceIfSucceeded, HoldFirst];
+CallOnceIfSucceeded[callResult_] := Function[initRoutine, callResult = If[TrueQ[callResult], True, Evaluate[initRoutine]], HoldFirst];
 
+(* LLU depends on WSTP, so WSTP must be loaded before the paclet library.
+ * Paclets are not required to carry their own copy of WSTP shared library,
+ * instead every paclet attempts to load the WSTP located within the current installation of Mathematica.
+ * This may cause problems if paclet was built with different WSTP interface version but this should be extremely rare.
+ *)
+LoadWSTPLibrary[] :=
+	Block[{wstpName, wstpPath},
+		wstpName = "WSTP" <> ToString[$SystemWordLength] <> "i" <> ToString[MathLink`Information`$InterfaceNumber];
+		wstpPath = System`Private`LocateDynamicLibrary[wstpName];
+		SafeLibraryLoad @ wstpPath
+	];
+
+(* Initialization of LLU. Must be called by every paclet that uses LLU.
+ * libPath - path to the main paclet library (the one that LLU was linked into)
+ *)
+InitializeLLU[libPath_?StringQ] := CallOnceIfSucceeded[$InitializeLLU] @ (
+	(* Load WSTP *)
+	LoadWSTPLibrary[];
+
+	(* Load paclet library. This has to be done, because LLU needs its own init functions in the C++ code, that are part of paclet library. *)
+	SetPacletLibrary[libPath];
+	SafeLibraryLoad[libPath];
+
+	(* Initialize error handling part of LLU by loading errors from the C++ code *)
+	$GetCErrorCodes = SafeWSTPFunction["sendRegisteredErrors", "Throws" -> True];
+	RegisterCppErrors[];
+
+	(* Load library functions for initializing different parts of LLU. *)
+	$SetLoggerContext = SafeLibraryFunction["setLoggerContext", {String}, String, "Optional" -> True];
+	$SetExceptionDetailsContext = SafeLibraryFunction["setExceptionDetailsContext", {String}, String];
+	SetContexts[Context[$InitializeLLU]]; (* Tell C++ part of LLU in which context were top-level symbols loaded. *)
+	True
+);
 
 (* ::Section:: *)
 (* Internal Utilities *)
@@ -41,8 +71,8 @@ $ErrorCount = 0;
 
 (* Global association for all registered errors *)
 $CorePacletFailureLUT = <|
-	"LibraryLoadFailure" -> {20, "Failed to load library `LibraryName`."},
-	"FunctionLoadFailure" -> {21, "Failed to load the function `FunctionName` from `LibraryName`."},
+	"LibraryLoadFailure" -> {20, "Failed to load library `LibraryName`. Details: `details`."},
+	"FunctionLoadFailure" -> {21, "Failed to load the function `FunctionName` from `LibraryName`. Details: `details`."},
 	"RegisterFailure" -> {22, "Incorrect arguments to RegisterPacletErrors."},
 	"UnknownFailure" -> {23, "The error `ErrorName` has not been registered."},
 	"ProgressMonInvalidValue" -> {24, "Expecting None or a Symbol for the option \"ProgressMonitor\"."},
@@ -50,6 +80,16 @@ $CorePacletFailureLUT = <|
 	"UnexpectedManagedExpression" -> {26, "Expected managed `expected`, got `actual`." }
 |>;
 
+(* Every error used in the paclet must have unique ID. We distinguish 4 ranges of IDs:
+ * (-Infinity, 0) - for errors returned from the C++ code,
+ * [0, 20) - reserved for LibraryLink
+ * [20, $MaxLLUBuiltinErrorID] - reserved for built-in LLU top-level errors
+ * [$MaxLLUBuiltinErrorID + 1, Infinity) - for user-defined top-level errors
+ *
+ * IMPORTANT!
+ * Developers never explicitly specify IDs for their errors. This is done internally by LLU.
+ *)
+$MaxLLUBuiltinErrorID = 99;
 
 (* ::SubSection:: *)
 (* Utility Functions *)
@@ -93,40 +133,44 @@ SetContexts[loggerContext_?StringQ, exceptionContext_?StringQ] := (
 SetPacletLibrary[lib_?StringQ] := $PacletLibrary = lib;
 
 SafeLibraryLoad[lib_] :=
-	Quiet[
-		Check[
-			LibraryLoad[lib]
-			,
-			Throw @ CreatePacletFailure["LibraryLoadFailure", "MessageParameters" -> <|"LibraryName" -> lib|>];
-		]
-	]
+	Quiet @ Check[
+		LibraryLoad[lib]
+		,
+		Throw @ CreatePacletFailure[
+			"LibraryLoadFailure",
+			"MessageParameters" -> <|"LibraryName" -> lib, "details" -> ToString @ LibraryLink`$LibraryError|>
+		];
+	];
 
 Options[SafeLibraryFunctionLoad] = {
 	"Optional" -> False
 };
 
 SafeLibraryFunctionLoad[fname_?StringQ, fParams_, retType_, opts : OptionsPattern[SafeLibraryFunctionLoad]] :=
-	Quiet[
-		Check[
-			(* There are 2 categories of function arguments:
-			 * - regular - supported by LibraryLink (String, Integer, NumericArray, etc.)
-			 * - special - extensions added by LLU that need extra parsing before they can be passed to LibraryLink, for example Managed Expressions
-			 *)
-			Block[{specialArgs = argumentCategorizer[fParams]},
-				If[Length @ specialArgs > 0,
-					(* If the function that we are registering takes special arguments, we need to compose it with argumentParser function,
-					 * which will parse input arguments before every call, so that they are accepted by LibraryLink.*)
-					LibraryFunctionLoad[$PacletLibrary, fname, normalizeArgTypes @ fParams, retType] @* argumentParser[specialArgs]
-					,
-					LibraryFunctionLoad[$PacletLibrary, fname, fParams, retType]
-				]
-			]
-			,
-			If[TrueQ @ OptionValue["Optional"],
-				Null&
+	SafeLibraryFunctionLoad[$PacletLibrary, fname, fParams, retType, opts];
+
+SafeLibraryFunctionLoad[libName_?StringQ, fname_?StringQ, fParams_, retType_, opts : OptionsPattern[SafeLibraryFunctionLoad]] :=
+	Quiet @ Check[
+		(* There are 2 categories of function arguments:
+		 * - regular - supported by LibraryLink (String, Integer, NumericArray, etc.)
+		 * - special - extensions added by LLU that need extra parsing before they can be passed to LibraryLink, for example Managed Expressions
+		 *)
+		Block[{specialArgs = argumentCategorizer[fParams]},
+			If[Length @ specialArgs > 0,
+				(* If the function that we are registering takes special arguments, we need to compose it with argumentParser function,
+				 * which will parse input arguments before every call, so that they are accepted by LibraryLink.*)
+				LibraryFunctionLoad[libName, fname, normalizeArgTypes @ fParams, retType] @* argumentParser[specialArgs]
 				,
-				Throw @ CreatePacletFailure["FunctionLoadFailure", "MessageParameters" -> <|"FunctionName" -> fname, "LibraryName" -> $PacletLibrary|>]
+				LibraryFunctionLoad[libName, fname, fParams, retType]
 			]
+		]
+		,
+		If[TrueQ @ OptionValue["Optional"],
+			Null&
+			,
+			Throw @ CreatePacletFailure[
+				"FunctionLoadFailure",
+				"MessageParameters" -> <|"FunctionName" -> fname, "LibraryName" -> libName, "details" -> ToString @ LibraryLink`$LibraryError|>]
 		]
 	];
 
@@ -172,6 +216,9 @@ argumentParser[specialArgs_?AssociationQ] := Sequence @@ MapIndexed[parseManaged
 holdSet[Hold[sym_], rhs_] := sym = rhs;
 
 SafeLibraryFunction[fname_?StringQ, fParams_, retType_, opts : OptionsPattern[]] :=
+    SafeLibraryFunction[$PacletLibrary, fname, fParams, retType, opts];
+
+SafeLibraryFunction[libName_?StringQ, fname_?StringQ, fParams_, retType_, opts : OptionsPattern[]] :=
 Module[{errorHandler, pmSymbol, newParams, f, functionOptions, loadOptions},
 	functionOptions = FilterRules[{opts}, Options[SafeLibraryFunction]];
     errorHandler = If[TrueQ[OptionValue[Automatic, functionOptions, "Throws"]],
@@ -182,19 +229,22 @@ Module[{errorHandler, pmSymbol, newParams, f, functionOptions, loadOptions},
     pmSymbol = OptionValue[Automatic, functionOptions, "ProgressMonitor", Hold];
 	loadOptions = FilterRules[{opts}, Options[SafeLibraryFunctionLoad]];
     If[fParams === LinkObject || pmSymbol === Hold[None],
-	    errorHandler @* SafeLibraryFunctionLoad[fname, fParams, retType, loadOptions]
+	    errorHandler @* SafeLibraryFunctionLoad[libName, fname, fParams, retType, loadOptions]
 	    , (* else *)
 	    If[Not @ Developer`SymbolQ @ ReleaseHold @ pmSymbol,
 		    Throw @ CreatePacletFailure["ProgressMonInvalidValue"];
 	    ];
 	    newParams = Append[fParams, {Real, 1, "Shared"}];
-	    f = errorHandler @* SafeLibraryFunctionLoad[fname, newParams, retType, loadOptions];
+	    f = errorHandler @* SafeLibraryFunctionLoad[libName, fname, newParams, retType, loadOptions];
 	    (
 		    holdSet[pmSymbol, Developer`ToPackedArray[{0.0}]];
 		    f[##, ReleaseHold[pmSymbol]]
 	    )&
     ]
 ];
+
+SafeWSTPFunction[libName_String, fname_String, opts : OptionsPattern[SafeLibraryFunction]] :=
+	SafeLibraryFunction[libName, fname, LinkObject, LinkObject, opts];
 
 SafeWSTPFunction[fname_String, opts : OptionsPattern[SafeLibraryFunction]] :=
 	SafeLibraryFunction[fname, LinkObject, LinkObject, opts];
@@ -211,38 +261,25 @@ LibraryMemberFunction[exprHead_][fname_String, fParams_, retType_, opts : Option
 (* ------------------------------------------------------------------------- *)
 (* ------------------------------------------------------------------------- *)
 
-RegisterPacletErrors[libPath_?StringQ, errors_?AssociationQ] :=
-Block[{cErrorCodes, max},
-	InitLibraryLinkUtils[libPath];
-	cErrorCodes = $GetCErrorCodes[]; (* <|"TestError1" -> (-1 -> "TestError1 message."), "TestError2" -> (-2 -> "TestError2 message.")|> *)
-	If[Length[$CorePacletFailureLUT] > 0,
-		max = MaximalBy[$CorePacletFailureLUT, First];
-		max = If[Depth[max] > 2 && IntegerQ[max[[1, 1]]] && max[[1, 1]] >= 100,
-			max[[1, 1]]
-			,
-			99
-		];
-		$CorePacletFailureLUT =
-			Association[
-				$CorePacletFailureLUT
-				,
-				MapIndexed[#[[1]] -> {(First[#2] + max), #[[2]]} &, Normal[errors]]
-				,
-				cErrorCodes
-			];
-		,
-		AssociateTo[$CorePacletFailureLUT,
-			Association[
-				MapIndexed[#[[1]] -> {(First[#2] + 99), #[[2]]} &, Normal[errors]]
-				,
-				cErrorCodes
-			]
-		];
+RegisterCppErrors[] := AssociateTo[$CorePacletFailureLUT, $GetCErrorCodes[]];
+
+RegisterPacletErrors[errors_?AssociationQ] :=
+	Block[{maxIDError, maxID},
+		maxIDError = First[MaximalBy[$CorePacletFailureLUT, First], {}];
+		maxID = Max[First[maxIDError, 0], $MaxLLUBuiltinErrorID];
+		AssociateTo[$CorePacletFailureLUT, MapIndexed[#[[1]] -> {(First[#2] + maxID), #[[2]]} &, Normal[errors]]]
 	];
-]
+
+RegisterPacletErrors[libPath_?StringQ] :=
+	RegisterPacletErrors[libPath, <||>];
+
+RegisterPacletErrors[libPath_?StringQ, errors_?AssociationQ] := (
+	InitializeLLU[libPath];
+	RegisterPacletErrors[errors];
+);
 
 RegisterPacletErrors[___] :=
-	Throw @ CreatePacletFailure["RegisterFailure"]
+	Throw @ CreatePacletFailure["RegisterFailure"];
 
 
 (* ::SubSection:: *)
