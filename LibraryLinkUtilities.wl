@@ -243,11 +243,20 @@ Module[{errorHandler, pmSymbol, newParams, f, functionOptions, loadOptions},
     ]
 ];
 
+Attributes[LazyEvaluate] = {HoldFirst};
+LazyEvaluate[result_?Developer`SymbolQ][f_, args___] := (result := result = f[args]);
+
+Attributes[LazyLibraryFunction] = {HoldFirst};
+LazyLibraryFunction[fname_?Developer`SymbolQ][args___] := LazyEvaluate[fname][SafeLibraryFunction, args];
+
 SafeWSTPFunction[libName_String, fname_String, opts : OptionsPattern[SafeLibraryFunction]] :=
 	SafeLibraryFunction[libName, fname, LinkObject, LinkObject, opts];
 
 SafeWSTPFunction[fname_String, opts : OptionsPattern[SafeLibraryFunction]] :=
 	SafeLibraryFunction[fname, LinkObject, LinkObject, opts];
+
+Attributes[LazyWSTPFunction] = {HoldFirst};
+LazyWSTPFunction[fname_?Developer`SymbolQ][args___] := LazyEvaluate[fname][SafeWSTPFunction, args];
 
 LibraryMemberFunction[exprHead_][fname_String, fParams_, retType_, opts : OptionsPattern[SafeLibraryFunction]] :=
     If[fParams === LinkObject && retType === LinkObject,
