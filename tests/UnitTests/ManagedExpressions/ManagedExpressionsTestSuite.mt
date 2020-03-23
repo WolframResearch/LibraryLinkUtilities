@@ -176,8 +176,8 @@ Test[
 	,
 	Failure["InvalidManagedExpressionID",
 		<|
-			"MessageTemplate" -> "`expr` is not a valid ManagedExpression.",
-			"MessageParameters" -> <|"expr" -> MyExpression[500]|>,
+			"MessageTemplate" -> "`Expr` is not a valid ManagedExpression.",
+			"MessageParameters" -> <|"Expr" -> MyExpression[500]|>,
 			"ErrorCode" -> 25,
 			"Parameters" -> {}
 		|>
@@ -191,8 +191,8 @@ Test[
 	,
 	Failure["UnexpectedManagedExpression",
 		<|
-			"MessageTemplate" -> "Expected managed `expected`, got `actual`.",
-			"MessageParameters" -> <|"expected" -> MyExpression, "actual" -> NotMyExpression[1]|>,
+			"MessageTemplate" -> "Expected managed `Expected`, got `Actual`.",
+			"MessageParameters" -> <|"Expected" -> MyExpression, "Actual" -> NotMyExpression[1]|>,
 			"ErrorCode" -> 26,
 			"Parameters" -> {}
 		|>
@@ -308,8 +308,8 @@ Test[
 	,
 	Failure["InvalidManagedExpressionID",
 		<|
-			"MessageTemplate" -> "`expr` is not a valid ManagedExpression.",
-			"MessageParameters" -> <|"expr" -> MyExpression[500]|>,
+			"MessageTemplate" -> "`Expr` is not a valid ManagedExpression.",
+			"MessageParameters" -> <|"Expr" -> MyExpression[500]|>,
 			"ErrorCode" -> 25,
 			"Parameters" -> {}
 		|>

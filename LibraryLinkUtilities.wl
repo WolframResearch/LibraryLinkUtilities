@@ -71,13 +71,13 @@ $ErrorCount = 0;
 
 (* Global association for all registered errors *)
 $CorePacletFailureLUT = <|
-	"LibraryLoadFailure" -> {20, "Failed to load library `LibraryName`. Details: `details`."},
-	"FunctionLoadFailure" -> {21, "Failed to load the function `FunctionName` from `LibraryName`. Details: `details`."},
+	"LibraryLoadFailure" -> {20, "Failed to load library `LibraryName`. Details: `Details`."},
+	"FunctionLoadFailure" -> {21, "Failed to load the function `FunctionName` from `LibraryName`. Details: `Details`."},
 	"RegisterFailure" -> {22, "Incorrect arguments to RegisterPacletErrors."},
 	"UnknownFailure" -> {23, "The error `ErrorName` has not been registered."},
 	"ProgressMonInvalidValue" -> {24, "Expecting None or a Symbol for the option \"ProgressMonitor\"."},
-	"InvalidManagedExpressionID" -> {25, "`expr` is not a valid ManagedExpression." },
-	"UnexpectedManagedExpression" -> {26, "Expected managed `expected`, got `actual`." }
+	"InvalidManagedExpressionID" -> {25, "`Expr` is not a valid ManagedExpression." },
+	"UnexpectedManagedExpression" -> {26, "Expected managed `Expected`, got `Actual`." }
 |>;
 
 (* Every error used in the paclet must have unique ID. We distinguish 4 ranges of IDs:
@@ -138,7 +138,7 @@ SafeLibraryLoad[lib_] :=
 		,
 		Throw @ CreatePacletFailure[
 			"LibraryLoadFailure",
-			"MessageParameters" -> <|"LibraryName" -> lib, "details" -> ToString @ LibraryLink`$LibraryError|>
+			"MessageParameters" -> <|"LibraryName" -> lib, "Details" -> ToString @ LibraryLink`$LibraryError|>
 		];
 	];
 
@@ -170,7 +170,7 @@ SafeLibraryFunctionLoad[libName_?StringQ, fname_?StringQ, fParams_, retType_, op
 			,
 			Throw @ CreatePacletFailure[
 				"FunctionLoadFailure",
-				"MessageParameters" -> <|"FunctionName" -> fname, "LibraryName" -> libName, "details" -> ToString @ LibraryLink`$LibraryError|>]
+				"MessageParameters" -> <|"FunctionName" -> fname, "LibraryName" -> libName, "Details" -> ToString @ LibraryLink`$LibraryError|>]
 		]
 	];
 
@@ -199,10 +199,10 @@ parseManaged[Managed[expectedHead_], expectedHead_[id_Integer]] :=
     If[ManagedLibraryExpressionQ[expectedHead[id]],
 	    id
 	    ,
-	    Throw @ CreatePacletFailure["InvalidManagedExpressionID", "MessageParameters" -> <|"expr" -> expectedHead[id]|>];
+	    Throw @ CreatePacletFailure["InvalidManagedExpressionID", "MessageParameters" -> <|"Expr" -> expectedHead[id]|>];
     ];
 parseManaged[Managed[expectedHead_], differentHead_[id_Integer]] :=
-	Throw @ CreatePacletFailure["UnexpectedManagedExpression", "MessageParameters" -> <|"expected" -> expectedHead, "actual" -> differentHead[id]|>];
+	Throw @ CreatePacletFailure["UnexpectedManagedExpression", "MessageParameters" -> <|"Expected" -> expectedHead, "Actual" -> differentHead[id]|>];
 parseManaged[_, arg_] := arg;
 
 (* Parse special arguments before they are passed to a LibraryFunction. Currently the only implemented type of special arguments are ManagedExpressions, so
