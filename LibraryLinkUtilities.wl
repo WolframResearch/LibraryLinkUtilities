@@ -328,7 +328,7 @@ Block[{msgParam, param, errorCode, msgTemplate, errorType},
 			"Parameters" -> param
 		|>
 	]
-]
+];
 
 (* We need a symbol that will store values for TemplateSlots in the most recently thrown exception. Exceptions are thrown in C++ and slots values provided
  * in ErrorManager::throwException are transferred in a List via WSTP and assigned to this symbol.
@@ -337,7 +337,7 @@ Block[{msgParam, param, errorCode, msgTemplate, errorType},
 $LastFailureParameters;
 
 GetCCodeFailureParams[msgTemplate_String?StringQ] :=
-Block[{slotNames, slotValues, data},
+Block[{slotNames, slotValues},
 	slotNames = Cases[First @ StringTemplate[msgTemplate], TemplateSlot[s_] -> s];
 	slotNames = DeleteDuplicates[slotNames];
 	slotValues = If[ListQ[$LastFailureParameters], $LastFailureParameters, {}];
@@ -380,7 +380,7 @@ With[{result = Quiet[f, {
 		, (* else *)
 		result
 	]
-]
+];
 
 CatchAndThrowLibraryFunctionError[f_] :=
 With[{result = Quiet[f, {
@@ -398,7 +398,7 @@ With[{result = Quiet[f, {
 		, (* else *)
 		result
 	]
-]
+];
 
 
 (* ::SubSection:: *)
