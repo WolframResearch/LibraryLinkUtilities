@@ -58,7 +58,7 @@ TestMatch[
 	,
 	$Failed
 	,
-	{Repeated[CreateLibrary::cmperr, {4}]}
+	{Repeated[CreateLibrary::cmperr, {1, 4}]} (* different compilers may stop after different number of errors, there must be at least 1 *)
 	,
 	TestID -> "MArgumentManagerTestSuite-20180903-Y8Z5P1"
 ];
