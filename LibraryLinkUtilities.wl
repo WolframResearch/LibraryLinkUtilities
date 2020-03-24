@@ -243,20 +243,11 @@ Module[{errorHandler, pmSymbol, newParams, f, functionOptions, loadOptions},
     ]
 ];
 
-Attributes[LazyEvaluate] = {HoldFirst};
-LazyEvaluate[result_?Developer`SymbolQ][f_, args___] := (result := result = f[args]);
-
-Attributes[LazyLibraryFunction] = {HoldFirst};
-LazyLibraryFunction[fname_?Developer`SymbolQ][args___] := LazyEvaluate[fname][SafeLibraryFunction, args];
-
 SafeWSTPFunction[libName_String, fname_String, opts : OptionsPattern[SafeLibraryFunction]] :=
 	SafeLibraryFunction[libName, fname, LinkObject, LinkObject, opts];
 
 SafeWSTPFunction[fname_String, opts : OptionsPattern[SafeLibraryFunction]] :=
 	SafeLibraryFunction[fname, LinkObject, LinkObject, opts];
-
-Attributes[LazyWSTPFunction] = {HoldFirst};
-LazyWSTPFunction[fname_?Developer`SymbolQ][args___] := LazyEvaluate[fname][SafeWSTPFunction, args];
 
 LibraryMemberFunction[exprHead_][fname_String, fParams_, retType_, opts : OptionsPattern[SafeLibraryFunction]] :=
     If[fParams === LinkObject && retType === LinkObject,
@@ -264,6 +255,38 @@ LibraryMemberFunction[exprHead_][fname_String, fParams_, retType_, opts : Option
 	    ,
 		SafeLibraryFunction[fname, Prepend[fParams, Managed[exprHead]], retType, opts]
     ];
+
+
+(* ::SubSection:: *)
+(* Lazy loading library functions *)
+(* ------------------------------------------------------------------------- *)
+
+(* Here is a typical way to load a library function and assign it to a symbol:
+ *     f = SafeLibraryFunction["functionName", {Integer}, String];
+ * This code will immediately evaluate SafeLibraryFunction call and assign the result to f.
+ * If your paclet loads 50 functions during initialization, it may be frustrating for the users to wait that long. Even worse,
+ * if you initialized LLU with a relative path to the dynamic library, you will end up calling FindLibrary 50 times, which takes considerable amount of time.
+ *
+ * One possible solution is to replace "f = " with "f := " ta avoid immediate evaluation of the RHS, but this would result in evaluating RHS every time
+ * f is used. To address this, LLU defines a helper function Memoize:
+ *)
+
+Attributes[Memoize] = {HoldAll};
+Memoize[expr_] := expr = expr;
+
+(* You can now lazy load your functions like this:
+ *     f := Memoize @ SafeLibraryFunction["functionName", {Integer}, String];
+ *
+ * In case you want to be even more explicit about what your code does, LLU also provides a function LazyLoad, to be used in the following way:
+ *     LazyLoad[f, SafeLibraryFunction["functionName", {Integer}, String]];
+ * This will evaluate the second argument only once, when f is first used.
+ *
+ * Both LazyLoad and Memoize can be used not only with SafeLibraryFunction but also with related functions like SafeWSTPFunction.
+ *)
+
+Attributes[LazyLoad] = {HoldAll};
+LazyLoad[f_?Developer`SymbolQ, expr_] := (f := f = expr);
+
 
 (* ::SubSection:: *)
 (* RegisterPacletErrors *)
