@@ -101,7 +101,7 @@ Cell[BoxData[{
      "]"}], "]"}], ";"}], "\[IndentingNewLine]", 
  RowBox[{"Catch", "[", "\[IndentingNewLine]", 
   RowBox[{
-   RowBox[{"InitializeLLU", "[", "lib", "]"}], ";", "\[IndentingNewLine]", 
+   RowBox[{"InitializePacletLibrary", "[", "lib", "]"}], ";", "\[IndentingNewLine]",
    RowBox[{"GreaterAt", "=", 
     RowBox[{"SafeLibraryFunction", "[", 
      RowBox[{"\"\<GreaterAt\>\"", ",", " ", 
@@ -4006,7 +4006,7 @@ Cell[BoxData[
        RowBox[{"$LLUSharedDir", ",", "\"\<LibraryLinkUtilities.wl\>\""}], 
        "}"}], "]"}], "]"}], ";"}], "\[IndentingNewLine]", 
    RowBox[{
-    RowBox[{"Global`LLU`InitializeLLU", "[", "libWarn", "]"}], ";"}], 
+    RowBox[{"Global`LLU`InitializePacletLibrary", "[", "libWarn", "]"}], ";"}],
    "\[IndentingNewLine]", 
    RowBox[{
     RowBox[{"GreaterAtW", "=", 

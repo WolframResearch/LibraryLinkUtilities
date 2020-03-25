@@ -20,7 +20,7 @@ TestExecute[
 	];
 
 	Get[FileNameJoin[{$LLUSharedDir, "LibraryLinkUtilities.wl"}]];
-	InitializeLLU[lib];
+	InitializePacletLibrary[lib];
 
 	EchoImage1 = SafeLibraryFunction["EchoImage1", { LibraryDataType[Image | Image3D] }, LibraryDataType[Image | Image3D] ];
 	EchoImage2 = SafeLibraryFunction["EchoImage2", { LibraryDataType[Image | Image3D] }, LibraryDataType[Image | Image3D] ];

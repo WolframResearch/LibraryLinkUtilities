@@ -25,7 +25,7 @@ TestExecute[
 
 	Get[FileNameJoin[{$LLUSharedDir, "LibraryLinkUtilities.wl"}]];
 
-	`LLU`InitializeLLU[lib];
+	`LLU`InitializePacletLibrary[lib];
 
 	`LLU`Logger`FormattedLog := `LLU`Logger`LogToShortString;
 	(* SleepyThreads[n, m, t] spawns n threads and performs m jobs on them, where each job is just sleeping t milliseconds *)

@@ -5,20 +5,6 @@ Begin["`LLU`"];
 (* ------------------------------------------------------------------------- *)
 (* ------------------------------------------------------------------------- *)
 
-$InitializeLLU = False;
-
-(* The following pattern is very common in paclets to ensure the initialization only runs once:
- * $MyPacletInit = False;
- * InitMyPaclet[] := If[TrueQ[$MyPacletInit],
- *      $MyPacletInit
- *      ,
- *      <actual initialization done here, returns True if succeeded>
- * ]
- * CallOnceIfSucceeded is a small utility function to standardize this approach.
- *)
-SetAttributes[CallOnceIfSucceeded, HoldFirst];
-CallOnceIfSucceeded[callResult_] := Function[initRoutine, callResult = If[TrueQ[callResult], True, Evaluate[initRoutine]], HoldFirst];
-
 (* LLU depends on WSTP, so WSTP must be loaded before the paclet library.
  * Paclets are not required to carry their own copy of WSTP shared library,
  * instead every paclet attempts to load the WSTP located within the current installation of Mathematica.
@@ -31,10 +17,12 @@ LoadWSTPLibrary[] :=
 		SafeLibraryLoad @ wstpPath
 	];
 
-(* Initialization of LLU. Must be called by every paclet that uses LLU.
+(* Initialization of LLU that involves loading the main paclet library. Must be called by every paclet that uses LLU and will be evaluated only once
+ * unless it failed. Failures are indicated by Throwing.
  * libPath - path to the main paclet library (the one that LLU was linked into)
  *)
-InitializeLLU[libPath_?StringQ] := CallOnceIfSucceeded[$InitializeLLU] @ (
+InitializePacletLibrary[libPath_?StringQ] := Once @ $InitializePacletLibrary[libPath];
+$InitializePacletLibrary[libPath_?StringQ] := (
 	(* Load WSTP *)
 	LoadWSTPLibrary[];
 
@@ -47,10 +35,9 @@ InitializeLLU[libPath_?StringQ] := CallOnceIfSucceeded[$InitializeLLU] @ (
 	RegisterCppErrors[];
 
 	(* Load library functions for initializing different parts of LLU. *)
-	$SetLoggerContext = SafeLibraryFunction["setLoggerContext", {String}, String, "Optional" -> True];
-	$SetExceptionDetailsContext = SafeLibraryFunction["setExceptionDetailsContext", {String}, String];
-	SetContexts[Context[$InitializeLLU]]; (* Tell C++ part of LLU in which context were top-level symbols loaded. *)
-	True
+	$SetLoggerContext = SafeLibraryFunction["setLoggerContext", {String}, String, "Optional" -> True, "Throws" -> True];
+	$SetExceptionDetailsContext = SafeLibraryFunction["setExceptionDetailsContext", {String}, String, "Throws" -> True];
+	SetContexts[Context[$PacletLibrary]]; (* Tell C++ part of LLU in which context were top-level symbols loaded. *)
 );
 
 (* ::Section:: *)
@@ -306,7 +293,7 @@ RegisterPacletErrors[libPath_?StringQ] :=
 	RegisterPacletErrors[libPath, <||>];
 
 RegisterPacletErrors[libPath_?StringQ, errors_?AssociationQ] := (
-	InitializeLLU[libPath];
+	InitializePacletLibrary[libPath];
 	RegisterPacletErrors[errors];
 );
 

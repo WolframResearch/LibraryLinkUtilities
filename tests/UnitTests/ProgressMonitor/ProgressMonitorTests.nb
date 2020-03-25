@@ -649,7 +649,7 @@ Cell[BoxData[{
     RowBox[{"{", 
      RowBox[{"$LLUSharedDir", ",", "\"\<LibraryLinkUtilities.wl\>\""}], "}"}],
      "]"}], "]"}], ";"}], "\[IndentingNewLine]", 
- RowBox[{"Global`LLU`InitializeLLU", "[", "lib", "]"}]}], "Input",
+ RowBox[{"Global`LLU`InitializePacletLibrary", "[", "lib", "]"}]}], "Input",
  InitializationCell->True,
  CellChangeTimes->{{3.75136973141927*^9, 3.7513697441112137`*^9}, {
    3.7513697816158247`*^9, 3.751369841488006*^9}, {3.751370020756031*^9, 

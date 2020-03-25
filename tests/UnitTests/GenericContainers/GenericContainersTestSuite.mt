@@ -18,7 +18,7 @@ TestExecute[
 
 	Get[FileNameJoin[{$LLUSharedDir, "LibraryLinkUtilities.wl"}]];
 
-	`LLU`InitializeLLU[lib];
+	`LLU`InitializePacletLibrary[lib];
 
 	Off[General::stop]; (* because we want to see all error messages from CreateLibrary *)
 

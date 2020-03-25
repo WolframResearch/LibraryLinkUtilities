@@ -18,7 +18,7 @@ TestExecute[
 
 	Get[FileNameJoin[{$LLUSharedDir, "LibraryLinkUtilities.wl"}]];
 
-	`LLU`InitializeLLU[lib];
+	`LLU`InitializePacletLibrary[lib];
 	`LLU`RegisterPacletErrors[<|
 		"StaticTopLevelError" -> "This top-level error has a static error message.",
 		"TopLevelNamedSlotsError" -> "Hi `name`! Error occurred `when`.",
@@ -363,7 +363,7 @@ TestExecute[
 	libLogDebug = CCompilerDriver`CreateLibrary[{loggerTestPath}, "LogDebug", options, "Defines" -> {"LLU_LOG_DEBUG"}];
 
 	`LLU`$InitLibraryLinkUtils = False;
-	`LLU`InitializeLLU[libLogDebug];
+	`LLU`InitializePacletLibrary[libLogDebug];
 
 	`LLU`Logger`PrintLogFunctionSelector := Block[{`LLU`Logger`FormattedLog = `LLU`Logger`LogToAssociation},
 		`LLU`Logger`PrintLogToSymbol[TestLogSymbol][##]
@@ -539,26 +539,9 @@ TestExecute[
 	libLogWarning = CCompilerDriver`CreateLibrary[FileNameJoin[{currentDirectory, "TestSources", #}]& /@ {"LoggerTest.cpp"},
 		"LogWarning", options, "Defines" -> {"LLU_LOG_WARNING"}];
 
-	`LLU`$InitLibraryLinkUtils = False;
-	`LLU`InitializeLLU[libLogWarning];
-	GreaterAtW = `LLU`SafeLibraryFunction["GreaterAt", {String, {_, 1}, Integer, Integer}, "Boolean"];
-];
-
-Test[
-	Reap @ GreaterAtW["my:file.txt", {5, 6, 7, 8, 9}, 1, 3]
-	,
-	{
-		False, {{"(GreaterAt): File name my:file.txt contains a possibly problematic character \":\"."}}
-	}
-	,
-	SameTest -> ResultAndLogTest
-	,
-	TestID -> "ErrorReportingTestSuite-20190415-F5I9D0"
-];
-
-TestExecute[
 	Get[FileNameJoin[{$LLUSharedDir, "LibraryLinkUtilities.wl"}]];
-	`LLU`RegisterPacletErrors[libLogWarning];
+	`LLU`InitializePacletLibrary[libLogWarning];
+	GreaterAtW = `LLU`SafeLibraryFunction["GreaterAt", {String, {_, 1}, Integer, Integer}, "Boolean"];
 ];
 
 Test[
