@@ -289,14 +289,6 @@ RegisterPacletErrors[errors_?AssociationQ] :=
 		AssociateTo[$CorePacletFailureLUT, MapIndexed[#[[1]] -> {(First[#2] + maxID), #[[2]]} &, Normal[errors]]]
 	];
 
-RegisterPacletErrors[libPath_?StringQ] :=
-	RegisterPacletErrors[libPath, <||>];
-
-RegisterPacletErrors[libPath_?StringQ, errors_?AssociationQ] := (
-	InitializePacletLibrary[libPath];
-	RegisterPacletErrors[errors];
-);
-
 RegisterPacletErrors[___] :=
 	Throw @ CreatePacletFailure["RegisterFailure"];
 
