@@ -218,3 +218,4 @@ Contributors
 * Rafał Chojna (rafalc) - main developer
 * Sean Cheren  (scheren) - top-level code for error handling, CMake improvements
 * Rebecca Frederick (rebeccaf) - CMake improvements
+* Carlo Giacometti (carlog) - top-level utilities for advanced paclet loading

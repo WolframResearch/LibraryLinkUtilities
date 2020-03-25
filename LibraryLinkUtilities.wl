@@ -630,4 +630,76 @@ LoadMemberFunction[exprHead_][memberSymbol_?Developer`SymbolQ, fname_String, fPa
 LoadWSTPMemberFunction[exprHead_][memberSymbol_?Developer`SymbolQ, fname_String, opts : OptionsPattern[SafeLibraryFunction]] :=
 	LoadMemberFunction[exprHead][memberSymbol, fname, LinkObject, LinkObject, opts];
 
+
+(* ::SubSection:: *)
+(* Specific paclet utilities *)
+(* ------------------------------------------------------------------------- *)
+
+(*
+ * This section contains utility functions to be used in complex paclets that load multiple WL source files, define subcontexts, etc.
+ * They are independent of any other part of LLU and they are not directly related to LibraryLink, so it is likely that they will be moved
+ * to a different location in the future.
+ *)
+
+(*
+ * Find all symbols exported from a paclet under the given context
+ *)
+FindPacletSymbols[context_?StringQ] :=
+	Module[{paclet, extensions},
+		paclet = First[PacletFind[First @ StringSplit[context, "`"]], {}];
+		If[!PacletObjectQ[paclet],
+			Return[{}]
+		];
+		extensions = Select[
+			paclet["Extensions"],
+			MatchQ[{"Kernel", ___, "Context" -> {context} | context, ___}]
+		];
+		Join @@ Cases[extensions, ("Symbols" -> x_) :> x, Infinity]
+	];
+FindPacletSymbols[___] := {};
+
+(*
+ * Load the specified files, placing all symbols in the given context.
+ * During the loading of the files, $Context will be set to context <> "Private`" and the $ContextPath will be
+ * {"System`", mainPacletContext <> "`Private`", context} unless specified otherwise with the "ContextPath" option.
+ * File names given are interpreted relatively to FileNameDrop[$InputFileName, -1] unless overriden with the "FilePath" option.
+ *)
+Options[LoadFilesInContext] = {
+	(* If "FilePath" is Automatic, it's assumed that the location of the files is FileNameDrop[$InputFileName, -1].
+	 * Otherwise, specify the directory containing the files as the value of the "FilePath option. *)
+	"FilePath" -> Automatic,
+
+	(* If "ContextPath" is Automatic, $ContextPath will be set to {"System`", mainPacletContext <> "`Private`", context}.
+	 * Alternatively, one can specify an arbitrary valid list of contexts. *)
+	"ContextPath" -> Automatic
+};
+LoadFilesInContext[files: {__?StringQ} | _?StringQ, context_?StringQ, opts: OptionsPattern[]] :=
+	Module[{symbols, path, mainContext, contextPath},
+		symbols = FindSymbols[context];
+		path = With[
+			{folder = OptionValue["FilePath"]},
+			If[DirectoryQ[folder],
+				folder
+				,
+				FileNameDrop[$InputFileName, -1]
+			]
+		];
+		contextPath = OptionValue["ContextPath"];
+		If[contextPath === Automatic,
+			mainContext = First[StringSplit[context, "`"]];
+			contextPath = {"System`", mainContext <> "`Private`", context}
+		];
+		Unprotect @@ symbols;
+		Clear @@ symbols;
+		Block[
+			{$Context = context <> "Private`", $ContextPath = contextPath},
+			Map[
+				Get[FileNameJoin[{path, #}]] &,
+				Developer`ToList @ files
+			];
+		];
+		SetAttributes[#, {Protected, ReadProtected}] & /@ symbols;
+	];
+LoadFilesInContext[___] := $Failed;
+
 End[]; (* `LLU` *)
