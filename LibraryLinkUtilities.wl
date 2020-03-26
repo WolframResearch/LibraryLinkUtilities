@@ -153,7 +153,7 @@ SafeLibraryFunctionLoad[libName_?StringQ, fname_?StringQ, fParams_, retType_, op
 		]
 		,
 		If[TrueQ @ OptionValue["Optional"],
-			Null&
+			Missing["NotInLibrary"]
 			,
 			Throw @ CreatePacletFailure[
 				"FunctionLoadFailure",
