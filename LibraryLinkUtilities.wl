@@ -715,7 +715,7 @@ Options[LoadFilesInContext] = {
 };
 LoadFilesInContext[files: {__?StringQ} | _?StringQ, context_?StringQ, opts: OptionsPattern[]] :=
 	Module[{symbols, path, mainContext, contextPath},
-		symbols = FindSymbols[context];
+		symbols = FindPacletSymbols[context];
 		path = With[
 			{folder = OptionValue["FilePath"]},
 			If[DirectoryQ[folder],
