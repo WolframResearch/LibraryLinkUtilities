@@ -616,44 +616,45 @@ endfunction()
 # Copies paclet files to install location (CMAKE_INSTALL_PREFIX should be set appropriately before calling this).
 # Optional 3rd arg is PacletName (defaults to TARGET_NAME). Optional 4th arg is paclet location (defaults to CMAKE_CURRENT_SOURCE_DIR/PacletName).
 # "Old-style" (non-updateable) paclet layout (with PacletInfo.m in git root directory) is not supported.
-function(install_paclet_files TARGET_NAME LLU_INSTALL_DIR)
-	if(ARGC GREATER_EQUAL 3)
-		set(PACLET_NAME ${ARGV2})
-	else()
-		set(PACLET_NAME ${TARGET_NAME})
-	endif()
-	if(ARGC GREATER_EQUAL 4)
-		set(PACLET_DIRECTORY ${ARGV3})
-	else()
-		set(PACLET_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${PACLET_NAME})
-	endif()
-	#copy over the paclet directory - i.e. the main .m file, the Kernel directory, etc.
-	install(DIRECTORY ${PACLET_DIRECTORY}
+function(install_paclet_files)
+	set(OPTIONS INSTALL_TO_LAYOUT)
+	set(ONE_VALUE_ARGS TARGET LLU_LOCATION PACLET_NAME PACLET_FILES_LOCATION)
+	set(MULTI_VALUE_ARGS)
+	cmake_parse_arguments(INSTALL_PACLET "${OPTIONS}" "${ONE_VALUE_ARGS}" "${MULTI_VALUE_ARGS}" ${ARGN})
+	required_arg(INSTALL_PACLET_TARGET "Target must be specified.")
+	set_if_undefined(INSTALL_PACLET_PACLET_NAME ${INSTALL_PACLET_TARGET})
+	set_if_undefined(INSTALL_PACLET_PACLET_FILES_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/${INSTALL_PACLET_PACLET_NAME})
+
+	#copy over the paclet directory - i.e. the main .m file, the Kernel directory, PacletInfo file, etc.
+	install(DIRECTORY ${INSTALL_PACLET_PACLET_FILES_LOCATION}
 		DESTINATION ${CMAKE_INSTALL_PREFIX}
 		PATTERN ".DS_Store" EXCLUDE
 	)
+
 	#copy the library produced into LibraryResources/$SystemID
+	set(LIB_RESOURCES_DIR "${INSTALL_PACLET_PACLET_NAME}/LibraryResources")
 	detect_system_id(SYSTEMID)
-	install(TARGETS ${TARGET_NAME}
-		LIBRARY DESTINATION ${PACLET_NAME}/LibraryResources/${SYSTEMID}
-		RUNTIME DESTINATION ${PACLET_NAME}/LibraryResources/${SYSTEMID}
+	install(TARGETS ${INSTALL_PACLET_TARGET}
+		LIBRARY DESTINATION ${LIB_RESOURCES_DIR}/${SYSTEMID}
+		RUNTIME DESTINATION ${LIB_RESOURCES_DIR}/${SYSTEMID}
 	)
+
 	# copy LLU top-level code
-	if(NOT "${LLU_INSTALL_DIR}" STREQUAL "")
-		install(FILES "${LLU_INSTALL_DIR}/share/LibraryLinkUtilities.wl"
-			DESTINATION "${PACLET_NAME}/LibraryResources"
-		)
+	if(NOT INSTALL_PACLET_LLU_LOCATION)
+		message(WARNING "*** LLU_LOCATION was not specified. This may be OK if the paclet is not using LLU. ***")
 	else()
-		message(WARNING "*** Specified variable LLU_INSTALL_DIR is empty. This may be OK if the paclet is not using LLU. ***")
+		install(FILES "${INSTALL_PACLET_LLU_LOCATION}/share/LibraryLinkUtilities.wl"
+			DESTINATION ${LIB_RESOURCES_DIR}
+		)
 	endif()
-	#copy PacletInfo.m
-	install(FILES ${PACLET_NAME}/PacletInfo.m
-		DESTINATION "${PACLET_NAME}"
-	)
+
+	if(INSTALL_PACLET_INSTALL_TO_LAYOUT)
+		install_paclet_to_layout(${INSTALL_PACLET_PACLET_NAME} TRUE)
+	endif()
 endfunction()
 
 # Installs paclet into a Mathematica layout if requested.
-function(install_paclet_to_layout PACLET_NAME INSTALLQ)
+macro(install_paclet_to_layout PACLET_NAME INSTALLQ)
 	if(${INSTALLQ})
 		if(EXISTS "${MATHEMATICA_INSTALL_DIR}")
 			install(DIRECTORY "${CMAKE_INSTALL_PREFIX}/${PACLET_NAME}"
@@ -663,7 +664,7 @@ function(install_paclet_to_layout PACLET_NAME INSTALLQ)
 			message(WARNING "Failed to install paclet to layout: \"${MATHEMATICA_INSTALL_DIR}\" does not exist.")
 		endif()
 	endif()
-endfunction()
+macro()
 
 # Creates a custom 'zip' target for a paclet.
 # CMAKE_INSTALL_PREFIX should be set appropriately before calling this.
@@ -739,5 +740,17 @@ macro(fail_if_dne FILE_OR_DIR)
 		else()
 			message(FATAL_ERROR "File or directory does not exist: ${FILE_OR_DIR}")
 		endif()
+	endif()
+endmacro()
+
+macro(set_if_undefined VAR VALUE)
+	if(NOT VAR)
+		set(VAR ${VALUE})
+	endif()
+endmacro()
+
+macro(required_arg VAR MESSAGE)
+	if(NOT VAR)
+		message(FATAL_ERROR ${MESSAGE})
 	endif()
 endmacro()
