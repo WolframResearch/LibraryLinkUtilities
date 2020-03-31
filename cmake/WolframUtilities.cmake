@@ -135,23 +135,6 @@ function(get_wstp_library_name WSTP_INTERFACE_VERSION WSTP_LIB_NAME)
 	set(${WSTP_LIB_NAME} "${WSTP_LIBRARY}" PARENT_SCOPE)
 endfunction()
 
-# not sure if this one is needed, keep it just in case
-function(additional_paclet_dependencies SYSTEM_ID EXTRA_LIBS)
-	if (${SYSTEM_ID} STREQUAL "MacOSX-x86-64")
-		set(EXTRA_LIBS "c++" "-framework Foundation" PARENT_SCOPE)
-	elseif (${SYSTEM_ID} STREQUAL "Linux")
-		# nothing for now
-	elseif (${SYSTEM_ID} STREQUAL "Linux-x86-64")
-		# nothing for now
-	elseif (${SYSTEM_ID} STREQUAL "Linux-ARM")
-		# nothing for now
-	elseif (${SYSTEM_ID} STREQUAL "Windows")
-		# nothing for now
-	elseif (${SYSTEM_ID} STREQUAL "Windows-x86-64")
-		# nothing for now
-	endif ()
-endfunction()
-
 # On linux, set the linker flags to use the nonshared version of stdc++ if found.
 # This supports old runtimes lacking new c++ language features.
 function(add_cpp_nonshared_library TARGET_NAME)
@@ -664,7 +647,7 @@ macro(install_paclet_to_layout PACLET_NAME INSTALLQ)
 			message(WARNING "Failed to install paclet to layout: \"${MATHEMATICA_INSTALL_DIR}\" does not exist.")
 		endif()
 	endif()
-macro()
+endmacro()
 
 # Creates a custom 'zip' target for a paclet.
 # CMAKE_INSTALL_PREFIX should be set appropriately before calling this.
