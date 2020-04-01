@@ -253,7 +253,17 @@ iLoadLibraryFunction[symbol_, loader_, libraryName_, args___, opts : OptionsPatt
 		Clear[symbol];
 		assignmentHead[
 			symbol,
-			(preLoadRoutine[libraryName]; loader[libraryName, args, functionOpts])
+			(
+				preLoadRoutine[libraryName];
+				(* Library name is evaluated at the point of calling LoadLibraryFunction and it may be None if the library has not been loaded yet.
+				 * In this case, we do not pass it to a loading function, but instead we let the loading function use $PacletLibrary, which must be
+				 * initialized by the time the function is actually being loaded. *)
+				If[libraryName === None,
+					loader[args, functionOpts]
+					,
+					loader[libraryName, args, functionOpts]
+				]
+			)
 		]
 	];
 
@@ -270,9 +280,9 @@ guessFunctionNameFromSymbol[symbol_] := StringReplace["$" ~~ s_ :> s] @ SymbolNa
  * - fParams_ - parameter types of the library function to be loaded
  * - fResultType_ - result type
  * Options:
- * All options for SafeLibraryFunction and SafeLibraryFunctionLoad are accepted, and additionaly:
+ * All options for SafeLibraryFunction and SafeLibraryFunctionLoad are accepted, and additionally:
  * - "Lazy" : True|False - whether the loading should be lazy (default) or happen immediately
- * - "Loader" - arbitrary function that takes library name as argument. It will be evaluated before the library  function loads and is a good opportunity
+ * - "Loader" - arbitrary function that takes library name as argument. It will be evaluated before the library function loads and is a good opportunity
  *              to perform some kind of initialization routine. Notice that if "Lazy" -> True, the loader function will be lazy evaluated too.
  *)
 Options[LoadLibraryFunction] = {
