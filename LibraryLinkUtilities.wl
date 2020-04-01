@@ -700,40 +700,43 @@ FindPacletSymbols[context_?StringQ] :=
 FindPacletSymbols[___] := {};
 
 (*
- * Load the specified files, placing all symbols in the given context.
- * During the loading of the files, $Context will be set to context <> "Private`" and the $ContextPath will be
- * {"System`", mainPacletContext <> "`Private`", context} unless specified otherwise with the "ContextPath" option.
- * File names given are interpreted relatively to FileNameDrop[$InputFileName, -1] unless overriden with the "FilePath" option.
+ * Load the specified files, protecting and readprotecting all symbols in `exportedContext`.
+ * During the loading of the files, $Context will be set to `loadingContext` and the $ContextPath will be
+ * `{exportedContext, "System`"}` unless specified otherwise with the "ContextPath" option.
+ * File names given are interpreted relatively to `DirectoryName[$InputFileName]` unless overriden with the "FilePath" option.
  *)
 Options[LoadFilesInContext] = {
-	(* If "FilePath" is Automatic, it's assumed that the location of the files is FileNameDrop[$InputFileName, -1].
-	 * Otherwise, specify the directory containing the files as the value of the "FilePath option. *)
+	(* If "FilePath" is Automatic, it's assumed that the location of the files is `DirectoryName[$InputFileName]`.
+	 * Otherwise, specify the directory containing the files as the value of the "FilePath" option. If not a valid directory,
+	 * the option will be ignored
+	 *)
 	"FilePath" -> Automatic,
 
-	(* If "ContextPath" is Automatic, $ContextPath will be set to {"System`", mainPacletContext <> "`Private`", context}.
-	 * Alternatively, one can specify an arbitrary valid list of contexts. *)
+	(* If "ContextPath" is Automatic, $ContextPath will be set to `{exportedContext, "System`"}`.
+	 * Alternatively, one can specify an arbitrary valid list of contexts. If the value of the option is not
+	 * a list of strings ending in `, the option will be ignored
+	 *)
 	"ContextPath" -> Automatic
 };
-LoadFilesInContext[files: {__?StringQ} | _?StringQ, context_?StringQ, opts: OptionsPattern[]] :=
+LoadFilesInContext[files: {__?StringQ} | _?StringQ, exportedContext_?StringQ, loadingContext_?StringQ, opts: OptionsPattern[]] :=
 	Module[{symbols, path, mainContext, contextPath},
-		symbols = FindPacletSymbols[context];
+		symbols = FindPacletSymbols[exportedContext];
 		path = With[
 			{folder = OptionValue["FilePath"]},
 			If[DirectoryQ[folder],
 				folder
 				,
-				FileNameDrop[$InputFileName, -1]
+				DirectoryName[$InputFileName]
 			]
 		];
 		contextPath = OptionValue["ContextPath"];
-		If[contextPath === Automatic,
-			mainContext = First[StringSplit[context, "`"]];
-			contextPath = {"System`", mainContext <> "`Private`", context}
+		If[Quiet @ !VectorQ[contextPath, StringEndsQ["`"]],
+			contextPath = {exportedContext, "System`"}
 		];
 		Unprotect @@ symbols;
 		Clear @@ symbols;
 		Block[
-			{$Context = context <> "Private`", $ContextPath = contextPath},
+			{$Context = loadingContext, $ContextPath = contextPath},
 			Map[
 				Get[FileNameJoin[{path, #}]] &,
 				Developer`ToList @ files
