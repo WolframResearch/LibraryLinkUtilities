@@ -32,6 +32,7 @@ TestExecute[
 	StringsThroughVectorReversed = `LLU`SafeLibraryFunction["StringsThroughVectorReversed", {"DataStore"}, "DataStore"];
 	IntsToNumericArray = `LLU`SafeLibraryFunction["IntsToNumericArray", {"DataStore"}, NumericArray];
 	GetLength = `LLU`SafeLibraryFunction["GetLength", {"DataStore"}, Integer];
+	CheckSizeChange = `LLU`SafeLibraryFunction["CheckSizeChange", {Integer}, {Integer, 1}];
 
 	(* Test data used across multiple tests *)
 	bool = True;
@@ -409,6 +410,14 @@ Test[
 	4
 	,
 	TestID -> "DataListTestSuite-20190823-L2D8R7"
+];
+
+Test[
+	CheckSizeChange[5]
+	,
+	{5, 5, 5, 5}
+	,
+	TestID -> "DataListTestSuite-20200401-L5V4B8"
 ];
 
 (* Timing tests *)
