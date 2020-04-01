@@ -194,7 +194,7 @@ namespace LLU {
 		template<class P>
 		DataList& operator=(const DataList<T, P>& other) {
 			GenericDataStore::operator=(other);
-			proxyList = std::move(other.proxyList);
+			proxyList = other.proxyList;
 			return *this;
 		}
 
@@ -449,6 +449,7 @@ namespace LLU {
 	template<MArgumentType U>
 	auto DataList<T, PassingMode>::push_back(const std::string& name, MArgument& nodeData, MArgumentType MArgT) -> IsMArgument<U> {
 		Argument<MArgumentType::MArgument>(nodeData).addToDataStore(this->getContainer(), name, MArgT);
+		proxyList.emplace_back(this->getLastNode());
 	}
 
 	template<MArgumentType T, class PassingMode>
@@ -461,6 +462,7 @@ namespace LLU {
 	template<MArgumentType MArgT>
 	auto DataList<T, PassingMode>::push_back(const std::string& name, const MType_t<MArgT>& nodeData) -> ValidNodeType<MArgT> {
 		Argument<MArgT>::addDataStoreNode(this->getContainer(), name, nodeData);
+		proxyList.emplace_back(this->getLastNode());
 	}
 
 	template<MArgumentType T, class PassingMode>
@@ -471,7 +473,7 @@ namespace LLU {
 	template<MArgumentType T, class PassingMode>
 	void DataList<T, PassingMode>::push_back(const std::string& name, const DataList::value_type& nodeData) {
 		Argument<T>::addDataStoreNode(this->getContainer(), name, nodeData);
-		proxyList.emplace_back(LibraryData::DataStoreAPI()->DataStore_getLastNode(this->getContainer()));
+		proxyList.emplace_back(this->getLastNode());
 	}
 
 	template<MArgumentType T, class PassingMode>
