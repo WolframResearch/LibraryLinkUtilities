@@ -11,15 +11,16 @@
 class A {};
 
 LLU_LIBRARY_FUNCTION(UnregisteredArg) {
-	[[maybe_unused]] auto f = mngr.get<float>(0);
-	[[maybe_unused]] auto a = mngr.get<A>(1);
+	[[maybe_unused]] auto f = mngr.get<float>(0); // Compile time error - float does not correspond to any argument type known to MArgumentManager
+	[[maybe_unused]] auto a = mngr.get<A>(1); 	// Compile time error - A does not correspond to any argument type known to MArgumentManager
 }
 
 LLU_LIBRARY_FUNCTION(UnregisteredRetType) {
 	A a;
-	mngr.set(a);
+	mngr.set(a);	// Compile time error - A does not correspond to any return type known to MArgumentManager
 }
 
 LLU_LIBRARY_FUNCTION(GetArgsWithIndices) {
+	// Compile time error - number of argument types does not match the number of indices in the call to mngr.get<..>(...)
 	[[maybe_unused]] auto [x, y] = mngr.get<unsigned short, mint>({1, 2, 3});
 }
