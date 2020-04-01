@@ -33,15 +33,8 @@ set(TEST_MODULES
         "Utilities"
         )
 
-set(CMAKE_FIND_APPBUNDLE NEVER)
-
-find_program(WOLFRAMSCRIPT_EXE
-        NAMES wolframscript
-        HINTS ${MATHEMATICA_INSTALL_DIR}
-        PATH_SUFFIXES Executables MacOS
-        DOC "Path to wolframscript executable."
-)
-
+include("WolframPacletUtilities")
+find_wolframscript(WOLFRAMSCRIPT_EXE)
 message(STATUS "Unit tests will be run with: ${WOLFRAMSCRIPT_EXE}")
 
 foreach (UnitTest ${TEST_MODULES})
