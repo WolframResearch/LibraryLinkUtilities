@@ -59,11 +59,6 @@ namespace LLU {
 		 **/
 		MArgumentManager(WolframLibraryData ld, mint Argc, MArgument* Args, MArgument& Res);
 
-		/**
-		 *   @brief Default destructor
-		 **/
-		virtual ~MArgumentManager() = default;
-
 		/************************************ MArgument "getters" ************************************/
 
 		/**
