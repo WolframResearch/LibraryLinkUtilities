@@ -118,12 +118,17 @@ CustomMArgumentTypeQ[_] := False;
 CustomMResultTypeQ[_] := False;
 
 (* Get basic LibraryLink type(s) corresponding to a given user-defined type.
+ * MArgumentCustomType[t] must evaluate to a sequence of basic LibraryLink types that corresponds to a single argument of "type" t.
+ * MResultCustomType[t] must evaluate to a single basic LibraryLink type that corresponds to a library function return value of "type" t.
  * Downvalues for these symbols can be provided by developers either directly or by calling MArgumentType/MResultType
  *)
 MArgumentCustomType[t_] := t;
 MResultCustomType[t_] := t;
 
 (* Get transformation function for user-defined argument/return type.
+ * MArgumentTransform[t] must be a one-argument function that takes an expression of "type" t and returns
+ * a sequence of LibraryLink-compatible expressions (String, Integer, NumericArray, etc.).
+ * MResultTransform[t] shall be a one-argument function that takes a LibraryLink-compatible expression and returns an expression of "type" t.
  * Downvalues for these symbols can be provided by developers either directly or by calling MArgumentType/MResultType
  *)
 MArgumentTransform[_] := Identity;
