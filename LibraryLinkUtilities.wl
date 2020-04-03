@@ -20,16 +20,22 @@ LoadWSTPLibrary[] :=
 
 (* Initialization of LLU that involves loading the main paclet library. Must be called by every paclet that uses LLU and will be evaluated only once
  * unless it failed. Failures are indicated by Throwing.
+ * Loading can be done either eagerly or lazily, depending on which of the two versions below is used.
  * libPath - path to the main paclet library (the one that LLU was linked into)
  *)
-InitializePacletLibrary[libPath_?StringQ] := Once @ $InitializePacletLibrary[libPath];
+InitializePacletLibrary[libPath_] :=
+	Once @ SetPacletLibrary[$InitializePacletLibrary[libPath]];
+
+SetAttributes[LazyInitializePacletLibrary, HoldFirst];
+LazyInitializePacletLibrary[libPath_] :=
+	$PacletLibrary := SetPacletLibrary[$InitializePacletLibrary[libPath]];
+
 $InitializePacletLibrary[libPath_?StringQ] := (
 	(* Load WSTP *)
 	LoadWSTPLibrary[];
 
 	(* Load paclet library. This has to be done, because LLU needs its own init functions in the C++ code, that are part of paclet library. *)
-	SetPacletLibrary[libPath];
-	SafeLibraryLoad[libPath];
+	SetPacletLibrary[SafeLibraryLoad[libPath]];
 
 	(* Initialize error handling part of LLU by loading errors from the C++ code *)
 	LoadWSTPFunction[$GetCErrorCodes, "sendRegisteredErrors", "Throws" -> True, "Lazy" -> False];
@@ -39,6 +45,7 @@ $InitializePacletLibrary[libPath_?StringQ] := (
 	LoadLibraryFunction[$SetLoggerContext, "setLoggerContext", {String}, String, "Optional" -> True, "Throws" -> True, "Lazy" -> False];
 	LoadLibraryFunction[$SetExceptionDetailsContext, "setExceptionDetailsContext", {String}, String, "Throws" -> True, "Lazy" -> False];
 	SetContexts[Context[$PacletLibrary]]; (* Tell C++ part of LLU in which context were top-level symbols loaded. *)
+	$PacletLibrary
 );
 
 (* ::Section:: *)
@@ -52,7 +59,7 @@ $InitializePacletLibrary[libPath_?StringQ] := (
 (* ------------------------------------------------------------------------- *)
 
 (* Path to the paclet library *)
-$PacletLibrary = None;
+$PacletLibrary;
 
 SetPacletLibrary[lib_?StringQ] := $PacletLibrary = lib;
 
@@ -233,7 +240,10 @@ Options[SafeLibraryFunction] = {
 holdSet[Hold[sym_], rhs_] := sym = rhs;
 
 SafeLibraryFunction[fname_?StringQ, fParams_, retType_, opts : OptionsPattern[]] :=
-    SafeLibraryFunction[$PacletLibrary, fname, fParams, retType, opts];
+(
+	Print["SafeLibraryFunction: ", {fname}];
+    SafeLibraryFunction[$PacletLibrary, fname, fParams, retType, opts]
+    )
 
 SafeLibraryFunction[libName_?StringQ, fname_?StringQ, fParams_, retType_, opts : OptionsPattern[]] :=
 Module[{errorHandler, pmSymbol, newParams, f, functionOptions, loadOptions},
