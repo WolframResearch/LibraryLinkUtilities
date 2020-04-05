@@ -22,5 +22,6 @@ LLU_LIBRARY_FUNCTION(UnregisteredRetType) {
 
 LLU_LIBRARY_FUNCTION(GetArgsWithIndices) {
 	// Compile time error - number of argument types does not match the number of indices in the call to mngr.get<..>(...)
+	// gcc also triggers separate error for: "no matching function for call to ‘LLU::MArgumentManager::get<short unsigned int, mint>(<brace-enclosed initializer list>)’"
 	[[maybe_unused]] auto [x, y] = mngr.get<unsigned short, mint>({1, 2, 3});
 }

@@ -41,6 +41,12 @@ namespace LLU {
 	class MArgumentManager {
 	public:
 		using size_type = std::size_t;
+
+		template<typename T>
+		struct CustomType {
+//			using CorrespondingTypes = std::tuple<T>;
+		};
+
 	public:
 		/**
 		 *   @brief         Constructor
@@ -257,14 +263,16 @@ namespace LLU {
 		 * @param   index - position of desired argument in \c Args
 		 * @return  a value of type T created from the specified input argument
 		 */
-		template<typename T, std::enable_if_t<std::is_integral<T>::value, int> = 0>
+		template<typename T>
 		T get(size_type index) const {
-			return getInteger<T>(index);
-		}
-
-		template<typename T, std::enable_if_t<!std::is_integral<T>::value, int> = 0>
-		T get(size_type index) const {
-			return MArgGetter<T>::get(*this, index);
+			if constexpr (isCustom<T>) {
+				return MArgGetter<T>::get(*this, index);
+			} else if constexpr (std::is_integral_v<T>) {
+				return getInteger<T>(index);
+			} else {
+				static_assert(dependent_false_v<T>, "Unrecognized MArgument type passed as template parameter to MArgumentManager::get.");
+				return {};
+			}
 		}
 
 		/**
@@ -273,8 +281,9 @@ namespace LLU {
 		 * @return  a tuple of function arguments
 		 */
 		template<typename... ArgTypes>
-		std::tuple<ArgTypes...> get() const {
-			return MArgPackGetter<ArgTypes...>::template getImpl(*this, std::index_sequence_for<ArgTypes...>{});
+		std::tuple<ArgTypes...> getTuple(size_type index = 0) const {
+			const auto indices = getOffsets(index, std::array<size_type, sizeof...(ArgTypes)> {ArgSlotCount<ArgTypes>...});
+			return MArgPackGetter<ArgTypes...>::template getImpl(*this, indices, std::index_sequence_for<ArgTypes...>{});
 		}
 
 		/**
@@ -284,7 +293,7 @@ namespace LLU {
 		 * @return  a tuple of function arguments
 		 */
 		template<typename... ArgTypes>
-		std::tuple<ArgTypes...> get(std::array<size_type, sizeof...(ArgTypes)> indices) const {
+		std::tuple<ArgTypes...> getTuple(std::array<size_type, sizeof...(ArgTypes)> indices) const {
 			return MArgPackGetter<ArgTypes...>::template getImpl(*this, indices, std::index_sequence_for<ArgTypes...>{});
 		}
 
@@ -612,6 +621,17 @@ namespace LLU {
 		template<class PassingMode = Passing::Automatic, class Operator>
 		void operateOnImage(size_type index, Operator&& op);
 
+
+		template<typename T, typename = typename CustomType<T>::CorrespondingTypes>
+		struct MArgGetter;
+
+		template<typename T, typename... Args>
+		struct MArgGetter<T, std::tuple<Args...>> {
+			static T get(const MArgumentManager& mngr, size_type firstIndex) {
+				return std::make_from_tuple<T>(mngr.getTuple<Args...>(firstIndex));
+			}
+		};
+
 	private:
 		// Efficient and memory-safe type for storing string arguments from LibraryLink
 		using LLStringPtr = std::unique_ptr<char[], decltype(st_WolframLibraryData::UTF8String_disown)>;
@@ -620,14 +640,8 @@ namespace LLU {
 		template<typename... ArgTypes>
 		struct MArgPackGetter {
 			template<size_type... Indices>
-			static std::tuple<ArgTypes...> getImpl(const MArgumentManager& mngr, std::index_sequence<Indices...>) {
-				if (sizeof...(ArgTypes) > static_cast<size_type>(mngr.argc)) {
-					ErrorManager::throwException(ErrorName::MArgumentIndexError);
-				}
-				return {mngr.get<ArgTypes>(Indices)...};
-			}
-			template<size_type... Indices>
-			static std::tuple<ArgTypes...> getImpl(const MArgumentManager& mngr, std::array<size_type, sizeof...(ArgTypes)> inds, std::index_sequence<Indices...>) {
+			static std::tuple<ArgTypes...>
+			getImpl(const MArgumentManager& mngr, std::array<size_type, sizeof...(ArgTypes)> inds, std::index_sequence<Indices...>) {
 				if (sizeof...(ArgTypes) > static_cast<size_type>(mngr.argc)) {
 					ErrorManager::throwException(ErrorName::MArgumentIndexError);
 				}
@@ -636,12 +650,39 @@ namespace LLU {
 		};
 
 		template<typename T>
-		struct MArgGetter {
-			static T get(const MArgumentManager&, size_type) {
-				static_assert(dependent_false_v<T>, "Trying to use unspecialized MArgumentManager::get");
-				return {};
-			}
+		struct isCustomMArgumentType {
+			template<typename U>
+			static std::bool_constant<true> isSpecialized(typename CustomType<U>::CorrespondingTypes*);
+
+			template<typename>
+			static std::bool_constant<false> isSpecialized(...);
+
+			static constexpr bool value = decltype(isSpecialized<T>(nullptr))::value;
 		};
+
+		template<typename T>
+		static constexpr bool isCustom = isCustomMArgumentType<T>::value;
+
+		template<typename T>
+		static constexpr size_type ArgSlotCount = ([]() constexpr -> size_type {
+			if constexpr (isCustom<T>) {
+				return std::tuple_size_v<typename CustomType<T>::CorrespondingTypes>;
+			}
+			return 1;
+		})();
+
+		template<size_t N>
+		static std::array<size_type, N> getOffsets(size_t I0, std::array<size_type, N> a) {
+			if constexpr (N == 0) {
+				return {};
+			} else {
+				std::array<size_type, N> offsets = {I0};
+				for (size_t i = 1; i < N; ++i) {
+					offsets[i] = offsets[i - 1] + a[i - 1];
+				}
+				return offsets;
+			}
+		}
 
 		/**
 		 *   @brief			Get MArgument at position \c index

@@ -58,7 +58,7 @@ TestMatch[
 	,
 	$Failed
 	,
-	{Repeated[CreateLibrary::cmperr, {1, 4}]} (* different compilers may stop after different number of errors, there must be at least 1 *)
+	{Repeated[CreateLibrary::cmperr, {1, 5}]} (* different compilers may stop after different number of errors, there must be at least 1 *)
 	,
 	TestID -> "MArgumentManagerTestSuite-20180903-Y8Z5P1"
 ];
@@ -90,12 +90,19 @@ Test[
 	TestID -> "MArgumentManagerTestSuite-20200309-P1B5S5"
 ];
 
+VerificationTest[
+	$AsFloat = `LLU`SafeLibraryFunction["AsFloat", {Real}, Real];
+	Abs[$AsFloat[1.23456] - 1.23456] < 10^-7
+	,
+	TestID -> "MArgumentManagerTestSuite-20200309-R1Y5I7"
+];
+
 Test[
 	$DescribePerson["John", 42, 1.83]
 	,
 	"John is 42 years old and 1.830000m tall."
 	,
-	TestID -> "MArgumentManagerTestSuite-20200309-R1Y5I7"
+	TestID -> "MArgumentManagerTestSuite-20200405-W6E2K7"
 ];
 
 TestMatch[
