@@ -1,30 +1,57 @@
 Begin["`LLU`"];
 
-InitializePacletLibrary::usage = "";
+InitializePacletLibrary::usage = "InitializePacletLibrary[libPath_]
+Initialization of LLU that involves loading the main paclet library. Must be called by every paclet that uses LLU and will be evaluated only once
+unless it failed. Failures are indicated by Throwing.
+Loading is done lazily, when the first library function is loaded.
+libPath - path to the main paclet library (the one that LLU was linked into)";
 
-RegisterPacletErrors::usage = "";
-CreatePacletFailure::usage = "";
+RegisterPacletErrors::usage = "RegisterPacletErrors[errors_?AssociationQ]
+Adds custom top-level errors.";
+CreatePacletFailure::usage = "CreatePacletFailure[type_?StringQ, opts:OptionsPattern[]]
+Emits a Failure object for the custom error named by type.";
 
-LoadLibraryFunction::usage = "";
-LoadWSTPFunction::usage = "";
+LoadLibraryFunction::usage = "LoadLibraryFunction[resultSymbol_, lib_, f_, fParams_, fResultType_, opts___]
+Attempts to load an exported function f from a dynamic library lib and assign the result to resultSymbol.
+Loading is lazy, which means that it will actually happen on the first evaluation of the resultSymbol.
+Arguments:
+- resultSymbol_ - a WL symbol to represent the loaded function
+- lib_String - name of the dynamic library
+- f_String - name of the function to load from the dynamic library
+- fParams_ - parameter types of the library function to be loaded
+- fResultType_ - result type
+Options:
+All options for SafeLibraryFunction and SafeLibraryFunctionLoad are accepted.";
+LoadWSTPFunction::usage = "LoadWSTPFunction[resultSymbol_, lib_, f_, opts___]
+A convenient wrapper around LoadLibraryFunction for easier loading of WSTP functions.";
 
-Constructor::usage = "";
-NewManagedExpression::usage = "";
-ManagedQ::usage = "";
-ManagedIDQ::usage = "";
-LoadMemberFunction::usage = "";
-LoadWSTPMemberFunction::usage = "";
+Constructor::usage = "`LLU`Constructor[exprHead_] = Function[...]
+Loads a constructor wrapper for a managed expression. The instanceID is passed to the wrapper as its first argument.";
+NewManagedExpression::usage = "NewManagedExpression[exprHead_][args___]
+Creates a MLE instance";
+ManagedQ::usage = "ManagedQ[exprHead_][expr]
+Checks whether expr is a valid MLE instance";
+ManagedIDQ::usage = "ManagedIDQ[exprHead_][expr]
+Checks whether expr is a valid id of a MLE instance";
+LoadMemberFunction::usage = "LoadMemberFunction[exprHead_][memberSymbol_?Developer`SymbolQ, libraryName_, fname_, fParams_, retType_, opts : OptionsPattern[]]
+Loads a library function that can be invoked on instances of exprHead like so: instance @ memberSymbol[...]";
+LoadWSTPMemberFunction::usage = "LoadWSTPMemberFunction[exprHead_][memberSymbol_, libraryName_, fname_?StringQ, opts : OptionsPattern[]]
+A convenient wrapper around LoadMemberFunction for easier loading of WSTP functions.";
 
-LoadFilesInContext::usage = "";
+LoadFilesInContext::usage = "LoadFilesInContext[files: {__?StringQ} | _?StringQ, exportedContext_?StringQ, loadingContext_?StringQ, opts: OptionsPattern[]]
+Finds all symbols exported in exportedContext and Gets the Wolfram Language code files in loadingContext.";
 
-Memoize::usage = "";
-LazyLoad::usage = "";
+Memoize::usage = "Memoize[expr_]
+Evaluates expr only once, when f is first used. It should be used like so: f := Memoize @ expr;";
+LazyLoad::usage = "LazyLoad[f_?Developer`SymbolQ, expr_]
+Evaluates expr only once, when f is first used.";
 
-SafeLibraryLoad::usage = "";
-SafeLibraryFunctionLoad::usage = "";
-
-SafeLibraryFunction::usage = "";
-SafeWSTPFunction::usage = "";
+(* Lower-level functions that shouldn't be needed in many cases *)
+SafeLibraryLoad::usage = "SafeLibraryLoad[lib_]";
+SafeLibraryFunction::usage = "SafeLibraryFunction[libName_, fname_?StringQ, fParams_, retType_, opts : OptionsPattern[]]";
+SafeWSTPFunction::usage = "SafeWSTPFunction[fname_String, opts : OptionsPattern[SafeLibraryFunction]]";
+LibraryMemberFunction::usage = "LibraryMemberFunction[exprHead_][libName_, fname_String, fParams_, retType_, opts : OptionsPattern[SafeLibraryFunction]]";
+SafeLibraryFunctionLoad::usage = "SafeLibraryFunctionLoad[libName_, fname_?StringQ, fParams_, retType_, opts : OptionsPattern[SafeLibraryFunctionLoad]]";
 
 (* ::Section:: *)
 (* Load Dependencies *)
