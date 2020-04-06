@@ -1,9 +1,37 @@
 Begin["`LLU`"];
 
+InitializePacletLibrary::usage = "";
+
+RegisterPacletErrors::usage = "";
+CreatePacletFailure::usage = "";
+
+LoadLibraryFunction::usage = "";
+LoadWSTPFunction::usage = "";
+
+Constructor::usage = "";
+NewManagedExpression::usage = "";
+ManagedQ::usage = "";
+ManagedIDQ::usage = "";
+LoadMemberFunction::usage = "";
+LoadWSTPMemberFunction::usage = "";
+
+LoadFilesInContext::usage = "";
+
+Memoize::usage = "";
+LazyLoad::usage = "";
+
+SafeLibraryLoad::usage = "";
+SafeLibraryFunctionLoad::usage = "";
+
+SafeLibraryFunction::usage = "";
+SafeWSTPFunction::usage = "";
+
 (* ::Section:: *)
 (* Load Dependencies *)
 (* ------------------------------------------------------------------------- *)
 (* ------------------------------------------------------------------------- *)
+
+Begin["`Private`"];
 
 (* LLU depends on WSTP, so WSTP must be loaded before the paclet library.
  * Paclets are not required to carry their own copy of WSTP shared library,
@@ -20,14 +48,11 @@ LoadWSTPLibrary[] :=
 
 (* Initialization of LLU that involves loading the main paclet library. Must be called by every paclet that uses LLU and will be evaluated only once
  * unless it failed. Failures are indicated by Throwing.
- * Loading can be done either eagerly or lazily, depending on which of the two versions below is used.
+ * Loading is done lazily, when the first library function is loaded.
  * libPath - path to the main paclet library (the one that LLU was linked into)
  *)
+SetAttributes[InitializePacletLibrary, HoldFirst];
 InitializePacletLibrary[libPath_] :=
-	Once @ SetPacletLibrary[$InitializePacletLibrary[libPath]];
-
-SetAttributes[LazyInitializePacletLibrary, HoldFirst];
-LazyInitializePacletLibrary[libPath_] :=
 	$PacletLibrary := SetPacletLibrary[$InitializePacletLibrary[libPath]];
 
 $InitializePacletLibrary[libPath_?StringQ] := (
@@ -240,10 +265,7 @@ Options[SafeLibraryFunction] = {
 holdSet[Hold[sym_], rhs_] := sym = rhs;
 
 SafeLibraryFunction[fname_?StringQ, fParams_, retType_, opts : OptionsPattern[]] :=
-(
-	Print["SafeLibraryFunction: ", {fname}];
     SafeLibraryFunction[$PacletLibrary, fname, fParams, retType, opts]
-    )
 
 SafeLibraryFunction[libName_?StringQ, fname_?StringQ, fParams_, retType_, opts : OptionsPattern[]] :=
 Module[{errorHandler, pmSymbol, newParams, f, functionOptions, loadOptions},
@@ -285,16 +307,13 @@ LibraryMemberFunction[exprHead_][libName_, fname_String, fParams_, retType_, opt
 
 Attributes[iLoadLibraryFunction] = {HoldFirst};
 iLoadLibraryFunction[symbol_, loader_, libraryName_, args___, opts : OptionsPattern[]] :=
-	Module[{loadingOpts, functionOpts, assignmentHead, preLoadRoutine},
+	Module[{loadingOpts, functionOpts},
 		loadingOpts = FilterRules[{opts}, Options[LoadLibraryFunction]];
 		functionOpts = Complement[{opts}, loadingOpts];
-		assignmentHead = If[TrueQ @ OptionValue[LoadLibraryFunction, loadingOpts, "Lazy"], LazyLoad, Set];
-		preLoadRoutine = OptionValue[LoadLibraryFunction, loadingOpts, "Loader"];
 		Clear[symbol];
-		assignmentHead[
+		LazyLoad[
 			symbol,
 			(
-				preLoadRoutine[libraryName];
 				(* Library name is evaluated at the point of calling LoadLibraryFunction and it may be None if the library has not been loaded yet.
 				 * In this case, we do not pass it to a loading function, but instead we let the loading function use $PacletLibrary, which must be
 				 * initialized by the time the function is actually being loaded. *)
@@ -312,7 +331,7 @@ guessFunctionNameFromSymbol[symbol_] := StringReplace["$" ~~ s_ :> s] @ SymbolNa
 
 
 (* LoadLibraryFunction[resultSymbol_, lib_, f_, fParams_, fResultType_, opts___] attempts to load an exported function f from a dynamic library lib and assign
- * the result to resultSymbol. By default, loading is lazy, which means that it will actually happen on the first evaluation of the resultSymbol.
+ * the result to resultSymbol. Loading is lazy, which means that it will actually happen on the first evaluation of the resultSymbol.
  * Arguments:
  * - resultSymbol_ - a WL symbol to represent the loaded function
  * - lib_String - name of the dynamic library
@@ -320,15 +339,9 @@ guessFunctionNameFromSymbol[symbol_] := StringReplace["$" ~~ s_ :> s] @ SymbolNa
  * - fParams_ - parameter types of the library function to be loaded
  * - fResultType_ - result type
  * Options:
- * All options for SafeLibraryFunction and SafeLibraryFunctionLoad are accepted, and additionally:
- * - "Lazy" : True|False - whether the loading should be lazy (default) or happen immediately
- * - "Loader" - arbitrary function that takes library name as argument. It will be evaluated before the library function loads and is a good opportunity
- *              to perform some kind of initialization routine. Notice that if "Lazy" -> True, the loader function will be lazy evaluated too.
+ * All options for SafeLibraryFunction and SafeLibraryFunctionLoad are accepted.
  *)
-Options[LoadLibraryFunction] = {
-	"Lazy" -> True,
-	"Loader" -> None
-};
+Options[LoadLibraryFunction] = Union[Options[SafeLibraryFunction], Options[SafeLibraryFunctionLoad]];
 
 Attributes[LoadLibraryFunction] = {HoldFirst};
 LoadLibraryFunction[symbol_, libraryName_, funcNameInLib_?StringQ, paramTypes_, retType_, opts : OptionsPattern[]] :=
@@ -508,6 +521,7 @@ With[{result = Quiet[f, {
 	]
 ];
 
+End[]; (* `Private` *)
 
 (* ::SubSection:: *)
 (* Logging *)
@@ -678,6 +692,7 @@ End[]; (* `Logger` *)
 	But in this case, you are loosing the correct handling of filtered-out messages so it's only fine with the default "accept-all" filter.
 ***)
 
+Begin["`Private`"];
 
 (* ::SubSection:: *)
 (* Managed Expressions *)
@@ -818,4 +833,5 @@ LoadFilesInContext[files: {__?StringQ} | _?StringQ, exportedContext_?StringQ, lo
 	];
 LoadFilesInContext[___] := $Failed;
 
+End[]; (* `Private` *)
 End[]; (* `LLU` *)
