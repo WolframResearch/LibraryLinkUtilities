@@ -42,11 +42,6 @@ namespace LLU {
 	public:
 		using size_type = std::size_t;
 
-		template<typename T>
-		struct CustomType {
-//			using CorrespondingTypes = std::tuple<T>;
-		};
-
 	public:
 		/**
 		 *   @brief         Constructor
@@ -265,13 +260,10 @@ namespace LLU {
 		 */
 		template<typename T>
 		T get(size_type index) const {
-			if constexpr (isCustom<T>) {
-				return MArgGetter<T>::get(*this, index);
-			} else if constexpr (std::is_integral_v<T>) {
+			if constexpr (std::is_integral_v<T>) {
 				return getInteger<T>(index);
 			} else {
-				static_assert(dependent_false_v<T>, "Unrecognized MArgument type passed as template parameter to MArgumentManager::get.");
-				return {};
+				return Getter<T>::get(*this, index);
 			}
 		}
 
@@ -506,8 +498,8 @@ namespace LLU {
 		 *  @tparam T - any type, for types not supported by default developers are encouraged to specialize this function template
 		 */
 		template<typename T>
-		void set(const T&) {
-			static_assert(dependent_false_v<T>, "MArgumentManager::set has not been specialized for this type.");
+		void set(const T& arg) {
+			Setter<T>::set(*this, arg);
 		}
 
 		/************************************ utility functions ************************************/
@@ -621,20 +613,49 @@ namespace LLU {
 		template<class PassingMode = Passing::Automatic, class Operator>
 		void operateOnImage(size_type index, Operator&& op);
 
+		/************************************ User-defined types registration ************************************/
 
-		template<typename T, typename = typename CustomType<T>::CorrespondingTypes>
-		struct MArgGetter;
+		/**
+		 * @brief   Helper structure that can be used to register user-defined argument types in LLU.
+		 * @details If you want a type X to be supported as template argument for MArgumentManager::get<>, you must specialize CustomType<> for X
+		 *          and this specialization must contain a type alias CorrespondingTypes which is defined to be a std::tuple of basic LibraryLink types,
+		 *          from which an object of type X can be constructed. See online docs and MArgumentManager unit tests for examples.
+		 * @tparam  T - any type you would like to treat as a user-defined LibraryLink argument type
+		 */
+		template<typename T>
+		struct CustomType {
+//			using CorrespondingTypes = std::tuple<...>;
+		};
 
-		template<typename T, typename... Args>
-		struct MArgGetter<T, std::tuple<Args...>> {
+		/**
+		 * @brief   Helper structure to fully customize the way MArgumentManager reads T as argument type.
+		 * @details If T is a user-defined argument type, LLU will by default attempt to create an object of type T by reading values of corresponding types
+		 *          and feeding it to a constructor of T. Specialize Getter<> to override this behavior.
+		 * @note    Every user-defined argument type must specialize CustomType<>, specializing Getter<> is optional.
+		 * @tparam  T - any type, for which you would like full control over how MArgumentManager reads arguments of that type
+		 */
+		template<typename T>
+		struct Getter {
 			static T get(const MArgumentManager& mngr, size_type firstIndex) {
-				return std::make_from_tuple<T>(mngr.getTuple<Args...>(firstIndex));
+				if constexpr (isCustomMArgumentType<T>) {
+					return DefaultCustomGetter<T, typename CustomType<T>::CorrespondingTypes>::get(mngr, firstIndex);
+				} else {
+					static_assert(dependent_false_v<T>, "Unrecognized MArgument type passed as template parameter to MArgumentManager::get.");
+					return {};
+				}
 			}
 		};
 
-	private:
-		// Efficient and memory-safe type for storing string arguments from LibraryLink
-		using LLStringPtr = std::unique_ptr<char[], decltype(st_WolframLibraryData::UTF8String_disown)>;
+		/**
+		 * @brief   Helper structure to fully customize the way MArgumentManager sets an object of type T as result of a library function.
+		 * @note    You can explicitly specialize MArgumentManager::set for your type T, but having Setter<> allows you to define partial specializations.
+		 */
+		template<typename T>
+		struct Setter {
+			static void set(MArgumentManager&, const T&) {
+				static_assert(dependent_false_v<T>, "Unrecognized MArgument type passed as template parameter to MArgumentManager::set.");
+			}
+		};
 
 	private:
 		template<typename... ArgTypes>
@@ -649,23 +670,32 @@ namespace LLU {
 			}
 		};
 
+		template<typename, typename>
+		struct DefaultCustomGetter;
+		template<typename T, typename... Args>
+		struct DefaultCustomGetter<T, std::tuple<Args...>> {
+			static T get(const MArgumentManager& mngr, size_type firstIndex) {
+				return std::make_from_tuple<T>(mngr.getTuple<Args...>(firstIndex));
+			}
+		};
+
 		template<typename T>
-		struct isCustomMArgumentType {
+		struct CustomMArgumentTypeDetector {
 			template<typename U>
-			static std::bool_constant<true> isSpecialized(typename CustomType<U>::CorrespondingTypes*);
+			static std::true_type isSpecialized(typename CustomType<U>::CorrespondingTypes*) { return {}; }
 
 			template<typename>
-			static std::bool_constant<false> isSpecialized(...);
+			static std::false_type isSpecialized(...) { return {}; }
 
 			static constexpr bool value = decltype(isSpecialized<T>(nullptr))::value;
 		};
 
 		template<typename T>
-		static constexpr bool isCustom = isCustomMArgumentType<T>::value;
+		static constexpr bool isCustomMArgumentType = CustomMArgumentTypeDetector<T>::value;
 
 		template<typename T>
 		static constexpr size_type ArgSlotCount = ([]() constexpr -> size_type {
-			if constexpr (isCustom<T>) {
+			if constexpr (isCustomMArgumentType<T>) {
 				return std::tuple_size_v<typename CustomType<T>::CorrespondingTypes>;
 			}
 			return 1;
@@ -683,6 +713,11 @@ namespace LLU {
 				return offsets;
 			}
 		}
+		/********************************* End of user-defined types registration ************************************/
+
+	private:
+		// Efficient and memory-safe type for storing string arguments from LibraryLink
+		using LLStringPtr = std::unique_ptr<char[], decltype(st_WolframLibraryData::UTF8String_disown)>;
 
 		/**
 		 *   @brief			Get MArgument at position \c index
@@ -753,13 +788,13 @@ namespace LLU {
 
 #define MARGUMENTMANAGER_GENERATE_GET_SPECIALIZATION_FOR_CONTAINER(Container, tmplParameterCategory) \
 	template<tmplParameterCategory T, class PassingMode>\
-	struct MArgumentManager::MArgGetter<Container<T, PassingMode>> {\
+	struct MArgumentManager::Getter<Container<T, PassingMode>> {\
 		static Container<T, PassingMode> get(const MArgumentManager& mngr, size_type index) {\
 			return mngr.get##Container<T, PassingMode>(index);\
 		}\
 	};\
 	template<class PassingMode>\
-	struct MArgumentManager::MArgGetter<Generic##Container<PassingMode>> {\
+	struct MArgumentManager::Getter<Generic##Container<PassingMode>> {\
 		static Generic##Container<PassingMode> get(const MArgumentManager& mngr, size_type index) {\
 			return mngr.getGeneric##Container<PassingMode>(index);\
 		}\

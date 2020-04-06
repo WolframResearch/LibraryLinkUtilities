@@ -97,6 +97,16 @@ VerificationTest[
 	TestID -> "MArgumentManagerTestSuite-20200309-R1Y5I7"
 ];
 
+VerificationTest[
+	$Transform = `LLU`SafeLibraryFunction["Transform", {Real, Integer, Real}, Real];
+	a = 3.14;
+	n = 42;
+	b = 56.789;
+	Abs[$Transform[a, n, b] - (a * n + b)] < 10^-5
+	,
+	TestID -> "MArgumentManagerTestSuite-20200406-S1A5I1"
+];
+
 Test[
 	$DescribePerson["John", 42, 1.83]
 	,
@@ -173,3 +183,27 @@ Test[
 	,
 	TestID -> "MArgumentManagerTestSuite-20200312-D9T9H8"
 ];
+
+TestExecute[
+	$GetTallest = `LLU`SafeLibraryFunction["GetTallest", {"DataStore"}, String];
+	$Sort = `LLU`SafeLibraryFunction["Sort", {{NumericArray, "Constant"}, {NumericArray, "Constant"}}, NumericArray];
+];
+
+Test[
+	people = Apply[Developer`DataStore, {john, james, alicia}, {0, 1}];
+	$GetTallest @ people
+	,
+	"John"
+	,
+	TestID -> "MArgumentManagerTestSuite-20200406-B7I2M4"
+]
+
+Test[
+	v1 = Range[10];
+	v2 = Range[20];
+	Normal @ $Sort[NumericArray[v1, "Integer32"], NumericArray[v2, "Integer64"]]
+	,
+	Sort[v2, Greater] ~Join~ Sort[v1, Less]
+	,
+	TestID -> "MArgumentManagerTestSuite-20200406-A1Y8O9"
+]

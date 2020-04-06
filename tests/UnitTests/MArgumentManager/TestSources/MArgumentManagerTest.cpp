@@ -6,6 +6,7 @@
 #include <functional>
 #include <tuple>
 
+#include <LLU/Containers/Iterators/DataList.hpp>
 #include <LLU/LLU.h>
 #include <LLU/LibraryLinkFunctionMacro.h>
 
@@ -14,11 +15,16 @@ EXTERN_C DLLEXPORT int WolframLibrary_initialize(WolframLibraryData libData) {
 	return LLU::ErrorCode::NoError;
 }
 
-// Simple case for single-type custom MArgument types - directly specialize MArgumentManager::get.
+// Simple case for custom MArgument types that correspond to a single basic argument type - directly specialize MArgumentManager::get.
 namespace LLU {
 	template<>
 	float MArgumentManager::get<float>(size_type index) const {
 		return static_cast<float>(get<double>(index));
+	}
+
+	template<>
+	void MArgumentManager::set<float>(const float& f) {
+		set(static_cast<double>(f));
 	}
 }
 
@@ -28,7 +34,12 @@ LLU_LIBRARY_FUNCTION(AsFloat) {
 	if (f1 != f2) {
 		LLU::ErrorManager::throwException(LLU::ErrorName::FunctionError);
 	}
-	mngr.set(static_cast<double>(f1));
+	mngr.set(f1);
+}
+
+LLU_LIBRARY_FUNCTION(Transform) {
+	auto [a, n, b] = mngr.getTuple<float, mint, float>();
+	mngr.set(a * n + b);
 }
 
 LLU_LIBRARY_FUNCTION(DescribePerson) {
@@ -49,9 +60,12 @@ struct Person {
 };
 
 namespace LLU {
+	// Tell LLU that Person corresponds to 3 "basic" types: String, Integer and Real. When you try to read Person as argument, LLU will read 3 values
+	// of the aforementioned types and feed them to Person constructor.
 	template<>
 	struct MArgumentManager::CustomType<Person> { using CorrespondingTypes = std::tuple<std::string, uint8_t, double>; };
 
+	// Teach LLU how to send Person object as result of the library function. DataStore is used as the actual MArgument type.
 	template<>
 	void MArgumentManager::set<Person>(const Person& p) {
 		DataList<MArgumentType::MArgument> personDS;
@@ -79,17 +93,61 @@ LLU_LIBRARY_FUNCTION(PredictChild) {
 	mngr.set(Person {personA.name + " Junior", 0, (personA.height + personB.height) / 2});
 }
 
+// Fun with vectors - partial end explicit specializations of MArgumentManager::Getter (undocumented feature)
 namespace LLU {
 	template<typename T>
-	struct MArgumentManager::CustomType<std::vector<T>> { using CorrespondingTypes = std::tuple<NumericArray<T>>; };
+	struct MArgumentManager::CustomType<std::vector<T>> { using CorrespondingTypes = std::tuple<NumericArray<T, Passing::Constant>>; };
 
 	template<typename T>
-	struct MArgumentManager::MArgGetter<std::vector<T>> {
+	struct MArgumentManager::Getter<std::vector<T>> {
 		static std::vector<T> get(const MArgumentManager& mngr, size_type index) {
-			auto na = mngr.get<NumericArray<T>>(index);
+			auto na = mngr.get<NumericArray<T, LLU::Passing::Constant>>(index);
 			return { std::cbegin(na), std::cend(na) };
 		}
 	};
+
+	template<>
+	struct MArgumentManager::CustomType<std::vector<Person>> { using CorrespondingTypes = std::tuple<DataList<MArgumentType::MArgument>>; };
+
+	template<>
+	struct MArgumentManager::Getter<std::vector<Person>> {
+		static std::vector<Person> get(const MArgumentManager& mngr, size_type index) {
+			auto dl = mngr.get<DataList<MArgumentType::DataStore>>(index);
+			std::vector<Person> res;
+			std::transform(std::begin(dl), std::end(dl), std::back_inserter(res), [](DataNode<MArgumentType::DataStore>& node) {
+				DataList<MArgumentType::MArgument, Passing::Automatic> p {node.getValue()};
+				NodeValueIterator<MArgumentType::MArgument> it = p.begin();
+				std::string name = Argument<MArgumentType::UTF8String>(*it++).get();
+				auto age = static_cast<uint8_t>(Argument<MArgumentType::Integer>(*it++).get());
+				double height = Argument<MArgumentType::Real>(*it++).get();
+				return Person { std::move(name), age, height };
+			});
+			return res;
+		}
+	};
+
+	template<typename T>
+	struct MArgumentManager::Setter<std::vector<T>> {
+		static void set(MArgumentManager& mngr, const std::vector<T>& v) {
+			mngr.set(NumericArray<T>{ std::cbegin(v), std::cend(v) });
+		}
+	};
+}
+
+LLU_LIBRARY_FUNCTION(GetTallest) {
+	auto people = mngr.get<std::vector<Person>>(0); // non-empty collection of Persons
+	auto tallest = std::max_element(cbegin(people), cend(people), [](const Person& p1, const Person& p2) {
+		return p1.height < p2.height;
+	});
+	mngr.set(tallest->name);
+}
+
+LLU_LIBRARY_FUNCTION(Sort) {
+	auto [v32, v64] = mngr.getTuple<std::vector<int32_t>, std::vector<int64_t>>();
+	std::sort(begin(v32), end(v32), std::less<>());
+	std::sort(begin(v64), end(v64), std::greater<>());
+	std::copy(begin(v32), end(v32), std::back_inserter(v64));
+	mngr.set(v64);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
