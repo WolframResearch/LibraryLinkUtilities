@@ -158,17 +158,35 @@ are of the form ``Quantity[_Real, _String]``:
 
 The second argument is the list of basic LibraryLink types that constitute to a single expression of type ``"Money"``. The third argument is a translation
 function that takes something of the form ``Quantity[_Real, _String]`` and produces a ``Sequence`` of two values: Real and String.
-In the C++ code we used ``mngr.get<Money>``, which means we have to specialize ``MArgumentManager::get`` template to work with ``Money`` type:
+
+In the C++ code we used ``mngr.get<Money>``, which means we have to tell LLU how many and what basic LibraryLink types correspond to a ``Money`` object.
+This is achieved by defining a specialization of ``CustomType`` structure template and providing a type alias member ``CorrespondingTypes`` which must be a
+``std::tuple`` of corresponding basic LibraryLink types:
 
 .. code-block:: cpp
 
-    template<>
-    Money LLU::MArgumentManager::get<Money>(size_type index) const {
-        return std::make_from_tuple<Money>(get<double, std::string>({index, index + 1}));
-    }
+   template<>
+   struct LLU::MArgumentManager::CustomType<Money> {
+      using CorrespondingTypes = std::tuple<double, std::string>;
+   };
 
-In this code we say that to read an object of type Money from input arguments starting at position ``index``, MArgumentManager first needs to read two
+With this information, whenever LLU is requested to read an argument of type ``Money`` it will read two
 consecutive input arguments as ``double`` and ``std::string``, respectively, and construct a ``Money`` object from those 2 values.
+
+In many cases this is sufficient, however in some situations you may want to have full control over how LLU creates objects of your type. Imagine we want
+to always capitalize the currency that is passed from Wolfram Language code, before creating a ``Money`` object. To have such fine-grained control over
+MArgumentManager's behavior, we must additionally specialize a struct template ``Getter`` that provides a member function ``get``, like this:
+
+.. code-block:: cpp
+
+   template<>
+   struct LLU::MArgumentManager::Getter<Money> {
+      static Money get(const MArgumentManager& mngr, size_type index) {
+         auto [amount, currency] = mngr.getTuple<double, std::string>(index);
+         std::transform(currency.begin(), currency.end(), currency.begin(), [](unsigned char c){ return std::toupper(c); });
+         return Money { amount, std::move(currency) };
+      }
+   };
 
 At this point, LLU knows how to change WL expressions of the form ``Quantity[_Real, _String]`` into ``Money`` objects in C++. The only thing left is to teach
 LLU how to work in the other direction, i.e. how to return ``Money`` objects via "DataStore" and change them into Quantity. First, let us specialize
@@ -185,7 +203,7 @@ LLU how to work in the other direction, i.e. how to return ``Money`` objects via
     }
 
 You can read more about :cpp:class:`DataList <template\<MArgumentType T, class PassingMode = Passing::Manual> LLU::DataList>` in the section
-about :doc:`containers`. The last part is to tell LLU how to turn incoming DataStores into Quantities in library functions that declare "Money" as return type:
+about :doc:`containers`. The last step is to tell LLU how to turn incoming DataStores into Quantities in library functions that declare "Money" as return type:
 
 .. code-block:: mma
    :force:
