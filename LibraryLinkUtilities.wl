@@ -1,3 +1,5 @@
+(* $Context holds the private paclet context that this file was loaded in. *)
+System`Private`NewContextPath[{"System`", $Context <> "LLU`"}];
 Begin["`LLU`"];
 
 InitializePacletLibrary::usage = "InitializePacletLibrary[libPath_]
@@ -862,3 +864,5 @@ LoadFilesInContext[___] := $Failed;
 
 End[]; (* `Private` *)
 End[]; (* `LLU` *)
+
+System`Private`RestoreContextPath[];
