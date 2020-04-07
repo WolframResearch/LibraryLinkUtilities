@@ -292,7 +292,7 @@ Options[SafeLibraryFunction] = {
 holdSet[Hold[sym_], rhs_] := sym = rhs;
 
 SafeLibraryFunction[fname_?StringQ, fParams_, retType_, opts : OptionsPattern[]] :=
-    SafeLibraryFunction[$PacletLibrary, fname, fParams, retType, opts]
+    SafeLibraryFunction[$PacletLibrary, fname, fParams, retType, opts];
 
 SafeLibraryFunction[libName_?StringQ, fname_?StringQ, fParams_, retType_, opts : OptionsPattern[]] :=
 Module[{errorHandler, pmSymbol, newParams, f, functionOptions, loadOptions},
