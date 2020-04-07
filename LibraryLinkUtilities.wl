@@ -2,63 +2,127 @@
 System`Private`NewContextPath[{"System`", $Context <> "LLU`"}];
 Begin["`LLU`"];
 
+(* ::Section:: *)
+(*Exported Symbols*)
+(* ------------------------------------------------------------------------- *)
+(* ------------------------------------------------------------------------- *)
+
 InitializePacletLibrary::usage = "InitializePacletLibrary[libPath_]
-Initialization of LLU that involves loading the main paclet library. Must be called by every paclet that uses LLU and will be evaluated only once
-unless it failed. Failures are indicated by Throwing.
-libPath - path to the main paclet library (the one that LLU was linked into)";
+	Initialization of LLU that involves loading the main paclet library.
+	Must be called by every paclet that uses LLU and will be evaluated only once
+	unless it failed. Failures are indicated by Throwing.
+	libPath - path to the main paclet library (the one that LLU was linked into)";
 LazyInitializePacletLibrary::usage = "Lazy version of InitializePacletLibrary
 	which loads the library at the time the first library function is loaded.";
 
 RegisterPacletErrors::usage = "RegisterPacletErrors[errors_?AssociationQ]
-Adds custom top-level errors.";
+	Adds custom top-level errors.";
 CreatePacletFailure::usage = "CreatePacletFailure[type_?StringQ, opts:OptionsPattern[]]
-Emits a Failure object for the custom error named by type.";
+	Emits a Failure object for the custom error named by type.";
+
+(* ---------------- Loading libraries and library functions ---------------- *)
+
+SafeLibraryLoad::usage = "SafeLibraryLoad[lib_]
+	Quietly attempts to load the dynamic library lib, and Throws if it cannot be loaded.";
 
 LoadLibraryFunction::usage = "LoadLibraryFunction[resultSymbol_, lib_, f_, fParams_, fResultType_, opts___]
-Attempts to load an exported function f from a dynamic library lib and assign the result to resultSymbol.
-Loading is lazy, which means that it will actually happen on the first evaluation of the resultSymbol.
-Arguments:
-- resultSymbol_ - a WL symbol to represent the loaded function
-- lib_String - name of the dynamic library
-- f_String - name of the function to load from the dynamic library
-- fParams_ - parameter types of the library function to be loaded
-- fResultType_ - result type
-Options:
-All options for SafeLibraryFunction and SafeLibraryFunctionLoad are accepted.";
+	Attempts to load an exported function f from a dynamic library lib and assign the result to resultSymbol.
+	Loading is lazy, which means that it will actually happen on the first evaluation of the resultSymbol.
+	Arguments:
+	- resultSymbol_ - a WL symbol to represent the loaded function
+	- lib_String - name of the dynamic library
+	- f_String - name of the function to load from the dynamic library
+	- fParams_ - parameter types of the library function to be loaded
+	- fResultType_ - result type
+	Options:
+	All options for SafeLibraryFunction and SafeLibraryFunctionLoad are accepted.";
 LazyLoadLibraryFunction::usage = "Lazy version of LoadLibraryFunction.";
 LoadWSTPFunction::usage = "LoadWSTPFunction[resultSymbol_, lib_, f_, opts___]
-A convenient wrapper around LoadLibraryFunction for easier loading of WSTP functions.";
+	A convenient wrapper around LoadLibraryFunction for easier loading of WSTP functions.";
 LazyLoadWSTPFunction::usage = "Lazy version of LoadWSTPFunction.";
+LoadMemberFunction::usage = "LoadMemberFunction[exprHead_][memberSymbol_?Developer`SymbolQ, libraryName_, fname_, fParams_, retType_, opts : OptionsPattern[]]
+	Loads a library function that can be invoked on instances of exprHead like so: instance @ memberSymbol[...]";
 LazyLoadMemberFunction::usage = "Lazy version of LoadMemberFunction.";
+LoadWSTPMemberFunction::usage = "LoadWSTPMemberFunction[exprHead_][memberSymbol_, libraryName_, fname_?StringQ, opts : OptionsPattern[]]
+	A convenient wrapper around LoadMemberFunction for easier loading of WSTP functions.";
 LazyLoadWSTPMemberFunction::usage = "Lazy version of LoadWSTPMemberFunction.";
 
-Constructor::usage = "`LLU`Constructor[exprHead_] = Function[...]
-Loads a constructor wrapper for a managed expression. The instanceID is passed to the wrapper as its first argument.";
-NewManagedExpression::usage = "NewManagedExpression[exprHead_][args___]
-Creates a MLE instance";
-ManagedQ::usage = "ManagedQ[exprHead_][expr]
-Checks whether expr is a valid MLE instance";
-ManagedIDQ::usage = "ManagedIDQ[exprHead_][expr]
-Checks whether expr is a valid id of a MLE instance";
-LoadMemberFunction::usage = "LoadMemberFunction[exprHead_][memberSymbol_?Developer`SymbolQ, libraryName_, fname_, fParams_, retType_, opts : OptionsPattern[]]
-Loads a library function that can be invoked on instances of exprHead like so: instance @ memberSymbol[...]";
-LoadWSTPMemberFunction::usage = "LoadWSTPMemberFunction[exprHead_][memberSymbol_, libraryName_, fname_?StringQ, opts : OptionsPattern[]]
-A convenient wrapper around LoadMemberFunction for easier loading of WSTP functions.";
+SafeLibraryFunction::usage = "SafeLibraryFunction[libName_, fname_?StringQ, fParams_, retType_, opts : OptionsPattern[]]";
+SafeWSTPFunction::usage = "SafeWSTPFunction[fname_String, opts : OptionsPattern[SafeLibraryFunction]]
+	A convenient wrapper around SafeLibraryFunction for easier loading of WSTP functions.";
+LibraryMemberFunction::usage = "LibraryMemberFunction[exprHead_][libName_, fname_String, fParams_, retType_, opts : OptionsPattern[SafeLibraryFunction]]";
+SafeWSTPMemberFunction::usage = "
+	A convenient wrapper around LibraryMemberFunction for easier loading of WSTP functions.";
 
-LoadFilesInContext::usage = "LoadFilesInContext[files: {__?StringQ} | _?StringQ, exportedContext_?StringQ, loadingContext_?StringQ, opts: OptionsPattern[]]
-Finds all symbols exported in exportedContext and Gets the Wolfram Language code files in loadingContext.";
+SafeLibraryFunctionLoad::usage = "SafeLibraryFunctionLoad[libName_, fname_?StringQ, fParams_, retType_, opts : OptionsPattern[SafeLibraryFunctionLoad]]";
+
+(* ---------------- Managed Library Expressions ---------------------------- *)
+
+Constructor::usage = "Constructor[exprHead_] = Function[...]
+	Loads a constructor wrapper for a managed expression. The instanceID is passed to the wrapper as its first argument.";
+NewManagedExpression::usage = "NewManagedExpression[exprHead_][args___]
+	Creates a MLE instance";
+ManagedQ::usage = "ManagedQ[exprHead_][expr]
+	Checks whether expr is a valid MLE instance";
+ManagedIDQ::usage = "ManagedIDQ[exprHead_][expr]
+	Checks whether expr is a valid id of a MLE instance";
+
+(* ---------------- Logging ------------------------------------------------ *)
+
+`Logger`LogToList::usage = "LogToList[args___]
+	Put all message parts in a list unstyled";
+`Logger`LogToAssociation::usage = "LogToAssociation[logLevel_, line_, file_, fn_, args___]
+	Put all message parts in Association";
+`Logger`LogToString::usage = "LogToString[logLevel_, line_, file_, fn_, args___]
+	Combine all log parts to a String. No styling, contains a newline character.";
+`Logger`LogToShortString::usage = "LogToShortString[logLevel_, line_, file_, fn_, args___]
+	Combine all log parts to a condensed String. No styling, single line (unless message text contains newlines).";
+`Logger`LogToGrid::usage = "LogToGrid[logLevel_, line_, file_, fn_, args___]
+	Place fully styled log message in a TextGrid. Looks nice, good default choice for printing to the notebook.";
+`Logger`LogToRow::usage = "LogToRow[logLevel_, line_, file_, fn_, args___]
+	Fully styled, condensed log message in a Row. Good choice if you expect many log messages and want to see them all in the notebook.";
+
+`Logger`LogFiltered::usage = "A symbol for filtered-out messages";
+`Logger`FilterAcceptAll::usage = "FilterAcceptAll[args___]
+	Simple filter that does no filtering";
+`Logger`FilterRejectAll::usage = "FilterRejectAll[___]
+	Filter that rejects everything";
+`Logger`FilterBySingleFeature::usage = "FilterBySingleFeature[featureIndex_][test_]
+	Meta function for defining filters that filter by a single element of a log: level, line, file name or function name";
+`Logger`FilterByLevel::usage = "FilterByLevel[test_]
+	Single element filter which discriminates by severity level.";
+`Logger`FilterByLine::usage = "FilterByLine[test_]
+	Single element filter which discriminates by line number.";
+`Logger`FilterByFile::usage = "FilterByFile[test_]
+	Single element filter which discriminates by file name.";
+`Logger`FilterByFunction::usage = "FilterByFunction[test_]
+	Single element filter which discriminates by function name.";
+`Logger`FilterCustom::usage = "FilterCustom[test_]
+	Define custom filter - test function have access to all elements of the log";
+`Logger`LogFilterSelector::usage = "This is a \"selector\" called by other functions below. Feel free to modify/Block this symbol, see examples.";
+
+`Logger`DiscardLog::usage = "DiscardLog[___]
+	Discard the log";
+`Logger`PrintLogToNotebook::usage = "PrintLogToNotebook[args___]
+	Print to current notebook";
+`Logger`PrintLogToMessagesWindow::usage = "PrintLogToMessagesWindow[args___]
+	Print to Messages window. Remember that this window may be hidden by default.";
+`Logger`PrintLogToSymbol::usage = "PrintLogToSymbol[x_]
+	Append to a list and assign to given symbol. Good choice if you don't want to see the logs immediately, but want to store them for later analysis.";
+`Logger`PrintLogFunctionSelector::usage = "This is a \"selector\" called by other functions below. Feel free to modify/Block this symbol, see examples.";
+`Logger`LogHandler::usage = "This is a function WSTP will call from the C++ code. It all starts here. Feel free to modify/Block this symbol, see examples.";
+
+(* ---------------- General utilities -------------------------------------- *)
 
 Memoize::usage = "Memoize[expr_]
-Evaluates expr only once, when f is first used. It should be used like so: f := Memoize @ expr;";
+	Evaluates expr only once, when f is first used. It should be used like so: f := Memoize @ expr;";
 LazyLoad::usage = "LazyLoad[f_?Developer`SymbolQ, expr_]
-Evaluates expr only once, when f is first used.";
+	Evaluates expr only once, when f is first used.";
 
-(* Lower-level functions that shouldn't be needed in many cases *)
-SafeLibraryLoad::usage = "SafeLibraryLoad[lib_]";
-SafeLibraryFunction::usage = "SafeLibraryFunction[libName_, fname_?StringQ, fParams_, retType_, opts : OptionsPattern[]]";
-SafeWSTPFunction::usage = "SafeWSTPFunction[fname_String, opts : OptionsPattern[SafeLibraryFunction]]";
-LibraryMemberFunction::usage = "LibraryMemberFunction[exprHead_][libName_, fname_String, fParams_, retType_, opts : OptionsPattern[SafeLibraryFunction]]";
-SafeLibraryFunctionLoad::usage = "SafeLibraryFunctionLoad[libName_, fname_?StringQ, fParams_, retType_, opts : OptionsPattern[SafeLibraryFunctionLoad]]";
+(* ---------------- Specfic utilities -------------------------------------- *)
+
+LoadFilesInContext::usage = "LoadFilesInContext[files: {__?StringQ} | _?StringQ, exportedContext_?StringQ, loadingContext_?StringQ, opts: OptionsPattern[]]
+	Finds all symbols exported in exportedContext and Gets the Wolfram Language code files in loadingContext.";
 
 (* ::Section:: *)
 (* Load Dependencies *)
