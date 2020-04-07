@@ -363,3 +363,15 @@ LIBRARY_LINK_FUNCTION(GetLength) {
 	}
 	return err;
 }
+
+LLU_LIBRARY_FUNCTION(CheckSizeChange) {
+	auto n = mngr.getInteger<mint>(0);
+	DataList<MArgumentType::Integer> dsInt;
+	DataList<MArgumentType::MArgument> dsArg;
+	for (int i = 0; i < n; ++i) {
+		dsInt.push_back(i);
+		dsArg.push_back<MArgumentType::Integer>(i);
+	}
+	LLU::Tensor<mint> res({dsInt.getLength(), static_cast<mint>(dsInt.size()), dsArg.getLength(), static_cast<mint>(dsArg.size())});
+	mngr.setTensor(res);
+}
