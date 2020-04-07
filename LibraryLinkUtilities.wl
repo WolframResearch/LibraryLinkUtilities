@@ -5,6 +5,19 @@ Begin["`LLU`"];
 (* ------------------------------------------------------------------------- *)
 (* ------------------------------------------------------------------------- *)
 
+(* LLU depends on WSTP, so WSTP must be loaded before the paclet library.
+ * Paclets are not required to carry their own copy of WSTP shared library,
+ * instead every paclet attempts to load the WSTP located within the current installation of Mathematica.
+ * This may cause problems if paclet was built with different WSTP interface version but this should be extremely rare.
+ * On MacOS WSTP is a framework and it is on the Kernel's rpath so the loading should happen automatically.
+ *)
+LoadWSTPLibrary[] :=
+	Block[{wstpName, wstpPath},
+		wstpName = "WSTP" <> ToString[$SystemWordLength] <> "i" <> ToString[MathLink`Information`$InterfaceNumber];
+		wstpPath = System`Private`LocateDynamicLibrary[wstpName];
+		SafeLibraryLoad @ wstpPath
+	] /; ($OperatingSystem =!= "MacOSX");
+
 $InitLibraryLinkUtils = False;
 
 InitLibraryLinkUtils[libPath_?StringQ] :=
@@ -12,6 +25,9 @@ If[TrueQ[$InitLibraryLinkUtils],
 	$InitLibraryLinkUtils
 	, (* else *)
 	$InitLibraryLinkUtils = (
+		(* Load WSTP *)
+		LoadWSTPLibrary[];
+
 		SetPacletLibrary[libPath];
 		SafeLibraryLoad[libPath];
 		$GetCErrorCodes = SafeWSTPFunction["sendRegisteredErrors"];
