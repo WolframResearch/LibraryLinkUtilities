@@ -1,6 +1,7 @@
-(* $Context holds the private paclet context that this file was loaded in. *)
-System`Private`NewContextPath[{"System`", $Context <> "LLU`"}];
 Begin["`LLU`"];
+
+(* $Context holds the private paclet context that this file was loaded in. *)
+System`Private`NewContextPath[{"System`", $Context}];
 
 (* ::Section:: *)
 (*Exported Symbols*)
@@ -886,7 +887,6 @@ LoadWSTPMemberFunction[exprHead_][memberSymbol_, fname_?StringQ, opts : OptionsP
 LoadWSTPMemberFunction[exprHead_][memberSymbol_, opts : OptionsPattern[]] :=
 	LoadMemberFunction[exprHead][memberSymbol, guessFunctionNameFromSymbol[memberSymbol], LinkObject, LinkObject, opts];
 
-(* This won't quite work due to the subvalues *)
 declareLazyVersion[LoadMemberFunction];
 declareLazyVersion[LoadWSTPMemberFunction];
 
@@ -965,6 +965,7 @@ LoadFilesInContext[files: {__?StringQ} | _?StringQ, exportedContext_?StringQ, lo
 LoadFilesInContext[___] := $Failed;
 
 End[]; (* `Private` *)
-End[]; (* `LLU` *)
 
 System`Private`RestoreContextPath[];
+
+End[]; (* `LLU` *)
