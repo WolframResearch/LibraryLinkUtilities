@@ -206,7 +206,8 @@ SetPacletLibrary[lib_?StringQ] := $PacletLibrary = lib;
 
 $LazyLoading;
 $EagerLoading;
-lazyLoadingQ[loading_] := SameQ[SymbolName[loading] === SymbolName[$LazyLoading]];
+lazyLoadingQ[$LazyLoading] := True;
+lazyLoadingQ[_] := False;
 GetPacletLibrary[loading_?Developer`SymbolQ] := If[lazyLoadingQ[loading], None, $PacletLibrary];
 
 (* Count how many failures was produced by the paclet during current Kernel session *)
@@ -442,10 +443,10 @@ iLoadLibraryFunction[symbol_, loading_, loader_, libraryName_, args___, opts : O
 		assignmentHead[
 			symbol,
 			(
+				(* Library name is evaluated at the point of calling LoadLibraryFunction and it may be None if the library has not been loaded yet.
+				 * In this case, we do not pass it to a loading function, but instead we let the loading function use $PacletLibrary, which must be
+				 * initialized by the time the function is actually being loaded. *)
 				If[libraryName === None,
-					(* Library name is evaluated at the point of calling LoadLibraryFunction and it may be None if the library has not been loaded yet.
-					 * In this case, we do not pass it to a loading function, but instead we let the loading function use $PacletLibrary, which must be
-					 * initialized by the time the function is actually being loaded. *)
 					loader[args, loadingOpts]
 					,
 					loader[libraryName, args, loadingOpts]
