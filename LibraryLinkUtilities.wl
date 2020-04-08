@@ -476,6 +476,10 @@ With[{lazyf = Symbol["Lazy" <> SymbolName[f]]},
 		f -> lazyf,
 		GetPacletLibrary -> GetLazyPacletLibrary
 	};
+	SubValues[lazyf] = SubValues[f] /. {
+		f -> lazyf,
+		GetPacletLibrary -> GetLazyPacletLibrary
+	};
 ];
 
 declareLazyVersion[LoadLibraryFunction];
