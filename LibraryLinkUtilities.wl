@@ -3,6 +3,8 @@ Begin["`LLU`"];
 (* $Context holds the private paclet context that this file was loaded in. *)
 System`Private`NewContextPath[{"System`", $Context}];
 
+`Private`$LLULoadingContext = $Context;
+
 (* ::Section:: *)
 (*Exported Symbols*)
 (* ------------------------------------------------------------------------- *)
@@ -16,10 +18,17 @@ InitializePacletLibrary::usage = "InitializePacletLibrary[libPath_]
 LazyInitializePacletLibrary::usage = "Lazy version of InitializePacletLibrary
 	which loads the library at the time the first library function is loaded.";
 
+(* ---------------- Paclet errors ------------------------------------------ *)
+
 RegisterPacletErrors::usage = "RegisterPacletErrors[errors_?AssociationQ]
 	Adds custom top-level errors.";
 CreatePacletFailure::usage = "CreatePacletFailure[type_?StringQ, opts:OptionsPattern[]]
 	Emits a Failure object for the custom error named by type.";
+$LastFailureParameters::usage = "A symbol that will store values for TemplateSlots in the most recently thrown exception. Exceptions are thrown in C++ and slots values provided
+ * in ErrorManager::throwException are transferred in a List via WSTP and assigned to this symbol.
+ * Later, the error handling routine in WL, CatchLibraryFunctionError, checks this symbol and creates Failure object.";
+CatchLibraryFunctionError::usage = "CatchLibraryFunctionError[f_]";
+CatchAndThrowLibraryFunctionError::usage = "CatchAndThrowLibraryFunctionError[f_]";
 
 (* ---------------- Loading libraries and library functions ---------------- *)
 
@@ -61,12 +70,16 @@ SafeLibraryFunctionLoad::usage = "SafeLibraryFunctionLoad[libName_, fname_?Strin
 
 Constructor::usage = "Constructor[exprHead_] = Function[...]
 	Loads a constructor wrapper for a managed expression. The instanceID is passed to the wrapper as its first argument.";
+Managed::usage = "Managed[exprHead_]
+	represents a MLE instance.";
 NewManagedExpression::usage = "NewManagedExpression[exprHead_][args___]
-	Creates a MLE instance";
+	Creates a MLE instance.";
 ManagedQ::usage = "ManagedQ[exprHead_][expr]
-	Checks whether expr is a valid MLE instance";
+	Checks whether expr is a valid MLE instance.";
 ManagedIDQ::usage = "ManagedIDQ[exprHead_][expr]
-	Checks whether expr is a valid id of a MLE instance";
+	Checks whether expr is a valid id of a MLE instance.";
+GetManagedID::usage = "GetManagedID[instance_]
+	returns the id associated with a valid MLE instance.";
 
 (* ---------------- Logging ------------------------------------------------ *)
 
@@ -168,7 +181,8 @@ $InitializePacletLibrary[libPath_?StringQ] := (
 	(* Load library functions for initializing different parts of LLU. *)
 	LoadLibraryFunction[$SetLoggerContext, "setLoggerContext", {String}, String, "Optional" -> True, "Throws" -> True];
 	LoadLibraryFunction[$SetExceptionDetailsContext, "setExceptionDetailsContext", {String}, String, "Throws" -> True];
-	SetContexts[Context[$PacletLibrary]]; (* Tell C++ part of LLU in which context were top-level symbols loaded. *)
+	(* Tell C++ part of LLU in which context were top-level symbols loaded. *)
+	SetContexts[$LLULoadingContext];
 	$PacletLibrary
 );
 
@@ -413,6 +427,9 @@ LibraryMemberFunction[exprHead_][libName_, fname_String, fParams_, retType_, opt
 	    ,
 		SafeLibraryFunction[libName, fname, Prepend[fParams, Managed[exprHead]], retType, opts]
     ];
+
+LibraryMemberFunction[exprHead_][fname_String, fParams_, retType_, opts : OptionsPattern[SafeLibraryFunction]] :=
+	LibraryMemberFunction[exprHead][$PacletLibrary, fname, fParams, retType, opts];
 
 Attributes[iLoadLibraryFunction] = {HoldFirst};
 iLoadLibraryFunction[symbol_, loader_, libraryName_, args___, opts : OptionsPattern[]] :=

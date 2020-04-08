@@ -22,17 +22,17 @@ TestExecute[
 
 	Off[General::stop]; (* because we want to see all error messages from CreateLibrary *)
 
-	IsOwnerAutomatic = SafeLibraryFunction["IsOwnerAutomatic", {Image}, "Boolean"];
-	IsOwnerManual = SafeLibraryFunction["IsOwnerManual", {{Integer, _, "Manual"}}, "Boolean"];
-	IsOwnerShared = SafeLibraryFunction["IsOwnerShared", {{NumericArray, "Shared"}}, "Boolean"];
+	IsOwnerAutomatic = `LLU`SafeLibraryFunction["IsOwnerAutomatic", {Image}, "Boolean"];
+	IsOwnerManual = `LLU`SafeLibraryFunction["IsOwnerManual", {{Integer, _, "Manual"}}, "Boolean"];
+	IsOwnerShared = `LLU`SafeLibraryFunction["IsOwnerShared", {{NumericArray, "Shared"}}, "Boolean"];
 
-	CloneAutomatic = SafeLibraryFunction["CloneAutomatic", {Image}, Image];
-	CloneManual = SafeLibraryFunction["CloneManual", {{Integer, _, "Manual"}}, {Integer, _}];
-	CloneShared = SafeLibraryFunction["CloneShared", {{NumericArray, "Shared"}}, NumericArray];
+	CloneAutomatic = `LLU`SafeLibraryFunction["CloneAutomatic", {Image}, Image];
+	CloneManual = `LLU`SafeLibraryFunction["CloneManual", {{Integer, _, "Manual"}}, {Integer, _}];
+	CloneShared = `LLU`SafeLibraryFunction["CloneShared", {{NumericArray, "Shared"}}, NumericArray];
 
-	MoveAutomatic = SafeLibraryFunction["MoveAutomatic", {Image}, Image];
-	MoveManual = SafeLibraryFunction["MoveManual", {{Integer, _, "Manual"}}, {Integer, _}];
-	MoveShared = SafeLibraryFunction["MoveShared", {{NumericArray, "Shared"}}, NumericArray];
+	MoveAutomatic = `LLU`SafeLibraryFunction["MoveAutomatic", {Image}, Image];
+	MoveManual = `LLU`SafeLibraryFunction["MoveManual", {{Integer, _, "Manual"}}, {Integer, _}];
+	MoveShared = `LLU`SafeLibraryFunction["MoveShared", {{NumericArray, "Shared"}}, NumericArray];
 
 	img = RandomImage[];
 	tensor = {1, 2, 3, 4, 5};
