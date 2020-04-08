@@ -142,7 +142,7 @@ Memoize::usage = "Memoize[expr_]
 LazyLoad::usage = "LazyLoad[f_?Developer`SymbolQ, expr_]
 	Evaluates expr only once, when f is first used.";
 
-(* ---------------- Specfic utilities -------------------------------------- *)
+(* ---------------- Specific utilities ------------------------------------- *)
 
 LoadFilesInContext::usage = "LoadFilesInContext[files: {__?StringQ} | _?StringQ, exportedContext_?StringQ, loadingContext_?StringQ, opts: OptionsPattern[]]
 	Finds all symbols exported in exportedContext and Gets the Wolfram Language code files in loadingContext.";
@@ -215,7 +215,7 @@ SetPacletLibrary[lib_?StringQ] := $PacletLibrary = lib;
 
 lazyLoadingQ["LazyLoading"] := True;
 lazyLoadingQ[_] := False;
-GetPacletLibrary[loading_?Developer`SymbolQ] := If[lazyLoadingQ[loading], None, $PacletLibrary];
+GetPacletLibrary[loading_] := If[lazyLoadingQ[loading], None, $PacletLibrary];
 
 (* Count how many failures was produced by the paclet during current Kernel session *)
 $ErrorCount = 0;
