@@ -19,7 +19,7 @@ TestExecute[
 
 	(* A function that will build the test library and load it initializing LLU. We don't want it to run immediately. It must be evaluated only once,
 	 * right before any of the library functions is first used. *)
-	loader[_] := With[
+	loader[] := With[
 		{
 			(* Compile the test library *)
 			lib = CCompilerDriver`CreateLibrary[
@@ -31,13 +31,12 @@ TestExecute[
 		},
 		loader::init = "Initializing Async unit test library.";
 		Message[loader::init];
-		`LLU`InitializePacletLibrary[lib];
 		`LLU`Logger`FormattedLog := `LLU`Logger`LogToShortString;
+		lib
 	];
+	`LLU`LazyInitializePacletLibrary[loader[]];
 
-	(* If you really want to use SetOptions make sure to localize it effects, for example by setting it back to default as soon as possible. *)
-	SetOptions[`LLU`LoadLibraryFunction, "Loader" -> Once @* loader];
-	`LLU`LoadLibraryFunction @@@ {
+	`LLU`LazyLoadLibraryFunction @@@ {
 		(* SleepyThreads[n, m, t] spawns n threads and performs m jobs on them, where each job is just sleeping t milliseconds *)
 		{SleepyThreads, {Integer, Integer, Integer}, "Void"},
 		(* SleepyThreadsWithPause[n, m, t] works same as SleepyThreads but pauses the pool for 1 second, submits all tasks and then resumes. *)
@@ -56,15 +55,14 @@ TestExecute[
 		{ParallelLcm, "LcmParallel", {{NumericArray, "Constant"}, Integer, Integer}, NumericArray},
 		{SequentialLcm, "LcmSequential", {{NumericArray, "Constant"}}, NumericArray}
 	};
-	(* If we do not reset the option value to default, it might affect other parts of the program in hard to predict ways. *)
-	SetOptions[`LLU`LoadLibraryFunction, "Loader" -> None];
 ];
 
 Test[
-	(* At this point the library has not been initialized and not even compiled yet. *)
-	`LLU`$PacletLibrary
+	(* At this point the library has not been initialized and not even compiled yet.
+	 * Evaluating $PacletLibrary will cause the library (set in LazyInitializePacletLibrary) to be loaded. *)
+	Select[Compile`LoadedLibraries[], FileBaseName[#] === "Async" &]
 	,
-	None
+	{}
 	,
 	TestID -> "AsyncTestSuite-20190718-I7S1K0"
 ];

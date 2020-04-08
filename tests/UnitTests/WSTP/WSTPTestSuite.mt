@@ -67,7 +67,7 @@ Test[
 ]
 
 Test[
-	`LLU`LoadWSTPFunction[WriteMint, "Lazy" -> False];
+	`LLU`LoadWSTPFunction[WriteMint];
 	WriteMint[]
 	,
 	-1
