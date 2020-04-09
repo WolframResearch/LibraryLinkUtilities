@@ -19,11 +19,20 @@ function(install_paclet_files)
 	set(ONE_VALUE_ARGS TARGET LLU_LOCATION PACLET_NAME PACLET_FILES_LOCATION)
 	set(MULTI_VALUE_ARGS)
 	cmake_parse_arguments(INSTALL_PACLET "${OPTIONS}" "${ONE_VALUE_ARGS}" "${MULTI_VALUE_ARGS}" ${ARGN})
+
+	message(install_paclet_file)
+	message(INSTALL_PACLET_TARGET ${INSTALL_PACLET_TARGET})
+	if(NOT INSTALL_PACLET_TARGET)
+		message(FATAL_ERROR "Ooops")
+	endif()
+	message(INSTALL_PACLET_LLU_LOCATION ${INSTALL_PACLET_LLU_LOCATION})
+	message(INSTALL_PACLET_PACLET_NAME ${INSTALL_PACLET_PACLET_NAME})
+
 	required_arg(INSTALL_PACLET_TARGET "Target must be specified.")
 	set_if_undefined(INSTALL_PACLET_PACLET_NAME ${INSTALL_PACLET_TARGET})
 	set_if_undefined(INSTALL_PACLET_PACLET_FILES_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/${INSTALL_PACLET_PACLET_NAME})
 
-	#copy over the paclet directory - i.e. the main .m file, the Kernel directory, PacletInfo file, etc.
+	#copy over the paclet directory - i.e. the main .wl file, the Kernel directory, PacletInfo file, etc.
 	install(DIRECTORY ${INSTALL_PACLET_PACLET_FILES_LOCATION}
 			DESTINATION ${CMAKE_INSTALL_PREFIX}
 			PATTERN ".DS_Store" EXCLUDE
@@ -74,17 +83,6 @@ function(create_zip_target PACLET_NAME)
 			)
 endfunction()
 
-function(find_wolframscript WOLFRAMSCRIPT_EXE)
-	set(CMAKE_FIND_APPBUNDLE NEVER)
-
-	find_program(_WOLFRAMSCRIPT_EXE
-			NAMES wolframscript
-			HINTS ${MATHEMATICA_INSTALL_DIR}
-			PATH_SUFFIXES Executables MacOS
-			DOC "Path to wolframscript executable."
-			)
-	set(WOLFRAMSCRIPT_EXE ${_WOLFRAMSCRIPT_EXE} PARENT_SCOPE)
-endfunction()
 
 function(pack_paclet)
 	set(OPTIONS VERIFY)

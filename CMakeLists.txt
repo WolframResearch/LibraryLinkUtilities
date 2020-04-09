@@ -6,7 +6,7 @@
 #################################################################################
 
 
-cmake_minimum_required(VERSION 3.8.0)
+cmake_minimum_required(VERSION 3.11.0)
 
 #set minimum MacOS target version if not defined as environment variable
 if(APPLE AND NOT DEFINED ENV{MACOSX_DEPLOYMENT_TARGET})
@@ -150,9 +150,6 @@ if(NOT TARGET LLU)
 			WolframLibrary::WolframLibrary
 	)
 
-	if (NOT WIN32)
-		set_rpath(LLU "")
-	endif ()
 	set_machine_flags(LLU)
 
 	##############################################
@@ -198,6 +195,7 @@ if(NOT TARGET LLU)
 	)
 
 	#Install the config, configversion and custom find modules
+	install(DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/cmake/Wolfram DESTINATION ${INSTALL_CONFIGDIR})
 	install(FILES
 		${CMAKE_CURRENT_LIST_DIR}/cmake/FindWolframLibrary.cmake
 		${CMAKE_CURRENT_LIST_DIR}/cmake/FindWSTP.cmake
