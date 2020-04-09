@@ -1,3 +1,4 @@
+# IDEs metadata
 .project
 .cproject
 .settings/
@@ -5,12 +6,15 @@
 .vs/
 CMakeSettings.json
 .idea/
-**/build-local.properties
-tests/Demo/bin
+
+# Documentation intermediate files
+docs/xml
+docs/LibraryLinkUtilities
+
+# Other
 Debug/
 lib/
 build*/
+cmake-build*/
+tests/Demo/build*/
 install/
-
-docs/xml
-docs/LibraryLinkUtilities
