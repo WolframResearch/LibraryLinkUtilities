@@ -20,6 +20,7 @@ TestExecute[
 	];
 
 	Get[FileNameJoin[{$LLUSharedDir, "LibraryLinkUtilities.wl"}]];
+	`LLU`InitLibraryLinkUtils[lib];
 ];
 
 
