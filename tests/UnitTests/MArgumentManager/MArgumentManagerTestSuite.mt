@@ -23,7 +23,7 @@ TestExecute[
 
 	Get[FileNameJoin[{$LLUSharedDir, "LibraryLinkUtilities.wl"}]];
 
-	`LLU`RegisterPacletErrors[lib, <||>];
+	`LLU`InitializePacletLibrary[lib];
 
 	(* Person expression takes 3 arguments: name, age and height e.g. Person["James", 20, 1.75],
 	 * so it decays to 3 LibraryLink arguments: String, Integer and Real. *)
