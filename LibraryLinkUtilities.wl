@@ -781,7 +781,7 @@ Options[LoadFilesInContext] = {
 	"ContextPath" -> Automatic
 };
 LoadFilesInContext[files: {__?StringQ} | _?StringQ, exportedContext_?StringQ, loadingContext_?StringQ, opts: OptionsPattern[]] :=
-	Module[{symbols, path, mainContext, contextPath},
+	Module[{symbols, path, contextPath},
 		symbols = FindPacletSymbols[exportedContext];
 		path = With[
 			{folder = OptionValue["FilePath"]},
