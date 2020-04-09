@@ -23,6 +23,7 @@ set(TEST_MODULES
         "ErrorReporting"
         "Image"
         "ManagedExpressions"
+        "MArgumentManager"
         "WSTP"
         "NumericArray"
         "GenericContainers"

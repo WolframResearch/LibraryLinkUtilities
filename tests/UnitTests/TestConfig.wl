@@ -13,8 +13,8 @@ $LLULib = "LLU";
 (* Path to LibraryLinkUtilities shared resources *)
 $LLUSharedDir = FileNameJoin[{$baseDir, "install", "share"}];
 
-(* The majority of unit tests should compile with C++14. For the rest we add a global config variable to modify. *)
-$CppVersion = "c++14";
+(* C++ version to build unit tests with. Some parts of LLU require C++17. *)
+$CppVersion = "c++17";
 
 (* Compilations options for all tests *)
 options := {
