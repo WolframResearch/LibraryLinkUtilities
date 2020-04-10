@@ -12,8 +12,8 @@ System`Private`NewContextPath[{"System`", $Context}];
 
 InitializePacletLibrary::usage = "InitializePacletLibrary[libPath_]
 	Initialization of LLU that involves loading the main paclet library.
-	Must be called by every paclet that uses LLU and will be evaluated only once
-	unless it failed. Failures are indicated by Throwing.
+	This or LazyInitializePacletLibrary must be called by every paclet that uses LLU
+	and will be evaluated only once unless it fails by Throwing.
 	libPath - path to the main paclet library (the one that LLU was linked into)";
 LazyInitializePacletLibrary::usage = "Lazy version of InitializePacletLibrary
 	which loads the library at the time the first library function is loaded.";
@@ -21,7 +21,8 @@ LazyInitializePacletLibrary::usage = "Lazy version of InitializePacletLibrary
 (* ---------------- Paclet errors ------------------------------------------ *)
 
 RegisterPacletErrors::usage = "RegisterPacletErrors[errors_?AssociationQ]
-	Adds custom top-level errors.";
+	Adds custom top-level errors. Errors are specified in the form
+	<| \"ErrorName\" -> \"Message\" |>";
 CreatePacletFailure::usage = "CreatePacletFailure[type_?StringQ, opts:OptionsPattern[]]
 	Emits a Failure object for the custom error named by type.";
 $LastFailureParameters::usage = "A symbol that will store values for TemplateSlots in the most recently thrown exception.
@@ -38,10 +39,7 @@ SafeLibraryLoad::usage = "SafeLibraryLoad[lib_]
 LoadLibraryFunction::usage = "LoadLibraryFunction[resultSymbol_, fParams_, fResultType_, opts___]
 	Attempts to load an exported function from a dynamic library and assign the result to resultSymbol.
 	By default, the dynamic library name is taken from the library given to InitializePacletLibrary (\"Paclet Library\").
-		Alternatively, a library name can be specified, in which case Paclet Library will be ignored. This allows LoadLibraryFunction
-		to cover a more general field of use cases (e.g., lazily loading a function from a library distinct from Paclet Library),
-		but also gives one the means to shoot themselves in the foot (e.g., if Paclet Library has been lazily initialized and
-		LoadLibraryFunction is called with a path to it, since auto-loading of Paclet Library will not be triggered in that case).
+	A caveat is that if Paclet Library has been lazily initalized and LoadLibraryFunction is called with a path to it, then auto-loading of Paclet Library will not be triggered.
 	By default, the name of the library function is assumed to be the same as the symbol name (sans any leading or trailing $'s).
 	Arguments:
 	- resultSymbol_ - a WL symbol to represent the loaded function
@@ -503,18 +501,15 @@ LoadWSTPFunction[symbol_, opts : OptionsPattern[]] :=
 
 SetAttributes[declareLazyVersion, HoldAll];
 declareLazyVersion[f_?Developer`SymbolQ] :=
-With[{lazyf = Symbol["Lazy" <> SymbolName[f]]},
-	Attributes[lazyf] = Attributes[f];
-	Options[lazyf] = Options[f];
-	DownValues[lazyf] = DownValues[f] /. {
-		f -> lazyf,
-		"EagerLoading" -> "LazyLoading"
-	};
-	SubValues[lazyf] = SubValues[f] /. {
-		f -> lazyf,
-		"EagerLoading" -> "LazyLoading"
-	};
-];
+	With[{lazyf = Symbol["Lazy" <> SymbolName[f]]},
+		Block[{rules},
+			rules = {f -> lazyf, "EagerLoading" -> "LazyLoading"};
+			Attributes[lazyf] = Attributes[f];
+			Options[lazyf] = Options[f];
+			DownValues[lazyf] = DownValues[f] /. rules;
+			SubValues[lazyf] = SubValues[f] /. rules;
+		];
+	];
 
 declareLazyVersion[LoadLibraryFunction];
 declareLazyVersion[LoadWSTPFunction];
