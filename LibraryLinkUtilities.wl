@@ -128,13 +128,6 @@ GetManagedID::usage = "GetManagedID[instance_]
 `Logger`PrintLogFunctionSelector::usage = "This is a \"selector\" called by other functions below. Feel free to modify/Block this symbol, see examples.";
 `Logger`LogHandler::usage = "This is a function WSTP will call from the C++ code. It all starts here. Feel free to modify/Block this symbol, see examples.";
 
-(* ---------------- General utilities -------------------------------------- *)
-
-Memoize::usage = "Memoize[expr_]
-	Evaluates expr only once, when f is first used. It should be used like so: f := Memoize @ expr;";
-LazyLoad::usage = "LazyLoad[f_?Developer`SymbolQ, expr_]
-	Evaluates expr only once, when f is first used.";
-
 (* ---------------- Specific utilities ------------------------------------- *)
 
 LoadFilesInContext::usage = "LoadFilesInContext[files: {__?StringQ} | _?StringQ, exportedContext_?StringQ, loadingContext_?StringQ, opts: OptionsPattern[]]
@@ -521,20 +514,11 @@ declareLazyVersion[LoadWSTPFunction];
  * if you initialized LLU with a relative path to the dynamic library, you will end up calling FindLibrary 50 times, which takes considerable amount of time.
  *
  * One possible solution is to replace "f = " with "f := " ta avoid immediate evaluation of the RHS, but this would result in evaluating RHS every time
- * f is used. To address this, LLU defines a helper function Memoize:
- *)
-
-Attributes[Memoize] = {HoldAll};
-Memoize[expr_] := expr = expr;
-
-(* You can now lazy load your functions like this:
- *     f := Memoize @ SafeLibraryFunction["functionName", {Integer}, String];
- *
- * In case you want to be even more explicit about what your code does, LLU also provides a function LazyLoad, to be used in the following way:
+ * f is used. To address this, LLU defines a helper function LazyLoad, which can be used in the following way:
  *     LazyLoad[f, SafeLibraryFunction["functionName", {Integer}, String]];
  * This will evaluate the second argument only once, when f is first used.
  *
- * Both LazyLoad and Memoize can be used not only with SafeLibraryFunction but also with related functions like SafeWSTPFunction.
+ * LazyLoad can be used not only with SafeLibraryFunction but also with related functions like SafeWSTPFunction.
  *)
 
 Attributes[LazyLoad] = {HoldAll};
