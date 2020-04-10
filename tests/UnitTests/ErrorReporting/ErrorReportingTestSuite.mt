@@ -320,9 +320,9 @@ Test[
 	SetSPI = `LLU`SafeLibraryFunction["SetSendParametersImmediately", {"Boolean"}, "Void"];
 	SetSPI[False];
 
-	`LLU`$LastFailureParameters = {"This", "will", "be", "overwritten"};
+	`LLU`Private`$LastFailureParameters = {"This", "will", "be", "overwritten"};
 	ReadData["somefile.txt"];
-	`LLU`$LastFailureParameters
+	`LLU`Private`$LastFailureParameters
 	,
 	{}
 	,

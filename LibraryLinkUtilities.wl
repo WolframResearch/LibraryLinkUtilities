@@ -25,11 +25,6 @@ RegisterPacletErrors::usage = "RegisterPacletErrors[errors_?AssociationQ]
 	<| \"ErrorName\" -> \"Message\" |>";
 CreatePacletFailure::usage = "CreatePacletFailure[type_?StringQ, opts:OptionsPattern[]]
 	Emits a Failure object for the custom error named by type.";
-$LastFailureParameters::usage = "A symbol that will store values for TemplateSlots in the most recently thrown exception.
-	Exceptions are thrown in C++ and slot values provided in ErrorManager::throwException are transferred in a List via WSTP and assigned to this symbol.
-	Later, the error handling routine in WL, CatchLibraryFunctionError, checks this symbol and creates Failure object.";
-CatchLibraryFunctionError::usage = "CatchLibraryFunctionError[f_]";
-CatchAndThrowLibraryFunctionError::usage = "CatchAndThrowLibraryFunctionError[f_]";
 
 (* ---------------- Loading libraries and library functions ---------------- *)
 
@@ -189,7 +184,7 @@ $InitializePacletLibrary[libPath_?StringQ] := (
 	LoadLibraryFunction[$SetLoggerContext, "setLoggerContext", {String}, String, "Optional" -> True, "Throws" -> True];
 	LoadLibraryFunction[$SetExceptionDetailsContext, "setExceptionDetailsContext", {String}, String, "Throws" -> True];
 	(* Tell C++ part of LLU in which context were top-level symbols loaded. *)
-	SetContexts[$LLULoadingContext];
+	SetContexts[$LLULoadingContext, $LLULoadingContext <> "Private`"];
 	$PacletLibrary
 );
 
