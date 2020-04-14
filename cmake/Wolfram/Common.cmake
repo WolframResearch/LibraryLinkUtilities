@@ -454,5 +454,6 @@ function(find_wolframscript WOLFRAMSCRIPT_EXE)
 			PATH_SUFFIXES Executables MacOS
 			DOC "Path to wolframscript executable."
 			)
-	set(WOLFRAMSCRIPT_EXE ${_WOLFRAMSCRIPT_EXE} PARENT_SCOPE)
+
+	set(${WOLFRAMSCRIPT_EXE} ${_WOLFRAMSCRIPT_EXE} PARENT_SCOPE)
 endfunction()

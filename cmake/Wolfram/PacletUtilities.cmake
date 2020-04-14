@@ -1,14 +1,22 @@
 
 macro(set_if_undefined VAR VALUE)
-	if(NOT VAR)
-		set(VAR ${VALUE})
+	if(NOT ${VAR})
+		set(${VAR} ${VALUE})
 	endif()
 endmacro()
 
 macro(required_arg VAR MESSAGE)
-	if(NOT VAR)
+	if(NOT ${VAR})
 		message(FATAL_ERROR ${MESSAGE})
 	endif()
+endmacro()
+
+macro(find_paclet_info DIR PACLET_INFO_LOCATION)
+	find_file(${PACLET_INFO_LOCATION}
+			NAMES PacletInfo.wl PacletInfo.wl.in PacletInfo.m PacletInfo.m.in
+			HINTS ${DIR}
+			DOC "Path to the PacletInfo file"
+			NO_DEFAULT_PATH)
 endmacro()
 
 # Copies paclet files to install location (CMAKE_INSTALL_PREFIX should be set appropriately before calling this).
@@ -20,23 +28,26 @@ function(install_paclet_files)
 	set(MULTI_VALUE_ARGS)
 	cmake_parse_arguments(INSTALL_PACLET "${OPTIONS}" "${ONE_VALUE_ARGS}" "${MULTI_VALUE_ARGS}" ${ARGN})
 
-	message(install_paclet_file)
-	message(INSTALL_PACLET_TARGET ${INSTALL_PACLET_TARGET})
-	if(NOT INSTALL_PACLET_TARGET)
-		message(FATAL_ERROR "Ooops")
-	endif()
-	message(INSTALL_PACLET_LLU_LOCATION ${INSTALL_PACLET_LLU_LOCATION})
-	message(INSTALL_PACLET_PACLET_NAME ${INSTALL_PACLET_PACLET_NAME})
-
 	required_arg(INSTALL_PACLET_TARGET "Target must be specified.")
 	set_if_undefined(INSTALL_PACLET_PACLET_NAME ${INSTALL_PACLET_TARGET})
 	set_if_undefined(INSTALL_PACLET_PACLET_FILES_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/${INSTALL_PACLET_PACLET_NAME})
 
-	#copy over the paclet directory - i.e. the main .wl file, the Kernel directory, PacletInfo file, etc.
+	find_paclet_info(${INSTALL_PACLET_PACLET_FILES_LOCATION} PACLET_INFO)
+	if(NOT PACLET_INFO)
+		message(WARNING "PacletInfo file could not be found. Paclet might be broken.")
+	else()
+		configure_file(${PACLET_INFO} ${CMAKE_CURRENT_BINARY_DIR}/PacletInfo.wl @ONLY) # enforce modern .wl extension
+	endif()
+
+	#copy over the paclet directory - i.e. .wl sources and other files except PacletInfo
 	install(DIRECTORY ${INSTALL_PACLET_PACLET_FILES_LOCATION}
 			DESTINATION ${CMAKE_INSTALL_PREFIX}
 			PATTERN ".DS_Store" EXCLUDE
-			)
+			PATTERN REGEX ${PACLET_INFO} EXCLUDE)
+
+	# install generated PacletInfo
+	install(FILES ${CMAKE_CURRENT_BINARY_DIR}/PacletInfo.wl
+			DESTINATION ${CMAKE_INSTALL_PREFIX}/${INSTALL_PACLET_PACLET_NAME})
 
 	#copy the library produced into LibraryResources/$SystemID
 	set(LIB_RESOURCES_DIR "${INSTALL_PACLET_PACLET_NAME}/LibraryResources")
