@@ -12,6 +12,14 @@ project(Demo
 		LANGUAGES   CXX
 )
 
+# By default install to the build directory
+if (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+	set(CMAKE_INSTALL_PREFIX "${CMAKE_CURRENT_BINARY_DIR}" CACHE PATH "Demo paclet install prefix" FORCE)
+endif ()
+
+# Optionally, install paclet to Mathematica layout (set MATHEMATICA_INSTALL_DIR to choose which one)
+set(INSTALL_PACLET_TO_LAYOUT OFF CACHE BOOL "Copy paclet into Mathematica installation")
+
 #=============================================
 #=============== FIND LLU ====================
 #=============================================
