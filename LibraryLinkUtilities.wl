@@ -177,9 +177,6 @@ $InitializePacletLibrary[libPath_?StringQ] := (
 	$PacletLibrary
 );
 
-$InitializePacletLibrary[___] :=
-	Throw @ Failure["InitializePacletLibrary", <||>]; (* TODO: since this could be called lazily, it probably shouldn't fail silently *)
-
 (* ::Section:: *)
 (* Internal Utilities *)
 (* ------------------------------------------------------------------------- *)
