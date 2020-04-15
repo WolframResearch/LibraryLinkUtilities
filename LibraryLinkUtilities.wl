@@ -79,6 +79,37 @@ ManagedIDQ::usage = "ManagedIDQ[exprHead_][expr]
 GetManagedID::usage = "GetManagedID[instance_]
 	returns the id associated with a valid MLE instance.";
 
+(* ---------------- User-defined argument and result types ----------------- *)
+
+MArgumentType::usage = "MArgumentType[customType_, actualType_, transformation_]
+extends the set of basic LibraryLink argument types. Three parameters must be provided:
+ - customType - new argument type, can be a Symbol, String, or some other expression
+ - actualType - a type or a list of basic LibraryLink argument types that correspond to a single argument of customType
+ - transformation - a function that takes a single expression of customType and returns a sequence of corresponding values of actualType";
+
+MResultType::usage = "MResultType[customType_, actualType_, transformation_]
+extends the set of basic LibraryLink return types. Three parameters must be provided:
+ - customType - new return type, can be a Symbol, String, or some other expression
+ - actualType - a single basic LibraryLink type that corresponds to an expression of customType
+ - transformation - a function that takes an expression of actualType and returns a value of customType";
+
+CustomMArgumentTypeQ::usage = "CustomMArgumentTypeQ[t] returns True iff t has been registered as a user-defined library function argument type.";
+
+CustomMResultTypeQ::usage = "CustomMResultTypeQ[t] returns True iff t has been registered as a user-defined library function return type.";
+
+MArgumentCustomType::usage = "MArgumentCustomType[t] must evaluate to a sequence of basic LibraryLink types that corresponds to a single argument of type t.
+DownValues for this symbol can be provided by developers either directly or, preferably, by calling MArgumentType.";
+
+MResultCustomType::usage = "MResultCustomType[t] must evaluate to a single basic LibraryLink type that corresponds to a library function return value of type t.
+DownValues for this symbol can be provided by developers either directly or, preferably, by calling MResultType.";
+
+MArgumentTransform::usage = "MArgumentTransform[t] must evaluate to a one-argument function that takes an expression of \"type\" t and returns a sequence of
+LibraryLink-compatible expressions (String, Integer, NumericArray, etc.). DownValues for this symbol can be provided by developers either directly or,
+preferably, by calling MArgumentType.";
+
+MResultTransform::usage = "MResultTransform[t] must evaluate to a one-argument function that takes a LibraryLink-compatible expression
+and returns an expression of \"type\" t. DownValues for this symbol can be provided by developers either directly or, preferably, by calling MResultType.";
+
 (* ---------------- Logging ------------------------------------------------ *)
 
 `Logger`LogToList::usage = "LogToList[args___]
