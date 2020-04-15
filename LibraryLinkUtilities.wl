@@ -155,11 +155,6 @@ and returns an expression of \"type\" t. DownValues for this symbol can be provi
 `Logger`PrintLogFunctionSelector::usage = "This is a \"selector\" called by other functions below. Feel free to modify/Block this symbol, see examples.";
 `Logger`LogHandler::usage = "This is a function WSTP will call from the C++ code. It all starts here. Feel free to modify/Block this symbol, see examples.";
 
-(* ---------------- Specific utilities ------------------------------------- *)
-
-LoadFilesInContext::usage = "LoadFilesInContext[files: {__?StringQ} | _?StringQ, exportedContext_?StringQ, loadingContext_?StringQ, opts: OptionsPattern[]]
-	Finds all symbols exported in exportedContext and Gets the Wolfram Language code files in loadingContext.";
-
 (* ::Section:: *)
 (* Load Dependencies *)
 (* ------------------------------------------------------------------------- *)
