@@ -19,20 +19,20 @@ TestExecute[
 
 	`LLU`InitializePacletLibrary[lib];
 
-	PassDataStore = `LLU`SafeLibraryFunction["PassDataStore", {"DataStore", "Boolean"}, "DataStore"];
-	JoinDataStores = `LLU`SafeLibraryFunction["JoinDataStores", {"DataStore", "DataStore", "Boolean"}, "DataStore"];
-	TestSelfReferencialDataStore = `LLU`SafeLibraryFunction["TestSelfReferencialDataStore", {"DataStore"}, "DataStore"];
-	ReverseListOfStringsWSTP = `LLU`SafeWSTPFunction["ReverseListOfStringsWSTP"];
-	ReverseListOfStringsLibraryLink = `LLU`SafeLibraryFunction["ReverseListOfStringsLibraryLink", {"DataStore"}, "DataStore"];
-	ReverseListOfStrings = `LLU`SafeLibraryFunction["ReverseListOfStrings", {"DataStore"}, "DataStore"];
-	SeparateKeysAndValues = `LLU`SafeLibraryFunction["SeparateKeysAndValues", {"DataStore"}, "DataStore"];
-	GetKeys = `LLU`SafeLibraryFunction["GetKeys", {"DataStore"}, "DataStore"];
-	GetValuesReversed = `LLU`SafeLibraryFunction["GetValuesReversed", {"DataStore"}, "DataStore"];
-	FrameDims = `LLU`SafeLibraryFunction["FrameDims", {"DataStore"}, NumericArray];
-	StringsThroughVectorReversed = `LLU`SafeLibraryFunction["StringsThroughVectorReversed", {"DataStore"}, "DataStore"];
-	IntsToNumericArray = `LLU`SafeLibraryFunction["IntsToNumericArray", {"DataStore"}, NumericArray];
-	GetLength = `LLU`SafeLibraryFunction["GetLength", {"DataStore"}, Integer];
-	CheckSizeChange = `LLU`SafeLibraryFunction["CheckSizeChange", {Integer}, {Integer, 1}];
+	PassDataStore = `LLU`PacletFunctionLoad["PassDataStore", {"DataStore", "Boolean"}, "DataStore"];
+	JoinDataStores = `LLU`PacletFunctionLoad["JoinDataStores", {"DataStore", "DataStore", "Boolean"}, "DataStore"];
+	TestSelfReferencialDataStore = `LLU`PacletFunctionLoad["TestSelfReferencialDataStore", {"DataStore"}, "DataStore"];
+	ReverseListOfStringsWSTP = `LLU`PacletFunctionLoad["ReverseListOfStringsWSTP", LinkObject, LinkObject];
+	ReverseListOfStringsLibraryLink = `LLU`PacletFunctionLoad["ReverseListOfStringsLibraryLink", {"DataStore"}, "DataStore"];
+	ReverseListOfStrings = `LLU`PacletFunctionLoad["ReverseListOfStrings", {"DataStore"}, "DataStore"];
+	SeparateKeysAndValues = `LLU`PacletFunctionLoad["SeparateKeysAndValues", {"DataStore"}, "DataStore"];
+	GetKeys = `LLU`PacletFunctionLoad["GetKeys", {"DataStore"}, "DataStore"];
+	GetValuesReversed = `LLU`PacletFunctionLoad["GetValuesReversed", {"DataStore"}, "DataStore"];
+	FrameDims = `LLU`PacletFunctionLoad["FrameDims", {"DataStore"}, NumericArray];
+	StringsThroughVectorReversed = `LLU`PacletFunctionLoad["StringsThroughVectorReversed", {"DataStore"}, "DataStore"];
+	IntsToNumericArray = `LLU`PacletFunctionLoad["IntsToNumericArray", {"DataStore"}, NumericArray];
+	GetLength = `LLU`PacletFunctionLoad["GetLength", {"DataStore"}, Integer];
+	CheckSizeChange = `LLU`PacletFunctionLoad["CheckSizeChange", {Integer}, {Integer, 1}];
 
 	(* Test data used across multiple tests *)
 	bool = True;
@@ -65,7 +65,7 @@ Test[
 (* Basic tests *)
 
 Test[
-	EmptyDataStore = `LLU`SafeLibraryFunction["EmptyDataStore", {}, "DataStore"];
+	EmptyDataStore = `LLU`PacletFunctionLoad["EmptyDataStore", {}, "DataStore"];
 	EmptyDataStore[]
 	,
 	Developer`DataStore[]
@@ -475,7 +475,7 @@ Test[
 
 Test[
 	LibraryFunctionUnload[Last @ PassDataStore];
-	PassDataStore = `LLU`SafeLibraryFunction["PassDataStore", {{"DataStore", "Manual"}, "Boolean"}, "DataStore"];
+	PassDataStore = `LLU`PacletFunctionLoad["PassDataStore", {{"DataStore", "Manual"}, "Boolean"}, "DataStore"];
 	MemoryLeakTest[PassDataStore[ds0, #]] & /@ {False, True}
 	,
 	{ 0, n_ } /; n > 0  (* when copy is made we expect a leak, because the C++ code is not aware of the "Manual" passing of the input DataStore *)

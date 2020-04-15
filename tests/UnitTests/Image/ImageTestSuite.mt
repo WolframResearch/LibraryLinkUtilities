@@ -22,22 +22,22 @@ TestExecute[
 	Get[FileNameJoin[{$LLUSharedDir, "LibraryLinkUtilities.wl"}]];
 	`LLU`InitializePacletLibrary[lib];
 
-	EchoImage1 = `LLU`SafeLibraryFunction["EchoImage1", { LibraryDataType[Image | Image3D] }, LibraryDataType[Image | Image3D] ];
-	EchoImage2 = `LLU`SafeLibraryFunction["EchoImage2", { LibraryDataType[Image | Image3D] }, LibraryDataType[Image | Image3D] ];
-	EchoImage3 = `LLU`SafeLibraryFunction["EchoImage3", { LibraryDataType[Image | Image3D] }, LibraryDataType[Image | Image3D] ];
-	ConvertImageToByte = `LLU`SafeLibraryFunction["ConvertImageToByte", { LibraryDataType[Image | Image3D] }, LibraryDataType[Image | Image3D] ];
-	UnifyImageTypes = `LLU`SafeLibraryFunction["UnifyImageTypes", { LibraryDataType[Image | Image3D], LibraryDataType[Image | Image3D] }, LibraryDataType[Image | Image3D]];
-	CloneImage = `LLU`SafeLibraryFunction["CloneImage", { LibraryDataType[Image | Image3D] }, LibraryDataType[Image | Image3D] ];
-	EmptyWrapper = `LLU`SafeLibraryFunction["EmptyWrapper", {}, "Void" ];
+	EchoImage1 = `LLU`PacletFunctionLoad["EchoImage1", { LibraryDataType[Image | Image3D] }, LibraryDataType[Image | Image3D] ];
+	EchoImage2 = `LLU`PacletFunctionLoad["EchoImage2", { LibraryDataType[Image | Image3D] }, LibraryDataType[Image | Image3D] ];
+	EchoImage3 = `LLU`PacletFunctionLoad["EchoImage3", { LibraryDataType[Image | Image3D] }, LibraryDataType[Image | Image3D] ];
+	ConvertImageToByte = `LLU`PacletFunctionLoad["ConvertImageToByte", { LibraryDataType[Image | Image3D] }, LibraryDataType[Image | Image3D] ];
+	UnifyImageTypes = `LLU`PacletFunctionLoad["UnifyImageTypes", { LibraryDataType[Image | Image3D], LibraryDataType[Image | Image3D] }, LibraryDataType[Image | Image3D]];
+	CloneImage = `LLU`PacletFunctionLoad["CloneImage", { LibraryDataType[Image | Image3D] }, LibraryDataType[Image | Image3D] ];
+	EmptyWrapper = `LLU`PacletFunctionLoad["EmptyWrapper", {}, "Void" ];
 
-	ImageNegate = `LLU`SafeLibraryFunction["ImageNegate", { LibraryDataType[Image | Image3D] }, LibraryDataType[Image | Image3D] ];
-	NegateImages = `LLU`SafeLibraryFunction["NegateImages", { "DataStore" }, "DataStore"];
+	ImageNegate = `LLU`PacletFunctionLoad["ImageNegate", { LibraryDataType[Image | Image3D] }, LibraryDataType[Image | Image3D] ];
+	NegateImages = `LLU`PacletFunctionLoad["NegateImages", { "DataStore" }, "DataStore"];
 
-	ImageColumnCount = `LLU`SafeLibraryFunction["ImageColumnCount", { LibraryDataType[Image | Image3D] }, Integer ];
-	ImageRowCount = `LLU`SafeLibraryFunction["ImageRowCount", { LibraryDataType[Image | Image3D] }, Integer ];
-	ImageRank = `LLU`SafeLibraryFunction["ImageRank", {LibraryDataType[Image | Image3D] }, Integer ];
-	GetLargest = `LLU`SafeLibraryFunction["GetLargest", {Image, {Image, "Constant"}, {Image, "Manual"}}, Integer];
-	EmptyView = `LLU`SafeLibraryFunction["EmptyView", {}, {Integer, 1}];
+	ImageColumnCount = `LLU`PacletFunctionLoad["ImageColumnCount", { LibraryDataType[Image | Image3D] }, Integer ];
+	ImageRowCount = `LLU`PacletFunctionLoad["ImageRowCount", { LibraryDataType[Image | Image3D] }, Integer ];
+	ImageRank = `LLU`PacletFunctionLoad["ImageRank", {LibraryDataType[Image | Image3D] }, Integer ];
+	GetLargest = `LLU`PacletFunctionLoad["GetLargest", {Image, {Image, "Constant"}, {Image, "Manual"}}, Integer];
+	EmptyView = `LLU`PacletFunctionLoad["EmptyView", {}, {Integer, 1}];
 ];
 
 

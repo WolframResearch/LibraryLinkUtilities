@@ -28,7 +28,7 @@ TestExecute[
 		`LLU`Logger`PrintLogToSymbol[LogSymbol][##]
 	]&;
 
-	`LLU`LoadLibraryFunction @@@ {
+	`LLU`PacletFunctionSet @@@ {
 		(* Load a number of library functions. We do not provide library path, so the one passed to InitializePacletLibrary will be used. *)
 		{$OpenRead, "OpenForReading", {String}, Integer},
 		{$OpenWrite, "OpenForWriting", {String}, Integer},
@@ -53,7 +53,7 @@ TestExecute[
 	FailureOnWindowsManagedExprOtherwiseQ[expr_] := If[$OperatingSystem == "Windows", FailureQ, ManagedLibraryExpressionQ][expr];
 
 	(* UTF conversion utilities *)
-	`LLU`LoadLibraryFunction @@@ {
+	`LLU`PacletFunctionSet @@@ {
 		(* Load encoding-related library functions explicitly providing a path to the library. *)
 		{$WideStringUTF8UTF16Conversion, lib, "WideStringUTF8UTF16Conversion", {}, "Boolean"},
 		{$Char16UTF8UTF16Conversion, lib, "Char16UTF8UTF16Conversion", {}, "Boolean"},

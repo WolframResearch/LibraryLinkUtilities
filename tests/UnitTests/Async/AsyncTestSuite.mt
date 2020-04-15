@@ -36,7 +36,7 @@ TestExecute[
 	];
 	`LLU`LazyInitializePacletLibrary[loader[]];
 
-	`LLU`LazyLoadLibraryFunction @@@ {
+	`LLU`LazyPacletFunctionSet @@@ {
 		(* SleepyThreads[n, m, t] spawns n threads and performs m jobs on them, where each job is just sleeping t milliseconds *)
 		{SleepyThreads, {Integer, Integer, Integer}, "Void"},
 		(* SleepyThreadsWithPause[n, m, t] works same as SleepyThreads but pauses the pool for 1 second, submits all tasks and then resumes. *)

@@ -85,7 +85,7 @@ Cell[CellGroupData[{
 Cell[BoxData[
  RowBox[{"Catch", "[", 
   RowBox[{
-   RowBox[{"Global`LLU`LoadLibraryFunction", "[", 
+   RowBox[{"Global`LLU`PacletFunctionSet", "[",
     RowBox[{"UniformProgress", ",", 
      RowBox[{"{", "Real", "}"}], ",", "Integer", ",", " ", 
      RowBox[{"\"\<ProgressMonitor\>\"", "\[Rule]", "a"}]}], "]"}], ";"}], 
@@ -241,7 +241,7 @@ f0a4c1128487"],
 
 Cell[BoxData[
  RowBox[{
-  RowBox[{"Global`LLU`LoadLibraryFunction", "[", 
+  RowBox[{"Global`LLU`PacletFunctionSet", "[",
    RowBox[{"UniformProgress", ",", 
     RowBox[{"{", "Real", "}"}], ",", "Integer", ",", " ", 
     RowBox[{
@@ -517,7 +517,7 @@ some part of the function must be rerun due to internal error:\
 
 Cell[BoxData[
  RowBox[{
-  RowBox[{"Global`LLU`LoadLibraryFunction", "[", 
+  RowBox[{"Global`LLU`PacletFunctionSet", "[",
    RowBox[{"DecreaseProgress", ",", 
     RowBox[{"{", "Real", "}"}], ",", "Integer", ",", " ", 
     RowBox[{
@@ -556,7 +556,7 @@ b7efd753e937"],
 
 Cell[BoxData[
  RowBox[{
-  RowBox[{"Global`LLU`LoadLibraryFunction", "[", 
+  RowBox[{"Global`LLU`PacletFunctionSet", "[",
    RowBox[{"PrepareProcessAndFormat", ",", 
     RowBox[{"{", "Real", "}"}], ",", "Integer", ",", 
     RowBox[{
@@ -652,7 +652,7 @@ but with checking for Aborts: \
 
 Cell[BoxData[
  RowBox[{
-  RowBox[{"Global`LLU`LoadLibraryFunction", "[", 
+  RowBox[{"Global`LLU`PacletFunctionSet", "[",
    RowBox[{"NoProgressButAbortable", ",", 
     RowBox[{"{", "Real", "}"}], ",", "Integer"}], "]"}], ";"}]], "Input",
  CellChangeTimes->{{3.783358120583601*^9, 3.783358121885501*^9}, {
@@ -678,7 +678,7 @@ Abort:\
 
 Cell[BoxData[
  RowBox[{
-  RowBox[{"Global`LLU`LoadLibraryFunction", "[", 
+  RowBox[{"Global`LLU`PacletFunctionSet", "[",
    RowBox[{"NoProgressNotAbortable", ",", 
     RowBox[{"{", "Real", "}"}], ",", "Integer"}], "]"}], ";"}]], "Input",
  CellChangeTimes->{{3.752825556905465*^9, 3.752825561096634*^9}, {

@@ -101,18 +101,18 @@ Cell[BoxData[{
   RowBox[{
    RowBox[{"`LLU`InitializePacletLibrary", "[", "lib", "]"}], ";", 
    "\[IndentingNewLine]", 
-   RowBox[{"`LLU`LoadLibraryFunction", "[", 
+   RowBox[{"`LLU`PacletFunctionSet", "[",
     RowBox[{"GreaterAt", ",", " ", 
      RowBox[{"{", 
       RowBox[{"String", ",", 
        RowBox[{"{", 
         RowBox[{"_", ",", "1"}], "}"}], ",", "Integer", ",", "Integer"}], 
       "}"}], ",", "\"\<Boolean\>\""}], "]"}], ";", "\[IndentingNewLine]", 
-   RowBox[{"`LLU`LoadLibraryFunction", "[", 
+   RowBox[{"`LLU`PacletFunctionSet", "[",
     RowBox[{"LogsFromThreads", ",", " ", 
      RowBox[{"{", "Integer", "}"}], ",", "\"\<Void\>\""}], "]"}], ";", 
    "\[IndentingNewLine]", 
-   RowBox[{"`LLU`LoadLibraryFunction", "[", 
+   RowBox[{"`LLU`PacletFunctionSet", "[",
     RowBox[{"LogDemo", ",", " ", 
      RowBox[{"{", 
       RowBox[{
@@ -3979,7 +3979,7 @@ Cell[BoxData[
     RowBox[{"Global`LLU`InitializePacletLibrary", "[", "libWarn", "]"}], 
     ";"}], "\[IndentingNewLine]", 
    RowBox[{
-    RowBox[{"Global`LLU`LoadLibraryFunction", "[", 
+    RowBox[{"Global`LLU`PacletFunctionSet", "[",
      RowBox[{"GreaterAtW", ",", "\"\<GreaterAt\>\"", ",", " ", 
       RowBox[{"{", 
        RowBox[{"String", ",", 
@@ -3987,7 +3987,7 @@ Cell[BoxData[
          RowBox[{"_", ",", "1"}], "}"}], ",", "Integer", ",", "Integer"}], 
        "}"}], ",", "\"\<Boolean\>\""}], "]"}], ";"}], "\[IndentingNewLine]", 
    RowBox[{
-    RowBox[{"Global`LLU`LoadLibraryFunction", "[", 
+    RowBox[{"Global`LLU`PacletFunctionSet", "[",
      RowBox[{"LogDemoW", ",", "\"\<LogDemo\>\"", ",", " ", 
       RowBox[{"{", 
        RowBox[{

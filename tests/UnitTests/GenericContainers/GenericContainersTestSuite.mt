@@ -22,17 +22,17 @@ TestExecute[
 
 	Off[General::stop]; (* because we want to see all error messages from CreateLibrary *)
 
-	IsOwnerAutomatic = `LLU`SafeLibraryFunction["IsOwnerAutomatic", {Image}, "Boolean"];
-	IsOwnerManual = `LLU`SafeLibraryFunction["IsOwnerManual", {{Integer, _, "Manual"}}, "Boolean"];
-	IsOwnerShared = `LLU`SafeLibraryFunction["IsOwnerShared", {{NumericArray, "Shared"}}, "Boolean"];
+	IsOwnerAutomatic = `LLU`PacletFunctionLoad["IsOwnerAutomatic", {Image}, "Boolean"];
+	IsOwnerManual = `LLU`PacletFunctionLoad["IsOwnerManual", {{Integer, _, "Manual"}}, "Boolean"];
+	IsOwnerShared = `LLU`PacletFunctionLoad["IsOwnerShared", {{NumericArray, "Shared"}}, "Boolean"];
 
-	CloneAutomatic = `LLU`SafeLibraryFunction["CloneAutomatic", {Image}, Image];
-	CloneManual = `LLU`SafeLibraryFunction["CloneManual", {{Integer, _, "Manual"}}, {Integer, _}];
-	CloneShared = `LLU`SafeLibraryFunction["CloneShared", {{NumericArray, "Shared"}}, NumericArray];
+	CloneAutomatic = `LLU`PacletFunctionLoad["CloneAutomatic", {Image}, Image];
+	CloneManual = `LLU`PacletFunctionLoad["CloneManual", {{Integer, _, "Manual"}}, {Integer, _}];
+	CloneShared = `LLU`PacletFunctionLoad["CloneShared", {{NumericArray, "Shared"}}, NumericArray];
 
-	MoveAutomatic = `LLU`SafeLibraryFunction["MoveAutomatic", {Image}, Image];
-	MoveManual = `LLU`SafeLibraryFunction["MoveManual", {{Integer, _, "Manual"}}, {Integer, _}];
-	MoveShared = `LLU`SafeLibraryFunction["MoveShared", {{NumericArray, "Shared"}}, NumericArray];
+	MoveAutomatic = `LLU`PacletFunctionLoad["MoveAutomatic", {Image}, Image];
+	MoveManual = `LLU`PacletFunctionLoad["MoveManual", {{Integer, _, "Manual"}}, {Integer, _}];
+	MoveShared = `LLU`PacletFunctionLoad["MoveShared", {{NumericArray, "Shared"}}, NumericArray];
 
 	img = RandomImage[];
 	tensor = {1, 2, 3, 4, 5};
