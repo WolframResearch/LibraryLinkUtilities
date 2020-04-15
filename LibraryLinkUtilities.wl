@@ -153,10 +153,10 @@ LoadWSTPLibrary[] :=
  * unless it failed. Failures are indicated by Throwing. In the lazy version, loading is triggered when the first library function is loaded.
  * libPath - path to the main paclet library (the one that LLU was linked into)
  *)
-InitializePacletLibrary[libPath_?StringQ] := Once @ $InitializePacletLibrary[libPath];
-
 SetAttributes[LazyInitializePacletLibrary, HoldFirst];
 LazyInitializePacletLibrary[libPath_] := LazyLoad[$PacletLibrary, $InitializePacletLibrary[libPath]];
+
+InitializePacletLibrary[libPath_?StringQ] := (LazyInitializePacletLibrary[libPath]; $PacletLibrary);
 
 $InitializePacletLibrary[libPath_?StringQ] := (
 	(* Load WSTP *)
@@ -191,7 +191,7 @@ $InitializePacletLibrary[___] :=
 (* ------------------------------------------------------------------------- *)
 
 (* Path to the paclet library *)
-$PacletLibrary;
+Clear @ $PacletLibrary;
 
 SetPacletLibrary[lib_?StringQ] := $PacletLibrary = lib;
 
@@ -441,7 +441,7 @@ Attributes[guessFunctionNameFromSymbol] = {HoldFirst};
 guessFunctionNameFromSymbol[symbol_] := StringReplace["$" ~~ s_ :> s] @ SymbolName[Unevaluated[symbol]];
 
 
-(* LoadLibraryFunction[resultSymbol_, lib_, f_, fParams_, fResultType_, opts___] attempts to load an exported function f from a dynamic library lib and assign
+(* PacletFunctionSet[resultSymbol_, lib_, f_, fParams_, fResultType_, opts___] attempts to load an exported function f from a dynamic library lib and assign
  * the result to resultSymbol. In the lazy version, the function will be loaded on the first evaluation of resultSymbol.
  * Arguments:
  * - resultSymbol_ - a WL symbol to represent the loaded function
@@ -450,7 +450,7 @@ guessFunctionNameFromSymbol[symbol_] := StringReplace["$" ~~ s_ :> s] @ SymbolNa
  * - fParams_ - parameter types of the library function to be loaded
  * - fResultType_ - result type
  * Options:
- * All options for SafeLibraryFunction and SafeLibraryFunctionLoad are accepted.
+ * All options for PacletFunctionLoad and SafeLibraryFunctionLoad are accepted.
  *)
 Options[PacletFunctionSet] =
 	Union[Options[PacletFunctionLoad], Options[SafeLibraryFunctionLoad]];
@@ -497,17 +497,16 @@ declareLazyVersion[WSTPFunctionSet];
 (* ------------------------------------------------------------------------- *)
 
 (* Here is a typical way to load a library function and assign it to a symbol:
- *     f = SafeLibraryFunction["functionName", {Integer}, String];
- * This code will immediately evaluate SafeLibraryFunction call and assign the result to f.
+ *     f = PacletFunctionLoad["functionName", {Integer}, String];
+ * This code will immediately evaluate PacletFunctionLoad call and assign the result to f.
  * If your paclet loads 50 functions during initialization, it may be frustrating for the users to wait that long. Even worse,
  * if you initialized LLU with a relative path to the dynamic library, you will end up calling FindLibrary 50 times, which takes considerable amount of time.
  *
  * One possible solution is to replace "f = " with "f := " ta avoid immediate evaluation of the RHS, but this would result in evaluating RHS every time
  * f is used. To address this, LLU defines a helper function LazyLoad, which can be used in the following way:
- *     LazyLoad[f, SafeLibraryFunction["functionName", {Integer}, String]];
+ *     LazyLoad[f, PacletFunctionLoad["functionName", {Integer}, String]];
  * This will evaluate the second argument only once, when f is first used.
  *)
-
 Attributes[LazyLoad] = {HoldAll};
 LazyLoad[f_?Developer`SymbolQ, expr_] := (f := f = expr);
 
@@ -573,7 +572,7 @@ Block[{msgParam, param, errorCode, msgTemplate, errorType},
  * in ErrorManager::throwException are transferred in a List via WSTP and assigned to this symbol.
  * Later, the error handling routine in WL, CatchLibraryFunctionError, checks this symbol and creates Failure object.
  *)
-$LastFailureParameters;
+Clear @ $LastFailureParameters;
 
 GetCCodeFailureParams[msgTemplate_String?StringQ] :=
 Block[{slotNames, slotValues},
