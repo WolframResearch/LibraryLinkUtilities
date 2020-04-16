@@ -43,7 +43,7 @@ namespace LLU {
 	}
 
 	/**
-	 * ManagedExpressionStore will keep track of instances of managed class T and will provide safe access to them
+	 * @struct ManagedExpressionStore will keep track of instances of managed class T and will provide safe access to them
 	 * @tparam T - managed class
 	 */
 	template<typename T>
