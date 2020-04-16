@@ -9,7 +9,7 @@ message(STATUS "Creating test targets.")
 
 # Unit tests are split into independent modules. You can run them separately, for example:
 #
-#   ctest -R MathLink
+#   ctest -R WSTP
 #
 # or all at once:
 #
@@ -18,11 +18,13 @@ message(STATUS "Creating test targets.")
 # One helpful option for ctest is --verbose. It shows more output from wolframscript.
 
 set(TEST_MODULES
+        "Async"
         "DataList"
         "ErrorReporting"
         "Image"
         "ManagedExpressions"
-        "MathLink"
+        "MArgumentManager"
+        "WSTP"
         "NumericArray"
         "GenericContainers"
         "Scalar"

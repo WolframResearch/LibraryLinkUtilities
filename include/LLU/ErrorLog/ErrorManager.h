@@ -46,7 +46,7 @@ namespace LLU {
 		/**
 		 * @brief	Throw exception with given name.
 		 * 			Optionally, pass arbitrary details of the exception occurrence and they will be stored on a loopback link in the exception object.
-		 * 			Those details may later be sent via MathLink to top-level and assigned as a List to to the symbol specified
+		 * 			Those details may later be sent via WSTP to top-level and assigned as a List to to the symbol specified
 		 * 			in ErrorManager::exceptionDetailsSymbol. To trigger exception details transfer one should call LibraryLinkError::sendParameters
 		 * 			on the exception object. However, if ErrorManager::sendParametersImmediately is set to true, this call will be done automatically
 		 * 			in throwException.
@@ -62,12 +62,12 @@ namespace LLU {
 		/**
 		 * @brief	Throw exception with given name.
 		 * 			Optionally, pass arbitrary details of the exception occurrence and they will be stored on a loopback link in the exception object.
-		 * 			Those details may later be sent via MathLink to top-level and assigned as a List to to the symbol specified
+		 * 			Those details may later be sent via WSTP to top-level and assigned as a List to to the symbol specified
 		 * 			in ErrorManager::exceptionDetailsSymbol. To trigger exception details transfer one should call LibraryLinkError::sendParameters
 		 * 			on the exception object. However, if ErrorManager::sendParametersImmediately is set to true, this call will be done automatically
 		 * 			in throwException.
 		 * @tparam 	T - type template parameter pack
-		 * @param	libData - a copy of WolframLibraryData which should be used to extract the MLink for MathLink connection
+		 * @param	libData - a copy of WolframLibraryData which should be used to extract the WSLINK for WSTP connection
 		 * @param 	errorName - name of error to be thrown, must be registered beforehand
 		 * @param 	args - any number of arguments that will replace TemplateSlots (``, `1`, `xx`, etd) in the message text in top-level
 		 */
@@ -90,7 +90,7 @@ namespace LLU {
 		/**
 		 * @brief	Throw exception with given name and additional information that might be helpful in debugging.
 		 * 			Optionally, pass arbitrary details of the exception occurrence and they will be stored on a loopback link in the exception object.
-		 * 			Those details may later be sent via MathLink to top-level and assigned as a List to to the symbol specified
+		 * 			Those details may later be sent via WSTP to top-level and assigned as a List to to the symbol specified
 		 * 			in ErrorManager::exceptionDetailsSymbol. To trigger exception details transfer one should call LibraryLinkError::sendParameters
 		 * 			on the exception object. However, if ErrorManager::sendParametersImmediately is set to true, this call will be done automatically
 		 * 			in throwException.
@@ -109,14 +109,14 @@ namespace LLU {
 		/**
 		 * @brief	Throw exception with given name and additional information that might be helpful in debugging.
 		 * 			Optionally, pass arbitrary details of the exception occurrence and they will be stored on a loopback link in the exception object.
-		 * 			Those details may later be sent via MathLink to top-level and assigned as a List to to the symbol specified
+		 * 			Those details may later be sent via WSTP to top-level and assigned as a List to to the symbol specified
 		 * 			in ErrorManager::exceptionDetailsSymbol. To trigger exception details transfer one should call LibraryLinkError::sendParameters
 		 * 			on the exception object. However, if ErrorManager::sendParametersImmediately is set to true, this call will be done automatically
 		 * 			in throwException.
 		 * 			The debugInfo is a string stored inside the LibraryLinkError object. It is never transferred to top-level but might be for example logged
 		 * 			to a file in a "catch" block in C++ code.
 		 * @tparam 	T - type template parameter pack
-		 * @param	libData - a copy of WolframLibraryData which should be used to extract the MLink for MathLink connection
+		 * @param	libData - a copy of WolframLibraryData which should be used to extract the WSLINK for WSTP connection
 		 * @param 	errorName - name of error to be thrown, must be registered beforehand
 		 * @param	debugInfo - additional message with debug info, this message will not be passed to top-level Failure object
 		 * @param 	args - any number of arguments that will replace TemplateSlots (``, `1`, `xx`, etd) in the message text in top-level
@@ -148,9 +148,9 @@ namespace LLU {
 		 *
 		 * Sending registered errors allows for nice and meaningful Failure objects to be generated when paclet function fails in top level,
 		 * instead of usual LibraryFunctionError expressions.
-		 * @param mlp - active MathLink connection
+		 * @param mlp - active WSTP connection
 		 */
-		static void sendRegisteredErrorsViaMathlink(MLINK mlp);
+		static void sendRegisteredErrorsViaWSTP(WSLINK mlp);
 
 	private:
 		/// Errors are stored in a map with elements of the form { "ErrorName", immutable LibraryLinkError object }

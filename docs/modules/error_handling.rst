@@ -105,7 +105,7 @@ The Wolfram Language part of the error-handling functionality of LLU is responsi
 into nice and informative :wl:`Failure` objects.
 
 .. rubric:: Footnotes
-.. [#] One more possible signature is ``int f(WolframLibraryData, MLINK)``. For such functions error handling is done in the same way.
+.. [#] One more possible signature is ``int f(WolframLibraryData, WSLINK)``. For such functions error handling is done in the same way.
 
 Examples
 ================

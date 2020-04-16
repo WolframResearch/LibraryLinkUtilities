@@ -9,7 +9,7 @@
 #include <list>
 #include <string>
 
-#include "mathlink.h"
+#include "wstp.h"
 
 #include "WolframIOLibraryFunctions.h"
 #include "WolframLibrary.h"
@@ -17,13 +17,13 @@
 #include "LLU/Containers/Iterators/DataList.hpp"
 #include "LLU/LLU.h"
 #include "LLU/LibraryLinkFunctionMacro.h"
-#include "LLU/ML/MLStream.hpp"
+#include "LLU/WSTP/WSStream.hpp"
 #include "LLU/Utilities.hpp"
 
-namespace ML = LLU::ML;
+namespace WS = LLU::WS;
 namespace LLErrorCode = LLU::ErrorCode;
 
-using LLU::MLStream;
+using LLU::WSStream;
 using LLU::DataList;
 using LLU::MArgumentType;
 
@@ -201,15 +201,15 @@ LIBRARY_LINK_FUNCTION(ReverseListOfStringsLibraryLink) {
 	return errCode;
 }
 
-/* Reverse each string in a list of strings using MathLink */
-LIBRARY_MATHLINK_FUNCTION(ReverseListOfStringsMathLink) {
+/* Reverse each string in a list of strings using WSTP */
+LIBRARY_WSTP_FUNCTION(ReverseListOfStringsWSTP) {
 	auto err = LLErrorCode::NoError;
 	try {
-		MLStream<ML::Encoding::UTF8> ml {mlp, 1};
+		WSStream<WS::Encoding::UTF8> ml {mlp, 1};
 		std::vector<std::string> listOfStrings;
 		ml >> listOfStrings;
 
-		ml << ML::List(static_cast<int>(listOfStrings.size()));
+		ml << WS::List(static_cast<int>(listOfStrings.size()));
 		for (const auto& s : listOfStrings) {
 			std::string outStr(s.rbegin(), s.rend());	 // create reversed copy
 			ml << outStr;
@@ -363,4 +363,16 @@ LIBRARY_LINK_FUNCTION(GetLength) {
 		err = LLErrorCode::FunctionError;
 	}
 	return err;
+}
+
+LLU_LIBRARY_FUNCTION(CheckSizeChange) {
+	auto n = mngr.getInteger<mint>(0);
+	DataList<MArgumentType::Integer> dsInt;
+	DataList<MArgumentType::MArgument> dsArg;
+	for (int i = 0; i < n; ++i) {
+		dsInt.push_back(i);
+		dsArg.push_back<MArgumentType::Integer>(i);
+	}
+	LLU::Tensor<mint> res({dsInt.getLength(), static_cast<mint>(dsInt.size()), dsArg.getLength(), static_cast<mint>(dsArg.size())});
+	mngr.setTensor(res);
 }

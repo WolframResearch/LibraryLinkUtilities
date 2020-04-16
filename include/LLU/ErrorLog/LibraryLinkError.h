@@ -11,7 +11,7 @@
 #include <stdexcept>
 #include <string>
 
-#include "LLU/ML/MLStream.hpp"
+#include "LLU/WSTP/WSStream.hpp"
 
 /**
  * @namespace LLU
@@ -88,7 +88,7 @@ namespace LLU {
 		/**
 		 * @brief	Store arbitrary number of message parameters in a List expression on a loopback link.
 		 * 			They will travel with the exception until \c sendParameters is called on the exception.
-		 * @tparam 	T - any type(s) that MLStream supports
+		 * @tparam 	T - any type(s) that WSStream supports
 		 * @param 	libData - WolframLibraryData, if nullptr, the parameters will not be send
 		 * @param 	params - any number of message parameters
 		 */
@@ -134,11 +134,11 @@ namespace LLU {
 			: std::runtime_error(t), errorId(which), type(std::move(t)), messageTemplate(std::move(msg)) {}
 
 		/**
-		 * @brief	Helper functions that opens a loopback link given a MathLink environment
-		 * @param 	env - MathLink environment
+		 * @brief	Helper functions that opens a loopback link given a WSTP environment
+		 * @param 	env - WSTP environment
 		 * @return 	a loopback link (may be nullptr if function failed to create the link)
 		 */
-		static MLINK openLoopback(MLENV env);
+		static WSLINK openLoopback(WSENV env);
 
 		/// A WL symbol that will hold the details of last thrown exception. It cannot be modified directly, you can only change its context.
 		static constexpr const char* exceptionDetailsSymbol = "$LastFailureParameters";
@@ -150,7 +150,7 @@ namespace LLU {
 		const std::string type;
 		const std::string messageTemplate;
 		std::string debugInfo;
-		MLINK messageParams = nullptr;
+		WSLINK messageParams = nullptr;
 	};
 
 	template<typename... T>
@@ -159,9 +159,9 @@ namespace LLU {
 		if (!messageParams) {
 			return;
 		}
-		MLStream<ML::Encoding::UTF8> loopback {messageParams};
+		WSStream<WS::Encoding::UTF8> loopback {messageParams};
 		auto messageParamsCount = sizeof...(T);
-		loopback << ML::List(static_cast<int>(messageParamsCount));
+		loopback << WS::List(static_cast<int>(messageParamsCount));
 		static_cast<void>(std::initializer_list<int> {(loopback << params, 0)...});
 	}
 } /* namespace LLU */

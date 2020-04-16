@@ -16,7 +16,7 @@
    modules/function_arguments
    modules/containers
    modules/error_handling
-   modules/mathlink
+   modules/wstp
    modules/managed_expressions
    modules/progress_monitor
    modules/miscellaneous

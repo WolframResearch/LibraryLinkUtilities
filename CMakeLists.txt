@@ -12,7 +12,7 @@ if(APPLE AND NOT DEFINED ENV{MACOSX_DEPLOYMENT_TARGET})
 	set(CMAKE_OSX_DEPLOYMENT_TARGET "10.12" CACHE STRING "Minimum OS X deployment version")
 endif()
 
-project(LLU VERSION 2.1.0 LANGUAGES CXX)
+project(LLU VERSION 2.2.0 LANGUAGES CXX)
 
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 
@@ -35,7 +35,7 @@ set(MATHEMATICA_INSTALL_DIR ${_MATHEMATICA_INSTALL_DIR} CACHE PATH "Mathematica 
 
 # set default build type to Release
 if(NOT CMAKE_BUILD_TYPE)
-  set(CMAKE_BUILD_TYPE Release CACHE STRING "Choose the type of build." FORCE)
+	set(CMAKE_BUILD_TYPE Release CACHE STRING "Choose the type of build." FORCE)
 	set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "None" "Debug" "Release" "MinSizeRel" "RelWithDebInfo")
 endif()
 
@@ -50,10 +50,10 @@ if(NOT TARGET LLU)
 	set(SYSTEMID ${DEFAULT_SYSTEMID} CACHE STRING "Wolfram System ID")
 
 	#=============================================
-	#=========== WOLFRAM MATHLINK ================
+	#================== WSTP =====================
 	#=============================================
 
-	find_package(MathLink 4.25 REQUIRED MODULE)
+	find_package(WSTP 4.25 REQUIRED MODULE)
 
 	#=============================================
 	#=============== LIBRARYLINK =================
@@ -76,11 +76,11 @@ if(NOT TARGET LLU)
 		${LLU_SOURCE_DIR}/MArgumentManager.cpp
 		${LLU_SOURCE_DIR}/Containers/MArrayDimensions.cpp
 		${LLU_SOURCE_DIR}/Containers/Tensor.cpp
-		${LLU_SOURCE_DIR}/ML/Get.cpp
-		${LLU_SOURCE_DIR}/ML/Put.cpp
-		${LLU_SOURCE_DIR}/ML/Release.cpp
-		${LLU_SOURCE_DIR}/ML/Strings.cpp
-		${LLU_SOURCE_DIR}/ML/Utilities.cpp
+		${LLU_SOURCE_DIR}/WSTP/Get.cpp
+		${LLU_SOURCE_DIR}/WSTP/Put.cpp
+		${LLU_SOURCE_DIR}/WSTP/Release.cpp
+		${LLU_SOURCE_DIR}/WSTP/Strings.cpp
+		${LLU_SOURCE_DIR}/WSTP/Utilities.cpp
 		${LLU_SOURCE_DIR}/MArgument.cpp
 		${LLU_SOURCE_DIR}/ProgressMonitor.cpp
         ${LLU_SOURCE_DIR}/ErrorLog/ErrorManager.cpp
@@ -104,18 +104,16 @@ if(NOT TARGET LLU)
 		# Remove default warning level. It will be set later.
 		string(REGEX REPLACE "/W[0-4]" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
 
-		# Force static runtime on Windows. See https://gitlab.kitware.com/cmake/community/wikis/FAQ#dynamic-replace
-		foreach(flag_var CMAKE_CXX_FLAGS CMAKE_CXX_FLAGS_DEBUG CMAKE_CXX_FLAGS_RELEASE CMAKE_CXX_FLAGS_MINSIZEREL CMAKE_CXX_FLAGS_RELWITHDEBINFO)
-			if(${flag_var} MATCHES "/MD")
-				string(REGEX REPLACE "/MD" "/MT" ${flag_var} "${${flag_var}}")
-			endif()
-		endforeach()
+		set_windows_static_runtime()
 
 		target_compile_options(LLU
 			PRIVATE "/W4"
 			PRIVATE "/EHsc"
 			PRIVATE "$<$<CONFIG:Debug>:/Zi>"
 			PRIVATE "$<$<NOT:$<CONFIG:Debug>>:/O2>"
+		)
+		target_compile_definitions(LLU
+			PRIVATE _SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING
 		)
 	else()
 		target_compile_options(LLU
@@ -126,10 +124,10 @@ if(NOT TARGET LLU)
 		)
 	endif()
 
-	# tell all targets importing LLU that public part of LLU uses C++14 features
+	# tell all targets importing LLU that public part of LLU uses C++17 features
 	target_compile_features(LLU
 		PUBLIC
-			cxx_std_14
+			cxx_std_17
 	)
 
 	#add the include directory for the project
@@ -144,7 +142,7 @@ if(NOT TARGET LLU)
 	#link libraries
 	target_link_libraries(LLU
 		PUBLIC
-			MathLink::MathLink
+			WSTP::WSTP
 			WolframLibrary::WolframLibrary
 	)
 
@@ -198,7 +196,7 @@ if(NOT TARGET LLU)
 	#Install the config, configversion and custom find modules
 	install(FILES
 		${CMAKE_CURRENT_LIST_DIR}/cmake/FindWolframLibrary.cmake
-		${CMAKE_CURRENT_LIST_DIR}/cmake/FindMathLink.cmake
+		${CMAKE_CURRENT_LIST_DIR}/cmake/FindWSTP.cmake
 		${CMAKE_CURRENT_LIST_DIR}/cmake/WolframUtilities.cmake
 		${CMAKE_CURRENT_BINARY_DIR}/LLUConfig.cmake
 		${CMAKE_CURRENT_BINARY_DIR}/LLUConfigVersion.cmake
@@ -215,7 +213,7 @@ if(NOT TARGET LLU)
 
 	configure_file(${CMAKE_CURRENT_LIST_DIR}/cmake/WolframUtilities.cmake ${CMAKE_CURRENT_BINARY_DIR}/WolframUtilities.cmake COPYONLY)
 	configure_file(${CMAKE_CURRENT_LIST_DIR}/cmake/FindWolframLibrary.cmake ${CMAKE_CURRENT_BINARY_DIR}/FindWolframLibrary.cmake COPYONLY)
-	configure_file(${CMAKE_CURRENT_LIST_DIR}/cmake/FindMathLink.cmake ${CMAKE_CURRENT_BINARY_DIR}/FindMathLink.cmake COPYONLY)
+	configure_file(${CMAKE_CURRENT_LIST_DIR}/cmake/FindWSTP.cmake ${CMAKE_CURRENT_BINARY_DIR}/FindWSTP.cmake COPYONLY)
 
 	export(EXPORT LLU-targets
 		FILE ${CMAKE_CURRENT_BINARY_DIR}/LLUTargets.cmake

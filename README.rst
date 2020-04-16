@@ -208,7 +208,7 @@ Glossary
 
 		.. code-block:: cpp
 
-		   int f (WolframLibraryData libData, MLINK mlp);
+		   int f (WolframLibraryData libData, WSLINK mlp);
 
 		Such functions can later be loaded into Wolfram Language using :wl:`LibraryFunctionLoad`.
 

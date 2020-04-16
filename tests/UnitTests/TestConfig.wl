@@ -13,16 +13,25 @@ $LLULib = "LLU";
 (* Path to LibraryLinkUtilities shared resources *)
 $LLUSharedDir = FileNameJoin[{$baseDir, "install", "share"}];
 
+(* C++ version to build unit tests with. Some parts of LLU require C++17. *)
+$CppVersion = "c++17";
+
 (* Compilations options for all tests *)
-options = {
+options := {
 	"CleanIntermediate" -> True,
 	"IncludeDirectories" -> { $LLUIncDir },
 	"Libraries" -> { $LLULib },
 	"LibraryDirectories" -> { $LLULibDir },
-	"CompileOptions" -> If[MatchQ[$SystemID, "Windows-x86-64" | "Windows"], "/O2 /EHsc /W3 /std:c++14" , "-O2 -std=c++14 -Wall --pedantic -fvisibility=hidden"],
+	"CompileOptions" ->
+		If[MatchQ[$SystemID, "Windows-x86-64" | "Windows"],
+			"/O2 /EHsc /W3 /std:" <> $CppVersion <> " /D_SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING"
+			,
+			"-O2 -Wall --pedantic -fvisibility=hidden -std=" <> $CppVersion
+		],
 	"ShellOutputFunction" -> Print,
 	"ShellCommandFunction" -> Print,
-	"Language" -> "C++"
+	"Language" -> "C++",
+	"TransferProtocolLibrary" -> "WSTP"
 };
 
 (* If dynamic version of LLU was built, we want to load it to Mathematica before test libs are loaded *)
