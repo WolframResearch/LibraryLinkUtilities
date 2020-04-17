@@ -95,12 +95,12 @@ function(create_zip_target PACLET_NAME)
 endfunction()
 
 
-function(pack_paclet)
+function(add_paclet_target)
 	set(OPTIONS VERIFY)
 	set(ONE_VALUE_ARGS NAME)
 	set(MULTI_VALUE_ARGS)
-	cmake_parse_arguments(PACK_PACLET "${OPTIONS}" "${ONE_VALUE_ARGS}" "${MULTI_VALUE_ARGS}" ${ARGN})
-	required_arg(PACK_PACLET_NAME "Paclet name must be provided.")
+	cmake_parse_arguments(MAKE_PACLET "${OPTIONS}" "${ONE_VALUE_ARGS}" "${MULTI_VALUE_ARGS}" ${ARGN})
+	required_arg(MAKE_PACLET_NAME "Paclet name must be provided.")
 
 	find_wolframscript(WOLFRAMSCRIPT)
 	if(NOT WOLFRAMSCRIPT)
@@ -108,29 +108,42 @@ function(pack_paclet)
 		return()
 	endif()
 
-	if(PACK_PACLET_VERIFY)
+	if(MAKE_PACLET_VERIFY)
 		set(VERIFICATION_MESSAGE " and verifying PacletInfo contents.")
-		set(VERIFICATION_CODE "
-			If[Not @ PacletManager`VerifyPaclet[paclet],
-				Print[\"Paclet verification failed! Check the structure of your project and the contents of PacletInfo file\".];
-				Return[$Failed];
-			];
-			hasLLExt = MemberQ[First[paclet][\"Extensions\"], {\"LibraryLink\", ___}];
-			If[Not @ hasLLExt,
-				Print[\"Paclet does not contain the \"LibraryLink\" extension which may potentially lead to loading issues.\"];
-			];
-		")
 	endif()
 
-	set(WL_CODE "
-			pacDir = \"${PACK_PACLET_NAME}\";
+	set(WL_CODE
+			[===[
+			pacDir = "${MAKE_PACLET_NAME}";
 			If[Not @ DirectoryQ[pacDir],
-				Print[];
+				Print["Paclet directory \" <> pacDir <> \" does not exist."]
 			];
 			paclet = CreatePacletArchive[pacDir];
-		")
+			If[FailureQ[paclet],
+				Print["Could not create paclet."];
+				Exit[1]
+			];
+			If["${MAKE_PACLET_VERIFY}" =!= "TRUE",
+				Print["Paclet successfully created: " <> paclet];
+				Exit[0]
+			];
+			If[Not @ PacletManager`VerifyPaclet[paclet],
+				Print["Paclet verification failed! Check the structure of your project and the contents of PacletInfo file."];
+				Return[$Failed]
+			];
+			hasLLExt = MemberQ[First[PacletObject[paclet]]["Extensions"], {"LibraryLink", ___}];
+			If[Not @ hasLLExt,
+				Print["Paclet does not contain the \"LibraryLink\" extension which may potentially lead to loading issues."];
+			];
+			Print["Paclet successfully created and verified: " <> paclet];
+			Exit[0]
+			]===])
+
+	string(REGEX REPLACE "[\t\r\n]+" "" WL_CODE "${WL_CODE}")
+	string(CONFIGURE "${WL_CODE}" WL_CODE)
+
 	add_custom_target(paclet
-			COMMAND ${WOLFRAMSCRIPT} -code ${WL_CODE}${VERIFICATION_CODE}
+			COMMAND ${WOLFRAMSCRIPT} -code "${WL_CODE}"
 			WORKING_DIRECTORY ${CMAKE_INSTALL_PREFIX}
 			COMMENT "Creating .paclet file${VERIFICATION_MESSAGE}..."
 			VERBATIM
