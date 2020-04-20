@@ -377,3 +377,52 @@ Test[
 	,
 	TestID -> "ManagedExpressionsTestSuite-20190911-R4ZHG9"
 ];
+
+TestExecute[
+	`LLU`Constructor[Serializable] = `LLU`SafeLibraryFunction["CreateSerializableExpression", {`LLU`Managed[Serializable], String}, "Void", "Throws" -> True];
+	Serialize = `LLU`SafeLibraryFunction["Serialize", {`LLU`Managed[Serializable]}, String];
+];
+
+Test[
+	a = `LLU`NewManagedExpression[Serializable]["I am an A."]
+	,
+	Serializable[1]
+	,
+	TestID -> "ManagedExpressionsTestSuite-20200420-N6L0O5"
+];
+
+Test[
+	Serialize[a]
+	,
+	"Hello! I'm A."
+	,
+	TestID -> "ManagedExpressionsTestSuite-20200420-D8B7D8"
+];
+
+Test[
+	b = `LLU`NewManagedExpression[Serializable]["Yo soy B."];
+	Serialize[b]
+	,
+	"Hello! I'm B. I hold 7."
+	,
+	TestID -> "ManagedExpressionsTestSuite-20200420-B9Q4H7"
+];
+
+VerificationTest[
+	c = Catch @ `LLU`NewManagedExpression[Serializable]["Jestem C."]; (* The factory function will throw and the C++ object will not be created *)
+	FailureQ[c]
+	,
+	TestID -> "ManagedExpressionsTestSuite-20200420-T5J0L7"
+];
+
+VerificationTest[
+	Not @ `LLU`ManagedIDQ[Serializable][3] (* Since the creation of managed expression failed, it must not be registered as MLE *)
+	,
+	TestID -> "ManagedExpressionsTestSuite-20200420-R0M2X2"
+];
+
+VerificationTest[
+	Not @ `LLU`ManagedQ[Serializable][c]
+	,
+	TestID -> "ManagedExpressionsTestSuite-20200420-W2O0L8"
+];
