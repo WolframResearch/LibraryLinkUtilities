@@ -34,7 +34,7 @@ SafeLibraryLoad::usage = "SafeLibraryLoad[lib_]
 PacletFunctionSet::usage = "PacletFunctionSet[resultSymbol_, fParams_, fResultType_, opts___]
 	Attempts to load an exported function from a dynamic library and assign the result to resultSymbol.
 	By default, the dynamic library name is taken from the library given to InitializePacletLibrary (\"Paclet Library\").
-	A caveat is that if Paclet Library has been lazily initialized and LoadLibraryFunction is called with a path to it, then
+	A caveat is that if Paclet Library has been lazily initialized and PacletFunctionSet is called with a path to it, then
 	auto-loading of Paclet Library will not be triggered.
 	By default, the name of the library function is assumed to be the same as the symbol name (sans any leading or trailing $'s).
 	Arguments:
@@ -44,21 +44,21 @@ PacletFunctionSet::usage = "PacletFunctionSet[resultSymbol_, fParams_, fResultTy
 	- fParams_ - parameter types of the library function to be loaded
 	- fResultType_ - result type
 	Options:
-	All options for SafeLibraryFunction and SafeLibraryFunctionLoad are accepted.";
-LazyPacletFunctionSet::usage = "Lazy version of LoadLibraryFunction which loads the function upon the first evaluation of resultSymbol.";
-WSTPFunctionSet::usage = "WSTPFunctionSet[resultSymbol_, opts : OptionsPattern[LoadLibraryFunction]]
-	A convenient wrapper around LoadLibraryFunction for easier loading of WSTP functions.";
+	All options for PacletFunctionLoad and SafeLibraryFunctionLoad are accepted.";
+LazyPacletFunctionSet::usage = "Lazy version of PacletFunctionSet which loads the function upon the first evaluation of resultSymbol.";
+WSTPFunctionSet::usage = "WSTPFunctionSet[resultSymbol_, opts : OptionsPattern[PacletFunctionSet]]
+	A convenient wrapper around PacletFunctionSet for easier loading of WSTP functions.";
 LazyWSTPFunctionSet::usage = "Lazy version of WSTPFunctionSet.";
-MemberFunctionSet::usage = "MemberFunctionSet[exprHead_][memberSymbol_?Developer`SymbolQ, fParams_, retType_, opts : OptionsPattern[LoadLibraryFunction]]
+MemberFunctionSet::usage = "MemberFunctionSet[exprHead_][memberSymbol_?Developer`SymbolQ, fParams_, retType_, opts : OptionsPattern[PacletFunctionSet]]
 	Loads a library function into memberSymbol that can be invoked on instances of exprHead like so: instance @ memberSymbol[...]";
 LazyMemberFunctionSet::usage = "Lazy version of MemberFunctionSet.";
-WSTPMemberFunctionSet::usage = "WSTPMemberFunctionSet[exprHead_][memberSymbol_, opts : OptionsPattern[LoadLibraryFunction]]
+WSTPMemberFunctionSet::usage = "WSTPMemberFunctionSet[exprHead_][memberSymbol_, opts : OptionsPattern[PacletFunctionSet]]
 	A convenient wrapper around MemberFunctionSet for easier loading of WSTP functions.";
 LazyWSTPMemberFunctionSet::usage = "Lazy version of WSTPMemberFunctionSet.";
 
 PacletFunctionLoad::usage = "PacletFunctionLoad[fname_?StringQ, fParams_, retType_, opts___]
 	By default, the dynamic library name is taken from the library given to InitializePacletLibrary. Alternatively,
-	a library name can be specified as the first argument. Unlike LoadLibraryFunction, there is no mechanism
+	a library name can be specified as the first argument. Unlike PacletFunctionSet, there is no mechanism
 	by which to avoid eager loading of the default paclet library.";
 
 SafeLibraryFunctionLoad::usage = "SafeLibraryFunctionLoad[libName_, fname_?StringQ, fParams_, retType_, opts___]
@@ -490,7 +490,7 @@ PacletFunctionSet[symbol_, paramTypes_, retType_, opts : OptionsPattern[]] :=
 
 Options[WSTPFunctionSet] = Options[PacletFunctionSet];
 
-(* WSTPFunctionSet[resultSymbol_, lib_, f_, opts___] - convenient wrapper around LoadLibraryFunction for easier loading of WSTP functions. *)
+(* WSTPFunctionSet[resultSymbol_, lib_, f_, opts___] - convenient wrapper around PacletFunctionSet for easier loading of WSTP functions. *)
 Attributes[WSTPFunctionSet] = {HoldFirst};
 WSTPFunctionSet[symbol_, libraryName_, funcNameInLib_?StringQ, opts : OptionsPattern[]] :=
 	PacletFunctionSet[symbol, libraryName, funcNameInLib, LinkObject, LinkObject, opts];
