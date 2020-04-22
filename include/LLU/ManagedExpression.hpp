@@ -48,6 +48,7 @@ namespace LLU {
 	 */
 	template<typename T>
 	class ManagedExpressionStore {
+	public:
 		using iterator = typename std::unordered_map<mint, std::shared_ptr<T>>::iterator;
 		using const_iterator = typename std::unordered_map<mint, std::shared_ptr<T>>::const_iterator;
 		using size_type = typename std::unordered_map<mint, std::shared_ptr<T>>::size_type;
