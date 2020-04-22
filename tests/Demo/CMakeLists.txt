@@ -75,5 +75,9 @@ install_paclet_files(
 		LLU_LOCATION ${LLU_INSTALL_DIR}
 )
 
-add_paclet_target(NAME Demo VERIFY)
+add_paclet_target(paclet
+		NAME Demo
+		VERIFY
+		INSTALL
+)
 

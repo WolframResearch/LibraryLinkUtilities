@@ -95,8 +95,8 @@ function(create_zip_target PACLET_NAME)
 endfunction()
 
 
-function(add_paclet_target)
-	set(OPTIONS VERIFY)
+function(add_paclet_target TARGET_NAME)
+	set(OPTIONS VERIFY INSTALL)
 	set(ONE_VALUE_ARGS NAME)
 	set(MULTI_VALUE_ARGS)
 	cmake_parse_arguments(MAKE_PACLET "${OPTIONS}" "${ONE_VALUE_ARGS}" "${MULTI_VALUE_ARGS}" ${ARGN})
@@ -114,35 +114,45 @@ function(add_paclet_target)
 
 	set(WL_CODE
 			[===[
+			SetOptions[$Output, FormatType -> OutputForm];
 			pacDir = "${MAKE_PACLET_NAME}";
 			If[Not @ DirectoryQ[pacDir],
 				Print["Paclet directory \" <> pacDir <> \" does not exist."]
 			];
 			paclet = CreatePacletArchive[pacDir];
 			If[FailureQ[paclet],
-				Print["Could not create paclet."];
+				Print["ERROR: Could not create paclet."];
 				Exit[1]
+				,
+				Print["Paclet successfully created:"];
+				Print @ Column[("\t" <> First[#] -> Last[#]) & /@ (DeleteMissing @PacletObject[paclet][All])]
 			];
-			If["${MAKE_PACLET_VERIFY}" =!= "TRUE",
-				Print["Paclet successfully created: " <> paclet];
-				Exit[0]
+			If["${MAKE_PACLET_VERIFY}" === "TRUE",
+				If[Not @ PacletManager`VerifyPaclet[paclet],
+					Print["ERROR: Paclet verification failed! Check the structure of your project and the contents of PacletInfo file."];
+					Exit[1]
+				];
+				hasLLExt = MemberQ[First[PacletObject[paclet]]["Extensions"], {"LibraryLink", ___}];
+				If[Not @ hasLLExt,
+					Print["WARNING: Paclet does not contain the \"LibraryLink\" extension which may potentially lead to loading issues."];
+				];
+				Print["Paclet verified."];
 			];
-			If[Not @ PacletManager`VerifyPaclet[paclet],
-				Print["Paclet verification failed! Check the structure of your project and the contents of PacletInfo file."];
-				Return[$Failed]
+			If["${MAKE_PACLET_INSTALL}" === "TRUE",
+				If[PacletObjectQ[p = PacletInstall[paclet, ForceVersionInstall -> True]],
+					Print["Paclet installed to " <> p["Location"]]
+					,
+					Print["ERROR: Paclet installation failed."]
+					Exit[1]
+				]
 			];
-			hasLLExt = MemberQ[First[PacletObject[paclet]]["Extensions"], {"LibraryLink", ___}];
-			If[Not @ hasLLExt,
-				Print["Paclet does not contain the \"LibraryLink\" extension which may potentially lead to loading issues."];
-			];
-			Print["Paclet successfully created and verified: " <> paclet];
 			Exit[0]
 			]===])
 
 	string(REGEX REPLACE "[\t\r\n]+" "" WL_CODE "${WL_CODE}")
 	string(CONFIGURE "${WL_CODE}" WL_CODE)
 
-	add_custom_target(paclet
+	add_custom_target(${TARGET_NAME}
 			COMMAND ${WOLFRAMSCRIPT} -code "${WL_CODE}"
 			WORKING_DIRECTORY ${CMAKE_INSTALL_PREFIX}
 			COMMENT "Creating .paclet file${VERIFICATION_MESSAGE}..."
