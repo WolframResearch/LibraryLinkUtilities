@@ -285,7 +285,7 @@ std::unique_ptr<Serializable> getSerializable(std::string_view s) {
 
 LLU_LIBRARY_FUNCTION(CreateSerializableExpression) {
 	auto [id, text] = mngr.getTuple<mint, std::string>();
-	SerializableStore.createInstance(id, std::shared_ptr<Serializable> {getSerializable(text)});
+	SerializableStore.createInstance(id, getSerializable(text));
 }
 
 LLU_LIBRARY_FUNCTION(Serialize) {

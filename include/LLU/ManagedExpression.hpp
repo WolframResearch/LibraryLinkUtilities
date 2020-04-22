@@ -99,6 +99,16 @@ namespace LLU {
 		}
 
 		/**
+		 * Create instance in the store from a unique pointer to the managed class object. The store will claim shared ownership of the managed object.
+		 * @param   id - id of the newly created managed object
+		 * @param   ptr - pointer to an instance of T or a subclass
+		 * @return  reference to the object just added to the store
+		 */
+		T& createInstance(mint id, std::unique_ptr<T> ptr) {
+			return createInstance(id, std::shared_ptr<T> {std::move(ptr)});
+		}
+
+		/**
 		 * Release an instance managed by this Store.
 		 * @param id - id of the instance to be released
 		 * @return 0 if the id was correct and the operation succeeded, non-negative integer otherwise
