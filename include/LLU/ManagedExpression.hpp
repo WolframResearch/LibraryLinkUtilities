@@ -94,7 +94,7 @@ namespace LLU {
 		T& createInstance(mint id, std::shared_ptr<T> ptr) {
 			checkID(id);
 			store[id] = std::move(ptr);
-			return *store[id];
+			return instanceAt(id);
 		}
 
 		/**
@@ -119,13 +119,13 @@ namespace LLU {
 		}
 
 		/**
-		 * Get managed instance with given \p id. Throw if the \p id is invalid.
+		 * Get managed instance with given \p id. Throw if the \p id is invalid or if there is no corresponding instance.
 		 * @param id - id of instance of interest
 		 * @return reference to the managed object
 		 */
 		T& getInstance(mint id) {
 			checkID(id);
-			return *store[id];
+			return instanceAt(id);
 		}
 
 		/**
@@ -225,6 +225,19 @@ namespace LLU {
 			if (!hasInstance(id)) {
 				ErrorManager::throwException(ErrorName::ManagedExprInvalidID);
 			}
+		}
+
+		/**
+		 * Safely access an instance, throw if the instance does not exist
+		 * @param id - valid MLE id
+		 * @return reference to the managed object under given ID
+		 */
+		T& instanceAt(mint id) {
+			auto& instancePtr = store[id];
+			if (!instancePtr) {
+				ErrorManager::throwException(ErrorName::MLENullInstance);
+			}
+			return *instancePtr;
 		}
 
 	private:
