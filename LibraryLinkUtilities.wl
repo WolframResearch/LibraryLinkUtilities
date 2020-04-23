@@ -45,16 +45,23 @@ PacletFunctionSet::usage = "PacletFunctionSet[resultSymbol_, fParams_, fResultTy
 	- fResultType_ - result type
 	Options:
 	All options for PacletFunctionLoad and SafeLibraryFunctionLoad are accepted.";
-LazyPacletFunctionSet::usage = "Lazy version of PacletFunctionSet which loads the function upon the first evaluation of resultSymbol.";
+LazyPacletFunctionSet::usage = "LazyPacletFunctionSet[resultSymbol_, fParams_, fResultType_, opts___]
+	Lazy version of PacletFunctionSet which loads the function upon the first evaluation of resultSymbol.";
+
 WSTPFunctionSet::usage = "WSTPFunctionSet[resultSymbol_, opts : OptionsPattern[PacletFunctionSet]]
 	A convenient wrapper around PacletFunctionSet for easier loading of WSTP functions.";
-LazyWSTPFunctionSet::usage = "Lazy version of WSTPFunctionSet.";
+LazyWSTPFunctionSet::usage = "LazyWSTPFunctionSet[resultSymbol_, opts : OptionsPattern[PacletFunctionSet]]
+	Lazy version of WSTPFunctionSet which loads the function upon the first evaluation of resultSymbol.";
+
 MemberFunctionSet::usage = "MemberFunctionSet[exprHead_][memberSymbol_?Developer`SymbolQ, fParams_, retType_, opts : OptionsPattern[PacletFunctionSet]]
 	Loads a library function into memberSymbol that can be invoked on instances of exprHead like so: instance @ memberSymbol[...]";
-LazyMemberFunctionSet::usage = "Lazy version of MemberFunctionSet.";
+LazyMemberFunctionSet::usage = "LazyMemberFunctionSet[exprHead_][memberSymbol_?Developer`SymbolQ, fParams_, retType_, opts : OptionsPattern[PacletFunctionSet]]
+	Lazy version of MemberFunctionSet which loads the function upon the first evaluation of memberSymbol.";
+
 WSTPMemberFunctionSet::usage = "WSTPMemberFunctionSet[exprHead_][memberSymbol_, opts : OptionsPattern[PacletFunctionSet]]
 	A convenient wrapper around MemberFunctionSet for easier loading of WSTP functions.";
-LazyWSTPMemberFunctionSet::usage = "Lazy version of WSTPMemberFunctionSet.";
+LazyWSTPMemberFunctionSet::usage = "LazyWSTPMemberFunctionSet[exprHead_][memberSymbol_, opts : OptionsPattern[PacletFunctionSet]]
+	Lazy version of WSTPMemberFunctionSet which loads the function upon the first evaluation of memberSymbol.";
 
 PacletFunctionLoad::usage = "PacletFunctionLoad[fname_?StringQ, fParams_, retType_, opts___]
 	By default, the dynamic library name is taken from the library given to InitializePacletLibrary. Alternatively,
@@ -66,8 +73,8 @@ SafeLibraryFunctionLoad::usage = "SafeLibraryFunctionLoad[libName_, fname_?Strin
 
 (* ---------------- Managed Library Expressions ---------------------------- *)
 
-Constructor::usage = "Constructor[exprHead_] = Function[...]
-	Loads a constructor wrapper for a managed expression. The instanceID is passed to the wrapper as its first argument.";
+Constructor::usage = "Constructor[exprHead_] shall evaluate to a function that takes an instanceID (Integer) and an arbitrary number of additional arguments.
+	This function is responsible for creating an instance of managed expression for given ID in the corresponding ManagedExpressionStore on the C++ side";
 Managed::usage = "Managed[exprHead_]
 	represents a MLE instance.";
 NewManagedExpression::usage = "NewManagedExpression[exprHead_][args___]
