@@ -274,7 +274,7 @@ namespace LLU {
 		 */
 		template<typename... ArgTypes>
 		std::tuple<ArgTypes...> getTuple(size_type index = 0) const {
-			const auto indices = getOffsets(index, std::array<size_type, sizeof...(ArgTypes)> {ArgSlotCount<ArgTypes>...});
+			const auto indices = getOffsets(index, std::array<size_type, sizeof...(ArgTypes)> {getArgSlotCount<ArgTypes>()...});
 			return MArgPackGetter<ArgTypes...>::template getImpl(*this, indices, std::index_sequence_for<ArgTypes...>{});
 		}
 
@@ -694,12 +694,12 @@ namespace LLU {
 		static constexpr bool isCustomMArgumentType = CustomMArgumentTypeDetector<T>::value;
 
 		template<typename T>
-		static constexpr size_type ArgSlotCount = ([]() constexpr -> size_type {
+		static constexpr size_type getArgSlotCount() {
 			if constexpr (isCustomMArgumentType<T>) {
 				return std::tuple_size_v<typename CustomType<T>::CorrespondingTypes>;
 			}
 			return 1;
-		})();
+		}
 
 		template<size_t N>
 		static std::array<size_type, N> getOffsets(size_t I0, std::array<size_type, N> a) {

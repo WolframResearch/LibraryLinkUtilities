@@ -105,7 +105,8 @@ namespace LLU {
 
 			// ManagedExpression errors:
 			{ErrorName::ManagedExprInvalidID, "Given number is not an ID of any existing managed expression."},
-			{ErrorName::MLEDynamicTypeError, "Invalid dynamic type requested for a Managed Library Expression"},
+			{ErrorName::MLEDynamicTypeError, "Invalid dynamic type requested for a Managed Library Expression."},
+			{ErrorName::MLENullInstance, "Missing managed object for a valid ID."},
 
 			// FileUtilities errors:
 			{ErrorName::PathNotValidated, "File path `path` could not be validated under desired open mode."},

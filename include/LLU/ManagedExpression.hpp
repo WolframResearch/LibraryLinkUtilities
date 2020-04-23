@@ -48,6 +48,7 @@ namespace LLU {
 	 */
 	template<typename T>
 	class ManagedExpressionStore {
+	public:
 		using iterator = typename std::unordered_map<mint, std::shared_ptr<T>>::iterator;
 		using const_iterator = typename std::unordered_map<mint, std::shared_ptr<T>>::const_iterator;
 		using size_type = typename std::unordered_map<mint, std::shared_ptr<T>>::size_type;
@@ -85,6 +86,29 @@ namespace LLU {
 		}
 
 		/**
+		 * Create instance in the store from a pointer to the managed class object. This is useful when you have an existing object to be managed or
+		 * when objects of class T cannot be constructed directly (e.g. because T is an abstract class).
+		 * @param   id - id of the newly created managed object
+		 * @param   ptr - pointer to an instance of T or a subclass
+		 * @return  reference to the object just added to the store
+		 */
+		T& createInstance(mint id, std::shared_ptr<T> ptr) {
+			checkID(id);
+			store[id] = std::move(ptr);
+			return instanceAt(id);
+		}
+
+		/**
+		 * Create instance in the store from a unique pointer to the managed class object. The store will claim shared ownership of the managed object.
+		 * @param   id - id of the newly created managed object
+		 * @param   ptr - pointer to an instance of T or a subclass
+		 * @return  reference to the object just added to the store
+		 */
+		T& createInstance(mint id, std::unique_ptr<T> ptr) {
+			return createInstance(id, std::shared_ptr<T> {std::move(ptr)});
+		}
+
+		/**
 		 * Release an instance managed by this Store.
 		 * @param id - id of the instance to be released
 		 * @return 0 if the id was correct and the operation succeeded, non-negative integer otherwise
@@ -106,13 +130,13 @@ namespace LLU {
 		}
 
 		/**
-		 * Get managed instance with given \p id. Throw if the \p id is invalid.
+		 * Get managed instance with given \p id. Throw if the \p id is invalid or if there is no corresponding instance.
 		 * @param id - id of instance of interest
 		 * @return reference to the managed object
 		 */
 		T& getInstance(mint id) {
 			checkID(id);
-			return *store[id];
+			return instanceAt(id);
 		}
 
 		/**
@@ -212,6 +236,19 @@ namespace LLU {
 			if (!hasInstance(id)) {
 				ErrorManager::throwException(ErrorName::ManagedExprInvalidID);
 			}
+		}
+
+		/**
+		 * Safely access an instance, throw if the instance does not exist
+		 * @param id - valid MLE id
+		 * @return reference to the managed object under given ID
+		 */
+		T& instanceAt(mint id) {
+			auto& instancePtr = store[id];
+			if (!instancePtr) {
+				ErrorManager::throwException(ErrorName::MLENullInstance);
+			}
+			return *instancePtr;
 		}
 
 	private:
