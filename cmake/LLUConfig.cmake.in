@@ -5,11 +5,15 @@
 get_filename_component(LLU_CMAKE_DIR "${CMAKE_CURRENT_LIST_FILE}" PATH)
 include(CMakeFindDependencyMacro)
 
+# Include cmake script with utility functions
+include(${LLU_CMAKE_DIR}/Wolfram/Common.cmake)
+
+# Include cmake script with utility functions
+include(${LLU_CMAKE_DIR}/Wolfram/PacletUtilities.cmake)
+
 list(APPEND CMAKE_MODULE_PATH ${LLU_CMAKE_DIR})
 
-find_package(Mathematica 12.0 REQUIRED WolframLibrary WSTP)
-#find_dependency(WolframLibrary 4)
-#find_dependency(WSTP 4.25)
+find_dependency(Mathematica 12.0 REQUIRED WolframLibrary WSTP)
 
 if(NOT TARGET LLU::LLU)
 	include("${LLU_CMAKE_DIR}/LLUTargets.cmake")

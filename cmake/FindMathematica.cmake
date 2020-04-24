@@ -31,11 +31,16 @@ function(parse_mathematica_version M_DIRECTORY VERSION)
 	set(${VERSION} ${VERSION_ID_STRING} PARENT_SCOPE)
 endfunction()
 
+if (NOT Mathematica_ROOT AND MATHEMATICA_DIR)
+	set(Mathematica_ROOT ${MATHEMATICA_DIR})
+endif()
+
+cmake_print_variables(Mathematica_ROOT)
 find_program(_MATHEMATICA_EXE
 		NAMES
 			Mathematica mathematica
-		PATHS
-			${MATHEMATICA_DIR}
+		HINTS
+			${Mathematica_ROOT}
 		PATH_SUFFIXES
 			Executables
 		DOC
@@ -51,7 +56,7 @@ if (_MATHEMATICA_EXE)
 	get_filename_component(_MATHEMATICA_EXE_DIRECTORY ${_MATHEMATICA_EXE_REALPATH} DIRECTORY)
 	get_filename_component(_MATHEMATICA_DIRECTORY ${_MATHEMATICA_EXE_DIRECTORY} DIRECTORY)
 
-	cmake_print_variables(_MATHEMATICA_EXE_DIRECTORY _MATHEMATICA_DIRECTORY)
+	cmake_print_variables(_MATHEMATICA_DIRECTORY)
 
 	parse_mathematica_version(${_MATHEMATICA_DIRECTORY} MMA_VERSION_STRING)
 
@@ -62,23 +67,23 @@ if (_MATHEMATICA_EXE)
 	set(MATHEMATICA_INSTALL_DIR ${_MATHEMATICA_DIRECTORY})
 endif()
 
-foreach(_comp IN LISTS Mathematica_FIND_COMPONENTS)
-	if(_comp STREQUAL "WolframLibrary")
+foreach(_COMP IN LISTS Mathematica_FIND_COMPONENTS)
+	if(_COMP STREQUAL "WolframLibrary")
 		find_package(WolframLibrary ${Mathematica_WOLFRAMLIBRARY_VERSION_REQUIRED} QUIET)
-		set(Mathematica_${_comp}_FOUND ${WolframLibrary_FOUND})
-	elseif(_comp STREQUAL "WSTP")
+		set(Mathematica_${_COMP}_FOUND ${WolframLibrary_FOUND})
+	elseif(_COMP STREQUAL "WSTP")
 		find_package(WSTP ${Mathematica_WSTP_VERSION_REQUIRED} QUIET)
-		set(Mathematica_${_comp}_FOUND ${WSTP_FOUND})
-	elseif(_comp STREQUAL "wolframscript")
+		set(Mathematica_${_COMP}_FOUND ${WSTP_FOUND})
+	elseif(_COMP STREQUAL "wolframscript")
 		find_wolframscript(Mathematica_wolframscript_EXE)
 		if(EXISTS ${Mathematica_wolframscript_EXE})
-			set(Mathematica_${_comp}_FOUND TRUE)
+			set(Mathematica_${_COMP}_FOUND TRUE)
 		else()
-			set(Mathematica_${_comp}_FOUND FALSE)
+			set(Mathematica_${_COMP}_FOUND FALSE)
 		endif()
 	else()
-		message(WARNING "Unknown Mathematica component \"${_comp}\" requested.")
-		set(Mathematica_${_comp}_FOUND FALSE)
+		message(WARNING "Unknown Mathematica component \"${_COMP}\" requested.")
+		set(Mathematica_${_COMP}_FOUND FALSE)
 	endif()
 endforeach()
 
