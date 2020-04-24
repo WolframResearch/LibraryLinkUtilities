@@ -55,7 +55,7 @@ if(WSTP_INCLUDE_DIR)
 	include(WolframUtilities)
 	get_wstp_library_name(${WSTP_VERSION_MAJOR} _WOLFSTP_LIB_NAME)
 
-	message(STATUS "Looking for ${_WOLFSTP_LIB_NAME} in ${_WOLFSTP_LIBRARY_PATH}")
+	#message(STATUS "Looking for ${_WOLFSTP_LIB_NAME} in ${_WOLFSTP_LIBRARY_PATH}")
 
 	find_library(WSTP_LIBRARY
 		NAMES "wstp" ${_WOLFSTP_LIB_NAME}

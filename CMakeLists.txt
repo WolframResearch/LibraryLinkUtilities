@@ -197,6 +197,7 @@ if(NOT TARGET LLU)
 	#Install the config, configversion and custom find modules
 	install(DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/cmake/Wolfram DESTINATION ${INSTALL_CONFIGDIR})
 	install(FILES
+		${CMAKE_CURRENT_LIST_DIR}/cmake/FindMathematica.cmake
 		${CMAKE_CURRENT_LIST_DIR}/cmake/FindWolframLibrary.cmake
 		${CMAKE_CURRENT_LIST_DIR}/cmake/FindWSTP.cmake
 		${CMAKE_CURRENT_LIST_DIR}/cmake/WolframUtilities.cmake

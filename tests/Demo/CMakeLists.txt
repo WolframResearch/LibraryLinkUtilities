@@ -27,14 +27,16 @@ set(INSTALL_PACLET_TO_LAYOUT OFF CACHE BOOL "Copy paclet into Mathematica instal
 set(LLU_INSTALL_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../../install" CACHE PATH "Location of LLU installation.")
 
 # Add cmake scripts distributed with LLU to cmake prefix path
-set(CMAKE_PREFIX_PATH "${LLU_INSTALL_DIR}/cmake")
+set(CMAKE_MODULE_PATH "${LLU_INSTALL_DIR}/cmake/LLU")
+
+#find_package(Mathematica 11.3 REQUIRED COMPONENTS WolframLibrary WSTP OPTIONAL_COMPONENTS wolframscript)
 
 # Include cmake script with utility functions
 include(${LLU_INSTALL_DIR}/cmake/LLU/Wolfram/Common.cmake)
 
 # Figure out default Mathematica location
-get_default_mathematica_dir("12.1" DEFAULT_MATHEMATICA_INSTALL_DIR)
-set(MATHEMATICA_INSTALL_DIR "${DEFAULT_MATHEMATICA_INSTALL_DIR}" CACHE PATH "Mathematica installation")
+#get_default_mathematica_dir("12.1" DEFAULT_MATHEMATICA_INSTALL_DIR)
+#set(MATHEMATICA_INSTALL_DIR "${DEFAULT_MATHEMATICA_INSTALL_DIR}" CACHE PATH "Mathematica installation")
 
 find_package(LLU 2.2.0 EXACT REQUIRED)
 
