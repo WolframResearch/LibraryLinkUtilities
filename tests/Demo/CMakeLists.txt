@@ -4,7 +4,7 @@
 ######
 ################################################################################
 
-cmake_minimum_required(VERSION 3.11.0)
+cmake_minimum_required(VERSION 3.12.0)
 
 project(Demo
 		VERSION     0.0.1
@@ -17,28 +17,14 @@ if (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
 	set(CMAKE_INSTALL_PREFIX "${CMAKE_CURRENT_BINARY_DIR}" CACHE PATH "Demo paclet install prefix" FORCE)
 endif ()
 
-# Optionally, install paclet to Mathematica layout (set MATHEMATICA_INSTALL_DIR to choose which one)
-set(INSTALL_PACLET_TO_LAYOUT OFF CACHE BOOL "Copy paclet into Mathematica installation")
-
 #=============================================
 #=============== FIND LLU ====================
 #=============================================
 
-set(LLU_INSTALL_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../../install" CACHE PATH "Location of LLU installation.")
+set(LLU_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/../../install" CACHE PATH "Location of LLU installation.")
 
-# Add cmake scripts distributed with LLU to cmake prefix path
-set(CMAKE_MODULE_PATH "${LLU_INSTALL_DIR}/cmake/LLU")
-
-#find_package(Mathematica 11.3 REQUIRED COMPONENTS WolframLibrary WSTP OPTIONAL_COMPONENTS wolframscript)
-
-# Include cmake script with utility functions
-include(${LLU_INSTALL_DIR}/cmake/LLU/Wolfram/Common.cmake)
-
-# Figure out default Mathematica location
-#get_default_mathematica_dir("12.1" DEFAULT_MATHEMATICA_INSTALL_DIR)
-#set(MATHEMATICA_INSTALL_DIR "${DEFAULT_MATHEMATICA_INSTALL_DIR}" CACHE PATH "Mathematica installation")
-
-find_package(LLU 2.2.0 EXACT REQUIRED)
+set(CMAKE_FIND_DEBUG_MODE ON)
+find_package(LLU 2.2.0 EXACT REQUIRED NO_MODULE PATH_SUFFIXES LLU)
 
 #=============================================
 #=========== MAIN PACLET LIBRARY =============
@@ -69,17 +55,15 @@ target_link_libraries(Demo PRIVATE LLU::LLU)
 #=========== INSTALL PACLET ==================
 #=============================================
 
-# Include cmake script with utility functions
-#include(${LLU_INSTALL_DIR}/cmake/LLU/Wolfram/PacletUtilities.cmake)
-
 install_paclet_files(
 		TARGET Demo
-		LLU_LOCATION ${LLU_INSTALL_DIR}
+		LLU_LOCATION ${LLU_ROOT}
 )
 
 add_paclet_target(paclet
 		NAME Demo
 		VERIFY
 		INSTALL
+		TEST_FILE Tests/test.wl
 )
 
