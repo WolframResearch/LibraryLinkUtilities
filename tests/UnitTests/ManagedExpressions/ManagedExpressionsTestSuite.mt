@@ -379,8 +379,8 @@ Test[
 ];
 
 TestExecute[
-	`LLU`Constructor[Serializable] = `LLU`SafeLibraryFunction["CreateSerializableExpression", {`LLU`Managed[Serializable], String}, "Void", "Throws" -> True];
-	Serialize = `LLU`SafeLibraryFunction["Serialize", {`LLU`Managed[Serializable]}, String];
+	`LLU`Constructor[Serializable] = `LLU`PacletFunctionLoad["CreateSerializableExpression", {`LLU`Managed[Serializable], String}, "Void", "Throws" -> True];
+	`LLU`PacletFunctionSet[Serialize, {`LLU`Managed[Serializable]}, String];
 ];
 
 Test[
