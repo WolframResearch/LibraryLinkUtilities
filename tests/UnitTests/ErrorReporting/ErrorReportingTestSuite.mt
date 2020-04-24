@@ -18,7 +18,8 @@ TestExecute[
 
 	Get[FileNameJoin[{$LLUSharedDir, "LibraryLinkUtilities.wl"}]];
 
-	`LLU`RegisterPacletErrors[lib, <|
+	`LLU`InitializePacletLibrary[lib];
+	`LLU`RegisterPacletErrors[<|
 		"StaticTopLevelError" -> "This top-level error has a static error message.",
 		"TopLevelNamedSlotsError" -> "Hi `name`! Error occurred `when`.",
 		"TopLevelNumberedSlotsError" -> "Slot number one: `1`, number two: `2`."
@@ -113,7 +114,7 @@ TestMatch[
 (*********************************************************** C++ code failures **************************************************************)
 
 TestMatch[
-	ReadData = `LLU`SafeLibraryFunction["ReadData", {String}, "Void"];
+	ReadData = `LLU`PacletFunctionLoad["ReadData", {String}, "Void"];
 	ReadData["test.txt"]
 	,
 	Failure["DataFileError", <|
@@ -140,7 +141,7 @@ TestMatch[
 ];
 
 TestMatch[
-	ReadData2 = `LLU`SafeLibraryFunction["ReadDataLocalWLD", {String}, "Void"];
+	ReadData2 = `LLU`PacletFunctionLoad["ReadDataLocalWLD", {String}, "Void"];
 	ReadData2["test.txt"]
 	,
 	Failure["DataFileError", <|
@@ -167,7 +168,7 @@ TestMatch[
 ];
 
 TestMatch[
-	RepeatedTemplate = `LLU`SafeLibraryFunction["RepeatedTemplate", {}, "Void"];
+	RepeatedTemplate = `LLU`PacletFunctionLoad["RepeatedTemplate", {}, "Void"];
 	RepeatedTemplate[]
 	,
 	Failure["RepeatedTemplateError", <|
@@ -181,7 +182,7 @@ TestMatch[
 ];
 
 TestMatch[
-	NumberedSlots = `LLU`SafeLibraryFunction["NumberedSlots", {}, "Void"];
+	NumberedSlots = `LLU`PacletFunctionLoad["NumberedSlots", {}, "Void"];
 	NumberedSlots[]
 	,
 	Failure["NumberedSlotsError", <|
@@ -195,7 +196,7 @@ TestMatch[
 ];
 
 TestMatch[
-	RepeatedNumberTemplate = `LLU`SafeLibraryFunction["RepeatedNumberTemplate", {}, "Void"];
+	RepeatedNumberTemplate = `LLU`PacletFunctionLoad["RepeatedNumberTemplate", {}, "Void"];
 	RepeatedNumberTemplate[]
 	,
 	Failure["RepeatedNumberTemplateError", <|
@@ -209,7 +210,7 @@ TestMatch[
 ];
 
 TestMatch[
-	TooManyValues = `LLU`SafeLibraryFunction["TooManyValues", {}, "Void"];
+	TooManyValues = `LLU`PacletFunctionLoad["TooManyValues", {}, "Void"];
 	TooManyValues[]
 	,
 	Failure["NumberedSlotsError", <|
@@ -223,7 +224,7 @@ TestMatch[
 ];
 
 TestMatch[
-	TooFewValues = `LLU`SafeLibraryFunction["TooFewValues", {}, "Void"];
+	TooFewValues = `LLU`PacletFunctionLoad["TooFewValues", {}, "Void"];
 	TooFewValues[]
 	,
 	Failure["NumberedSlotsError", <|
@@ -237,7 +238,7 @@ TestMatch[
 ];
 
 TestMatch[
-	MixedSlots = `LLU`SafeLibraryFunction["MixedSlots", {}, "Void"];
+	MixedSlots = `LLU`PacletFunctionLoad["MixedSlots", {}, "Void"];
 	MixedSlots[]
 	,
 	Failure["MixedSlotsError", <|
@@ -254,7 +255,7 @@ TestMatch[
 (* Unit tests of ErrorManager::throwCustomException *)
 
 TestMatch[
-	ReadDataWithLoggingError = `LLU`SafeLibraryFunction["ReadDataWithLoggingError", {String}, "Void"];
+	ReadDataWithLoggingError = `LLU`PacletFunctionLoad["ReadDataWithLoggingError", {String}, "Void"];
 	ReadDataWithLoggingError["test.txt"]
 	,
 	Failure["DataFileError", <|
@@ -307,7 +308,7 @@ Test[
 (* Unit tests of ErrorManager::sendParamatersImmediately *)
 
 Test[
-	GetSPI = `LLU`SafeLibraryFunction["GetSendParametersImmediately", {}, "Boolean"];
+	GetSPI = `LLU`PacletFunctionLoad["GetSendParametersImmediately", {}, "Boolean"];
 	GetSPI[]
 	,
 	True
@@ -316,12 +317,12 @@ Test[
 ];
 
 Test[
-	SetSPI = `LLU`SafeLibraryFunction["SetSendParametersImmediately", {"Boolean"}, "Void"];
+	SetSPI = `LLU`PacletFunctionLoad["SetSendParametersImmediately", {"Boolean"}, "Void"];
 	SetSPI[False];
 
-	`LLU`$LastFailureParameters = {"This", "will", "be", "overwritten"};
+	`LLU`Private`$LastFailureParameters = {"This", "will", "be", "overwritten"};
 	ReadData["somefile.txt"];
-	`LLU`$LastFailureParameters
+	`LLU`Private`$LastFailureParameters
 	,
 	{}
 	,
@@ -329,7 +330,7 @@ Test[
 ];
 
 TestMatch[
-	ReadDataDelayedParametersTransfer = `LLU`SafeLibraryFunction["ReadDataDelayedParametersTransfer", {String}, "Void"];
+	ReadDataDelayedParametersTransfer = `LLU`PacletFunctionLoad["ReadDataDelayedParametersTransfer", {String}, "Void"];
 	ReadDataDelayedParametersTransfer["somefile.txt"]
 	,
 	Failure["DataFileError", <|
@@ -343,7 +344,7 @@ TestMatch[
 ];
 
 TestMatch[
-	EmptyLibDataException = `LLU`SafeLibraryFunction["EmptyLibDataException", {}, "Void"];
+	EmptyLibDataException = `LLU`PacletFunctionLoad["EmptyLibDataException", {}, "Void"];
 	EmptyLibDataException[]
 	,
 	Failure["LibDataError", <|
@@ -361,8 +362,10 @@ TestExecute[
 	loggerTestPath = FileNameJoin[{currentDirectory, "TestSources", "LoggerTest.cpp"}];
 	libLogDebug = CCompilerDriver`CreateLibrary[{loggerTestPath}, "LogDebug", options, "Defines" -> {"LLU_LOG_DEBUG"}];
 
-	`LLU`$InitLibraryLinkUtils = False;
-	`LLU`RegisterPacletErrors[libLogDebug, <||>];
+	(* Reset top-level LLU part *)
+	Get[FileNameJoin[{$LLUSharedDir, "LibraryLinkUtilities.wl"}]];
+	
+	`LLU`InitializePacletLibrary[libLogDebug];
 
 	`LLU`Logger`PrintLogFunctionSelector := Block[{`LLU`Logger`FormattedLog = `LLU`Logger`LogToAssociation},
 		`LLU`Logger`PrintLogToSymbol[TestLogSymbol][##]
@@ -370,7 +373,7 @@ TestExecute[
 ];
 
 Test[
-	GreaterAt = `LLU`SafeLibraryFunction["GreaterAt", {String, {_, 1}, Integer, Integer}, "Boolean"];
+	GreaterAt = `LLU`PacletFunctionLoad["GreaterAt", {String, {_, 1}, Integer, Integer}, "Boolean"];
 	GreaterAt["file.txt", {5, 6, 7, 8, 9}, 1, 3];
 	TestLogSymbol
 	,
@@ -431,7 +434,7 @@ TestMatch[
 ];
 
 Test[
-	MultiThreadedLog = `LLU`SafeLibraryFunction["LogsFromThreads", {Integer}, "Void"];
+	MultiThreadedLog = `LLU`PacletFunctionLoad["LogsFromThreads", {Integer}, "Void"];
 	Clear[TestLogSymbol];
 	MultiThreadedLog[3];
 	And @@ (
@@ -538,26 +541,9 @@ TestExecute[
 	libLogWarning = CCompilerDriver`CreateLibrary[FileNameJoin[{currentDirectory, "TestSources", #}]& /@ {"LoggerTest.cpp"},
 		"LogWarning", options, "Defines" -> {"LLU_LOG_WARNING"}];
 
-	`LLU`$InitLibraryLinkUtils = False;
-	`LLU`RegisterPacletErrors[libLogWarning, <||>];
-	GreaterAtW = `LLU`SafeLibraryFunction["GreaterAt", {String, {_, 1}, Integer, Integer}, "Boolean"];
-];
-
-Test[
-	Reap @ GreaterAtW["my:file.txt", {5, 6, 7, 8, 9}, 1, 3]
-	,
-	{
-		False, {{"(GreaterAt): File name my:file.txt contains a possibly problematic character \":\"."}}
-	}
-	,
-	SameTest -> ResultAndLogTest
-	,
-	TestID -> "ErrorReportingTestSuite-20190415-F5I9D0"
-];
-
-TestExecute[
 	Get[FileNameJoin[{$LLUSharedDir, "LibraryLinkUtilities.wl"}]];
-	`LLU`RegisterPacletErrors[libLogWarning, <||>];
+	`LLU`InitializePacletLibrary[libLogWarning];
+	GreaterAtW = `LLU`PacletFunctionLoad["GreaterAt", {String, {_, 1}, Integer, Integer}, "Boolean"];
 ];
 
 Test[
@@ -600,7 +586,7 @@ TestExecute[
 	`LLU`Logger`PrintLogFunctionSelector := Block[{`LLU`Logger`FormattedLog = `LLU`Logger`LogToList},
 		`LLU`Logger`PrintLogToSymbol[TestLogSymbol][##]
 	]&;
-	LogDemo = `LLU`SafeLibraryFunction["LogDemo", {Integer, Integer, Integer, Integer, Integer}, Integer];
+	LogDemo = `LLU`PacletFunctionLoad["LogDemo", {Integer, Integer, Integer, Integer, Integer}, Integer];
 ];
 
 Test[

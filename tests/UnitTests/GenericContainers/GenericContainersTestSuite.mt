@@ -18,25 +18,21 @@ TestExecute[
 
 	Get[FileNameJoin[{$LLUSharedDir, "LibraryLinkUtilities.wl"}]];
 
-	RegisterPacletErrors[lib, <|
-		"StaticTopLevelError" -> "This top-level error has a static error message.",
-		"TopLevelNamedSlotsError" -> "Hi `name`! Error occurred `when`.",
-		"TopLevelNumberedSlotsError" -> "Slot number one: `1`, number two: `2`."
-	|>];
+	`LLU`InitializePacletLibrary[lib];
 
 	Off[General::stop]; (* because we want to see all error messages from CreateLibrary *)
 
-	IsOwnerAutomatic = SafeLibraryFunction["IsOwnerAutomatic", {Image}, "Boolean"];
-	IsOwnerManual = SafeLibraryFunction["IsOwnerManual", {{Integer, _, "Manual"}}, "Boolean"];
-	IsOwnerShared = SafeLibraryFunction["IsOwnerShared", {{NumericArray, "Shared"}}, "Boolean"];
+	IsOwnerAutomatic = `LLU`PacletFunctionLoad["IsOwnerAutomatic", {Image}, "Boolean"];
+	IsOwnerManual = `LLU`PacletFunctionLoad["IsOwnerManual", {{Integer, _, "Manual"}}, "Boolean"];
+	IsOwnerShared = `LLU`PacletFunctionLoad["IsOwnerShared", {{NumericArray, "Shared"}}, "Boolean"];
 
-	CloneAutomatic = SafeLibraryFunction["CloneAutomatic", {Image}, Image];
-	CloneManual = SafeLibraryFunction["CloneManual", {{Integer, _, "Manual"}}, {Integer, _}];
-	CloneShared = SafeLibraryFunction["CloneShared", {{NumericArray, "Shared"}}, NumericArray];
+	CloneAutomatic = `LLU`PacletFunctionLoad["CloneAutomatic", {Image}, Image];
+	CloneManual = `LLU`PacletFunctionLoad["CloneManual", {{Integer, _, "Manual"}}, {Integer, _}];
+	CloneShared = `LLU`PacletFunctionLoad["CloneShared", {{NumericArray, "Shared"}}, NumericArray];
 
-	MoveAutomatic = SafeLibraryFunction["MoveAutomatic", {Image}, Image];
-	MoveManual = SafeLibraryFunction["MoveManual", {{Integer, _, "Manual"}}, {Integer, _}];
-	MoveShared = SafeLibraryFunction["MoveShared", {{NumericArray, "Shared"}}, NumericArray];
+	MoveAutomatic = `LLU`PacletFunctionLoad["MoveAutomatic", {Image}, Image];
+	MoveManual = `LLU`PacletFunctionLoad["MoveManual", {{Integer, _, "Manual"}}, {Integer, _}];
+	MoveShared = `LLU`PacletFunctionLoad["MoveShared", {{NumericArray, "Shared"}}, NumericArray];
 
 	img = RandomImage[];
 	tensor = {1, 2, 3, 4, 5};
