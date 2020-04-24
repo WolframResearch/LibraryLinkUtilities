@@ -33,7 +33,7 @@ set(TEST_MODULES
         "Utilities"
         )
 
-include("Wolfram/PacletUtilities")
+
 find_wolframscript(WOLFRAMSCRIPT_EXE)
 message(STATUS "Unit tests will be run with: ${WOLFRAMSCRIPT_EXE}")
 

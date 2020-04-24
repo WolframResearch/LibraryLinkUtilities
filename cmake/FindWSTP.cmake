@@ -18,7 +18,7 @@
 #
 # Author: Rafal Chojna - rafalc@wolfram.com
 
-include(WolframUtilities)
+include(Wolfram/Common)
 
 detect_system_id(_WOLFSTP_SYSTEMID)
 
@@ -52,10 +52,7 @@ if(WSTP_INCLUDE_DIR)
 
 	set(WSTP_VERSION_STRING "${WSTP_VERSION_MAJOR}.${WSTP_VERSION_MINOR}")
 
-	include(WolframUtilities)
 	get_wstp_library_name(${WSTP_VERSION_MAJOR} _WOLFSTP_LIB_NAME)
-
-	#message(STATUS "Looking for ${_WOLFSTP_LIB_NAME} in ${_WOLFSTP_LIBRARY_PATH}")
 
 	find_library(WSTP_LIBRARY
 		NAMES "wstp" ${_WOLFSTP_LIB_NAME}
