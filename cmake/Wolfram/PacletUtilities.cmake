@@ -96,8 +96,8 @@ endfunction()
 
 
 function(add_paclet_target TARGET_NAME)
-	set(OPTIONS VERIFY INSTALL)
-	set(ONE_VALUE_ARGS NAME)
+	set(OPTIONS VERIFY INSTALL TEST_LOADING)
+	set(ONE_VALUE_ARGS NAME TEST_FILE)
 	set(MULTI_VALUE_ARGS)
 	cmake_parse_arguments(MAKE_PACLET "${OPTIONS}" "${ONE_VALUE_ARGS}" "${MULTI_VALUE_ARGS}" ${ARGN})
 	required_arg(MAKE_PACLET_NAME "Paclet name must be provided.")
@@ -110,6 +110,15 @@ function(add_paclet_target TARGET_NAME)
 
 	if(MAKE_PACLET_VERIFY)
 		set(VERIFICATION_MESSAGE " and verifying PacletInfo contents.")
+	endif()
+
+	if(MAKE_PACLET_TEST_FILE)
+		set(RUN_TESTS TRUE)
+		get_filename_component(TEST_FILE ${MAKE_PACLET_TEST_FILE} ABSOLUTE BASE_DIR ${CMAKE_CURRENT_LIST_DIR})
+		if(NOT EXISTS ${TEST_FILE})
+			message(WARNING "Test file ${TEST_FILE} does not exist. Skipping tests.")
+			set(RUN_TESTS FALSE)
+		endif()
 	endif()
 
 	set(WL_CODE
@@ -145,6 +154,10 @@ function(add_paclet_target TARGET_NAME)
 					Print["ERROR: Paclet installation failed."]
 					Exit[1]
 				]
+			];
+			If["${RUN_TESTS}" === "TRUE",
+				Print["Running test file: ${TEST_FILE}."];
+				Get["${TEST_FILE}"]
 			];
 			Exit[0]
 			]===])
