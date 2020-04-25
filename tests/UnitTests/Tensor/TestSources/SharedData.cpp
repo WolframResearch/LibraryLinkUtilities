@@ -1,6 +1,5 @@
 #include <memory>
 
-#include "LLU/Containers/Passing/Shared.hpp"
 #include "LLU/Containers/Tensor.h"
 #include "LLU/LibraryLinkFunctionMacro.h"
 #include "LLU/MArgumentManager.h"
