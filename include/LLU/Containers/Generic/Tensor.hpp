@@ -11,22 +11,21 @@
 
 namespace LLU {
 
-	template<class PassingMode>
-	class MContainer<MArgumentType::Tensor, PassingMode>;
+	template<>
+	class MContainer<MArgumentType::Tensor>;
 
 	/// MContainer specialization for MTensor is called GenericTensor
-	template<class PassingMode>
-	using GenericTensor = MContainer<MArgumentType::Tensor, PassingMode>;
+	using GenericTensor = MContainer<MArgumentType::Tensor>;
 	
 	/**
 	 *  @brief  MContainer specialization for MTensor
 	 *  @tparam PassingMode - passing policy
 	 */
-	template<class PassingMode>
-	class MContainer<MArgumentType::Tensor, PassingMode> : public TensorInterface, public MContainerBase<MArgumentType::Tensor, PassingMode> {
+	template<>
+	class MContainer<MArgumentType::Tensor> : public TensorInterface, public MContainerBase<MArgumentType::Tensor> {
 	public:
 		/// Inherit constructors from MContainerBase
-		using MContainerBase<MArgumentType::Tensor, PassingMode>::MContainerBase;
+		using MContainerBase<MArgumentType::Tensor>::MContainerBase;
 
 		/// Default constructor, the MContainer does not manage any instance of MTensor.
 		MContainer() = default;
@@ -43,16 +42,8 @@ namespace LLU {
 			if (LibraryData::API()->MTensor_new(type, rank, dims, &tmp)) {
 				ErrorManager::throwException(ErrorName::TensorNewError);
 			}
-			this->setContainer(tmp);
+			this->reset(tmp);
 		}
-
-		/**
-		 * @brief   Create GenericTensor from another GenericTensor with different passing mode.
-		 * @tparam  P - some passing mode
-		 * @param   mc - different GenericTensor
-		 */
-		template<class P>
-		explicit MContainer(const MContainer<MArgumentType::Tensor, P>& mc) : Base(mc) {}
 
 		MContainer(const MContainer& mc) = default;
 
@@ -62,22 +53,8 @@ namespace LLU {
 
 		MContainer& operator=(MContainer&& mc) noexcept = default;
 
-		/**
-		 * @brief   Assign a GenericTensor with different passing mode.
-		 * @tparam  P - some passing mode
-		 * @param   mc - different GenericTensor
-		 * @return  this
-		 */
-		template<class P>
-		MContainer& operator=(const MContainer<MArgumentType::Tensor, P>& mc) {
-			Base::operator=(mc);
-			return *this;
-		}
-
 		/// Destructor which triggers the appropriate cleanup action which depends on the PassingMode
-		~MContainer() {
-			this->cleanup();
-		};
+		~MContainer() override = default;
 
 		/// @copydoc TensorInterface::getRank()
 		mint getRank() const override {
@@ -109,7 +86,7 @@ namespace LLU {
 			}
 		}
 	private:
-		using Base = MContainerBase<MArgumentType::Tensor, PassingMode>;
+		using Base = MContainerBase<MArgumentType::Tensor>;
 		using RawContainer = typename Base::Container;
 
 		/**

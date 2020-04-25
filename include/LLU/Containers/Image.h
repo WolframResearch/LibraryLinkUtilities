@@ -13,9 +13,6 @@
 
 #include "LLU/Containers/Generic/Image.hpp"
 #include "LLU/Containers/MArray.hpp"
-#include "LLU/Containers/Passing/Automatic.hpp"
-#include "LLU/Containers/Passing/Manual.hpp"
-#include "LLU/Containers/Passing/PassingPolicy.hpp"
 
 namespace LLU {
 
@@ -125,8 +122,8 @@ namespace LLU {
 	 *
 	 * @tparam	T - type of underlying data
 	 */
-	template<typename T, class PassingMode = Passing::Manual>
-	class Image : public TypedImage<T>, public GenericImage<PassingMode> {
+	template<typename T>
+	class Image : public TypedImage<T>, public GenericImage {
 	public:
 		/**
 		 *   @brief         Constructs new 2D Image
@@ -155,7 +152,7 @@ namespace LLU {
 		 *   @param[in]     im - generic image to be wrapped into Image class
 		 *   @throws		ErrorName::ImageTypeError - if the Image template type \b T does not match the actual data type of the generic image
 		 **/
-		explicit Image(GenericImage<PassingMode> im);
+		explicit Image(GenericImage im);
 
 		/**
 		 *   @brief         Constructs Image based on MImage
@@ -186,19 +183,12 @@ namespace LLU {
 		~Image() override = default;
 
 		/**
-		 *   @brief         Copy an Image with different passing policy
-		 *   @param[in]     other - const reference to an Image
-		 **/
-		template<class P>
-		explicit Image(const Image<T, P>& other) : TypedImage<T>(other), GenericImage<PassingMode>(other) {}
-
-		/**
 		 *   @brief         Copy constructor with type conversion
 		 *   @tparam		U - any type that Image supports
 		 *   @param[in]     i2 - const reference to an Image
 		 **/
-		template<typename U, class P>
-		explicit Image(const Image<U, P>& i2);
+		template<typename U>
+		explicit Image(const Image<U>& i2);
 
 		/**
 		 *   @brief         Copy constructor with type conversion and explicitly specified interleaving
@@ -206,22 +196,11 @@ namespace LLU {
 		 *   @param[in]     i2 - const reference to an Image
 		 *   @param[in]		interleavedQ - whether the newly created Image should be interleaved
 		 **/
-		template<typename U, class P>
-		Image(const Image<U, P>& i2, bool interleavedQ);
-
-		/**
-		 *   @brief         Copy-assignment operator with passing mode change
-		 *   @param[in]     other - const reference to an Image of matching type
-		 **/
-		template<class P>
-		Image& operator=(const Image<T, P>& other) {
-			TypedImage<T>::operator=(other);
-			GenericBase::operator=(other);
-			return *this;
-		}
-
+		template<typename U>
+		Image(const Image<U>& i2, bool interleavedQ);
+		
 	private:
-		using GenericBase = MContainer<MArgumentType::Image, PassingMode>;
+		using GenericBase = MContainer<MArgumentType::Image>;
 
 		/// @copydoc MContainerBase::getContainer()
 		MImage getInternal() const noexcept override {
@@ -241,33 +220,33 @@ namespace LLU {
 		static MArrayDimensions dimensionsFromGenericImage(const GenericBase& im);
 	};
 
-	template<typename T, class PassingMode>
-	Image<T, PassingMode>::Image(mint w, mint h, mint channels, colorspace_t cs, bool interleavingQ) : Image(0, w, h, channels, cs, interleavingQ) {}
+	template<typename T>
+	Image<T>::Image(mint w, mint h, mint channels, colorspace_t cs, bool interleavingQ) : Image(0, w, h, channels, cs, interleavingQ) {}
 
-	template<typename T, class PassingMode>
-	Image<T, PassingMode>::Image(GenericBase im) : TypedImage<T>(dimensionsFromGenericImage(im)), GenericBase(std::move(im)) {
+	template<typename T>
+	Image<T>::Image(GenericBase im) : TypedImage<T>(dimensionsFromGenericImage(im)), GenericBase(std::move(im)) {
 		if (ImageType<T> != GenericBase::type()) {
 			ErrorManager::throwException(ErrorName::ImageTypeError);
 		}
 	}
 
-	template<typename T, class PassingMode>
-	Image<T, PassingMode>::Image(mint nFrames, mint w, mint h, mint channels, colorspace_t cs, bool interleavingQ)
+	template<typename T>
+	Image<T>::Image(mint nFrames, mint w, mint h, mint channels, colorspace_t cs, bool interleavingQ)
 		: Image(GenericBase {nFrames, w, h, channels, ImageType<T>, cs, interleavingQ}) {}
 
-	template<typename T, class PassingMode>
-	Image<T, PassingMode>::Image(MImage mi) : Image(GenericBase {mi}) {}
+	template<typename T>
+	Image<T>::Image(MImage mi) : Image(GenericBase {mi}) {}
 
-	template<typename T, class PassingMode>
-	template<typename U, class P>
-	Image<T, PassingMode>::Image(const Image<U, P>& i2) : Image(i2, i2.interleavedQ()) {}
+	template<typename T>
+	template<typename U>
+	Image<T>::Image(const Image<U>& i2) : Image(i2, i2.interleavedQ()) {}
 
-	template<typename T, class PassingMode>
-	template<typename U, class P>
-	Image<T, PassingMode>::Image(const Image<U, P>& i2, bool interleavedQ) : TypedImage<T>(i2), GenericBase(i2.convert(ImageType<T>, interleavedQ)) {}
+	template<typename T>
+	template<typename U>
+	Image<T>::Image(const Image<U>& i2, bool interleavedQ) : TypedImage<T>(i2), GenericBase(i2.convert(ImageType<T>, interleavedQ)) {}
 
-	template<typename T, class PassingMode>
-	MArrayDimensions Image<T, PassingMode>::dimensionsFromGenericImage(const GenericBase& im) {
+	template<typename T>
+	MArrayDimensions Image<T>::dimensionsFromGenericImage(const GenericBase& im) {
 		std::vector<mint> dims;
 		if (!im.getContainer()) {
 			return dims;

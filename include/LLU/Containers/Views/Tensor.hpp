@@ -17,14 +17,14 @@ namespace LLU {
 	 * Intended for use in functions that only need to access MTensor metadata, where it can alleviate the need for introducing template parameters
 	 * for MTensor passing mode (like in GenericTensor) or data type (like in Tensor class).
 	 */
-	class TensorView : public TensorInterface {
+	template<>
+	struct View<MArgumentType::Tensor> : public TensorInterface {
 	public:
-		TensorView() = default;
+		View() = default;
 
-		template<class Passing>
-		/* implicit */ TensorView(const GenericTensor<Passing>& gTen) : t {gTen.getContainer()} {}
+		/* implicit */ View(const GenericTensor& gTen) : t {gTen.getContainer()} {}
 
-		/* implicit */ TensorView(MTensor mt) : t {mt} {}
+		/* implicit */ View(MTensor mt) : t {mt} {}
 
 		/// @copydoc TensorInterface::getRank()
 		mint getRank() const override {
@@ -60,13 +60,14 @@ namespace LLU {
 		MTensor t = nullptr;
 	};
 
+	using TensorView = View<MArgumentType::Tensor>;
+
 	template<typename T>
 	class TensorTypedView : public TensorView, public IterableContainer<T> {
 	public:
 		TensorTypedView() = default;
 
-		template<class Passing>
-		/* implicit */ TensorTypedView(const GenericTensor<Passing>& gTen) : TensorView(gTen) {
+		/* implicit */ TensorTypedView(const GenericTensor& gTen) : TensorView(gTen) {
 			if (TensorType<T> != type()) {
 				ErrorManager::throwException(ErrorName::TensorTypeError);
 			}

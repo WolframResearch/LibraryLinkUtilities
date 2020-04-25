@@ -7,41 +7,34 @@
 #define LLU_INCLUDE_LLU_CONTAINERS_GENERIC_DATASTORE
 
 #include "LLU/Containers/Generic/Base.hpp"
-#include "LLU/Containers/Passing/Shared.hpp"
 
 namespace LLU {
 
-	template<class PassingMode>
-	class MContainer<MArgumentType::DataStore, PassingMode>;
+	template<>
+	class MContainer<MArgumentType::DataStore>;
 
 	/// MContainer specialization for DataStore is called GenericDataList
-	template<class PassingMode>
-	using GenericDataList = MContainer<MArgumentType::DataStore, PassingMode>;
+	using GenericDataList = MContainer<MArgumentType::DataStore>;
 
 	/**
 	 *  @brief  MContainer specialization for DataStore
 	 *  @tparam PassingMode - passing policy
 	 */
-	template<class PassingMode>
-	class MContainer<MArgumentType::DataStore, PassingMode> : public MContainerBase<MArgumentType::DataStore, PassingMode> {
-		static_assert(!std::is_same<PassingMode, Passing::Shared>::value, "DataStore cannot be Shared.");
-
+	template<>
+	class MContainer<MArgumentType::DataStore> : public MContainerBase<MArgumentType::DataStore> {
 	public:
 		/// Inherit constructors from MContainerBase
-		using MContainerBase<MArgumentType::DataStore, PassingMode>::MContainerBase;
+		using MContainerBase<MArgumentType::DataStore>::MContainerBase;
 
 		/**
 		 * @brief   Default constructor, the MContainer does not manage any instance of DataStore.
 		 */
 		MContainer() = default;
 
-		/**
-		 * @brief   Create GenericDataList from another GenericDataList with different passing mode.
-		 * @tparam  P - some passing mode
-		 * @param   mc - different GenericDataList
-		 */
-		template<class P>
-		explicit MContainer(const MContainer<MArgumentType::DataStore, P>& mc) : Base(mc) {}
+		template<Ownership PassingMode = Ownership::Library>
+		/* implicit */ MContainer(Container c) : MContainerBase<PassingMode> {c} {
+			static_assert(PassingMode != Ownership::Shared, "DataStore cannot be Shared.");
+		}
 
 		MContainer(const MContainer& mc) = default;
 
@@ -51,22 +44,8 @@ namespace LLU {
 
 		MContainer& operator=(MContainer&& mc) noexcept = default;
 
-		/**
-		 * @brief   Assign a GenericDataList with different passing mode.
-		 * @tparam  P - some passing mode
-		 * @param   mc - different GenericDataList
-		 * @return  this
-		 */
-		template<class P>
-		MContainer& operator=(const MContainer<MArgumentType::DataStore, P>& mc) {
-			Base::operator=(mc);
-			return *this;
-		}
-
 		/// Destructor which triggers the appropriate cleanup action which depends on the PassingMode
-		~MContainer() {
-			this->cleanup();
-		};
+		~MContainer() override = default;
 
 		/**
 		 * @brief   Get the length of the DataStore.
@@ -93,7 +72,7 @@ namespace LLU {
 		};
 
 	private:
-		using Base = MContainerBase<MArgumentType::DataStore, PassingMode>;
+		using Base = MContainerBase<MArgumentType::DataStore>;
 		using RawContainer = typename Base::Container;
 
 		/// Make a deep copy of the raw container

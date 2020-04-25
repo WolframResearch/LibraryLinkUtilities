@@ -10,22 +10,21 @@
 
 namespace LLU {
 
-	template<class PassingMode>
-	class MContainer<MArgumentType::Image, PassingMode>;
+	template<>
+	class MContainer<MArgumentType::Image>;
 
 	/// MContainer specialization for MImage is called GenericImage
-	template<class PassingMode>
-	using GenericImage = MContainer<MArgumentType::Image, PassingMode>;
+	using GenericImage = MContainer<MArgumentType::Image>;
 
 	/**
 	 *  @brief  MContainer specialization for MImage
 	 *  @tparam PassingMode - passing policy
 	 */
-	template<class PassingMode>
-	class MContainer<MArgumentType::Image, PassingMode> : public ImageInterface, public MContainerBase<MArgumentType::Image, PassingMode> {
+	template<>
+	class MContainer<MArgumentType::Image> : public ImageInterface, public MContainerBase<MArgumentType::Image> {
 	public:
 		/// Inherit constructors from MContainerBase
-		using MContainerBase<MArgumentType::Image, PassingMode>::MContainerBase;
+		using MContainerBase<MArgumentType::Image>::MContainerBase;
 
 		/// Default constructor, the MContainer does not manage any instance of MImage.
 		MContainer() = default;
@@ -58,16 +57,8 @@ namespace LLU {
 					   : LibraryData::ImageAPI()->MImage_new2D(width, height, channels, type, colorSpace, interleaving, &tmp)) {
 				ErrorManager::throwException(ErrorName::ImageNewError);
 			}
-			this->setContainer(tmp);
+			this->reset(tmp);
 		}
-
-		/**
-		 * @brief   Create GenericImage from another GenericImage with different passing mode.
-		 * @tparam  P - some passing mode
-		 * @param   mc - different GenericImage
-		 */
-		template<class P>
-		explicit MContainer(const MContainer<MArgumentType::Image, P>& mc) : Base(mc) {}
 
 		MContainer(const MContainer& mc) = default;
 
@@ -77,22 +68,8 @@ namespace LLU {
 
 		MContainer& operator=(MContainer&&) noexcept = default;
 
-		/**
-		 * @brief   Assign a GenericImage with different passing mode.
-		 * @tparam  P - some passing mode
-		 * @param   mc - different GenericImage
-		 * @return  this
-		 */
-		template<class P>
-		MContainer& operator=(const MContainer<MArgumentType::Image, P>& mc) {
-			Base::operator=(mc);
-			return *this;
-		}
-
 		/// Destructor which triggers the appropriate cleanup action which depends on the PassingMode
-		~MContainer() override {
-			this->cleanup();
-		};
+		~MContainer() override = default;
 
 		/**
 		 * @brief   Convert this object to a new GenericImage of given datatype, optionally changing interleaving
@@ -101,12 +78,12 @@ namespace LLU {
 		 * @return  converted GenericImage with Manual passing mode
 		 * @see     <http://reference.wolfram.com/language/LibraryLink/ref/callback/MImage_convertType.html>
 		 */
-		GenericImage<Passing::Manual> convert(imagedata_t t, mbool interleavingQ) const {
+		GenericImage convert(imagedata_t t, mbool interleavingQ) const {
 			auto newImage = LibraryData::ImageAPI()->MImage_convertType(this->getContainer(), t, interleavingQ);
 			if (!newImage) {
 				ErrorManager::throwException(ErrorName::ImageNewError, "Conversion to type " + std::to_string(static_cast<int>(t)) + " failed.");
 			}
-			return newImage;
+			return {newImage, Ownership::Library};
 		}
 
 		/**
@@ -115,7 +92,7 @@ namespace LLU {
 		 * @return  converted GenericImage with Manual passing mode
 		 * @see     <http://reference.wolfram.com/language/LibraryLink/ref/callback/MImage_convertType.html>
 		 */
-		GenericImage<Passing::Manual> convert(imagedata_t t) const {
+		GenericImage convert(imagedata_t t) const {
 			return convert(t, interleavedQ());
 		}
 
@@ -179,7 +156,7 @@ namespace LLU {
 			return LibraryData::ImageAPI()->MImage_getRawData(this->getContainer());
 		}
 	private:
-		using Base = MContainerBase<MArgumentType::Image, PassingMode>;
+		using Base = MContainerBase<MArgumentType::Image>;
 		using RawContainer = typename Base::Container;
 
 		/**

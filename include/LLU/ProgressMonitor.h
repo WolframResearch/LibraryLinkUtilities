@@ -6,7 +6,6 @@
 #ifndef LLUTILS_PROGRESSMONITOR_H
 #define LLUTILS_PROGRESSMONITOR_H
 
-#include "LLU/Containers/Passing/Shared.hpp"
 #include "LLU/Containers/Tensor.h"
 
 namespace LLU {
@@ -21,7 +20,7 @@ namespace LLU {
 	 **/
 	class ProgressMonitor {
 	public:
-		using SharedTensor = Tensor<double, Passing::Shared>;
+		using SharedTensor = Tensor<double>;
 		/**
 		 * @brief Construct a new ProgressMonitor
 		 * @param sharedIndicator - shared Tensor of type \c double. If tensor length is smaller than 1, the behavior is undefined.
