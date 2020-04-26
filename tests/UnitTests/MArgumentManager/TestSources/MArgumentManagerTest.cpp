@@ -96,7 +96,7 @@ LLU_LIBRARY_FUNCTION(PredictChild) {
 // Fun with vectors - partial end explicit specializations of MArgumentManager::Getter (undocumented feature)
 namespace LLU {
 	template<typename T>
-	struct MArgumentManager::CustomType<std::vector<T>> { using CorrespondingTypes = std::tuple<NumericArray<T, Passing::Constant>>; };
+	struct MArgumentManager::CustomType<std::vector<T>> { using CorrespondingTypes = std::tuple<NumericArray<T>>; };
 
 	template<typename T>
 	struct MArgumentManager::Getter<std::vector<T>> {
@@ -115,7 +115,7 @@ namespace LLU {
 			auto dl = mngr.get<DataList<MArgumentType::DataStore>>(index);
 			std::vector<Person> res;
 			std::transform(std::begin(dl), std::end(dl), std::back_inserter(res), [](DataNode<MArgumentType::DataStore>& node) {
-				DataList<MArgumentType::MArgument, Passing::Automatic> p {node.getValue()};
+				DataList<MArgumentType::MArgument> p {node.getValue(), Passing::Automatic};
 				NodeValueIterator<MArgumentType::MArgument> it = p.begin();
 				std::string name = Argument<MArgumentType::UTF8String>(*it++).get();
 				auto age = static_cast<uint8_t>(Argument<MArgumentType::Integer>(*it++).get());

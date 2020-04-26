@@ -18,8 +18,8 @@ template<>
 constexpr double negator<double> = 1.;
 
 struct ImageNegator {
-	template<typename T, class P>
-	void operator()(LLU::Image<T, P> in, LLU::MArgumentManager& mngr) {
+	template<typename T>
+	void operator()(LLU::Image<T> in, LLU::MArgumentManager& mngr) {
 		LLU::Image<T> out {in};
 
 		std::transform(std::cbegin(in), std::cend(in), std::begin(out), [](T inElem) { return negator<T> - inElem; });

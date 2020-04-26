@@ -6,7 +6,7 @@
 
 using namespace LLU;
 
-using SharedTensorPtr = std::unique_ptr<Tensor<double, Passing::Shared>>;
+using SharedTensorPtr = std::unique_ptr<Tensor<double>>;
 
 static SharedTensorPtr tensor {};
 
@@ -24,7 +24,7 @@ EXTERN_C DLLEXPORT int loadRealArray(WolframLibraryData libData, mint Argc, MArg
 	try {
 		MArgumentManager mngr(Argc, Args, Res);
 		auto genericTensor = mngr.getGenericTensor<Passing::Shared>(0);
-		tensor = std::make_unique<Tensor<double, Passing::Shared>>(std::move(genericTensor));
+		tensor = std::make_unique<Tensor<double>>(std::move(genericTensor));
 	} catch (const LibraryLinkError& e) {
 		err = e.which();
 	} catch (...) {

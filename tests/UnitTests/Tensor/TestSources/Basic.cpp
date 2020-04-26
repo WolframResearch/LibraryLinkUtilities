@@ -53,7 +53,7 @@ LIBRARY_LINK_FUNCTION(CloneTensor) {
 		MArgumentManager mngr(libData, Argc, Args, Res);
 		mngr.operateOnTensor(0, [&mngr](auto&& t1) {
 			using T = typename std::decay_t<decltype(t1)>::value_type;
-			Tensor<T, LLU::Passing::Manual> t2 {t1};	// test copy constructor
+			Tensor<T> t2 {t1};	// test copy constructor
 			Tensor<T> t3;
 			t3 = t2;	// test copy assignment
 			mngr.setTensor(t3);

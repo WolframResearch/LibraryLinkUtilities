@@ -72,7 +72,7 @@ LIBRARY_LINK_FUNCTION(JoinDataStores) {
 
 		auto returnCopyQ = mngr.getBoolean(2);
 
-		DataList<MArgumentType::DataStore, LLU::Passing::Manual> dsOut;
+		DataList<MArgumentType::DataStore> dsOut;
 		if (returnCopyQ) {
 			dsOut.push_back(ds1.clone());
 			dsOut.push_back(ds2.clone());
@@ -235,7 +235,7 @@ LIBRARY_LINK_FUNCTION(SeparateKeysAndValues) {
 			values.push_back(listElem.getValue());
 		}
 
-		DataList<MArgumentType::DataStore> dsOut {{"Keys", keys.abandonContainer()}, {"Values", values.abandonContainer()}};
+		DataList<MArgumentType::DataStore> dsOut {{"Keys", keys}, {"Values", values}};
 		mngr.setDataList(dsOut);
 	} catch (const LLU::LibraryLinkError& e) {
 		err = e.which();
