@@ -180,22 +180,6 @@ namespace LLU {
 		}
 
 		/**
-		 *   @copydoc   MContainerBase::disown()
-		 *   @see 		<http://reference.wolfram.com/language/LibraryLink/ref/callback/MImage_disown.html>
-		 **/
-		void disownImpl() const noexcept override {
-			LibraryData::ImageAPI()->MImage_disown(this->getContainer());
-		}
-
-		/**
-		 *   @copydoc   MContainerBase::free()
-		 *   @see 		<http://reference.wolfram.com/language/LibraryLink/ref/callback/MImage_free.html>
-		 **/
-		void freeImpl() const noexcept override {
-			LibraryData::ImageAPI()->MImage_free(this->getContainer());
-		}
-
-		/**
 		 *   @copydoc   MContainerBase::pass
 		 **/
 		void passImpl(MArgument& res) const noexcept override {

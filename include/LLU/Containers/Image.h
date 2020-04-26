@@ -160,7 +160,7 @@ namespace LLU {
 		 *   @throws		ErrorName::ImageTypeError - if template parameter \b T does not match MImage data type
 		 *   @throws		ErrorName::ImageSizeError - if constructor failed to calculate image dimensions properly
 		 **/
-		explicit Image(MImage mi);
+		Image(MImage mi, Passing mode);
 
 		Image() = default;
 
@@ -235,7 +235,7 @@ namespace LLU {
 		: Image(GenericBase {nFrames, w, h, channels, ImageType<T>, cs, interleavingQ}) {}
 
 	template<typename T>
-	Image<T>::Image(MImage mi) : Image(GenericBase {mi}) {}
+	Image<T>::Image(MImage mi, Passing mode) : Image(GenericBase {mi, mode}) {}
 
 	template<typename T>
 	template<typename U>

@@ -89,18 +89,6 @@ namespace LLU {
 		}
 
 		/**
-		 * @brief   Disowning does nothing for DataStore as it cannot be shared.
-		 */
-		void disownImpl() const noexcept override {}
-
-		/**
-		 * @brief   Free the underlying raw container.
-		 */
-		void freeImpl() const noexcept override {
-			LibraryData::DataStoreAPI()->deleteDataStore(this->getContainer());
-		}
-
-		/**
 		 * @brief   Pass the raw container as result of a library function.
 		 * @param   res - MArgument that will store the result of library function
 		 */

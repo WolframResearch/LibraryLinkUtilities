@@ -98,22 +98,6 @@ namespace LLU {
 		}
 
 		/**
-		 *   @copydoc   MContainerBase::disown()
-		 *   @see 		<http://reference.wolfram.com/language/LibraryLink/ref/callback/MTensor_disown.html>
-		 **/
-		void disownImpl() const noexcept override {
-			LibraryData::API()->MTensor_disown(this->getContainer());
-		}
-
-		/**
-		 *   @copydoc   MContainerBase::free()
-		 *   @see 		<http://reference.wolfram.com/language/LibraryLink/ref/callback/MTensor_free.html>
-		 **/
-		void freeImpl() const noexcept override {
-			LibraryData::API()->MTensor_free(this->getContainer());
-		}
-
-		/**
 		 *   @copydoc   MContainerBase::pass
 		 **/
 		void passImpl(MArgument& res) const noexcept override {

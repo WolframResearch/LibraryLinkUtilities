@@ -49,7 +49,7 @@ namespace LLU {
 		 */
 		/* implicit */ MContainerBase(Container c, Passing mode) : MContainerBase(c, ownerFromPassingMode(mode)) {}
 
-		/* implicit */ MContainerBase(Container c, Ownership owner) : container {c}, ownerMode {owner} {
+		/* implicit */ MContainerBase(Container c, Ownership owner) : container {c}, owner {owner} {
 			if (!c) {
 				ErrorManager::throwException(ErrorName::CreateFromNullError);
 			}
@@ -65,7 +65,7 @@ namespace LLU {
 		 * @brief Move-constructor
 		 * @param mc - MContainerBase to be moved-from, it's internal container becomes nullptr
 		 */
-		MContainerBase(MContainerBase&& mc) noexcept : container {mc.container}, ownerMode {mc.ownerMode} {
+		MContainerBase(MContainerBase&& mc) noexcept : container {mc.container}, owner { mc.owner} {
 			mc.container = nullptr;
 		}
 
@@ -85,7 +85,7 @@ namespace LLU {
 		 * @return reference to this object
 		 */
 		MContainerBase& operator=(MContainerBase&& mc) noexcept {
-			reset(mc.container, mc.ownerMode);
+			reset(mc.container, mc.owner);
 			mc.container = nullptr;
 			return *this;
 		}
@@ -143,23 +143,55 @@ namespace LLU {
 			if (container) {
 				passImpl(res);
 			}
-			if (ownerMode == Ownership::Library) {
-				ownerMode = Ownership::LibraryLink;
+			// Per LibraryLink documentation: returning a Shared container does not affect the memory management, so we only need to cover
+			// the case where the library owns the container. In such case the ownership is passed to the LibraryLink
+			if (owner == Ownership::Library) {
+				owner = Ownership::LibraryLink;
 			}
+		}
+
+		[[nodiscard]] Ownership getOwner() const noexcept {
+			return owner;
 		}
 
 	protected:
 		/// Disown internal container if present
 		void disown() const noexcept {
-			if (container) {
-				disownImpl();
+			if (!container || !LibraryData::hasLibraryData()) {
+				return;
+			}
+			if constexpr (Type == MArgumentType::DataStore) {
+				// Disowning does nothing for DataStore as it cannot be shared.
+			} else if constexpr (Type == MArgumentType::Image) {
+				LibraryData::ImageAPI()->MImage_disown(container);
+			} else if constexpr (Type == MArgumentType::NumericArray) {
+				LibraryData::NumericArrayAPI()->MNumericArray_disown(container);
+			} else if constexpr (Type == MArgumentType::SparseArray) {
+				LibraryData::SparseArrayAPI()->MSparseArray_disown(container);
+			} else if constexpr (Type == MArgumentType::Tensor) {
+				LibraryData::API()->MTensor_disown(container);
+			} else {
+				static_assert(alwaysFalse<Type>, "Unsupported MContainer type.");
 			}
 		}
 
 		/// Free internal container if present
 		void free() const noexcept {
-			if (container) {
-				freeImpl();
+			if (!container || !LibraryData::hasLibraryData()) {
+				return;
+			}
+			if constexpr (Type == MArgumentType::DataStore) {
+				LibraryData::DataStoreAPI()->deleteDataStore(container);
+			} else if constexpr (Type == MArgumentType::Image) {
+				LibraryData::ImageAPI()->MImage_free(container);
+			} else if constexpr (Type == MArgumentType::NumericArray) {
+				LibraryData::NumericArrayAPI()->MNumericArray_free(container);
+			} else if constexpr (Type == MArgumentType::SparseArray) {
+				LibraryData::SparseArrayAPI()->MSparseArray_free(container);
+			} else if constexpr (Type == MArgumentType::Tensor) {
+				LibraryData::API()->MTensor_free(container);
+			} else {
+				static_assert(alwaysFalse<Type>, "Unsupported MContainer type.");
 			}
 		}
 
@@ -168,7 +200,7 @@ namespace LLU {
 		 * @param   newCont - new internal container
 		 */
 		void reset(Container newCont, Ownership newOwnerMode = Ownership::Library) noexcept {
-			switch (ownerMode) {
+			switch (owner) {
 				case Ownership::Shared:
 					disown();
 					break;
@@ -177,7 +209,7 @@ namespace LLU {
 					break;
 				case Ownership::LibraryLink: break;
 			}
-			ownerMode = newOwnerMode;
+			owner = newOwnerMode;
 			container = newCont;
 		}
 
@@ -192,12 +224,7 @@ namespace LLU {
 		}
 
 	private:
-
 		virtual Container cloneImpl() const = 0;
-
-		virtual void freeImpl() const = 0;
-
-		virtual void disownImpl() const = 0;
 
 		virtual mint shareCountImpl() const = 0;
 
@@ -206,7 +233,7 @@ namespace LLU {
 		/// Raw LibraryLink container (MTensor, MImage, DataStore, etc.)
 		Container container;
 
-		mutable Ownership ownerMode = Ownership::Library;
+		mutable Ownership owner = Ownership::Library;
 	};
 
 	/**

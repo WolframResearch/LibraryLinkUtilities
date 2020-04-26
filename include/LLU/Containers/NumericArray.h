@@ -114,8 +114,7 @@ namespace LLU {
 		 *
 		 * @param na
 		 */
-		template<Ownership PassingMode>
-		explicit NumericArray(MNumericArray na);
+		NumericArray(MNumericArray na, Passing mode);
 
 		/**
 		 *   @brief     Create new NumericArray from a GenericNumericArray
@@ -131,7 +130,6 @@ namespace LLU {
 		 *   @param[in]		method - conversion method to be used
 		 *   @param[in]     param - conversion tolerance
 		 **/
-		template<class P>
 		explicit NumericArray(const GenericNumericArray& other, NA::ConversionMethod method = NA::ConversionMethod::ClipRound, double param = 0.0);
 
 		/**
@@ -154,7 +152,7 @@ namespace LLU {
 		/**
 		 *    @brief	Free internal MNumericArray if necessary
 		 **/
-		~NumericArray() = default;
+		~NumericArray() override = default;
 
 		/// Default copy-assignment operator
 		NumericArray& operator=(const NumericArray&) = default;
@@ -199,11 +197,9 @@ namespace LLU {
 	}
 
 	template<typename T>
-	template<Ownership Owner>
-	NumericArray<T>::NumericArray(MNumericArray na) : NumericArray(GenericBase<Owner> {na}) {}
+	NumericArray<T>::NumericArray(MNumericArray na, Passing mode) : NumericArray(GenericBase {na, mode}) {}
 
 	template<typename T>
-	template<class P>
 	NumericArray<T>::NumericArray(const GenericNumericArray& other, NA::ConversionMethod method, double param)
 		: TypedNumericArray<T>({other.getDimensions(), other.getRank()}), GenericBase(other.convert(NumericArrayType<T>, method, param)) {}
 

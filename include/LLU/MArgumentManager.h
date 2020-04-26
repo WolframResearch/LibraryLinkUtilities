@@ -817,12 +817,12 @@ struct Managed {};
 
 	template<typename T, Passing Mode>
 	NumericArray<T> MArgumentManager::getNumericArray(size_type index) const {
-		return NumericArray<T>(MArgument_getMNumericArray(getArgs(index)), Mode);
+		return NumericArray<T> { getGenericNumericArray<Mode>(index) };
 	}
 
 	template<typename T>
 	void MArgumentManager::setNumericArray(const NumericArray<T>& na) {
-		na.passAsResult(res);
+		na.pass(res);
 	}
 
 	template<Passing Mode, class Operator, class... Args>
@@ -870,12 +870,12 @@ struct Managed {};
 
 	template<typename T, Passing Mode>
 	Tensor<T> MArgumentManager::getTensor(size_type index) const {
-		return Tensor<T>{MArgument_getMTensor(getArgs(index)), Mode};
+		return Tensor<T> { getGenericTensor<Mode>(index) };
 	}
 
 	template<typename T>
 	void MArgumentManager::setTensor(const Tensor<T>& ten) {
-		ten.passAsResult(res);
+		ten.pass(res);
 	}
 
 	template<Passing Mode, class Operator, class... Args>
@@ -905,12 +905,12 @@ struct Managed {};
 
 	template<typename T, Passing Mode>
 	Image<T> MArgumentManager::getImage(size_type index) const {
-		return Image<T>(MArgument_getMImage(getArgs(index)), Mode);
+		return Image<T> { getGenericImage<Mode>(index) };
 	}
 
 	template<typename T>
 	void MArgumentManager::setImage(const Image<T>& im) {
-		im.passAsResult(res);
+		im.pass(res);
 	}
 
 	template<Passing Mode, class Operator, class... Args>
@@ -944,12 +944,12 @@ struct Managed {};
 
 	template<MArgumentType T, Passing Mode>
 	DataList<T> MArgumentManager::getDataList(size_type index) const {
-		return DataList<T>(MArgument_getDataStore(getArgs(index)), Mode);
+		return DataList<T> {getGenericDataList<Mode>(index)};
 	}
 
 	template<MArgumentType T>
 	void MArgumentManager::setDataList(const DataList<T>& ds) {
-		ds.passAsResult(res);
+		ds.pass(res);
 	}
 
 	template<Passing Mode>
@@ -969,6 +969,7 @@ struct Managed {};
 
 	template<Passing Mode>
 	GenericDataList MArgumentManager::getGenericDataList(size_type index) const {
+		static_assert(Mode != Passing::Shared, "DataStore cannot be passed as \"Shared\".");
 		return {getDataStore(index), Mode};
 	}
 

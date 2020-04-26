@@ -125,22 +125,6 @@ namespace LLU {
 		}
 
 		/**
-		 *   @copydoc   MContainerBase::disown()
-		 *   @see 		<http://reference.wolfram.com/language/LibraryLink/ref/callback/MNumericArray_disown.html>
-		 **/
-		void disownImpl() const noexcept override {
-			LibraryData::NumericArrayAPI()->MNumericArray_disown(this->getContainer());
-		}
-
-		/**
-		 *   @copydoc   MContainerBase::free()
-		 *   @see 		<http://reference.wolfram.com/language/LibraryLink/ref/callback/MNumericArray_free.html>
-		 **/
-		void freeImpl() const noexcept override {
-			LibraryData::NumericArrayAPI()->MNumericArray_free(this->getContainer());
-		}
-
-		/**
 		 *   @copydoc   MContainerBase::pass
 		 **/
 		void passImpl(MArgument& res) const noexcept override {
