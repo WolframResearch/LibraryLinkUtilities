@@ -31,9 +31,8 @@ namespace LLU {
 		 */
 		MContainer() = default;
 
-		template<Ownership PassingMode = Ownership::Library>
-		/* implicit */ MContainer(Container c) : MContainerBase<PassingMode> {c} {
-			static_assert(PassingMode != Ownership::Shared, "DataStore cannot be Shared.");
+		MContainer(Container c, Ownership Owner) : MContainerBase {c, Owner} {
+			//static_assert(PassingMode != Ownership::Shared, "DataStore cannot be Shared.");
 		}
 
 		MContainer(const MContainer& mc) = default;

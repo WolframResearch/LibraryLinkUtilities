@@ -133,7 +133,9 @@ namespace LLU {
 		 * @brief	Create DataList wrapping around an existing DataStore with nodes of matching type
 		 * @param 	ds - DataStore
 		 */
-		explicit DataList(DataStore ds);
+		explicit DataList(DataStore ds) : DataList(ds, Ownership::LibraryLink) {};
+
+		DataList(DataStore ds, Ownership owner);
 
 		/**
 		 * @brief	Create DataList wrapping around an existing GenericDataStore with matching passing policy
@@ -379,7 +381,7 @@ namespace LLU {
 	/* Definitions od DataList methods */
 
 	template<MArgumentType T>
-	DataList<T>::DataList(DataStore ds) : GenericDataStore(ds) {
+	DataList<T>::DataList(DataStore ds, Ownership owner) : GenericDataStore(ds, owner) {
 		if (!this->getContainer()) {
 			ErrorManager::throwException(ErrorName::DLNullRawDataStore);
 		}

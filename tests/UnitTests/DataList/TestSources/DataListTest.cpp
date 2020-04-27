@@ -235,7 +235,7 @@ LIBRARY_LINK_FUNCTION(SeparateKeysAndValues) {
 			values.push_back(listElem.getValue());
 		}
 
-		DataList<MArgumentType::DataStore> dsOut {{"Keys", keys}, {"Values", values}};
+		DataList<MArgumentType::DataStore> dsOut {{"Keys", keys.abandonContainer()}, {"Values", values.abandonContainer()}};
 		mngr.setDataList(dsOut);
 	} catch (const LLU::LibraryLinkError& e) {
 		err = e.which();
@@ -298,9 +298,9 @@ LIBRARY_LINK_FUNCTION(FrameDims) {
 
 		using ValueIterator = LLU::NodeValueIterator<MArgumentType::Image>;
 		for (ValueIterator it = dsIn.begin(); it != dsIn.end(); ++it) {
-			LLU::Image<float> im {*it};
-			dims[dimsIndex++] = static_cast<std::uint64_t>(im.dimension(0));
-			dims[dimsIndex++] = static_cast<std::uint64_t>(im.dimension(1));
+			LLU::ImageView im {*it};
+			dims[dimsIndex++] = static_cast<std::uint64_t>(im.rows());
+			dims[dimsIndex++] = static_cast<std::uint64_t>(im.columns());
 		}
 		mngr.setNumericArray(dims);
 	} catch (const LLU::LibraryLinkError& e) {

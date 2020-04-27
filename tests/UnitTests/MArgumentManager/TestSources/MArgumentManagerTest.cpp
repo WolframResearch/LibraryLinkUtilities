@@ -101,7 +101,7 @@ namespace LLU {
 	template<typename T>
 	struct MArgumentManager::Getter<std::vector<T>> {
 		static std::vector<T> get(const MArgumentManager& mngr, size_type index) {
-			auto na = mngr.get<NumericArray<T, LLU::Passing::Constant>>(index);
+			auto na = mngr.get<Managed<NumericArray<T>, LLU::Passing::Constant>>(index);
 			return { std::cbegin(na), std::cend(na) };
 		}
 	};
@@ -115,7 +115,7 @@ namespace LLU {
 			auto dl = mngr.get<DataList<MArgumentType::DataStore>>(index);
 			std::vector<Person> res;
 			std::transform(std::begin(dl), std::end(dl), std::back_inserter(res), [](DataNode<MArgumentType::DataStore>& node) {
-				DataList<MArgumentType::MArgument> p {node.getValue(), Passing::Automatic};
+				DataList<MArgumentType::MArgument> p {node.getValue()};
 				NodeValueIterator<MArgumentType::MArgument> it = p.begin();
 				std::string name = Argument<MArgumentType::UTF8String>(*it++).get();
 				auto age = static_cast<uint8_t>(Argument<MArgumentType::Integer>(*it++).get());

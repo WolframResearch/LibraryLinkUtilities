@@ -251,6 +251,24 @@ namespace LLU {
 		template<class ManagedExpr, class DynamicType = ManagedExpr>
 		std::shared_ptr<DynamicType> getManagedExpressionPtr(size_type index, ManagedExpressionStore<ManagedExpr>& store) const;
 
+		/************************************ MArgument generic "getters" ************************************/
+
+		template<class Container, Passing Mode>
+		struct Managed {};
+
+		template<typename T>
+		struct RequestedTypeImpl {
+			using type = T;
+		};
+
+		template<class Container, Passing P>
+		struct RequestedTypeImpl<Managed<Container, P>> {
+			using type = Container;
+		};
+
+		template<typename T>
+		using RequestedType = typename RequestedTypeImpl<T>::type;
+
 		/**
 		 * @brief   Extract library function argument at given index and convert it from MArgument to a desired type.
 		 * @tparam  T - any type, for types not supported by default developers may specialize this function template
@@ -258,11 +276,11 @@ namespace LLU {
 		 * @return  a value of type T created from the specified input argument
 		 */
 		template<typename T>
-		T get(size_type index) const {
+		RequestedType<T> get(size_type index) const {
 			if constexpr (std::is_integral_v<T>) {
 				return getInteger<T>(index);
 			} else {
-				return Getter<T>::get(*this, index);
+				return Getter<std::remove_cv_t<T>>::get(*this, index);
 			}
 		}
 
@@ -272,8 +290,8 @@ namespace LLU {
 		 * @return  a tuple of function arguments
 		 */
 		template<typename... ArgTypes>
-		std::tuple<ArgTypes...> getTuple(size_type index = 0) const {
-			const auto indices = getOffsets(index, std::array<size_type, sizeof...(ArgTypes)> {getArgSlotCount<ArgTypes>()...});
+		std::tuple<RequestedType<ArgTypes>...> getTuple(size_type index = 0) const {
+			const auto indices = getOffsets(index, std::array<size_type, sizeof...(ArgTypes)> {getArgSlotCount<std::remove_cv_t<ArgTypes>>()...});
 			return MArgPackGetter<ArgTypes...>::template getImpl(*this, indices, std::index_sequence_for<ArgTypes...>{});
 		}
 
@@ -284,7 +302,7 @@ namespace LLU {
 		 * @return  a tuple of function arguments
 		 */
 		template<typename... ArgTypes>
-		std::tuple<ArgTypes...> getTuple(std::array<size_type, sizeof...(ArgTypes)> indices) const {
+		std::tuple<RequestedType<ArgTypes>...> getTuple(std::array<size_type, sizeof...(ArgTypes)> indices) const {
 			return MArgPackGetter<ArgTypes...>::template getImpl(*this, indices, std::index_sequence_for<ArgTypes...>{});
 		}
 
@@ -707,6 +725,7 @@ namespace LLU {
 		/********************************* End of user-defined types registration ************************************/
 
 	private:
+
 		// Efficient and memory-safe type for storing string arguments from LibraryLink
 		using LLStringPtr = std::unique_ptr<char[], decltype(st_WolframLibraryData::UTF8String_disown)>;
 
@@ -764,9 +783,9 @@ namespace LLU {
 	}
 
 #define MARGUMENTMANAGER_GENERATE_GET_SPECIALIZATION(type, getFunction) \
-	template<>\
-	inline type MArgumentManager::get<type>(size_type index) const {\
-		return getFunction(index);\
+	template<>                                                          \
+	inline type MArgumentManager::get<type>(size_type index) const {    \
+		return getFunction(index);                                      \
 	}
 
 	MARGUMENTMANAGER_GENERATE_GET_SPECIALIZATION(bool, getBoolean)
@@ -777,21 +796,30 @@ namespace LLU {
 
 #undef MARGUMENTMANAGER_GENERATE_GET_SPECIALIZATION
 
-template<class Container, Passing Mode>
-struct Managed {};
-
 #define MARGUMENTMANAGER_GENERATE_GET_SPECIALIZATION_FOR_CONTAINER(Container, tmplParameterCategory) \
-	template<tmplParameterCategory T, Passing Mode>\
-	struct MArgumentManager::Getter<Managed<Container<T>, Mode>> {\
-		static Container<T> get(const MArgumentManager& mngr, size_type index) {\
-			return mngr.get##Container<T, Mode>(index);\
-		}\
-	};\
-	template<Passing Mode>\
-	struct MArgumentManager::Getter<Managed<Generic##Container, Mode>> {\
-		static Generic##Container get(const MArgumentManager& mngr, size_type index) {\
-			return mngr.getGeneric##Container<Mode>(index);\
-		}\
+	template<tmplParameterCategory T>                                                                \
+	struct MArgumentManager::Getter<Container<T>> {                                                  \
+		static Container<T> get(const MArgumentManager& mngr, size_type index) {                     \
+			return mngr.get##Container<T, Passing::Automatic>(index);                                \
+		}                                                                                            \
+	};                                                                                               \
+	template<tmplParameterCategory T, Passing Mode>                                                  \
+	struct MArgumentManager::Getter<MArgumentManager::Managed<Container<T>, Mode>> {                 \
+		static Container<T> get(const MArgumentManager& mngr, size_type index) {                     \
+			return mngr.get##Container<T, Mode>(index);                                              \
+		}                                                                                            \
+	};                                                                                               \
+	template<>                                                                                       \
+	struct MArgumentManager::Getter<Generic##Container> {                                            \
+		static Generic##Container get(const MArgumentManager& mngr, size_type index) {               \
+			return mngr.getGeneric##Container<Passing::Automatic>(index);                            \
+		}                                                                                            \
+	};                                                                                               \
+	template<Passing Mode>                                                                           \
+	struct MArgumentManager::Getter<MArgumentManager::Managed<Generic##Container, Mode>> {           \
+		static Generic##Container get(const MArgumentManager& mngr, size_type index) {               \
+			return mngr.getGeneric##Container<Mode>(index);                                          \
+		}                                                                                            \
 	};
 
 	MARGUMENTMANAGER_GENERATE_GET_SPECIALIZATION_FOR_CONTAINER(NumericArray, typename)

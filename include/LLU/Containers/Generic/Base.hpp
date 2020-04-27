@@ -47,9 +47,11 @@ namespace LLU {
 		 * @brief Create MContainerBase from a raw container
 		 * @param c - raw LibraryLink container (MTensor, MNumericArray, etc.), passing a nullptr will trigger an exception
 		 */
-		/* implicit */ MContainerBase(Container c, Passing mode) : MContainerBase(c, ownerFromPassingMode(mode)) {}
+		MContainerBase(Container c, Passing mode) : MContainerBase(c, ownerFromPassingMode(mode)) {}
 
-		/* implicit */ MContainerBase(Container c, Ownership owner) : container {c}, owner {owner} {
+		explicit MContainerBase(Container c) : MContainerBase(c, Ownership::Library) {}
+
+		MContainerBase(Container c, Ownership owner) : container {c}, owner {owner} {
 			if (!c) {
 				ErrorManager::throwException(ErrorName::CreateFromNullError);
 			}
@@ -120,10 +122,10 @@ namespace LLU {
 		 *
 		 * @return a handle to the internal container
 		 */
-//		Container abandonContainer() const noexcept {
-//			this->setOwner(false);
-//			return container;
-//		}
+		Container abandonContainer() const noexcept {
+			owner = Ownership::LibraryLink;
+			return container;
+		}
 
 		/**
 		 *   @brief Return share count of internal container.
@@ -231,7 +233,7 @@ namespace LLU {
 		virtual void passImpl(MArgument& res) const = 0;
 
 		/// Raw LibraryLink container (MTensor, MImage, DataStore, etc.)
-		Container container;
+		Container container {};
 
 		mutable Ownership owner = Ownership::Library;
 	};
@@ -240,15 +242,13 @@ namespace LLU {
 	 * @class   MContainer
 	 * @brief   MContainer is an abstract class template for generic containers. Only specializations shall be used.
 	 * @tparam  Type - container type (see MArgumentType definition)
-	 * @tparam  PassingMode - passing policy (Shared, Manual, etc.)
 	 */
-	template<MArgumentType Type>
+	template<MArgumentType Type, typename std::enable_if_t<isContainerType<Type>, int> = 0>
 #ifdef _WIN32
 	class MContainer;	 // On Windows we cannot provide a body with static_assert because of ridiculous MSVC compiler errors (probably a bug).
 #else					 // On other platforms we get a nice, compile-time error.
 	class MContainer {
-		static_assert(Type == MArgumentType::Tensor || Type == MArgumentType::Image || Type == MArgumentType::NumericArray || Type == MArgumentType::DataStore,
-				"Trying to instantiate unspecialized MContainer template.");
+		static_assert(alwaysFalse<Type>, "Trying to instantiate unspecialized MContainer template.");
 	};
 #endif
 }

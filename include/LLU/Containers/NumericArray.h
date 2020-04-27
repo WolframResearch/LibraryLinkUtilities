@@ -120,17 +120,17 @@ namespace LLU {
 		 *   @brief     Create new NumericArray from a GenericNumericArray
 		 *   @param[in] na - generic NumericArray to be wrapped into NumericArray class
 		 *   @throws	ErrorName::NumericArrayTypeError - if the NumericArray template type \b T does not match the actual data type of the generic
-		 *NumericArray
+		 *              NumericArray
 		 **/
 		explicit NumericArray(GenericNumericArray na);
 
 		/**
 		 *   @brief         Create NumericArray from generic NumericArray
 		 *   @param[in]     other - const reference to a generic NumericArray
-		 *   @param[in]		method - conversion method to be used
+		 *   @param[in]		method - conversion method to be used, when in doubt use NA::ConversionMethod::ClipRound as default
 		 *   @param[in]     param - conversion tolerance
 		 **/
-		explicit NumericArray(const GenericNumericArray& other, NA::ConversionMethod method = NA::ConversionMethod::ClipRound, double param = 0.0);
+		explicit NumericArray(const GenericNumericArray& other, NA::ConversionMethod method, double param = 0.0);
 
 		/**
 		 * Default constructor, creates a "hollow" NumericArray that does not have underlying MNumericArray

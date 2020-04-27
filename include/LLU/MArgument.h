@@ -39,7 +39,14 @@ namespace LLU {
 	};
 
 	/**
-	 * @brief Helper template variables that is always false. Useful in metaprogramming.
+	 * @brief Helper template variable that says if an MArgumentType is a LibraryLink container type
+	 */
+	template<MArgumentType T>
+	constexpr bool isContainerType = (T == MArgumentType::Tensor || T == MArgumentType::Image || T == MArgumentType::NumericArray ||
+									  T == MArgumentType::DataStore || T == MArgumentType::SparseArray);
+
+	/**
+	 * @brief Helper template variable that is always false. Useful in metaprogramming.
 	 */
 	template<MArgumentType T>
 	constexpr bool alwaysFalse = false;

@@ -162,6 +162,10 @@ namespace LLU {
 		 **/
 		Image(MImage mi, Passing mode);
 
+		explicit Image(MImage mi) : Image(mi, Ownership::LibraryLink) {};
+
+		Image(MImage mi, Ownership owner) : GenericImage(mi, owner) {};
+
 		Image() = default;
 
 		/**
@@ -200,7 +204,7 @@ namespace LLU {
 		Image(const Image<U>& i2, bool interleavedQ);
 		
 	private:
-		using GenericBase = MContainer<MArgumentType::Image>;
+		using GenericBase = GenericImage;
 
 		/// @copydoc MContainerBase::getContainer()
 		MImage getInternal() const noexcept override {
