@@ -216,6 +216,10 @@ namespace LLU {
 				case MNumericArray_Type_Real64: return NumericArrayFromEnum<MNumericArray_Type_Real64>::typeName;
 				case MNumericArray_Type_Complex_Real32: return NumericArrayFromEnum<MNumericArray_Type_Complex_Real32>::typeName;
 				case MNumericArray_Type_Complex_Real64: return NumericArrayFromEnum<MNumericArray_Type_Complex_Real64>::typeName;
+				default:
+					// In V12.2 MNumericArray_Type_Real16 and MNumericArray_Type_Complex_Real16 have been introduced but they are not supported in the Kernel.
+					// We add a default case to avoid compiler warnings.
+					return "Undefined";
 			}
 			return "Undefined";
 		}
