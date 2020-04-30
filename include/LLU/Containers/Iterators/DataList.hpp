@@ -22,7 +22,7 @@ namespace LLU {
 	 * @tparam 	T - type of nodes in the DataList.
 	 * @tparam 	BaseIter - iterator to inherit from, it must be a bidirectional iterator that returns DataNode<T>& when dereferenced.
 	 */
-	template<MArgumentType T, typename ValType, typename BaseIter>
+	template<typename ValType, typename BaseIter>
 	class SpecialIterator {
 	public:
 		using difference_type = typename BaseIter::difference_type;
@@ -39,13 +39,14 @@ namespace LLU {
 		 * @brief Construct SpecialIterator pointing to given DataNode
 		 * @param dataNode - raw pointer to the node which the iterator should point to
 		 */
-		explicit SpecialIterator(DataNode<T>* dataNode) : baseIter(dataNode) {};
+		template<typename T>
+		explicit SpecialIterator(DataNode<T>* dataNode) : baseIter(dataNode) {}
 
 		/**
 		 * @brief Construct the SpecialIterator from an iterator of base type
 		 * @param listIterator - iterator of base type
 		 */
-		SpecialIterator(BaseIter listIterator) : baseIter(listIterator) {};
+		SpecialIterator(BaseIter listIterator) : baseIter(listIterator) {}
 
 		/**
 		 * @brief test for iterator equality
@@ -61,15 +62,6 @@ namespace LLU {
 			return !(*this == other);
 		}
 
-		/**
-		 * @brief 	Get reference to the node currently pointed to by the base iterator.
-		 * 			You should rarely need this function.
-		 * @return 	Reference to the node currently pointed to by the base iterator.
-		 */
-		DataNode<T>& getNode() {
-			return *baseIter;
-		}
-
 	protected:
 		/// an instance of the base iterator
 		BaseIter baseIter;
@@ -81,10 +73,10 @@ namespace LLU {
 	 * @tparam 	T - type of nodes in the DataList.
 	 * @tparam 	BaseIter - iterator class to pass as template argument to SpecialIterator
 	 */
-	template<MArgumentType T, typename BaseIter = typename std::list<DataNode<T>>::iterator>
-	class NodeValueIterator : public SpecialIterator<T, MType_t<T>, BaseIter> {
+	template<typename T, typename BaseIter = typename std::list<DataNode<T>>::iterator>
+	class NodeValueIterator : public SpecialIterator<T, BaseIter> {
 	public:
-		using Super = SpecialIterator<T, MType_t<T>, BaseIter>;
+		using Super = SpecialIterator<T, BaseIter>;
 		using pointer = typename Super::pointer;
 		using reference = typename Super::reference;
 
@@ -97,7 +89,7 @@ namespace LLU {
 		 * @return	Reference to the value of the currently pointed to node
 		 */
 		reference operator*() {
-			return this->baseIter->getValue();
+			return this->baseIter->value();
 		}
 
 		/**
@@ -105,7 +97,7 @@ namespace LLU {
 		 * @return	Reference to the value of the currently pointed to node
 		 */
 		const reference operator*() const {
-			return this->baseIter->getValue();
+			return this->baseIter->value();
 		}
 
 		/**
@@ -113,7 +105,7 @@ namespace LLU {
 		 * @return	Pointer to the value of the currently pointed to node
 		 */
 		pointer operator->() {
-			return this->baseIter->getValueAddress();
+			return this->baseIter->valuePtr();
 		}
 
 		/**
@@ -121,7 +113,7 @@ namespace LLU {
 		 * @return	Pointer to the value of the currently pointed to node
 		 */
 		const pointer operator->() const {
-			return this->baseIter->getValueAddress();
+			return this->baseIter->valuePtr();
 		}
 
 		/**
@@ -165,10 +157,10 @@ namespace LLU {
 	 * @tparam 	T - type of nodes in the DataList.
 	 * @tparam 	BaseIter - iterator class to pass as template argument to SpecialIterator
 	 */
-	template<MArgumentType T, typename BaseIter = typename std::list<DataNode<T>>::iterator>
-	class NodeNameIterator : public SpecialIterator<T, const std::string, BaseIter> {
+	template<typename T, typename BaseIter = typename std::list<DataNode<T>>::iterator>
+	class NodeNameIterator : public SpecialIterator<const std::string, BaseIter> {
 	public:
-		using Super = SpecialIterator<T, const std::string, BaseIter>;
+		using Super = SpecialIterator<const std::string, BaseIter>;
 		using pointer = typename Super::pointer;
 		using reference = typename Super::reference;
 
@@ -181,7 +173,7 @@ namespace LLU {
 		 * @return	Reference to the name of the currently pointed to node
 		 */
 		reference operator*() const {
-			return this->baseIter->getName();
+			return this->baseIter->name;
 		}
 
 		/**
@@ -189,7 +181,7 @@ namespace LLU {
 		 * @return	Pointer to the name of the currently pointed to node
 		 */
 		pointer operator->() const {
-			return this->baseIter->getNameAddress();
+			return std::addressof(this->baseIter->name);
 		}
 
 		/**
@@ -230,13 +222,13 @@ namespace LLU {
 	/**
 	 * @brief Reversed version of NodeNameIterator
 	 */
-	template<MArgumentType T>
+	template<typename T>
 	using ReverseNameIterator = NodeNameIterator<T, typename std::list<DataNode<T>>::reverse_iterator>;
 
 	/**
 	 * @brief Reversed version of NodeValueIterator
 	 */
-	template<MArgumentType T>
+	template<typename T>
 	using ReverseValueIterator = NodeValueIterator<T, typename std::list<DataNode<T>>::reverse_iterator>;
 
 }	 // namespace LLU

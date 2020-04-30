@@ -87,7 +87,9 @@ if(NOT TARGET LLU)
         ${LLU_SOURCE_DIR}/ErrorLog/ErrorManager.cpp
 		${LLU_SOURCE_DIR}/ErrorLog/Errors.cpp
 		${LLU_SOURCE_DIR}/ErrorLog/Logger.cpp
-		${LLU_SOURCE_DIR}/FileUtilities.cpp)
+		${LLU_SOURCE_DIR}/FileUtilities.cpp
+		${LLU_SOURCE_DIR}/TypedMArgument.cpp
+		${LLU_SOURCE_DIR}/Containers/DataStore.cpp)
 
 	#add the main library
 	add_library(LLU ${LLU_SOURCE_FILES})

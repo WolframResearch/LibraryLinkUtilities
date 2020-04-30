@@ -208,7 +208,7 @@ namespace LLU {
 		 *   @throws        ErrorName::MArgumentIndexError - if \c index is out-of-bounds
 		 *   @see			DataList<T>::DataList(DataStore ds);
 		 **/
-		template<MArgumentType T, Passing Mode = Passing::Automatic>
+		template<typename T, Passing Mode = Passing::Automatic>
 		DataList<T> getDataList(size_type index) const;
 
 		/**
@@ -400,7 +400,7 @@ namespace LLU {
 		 *   @tparam		T - type of data stored in each node of DataStore
 		 *   @param[in]     ds - const reference to DataList which should pass its internal DataStore to LibraryLink
 		 **/
-		template<MArgumentType T>
+		template<typename T>
 		void setDataList(const DataList<T>& ds);
 
 		/**
@@ -489,7 +489,7 @@ namespace LLU {
 		}
 
 		/// @copydoc setDataList
-		template<MArgumentType T>
+		template<typename T>
 		void set(const DataList<T>& ds) {
 			setDataList(ds);
 		}
@@ -796,14 +796,14 @@ namespace LLU {
 
 #undef MARGUMENTMANAGER_GENERATE_GET_SPECIALIZATION
 
-#define MARGUMENTMANAGER_GENERATE_GET_SPECIALIZATION_FOR_CONTAINER(Container, tmplParameterCategory) \
-	template<tmplParameterCategory T>                                                                \
+#define MARGUMENTMANAGER_GENERATE_GET_SPECIALIZATION_FOR_CONTAINER(Container) \
+	template<typename T>                                                                \
 	struct MArgumentManager::Getter<Container<T>> {                                                  \
 		static Container<T> get(const MArgumentManager& mngr, size_type index) {                     \
 			return mngr.get##Container<T, Passing::Automatic>(index);                                \
 		}                                                                                            \
 	};                                                                                               \
-	template<tmplParameterCategory T, Passing Mode>                                                  \
+	template<typename T, Passing Mode>                                                  \
 	struct MArgumentManager::Getter<MArgumentManager::Managed<Container<T>, Mode>> {                 \
 		static Container<T> get(const MArgumentManager& mngr, size_type index) {                     \
 			return mngr.get##Container<T, Mode>(index);                                              \
@@ -822,10 +822,10 @@ namespace LLU {
 		}                                                                                            \
 	};
 
-	MARGUMENTMANAGER_GENERATE_GET_SPECIALIZATION_FOR_CONTAINER(NumericArray, typename)
-	MARGUMENTMANAGER_GENERATE_GET_SPECIALIZATION_FOR_CONTAINER(Tensor, typename)
-	MARGUMENTMANAGER_GENERATE_GET_SPECIALIZATION_FOR_CONTAINER(Image, typename)
-	MARGUMENTMANAGER_GENERATE_GET_SPECIALIZATION_FOR_CONTAINER(DataList, MArgumentType)
+	MARGUMENTMANAGER_GENERATE_GET_SPECIALIZATION_FOR_CONTAINER(NumericArray)
+	MARGUMENTMANAGER_GENERATE_GET_SPECIALIZATION_FOR_CONTAINER(Tensor)
+	MARGUMENTMANAGER_GENERATE_GET_SPECIALIZATION_FOR_CONTAINER(Image)
+	MARGUMENTMANAGER_GENERATE_GET_SPECIALIZATION_FOR_CONTAINER(DataList)
 
 #undef MARGUMENTMANAGER_GENERATE_GET_SPECIALIZATION_FOR_CONTAINER
 
@@ -970,12 +970,12 @@ namespace LLU {
 		}
 	}
 
-	template<MArgumentType T, Passing Mode>
+	template<typename T, Passing Mode>
 	DataList<T> MArgumentManager::getDataList(size_type index) const {
-		return DataList<T> {getGenericDataList<Mode>(index)};
+		return DataList<T>(getGenericDataList<Mode>(index));
 	}
 
-	template<MArgumentType T>
+	template<typename T>
 	void MArgumentManager::setDataList(const DataList<T>& ds) {
 		ds.pass(res);
 	}

@@ -18,6 +18,7 @@
 #include "LLU/ErrorLog/ErrorManager.h"
 #include "LLU/LibraryData.h"
 #include "LLU/MArgument.h"
+#include "LLU/TypedMArgument.h"
 
 namespace LLU {
 
@@ -25,12 +26,14 @@ namespace LLU {
 	 * @class	DataNode
 	 * @brief	Wrapper over DataStoreNode structure from LibraryLink.
 	 * 			It stores node name in std::string and node value as MArgument, getters for both are provided.
-	 * @tparam 	MArgType - type of the argument stored in the node, see enum MArgumentType
 	 */
-	template<MArgumentType MArgType>
-	class DataNode {
-	public:
-		using T = MType_t<MArgType>;
+	template<typename T>
+	struct DataNode {
+		static constexpr bool isGeneric = std::is_same_v<T, TypedArgument>;
+		static_assert(isTypedArgument<T> || isGeneric, "DataNode type is not a valid MArgument wrapper type.");
+
+		const std::string name;
+		TypedArgument nodeArg;
 
 	public:
 		/**
@@ -40,35 +43,37 @@ namespace LLU {
 		explicit DataNode(DataStoreNode dsn);
 
 		/**
-		 * @brief 	Get node name
-		 * @return 	const reference to std::string holding node name
+		 * @brief 	Get node value
+		 * @return 	Returns a reference to node value
 		 */
-		const std::string& getName() const {
-			return name;
-		}
-
-		/**
-		 * @brief 	Get the address of node name
-		 * @return	Address of the string holding node name
-		 */
-		const std::string* getNameAddress() const {
-			return &name;
+		T& value() {
+			if constexpr (isGeneric) {
+				return nodeArg;
+			} else {
+				// After the constructor is done, nodeArg will always hold an object of type T, so no validation needed
+				return *std::get_if<T>(&nodeArg);
+			}
 		}
 
 		/**
 		 * @brief 	Get node value
 		 * @return 	Returns a reference to node value
 		 */
-		T& getValue() {
-			return *getValueAddress();
+		const T& value() const {
+			if constexpr (isGeneric) {
+				return nodeArg;
+			} else {
+				// After the constructor is done, nodeArg will always hold an object of type T, so no validation needed
+				return *std::get_if<T>(&nodeArg);
+			}
 		}
 
-		/**
-		 * @brief 	Get the address of node value
-		 * @return	Address of the node value
-		 */
-		T* getValueAddress() {
-			return Argument<MArgType>(nodeArg).getAddress();
+		T* valuePtr() {
+			return std::addressof(value());
+		}
+
+		const T* valuePtr() const {
+			return std::addressof(value());
 		}
 
 		/**
@@ -76,18 +81,25 @@ namespace LLU {
 		 * 			This is useful when working on a "generic" DataList of type MArgumentType::MArgument, otherwise it should always return MArgType
 		 * @return	Actual type of node value
 		 */
-		MArgumentType getRawType() {
-			return static_cast<MArgumentType>(LibraryData::DataStoreAPI()->DataStoreNode_getDataType(rawNode));
+		static MArgumentType valueType() noexcept {
+			if constexpr (isGeneric) {
+				return MArgumentType::MArgument;
+			} else {
+				typedArgumentIndex<T>;
+			}
 		}
 
-		/// static data member holding the template parameter
-		static constexpr MArgumentType type = MArgType;
-
-	private:
-		std::string name;
-		MArgument nodeArg {};
-		DataStoreNode rawNode {};
+		template <std::size_t N>
+		decltype(auto) get() const {
+			static_assert(N < 2, "Bad structure binding attempt to a DataNode.");
+			if constexpr (N == 0) {
+				return name;
+			} else {
+				return (value());
+			}
+		}
 	};
+
 
 	/**
 	 * @class	DataList
@@ -97,7 +109,7 @@ namespace LLU {
 	 * @tparam 	T - type of data stored in each node, see the enum type \c MArgumentType
 	 * @tparam 	PassingMode - policy for memory management of the internal container
 	 */
-	template<MArgumentType T>
+	template<typename T>
 	class DataList : public MContainer<MArgumentType::DataStore> {
 
 		/// private proxy list with top-level wrappers of each node of the internal DataStore
@@ -108,34 +120,11 @@ namespace LLU {
 		using const_iterator = typename decltype(proxyList)::const_iterator;
 		using reverse_iterator = typename decltype(proxyList)::reverse_iterator;
 		using const_reverse_iterator = typename decltype(proxyList)::const_reverse_iterator;
-		using value_type = MType_t<T>;
+		using value_type = T;
 		using GenericDataStore = MContainer<MArgumentType::DataStore>;
 
-		template<MArgumentType U>
-		static constexpr bool ValidNodeTypeQ = (T == MArgumentType::MArgument || U == T);
-
-		template<MArgumentType MArgT>
-		using ValidNodeType = std::enable_if_t<ValidNodeTypeQ<MArgT>>;
-
-		template<MArgumentType MArgT>
-		using InvalidNodeType = std::enable_if_t<!ValidNodeTypeQ<MArgT>>;
-
-		template<MArgumentType MArgT>
-		using IsMArgument = std::enable_if_t<MArgT == MArgumentType::MArgument>;
-
 	public:
-		/**
-		 * @brief	Create empty DataList
-		 */
-		DataList() : DataList(LibraryData::DataStoreAPI()->createDataStore()) {}
-
-		/**
-		 * @brief	Create DataList wrapping around an existing DataStore with nodes of matching type
-		 * @param 	ds - DataStore
-		 */
-		explicit DataList(DataStore ds) : DataList(ds, Ownership::LibraryLink) {};
-
-		DataList(DataStore ds, Ownership owner);
+		using GenericDataStore::GenericDataStore;
 
 		/**
 		 * @brief	Create DataList wrapping around an existing GenericDataStore with matching passing policy
@@ -160,38 +149,26 @@ namespace LLU {
 		 * @tparam 	P - arbitrary passing policy
 		 * @param 	other - a DataList with matching node type
 		 */
-		DataList(const DataList<T>& other);
+		DataList(const DataList<T>& other) = default;
 
 		/**
 		 *   @brief         Copy-assignment operator with passing mode change
 		 *   @param[in]     other - const reference to a DataList of matching type
 		 **/
-		DataList& operator=(const DataList<T>& other) {
-			GenericDataStore::operator=(other);
-			proxyList = other.proxyList;
-			return *this;
-		}
+		DataList& operator=(const DataList<T>& other) = default;
 
 		/**
 		 * @brief	Create a DataList by moving contents of another DataList
 		 * @param 	other - DataList to move from
 		 */
-		DataList(DataList&& other) noexcept : GenericDataStore(std::move(other)), proxyList(std::move(other.proxyList)) {};
+		DataList(DataList&& other) noexcept = default;
 
 		/**
 		 * @brief	Move-assignment operator. Move contents of another DataList into this one.
 		 * @param 	other - DataList to move from
 		 * @return	*this
 		 */
-		DataList& operator=(DataList&& other) noexcept;
-
-
-		/**
-		 * @brief	Perform a deep copy of the DataList returning a new DataList with Manual passing policy
-		 */
-		DataList<T> clone() const {
-			return DataList<T>(GenericDataStore::clone());
-		}
+		DataList& operator=(DataList&& other) noexcept = default;
 
 		/**
 		 * @brief 	Get size of the DataList, which is the number of nodes in the list
@@ -270,86 +247,26 @@ namespace LLU {
 			return proxyList.rend();
 		}
 
-		/**
-		 * @brief 	Add new node to the DataList of type MArgument. This overload is considered only for "generic" DataLists.
-		 * @tparam 	U - dummy template parameter, should never be explicitly specified
-		 * @param 	nodeData - actual data to store in the new node
-		 * @param 	MArgT - type of value stored in \c nodeData. It must be passed because the low-level DataStore API requires it.
-		 * @return	nothing
-		 */
-		template<MArgumentType U = T>
-		IsMArgument<U> push_back(MArgument& nodeData, MArgumentType MArgT);
-
-		/**
-		 * @brief 	Add new node to the DataList of type MArgument. This overload is considered only for "generic" DataLists.
-		 * @tparam 	U - dummy template parameter, should never be explicitly specified
-		 * @param 	name - name to be stored in the new node
-		 * @param 	nodeData - actual data to store in the new node
-		 * @param 	MArgT - type of value stored in \c nodeData. It must be passed because the low-level DataStore API requires it.
-		 * @return 	nothing
-		 */
-		template<MArgumentType U = T>
-		IsMArgument<U> push_back(const std::string& name, MArgument& nodeData, MArgumentType MArgT);
-
-		/**
-		 * @brief	Add new node to the DataList. This overload is considered only if T is MArgumentType::MArgument or MArgT is equal to T.
-		 * @tparam 	MArgT - type of MArgument data
-		 * @param 	nodeData - actual data to store in the new node
-		 * @return	nothing
-		 */
-		template<MArgumentType MArgT>
-		ValidNodeType<MArgT> push_back(const MType_t<MArgT>& nodeData);
-
-		/**
-		 * @brief	Issue compile-time error message. This overload is considered only if T is not MArgumentType::MArgument and MArgT is not equal to T.
-		 * @tparam 	MArgT - type of MArgument data
-		 */
-		template<MArgumentType MArgT>
-		InvalidNodeType<MArgT> push_back(const MType_t<MArgT>&) {
-			static_assert(alwaysFalse<MArgT>, "Trying to add DataList node of incorrect type.");
+		void push_back(DataNode<value_type> node) {
+			push_back("", node.getValue());
 		}
 
-		/**
-		 * @brief 	Add new named node to the DataList. This overload is considered only if T is MArgumentType::MArgument or MArgT is equal to T.
-		 * @tparam 	MArgT - type of MArgument data
-		 * @param 	name - name for the new node
-		 * @param 	nodeData - actual data to store in the new node
-		 * @return 	nothing
-		 */
-		template<MArgumentType MArgT>
-		ValidNodeType<MArgT> push_back(const std::string& name, const MType_t<MArgT>& nodeData);
-
-		/**
-		 * @brief	Issue compile-time error message. This overload is considered only if T is not MArgumentType::MArgument and MArgT is not equal to T.
-		 * @tparam 	MArgT - type of MArgument data
-		 */
-		template<MArgumentType MArgT>
-		InvalidNodeType<MArgT> push_back(const std::string&, const MType_t<MArgT>&) {
-			static_assert(alwaysFalse<MArgT>, "Trying to add DataList node of incorrect type.");
-		}
-
-		template<MArgumentType MArgT>
-		ValidNodeType<MArgT> push_back(const MContainer<MArgT>& nodeData) {
-			push_back("", nodeData);
-		}
-
-		template<MArgumentType MArgT>
-		ValidNodeType<MArgT> push_back(const std::string& name, const MContainer<MArgT>& nodeData) {
-			push_back<MArgT>(name, nodeData.abandonContainer());
+		void push_back(const std::string& name, DataNode<value_type> node) {
+			push_back(name, node.getValue());
 		}
 
 		/**
 		 * @brief 	Add new node to the DataList.
 		 * @param 	nodeData - actual data to store in the new node
 		 */
-		void push_back(const value_type& nodeData);
+		void push_back(value_type nodeData);
 
 		/**
 		 * @brief 	Add new named node to the DataList.
 		 * @param 	name - name for the new node
 		 * @param 	nodeData - actual data to store in the new node
 		 */
-		void push_back(const std::string& name, const value_type& nodeData);
+		void push_back(const std::string& name, value_type nodeData);
 
 	private:
 		/**
@@ -359,65 +276,52 @@ namespace LLU {
 	};
 
 	/* Definitions od DataNode methods */
-
-	template<MArgumentType MArgType>
-	DataNode<MArgType>::DataNode(DataStoreNode dsn) : rawNode(dsn) {
-		if (!rawNode) {
-			ErrorManager::throwException(ErrorName::DLNullRawNode);
-		}
-		if (MArgType != MArgumentType::MArgument && MArgType != getRawType()) {
-			ErrorManager::throwException(ErrorName::DLInvalidNodeType);
-		}
-		char* rawName = nullptr;
-		LibraryData::DataStoreAPI()->DataStoreNode_getName(rawNode, &rawName);
-		if (rawName != nullptr) {
-			name = rawName;
-		}
-		if (LibraryData::DataStoreAPI()->DataStoreNode_getData(rawNode, &nodeArg) != 0) {
+	template<typename T>
+	DataNode<T>::DataNode(DataStoreNode dsn) : name {
+			  [&] {
+				  if (!dsn) {
+					  ErrorManager::throwException(ErrorName::DLNullRawNode);
+				  }
+				  char* rawName = nullptr;
+				  LibraryData::DataStoreAPI()->DataStoreNode_getName(dsn, &rawName);
+				  return rawName? std::string {rawName} : std::string {};
+			  }()
+		  }
+	{
+		MArgument m;
+		if (LibraryData::DataStoreAPI()->DataStoreNode_getData(dsn, &m) != 0) {
 			ErrorManager::throwException(ErrorName::DLGetNodeDataError);
+		}
+		nodeArg = fromMArgument(m, static_cast<MArgumentType>(LibraryData::DataStoreAPI()->DataStoreNode_getDataType(dsn)));
+		if constexpr (!isGeneric) {
+			if (!std::holds_alternative<T>(nodeArg)) {
+				ErrorManager::throwException(ErrorName::DLInvalidNodeType);
+			}
 		}
 	}
 
 	/* Definitions od DataList methods */
 
-	template<MArgumentType T>
-	DataList<T>::DataList(DataStore ds, Ownership owner) : GenericDataStore(ds, owner) {
-		if (!this->getContainer()) {
-			ErrorManager::throwException(ErrorName::DLNullRawDataStore);
-		}
-		makeProxy();
-	}
-
-	template<MArgumentType T>
+	template<typename T>
 	DataList<T>::DataList(GenericDataStore gds) : GenericDataStore(std::move(gds)) {
-		if (!this->getContainer()) {
-			ErrorManager::throwException(ErrorName::DLNullRawDataStore);
-		}
 		makeProxy();
 	}
 
-	template<MArgumentType T>
+	template<typename T>
 	DataList<T>::DataList(std::initializer_list<value_type> initList) : DataList() {
 		for (auto&& elem : initList) {
 			push_back(elem);
 		}
 	}
 
-	template<MArgumentType T>
+	template<typename T>
 	DataList<T>::DataList(std::initializer_list<std::pair<std::string, value_type>> initList) : DataList() {
 		for (auto&& elem : initList) {
 			push_back(elem.first, elem.second);
 		}
 	}
 
-	template<MArgumentType T>
-	auto DataList<T>::operator=(DataList&& other) noexcept -> DataList& {
-		GenericDataStore::operator=(std::move(other));
-		proxyList = std::move(other.proxyList);
-		return *this;
-	}
-
-	template<MArgumentType T>
+	template<typename T>
 	void DataList<T>::makeProxy() {
 		auto size = LibraryData::DataStoreAPI()->DataStore_getLength(this->getContainer());
 		auto currentNode = LibraryData::DataStoreAPI()->DataStore_getFirstNode(this->getContainer());
@@ -427,48 +331,27 @@ namespace LLU {
 		}
 	}
 
-	template<MArgumentType T>
-	template<MArgumentType U>
-	auto DataList<T>::push_back(MArgument& nodeData, MArgumentType MArgT) -> IsMArgument<U> {
-		push_back("", nodeData, MArgT);
+	template<typename T>
+	void DataList<T>::push_back(value_type nodeData) {
+		push_back("", std::move(nodeData));
 	}
 
-	template<MArgumentType T>
-	template<MArgumentType U>
-	auto DataList<T>::push_back(const std::string& name, MArgument& nodeData, MArgumentType MArgT) -> IsMArgument<U> {
-		Argument<MArgumentType::MArgument>(nodeData).addToDataStore(this->getContainer(), name, MArgT);
+	template<typename T>
+	void DataList<T>::push_back(const std::string& name, value_type nodeData) {
+		GenericDataStore::push_back(name, TypedArgument {std::move(nodeData)});
 		proxyList.emplace_back(this->getLastNode());
 	}
 
-	template<MArgumentType T>
-	template<MArgumentType MArgT>
-	auto DataList<T>::push_back(const MType_t<MArgT>& nodeData) -> ValidNodeType<MArgT> {
-		push_back<MArgT>("", nodeData);
-	}
+} /* namespace LLU */
 
-	template<MArgumentType T>
-	template<MArgumentType MArgT>
-	auto DataList<T>::push_back(const std::string& name, const MType_t<MArgT>& nodeData) -> ValidNodeType<MArgT> {
-		Argument<MArgT>::addDataStoreNode(this->getContainer(), name, nodeData);
-		proxyList.emplace_back(this->getLastNode());
-	}
+namespace std {
+	template<typename T>
+	struct tuple_size<LLU::DataNode<T>> : std::integral_constant<std::size_t, 2> {};
 
-	template<MArgumentType T>
-	void DataList<T>::push_back(const DataList::value_type& nodeData) {
-		push_back("", nodeData);
-	}
-
-	template<MArgumentType T>
-	void DataList<T>::push_back(const std::string& name, const DataList::value_type& nodeData) {
-		Argument<T>::addDataStoreNode(this->getContainer(), name, nodeData);
-		proxyList.emplace_back(this->getLastNode());
-	}
-
-	template<MArgumentType T>
-	DataList<T>::DataList(const DataList<T>& other) : GenericDataStore(other) {
-		makeProxy();
-	}
-
+	template<std::size_t N, typename T>
+	struct tuple_element<N, LLU::DataNode<T>> {
+		using type = decltype(std::declval<LLU::DataNode<T>>().template get<N>());
+	};
 }
 
 #endif	  // LLUTILS_DATALIST_H

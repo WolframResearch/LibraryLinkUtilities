@@ -6,7 +6,13 @@
 #ifndef LLU_INCLUDE_LLU_CONTAINERS_GENERIC_DATASTORE
 #define LLU_INCLUDE_LLU_CONTAINERS_GENERIC_DATASTORE
 
-#include "LLU/Containers/Generic/Base.hpp"
+#include <variant>
+
+#include <LLU/Containers/Generic/Base.hpp>
+#include <LLU/Containers/Generic/Image.hpp>
+#include <LLU/Containers/Generic/NumericArray.hpp>
+#include <LLU/Containers/Generic/Tensor.hpp>
+#include <LLU/MArgument.h>
 
 namespace LLU {
 
@@ -15,6 +21,10 @@ namespace LLU {
 
 	/// MContainer specialization for DataStore is called GenericDataList
 	using GenericDataList = MContainer<MArgumentType::DataStore>;
+
+	using TypedArgument =
+		std::variant<std::monostate, bool, mint, double, std::complex<double>, MContainer<MArgumentType::Tensor>, MSparseArray,
+					 MContainer<MArgumentType::NumericArray>, MContainer<MArgumentType::Image>, std::string_view, MContainer<MArgumentType::DataStore>>;
 
 	/**
 	 *  @brief  MContainer specialization for DataStore
@@ -27,13 +37,11 @@ namespace LLU {
 		using MContainerBase<MArgumentType::DataStore>::MContainerBase;
 
 		/**
-		 * @brief   Default constructor, the MContainer does not manage any instance of DataStore.
+		 * @brief   Default constructor, creates empty DataStore owned by the Library
 		 */
-		MContainer() = default;
+		MContainer() : MContainer(LibraryData::DataStoreAPI()->createDataStore()) {}
 
-		MContainer(Container c, Ownership Owner) : MContainerBase {c, Owner} {
-			//static_assert(PassingMode != Ownership::Shared, "DataStore cannot be Shared.");
-		}
+		MContainer(Container c, Ownership owner);
 
 		MContainer(const MContainer& mc) = default;
 
@@ -69,6 +77,12 @@ namespace LLU {
 		DataStoreNode getLastNode() {
 			return LibraryData::DataStoreAPI()->DataStore_getLastNode(this->getContainer());
 		};
+
+		void push_back(TypedArgument node) {
+			push_back("", std::move(node));
+		}
+
+		void push_back(const std::string& name, TypedArgument node);
 
 	private:
 		using Base = MContainerBase<MArgumentType::DataStore>;
