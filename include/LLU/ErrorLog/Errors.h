@@ -110,7 +110,7 @@ namespace LLU {
 		extern const std::string DLNullRawNode;			 ///< DataStoreNode passed to Node wrapper was null
 		extern const std::string DLInvalidNodeType;		 ///< DataStoreNode passed to Node wrapper carries data of invalid type
 		extern const std::string DLGetNodeDataError;	 ///< DataStoreNode_getData failed
-		extern const std::string DLNullRawDataStore;	 ///< DataStore passed to DataList was null
+		extern const std::string DLSharedDataStore;	 	 ///< Trying to create a Shared DataStore. DataStore can only be passed as Automatic or Manual.
 		extern const std::string DLPushBackTypeError;	 ///< Element to be added to the DataList has incorrect type
 
 		// MArgument errors:

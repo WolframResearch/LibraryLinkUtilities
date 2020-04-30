@@ -79,7 +79,7 @@ namespace LLU {
 		LLU_DEFINE_ERROR_NAME(DLNullRawNode);
 		LLU_DEFINE_ERROR_NAME(DLInvalidNodeType);
 		LLU_DEFINE_ERROR_NAME(DLGetNodeDataError);
-		LLU_DEFINE_ERROR_NAME(DLNullRawDataStore);
+		LLU_DEFINE_ERROR_NAME(DLSharedDataStore);
 		LLU_DEFINE_ERROR_NAME(DLPushBackTypeError);
 
 		LLU_DEFINE_ERROR_NAME(ArgumentCreateNull);
