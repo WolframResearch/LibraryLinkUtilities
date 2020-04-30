@@ -68,10 +68,10 @@ namespace LLU {
 	// Teach LLU how to send Person object as result of the library function. DataStore is used as the actual MArgument type.
 	template<>
 	void MArgumentManager::set<Person>(const Person& p) {
-		DataList<MArgumentType::MArgument> personDS;
-		personDS.push_back<MArgumentType::UTF8String>(const_cast<char*>(p.name.c_str()));
-		personDS.push_back<MArgumentType::Integer>(p.age);
-		personDS.push_back<MArgumentType::Real>(p.height);
+		DataList<LLU::TypedArgument> personDS;
+		personDS.push_back(p.name);
+		personDS.push_back(static_cast<mint>(p.age));
+		personDS.push_back(p.height);
 		set(personDS);
 	}
 }
@@ -107,19 +107,19 @@ namespace LLU {
 	};
 
 	template<>
-	struct MArgumentManager::CustomType<std::vector<Person>> { using CorrespondingTypes = std::tuple<DataList<MArgumentType::MArgument>>; };
+	struct MArgumentManager::CustomType<std::vector<Person>> { using CorrespondingTypes = std::tuple<DataList<LLU::TypedArgument>>; };
 
 	template<>
 	struct MArgumentManager::Getter<std::vector<Person>> {
 		static std::vector<Person> get(const MArgumentManager& mngr, size_type index) {
-			auto dl = mngr.get<DataList<MArgumentType::DataStore>>(index);
+			auto dl = mngr.get<DataList<LLU::GenericDataList>>(index);
 			std::vector<Person> res;
-			std::transform(std::begin(dl), std::end(dl), std::back_inserter(res), [](DataNode<MArgumentType::DataStore>& node) {
-				DataList<MArgumentType::MArgument> p {node.getValue()};
-				NodeValueIterator<MArgumentType::MArgument> it = p.begin();
-				std::string name = Argument<MArgumentType::UTF8String>(*it++).get();
-				auto age = static_cast<uint8_t>(Argument<MArgumentType::Integer>(*it++).get());
-				double height = Argument<MArgumentType::Real>(*it++).get();
+			std::transform(std::begin(dl), std::end(dl), std::back_inserter(res), [](auto& node) {
+				DataList<LLU::TypedArgument> d(node.value());
+				NodeValueIterator<LLU::TypedArgument> it {d.begin()};
+				std::string name = std::get<std::string_view>(*it++).data();
+				auto age = static_cast<uint8_t>(std::get<mint>(*it++));
+				double height = std::get<double>(*it++);
 				return Person { std::move(name), age, height };
 			});
 			return res;

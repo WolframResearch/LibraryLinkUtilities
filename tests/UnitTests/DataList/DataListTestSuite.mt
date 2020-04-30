@@ -43,9 +43,9 @@ TestExecute[
 	tensor = RandomReal[1, {3, 2}];
 	numeric = NumericArray[RandomInteger[{0, 255}, {2, 3}], "UnsignedInteger8"];
 	image = RandomImage[1, {2, 3}, ColorSpace -> "CMYK"];
-	(*sparse = SparseArray[{{1, 1} -> 1, {2, 2} -> 2, {3, 3} -> 3, {1, 3} -> 4}];*)
-	ds0 = Developer`DataStore[bool, int, real, complex, string, tensor, (*numeric,*) image(*, sparse*)];
-	ds1 = Developer`DataStore[bool, int, real, complex, string, tensor, (*numeric,*) image, (*sparse,*) ds0];
+	sparse = SparseArray[{{1, 1} -> 1, {2, 2} -> 2, {3, 3} -> 3, {1, 3} -> 4}];
+	ds0 = Developer`DataStore[bool, int, real, complex, tensor, sparse, numeric, image, string];
+	ds1 = Developer`DataStore[bool, int, real, complex, string, tensor, sparse, numeric, image, string, ds0];
 	ds2 = Developer`DataStore @@ Thread[Take[Alphabet[], Length[ds1]] -> List @@ ds1];
 	ds3 = ArrayReshape[RandomWord[10], {2, 5}] /. List -> Developer`DataStore;
 ];
@@ -295,6 +295,14 @@ Test[
 ];
 
 Test[
+	ReverseListOfStrings[Developer`DataStore["alpha", "beta", "gamma"]]
+	,
+	Developer`DataStore["ahpla", "ateb", "ammag"]
+	,
+	TestID -> "DataListTestSuite-20200429-S3Y8K2"
+];
+
+Test[
 	SeparateKeysAndValues[Developer`DataStore["a" -> 1 + 2.5 * I, "b" -> -3. - 6.I, 2I]]
 	,
 	Developer`DataStore["Keys" -> Developer`DataStore["a", "b", ""], "Values" -> Developer`DataStore[1. + 2.5 * I, -3. - 6.I, 2.I]]
@@ -421,8 +429,8 @@ Test[
 ];
 
 (* Timing tests *)
-Test[
-	los = RandomWord["CommonWords", 300000];
+VerificationTest[
+	los = RandomWord["CommonWords", 100000];
 	ds = Developer`DataStore @@ los;
 	{timeWSTP, r1} = RepeatedTiming[ReverseListOfStringsWSTP[los]];
 	{timeDataStore, r2} = RepeatedTiming[ReverseListOfStringsLibraryLink[ds]];
@@ -430,9 +438,7 @@ Test[
 	Print["Time when sending list via WSTP: " <> ToString[timeWSTP] <> "s."];
 	Print["Time when sending list via DataStore: " <> ToString[timeDataStore] <> "s."];
 	Print["Time when sending list via DataList: " <> ToString[timeDataList] <> "s."];
-	r1
-	,
-	List @@ r3
+	r1 == List @@ r2 == List @@ r3
 	,
 	TestID -> "DataListTestSuite-20180906-W5N4V0"
 ];
@@ -478,7 +484,7 @@ Test[
 	PassDataStore = `LLU`PacletFunctionLoad["PassDataStore", {{"DataStore", "Manual"}, "Boolean"}, "DataStore"];
 	MemoryLeakTest[PassDataStore[ds0, #]] & /@ {False, True}
 	,
-	{ 0, n_ } /; n > 0  (* when copy is made we expect a leak, because the C++ code is not aware of the "Manual" passing of the input DataStore *)
+	{ 0, n_ } /; n > 0   (* when copy is made we expect a leak, because the C++ code is not aware of the "Manual" passing of the input DataStore *)
 	,
 	TestID -> "DataListTestSuite-20180908-C4W5X3"
 	,

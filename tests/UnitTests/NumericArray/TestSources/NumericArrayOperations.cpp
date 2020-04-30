@@ -46,14 +46,14 @@ LIBRARY_LINK_FUNCTION(CreateEmptyMatrix) {
 }
 
 struct MoveTester {
-	LLU::DataList<LLU::MArgumentType::NumericArray>& result;
+	LLU::DataList<LLU::GenericNumericArray>& result;
 
 	template<typename T>
 	void operator()(NumericArray<T> na) {
 		auto na2 {std::move(na)};	 // test move constructor
 		NumericArray<T> na3;
-		na3 = std::move(na2);	 // test move assignment, but this will only move when P is Passing::Manual, otherwise it has to make a copy
-		result.push_back(na3);
+		na3 = std::move(na2);	 // test move assignment
+		result.push_back(std::move(na3));
 	}
 };
 
@@ -61,7 +61,7 @@ LIBRARY_LINK_FUNCTION(echoNumericArrays) {
 	auto err = ErrorCode::NoError;
 	try {
 		MArgumentManager mngr(Argc, Args, Res);
-		LLU::DataList<LLU::MArgumentType::NumericArray> result;
+		LLU::DataList<LLU::GenericNumericArray> result;
 
 		MoveTester mt {result};
 
@@ -124,7 +124,7 @@ LIBRARY_LINK_FUNCTION(newNumericArray) {
 }
 
 struct CopyTester {
-	LLU::DataList<LLU::MArgumentType::NumericArray>& result;
+	LLU::DataList<LLU::GenericNumericArray>& result;
 
 	template<typename T>
 	void operator()(NumericArray<T> na) {
@@ -140,7 +140,7 @@ LIBRARY_LINK_FUNCTION(cloneNumericArrays) {
 	auto err = ErrorCode::NoError;
 	try {
 		MArgumentManager mngr(Argc, Args, Res);
-		LLU::DataList<LLU::MArgumentType::NumericArray> result;
+		LLU::DataList<LLU::GenericNumericArray> result;
 
 		CopyTester mt {result};
 
@@ -317,7 +317,7 @@ LIBRARY_LINK_FUNCTION(TestDimensions2) {
 	auto err = ErrorCode::NoError;
 	try {
 		MArgumentManager mngr(Argc, Args, Res);
-		LLU::DataList<LLU::MArgumentType::NumericArray> naList;
+		LLU::DataList<LLU::GenericNumericArray> naList;
 
 		std::vector<std::vector<mint>> dimsList {{0}, {3}, {3, 0}, {3, 2}, {3, 2, 0}, {3, 2, 4}};
 

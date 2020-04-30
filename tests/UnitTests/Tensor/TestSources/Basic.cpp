@@ -83,13 +83,13 @@ LIBRARY_LINK_FUNCTION(TestDimensions2) {
 	auto err = ErrorCode::NoError;
 	try {
 		MArgumentManager mngr(libData, Argc, Args, Res);
-		DataList<MArgumentType::Tensor> naList;
+		DataList<GenericTensor> naList;
 
 		std::vector<std::vector<mint>> dimsList {{0}, {3}, {3, 0}, {3, 2}, {3, 2, 0}, {3, 2, 4}};
 
 		for (auto& dims : dimsList) {
 			Tensor<double> na(0.0, dims);
-			naList.push_back(na);
+			naList.push_back(std::move(na));
 		}
 
 		mngr.setDataList(naList);

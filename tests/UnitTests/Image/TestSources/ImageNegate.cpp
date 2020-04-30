@@ -37,12 +37,12 @@ LLU_LIBRARY_FUNCTION(ImageNegate) {
 }
 
 LLU_LIBRARY_FUNCTION(NegateImages) {
-	auto imgList = mngr.getDataList<MArgumentType::Image>(0);
-	LLU::DataList<MArgumentType::Image> outList;
+	auto imgList = mngr.getDataList<LLU::GenericImage>(0);
+	LLU::DataList<LLU::GenericImage> outList;
 	for (auto&& node : imgList) {
-		MImage img = node.getValue();
+		auto& img = node.value();
 		LLU::asTypedImage(img, ImageNegator{});
-		outList.push_back(img);
+		outList.push_back(std::move(img));
 	}
 	mngr.set(outList);
 }
