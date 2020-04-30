@@ -93,19 +93,12 @@ namespace LLU {
 		}
 
 		/// Default destructor
-		virtual ~MContainerBase() {
-			reset(nullptr);
-		}
-
-		/**
-		 * @brief Clone the raw container, if it's present
-		 * @return cloned container or nullptr if there is no internal container
-		 */
-		Container clone() const {
-			if (container == nullptr) {
-				return nullptr;
+		virtual ~MContainerBase() noexcept {
+			if (owner == Ownership::Shared) {
+				disown();
+			} else if (owner == Ownership::Library) {
+				free();
 			}
-			return cloneImpl();
 		}
 
 		/**
@@ -157,6 +150,17 @@ namespace LLU {
 		}
 
 	protected:
+		/**
+		 * @brief Clone the raw container, if it's present
+		 * @return cloned container or nullptr if there is no internal container
+		 */
+		Container clone() const {
+			if (container == nullptr) {
+				return nullptr;
+			}
+			return cloneImpl();
+		}
+
 		/// Disown internal container if present
 		void disown() const noexcept {
 			if (!container || !LibraryData::hasLibraryData()) {
