@@ -128,10 +128,10 @@ struct CopyTester {
 
 	template<typename T>
 	void operator()(NumericArray<T> na) {
-		NumericArray<T> na2 {na};	   // test copy constructor
+		NumericArray<T> na2 {na.clone()};
 		NumericArray<T> na3;
-		na3 = na2;	  // test copy assignment
-		result.push_back(na3);
+		na3 = na2.clone();
+		result.push_back(na3.clone());
 	}
 };
 
@@ -323,7 +323,7 @@ LIBRARY_LINK_FUNCTION(TestDimensions2) {
 
 		for (auto& dims : dimsList) {
 			NumericArray<float> na(0.0f, dims);
-			naList.push_back(na);
+			naList.push_back(std::move(na));
 		}
 		mngr.setDataList(naList);
 	} catch (const LibraryLinkError& e) {

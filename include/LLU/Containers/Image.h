@@ -164,45 +164,18 @@ namespace LLU {
 
 		explicit Image(MImage mi) : Image(mi, Ownership::LibraryLink) {};
 
-		Image(MImage mi, Ownership owner) : GenericImage(mi, owner) {};
+		Image(MImage mi, Ownership owner) : Image(GenericImage(mi, owner)) {};
 
 		Image() = default;
 
-		/**
-		 *   @brief         Copy constructor
-		 *   @param[in]     other - const reference to an Image
-		 **/
-		Image(const Image& other) = default;
+		Image clone() const;
 
-		/**
-		 *   @brief         Move constructor
-		 *   @param[in]     other - rvalue reference to an Image
-		 **/
-		Image(Image&& other) noexcept = default;
-
-		Image& operator=(const Image&) = default;
-
-		Image& operator=(Image&&) noexcept = default;
-
-		~Image() override = default;
-
-		/**
-		 *   @brief         Copy constructor with type conversion
-		 *   @tparam		U - any type that Image supports
-		 *   @param[in]     i2 - const reference to an Image
-		 **/
 		template<typename U>
-		explicit Image(const Image<U>& i2);
+		Image<U> convert(bool interleaved) const;
 
-		/**
-		 *   @brief         Copy constructor with type conversion and explicitly specified interleaving
-		 *   @tparam		U - any type that Image supports
-		 *   @param[in]     i2 - const reference to an Image
-		 *   @param[in]		interleavedQ - whether the newly created Image should be interleaved
-		 **/
 		template<typename U>
-		Image(const Image<U>& i2, bool interleavedQ);
-		
+		Image<U> convert() const;
+
 	private:
 		using GenericBase = GenericImage;
 
@@ -242,12 +215,21 @@ namespace LLU {
 	Image<T>::Image(MImage mi, Passing mode) : Image(GenericBase {mi, mode}) {}
 
 	template<typename T>
-	template<typename U>
-	Image<T>::Image(const Image<U>& i2) : Image(i2, i2.interleavedQ()) {}
+	Image<T> Image<T>::clone() const {
+		return Image {cloneContainer(), Ownership::Library};
+	}
 
 	template<typename T>
 	template<typename U>
-	Image<T>::Image(const Image<U>& i2, bool interleavedQ) : TypedImage<T>(i2), GenericBase(i2.convert(ImageType<T>, interleavedQ)) {}
+	Image<U> Image<T>::convert(bool interleaved) const {
+		return Image<U> {GenericImage::convert(ImageType<U>, interleaved)};
+	}
+
+	template<typename T>
+	template<typename U>
+	Image<U> Image<T>::convert() const {
+		return convert<U>(interleavedQ());
+	}
 
 	template<typename T>
 	MArrayDimensions Image<T>::dimensionsFromGenericImage(const GenericBase& im) {

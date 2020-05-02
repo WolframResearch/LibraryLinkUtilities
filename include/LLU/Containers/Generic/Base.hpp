@@ -61,7 +61,7 @@ namespace LLU {
 		 * @brief Copy-constructor, performs a deep copy of the raw container.
 		 * @param mc - MContainerBase to be copied
 		 */
-		MContainerBase(const MContainerBase& mc) : container(mc.clone()) {}
+		MContainerBase(const MContainerBase& mc) = delete;
 
 		/**
 		 * @brief Move-constructor
@@ -76,10 +76,7 @@ namespace LLU {
 		 * @param mc - MContainerBase to be copied
 		 * @return reference to this object
 		 */
-		MContainerBase& operator=(const MContainerBase& mc) {
-			reset(mc.clone());
-			return *this;
-		}
+		MContainerBase& operator=(const MContainerBase& mc) = delete;
 
 		/**
 		 * @brief Move-assignment operator
@@ -154,7 +151,7 @@ namespace LLU {
 		 * @brief Clone the raw container, if it's present
 		 * @return cloned container or nullptr if there is no internal container
 		 */
-		Container clone() const {
+		Container cloneContainer() const {
 			if (container == nullptr) {
 				return nullptr;
 			}

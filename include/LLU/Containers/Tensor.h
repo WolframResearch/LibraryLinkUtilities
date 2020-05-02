@@ -110,7 +110,7 @@ namespace LLU {
 		 *  @brief  Create new Tensor from MTensor
 		 *  @param  t - MTensor
 		 */
-		Tensor(MTensor t, Passing mode);
+		Tensor(MTensor t, Ownership mode);
 
 		/**
 		 *   @brief     Create new Tensor from a GenericTensor
@@ -124,29 +124,9 @@ namespace LLU {
 		 */
 		Tensor() = default;
 
-		/**
-		 *   @brief        	Copy constructor
-		 *   @param[in]     other - const reference to a Tensor of matching type
-		 **/
-		Tensor(const Tensor& other) = default;
-
-		/**
-		 *   @brief         Move constructor
-		 *   @param[in]     other - rvalue reference to a Tensor of matching type
-		 **/
-		Tensor(Tensor&& other) noexcept = default;
-
-		/**
-		 *   @brief	Free internal MTensor if necessary
-		 **/
-		~Tensor() = default;
-
-		/// Default move-assignment operator
-		Tensor& operator=(Tensor&&) noexcept = default;
-
-		/// Default copy-assignment operator
-		Tensor& operator=(const Tensor&) = default;
-
+		Tensor clone() const {
+			return Tensor {cloneContainer(), Ownership::Library};
+		}
 	private:
 		using GenericBase = MContainer<MArgumentType::Tensor>;
 
@@ -185,7 +165,7 @@ namespace LLU {
 	}
 
 	template<typename T>
-	Tensor<T>::Tensor(MTensor t, Passing mode) : Tensor(GenericBase {t, mode}) {}
+	Tensor<T>::Tensor(MTensor t, Ownership mode) : Tensor(GenericBase {t, mode}) {}
 
 
 } /* namespace LLU */

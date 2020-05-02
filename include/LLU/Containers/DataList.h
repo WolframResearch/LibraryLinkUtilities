@@ -144,31 +144,7 @@ namespace LLU {
 		 */
 		DataList(std::initializer_list<std::pair<std::string, value_type>> initList);
 
-		/**
-		 * @brief	Create DataList copying a different DataList with the same type but possible different Passing policy
-		 * @tparam 	P - arbitrary passing policy
-		 * @param 	other - a DataList with matching node type
-		 */
-		DataList(const DataList<T>& other) = default;
-
-		/**
-		 *   @brief         Copy-assignment operator with passing mode change
-		 *   @param[in]     other - const reference to a DataList of matching type
-		 **/
-		DataList& operator=(const DataList<T>& other) = default;
-
-		/**
-		 * @brief	Create a DataList by moving contents of another DataList
-		 * @param 	other - DataList to move from
-		 */
-		DataList(DataList&& other) noexcept = default;
-
-		/**
-		 * @brief	Move-assignment operator. Move contents of another DataList into this one.
-		 * @param 	other - DataList to move from
-		 * @return	*this
-		 */
-		DataList& operator=(DataList&& other) noexcept = default;
+		DataList clone() const;
 
 		/**
 		 * @brief 	Get size of the DataList, which is the number of nodes in the list
@@ -310,14 +286,14 @@ namespace LLU {
 	template<typename T>
 	DataList<T>::DataList(std::initializer_list<value_type> initList) : DataList() {
 		for (auto&& elem : initList) {
-			push_back(elem);
+			push_back(std::move(elem));
 		}
 	}
 
 	template<typename T>
 	DataList<T>::DataList(std::initializer_list<std::pair<std::string, value_type>> initList) : DataList() {
 		for (auto&& elem : initList) {
-			push_back(elem.first, elem.second);
+			push_back(elem.first, std::move(elem.second));
 		}
 	}
 
@@ -329,6 +305,11 @@ namespace LLU {
 			proxyList.emplace_back(currentNode);
 			currentNode = LibraryData::DataStoreAPI()->DataStoreNode_getNextNode(currentNode);
 		}
+	}
+
+	template<typename T>
+	DataList<T> DataList<T>::clone() const {
+		return DataList {cloneContainer(), Ownership::Library};
 	}
 
 	template<typename T>

@@ -46,17 +46,6 @@ namespace LLU {
 			this->reset(tmp);
 		}
 
-		MContainer(const MContainer& mc) = default;
-
-		MContainer(MContainer&& mc) noexcept = default;
-
-		MContainer& operator=(const MContainer&) = default;
-
-		MContainer& operator=(MContainer&&) noexcept = default;
-
-		/// Destructor which triggers the appropriate cleanup action which depends on the PassingMode
-		~MContainer() override = default;
-
 		/**
 		 * @brief   Convert this object to a new GenericNumericArray of given datatype, using specified conversion method
 		 * @param   t - destination data type
@@ -73,6 +62,10 @@ namespace LLU {
 				ErrorManager::throwException(ErrorName::NumericArrayConversionError, "Conversion to type " + std::to_string(static_cast<int>(t)) + " failed.");
 			}
 			return {newNA, Ownership::Library};
+		}
+
+		MContainer clone() const {
+			return MContainer {cloneContainer()};
 		}
 
 		/// @copydoc NumericArrayInterface::getRank()

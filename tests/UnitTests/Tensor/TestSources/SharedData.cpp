@@ -6,9 +6,10 @@
 
 using namespace LLU;
 
-using SharedTensorPtr = std::unique_ptr<Tensor<double>>;
+namespace {
+	std::unique_ptr<Tensor<double>> tensor {};
+}
 
-static SharedTensorPtr tensor {};
 
 EXTERN_C DLLEXPORT mint WolframLibrary_getVersion() {
 	return WolframLibraryVersion;
@@ -112,7 +113,7 @@ LIBRARY_LINK_FUNCTION(copyShared) {
 		MArgumentManager mngr(Argc, Args, Res);
 		auto sharedTensor = mngr.getTensor<double, Passing::Shared>(0);
 		auto sc = sharedTensor.shareCount();
-		Tensor<double> copy {sharedTensor};	   // create deep copy of the shared Tensor. The new Tensor is not Shared
+		Tensor<double> copy {sharedTensor.clone()};	   // create deep copy of the shared Tensor. The new Tensor is not Shared
 		mngr.setInteger(100 * sc + 10 * sharedTensor.shareCount() + copy.shareCount());
 	} catch (const LibraryLinkError& e) {
 		err = e.which();

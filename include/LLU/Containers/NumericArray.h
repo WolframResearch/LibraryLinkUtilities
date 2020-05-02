@@ -114,7 +114,7 @@ namespace LLU {
 		 *
 		 * @param na
 		 */
-		NumericArray(MNumericArray na, Passing mode);
+		NumericArray(MNumericArray na, Ownership mode);
 
 		/**
 		 *   @brief     Create new NumericArray from a GenericNumericArray
@@ -137,28 +137,9 @@ namespace LLU {
 		 */
 		NumericArray() = default;
 
-		/**
-		 *   @brief        	Copy constructor
-		 *   @param[in]     other - const reference to a NumericArray of matching type
-		 **/
-		NumericArray(const NumericArray& other) = default;
-
-		/**
-		 *   @brief         Move constructor
-		 *   @param[in]     other - rvalue reference to a NumericArray of matching type
-		 **/
-		NumericArray(NumericArray&& other) noexcept = default;
-
-		/**
-		 *    @brief	Free internal MNumericArray if necessary
-		 **/
-		~NumericArray() override = default;
-
-		/// Default copy-assignment operator
-		NumericArray& operator=(const NumericArray&) = default;
-
-		/// Default move-assignment operator
-		NumericArray& operator=(NumericArray&&) noexcept = default;
+		NumericArray clone() const {
+			return NumericArray {cloneContainer(), Ownership::Library};
+		}
 
 	private:
 		using GenericBase = GenericNumericArray;
@@ -197,7 +178,7 @@ namespace LLU {
 	}
 
 	template<typename T>
-	NumericArray<T>::NumericArray(MNumericArray na, Passing mode) : NumericArray(GenericBase {na, mode}) {}
+	NumericArray<T>::NumericArray(MNumericArray na, Ownership mode) : NumericArray(GenericBase {na, mode}) {}
 
 	template<typename T>
 	NumericArray<T>::NumericArray(const GenericNumericArray& other, NA::ConversionMethod method, double param)

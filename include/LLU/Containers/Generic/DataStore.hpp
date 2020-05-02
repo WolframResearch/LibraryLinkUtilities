@@ -43,16 +43,9 @@ namespace LLU {
 
 		MContainer(Container c, Ownership owner);
 
-		MContainer(const MContainer& mc) = default;
-
-		MContainer(MContainer&& mc) noexcept = default;
-
-		MContainer& operator=(const MContainer& mc) = default;
-
-		MContainer& operator=(MContainer&& mc) noexcept = default;
-
-		/// Destructor which triggers the appropriate cleanup action which depends on the PassingMode
-		~MContainer() override = default;
+		MContainer clone() const {
+			return MContainer {cloneContainer()};
+		}
 
 		/**
 		 * @brief   Get the length of the DataStore.

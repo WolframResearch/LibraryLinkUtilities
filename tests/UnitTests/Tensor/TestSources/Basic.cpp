@@ -53,9 +53,9 @@ LIBRARY_LINK_FUNCTION(CloneTensor) {
 		MArgumentManager mngr(libData, Argc, Args, Res);
 		mngr.operateOnTensor(0, [&mngr](auto&& t1) {
 			using T = typename std::decay_t<decltype(t1)>::value_type;
-			Tensor<T> t2 {t1};	// test copy constructor
+			Tensor<T> t2 {t1.clone()};
 			Tensor<T> t3;
-			t3 = t2;	// test copy assignment
+			t3 = t2.clone();
 			mngr.setTensor(t3);
 		});
 	} catch (const LibraryLinkError& e) {
@@ -231,7 +231,7 @@ LLU_LIBRARY_FUNCTION(GetLargest) {
 	auto largest = getLargest(tens);
 	mngr.set(static_cast<mint>(std::distance(std::cbegin(tens), largest)));
 
-	// perform some random assignments and copies to see it they compile
+	// perform some random assignments and copies to see if they compile
 	std::swap(tens[0], tens[1]);
 	TensorView iv = std::move(tens[2]);
 	tens[2] = iv;

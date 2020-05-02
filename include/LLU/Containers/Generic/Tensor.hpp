@@ -45,16 +45,9 @@ namespace LLU {
 			this->reset(tmp);
 		}
 
-		MContainer(const MContainer& mc) = default;
-
-		MContainer(MContainer&& mc) noexcept = default;
-
-		MContainer& operator=(const MContainer&) = default;
-
-		MContainer& operator=(MContainer&& mc) noexcept = default;
-
-		/// Destructor which triggers the appropriate cleanup action which depends on the PassingMode
-		~MContainer() override = default;
+		MContainer clone() const {
+			return MContainer {cloneContainer()};
+		}
 
 		/// @copydoc TensorInterface::getRank()
 		mint getRank() const override {

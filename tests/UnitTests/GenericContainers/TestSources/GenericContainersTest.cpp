@@ -67,7 +67,7 @@ LIBRARY_LINK_FUNCTION(IsOwnerShared) {
 LIBRARY_LINK_FUNCTION(CloneAutomatic) {
 	LLU::MArgumentManager mngr {libData, Argc, Args, Res};
 	auto img = mngr.getGenericImage(0);
-	LLU::GenericImage clone {img};
+	LLU::GenericImage clone {img.clone()};
 	mngr.set(clone);
 	return (libraryLinkOwnedQ(img) && libraryLinkOwnedQ(clone)) ? NoError : MemoryError;
 }
@@ -75,7 +75,7 @@ LIBRARY_LINK_FUNCTION(CloneAutomatic) {
 LIBRARY_LINK_FUNCTION(CloneManual) {
 	LLU::MArgumentManager mngr {libData, Argc, Args, Res};
 	auto t = mngr.getGenericTensor<Passing::Manual>(0);
-	LLU::GenericTensor clone {t};
+	LLU::GenericTensor clone {t.clone()};
 	LLU::Tensor<mint> tensor {std::move(t)};
 	tensor[0] = -324;
 	mngr.set(clone);
@@ -85,7 +85,7 @@ LIBRARY_LINK_FUNCTION(CloneManual) {
 LIBRARY_LINK_FUNCTION(CloneShared) {
 	LLU::MArgumentManager mngr {libData, Argc, Args, Res};
 	auto na = mngr.getGenericNumericArray<Passing::Shared>(0);
-	LLU::GenericNumericArray clone {na};
+	LLU::GenericNumericArray clone {na.clone()};
 	mngr.set(clone);
 	return (isShared(na) && libraryLinkOwnedQ(clone)) ? NoError : MemoryError;
 }

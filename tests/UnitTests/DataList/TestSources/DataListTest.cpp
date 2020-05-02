@@ -22,7 +22,7 @@ namespace LLErrorCode = LLU::ErrorCode;
 
 using LLU::WSStream;
 using LLU::DataList;
-using LLU::MArgumentType;
+using LLU::GenericDataList;
 
 /* Initialize Library */
 
@@ -43,7 +43,7 @@ LIBRARY_LINK_FUNCTION(PassDataStore) {
 		auto returnCopyQ = mngr.getBoolean(1);
 
 		if (returnCopyQ) {
-			auto dlOut = dlIn;
+			auto dlOut = dlIn.clone();
 			mngr.set(dlOut);
 		} else {
 			mngr.set(dlIn);
@@ -69,15 +69,13 @@ LIBRARY_LINK_FUNCTION(JoinDataStores) {
 
 		auto returnCopyQ = mngr.getBoolean(2);
 
-		DataList<LLU::GenericDataList> dsOut;
+		DataList<GenericDataList> dsOut;
 		if (returnCopyQ) {
-			auto copy = ds1;
-			dsOut.push_back(copy);
-			copy = ds2;
-			dsOut.push_back(copy);
+			dsOut.push_back(ds1.clone());
+			dsOut.push_back(ds2.clone());
 		} else {
-			dsOut.push_back(ds1);
-			dsOut.push_back(ds2);
+			dsOut.push_back(std::move(ds1));
+			dsOut.push_back(std::move(ds2));
 		}
 		mngr.setDataList(dsOut);
 	} catch (const LLU::LibraryLinkError& e) {
@@ -94,8 +92,8 @@ LIBRARY_LINK_FUNCTION(TestSelfReferencialDataStore) {
 	try {
 		LLU::MArgumentManager mngr {Argc, Args, Res};
 		auto dsIn = mngr.getGenericDataList(0);
-		dsIn.push_back(LLU::TypedArgument {std::in_place_type_t<LLU::GenericDataList>(), dsIn.getContainer(), LLU::Ownership::LibraryLink});
-		LLU::DataNode<LLU::GenericDataList> n{dsIn.getLastNode()};
+		dsIn.push_back(LLU::TypedArgument {std::in_place_type_t<GenericDataList>(), dsIn.getContainer(), LLU::Ownership::LibraryLink});
+		LLU::DataNode<GenericDataList> n{dsIn.getLastNode()};
 		mngr.set(dsIn);
 	} catch (const LLU::LibraryLinkError& e) {
 		err = e.which();
@@ -229,12 +227,15 @@ LIBRARY_LINK_FUNCTION(SeparateKeysAndValues) {
 		DataList<std::string_view> keys;
 		DataList<std::complex<double>> values;
 
-		for (auto [name, value] : dsIn) {
+		for (auto& [name, value] : dsIn) {
 			keys.push_back(name);
 			values.push_back(value);
 		}
 
-		DataList<LLU::GenericDataList> dsOut {{"Keys", keys}, {"Values", values}};
+		DataList<GenericDataList> dsOut;
+		dsOut.push_back("Keys", std::move(keys));
+		dsOut.push_back("Values", std::move(values));
+
 		mngr.set(dsOut);
 	} catch (const LLU::LibraryLinkError& e) {
 		err = e.which();
