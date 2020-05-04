@@ -177,7 +177,9 @@ namespace LLU {
 		 * @param 	name - name for the new node in the DataStore
 		 * @param 	val - value of the new node in the DataStore
 		 */
-		static void addDataStoreNode(DataStore ds, const std::string& name, const value_type& val);
+		static void addDataStoreNode(DataStore ds, std::string_view name, const value_type& val);
+
+		static void addDataStoreNode(DataStore ds, const value_type& val);
 
 	private:
 		MArgument& arg;
@@ -190,16 +192,16 @@ namespace LLU {
 
 	/* Explicit specialization for member functions of Argument class */
 
-#define ARGUMENT_DEFINE_SPECIALIZATIONS_OF_MEMBER_FUNCTIONS(ArgType)                                                       \
-	template<>                                                                                                             \
-	auto Argument<MArgumentType::ArgType>::get()->typename Argument::value_type&;                                          \
-	template<>                                                                                                             \
-	auto Argument<MArgumentType::ArgType>::get() const->const typename Argument::value_type&;                              \
-	template<>                                                                                                             \
-	void Argument<MArgumentType::ArgType>::addDataStoreNode(DataStore ds, const std::string& name, const value_type& val); \
-	template<>                                                                                                             \
-	auto Argument<MArgumentType::ArgType>::getAddress() const->typename Argument::value_type*;                             \
-	template<>                                                                                                             \
+#define ARGUMENT_DEFINE_SPECIALIZATIONS_OF_MEMBER_FUNCTIONS(ArgType)                                                     \
+	template<>                                                                                                           \
+	auto Argument<MArgumentType::ArgType>::get()->typename Argument::value_type&;                                        \
+	template<>                                                                                                           \
+	auto Argument<MArgumentType::ArgType>::get() const->const typename Argument::value_type&;                            \
+	template<>                                                                                                           \
+	void Argument<MArgumentType::ArgType>::addDataStoreNode(DataStore ds, std::string_view name, const value_type& val); \
+	template<>                                                                                                           \
+	auto Argument<MArgumentType::ArgType>::getAddress() const->typename Argument::value_type*;                           \
+	template<>                                                                                                           \
 	void Argument<MArgumentType::ArgType>::set(typename Argument::value_type newValue);
 
 	ARGUMENT_DEFINE_SPECIALIZATIONS_OF_MEMBER_FUNCTIONS(Boolean)
@@ -218,7 +220,9 @@ namespace LLU {
 	template<>
 	auto Argument<MArgumentType::MArgument>::get() const -> const typename Argument::value_type&;
 	template<>
-	void Argument<MArgumentType::MArgument>::addDataStoreNode(DataStore ds, const std::string& name, const value_type& val) = delete;
+	void Argument<MArgumentType::MArgument>::addDataStoreNode(DataStore ds, std::string_view name, const value_type& val) = delete;
+	template<>
+	void Argument<MArgumentType::MArgument>::addDataStoreNode(DataStore ds, const value_type& val) = delete;
 	template<>
 	auto Argument<MArgumentType::MArgument>::getAddress() const -> typename Argument::value_type*;
 	template<>
