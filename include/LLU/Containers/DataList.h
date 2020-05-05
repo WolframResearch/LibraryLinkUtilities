@@ -125,16 +125,15 @@ namespace LLU {
 		using const_reverse_iterator = typename ProxyContainer::const_reverse_iterator;
 		using size_type = typename ProxyContainer::size_type;
 		using value_type = T;
-		using GenericDataStore = MContainer<MArgumentType::DataStore>;
 
 	public:
-		using GenericDataStore::GenericDataStore;
+		using GenericDataList::GenericDataList;
 
 		/**
-		 * @brief	Create DataList wrapping around an existing GenericDataStore with matching passing policy
-		 * @param 	gds - GenericDataStore
+		 * @brief	Create DataList wrapping around an existing GenericDataList with matching passing policy
+		 * @param 	gds - GenericDataList
 		 */
-		explicit DataList(GenericDataStore gds);
+		explicit DataList(GenericDataList gds);
 
 		/**
 		 * @brief	Create DataList from list of values. Keys will be set to empty strings.
@@ -298,7 +297,7 @@ namespace LLU {
 	/* Definitions od DataList methods */
 
 	template<typename T>
-	DataList<T>::DataList(GenericDataStore gds) : GenericDataStore(std::move(gds)) {
+	DataList<T>::DataList(GenericDataList gds) : GenericDataList(std::move(gds)) {
 		makeProxy();
 	}
 
@@ -334,14 +333,14 @@ namespace LLU {
 	template<typename T>
 	void DataList<T>::push_back(value_type nodeData) {
 		TypedArgument t {std::move(nodeData)};
-		GenericDataStore::push_back(t);
+		GenericDataList::push_back(t);
 		proxyList.emplace_back(this->back(), std::move(t));
 	}
 
 	template<typename T>
 	void DataList<T>::push_back(std::string_view name, value_type nodeData) {
 		TypedArgument t {std::move(nodeData)};
-		GenericDataStore::push_back(name, t);
+		GenericDataList::push_back(name, t);
 		proxyList.emplace_back(this->back(), std::move(t));
 	}
 
