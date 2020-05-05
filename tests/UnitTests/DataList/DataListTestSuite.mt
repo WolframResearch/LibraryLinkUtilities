@@ -24,6 +24,9 @@ TestExecute[
 	TestSelfReferencialDataStore = `LLU`PacletFunctionLoad["TestSelfReferencialDataStore", {"DataStore"}, "DataStore"];
 	ReverseListOfStringsWSTP = `LLU`PacletFunctionLoad["ReverseListOfStringsWSTP", LinkObject, LinkObject];
 	ReverseListOfStringsLibraryLink = `LLU`PacletFunctionLoad["ReverseListOfStringsLibraryLink", {"DataStore"}, "DataStore"];
+	ReverseListOfStringsGeneric = `LLU`PacletFunctionLoad["ReverseListOfStringsGeneric", {"DataStore"}, "DataStore"];
+	ReverseListOfStringsGenericIn = `LLU`PacletFunctionLoad["ReverseListOfStringsGenericIn", {"DataStore"}, "DataStore"];
+	ReverseListOfStringsGenericOut = `LLU`PacletFunctionLoad["ReverseListOfStringsGenericOut", {"DataStore"}, "DataStore"];
 	ReverseListOfStrings = `LLU`PacletFunctionLoad["ReverseListOfStrings", {"DataStore"}, "DataStore"];
 	SeparateKeysAndValues = `LLU`PacletFunctionLoad["SeparateKeysAndValues", {"DataStore"}, "DataStore"];
 	GetKeys = `LLU`PacletFunctionLoad["GetKeys", {"DataStore"}, "DataStore"];
@@ -45,7 +48,7 @@ TestExecute[
 	image = RandomImage[1, {2, 3}, ColorSpace -> "CMYK"];
 	sparse = SparseArray[{{1, 1} -> 1, {2, 2} -> 2, {3, 3} -> 3, {1, 3} -> 4}];
 	ds0 = Developer`DataStore[bool, int, real, complex, tensor, sparse, numeric, image, string];
-	ds1 = Developer`DataStore[bool, int, real, complex, string, tensor, sparse, numeric, image, string, ds0];
+	ds1 = Developer`DataStore[bool, int, real, complex, tensor, sparse, numeric, image, string, ds0];
 	ds2 = Developer`DataStore @@ Thread[Take[Alphabet[], Length[ds1]] -> List @@ ds1];
 	ds3 = ArrayReshape[RandomWord[10], {2, 5}] /. List -> Developer`DataStore;
 ];
@@ -423,22 +426,97 @@ Test[
 Test[
 	CheckSizeChange[5]
 	,
-	{5, 5, 5, 5}
+	{5, 5, 5, 5, 5}
 	,
 	TestID -> "DataListTestSuite-20200401-L5V4B8"
 ];
 
+Test[
+	`LLU`PacletFunctionSet[PullAndPush, {"DataStore"}, "DataStore"];
+	oldDS1 = ds1;
+	PullAndPush[ds1]
+	,
+	Developer`DataStore[
+		bool, bool, "bool" -> bool, "mbool" -> bool, 
+		int, "mint" -> int, 
+		real, "mreal" -> real, 
+		complex, complex, "complex" -> complex, "mcomplex" -> complex,
+		tensor, "Tensor" -> tensor,
+		sparse, "MSparseArray" -> sparse, 
+		numeric, "NumericArray" -> numeric,
+		image, "Image" -> image,
+		string, string, "String" -> string, "RawString" -> string,
+		ds0, "DataList" -> ds0
+	]
+	,
+	TestID -> "DataListTestSuite-20200401-L5KJGB"
+];
+
+VerificationTest[
+	oldDS1 == ds1
+	,
+	TestID->"DataListTestSuite-20200505-N8W6E1"
+];
+
+Test[
+	MemoryLeakTest[PullAndPush[ds1]]
+	,
+	0
+	,
+	TestID -> "DataListTestSuite-20180904-J9J5U5"
+];
+
+Test[
+	`LLU`PacletFunctionSet[PullAndPush2, {"DataStore"}, "DataStore"];
+	PullAndPush2[ds1]
+	,
+	Developer`DataStore[
+		bool, int, real, complex, tensor, "Tensor" -> True, sparse, numeric, "NumericArray" -> True, image, "Image" -> True, string, "String" -> True, ds0, "DataList" -> True
+	]
+	,
+	TestID -> "DataListTestSuite-20200505-L9U9K6"
+];
+
+VerificationTest[
+	oldDS1 == ds1
+	,
+	TestID->"DataListTestSuite-20200505-O3V6J8"
+];
+
+Test[
+	MemoryLeakTest[PullAndPush2[ds1]]
+	,
+	0
+	,
+	TestID -> "DataListTestSuite-20200505-Z7Z9O7"
+];
+
 (* Timing tests *)
 VerificationTest[
-	los = RandomWord["CommonWords", 100000];
+	getSlowdown[x_] := ToString[N[(x/timeDataStore - 1) * 100]] <> "% slower than DataStore.";
+	SeedRandom[0];
+	los = RandomWord["CommonWords", 900000];
 	ds = Developer`DataStore @@ los;
-	{timeWSTP, r1} = RepeatedTiming[ReverseListOfStringsWSTP[los]];
-	{timeDataStore, r2} = RepeatedTiming[ReverseListOfStringsLibraryLink[ds]];
-	{timeDataList, r3} = RepeatedTiming[ReverseListOfStrings[ds]];
-	Print["Time when sending list via WSTP: " <> ToString[timeWSTP] <> "s."];
-	Print["Time when sending list via DataStore: " <> ToString[timeDataStore] <> "s."];
-	Print["Time when sending list via DataList: " <> ToString[timeDataList] <> "s."];
-	r1 == List @@ r2 == List @@ r3
+
+	{timeDataStore, r2} = RepeatedTiming[ReverseListOfStringsLibraryLink[ds], 3];
+	Print["Reverse strings - DataStore: " <> ToString[timeDataStore] <> "s."];
+
+	{timeGeneric, r3} = RepeatedTiming[ReverseListOfStringsGeneric[ds], 3];
+	Print["Reverse strings - GenericDataList: " <> ToString[timeGeneric] <> "s. " <> getSlowdown[timeGeneric]];
+
+	{timeGenericOut, r5} = RepeatedTiming[ReverseListOfStringsGenericOut[ds], 3];
+	Print["Reverse strings - [In]DataList/[Out]GenericDataList: " <> ToString[timeGenericOut] <> "s. " <> getSlowdown[timeGenericOut]];
+
+	{timeGenericIn, r4} = RepeatedTiming[ReverseListOfStringsGenericIn[ds], 3];
+	Print["Reverse strings - [In]GenericDataList/[Out]DataList: " <> ToString[timeGenericIn] <> "s. " <> getSlowdown[timeGenericIn]];
+
+	{timeDataList, r6} = RepeatedTiming[ReverseListOfStrings[ds], 3];
+	Print["Reverse strings - DataList: " <> ToString[timeDataList] <> "s. " <> getSlowdown[timeDataList]];
+
+	{timeWSTP, r1} = RepeatedTiming[ReverseListOfStringsWSTP[los], 3];
+	Print["Reverse strings - WSTP: " <> ToString[timeWSTP] <> "s. " <> getSlowdown[timeWSTP]];
+
+	r1 == List @@ r2 == List @@ r3 == List @@ r4 == List @@ r5 == List @@ r6
 	,
 	TestID -> "DataListTestSuite-20180906-W5N4V0"
 ];
@@ -446,13 +524,12 @@ VerificationTest[
 
 
 (* Memory leak tests *)
-
 Test[
 	MemoryLeakTest[PassDataStore[ds0, #]] & /@ {False, True}
 	,
 	{ 0, 0 }
 	,
-	TestID -> "DataListTestSuite-20180904-J9J5U5"
+	TestID -> "DataListTestSuite-20200505-E5A4L8"
 ];
 
 Test[

@@ -14,7 +14,8 @@ LIBRARY_LINK_FUNCTION(WrongNodeType) {
 	try {
 		LLU::MArgumentManager mngr {Argc, Args, Res};
 		auto dsIn = mngr.getDataList<LLU::GenericTensor>(0);
-		dsIn.push_back(dsIn.getContainer());	   // compile time error - "Trying to add DataList node of incorrect type."
+		dsIn.push_back(LLU::Tensor<mint> {2, 3, 4, 5, 6});	   // OK
+		dsIn.push_back(3.14);	   // compile time error - "Trying to add DataList node of incorrect type."
 		mngr.setDataList(dsIn);
 	} catch (const LLU::LibraryLinkError& e) {
 		err = e.which();

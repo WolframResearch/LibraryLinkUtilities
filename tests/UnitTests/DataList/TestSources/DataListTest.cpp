@@ -14,8 +14,8 @@
 #include "LLU/Containers/Iterators/DataList.hpp"
 #include "LLU/LLU.h"
 #include "LLU/LibraryLinkFunctionMacro.h"
-#include "LLU/WSTP/WSStream.hpp"
 #include "LLU/Utilities.hpp"
+#include "LLU/WSTP/WSStream.hpp"
 
 namespace WS = LLU::WS;
 namespace LLErrorCode = LLU::ErrorCode;
@@ -35,110 +35,84 @@ EXTERN_C DLLEXPORT int WolframLibrary_initialize(WolframLibraryData libData) {
 EXTERN_C DLLEXPORT void WolframLibrary_uninitialize(WolframLibraryData) {}
 
 /* Returns an input or a copy of an input */
-LIBRARY_LINK_FUNCTION(PassDataStore) {
-	auto err = LLErrorCode::NoError;
-	try {
-		LLU::MArgumentManager mngr {Argc, Args, Res};
-		auto dlIn = mngr.getDataList<LLU::TypedArgument>(0);
-		auto returnCopyQ = mngr.getBoolean(1);
+LLU_LIBRARY_FUNCTION(PassDataStore) {
+	auto dlIn = mngr.getDataList<LLU::TypedArgument>(0);
+	auto returnCopyQ = mngr.getBoolean(1);
 
-		if (returnCopyQ) {
-			auto dlOut = dlIn.clone();
-			mngr.set(dlOut);
-		} else {
-			mngr.set(dlIn);
-		}
-
-	} catch (const LLU::LibraryLinkError& e) {
-		err = e.which();
-	} catch (...) {
-		err = LLErrorCode::FunctionError;
+	if (returnCopyQ) {
+		auto dlOut = dlIn.clone();
+		mngr.set(dlOut);
+	} else {
+		mngr.set(dlIn);
 	}
-	return err;
 }
 
 /* Returns a DataStores carrying two input DataStores as nodes */
-LIBRARY_LINK_FUNCTION(JoinDataStores) {
-	auto err = LLErrorCode::NoError;
-	try {
-		LLU::MArgumentManager mngr {Argc, Args, Res};
+LLU_LIBRARY_FUNCTION(JoinDataStores) {
+	auto ds1 = mngr.getGenericDataList(0);
+	auto ds2 = mngr.getGenericDataList(1);
+	auto returnCopyQ = mngr.getBoolean(2);
 
-		auto ds1 = mngr.getGenericDataList(0);
-
-		auto ds2 = mngr.getGenericDataList(1);
-
-		auto returnCopyQ = mngr.getBoolean(2);
-
-		DataList<GenericDataList> dsOut;
-		if (returnCopyQ) {
-			dsOut.push_back(ds1.clone());
-			dsOut.push_back(ds2.clone());
-		} else {
-			dsOut.push_back(std::move(ds1));
-			dsOut.push_back(std::move(ds2));
-		}
-		mngr.setDataList(dsOut);
-	} catch (const LLU::LibraryLinkError& e) {
-		err = e.which();
-	} catch (...) {
-		err = LLErrorCode::FunctionError;
+	DataList<GenericDataList> dsOut;
+	if (returnCopyQ) {
+		dsOut.push_back(ds1.clone());
+		dsOut.push_back(ds2.clone());
+	} else {
+		dsOut.push_back(std::move(ds1));
+		dsOut.push_back(std::move(ds2));
 	}
-	return err;
+	mngr.setDataList(dsOut);
 }
 
 /* Returns a copy of the input plus its own reference */
-LIBRARY_LINK_FUNCTION(TestSelfReferencialDataStore) {
-	auto err = LLErrorCode::NoError;
-	try {
-		LLU::MArgumentManager mngr {Argc, Args, Res};
-		auto dsIn = mngr.getGenericDataList(0);
-		dsIn.push_back(LLU::TypedArgument {std::in_place_type_t<GenericDataList>(), dsIn.getContainer(), LLU::Ownership::LibraryLink});
-		LLU::DataNode<GenericDataList> n{dsIn.getLastNode()};
-		mngr.set(dsIn);
-	} catch (const LLU::LibraryLinkError& e) {
-		err = e.which();
-	} catch (...) {
-		err = LLErrorCode::FunctionError;
-	}
-	return err;
+LLU_LIBRARY_FUNCTION(TestSelfReferencialDataStore) {
+	auto dsIn = mngr.getGenericDataList(0);
+	dsIn.push_back(LLU::TypedArgument {std::in_place_type_t<GenericDataList>(), dsIn.getContainer(), LLU::Ownership::LibraryLink});
+	LLU::DataNode<GenericDataList> n {dsIn.back()};
+	mngr.set(dsIn);
 }
 
 /* Returns a empty DataStore */
-LIBRARY_LINK_FUNCTION(EmptyDataStore) {
-	LLU::Unused(libData);
-	auto err = LLErrorCode::NoError;
-	try {
-		LLU::MArgumentManager mngr {Argc, Args, Res};
-		DataList<std::string_view> ds;
-		mngr.setDataList(ds);
-	} catch (const LLU::LibraryLinkError& e) {
-		err = e.which();
-	} catch (...) {
-		err = LLErrorCode::FunctionError;
+LLU_LIBRARY_FUNCTION(EmptyDataStore) {
+	GenericDataList ds;
+	mngr.set(ds);
+}
+
+template<typename InContainer, typename OutContainer = InContainer>
+void reverseListOfString(LLU::MArgumentManager& mngr) {
+	auto dsIn = mngr.get<InContainer>(0);
+	OutContainer dsOut;
+
+	for (const auto& node : dsIn) {
+		std::string_view s;
+		if constexpr (std::is_same_v<InContainer, DataList<std::string_view>>) {
+			s = node.value();
+		} else {
+			s = std::get<std::string_view>(node.value());
+		}
+		std::string reversed {s.rbegin(), s.rend()};	// create reversed copy
+		dsOut.push_back(std::string_view(reversed));
 	}
-	return err;
+
+	mngr.set(dsOut);
 }
 
 /* Reverse each string in a list of strings using DataList */
-LIBRARY_LINK_FUNCTION(ReverseListOfStrings) {
-	auto err = LLErrorCode::NoError;
-	try {
-		LLU::MArgumentManager mngr {Argc, Args, Res};
-		auto ds = mngr.getDataList<std::string_view>(0);
-		DataList<std::string_view> dsOut;
+LLU_LIBRARY_FUNCTION(ReverseListOfStrings) {
+	reverseListOfString<DataList<std::string_view>>(mngr);
+}
 
-		for (const auto& node : ds) {
-			std::string_view s = node.value();
-			std::string reversed {s.rbegin(), s.rend()};	// create reversed copy
-			dsOut.push_back(reversed);
-		}
-		mngr.setDataList(dsOut);
-	} catch (const LLU::LibraryLinkError& e) {
-		err = e.which();
-	} catch (...) {
-		err = LLErrorCode::FunctionError;
-	}
-	return err;
+LLU_LIBRARY_FUNCTION(ReverseListOfStringsGenericOut) {
+	reverseListOfString<DataList<std::string_view>, GenericDataList>(mngr);
+}
+
+LLU_LIBRARY_FUNCTION(ReverseListOfStringsGenericIn) {
+	reverseListOfString<GenericDataList, DataList<std::string_view>>(mngr);
+}
+
+/* Reverse each string in a list of strings using GenericDataList */
+LLU_LIBRARY_FUNCTION(ReverseListOfStringsGeneric) {
+	reverseListOfString<GenericDataList>(mngr);
 }
 
 /* Reverse each string in a list of strings using raw DataStore */
@@ -146,23 +120,15 @@ LIBRARY_LINK_FUNCTION(ReverseListOfStringsLibraryLink) {
 	auto errCode = LLErrorCode::NoError;
 	DataStore ds_out = nullptr;
 	try {
-		DataStore ds_in = nullptr;
-
-		DataStoreNode dsn = nullptr;
-		mint length = 0;
-		std::list<std::string> inStrList;
-		MArgument data;
-
 		/* Argument checking */
 		if (Argc != 1) {
 			throw std::runtime_error("Invalid number of args");
 		}
-
-		ds_in = MArgument_getDataStore(Args[0]);
+		DataStore ds_in = MArgument_getDataStore(Args[0]);
 		if (ds_in == nullptr) {
 			throw std::runtime_error("Invalid input DataStore");
 		}
-		length = libData->ioLibraryFunctions->DataStore_getLength(ds_in);
+		mint length = libData->ioLibraryFunctions->DataStore_getLength(ds_in);
 		if (length <= 0) {
 			throw std::runtime_error("Invalid length of input DataStore");
 		}
@@ -172,23 +138,26 @@ LIBRARY_LINK_FUNCTION(ReverseListOfStringsLibraryLink) {
 			throw std::runtime_error("Invalid output DataStore");
 		}
 
-		dsn = libData->ioLibraryFunctions->DataStore_getFirstNode(ds_in);
+		DataStoreNode dsn = libData->ioLibraryFunctions->DataStore_getFirstNode(ds_in);
 		while (dsn != nullptr) {
+			MArgument data;
 			if (libData->ioLibraryFunctions->DataStoreNode_getData(dsn, &data) != 0) {
 				throw std::runtime_error("Could not get node data");
 			}
+			if (libData->ioLibraryFunctions->DataStoreNode_getDataType(dsn) != MType_UTF8String) {
+				throw std::runtime_error("Node of invalid type in the DataStore");
+			}
 			dsn = libData->ioLibraryFunctions->DataStoreNode_getNextNode(dsn);
-			inStrList.emplace_back(MArgument_getUTF8String(data));
-		}
-
-		for (const auto& s : inStrList) {
+			std::string_view s {MArgument_getUTF8String(data)};
 			std::string outStr(s.rbegin(), s.rend());	 // create reversed copy
-			libData->ioLibraryFunctions->DataStore_addString(ds_out, (char*)outStr.c_str());
+			libData->ioLibraryFunctions->DataStore_addString(ds_out, const_cast<char*>(outStr.c_str()));
 		}
-
 		MArgument_setDataStore(Res, ds_out);
 	} catch (const LLU::LibraryLinkError& e) {
 		errCode = e.which();
+		if (ds_out) {
+			libData->ioLibraryFunctions->deleteDataStore(ds_out);
+		}
 	} catch (...) {
 		errCode = LLErrorCode::FunctionError;
 		if (ds_out) {
@@ -219,156 +188,238 @@ LIBRARY_WSTP_FUNCTION(ReverseListOfStringsWSTP) {
 	return err;
 }
 
-LIBRARY_LINK_FUNCTION(SeparateKeysAndValues) {
-	auto err = LLErrorCode::NoError;
-	try {
-		LLU::MArgumentManager mngr {libData, Argc, Args, Res};
-		auto dsIn = mngr.getDataList<std::complex<double>>(0);
-		DataList<std::string_view> keys;
-		DataList<std::complex<double>> values;
+LLU_LIBRARY_FUNCTION(SeparateKeysAndValues) {
+	auto dsIn = mngr.getDataList<std::complex<double>>(0);
+	DataList<std::string_view> keys;
+	DataList<std::complex<double>> values;
 
-		for (auto& [name, value] : dsIn) {
-			keys.push_back(name);
-			values.push_back(value);
-		}
-
-		DataList<GenericDataList> dsOut;
-		dsOut.push_back("Keys", std::move(keys));
-		dsOut.push_back("Values", std::move(values));
-
-		mngr.set(dsOut);
-	} catch (const LLU::LibraryLinkError& e) {
-		err = e.which();
-	} catch (...) {
-		err = LLErrorCode::FunctionError;
+	for (auto& [name, value] : dsIn) {
+		keys.push_back(name);
+		values.push_back(value);
 	}
-	return err;
+
+	DataList<GenericDataList> dsOut;
+	dsOut.push_back("Keys", std::move(keys));
+	dsOut.push_back("Values", std::move(values));
+
+	mngr.set(dsOut);
 }
 
-LIBRARY_LINK_FUNCTION(GetKeys) {
-	auto err = LLErrorCode::NoError;
-	try {
-		LLU::MArgumentManager mngr {Argc, Args, Res};
-		auto dsIn = mngr.getDataList<LLU::TypedArgument>(0);
-		DataList<std::string_view> keys;
+LLU_LIBRARY_FUNCTION(GetKeys) {
+	auto dsIn = mngr.getDataList<LLU::TypedArgument>(0);
+	DataList<std::string_view> keys;
 
-		using NameIterator = LLU::NodeNameIterator<LLU::TypedArgument>;
-		for (NameIterator it = dsIn.begin(); it != dsIn.end(); ++it) {
-			keys.push_back(*it);
-		}
-
-		mngr.setDataList(keys);
-	} catch (const LLU::LibraryLinkError& e) {
-		err = e.which();
-	} catch (...) {
-		err = LLErrorCode::FunctionError;
+	using NameIterator = LLU::NodeNameIterator<LLU::TypedArgument>;
+	for (NameIterator it = dsIn.begin(); it != dsIn.end(); ++it) {
+		keys.push_back(*it);
 	}
-	return err;
+
+	mngr.setDataList(keys);
 }
 
-LIBRARY_LINK_FUNCTION(GetValuesReversed) {
-	auto err = LLErrorCode::NoError;
-	try {
-		LLU::MArgumentManager mngr {Argc, Args, Res};
-		auto dsIn = mngr.getDataList<LLU::TypedArgument>(0);
-		DataList<LLU::TypedArgument> values;
+LLU_LIBRARY_FUNCTION(GetValuesReversed) {
+	auto dsIn = mngr.getDataList<LLU::TypedArgument>(0);
+	DataList<LLU::TypedArgument> values;
 
-		using Iter = LLU::ReverseValueIterator<LLU::TypedArgument>;
-		std::move(Iter {dsIn.rbegin()}, Iter {dsIn.rend()}, std::back_inserter(values));
+	using Iter = LLU::ReverseValueIterator<LLU::TypedArgument>;
+	std::move(Iter {dsIn.rbegin()}, Iter {dsIn.rend()}, std::back_inserter(values));
 
-		mngr.setDataList(values);
-	} catch (const LLU::LibraryLinkError& e) {
-		err = e.which();
-	} catch (...) {
-		err = LLErrorCode::FunctionError;
-	}
-	return err;
+	mngr.setDataList(values);
 }
 
-LIBRARY_LINK_FUNCTION(FrameDims) {
-	auto err = LLErrorCode::NoError;
-	try {
-		LLU::MArgumentManager mngr {Argc, Args, Res};
-		auto dsIn = mngr.getDataList<LLU::GenericImage>(0);
+LLU_LIBRARY_FUNCTION(FrameDims) {
+	auto dsIn = mngr.getDataList<LLU::GenericImage>(0);
 
-		LLU::NumericArray<std::uint64_t> dims {0, {static_cast<mint>(dsIn.size()), 2}};
-		mint dimsIndex = 0;
+	LLU::NumericArray<std::uint64_t> dims {0, {static_cast<mint>(dsIn.size()), 2}};
+	mint dimsIndex = 0;
 
-		for (const auto& imgNode : dsIn) {
-			dims[dimsIndex++] = static_cast<std::uint64_t>(imgNode.value().rows());
-			dims[dimsIndex++] = static_cast<std::uint64_t>(imgNode.value().columns());
-		}
-		mngr.setNumericArray(dims);
-	} catch (const LLU::LibraryLinkError& e) {
-		err = e.which();
-	} catch (...) {
-		err = LLErrorCode::FunctionError;
+	for (const auto& imgNode : dsIn) {
+		dims[dimsIndex++] = static_cast<std::uint64_t>(imgNode.value().rows());
+		dims[dimsIndex++] = static_cast<std::uint64_t>(imgNode.value().columns());
 	}
-	return err;
+	mngr.setNumericArray(dims);
 }
 
-LIBRARY_LINK_FUNCTION(StringsThroughVectorReversed) {
-	auto err = LLErrorCode::NoError;
-	try {
-		LLU::MArgumentManager mngr {Argc, Args, Res};
-		auto dsIn = mngr.getDataList<std::string_view>(0);
+LLU_LIBRARY_FUNCTION(StringsThroughVectorReversed) {
+	auto dsIn = mngr.getDataList<std::string_view>(0);
 
-		using ValueIterator = LLU::NodeValueIterator<std::string_view>;
-		std::vector<std::string> vecStr {ValueIterator {dsIn.begin()}, ValueIterator {dsIn.end()}};
+	using ValueIterator = LLU::NodeValueIterator<std::string_view>;
+	std::vector<std::string> vecStr {ValueIterator {dsIn.begin()}, ValueIterator {dsIn.end()}};
 
-		DataList<std::string_view> dsOut;
+	DataList<std::string_view> dsOut;
 
-		std::transform(vecStr.rbegin(), vecStr.rend(), std::back_inserter(dsOut), [](const std::string& s) { return s; });
+	std::transform(vecStr.rbegin(), vecStr.rend(), std::back_inserter(dsOut), [](const std::string& s) { return s; });
 
-		mngr.setDataList(dsOut);
-	} catch (const LLU::LibraryLinkError& e) {
-		err = e.which();
-	} catch (...) {
-		err = LLErrorCode::FunctionError;
-	}
-	return err;
+	mngr.setDataList(dsOut);
 }
 
-LIBRARY_LINK_FUNCTION(IntsToNumericArray) {
-	auto err = LLErrorCode::NoError;
-	try {
-		LLU::MArgumentManager mngr {Argc, Args, Res};
-		auto dsIn = mngr.getDataList<mint>(0);
+LLU_LIBRARY_FUNCTION(IntsToNumericArray) {
+	auto dsIn = mngr.getDataList<mint>(0);
 
-		using ValueIterator = LLU::NodeValueIterator<mint>;
-		LLU::NumericArray<mint> ra {ValueIterator {dsIn.begin()}, ValueIterator {dsIn.end()}};
+	using ValueIterator = LLU::NodeValueIterator<mint>;
+	LLU::NumericArray<mint> ra {ValueIterator {dsIn.begin()}, ValueIterator {dsIn.end()}};
 
-		mngr.setNumericArray(ra);
-	} catch (const LLU::LibraryLinkError& e) {
-		err = e.which();
-	} catch (...) {
-		err = LLErrorCode::FunctionError;
-	}
-	return err;
+	mngr.setNumericArray(ra);
 }
 
-LIBRARY_LINK_FUNCTION(GetLength) {
-	auto err = LLErrorCode::NoError;
-	try {
-		LLU::MArgumentManager mngr {Argc, Args, Res};
-		auto dsIn = mngr.getGenericDataList(0);
-		mngr.setInteger(dsIn.getLength());
-	} catch (const LLU::LibraryLinkError& e) {
-		err = e.which();
-	} catch (...) {
-		err = LLErrorCode::FunctionError;
-	}
-	return err;
+LLU_LIBRARY_FUNCTION(GetLength) {
+	auto dsIn = mngr.getGenericDataList(0);
+	mngr.setInteger(dsIn.length());
 }
 
 LLU_LIBRARY_FUNCTION(CheckSizeChange) {
 	auto n = mngr.getInteger<mint>(0);
 	DataList<mint> dsInt;
 	DataList<LLU::TypedArgument> dsArg;
-	for (int i = 0; i < n; ++i) {
+	GenericDataList gds;
+	for (mint i = 0; i < n; ++i) {
 		dsInt.push_back(i);
-		dsArg.push_back(static_cast<mint>(i));
+		dsArg.push_back(i);
+		gds.push_back(i);
 	}
-	LLU::Tensor<mint> res({dsInt.getLength(), static_cast<mint>(dsInt.size()), dsArg.getLength(), static_cast<mint>(dsArg.size())});
+	LLU::Tensor<mint> res({dsInt.length(), static_cast<mint>(dsInt.size()), dsArg.length(), static_cast<mint>(dsArg.size()), gds.length()});
 	mngr.setTensor(res);
+}
+
+LLU_LIBRARY_FUNCTION(PullAndPush) {
+	using LLU::MArgumentType;
+
+	auto dsIn = mngr.getDataList<LLU::TypedArgument>(0);
+	GenericDataList dsOut;
+
+	// get and push Boolean
+	auto b = std::get<bool>(dsIn[0].value());
+	auto rawB = static_cast<mbool>(b);
+
+	dsOut.push_back(b);
+	dsOut.push_back(rawB);
+	dsOut.push_back<MArgumentType::Boolean>("bool", b);
+	dsOut.push_back<MArgumentType::Boolean>("mbool", rawB);
+
+	// get and push Integer
+	auto i = std::get<mint>(dsIn[1].value());
+	dsOut.push_back(i);
+	dsOut.push_back<MArgumentType::Integer>("mint", i);
+
+	// get and push Real
+	auto d = std::get<double>(dsIn[2].value());
+	dsOut.push_back(d);
+	dsOut.push_back<MArgumentType::Real>("mreal", d);
+
+	// get and push Complex
+	auto c = std::get<std::complex<double>>(dsIn[3].value());
+	auto rawC = LLU::toPrimitiveType<MArgumentType::Complex>(c);
+	dsOut.push_back(c);
+	dsOut.push_back(rawC);
+	dsOut.push_back<MArgumentType::Complex>("complex", c);
+	dsOut.push_back<MArgumentType::Complex>("mcomplex", rawC);
+
+	// get and push Tensor
+	auto& t = std::get<LLU::GenericTensor>(dsIn[4].value());
+	[[maybe_unused]] auto rawT = LLU::toPrimitiveType<MArgumentType::Tensor>(t);
+	dsOut.push_back(t.clone());
+	//dsOut.push_back(rawT); - compile time error due to a LibraryLink limitation
+	dsOut.push_back<MArgumentType::Tensor>("Tensor", std::move(t));
+	//dsOut.push_back<MArgumentType::Tensor>("MTensor", rawT); // this container has already been pushed to the dsOut one line above
+
+	// get and push SparseArray
+	auto& sa = std::get<MSparseArray>(dsIn[5].value());
+	dsOut.push_back(sa);
+	dsOut.push_back<MArgumentType::SparseArray>("MSparseArray", sa);
+
+	// get and push NumericArray
+	auto& na = std::get<LLU::GenericNumericArray>(dsIn[6].value());
+	[[maybe_unused]] auto rawNA = LLU::toPrimitiveType<MArgumentType::NumericArray>(na);
+	dsOut.push_back(na.clone());
+	//dsOut.push_back(rawNA); - compile time error due to a LibraryLink limitation
+	dsOut.push_back<MArgumentType::NumericArray>("NumericArray", std::move(na));
+	//dsOut.push_back<MArgumentType::NumericArray>("MNumericArray", rawNA);  // this container has already been pushed to the dsOut one line above
+
+	// get and push Image
+	auto& im = std::get<LLU::GenericImage>(dsIn[7].value());
+	[[maybe_unused]] auto rawIm = LLU::toPrimitiveType<MArgumentType::Image>(im);
+	dsOut.push_back(im.clone());
+	//dsOut.push_back(rawIm);
+	dsOut.push_back<MArgumentType::Image>("Image", std::move(im));
+	//dsOut.push_back<MArgumentType::Image>("MImage", rawIm);
+
+	// get and push String
+	auto str = std::get<std::string_view>(dsIn[8].value());
+	auto rawStr = LLU::toPrimitiveType<MArgumentType::UTF8String>(str);
+	dsOut.push_back(str);
+	dsOut.push_back(rawStr);
+	dsOut.push_back<MArgumentType::UTF8String>("String", str);
+	dsOut.push_back<MArgumentType::UTF8String>("RawString", rawStr);
+
+	// get and push DataStore
+	auto& ds = std::get<LLU::GenericDataList>(dsIn[9].value());
+	[[maybe_unused]] auto rawDS = LLU::toPrimitiveType<MArgumentType::DataStore>(ds);
+	dsOut.push_back(ds.clone());
+	//dsOut.push_back(rawDS);
+	dsOut.push_back<MArgumentType::DataStore>("DataList", std::move(ds));
+	// never add the same raw container to a DataStore multiple times, this will not work in top-level
+	//dsOut.push_back<MArgumentType::DataStore>("DataStore", rawDS);
+
+	mngr.set(dsOut);
+}
+
+LLU_LIBRARY_FUNCTION(PullAndPush2) {
+	using LLU::MArgumentType;
+
+	auto dsIn = mngr.getGenericDataList(0);
+	DataList<LLU::TypedArgument> dsOut;
+
+	auto node = dsIn.begin();
+
+	// get and push Boolean
+	auto b = std::get<bool>((*node++).value());
+	dsOut.push_back(b);
+
+	// get and push Integer
+	auto i = std::get<mint>((*node++).value());
+	dsOut.push_back(i);
+
+	// get and push Real
+	auto d = std::get<double>((*node++).value());
+	dsOut.push_back(d);
+
+	// get and push Complex
+	auto c = std::get<std::complex<double>>((*node++).value());
+	dsOut.push_back(c);
+
+	// get and push Tensor
+	auto t = std::get<LLU::GenericTensor>((*node++).value());
+	auto rawT = LLU::toPrimitiveType<MArgumentType::Tensor>(t);
+	dsOut.push_back(t.clone());
+	dsOut.push_back("Tensor", rawT); // rawT is a pointer type, it gets converted to bool and send as Boolean node
+
+	// get and push SparseArray
+	auto sa = std::get<MSparseArray>((*node++).value());
+	dsOut.push_back(sa);
+
+	// get and push NumericArray
+	auto na = std::get<LLU::GenericNumericArray>((*node++).value());
+	auto rawNA = LLU::toPrimitiveType<MArgumentType::NumericArray>(na);
+	dsOut.push_back(na.clone());
+	dsOut.push_back("NumericArray", rawNA);
+
+	// get and push Image
+	auto im = std::get<LLU::GenericImage>((*node++).value());
+	auto rawIm = LLU::toPrimitiveType<MArgumentType::Image>(im);
+	dsOut.push_back(im.clone());
+	dsOut.push_back("Image", rawIm);
+
+	// get and push String
+	auto str = std::get<std::string_view>((*node++).value());
+	auto rawStr = LLU::toPrimitiveType<MArgumentType::UTF8String>(str);
+	dsOut.push_back(str);
+	dsOut.push_back("String", rawStr);
+
+	// get and push DataStore
+	auto ds = std::get<LLU::GenericDataList>((*node++).value());
+	auto rawDS = LLU::toPrimitiveType<MArgumentType::DataStore>(ds);
+	dsOut.push_back(ds.clone());
+	dsOut.push_back("DataList", rawDS);
+
+	mngr.set(dsOut);
 }
