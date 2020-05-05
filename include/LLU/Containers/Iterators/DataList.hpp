@@ -73,7 +73,7 @@ namespace LLU {
 	 * @tparam 	T - type of nodes in the DataList.
 	 * @tparam 	BaseIter - iterator class to pass as template argument to SpecialIterator
 	 */
-	template<typename T, typename BaseIter = typename std::list<DataNode<T>>::iterator>
+	template<typename T, typename BaseIter = typename DataList<T>::iterator>
 	class NodeValueIterator : public SpecialIterator<T, BaseIter> {
 	public:
 		using Super = SpecialIterator<T, BaseIter>;
@@ -157,12 +157,12 @@ namespace LLU {
 	 * @tparam 	T - type of nodes in the DataList.
 	 * @tparam 	BaseIter - iterator class to pass as template argument to SpecialIterator
 	 */
-	template<typename T, typename BaseIter = typename std::list<DataNode<T>>::iterator>
-	class NodeNameIterator : public SpecialIterator<const std::string, BaseIter> {
+	template<typename T, typename BaseIter = typename DataList<T>::iterator>
+	class NodeNameIterator : public SpecialIterator<std::string_view, BaseIter> {
 	public:
-		using Super = SpecialIterator<const std::string, BaseIter>;
+		using Super = SpecialIterator<std::string_view, BaseIter>;
 		using pointer = typename Super::pointer;
-		using reference = typename Super::reference;
+		using reference = std::string_view;
 
 	public:
 		/// Inherited constructors
@@ -173,15 +173,7 @@ namespace LLU {
 		 * @return	Reference to the name of the currently pointed to node
 		 */
 		reference operator*() const {
-			return this->baseIter->name;
-		}
-
-		/**
-		 * @brief 	Get pointer to the name of the currently pointed to node
-		 * @return	Pointer to the name of the currently pointed to node
-		 */
-		pointer operator->() const {
-			return std::addressof(this->baseIter->name);
+			return this->baseIter->name();
 		}
 
 		/**
@@ -223,13 +215,13 @@ namespace LLU {
 	 * @brief Reversed version of NodeNameIterator
 	 */
 	template<typename T>
-	using ReverseNameIterator = NodeNameIterator<T, typename std::list<DataNode<T>>::reverse_iterator>;
+	using ReverseNameIterator = NodeNameIterator<T, typename DataList<T>::reverse_iterator>;
 
 	/**
 	 * @brief Reversed version of NodeValueIterator
 	 */
 	template<typename T>
-	using ReverseValueIterator = NodeValueIterator<T, typename std::list<DataNode<T>>::reverse_iterator>;
+	using ReverseValueIterator = NodeValueIterator<T, typename DataList<T>::reverse_iterator>;
 
 }	 // namespace LLU
 

@@ -28,12 +28,9 @@ namespace LLU {
 	 * 			It stores node name in std::string and node value as MArgument, getters for both are provided.
 	 */
 	template<typename T>
-	struct DataNode {
+	class DataNode {
 		static constexpr bool isGeneric = std::is_same_v<T, TypedArgument>;
 		static_assert(isTypedArgument<T> || isGeneric, "DataNode type is not a valid MArgument wrapper type.");
-
-		const std::string name;
-		TypedArgument nodeArg;
 
 	public:
 		/**
@@ -41,6 +38,8 @@ namespace LLU {
 		 * @param 	dsn - raw node
 		 */
 		explicit DataNode(DataStoreNode dsn);
+
+		DataNode(DataStoreNode dsn, TypedArgument arg);
 
 		/**
 		 * @brief 	Get node value
@@ -76,12 +75,16 @@ namespace LLU {
 			return std::addressof(value());
 		}
 
+		std::string_view name() const {
+			return node.name();
+		}
+
 		/**
 		 * @brief 	Get the actual type of node value stored in MArgument.
 		 * 			This is useful when working on a "generic" DataList of type MArgumentType::MArgument, otherwise it should always return MArgType
 		 * @return	Actual type of node value
 		 */
-		static MArgumentType valueType() noexcept {
+		static constexpr MArgumentType valueType() noexcept {
 			if constexpr (isGeneric) {
 				return MArgumentType::MArgument;
 			} else {
@@ -93,11 +96,14 @@ namespace LLU {
 		decltype(auto) get() const {
 			static_assert(N < 2, "Bad structure binding attempt to a DataNode.");
 			if constexpr (N == 0) {
-				return name;
+				return name();
 			} else {
 				return (value());
 			}
 		}
+	private:
+		GenericDataNode node;
+		TypedArgument nodeArg;
 	};
 
 
@@ -111,15 +117,13 @@ namespace LLU {
 	 */
 	template<typename T>
 	class DataList : public MContainer<MArgumentType::DataStore> {
-
-		/// private proxy list with top-level wrappers of each node of the internal DataStore
-		std::list<DataNode<T>> proxyList;
-
 	public:
-		using iterator = typename decltype(proxyList)::iterator;
-		using const_iterator = typename decltype(proxyList)::const_iterator;
-		using reverse_iterator = typename decltype(proxyList)::reverse_iterator;
-		using const_reverse_iterator = typename decltype(proxyList)::const_reverse_iterator;
+		using ProxyContainer = std::vector<DataNode<T>>;
+		using iterator = typename ProxyContainer::iterator;
+		using const_iterator = typename ProxyContainer::const_iterator;
+		using reverse_iterator = typename ProxyContainer::reverse_iterator;
+		using const_reverse_iterator = typename ProxyContainer::const_reverse_iterator;
+		using size_type = typename ProxyContainer::size_type;
 		using value_type = T;
 		using GenericDataStore = MContainer<MArgumentType::DataStore>;
 
@@ -149,7 +153,7 @@ namespace LLU {
 		/**
 		 * @brief 	Get size of the DataList, which is the number of nodes in the list
 		 */
-		std::size_t size() const {
+		size_type size() const {
 			return proxyList.size();
 		}
 
@@ -223,12 +227,26 @@ namespace LLU {
 			return proxyList.rend();
 		}
 
-		void push_back(DataNode<value_type> node) {
-			push_back("", node.getValue());
+		DataNode<T>& operator[](size_type index) {
+			return proxyList[index];
 		}
 
-		void push_back(const std::string& name, DataNode<value_type> node) {
-			push_back(name, node.getValue());
+		const DataNode<T>& operator[](size_type index) const {
+			return proxyList[index];
+		}
+
+		DataNode<T>& at(size_type index) {
+			if (index >= size()) {
+				ErrorManager::throwException(ErrorName::DimensionsError);
+			}
+			return proxyList[index];
+		}
+
+		const DataNode<T>& at(size_type index) const {
+			if (index >= size()) {
+				ErrorManager::throwException(ErrorName::DimensionsError);
+			}
+			return proxyList[index];
 		}
 
 		/**
@@ -242,33 +260,34 @@ namespace LLU {
 		 * @param 	name - name for the new node
 		 * @param 	nodeData - actual data to store in the new node
 		 */
-		void push_back(const std::string& name, value_type nodeData);
+		void push_back(std::string_view name, value_type nodeData);
 
 	private:
 		/**
 		 * @brief 	Recreate private proxy list from the internal DataStore
 		 */
 		void makeProxy();
+
+		/// private proxy list with top-level wrappers of each node of the internal DataStore
+		ProxyContainer proxyList;
 	};
 
 	/* Definitions od DataNode methods */
 	template<typename T>
-	DataNode<T>::DataNode(DataStoreNode dsn) : name {
-			  [&] {
-				  if (!dsn) {
-					  ErrorManager::throwException(ErrorName::DLNullRawNode);
-				  }
-				  char* rawName = nullptr;
-				  LibraryData::DataStoreAPI()->DataStoreNode_getName(dsn, &rawName);
-				  return rawName? std::string {rawName} : std::string {};
-			  }()
-		  }
-	{
-		MArgument m;
-		if (LibraryData::DataStoreAPI()->DataStoreNode_getData(dsn, &m) != 0) {
-			ErrorManager::throwException(ErrorName::DLGetNodeDataError);
+	DataNode<T>::DataNode(DataStoreNode dsn) : node {dsn} {
+		if (!dsn) {
+			ErrorManager::throwException(ErrorName::DLNullRawNode);
 		}
-		nodeArg = fromMArgument(m, static_cast<MArgumentType>(LibraryData::DataStoreAPI()->DataStoreNode_getDataType(dsn)));
+		nodeArg = node.value();
+		if constexpr (!isGeneric) {
+			if (!std::holds_alternative<T>(nodeArg)) {
+				ErrorManager::throwException(ErrorName::DLInvalidNodeType);
+			}
+		}
+	}
+
+	template<typename T>
+	DataNode<T>::DataNode(DataStoreNode dsn, TypedArgument arg) : node {dsn}, nodeArg {std::move(arg)} {
 		if constexpr (!isGeneric) {
 			if (!std::holds_alternative<T>(nodeArg)) {
 				ErrorManager::throwException(ErrorName::DLInvalidNodeType);
@@ -299,8 +318,8 @@ namespace LLU {
 
 	template<typename T>
 	void DataList<T>::makeProxy() {
-		auto size = LibraryData::DataStoreAPI()->DataStore_getLength(this->getContainer());
-		auto currentNode = LibraryData::DataStoreAPI()->DataStore_getFirstNode(this->getContainer());
+		auto size = length();
+		auto currentNode = front();
 		for (mint i = 0; i < size; ++i) {
 			proxyList.emplace_back(currentNode);
 			currentNode = LibraryData::DataStoreAPI()->DataStoreNode_getNextNode(currentNode);
@@ -314,13 +333,16 @@ namespace LLU {
 
 	template<typename T>
 	void DataList<T>::push_back(value_type nodeData) {
-		push_back("", std::move(nodeData));
+		TypedArgument t {std::move(nodeData)};
+		GenericDataStore::push_back(t);
+		proxyList.emplace_back(this->back(), std::move(t));
 	}
 
 	template<typename T>
-	void DataList<T>::push_back(const std::string& name, value_type nodeData) {
-		GenericDataStore::push_back(name, TypedArgument {std::move(nodeData)});
-		proxyList.emplace_back(this->getLastNode());
+	void DataList<T>::push_back(std::string_view name, value_type nodeData) {
+		TypedArgument t {std::move(nodeData)};
+		GenericDataStore::push_back(name, t);
+		proxyList.emplace_back(this->back(), std::move(t));
 	}
 
 } /* namespace LLU */
