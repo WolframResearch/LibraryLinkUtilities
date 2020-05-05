@@ -30,6 +30,13 @@
 
 namespace LLU {
 
+	enum class Passing {
+		Automatic,
+		Constant,
+		Manual,
+		Shared
+	};
+
 	/**
 	 * @class	MArgumentManager
 	 * @brief	Manages arguments exchanged between the paclet C++ code and LibraryLink interface.
@@ -751,6 +758,21 @@ namespace LLU {
 		 */
 		void acquireUTF8String(size_type index) const;
 
+		/**
+		 *
+		 * @param m
+		 * @return
+		 */
+		static constexpr Ownership getOwner(Passing m) noexcept {
+			if (m == Passing::Manual) {
+				return Ownership::Library;
+			}
+			if (m == Passing::Shared) {
+				return Ownership::Shared;
+			}
+			return Ownership::LibraryLink;
+		}
+
 		/// Here we store a string that was most recently returned to LibraryLink
 		/// [LLDocs]: https://reference.wolfram.com/language/LibraryLink/tutorial/InteractionWithMathematica.html#262826223 "LibraryLink docs"
 		/// @see [LibraryLink docs][LLDocs]
@@ -982,23 +1004,23 @@ namespace LLU {
 
 	template<Passing Mode>
 	GenericNumericArray MArgumentManager::getGenericNumericArray(size_type index) const {
-		return GenericNumericArray(getMNumericArray(index), Mode);
+		return GenericNumericArray(getMNumericArray(index), getOwner(Mode));
 	}
 
 	template<Passing Mode>
 	GenericTensor MArgumentManager::getGenericTensor(size_type index) const {
-		return {getMTensor(index), Mode};
+		return {getMTensor(index), getOwner(Mode)};
 	}
 
 	template<Passing Mode>
 	GenericImage MArgumentManager::getGenericImage(size_type index) const {
-		return {getMImage(index), Mode};
+		return {getMImage(index), getOwner(Mode)};
 	}
 
 	template<Passing Mode>
 	GenericDataList MArgumentManager::getGenericDataList(size_type index) const {
 		static_assert(Mode != Passing::Shared, "DataStore cannot be passed as \"Shared\".");
-		return {getDataStore(index), Mode};
+		return {getDataStore(index), getOwner(Mode)};
 	}
 
 	template<class ManagedExpr, class DynamicType>

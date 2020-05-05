@@ -24,12 +24,12 @@ namespace LLU {
 				auto* mc = MArgument_getComplexAddress(m);
 				return std::complex<double> {mc->ri[0], mc->ri[1]};
 			}
-			case MArgumentType::Tensor: return GenericTensor {MArgument_getMTensor(m), Passing::Automatic};
+			case MArgumentType::Tensor: return GenericTensor {MArgument_getMTensor(m), Ownership::LibraryLink};
 			case MArgumentType::SparseArray: return MArgument_getMSparseArray(m);
-			case MArgumentType::NumericArray: return GenericNumericArray {MArgument_getMNumericArray(m), Passing::Automatic};
-			case MArgumentType::Image: return GenericImage {MArgument_getMImage(m), Passing::Automatic};
+			case MArgumentType::NumericArray: return GenericNumericArray {MArgument_getMNumericArray(m), Ownership::LibraryLink};
+			case MArgumentType::Image: return GenericImage {MArgument_getMImage(m), Ownership::LibraryLink};
 			case MArgumentType::UTF8String: return std::string_view {MArgument_getUTF8String(m)};
-			case MArgumentType::DataStore: return GenericDataList {MArgument_getDataStore(m), Passing::Automatic};
+			case MArgumentType::DataStore: return GenericDataList {MArgument_getDataStore(m), Ownership::LibraryLink};
 		}
 		ErrorManager::throwException(ErrorName::FunctionError); //TODO add specific error
 	}

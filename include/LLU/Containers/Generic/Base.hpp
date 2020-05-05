@@ -47,8 +47,6 @@ namespace LLU {
 		 * @brief Create MContainerBase from a raw container
 		 * @param c - raw LibraryLink container (MTensor, MNumericArray, etc.), passing a nullptr will trigger an exception
 		 */
-		MContainerBase(Container c, Passing mode) : MContainerBase(c, ownerFromPassingMode(mode)) {}
-
 		MContainerBase(Container c, Ownership owner) : container {c}, owner {owner} {
 			if (!c) {
 				ErrorManager::throwException(ErrorName::CreateFromNullError);
@@ -212,16 +210,6 @@ namespace LLU {
 			}
 			owner = newOwnerMode;
 			container = newCont;
-		}
-
-		static Ownership ownerFromPassingMode(Passing m) noexcept {
-			if (m == Passing::Manual) {
-				return Ownership::Library;
-			}
-			if (m == Passing::Shared) {
-				return Ownership::Shared;
-			}
-			return Ownership::LibraryLink;
 		}
 
 	private:

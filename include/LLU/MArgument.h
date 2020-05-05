@@ -14,13 +14,6 @@
 
 namespace LLU {
 
-	enum class Passing {
-		Automatic,
-		Constant,
-		Manual,
-		Shared
-	};
-
 	/**
 	 * @brief Strongly type enum with possible types of data stored in MArgument.
 	 */
