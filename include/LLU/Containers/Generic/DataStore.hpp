@@ -46,12 +46,12 @@ namespace LLU {
 		/**
 		 * @brief   Default constructor, creates empty DataStore owned by the Library
 		 */
-		MContainer() : MContainer(LibraryData::DataStoreAPI()->createDataStore()) {}
+		MContainer() : MContainer(LibraryData::DataStoreAPI()->createDataStore(), Ownership::Library) {}
 
 		MContainer(Container c, Ownership owner);
 
 		MContainer clone() const {
-			return MContainer {cloneContainer()};
+			return MContainer {cloneContainer(), Ownership::Library};
 		}
 
 		/**

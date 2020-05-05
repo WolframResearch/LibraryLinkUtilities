@@ -162,8 +162,6 @@ namespace LLU {
 		 **/
 		Image(MImage mi, Passing mode);
 
-		explicit Image(MImage mi) : Image(mi, Ownership::LibraryLink) {};
-
 		Image(MImage mi, Ownership owner) : Image(GenericImage(mi, owner)) {};
 
 		Image() = default;

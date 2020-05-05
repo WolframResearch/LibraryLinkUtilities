@@ -49,8 +49,6 @@ namespace LLU {
 		 */
 		MContainerBase(Container c, Passing mode) : MContainerBase(c, ownerFromPassingMode(mode)) {}
 
-		explicit MContainerBase(Container c) : MContainerBase(c, Ownership::Library) {}
-
 		MContainerBase(Container c, Ownership owner) : container {c}, owner {owner} {
 			if (!c) {
 				ErrorManager::throwException(ErrorName::CreateFromNullError);

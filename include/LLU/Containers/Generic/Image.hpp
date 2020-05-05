@@ -86,7 +86,7 @@ namespace LLU {
 		}
 
 		MContainer clone() const {
-			return MContainer {cloneContainer()};
+			return MContainer {cloneContainer(), Ownership::Library};
 		}
 
 		/// @copydoc ImageInterface::colorspace()

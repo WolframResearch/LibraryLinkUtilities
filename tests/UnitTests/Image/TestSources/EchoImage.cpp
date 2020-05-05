@@ -75,5 +75,5 @@ LLU_LIBRARY_FUNCTION(CloneImage) {
 
 LLU_LIBRARY_FUNCTION(EmptyWrapper) {
 	LLU::Unused(mngr);
-	LLU::Image<std::uint8_t> im {nullptr};	  // this should trigger an exception
+	LLU::Image<std::uint8_t> im {nullptr, LLU::Ownership::Library};	  // this should trigger an exception
 }
