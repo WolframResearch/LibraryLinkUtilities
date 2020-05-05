@@ -11,30 +11,30 @@
 
 namespace LLU {
 
-#define ARGUMENT_DEFINE_SPECIALIZATIONS_OF_MEMBER_FUNCTIONS(ArgType, MArgGetPrefix, MArgSetPrefix, DSAddNamed, DSAdd)     \
-	template<>                                                                                                            \
-	auto Argument<MArgumentType::ArgType>::get()->typename Argument::value_type& {                                        \
-		return MArgGetPrefix##ArgType(arg);                                                                               \
-	}                                                                                                                     \
-	template<>                                                                                                            \
-	auto Argument<MArgumentType::ArgType>::get() const->const typename Argument::value_type& {                            \
-		return MArgGetPrefix##ArgType(arg);                                                                               \
-	}                                                                                                                     \
-	template<>                                                                                                            \
-	void Argument<MArgumentType::ArgType>::addDataStoreNode(DataStore ds, std::string_view name, const value_type& val) { \
-		LibraryData::DataStoreAPI()->DataStore_##DSAddNamed(ds, const_cast<char*>(name.data()), val);                     \
-	}                                                                                                                     \
-	template<>                                                                                                            \
-	void Argument<MArgumentType::ArgType>::addDataStoreNode(DataStore ds, const value_type& val) {                        \
-		LibraryData::DataStoreAPI()->DataStore_##DSAdd(ds, val);                                                          \
-	}                                                                                                                     \
-	template<>                                                                                                            \
-	auto Argument<MArgumentType::ArgType>::getAddress() const->typename Argument::value_type* {                           \
-		return MArgGetPrefix##ArgType##Address(arg);                                                                      \
-	}                                                                                                                     \
-	template<>                                                                                                            \
-	void Argument<MArgumentType::ArgType>::set(typename Argument::value_type newValue) {                                  \
-		MArgSetPrefix##ArgType(arg, newValue);                                                                            \
+#define ARGUMENT_DEFINE_SPECIALIZATIONS_OF_MEMBER_FUNCTIONS(ArgType, MArgGetPrefix, MArgSetPrefix, DSAddNamed, DSAdd) \
+	template<>                                                                                                        \
+	auto Argument<MArgumentType::ArgType>::get()->typename Argument::value_type& {                                    \
+		return MArgGetPrefix##ArgType(arg);                                                                           \
+	}                                                                                                                 \
+	template<>                                                                                                        \
+	auto Argument<MArgumentType::ArgType>::get() const->const typename Argument::value_type& {                        \
+		return MArgGetPrefix##ArgType(arg);                                                                           \
+	}                                                                                                                 \
+	template<>                                                                                                        \
+	void Argument<MArgumentType::ArgType>::addDataStoreNode(DataStore ds, std::string_view name, value_type val) {    \
+		LibraryData::DataStoreAPI()->DataStore_##DSAddNamed(ds, const_cast<char*>(name.data()), val);                 \
+	}                                                                                                                 \
+	template<>                                                                                                        \
+	void Argument<MArgumentType::ArgType>::addDataStoreNode(DataStore ds, value_type val) {                           \
+		LibraryData::DataStoreAPI()->DataStore_##DSAdd(ds, val);                                                      \
+	}                                                                                                                 \
+	template<>                                                                                                        \
+	auto Argument<MArgumentType::ArgType>::getAddress() const->typename Argument::value_type* {                       \
+		return MArgGetPrefix##ArgType##Address(arg);                                                                  \
+	}                                                                                                                 \
+	template<>                                                                                                        \
+	void Argument<MArgumentType::ArgType>::set(typename Argument::value_type newValue) {                              \
+		MArgSetPrefix##ArgType(arg, newValue);                                                                        \
 	}
 
 	ARGUMENT_DEFINE_SPECIALIZATIONS_OF_MEMBER_FUNCTIONS(Boolean, MArgument_get, MArgument_set, addNamedBoolean, addBoolean)
