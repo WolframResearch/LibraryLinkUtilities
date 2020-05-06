@@ -98,7 +98,7 @@ namespace LLU {
 		void push_back(T nodeValue) {
 			// MTensor and MNumericArray are actually the same type, so this function cannot handle them correctly.
 			// Use push_back templated with MArgumentType instead.
-			static_assert(not std::is_same_v<T, MTensor>, "Do not use push_back templated on the argument type with MTensor or MNumericArray.");
+			static_assert(!std::is_same_v<T, MTensor>, "Do not use push_back templated on the argument type with MTensor or MNumericArray.");
 			if constexpr (isPrimitiveArgument<T>) {
 				constexpr MArgumentType Type = primitiveArgumentIndex<T>;
 				Argument<Type>::addDataStoreNode(getContainer(), nodeValue);
@@ -110,7 +110,7 @@ namespace LLU {
 
 		template<typename T, EnableIfArgumentType<T> = 0>
 		void push_back(std::string_view name, T nodeValue) {
-			static_assert(not std::is_same_v<T, MTensor>, "Do not use push_back templated on the argument type with MTensor or MNumericArray.");
+			static_assert(!std::is_same_v<T, MTensor>, "Do not use push_back templated on the argument type with MTensor or MNumericArray.");
 			if constexpr (isPrimitiveArgument<T>) {
 				constexpr MArgumentType Type = primitiveArgumentIndex<T>;
 				Argument<Type>::addDataStoreNode(getContainer(), name, nodeValue);
