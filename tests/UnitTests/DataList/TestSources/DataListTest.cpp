@@ -88,7 +88,8 @@ void reverseListOfString(LLU::MArgumentManager& mngr) {
 		if constexpr (std::is_same_v<InContainer, DataList<std::string_view>>) {
 			s = node.value();
 		} else {
-			s = std::get<std::string_view>(node.value());
+			auto v = node.value();
+			s = *std::get_if<std::string_view>(&v);
 		}
 		std::string reversed {s.rbegin(), s.rend()};	// create reversed copy
 		dsOut.push_back(std::string_view(reversed));
@@ -288,7 +289,7 @@ LLU_LIBRARY_FUNCTION(PullAndPush) {
 	GenericDataList dsOut;
 
 	// get and push Boolean
-	auto b = std::get<bool>(dsIn[0].value());
+	auto b = *std::get_if<bool>(dsIn[0].valuePtr());
 	auto rawB = static_cast<mbool>(b);
 
 	dsOut.push_back(b);
@@ -297,17 +298,17 @@ LLU_LIBRARY_FUNCTION(PullAndPush) {
 	dsOut.push_back<MArgumentType::Boolean>("mbool", rawB);
 
 	// get and push Integer
-	auto i = std::get<mint>(dsIn[1].value());
+	auto i = *std::get_if<mint>(dsIn[1].valuePtr());
 	dsOut.push_back(i);
 	dsOut.push_back<MArgumentType::Integer>("mint", i);
 
 	// get and push Real
-	auto d = std::get<double>(dsIn[2].value());
+	auto d = *std::get_if<double>(dsIn[2].valuePtr());
 	dsOut.push_back(d);
 	dsOut.push_back<MArgumentType::Real>("mreal", d);
 
 	// get and push Complex
-	auto c = std::get<std::complex<double>>(dsIn[3].value());
+	auto c = *std::get_if<std::complex<double>>(dsIn[3].valuePtr());
 	auto rawC = LLU::toPrimitiveType<MArgumentType::Complex>(c);
 	dsOut.push_back(c);
 	dsOut.push_back(rawC);
@@ -315,7 +316,7 @@ LLU_LIBRARY_FUNCTION(PullAndPush) {
 	dsOut.push_back<MArgumentType::Complex>("mcomplex", rawC);
 
 	// get and push Tensor
-	auto& t = std::get<LLU::GenericTensor>(dsIn[4].value());
+	auto& t = *std::get_if<LLU::GenericTensor>(dsIn[4].valuePtr());
 	[[maybe_unused]] auto rawT = LLU::toPrimitiveType<MArgumentType::Tensor>(t);
 	dsOut.push_back(t.clone());
 	//dsOut.push_back(rawT); - compile time error due to a LibraryLink limitation
@@ -323,12 +324,12 @@ LLU_LIBRARY_FUNCTION(PullAndPush) {
 	//dsOut.push_back<MArgumentType::Tensor>("MTensor", rawT); // this container has already been pushed to the dsOut one line above
 
 	// get and push SparseArray
-	auto& sa = std::get<MSparseArray>(dsIn[5].value());
+	auto& sa = *std::get_if<MSparseArray>(dsIn[5].valuePtr());
 	dsOut.push_back(sa);
 	dsOut.push_back<MArgumentType::SparseArray>("MSparseArray", sa);
 
 	// get and push NumericArray
-	auto& na = std::get<LLU::GenericNumericArray>(dsIn[6].value());
+	auto& na = *std::get_if<LLU::GenericNumericArray>(dsIn[6].valuePtr());
 	[[maybe_unused]] auto rawNA = LLU::toPrimitiveType<MArgumentType::NumericArray>(na);
 	dsOut.push_back(na.clone());
 	//dsOut.push_back(rawNA); - compile time error due to a LibraryLink limitation
@@ -336,7 +337,7 @@ LLU_LIBRARY_FUNCTION(PullAndPush) {
 	//dsOut.push_back<MArgumentType::NumericArray>("MNumericArray", rawNA);  // this container has already been pushed to the dsOut one line above
 
 	// get and push Image
-	auto& im = std::get<LLU::GenericImage>(dsIn[7].value());
+	auto& im = *std::get_if<LLU::GenericImage>(dsIn[7].valuePtr());
 	[[maybe_unused]] auto rawIm = LLU::toPrimitiveType<MArgumentType::Image>(im);
 	dsOut.push_back(im.clone());
 	//dsOut.push_back(rawIm);
@@ -344,7 +345,7 @@ LLU_LIBRARY_FUNCTION(PullAndPush) {
 	//dsOut.push_back<MArgumentType::Image>("MImage", rawIm);
 
 	// get and push String
-	auto str = std::get<std::string_view>(dsIn[8].value());
+	auto str = *std::get_if<std::string_view>(dsIn[8].valuePtr());
 	auto rawStr = LLU::toPrimitiveType<MArgumentType::UTF8String>(str);
 	dsOut.push_back(str);
 	dsOut.push_back(rawStr);
@@ -352,7 +353,7 @@ LLU_LIBRARY_FUNCTION(PullAndPush) {
 	dsOut.push_back<MArgumentType::UTF8String>("RawString", rawStr);
 
 	// get and push DataStore
-	auto& ds = std::get<LLU::GenericDataList>(dsIn[9].value());
+	auto& ds = *std::get_if<LLU::GenericDataList>(dsIn[9].valuePtr());
 	[[maybe_unused]] auto rawDS = LLU::toPrimitiveType<MArgumentType::DataStore>(ds);
 	dsOut.push_back(ds.clone());
 	//dsOut.push_back(rawDS);
@@ -363,6 +364,11 @@ LLU_LIBRARY_FUNCTION(PullAndPush) {
 	mngr.set(dsOut);
 }
 
+LLU::TypedArgument* getValuePtrAndAdvance(GenericDataList::iterator& node) {
+	static LLU::TypedArgument value;
+	return std::addressof(value = (*node++).value());
+}
+
 LLU_LIBRARY_FUNCTION(PullAndPush2) {
 	using LLU::MArgumentType;
 
@@ -371,52 +377,53 @@ LLU_LIBRARY_FUNCTION(PullAndPush2) {
 
 	auto node = dsIn.begin();
 
+
 	// get and push Boolean
-	auto b = std::get<bool>((*node++).value());
+	auto b = *std::get_if<bool>(getValuePtrAndAdvance(node));
 	dsOut.push_back(b);
 
 	// get and push Integer
-	auto i = std::get<mint>((*node++).value());
+	auto i = *std::get_if<mint>(getValuePtrAndAdvance(node));
 	dsOut.push_back(i);
 
 	// get and push Real
-	auto d = std::get<double>((*node++).value());
+	auto d = *std::get_if<double>(getValuePtrAndAdvance(node));
 	dsOut.push_back(d);
 
 	// get and push Complex
-	auto c = std::get<std::complex<double>>((*node++).value());
+	auto c = *std::get_if<std::complex<double>>(getValuePtrAndAdvance(node));
 	dsOut.push_back(c);
 
 	// get and push Tensor
-	auto t = std::get<LLU::GenericTensor>((*node++).value());
+	auto t = std::move(*std::get_if<LLU::GenericTensor>(getValuePtrAndAdvance(node)));
 	auto rawT = LLU::toPrimitiveType<MArgumentType::Tensor>(t);
 	dsOut.push_back(t.clone());
 	dsOut.push_back("Tensor", rawT); // rawT is a pointer type, it gets converted to bool and send as Boolean node
 
 	// get and push SparseArray
-	auto sa = std::get<MSparseArray>((*node++).value());
+	auto sa = *std::get_if<MSparseArray>(getValuePtrAndAdvance(node));
 	dsOut.push_back(sa);
 
 	// get and push NumericArray
-	auto na = std::get<LLU::GenericNumericArray>((*node++).value());
+	auto na = std::move(*std::get_if<LLU::GenericNumericArray>(getValuePtrAndAdvance(node)));
 	auto rawNA = LLU::toPrimitiveType<MArgumentType::NumericArray>(na);
 	dsOut.push_back(na.clone());
 	dsOut.push_back("NumericArray", rawNA);
 
 	// get and push Image
-	auto im = std::get<LLU::GenericImage>((*node++).value());
+	auto im = std::move(*std::get_if<LLU::GenericImage>(getValuePtrAndAdvance(node)));
 	auto rawIm = LLU::toPrimitiveType<MArgumentType::Image>(im);
 	dsOut.push_back(im.clone());
 	dsOut.push_back("Image", rawIm);
 
 	// get and push String
-	auto str = std::get<std::string_view>((*node++).value());
+	auto str = *std::get_if<std::string_view>(getValuePtrAndAdvance(node));
 	auto rawStr = LLU::toPrimitiveType<MArgumentType::UTF8String>(str);
 	dsOut.push_back(str);
 	dsOut.push_back("String", rawStr);
 
 	// get and push DataStore
-	auto ds = std::get<LLU::GenericDataList>((*node++).value());
+	auto ds = std::move(*std::get_if<LLU::GenericDataList>(getValuePtrAndAdvance(node)));
 	auto rawDS = LLU::toPrimitiveType<MArgumentType::DataStore>(ds);
 	dsOut.push_back(ds.clone());
 	dsOut.push_back("DataList", rawDS);

@@ -37,21 +37,21 @@ namespace LLU {
 	void toMArgument(const TypedArgument& tma, MArgument& res) {
 		switch (static_cast<MArgumentType>(tma.index())) {
 			case MArgumentType::MArgument: ErrorManager::throwException(ErrorName::FunctionError); //TODO add specific error;
-			case MArgumentType::Boolean: MArgument_setBoolean(res, std::get<bool>(tma)); break;
-			case MArgumentType::Integer: MArgument_setInteger(res, std::get<mint>(tma)); break;
-			case MArgumentType::Real: MArgument_setReal(res, std::get<double>(tma)); break;
+			case MArgumentType::Boolean: MArgument_setBoolean(res, *std::get_if<bool>(&tma)); break;
+			case MArgumentType::Integer: MArgument_setInteger(res, *std::get_if<mint>(&tma)); break;
+			case MArgumentType::Real: MArgument_setReal(res, *std::get_if<double>(&tma)); break;
 			case MArgumentType::Complex: {
-				auto c = std::get<std::complex<double>>(tma);
+				auto c = *std::get_if<std::complex<double>>(&tma);
 				mcomplex mc {c.real(), c.imag()};
 				MArgument_setComplex(res, mc);
 				break;
 			}
-			case MArgumentType::Tensor: MArgument_setMTensor(res, std::get<GenericTensor>(tma).abandonContainer()); break;
-			case MArgumentType::SparseArray: MArgument_setMSparseArray(res, std::get<MSparseArray>(tma)); break;
-			case MArgumentType::NumericArray: MArgument_setMNumericArray(res, std::get<GenericNumericArray>(tma).abandonContainer()); break;
-			case MArgumentType::Image: MArgument_setMImage(res, std::get<GenericImage>(tma).abandonContainer()); break;
-			case MArgumentType::UTF8String: MArgument_setUTF8String(res, const_cast<char*>(std::get<std::string_view>(tma).data())); break;
-			case MArgumentType::DataStore: MArgument_setDataStore(res, std::get<GenericDataList>(tma).abandonContainer()); break;
+			case MArgumentType::Tensor: MArgument_setMTensor(res, std::get_if<GenericTensor>(&tma)->abandonContainer()); break;
+			case MArgumentType::SparseArray: MArgument_setMSparseArray(res, *std::get_if<MSparseArray>(&tma)); break;
+			case MArgumentType::NumericArray: MArgument_setMNumericArray(res, std::get_if<GenericNumericArray>(&tma)->abandonContainer()); break;
+			case MArgumentType::Image: MArgument_setMImage(res, std::get_if<GenericImage>(&tma)->abandonContainer()); break;
+			case MArgumentType::UTF8String: MArgument_setUTF8String(res, const_cast<char*>(std::get_if<std::string_view>(&tma)->data())); break;
+			case MArgumentType::DataStore: MArgument_setDataStore(res, std::get_if<GenericDataList>(&tma)->abandonContainer()); break;
 		}
 	}
 }

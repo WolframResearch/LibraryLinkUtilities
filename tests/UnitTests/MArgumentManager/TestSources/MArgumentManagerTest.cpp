@@ -116,10 +116,10 @@ namespace LLU {
 			std::vector<Person> res;
 			std::transform(std::begin(dl), std::end(dl), std::back_inserter(res), [](auto& node) {
 				DataList<LLU::TypedArgument> d(std::move(node.value())); // move DataStore from node to a new DataList, node will not be used again
-				NodeValueIterator<LLU::TypedArgument> it {d.begin()};
-				std::string name = std::get<std::string_view>(*it++).data();
-				auto age = static_cast<uint8_t>(std::get<mint>(*it++));
-				double height = std::get<double>(*it++);
+				auto it {d.begin()};
+				std::string name = std::get_if<std::string_view>((it++)->valuePtr())->data();
+				auto age = static_cast<uint8_t>(*std::get_if<mint>((it++)->valuePtr()));
+				double height = *std::get_if<double>((it++)->valuePtr());
 				return Person { std::move(name), age, height };
 			});
 			return res;
