@@ -52,7 +52,7 @@ namespace LLU {
 		 * @param interleaving - whether the image data should be interleaved or not
 		 */
 		MContainer(mint slices, mint width, mint height, mint channels, imagedata_t type, colorspace_t colorSpace, mbool interleaving) {
-			RawContainer tmp {};
+			Container tmp {};
 			if (slices ? LibraryData::ImageAPI()->MImage_new3D(slices, width, height, channels, type, colorSpace, interleaving, &tmp)
 					   : LibraryData::ImageAPI()->MImage_new2D(width, height, channels, type, colorSpace, interleaving, &tmp)) {
 				ErrorManager::throwException(ErrorName::ImageNewError);
@@ -149,15 +149,13 @@ namespace LLU {
 			return LibraryData::ImageAPI()->MImage_getRawData(this->getContainer());
 		}
 	private:
-		using Base = MContainerBase<MArgumentType::Image>;
-		using RawContainer = typename Base::Container;
 
 		/**
 		 *   @copydoc   MContainerBase::clone()
 		 *   @see 		<http://reference.wolfram.com/language/LibraryLink/ref/callback/MImage_clone.html>
 		 **/
-		RawContainer cloneImpl() const override {
-			RawContainer tmp {};
+		Container cloneImpl() const override {
+			Container tmp {};
 			if (LibraryData::ImageAPI()->MImage_clone(this->getContainer(), &tmp)) {
 				ErrorManager::throwException(ErrorName::ImageCloneError);
 			}

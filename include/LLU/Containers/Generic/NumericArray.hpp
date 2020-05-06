@@ -39,7 +39,7 @@ namespace LLU {
 		 * @see     <http://reference.wolfram.com/language/LibraryLink/ref/callback/MNumericArray_new.html>
 		 */
 		MContainer(numericarray_data_t type, mint rank, const mint* dims) {
-			RawContainer tmp {};
+			Container tmp {};
 			if (LibraryData::NumericArrayAPI()->MNumericArray_new(type, rank, dims, &tmp)) {
 				ErrorManager::throwException(ErrorName::NumericArrayNewError);
 			}
@@ -55,7 +55,7 @@ namespace LLU {
 		 * @see     <http://reference.wolfram.com/language/LibraryLink/ref/callback/MNumericArray_convertType.html>
 		 */
 		GenericNumericArray convert(numericarray_data_t t, NA::ConversionMethod method, double param) const {
-			RawContainer newNA = nullptr;
+			Container newNA = nullptr;
 			auto err = LibraryData::NumericArrayAPI()->MNumericArray_convertType(&newNA, this->getContainer(), t,
 																				 static_cast<numericarray_convert_method_t>(method), param);
 			if (err) {
@@ -94,15 +94,13 @@ namespace LLU {
 		}
 
 	private:
-		using Base = MContainerBase<MArgumentType::NumericArray>;
-		using RawContainer = typename Base::Container;
 
 		/**
 		 *   @copydoc   MContainerBase::clone()
 		 *   @see 		<http://reference.wolfram.com/language/LibraryLink/ref/callback/MNumericArray_clone.html>
 		 **/
-		RawContainer cloneImpl() const override {
-			RawContainer tmp {};
+		Container cloneImpl() const override {
+			Container tmp {};
 			if (LibraryData::NumericArrayAPI()->MNumericArray_clone(this->getContainer(), &tmp)) {
 				ErrorManager::throwException(ErrorName::NumericArrayCloneError);
 			}

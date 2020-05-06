@@ -38,7 +38,7 @@ namespace LLU {
 		 * @see     <http://reference.wolfram.com/language/LibraryLink/ref/callback/MTensor_new.html>
 		 */
 		MContainer(mint type, mint rank, const mint* dims) {
-			RawContainer tmp {};
+			Container tmp {};
 			if (LibraryData::API()->MTensor_new(type, rank, dims, &tmp)) {
 				ErrorManager::throwException(ErrorName::TensorNewError);
 			}
@@ -79,8 +79,6 @@ namespace LLU {
 			}
 		}
 	private:
-		using Base = MContainerBase<MArgumentType::Tensor>;
-		using RawContainer = typename Base::Container;
 
 		/**
 		 * @copydoc MContainerBase::shareCount()
@@ -101,8 +99,8 @@ namespace LLU {
 		 *   @copydoc   MContainerBase::clone()
 		 *   @see 		<http://reference.wolfram.com/language/LibraryLink/ref/callback/MTensor_clone.html>
 		 **/
-		RawContainer cloneImpl() const override {
-			RawContainer tmp {};
+		Container cloneImpl() const override {
+			Container tmp {};
 			if (LibraryData::API()->MTensor_clone(this->getContainer(), &tmp)) {
 				ErrorManager::throwException(ErrorName::TensorCloneError);
 			}

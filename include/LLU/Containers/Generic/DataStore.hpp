@@ -6,8 +6,6 @@
 #ifndef LLU_INCLUDE_LLU_CONTAINERS_GENERIC_DATASTORE
 #define LLU_INCLUDE_LLU_CONTAINERS_GENERIC_DATASTORE
 
-#include <variant>
-
 #include <LLU/Containers/Generic/Base.hpp>
 #include <LLU/Containers/Iterators/DataStore.hpp>
 
@@ -25,10 +23,6 @@ namespace LLU {
 	 */
 	template<>
 	class MContainer<MArgumentType::DataStore> : public MContainerBase<MArgumentType::DataStore> {
-
-		using Base = MContainerBase<MArgumentType::DataStore>;
-
-		using RawContainer = typename Base::Container;
 
 		template<typename T>
 		using EnableIfArgumentType = std::enable_if_t<isPrimitiveArgument<std::decay_t<T>> || isTypedArgument<std::decay_t<T>>, int>;
@@ -145,7 +139,7 @@ namespace LLU {
 
 	private:
 		/// Make a deep copy of the raw container
-		RawContainer cloneImpl() const override {
+		Container cloneImpl() const override {
 			return LibraryData::DataStoreAPI()->copyDataStore(this->getContainer());
 		}
 
