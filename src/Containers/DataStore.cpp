@@ -31,7 +31,7 @@ namespace LLU {
 		return fromMArgument(m, type());
 	}
 
-	GenericDataNode::operator bool() {
+	GenericDataNode::operator bool() const {
 		return node != nullptr;
 	}
 

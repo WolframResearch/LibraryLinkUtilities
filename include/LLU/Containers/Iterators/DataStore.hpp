@@ -26,29 +26,27 @@ namespace LLU {
 
 		TypedArgument value() const;
 
-		operator bool();
+		operator bool() const;
 	};
 
 	class DataStoreIterator {
-		GenericDataNode node;
+		DataStoreNode node;
 
 	public:
 		using value_type = GenericDataNode;
 		using reference = value_type;
 		using iterator_category = std::forward_iterator_tag;
-		using pointer = GenericDataNode*;
+		using pointer = void*;
 		using difference_type = void;
 
 		DataStoreIterator(DataStoreNode n) : node{n} {}
 
-		DataStoreIterator(GenericDataNode n) : node{n} {}
-
 		reference operator*() const {
-			return node;
+			return reference {node};
 		}
 
 		DataStoreIterator& operator++() {
-			node = node.next();
+			node = LLU::LibraryData::DataStoreAPI()->DataStoreNode_getNextNode(node);
 			return *this;
 		}
 
@@ -59,7 +57,7 @@ namespace LLU {
 		}
 
 		friend bool operator==(const DataStoreIterator& lhs, const DataStoreIterator& rhs) {
-			return lhs.node.node == rhs.node.node;
+			return lhs.node == rhs.node;
 		}
 		friend bool operator!=(const DataStoreIterator& lhs, const DataStoreIterator& rhs) {
 			return !(lhs == rhs);

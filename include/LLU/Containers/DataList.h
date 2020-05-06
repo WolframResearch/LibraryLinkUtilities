@@ -7,105 +7,21 @@
 
 #ifndef LLUTILS_DATALIST_H
 #define LLUTILS_DATALIST_H
-#include <cstddef>
-#include <iostream>
-#include <iterator>
-#include <list>
-#include <type_traits>
+
+#include <initializer_list>
+#include <string>
+#include <string_view>
 #include <utility>
+#include <vector>
 
 #include "LLU/Containers/Generic/DataStore.hpp"
+#include "LLU/Containers/Iterators/DataNode.hpp"
 #include "LLU/ErrorLog/ErrorManager.h"
 #include "LLU/LibraryData.h"
 #include "LLU/MArgument.h"
 #include "LLU/TypedMArgument.h"
 
 namespace LLU {
-
-	/**
-	 * @class	DataNode
-	 * @brief	Wrapper over DataStoreNode structure from LibraryLink.
-	 * 			It stores node name in std::string and node value as MArgument, getters for both are provided.
-	 */
-	template<typename T>
-	class DataNode {
-		static constexpr bool isGeneric = std::is_same_v<T, TypedArgument>;
-		static_assert(isTypedArgument<T> || isGeneric, "DataNode type is not a valid MArgument wrapper type.");
-
-	public:
-		/**
-		 * @brief 	Create DataNode from raw DataStoreNode structure
-		 * @param 	dsn - raw node
-		 */
-		explicit DataNode(DataStoreNode dsn);
-
-		DataNode(DataStoreNode dsn, TypedArgument arg);
-
-		/**
-		 * @brief 	Get node value
-		 * @return 	Returns a reference to node value
-		 */
-		T& value() {
-			if constexpr (isGeneric) {
-				return nodeArg;
-			} else {
-				// After the constructor is done, nodeArg will always hold an object of type T, so no validation needed
-				return *std::get_if<T>(&nodeArg);
-			}
-		}
-
-		/**
-		 * @brief 	Get node value
-		 * @return 	Returns a reference to node value
-		 */
-		const T& value() const {
-			if constexpr (isGeneric) {
-				return nodeArg;
-			} else {
-				// After the constructor is done, nodeArg will always hold an object of type T, so no validation needed
-				return *std::get_if<T>(&nodeArg);
-			}
-		}
-
-		T* valuePtr() {
-			return std::addressof(value());
-		}
-
-		const T* valuePtr() const {
-			return std::addressof(value());
-		}
-
-		std::string_view name() const {
-			return node.name();
-		}
-
-		/**
-		 * @brief 	Get the actual type of node value stored in MArgument.
-		 * 			This is useful when working on a "generic" DataList of type MArgumentType::MArgument, otherwise it should always return MArgType
-		 * @return	Actual type of node value
-		 */
-		static constexpr MArgumentType valueType() noexcept {
-			if constexpr (isGeneric) {
-				return MArgumentType::MArgument;
-			} else {
-				typedArgumentIndex<T>;
-			}
-		}
-
-		template <std::size_t N>
-		decltype(auto) get() const {
-			static_assert(N < 2, "Bad structure binding attempt to a DataNode.");
-			if constexpr (N == 0) {
-				return name();
-			} else {
-				return (value());
-			}
-		}
-	private:
-		GenericDataNode node;
-		TypedArgument nodeArg;
-	};
-
 
 	/**
 	 * @class	DataList
@@ -153,99 +69,99 @@ namespace LLU {
 		 * @brief 	Get size of the DataList, which is the number of nodes in the list
 		 */
 		size_type size() const {
-			return proxyList.size();
+			return proxy.size();
 		}
 
 		/**
 		 *	@brief Get iterator at the beginning of underlying data
 		 **/
 		iterator begin() {
-			return proxyList.begin();
+			return proxy.begin();
 		}
 
 		/**
 		 *	@brief Get constant iterator at the beginning of underlying data
 		 **/
 		const_iterator begin() const {
-			return proxyList.begin();
+			return proxy.begin();
 		}
 
 		/**
 		 *	@brief Get constant iterator at the beginning of underlying data
 		 **/
 		const_iterator cbegin() const {
-			return proxyList.cbegin();
+			return proxy.cbegin();
 		}
 
 		/**
 		 *	@brief Get iterator after the end of underlying data
 		 **/
 		iterator end() {
-			return proxyList.end();
+			return proxy.end();
 		}
 
 		/**
 		 *	@brief Get constant iterator after the end of underlying data
 		 **/
 		const_iterator end() const {
-			return proxyList.end();
+			return proxy.end();
 		}
 
 		/**
 		 *	@brief Get constant reverse iterator after the end of underlying data
 		 **/
 		const_iterator cend() const {
-			return proxyList.cend();
+			return proxy.cend();
 		}
 
 		/**
 		 *	@brief Get constant reverse iterator at the beginning of underlying data
 		 **/
 		reverse_iterator rbegin() {
-			return proxyList.rbegin();
+			return proxy.rbegin();
 		}
 
 		/**
 		 *	@brief Get constant reverse iterator at the beginning of underlying data
 		 **/
 		const_reverse_iterator rbegin() const {
-			return proxyList.rbegin();
+			return proxy.rbegin();
 		}
 
 		/**
 		 *	@brief Get reverse iterator after the end of underlying data
 		 **/
 		reverse_iterator rend() {
-			return proxyList.rend();
+			return proxy.rend();
 		}
 
 		/**
 		 *	@brief Get constant reverse iterator after the end of underlying data
 		 **/
 		const_reverse_iterator rend() const {
-			return proxyList.rend();
+			return proxy.rend();
 		}
 
 		DataNode<T>& operator[](size_type index) {
-			return proxyList[index];
+			return proxy[index];
 		}
 
 		const DataNode<T>& operator[](size_type index) const {
-			return proxyList[index];
+			return proxy[index];
 		}
 
 		DataNode<T>& at(size_type index) {
 			if (index >= size()) {
 				ErrorManager::throwException(ErrorName::DimensionsError);
 			}
-			return proxyList[index];
+			return proxy[index];
 		}
 
 		const DataNode<T>& at(size_type index) const {
 			if (index >= size()) {
 				ErrorManager::throwException(ErrorName::DimensionsError);
 			}
-			return proxyList[index];
+			return proxy[index];
 		}
 
 		/**
@@ -268,31 +184,8 @@ namespace LLU {
 		void makeProxy();
 
 		/// private proxy list with top-level wrappers of each node of the internal DataStore
-		ProxyContainer proxyList;
+		ProxyContainer proxy;
 	};
-
-	/* Definitions od DataNode methods */
-	template<typename T>
-	DataNode<T>::DataNode(DataStoreNode dsn) : node {dsn} {
-		if (!dsn) {
-			ErrorManager::throwException(ErrorName::DLNullRawNode);
-		}
-		nodeArg = node.value();
-		if constexpr (!isGeneric) {
-			if (!std::holds_alternative<T>(nodeArg)) {
-				ErrorManager::throwException(ErrorName::DLInvalidNodeType);
-			}
-		}
-	}
-
-	template<typename T>
-	DataNode<T>::DataNode(DataStoreNode dsn, TypedArgument arg) : node {dsn}, nodeArg {std::move(arg)} {
-		if constexpr (!isGeneric) {
-			if (!std::holds_alternative<T>(nodeArg)) {
-				ErrorManager::throwException(ErrorName::DLInvalidNodeType);
-			}
-		}
-	}
 
 	/* Definitions od DataList methods */
 
@@ -320,7 +213,7 @@ namespace LLU {
 		auto size = length();
 		auto currentNode = front();
 		for (mint i = 0; i < size; ++i) {
-			proxyList.emplace_back(currentNode);
+			proxy.emplace_back(currentNode);
 			currentNode = LibraryData::DataStoreAPI()->DataStoreNode_getNextNode(currentNode);
 		}
 	}
@@ -334,26 +227,16 @@ namespace LLU {
 	void DataList<T>::push_back(value_type nodeData) {
 		TypedArgument t {std::move(nodeData)};
 		GenericDataList::push_back(t);
-		proxyList.emplace_back(this->back(), std::move(t));
+		proxy.emplace_back(this->back(), std::move(t));
 	}
 
 	template<typename T>
 	void DataList<T>::push_back(std::string_view name, value_type nodeData) {
 		TypedArgument t {std::move(nodeData)};
 		GenericDataList::push_back(name, t);
-		proxyList.emplace_back(this->back(), std::move(t));
+		proxy.emplace_back(this->back(), std::move(t));
 	}
 
-} /* namespace LLU */
-
-namespace std {
-	template<typename T>
-	struct tuple_size<LLU::DataNode<T>> : std::integral_constant<std::size_t, 2> {};
-
-	template<std::size_t N, typename T>
-	struct tuple_element<N, LLU::DataNode<T>> {
-		using type = decltype(std::declval<LLU::DataNode<T>>().template get<N>());
-	};
 }
 
 #endif	  // LLUTILS_DATALIST_H
