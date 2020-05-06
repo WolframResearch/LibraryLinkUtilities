@@ -33,7 +33,7 @@ namespace LLU {
 	template<MArgumentType Type>
 	class MContainerBase {
 	public:
-		using Container = MType_t<Type>;
+		using Container = Argument::CType<Type>;
 
 	public:
 		/**
@@ -230,7 +230,7 @@ namespace LLU {
 	 * @brief   MContainer is an abstract class template for generic containers. Only specializations shall be used.
 	 * @tparam  Type - container type (see MArgumentType definition)
 	 */
-	template<MArgumentType Type, typename std::enable_if_t<isContainerType<Type>, int> = 0>
+	template<MArgumentType Type, typename std::enable_if_t<Argument::ContainerTypeQ<Type>, int> = 0>
 #ifdef _WIN32
 	class MContainer;	 // On Windows we cannot provide a body with static_assert because of ridiculous MSVC compiler errors (probably a bug).
 #else					 // On other platforms we get a nice, compile-time error.

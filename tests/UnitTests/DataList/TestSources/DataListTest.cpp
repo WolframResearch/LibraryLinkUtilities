@@ -36,7 +36,7 @@ EXTERN_C DLLEXPORT void WolframLibrary_uninitialize(WolframLibraryData) {}
 
 /* Returns an input or a copy of an input */
 LLU_LIBRARY_FUNCTION(PassDataStore) {
-	auto dlIn = mngr.getDataList<LLU::TypedArgument>(0);
+	auto dlIn = mngr.getDataList<LLU::NodeType::Any>(0);
 	auto returnCopyQ = mngr.getBoolean(1);
 
 	if (returnCopyQ) {
@@ -67,7 +67,7 @@ LLU_LIBRARY_FUNCTION(JoinDataStores) {
 /* Returns a copy of the input plus its own reference */
 LLU_LIBRARY_FUNCTION(TestSelfReferencialDataStore) {
 	auto dsIn = mngr.getGenericDataList(0);
-	dsIn.push_back(LLU::TypedArgument {std::in_place_type_t<GenericDataList>(), dsIn.getContainer(), LLU::Ownership::LibraryLink});
+	dsIn.push_back(LLU::NodeType::Any {std::in_place_type_t<GenericDataList>(), dsIn.getContainer(), LLU::Ownership::LibraryLink});
 	LLU::DataNode<GenericDataList> n {dsIn.back()};
 	mngr.set(dsIn);
 }
@@ -191,8 +191,8 @@ LIBRARY_WSTP_FUNCTION(ReverseListOfStringsWSTP) {
 
 LLU_LIBRARY_FUNCTION(SeparateKeysAndValues) {
 	auto dsIn = mngr.getDataList<std::complex<double>>(0);
-	DataList<std::string_view> keys;
-	DataList<std::complex<double>> values;
+	DataList<LLU::NodeType::UTF8String> keys;
+	DataList<LLU::NodeType::Complex> values;
 
 	for (auto& [name, value] : dsIn) {
 		keys.push_back(name);
@@ -207,10 +207,10 @@ LLU_LIBRARY_FUNCTION(SeparateKeysAndValues) {
 }
 
 LLU_LIBRARY_FUNCTION(GetKeys) {
-	auto dsIn = mngr.getDataList<LLU::TypedArgument>(0);
+	auto dsIn = mngr.getDataList<LLU::NodeType::Any>(0);
 	DataList<std::string_view> keys;
 
-	using NameIterator = LLU::NodeNameIterator<LLU::TypedArgument>;
+	using NameIterator = LLU::NodeNameIterator<LLU::NodeType::Any>;
 	for (NameIterator it = dsIn.begin(); it != dsIn.end(); ++it) {
 		keys.push_back(*it);
 	}
@@ -219,10 +219,10 @@ LLU_LIBRARY_FUNCTION(GetKeys) {
 }
 
 LLU_LIBRARY_FUNCTION(GetValuesReversed) {
-	auto dsIn = mngr.getDataList<LLU::TypedArgument>(0);
-	DataList<LLU::TypedArgument> values;
+	auto dsIn = mngr.getDataList<LLU::NodeType::Any>(0);
+	DataList<LLU::NodeType::Any> values;
 
-	using Iter = LLU::ReverseValueIterator<LLU::TypedArgument>;
+	using Iter = LLU::ReverseValueIterator<LLU::NodeType::Any>;
 	std::move(Iter {dsIn.rbegin()}, Iter {dsIn.rend()}, std::back_inserter(values));
 
 	mngr.setDataList(values);
@@ -271,7 +271,7 @@ LLU_LIBRARY_FUNCTION(GetLength) {
 LLU_LIBRARY_FUNCTION(CheckSizeChange) {
 	auto n = mngr.getInteger<mint>(0);
 	DataList<mint> dsInt;
-	DataList<LLU::TypedArgument> dsArg;
+	DataList<LLU::NodeType::Any> dsArg;
 	GenericDataList gds;
 	for (mint i = 0; i < n; ++i) {
 		dsInt.push_back(i);
@@ -284,8 +284,9 @@ LLU_LIBRARY_FUNCTION(CheckSizeChange) {
 
 LLU_LIBRARY_FUNCTION(PullAndPush) {
 	using LLU::MArgumentType;
+	using LLU::Argument::toPrimitiveType;
 
-	auto dsIn = mngr.getDataList<LLU::TypedArgument>(0);
+	auto dsIn = mngr.getDataList<LLU::NodeType::Any>(0);
 	GenericDataList dsOut;
 
 	// get and push Boolean
@@ -309,7 +310,7 @@ LLU_LIBRARY_FUNCTION(PullAndPush) {
 
 	// get and push Complex
 	auto c = *std::get_if<std::complex<double>>(dsIn[3].valuePtr());
-	auto rawC = LLU::toPrimitiveType<MArgumentType::Complex>(c);
+	auto rawC = toPrimitiveType<MArgumentType::Complex>(c);
 	dsOut.push_back(c);
 	dsOut.push_back(rawC);
 	dsOut.push_back<MArgumentType::Complex>("complex", c);
@@ -317,7 +318,7 @@ LLU_LIBRARY_FUNCTION(PullAndPush) {
 
 	// get and push Tensor
 	auto& t = *std::get_if<LLU::GenericTensor>(dsIn[4].valuePtr());
-	[[maybe_unused]] auto rawT = LLU::toPrimitiveType<MArgumentType::Tensor>(t);
+	[[maybe_unused]] auto rawT = toPrimitiveType<MArgumentType::Tensor>(t);
 	dsOut.push_back(t.clone());
 	//dsOut.push_back(rawT); - compile time error due to a LibraryLink limitation
 	dsOut.push_back<MArgumentType::Tensor>("Tensor", std::move(t));
@@ -330,7 +331,7 @@ LLU_LIBRARY_FUNCTION(PullAndPush) {
 
 	// get and push NumericArray
 	auto& na = *std::get_if<LLU::GenericNumericArray>(dsIn[6].valuePtr());
-	[[maybe_unused]] auto rawNA = LLU::toPrimitiveType<MArgumentType::NumericArray>(na);
+	[[maybe_unused]] auto rawNA = toPrimitiveType<MArgumentType::NumericArray>(na);
 	dsOut.push_back(na.clone());
 	//dsOut.push_back(rawNA); - compile time error due to a LibraryLink limitation
 	dsOut.push_back<MArgumentType::NumericArray>("NumericArray", std::move(na));
@@ -338,7 +339,7 @@ LLU_LIBRARY_FUNCTION(PullAndPush) {
 
 	// get and push Image
 	auto& im = *std::get_if<LLU::GenericImage>(dsIn[7].valuePtr());
-	[[maybe_unused]] auto rawIm = LLU::toPrimitiveType<MArgumentType::Image>(im);
+	[[maybe_unused]] auto rawIm = toPrimitiveType<MArgumentType::Image>(im);
 	dsOut.push_back(im.clone());
 	//dsOut.push_back(rawIm);
 	dsOut.push_back<MArgumentType::Image>("Image", std::move(im));
@@ -346,7 +347,7 @@ LLU_LIBRARY_FUNCTION(PullAndPush) {
 
 	// get and push String
 	auto str = *std::get_if<std::string_view>(dsIn[8].valuePtr());
-	auto rawStr = LLU::toPrimitiveType<MArgumentType::UTF8String>(str);
+	auto rawStr = toPrimitiveType<MArgumentType::UTF8String>(str);
 	dsOut.push_back(str);
 	dsOut.push_back(rawStr);
 	dsOut.push_back<MArgumentType::UTF8String>("String", str);
@@ -354,7 +355,7 @@ LLU_LIBRARY_FUNCTION(PullAndPush) {
 
 	// get and push DataStore
 	auto& ds = *std::get_if<LLU::GenericDataList>(dsIn[9].valuePtr());
-	[[maybe_unused]] auto rawDS = LLU::toPrimitiveType<MArgumentType::DataStore>(ds);
+	[[maybe_unused]] auto rawDS = toPrimitiveType<MArgumentType::DataStore>(ds);
 	dsOut.push_back(ds.clone());
 	//dsOut.push_back(rawDS);
 	dsOut.push_back<MArgumentType::DataStore>("DataList", std::move(ds));
@@ -364,19 +365,19 @@ LLU_LIBRARY_FUNCTION(PullAndPush) {
 	mngr.set(dsOut);
 }
 
-LLU::TypedArgument* getValuePtrAndAdvance(GenericDataList::iterator& node) {
-	static LLU::TypedArgument value;
+LLU::NodeType::Any* getValuePtrAndAdvance(GenericDataList::iterator& node) {
+	static LLU::NodeType::Any value;
 	return std::addressof(value = (*node++).value());
 }
 
 LLU_LIBRARY_FUNCTION(PullAndPush2) {
 	using LLU::MArgumentType;
+	using LLU::Argument::toPrimitiveType;
 
 	auto dsIn = mngr.getGenericDataList(0);
-	DataList<LLU::TypedArgument> dsOut;
+	DataList<LLU::NodeType::Any> dsOut;
 
 	auto node = dsIn.begin();
-
 
 	// get and push Boolean
 	auto b = *std::get_if<bool>(getValuePtrAndAdvance(node));
@@ -396,7 +397,7 @@ LLU_LIBRARY_FUNCTION(PullAndPush2) {
 
 	// get and push Tensor
 	auto t = std::move(*std::get_if<LLU::GenericTensor>(getValuePtrAndAdvance(node)));
-	auto rawT = LLU::toPrimitiveType<MArgumentType::Tensor>(t);
+	auto rawT = toPrimitiveType<MArgumentType::Tensor>(t);
 	dsOut.push_back(t.clone());
 	dsOut.push_back("Tensor", rawT); // rawT is a pointer type, it gets converted to bool and send as Boolean node
 
@@ -406,25 +407,25 @@ LLU_LIBRARY_FUNCTION(PullAndPush2) {
 
 	// get and push NumericArray
 	auto na = std::move(*std::get_if<LLU::GenericNumericArray>(getValuePtrAndAdvance(node)));
-	auto rawNA = LLU::toPrimitiveType<MArgumentType::NumericArray>(na);
+	auto rawNA = toPrimitiveType<MArgumentType::NumericArray>(na);
 	dsOut.push_back(na.clone());
 	dsOut.push_back("NumericArray", rawNA);
 
 	// get and push Image
 	auto im = std::move(*std::get_if<LLU::GenericImage>(getValuePtrAndAdvance(node)));
-	auto rawIm = LLU::toPrimitiveType<MArgumentType::Image>(im);
+	auto rawIm = toPrimitiveType<MArgumentType::Image>(im);
 	dsOut.push_back(im.clone());
 	dsOut.push_back("Image", rawIm);
 
 	// get and push String
 	auto str = *std::get_if<std::string_view>(getValuePtrAndAdvance(node));
-	auto rawStr = LLU::toPrimitiveType<MArgumentType::UTF8String>(str);
+	auto rawStr = toPrimitiveType<MArgumentType::UTF8String>(str);
 	dsOut.push_back(str);
 	dsOut.push_back("String", rawStr);
 
 	// get and push DataStore
 	auto ds = std::move(*std::get_if<LLU::GenericDataList>(getValuePtrAndAdvance(node)));
-	auto rawDS = LLU::toPrimitiveType<MArgumentType::DataStore>(ds);
+	auto rawDS = toPrimitiveType<MArgumentType::DataStore>(ds);
 	dsOut.push_back(ds.clone());
 	dsOut.push_back("DataList", rawDS);
 

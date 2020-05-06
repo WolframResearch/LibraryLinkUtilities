@@ -24,7 +24,7 @@ namespace LLU {
 
 		std::string_view name() const noexcept;
 
-		TypedArgument value() const;
+		Argument::TypedArgument value() const;
 
 		operator bool() const;
 	};

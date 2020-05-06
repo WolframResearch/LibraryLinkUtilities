@@ -114,7 +114,7 @@ namespace LLU {
 		extern const std::string DLPushBackTypeError;	 ///< Element to be added to the DataList has incorrect type
 
 		// MArgument errors:
-		extern const std::string ArgumentCreateNull;		  ///< Trying to create Argument object from nullptr
+		extern const std::string ArgumentCreateNull;		  ///< Trying to create PrimitiveWrapper object from nullptr
 		extern const std::string ArgumentAddNodeMArgument;	  ///< Trying to add DataStore Node of type MArgument (aka MType_Undef)
 
 		// ProgressMonitor errors:

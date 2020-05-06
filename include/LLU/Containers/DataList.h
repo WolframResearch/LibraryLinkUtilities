@@ -23,6 +23,7 @@
 
 namespace LLU {
 
+	namespace NodeType = Argument::Typed;
 	/**
 	 * @class	DataList
 	 * @brief 	Top-level wrapper over LibraryLink's DataStore.
@@ -225,14 +226,14 @@ namespace LLU {
 
 	template<typename T>
 	void DataList<T>::push_back(value_type nodeData) {
-		TypedArgument t {std::move(nodeData)};
+		Argument::TypedArgument t {std::move(nodeData)};
 		GenericDataList::push_back(t);
 		proxy.emplace_back(this->back(), std::move(t));
 	}
 
 	template<typename T>
 	void DataList<T>::push_back(std::string_view name, value_type nodeData) {
-		TypedArgument t {std::move(nodeData)};
+		Argument::TypedArgument t {std::move(nodeData)};
 		GenericDataList::push_back(name, t);
 		proxy.emplace_back(this->back(), std::move(t));
 	}

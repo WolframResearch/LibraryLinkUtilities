@@ -12,7 +12,7 @@
 #include <LLU/Containers/Generic/NumericArray.hpp>
 #include <LLU/Containers/Generic/Tensor.hpp>
 
-namespace LLU {
+namespace LLU::Argument {
 
 	TypedArgument fromMArgument(MArgument m, MArgumentType t) {
 		switch (t) {

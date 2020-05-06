@@ -23,12 +23,12 @@ namespace LLU {
 		return rawName ? std::string_view {rawName} : std::string_view {""};
 	}
 
-	TypedArgument GenericDataNode::value() const {
+	Argument::TypedArgument GenericDataNode::value() const {
 		MArgument m;
 		if (LibraryData::DataStoreAPI()->DataStoreNode_getData(node, &m) != 0) {
 			ErrorManager::throwException(ErrorName::DLGetNodeDataError);
 		}
-		return fromMArgument(m, type());
+		return Argument::fromMArgument(m, type());
 	}
 
 	GenericDataNode::operator bool() const {
@@ -41,66 +41,67 @@ namespace LLU {
 		}
 	}
 
-	void MContainer<MArgumentType::DataStore>::push_back(std::string_view name, const TypedArgument& node) {
+	void MContainer<MArgumentType::DataStore>::push_back(std::string_view name, const Argument::TypedArgument& node) {
 		switch (static_cast<MArgumentType>(node.index())) {
 			case MArgumentType::MArgument: ErrorManager::throwException(ErrorName::FunctionError);	  // TODO add specific error
-			case MArgumentType::Boolean: Argument<MArgumentType::Boolean>::addDataStoreNode(getContainer(), name, *std::get_if<bool>(&node)); break;
-			case MArgumentType::Integer: Argument<MArgumentType::Integer>::addDataStoreNode(getContainer(), name, *std::get_if<mint>(&node)); break;
-			case MArgumentType::Real: Argument<MArgumentType::Real>::addDataStoreNode(getContainer(), name, *std::get_if<double>(&node)); break;
+			case MArgumentType::Boolean: PrimitiveWrapper<MArgumentType::Boolean>::addDataStoreNode(getContainer(), name, *std::get_if<bool>(&node)); break;
+			case MArgumentType::Integer: PrimitiveWrapper<MArgumentType::Integer>::addDataStoreNode(getContainer(), name, *std::get_if<mint>(&node)); break;
+			case MArgumentType::Real: PrimitiveWrapper<MArgumentType::Real>::addDataStoreNode(getContainer(), name, *std::get_if<double>(&node)); break;
 			case MArgumentType::Complex: {
 				auto c = *std::get_if<std::complex<double>>(&node);
 				mcomplex mc {c.real(), c.imag()};
-				Argument<MArgumentType::Complex>::addDataStoreNode(getContainer(), name, mc);
+				PrimitiveWrapper<MArgumentType::Complex>::addDataStoreNode(getContainer(), name, mc);
 			} break;
 			case MArgumentType::Tensor:
-				Argument<MArgumentType::Tensor>::addDataStoreNode(getContainer(), name, std::get_if<GenericTensor>(&node)->abandonContainer());
+				PrimitiveWrapper<MArgumentType::Tensor>::addDataStoreNode(getContainer(), name, std::get_if<GenericTensor>(&node)->abandonContainer());
 				break;
 			case MArgumentType::SparseArray:
-				Argument<MArgumentType::SparseArray>::addDataStoreNode(getContainer(), name, *std::get_if<MSparseArray>(&node));
+				PrimitiveWrapper<MArgumentType::SparseArray>::addDataStoreNode(getContainer(), name, *std::get_if<MSparseArray>(&node));
 				break;
 			case MArgumentType::NumericArray:
-				Argument<MArgumentType::NumericArray>::addDataStoreNode(getContainer(), name, std::get_if<GenericNumericArray>(&node)->abandonContainer());
+				PrimitiveWrapper<MArgumentType::NumericArray>::addDataStoreNode(getContainer(), name, std::get_if<GenericNumericArray>(&node)->abandonContainer());
 				break;
 			case MArgumentType::Image:
-				Argument<MArgumentType::Image>::addDataStoreNode(getContainer(), name, std::get_if<GenericImage>(&node)->abandonContainer());
+				PrimitiveWrapper<MArgumentType::Image>::addDataStoreNode(getContainer(), name, std::get_if<GenericImage>(&node)->abandonContainer());
 				break;
 			case MArgumentType::UTF8String: {
 				auto* data = std::get_if<std::string_view>(&node)->data();
-				Argument<MArgumentType::UTF8String>::addDataStoreNode(getContainer(), name, const_cast<char*>(data));
+				PrimitiveWrapper<MArgumentType::UTF8String>::addDataStoreNode(getContainer(), name, const_cast<char*>(data));
 			} break;
 			case MArgumentType::DataStore:
-				Argument<MArgumentType::DataStore>::addDataStoreNode(getContainer(), name, std::get_if<GenericDataList>(&node)->abandonContainer());
+				PrimitiveWrapper<MArgumentType::DataStore>::addDataStoreNode(getContainer(), name, std::get_if<GenericDataList>(&node)->abandonContainer());
 				break;
 		}
 	}
 
-	void MContainer<MArgumentType::DataStore>::push_back(const TypedArgument& node) {
+	void MContainer<MArgumentType::DataStore>::push_back(const Argument::TypedArgument& node) {
 		switch (static_cast<MArgumentType>(node.index())) {
 			case MArgumentType::MArgument: ErrorManager::throwException(ErrorName::FunctionError);	  // TODO add specific error
-			case MArgumentType::Boolean: Argument<MArgumentType::Boolean>::addDataStoreNode(getContainer(), *std::get_if<bool>(&node)); break;
-			case MArgumentType::Integer: Argument<MArgumentType::Integer>::addDataStoreNode(getContainer(), *std::get_if<mint>(&node)); break;
-			case MArgumentType::Real: Argument<MArgumentType::Real>::addDataStoreNode(getContainer(), *std::get_if<double>(&node)); break;
+			case MArgumentType::Boolean: PrimitiveWrapper<MArgumentType::Boolean>::addDataStoreNode(getContainer(), *std::get_if<bool>(&node)); break;
+			case MArgumentType::Integer: PrimitiveWrapper<MArgumentType::Integer>::addDataStoreNode(getContainer(), *std::get_if<mint>(&node)); break;
+			case MArgumentType::Real: PrimitiveWrapper<MArgumentType::Real>::addDataStoreNode(getContainer(), *std::get_if<double>(&node)); break;
 			case MArgumentType::Complex: {
 				auto c = *std::get_if<std::complex<double>>(&node);
 				mcomplex mc {c.real(), c.imag()};
-				Argument<MArgumentType::Complex>::addDataStoreNode(getContainer(), mc);
+				PrimitiveWrapper<MArgumentType::Complex>::addDataStoreNode(getContainer(), mc);
 			} break;
 			case MArgumentType::Tensor:
-				Argument<MArgumentType::Tensor>::addDataStoreNode(getContainer(), std::get_if<GenericTensor>(&node)->abandonContainer());
+				PrimitiveWrapper<MArgumentType::Tensor>::addDataStoreNode(getContainer(), std::get_if<GenericTensor>(&node)->abandonContainer());
 				break;
-			case MArgumentType::SparseArray: Argument<MArgumentType::SparseArray>::addDataStoreNode(getContainer(), *std::get_if<MSparseArray>(&node)); break;
+			case MArgumentType::SparseArray:
+				PrimitiveWrapper<MArgumentType::SparseArray>::addDataStoreNode(getContainer(), *std::get_if<MSparseArray>(&node)); break;
 			case MArgumentType::NumericArray:
-				Argument<MArgumentType::NumericArray>::addDataStoreNode(getContainer(), std::get_if<GenericNumericArray>(&node)->abandonContainer());
+				PrimitiveWrapper<MArgumentType::NumericArray>::addDataStoreNode(getContainer(), std::get_if<GenericNumericArray>(&node)->abandonContainer());
 				break;
 			case MArgumentType::Image:
-				Argument<MArgumentType::Image>::addDataStoreNode(getContainer(), std::get_if<GenericImage>(&node)->abandonContainer());
+				PrimitiveWrapper<MArgumentType::Image>::addDataStoreNode(getContainer(), std::get_if<GenericImage>(&node)->abandonContainer());
 				break;
 			case MArgumentType::UTF8String: {
 				auto* data = std::get_if<std::string_view>(&node)->data();
-				Argument<MArgumentType::UTF8String>::addDataStoreNode(getContainer(), const_cast<char*>(data));
+				PrimitiveWrapper<MArgumentType::UTF8String>::addDataStoreNode(getContainer(), const_cast<char*>(data));
 			} break;
 			case MArgumentType::DataStore:
-				Argument<MArgumentType::DataStore>::addDataStoreNode(getContainer(), std::get_if<GenericDataList>(&node)->abandonContainer());
+				PrimitiveWrapper<MArgumentType::DataStore>::addDataStoreNode(getContainer(), std::get_if<GenericDataList>(&node)->abandonContainer());
 				break;
 		}
 	}

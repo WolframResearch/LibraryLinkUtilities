@@ -25,10 +25,10 @@ namespace LLU {
 	class MContainer<MArgumentType::DataStore> : public MContainerBase<MArgumentType::DataStore> {
 
 		template<typename T>
-		using EnableIfArgumentType = std::enable_if_t<isPrimitiveArgument<std::decay_t<T>> || isTypedArgument<std::decay_t<T>>, int>;
+		using EnableIfArgumentType = std::enable_if_t<Argument::PrimitiveQ<std::decay_t<T>> || Argument::WrapperQ<std::decay_t<T>>, int>;
 
 		template<MArgumentType T>
-		using EnableIfUnambiguousWrapperType = std::enable_if_t<!isPrimitiveArgument<WrapperType<T>>, int>;
+		using EnableIfUnambiguousWrapperType = std::enable_if_t<!Argument::PrimitiveQ<Argument::WrapperType<T>>, int>;
 
 	public:
 		using iterator = DataStoreIterator;
@@ -93,49 +93,49 @@ namespace LLU {
 			// MTensor and MNumericArray are actually the same type, so this function cannot handle them correctly.
 			// Use push_back templated with MArgumentType instead.
 			static_assert(!std::is_same_v<T, MTensor>, "Do not use push_back templated on the argument type with MTensor or MNumericArray.");
-			if constexpr (isPrimitiveArgument<T>) {
-				constexpr MArgumentType Type = primitiveArgumentIndex<T>;
-				Argument<Type>::addDataStoreNode(getContainer(), nodeValue);
-			} else if constexpr (isTypedArgument<T>) {
-				constexpr MArgumentType Type = typedArgumentIndex<T>;
-				Argument<Type>::addDataStoreNode(getContainer(), toPrimitiveType<Type>(nodeValue));
+			if constexpr (Argument::PrimitiveQ<T>) {
+				constexpr MArgumentType Type = Argument::PrimitiveIndex<T>;
+				PrimitiveWrapper<Type>::addDataStoreNode(getContainer(), nodeValue);
+			} else if constexpr (Argument::WrapperQ<T>) {
+				constexpr MArgumentType Type = Argument::WrapperIndex<T>;
+				PrimitiveWrapper<Type>::addDataStoreNode(getContainer(), Argument::toPrimitiveType<Type>(nodeValue));
 			}
 		}
 
 		template<typename T, EnableIfArgumentType<T> = 0>
 		void push_back(std::string_view name, T nodeValue) {
 			static_assert(!std::is_same_v<T, MTensor>, "Do not use push_back templated on the argument type with MTensor or MNumericArray.");
-			if constexpr (isPrimitiveArgument<T>) {
-				constexpr MArgumentType Type = primitiveArgumentIndex<T>;
-				Argument<Type>::addDataStoreNode(getContainer(), name, nodeValue);
-			} else if constexpr (isTypedArgument<T>) {
-				constexpr MArgumentType Type = typedArgumentIndex<T>;
-				Argument<Type>::addDataStoreNode(getContainer(), name, toPrimitiveType<Type>(nodeValue));
+			if constexpr (Argument::PrimitiveQ<T>) {
+				constexpr MArgumentType Type = Argument::PrimitiveIndex<T>;
+				PrimitiveWrapper<Type>::addDataStoreNode(getContainer(), name, nodeValue);
+			} else if constexpr (Argument::WrapperQ<T>) {
+				constexpr MArgumentType Type = Argument::WrapperIndex<T>;
+				PrimitiveWrapper<Type>::addDataStoreNode(getContainer(), name, Argument::toPrimitiveType<Type>(nodeValue));
 			}
 		}
 
 		template<MArgumentType Type, EnableIfUnambiguousWrapperType<Type> = 0>
-		void push_back(WrapperType<Type> nodeValue) {
-			Argument<Type>::addDataStoreNode(getContainer(), toPrimitiveType<Type>(nodeValue));
+		void push_back(Argument::WrapperType<Type> nodeValue) {
+			PrimitiveWrapper<Type>::addDataStoreNode(getContainer(), Argument::toPrimitiveType<Type>(nodeValue));
 		}
 
 		template<MArgumentType Type, EnableIfUnambiguousWrapperType<Type> = 0>
-		void push_back(std::string_view name, WrapperType<Type> nodeValue) {
-			Argument<Type>::addDataStoreNode(getContainer(), name, toPrimitiveType<Type>(nodeValue));
+		void push_back(std::string_view name, Argument::WrapperType<Type> nodeValue) {
+			PrimitiveWrapper<Type>::addDataStoreNode(getContainer(), name, Argument::toPrimitiveType<Type>(nodeValue));
 		}
 
 		template<MArgumentType Type>
-		void push_back(PrimitiveType<Type> nodeValue) {
-			Argument<Type>::addDataStoreNode(getContainer(), nodeValue);
+		void push_back(Argument::CType<Type> nodeValue) {
+			PrimitiveWrapper<Type>::addDataStoreNode(getContainer(), nodeValue);
 		}
 
 		template<MArgumentType Type>
-		void push_back(std::string_view name, PrimitiveType<Type> nodeValue) {
-			Argument<Type>::addDataStoreNode(getContainer(), name, nodeValue);
+		void push_back(std::string_view name, Argument::CType<Type> nodeValue) {
+			PrimitiveWrapper<Type>::addDataStoreNode(getContainer(), name, nodeValue);
 		}
 
-		void push_back(const TypedArgument& node);
-		void push_back(std::string_view name, const TypedArgument& node);
+		void push_back(const Argument::TypedArgument& node);
+		void push_back(std::string_view name, const Argument::TypedArgument& node);
 
 	private:
 		/// Make a deep copy of the raw container

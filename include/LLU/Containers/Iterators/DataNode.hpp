@@ -20,8 +20,8 @@ namespace LLU {
 	 */
 	template<typename T>
 	class DataNode {
-		static constexpr bool isGeneric = std::is_same_v<T, TypedArgument>;
-		static_assert(isTypedArgument<T> || isGeneric, "DataNode type is not a valid MArgument wrapper type.");
+		static constexpr bool isGeneric = std::is_same_v<T, Argument::TypedArgument>;
+		static_assert(Argument::WrapperQ<T>, "DataNode type is not a valid MArgument wrapper type.");
 
 	public:
 		/**
@@ -30,7 +30,7 @@ namespace LLU {
 		 */
 		explicit DataNode(DataStoreNode dsn);
 
-		DataNode(DataStoreNode dsn, TypedArgument arg);
+		DataNode(DataStoreNode dsn, Argument::TypedArgument arg);
 
 		/**
 		 * @brief 	Get node value
@@ -100,7 +100,7 @@ namespace LLU {
 
 	private:
 		GenericDataNode node;
-		TypedArgument nodeArg;
+		Argument::TypedArgument nodeArg;
 	};
 
 	/* Definitions od DataNode methods */
@@ -118,7 +118,7 @@ namespace LLU {
 	}
 
 	template<typename T>
-	DataNode<T>::DataNode(DataStoreNode dsn, TypedArgument arg) : node {dsn}, nodeArg {std::move(arg)} {
+	DataNode<T>::DataNode(DataStoreNode dsn, Argument::TypedArgument arg) : node {dsn}, nodeArg {std::move(arg)} {
 		if constexpr (!isGeneric) {
 			if (!std::holds_alternative<T>(nodeArg)) {
 				ErrorManager::throwException(ErrorName::DLInvalidNodeType);

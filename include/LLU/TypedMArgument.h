@@ -15,67 +15,53 @@
 #include <LLU/Containers/Generic/NumericArray.hpp>
 #include <LLU/Containers/Generic/Tensor.hpp>
 #include <LLU/MArgument.h>
+#include <LLU/Utilities.hpp>
 
-namespace LLU {
+template<>
+class LLU::MContainer<LLU::MArgumentType::DataStore>;
 
-	template<>
-	class MContainer<MArgumentType::DataStore>;
+namespace LLU::Argument {
 
-	using TypedArgument =
-	std::variant<std::monostate, bool, mint, double, std::complex<double>, MContainer<MArgumentType::Tensor>, MSparseArray,
-		MContainer<MArgumentType::NumericArray>, MContainer<MArgumentType::Image>, std::string_view, MContainer<MArgumentType::DataStore>>;
-
-	using PrimitiveArgument =
-	std::variant<std::monostate, mbool, mint, mreal, mcomplex, MTensor, MSparseArray, MNumericArray, MImage, char*, DataStore>;
-
-	/**
-	 *
-	 * @tparam VariantType
-	 * @tparam T
-	 * @tparam index
-	 * @return
-	 * @see     https://stackoverflow.com/questions/52303316/get-index-by-type-in-stdvariant
-	 */
-	template<typename VariantType, typename T, std::size_t index = 0>
-	constexpr std::size_t variant_index() {
-		if constexpr (index >= std::variant_size_v<VariantType>) {
-			return index;
-		} else if(std::is_same_v<std::variant_alternative_t<index, VariantType>, T>) {
-			return index;
-		} else {
-			return variant_index<VariantType, T, index + 1>();
-		}
+	namespace Typed {
+		using Boolean = bool;
+		using Integer = mint;
+		using Real = double;
+		using Complex = std::complex<double>;
+		using Tensor = MContainer<MArgumentType::Tensor>;
+		using SparseArray = MSparseArray;
+		using NumericArray = MContainer<MArgumentType::NumericArray>;
+		using Image = MContainer<MArgumentType::Image>;
+		using UTF8String = std::string_view;
+		using DataStore = MContainer<MArgumentType::DataStore>;
 	}
 
-	template<typename T>
-	constexpr MArgumentType typedArgumentIndex = static_cast<MArgumentType>(variant_index<TypedArgument, T>());
+	using TypedArgument = std::variant<std::monostate, Typed::Boolean, Typed::Integer, Typed::Real, Typed::Complex, Typed::Tensor, Typed::SparseArray,
+									   Typed::NumericArray, Typed::Image, Typed::UTF8String, Typed::DataStore>;
+	namespace Typed {
+		using Any = TypedArgument;
+	}
+
 
 	template<typename T>
-	constexpr MArgumentType primitiveArgumentIndex = static_cast<MArgumentType>(variant_index<PrimitiveArgument, T>());
+	constexpr MArgumentType WrapperIndex = static_cast<MArgumentType>(variant_index<TypedArgument, T>());
 
 	template<typename T>
-	constexpr bool isTypedArgument = (variant_index<TypedArgument, T>() < std::variant_size_v<TypedArgument>);
-
-	template<typename T>
-	constexpr bool isPrimitiveArgument = (variant_index<PrimitiveArgument, T>() < std::variant_size_v<PrimitiveArgument>);
+	constexpr bool WrapperQ = std::is_same_v<T, TypedArgument> || (variant_index<TypedArgument, T>() < std::variant_size_v<TypedArgument>);
 
 	template<MArgumentType T>
-	using PrimitiveType = std::variant_alternative_t<static_cast<size_t>(T), PrimitiveArgument>;
-
-	template<MArgumentType T>
-	using WrapperType = std::variant_alternative_t<static_cast<size_t>(T), TypedArgument>;
+	using WrapperType = std::conditional_t<T == MArgumentType::MArgument, TypedArgument, std::variant_alternative_t<static_cast<size_t>(T), TypedArgument>>;
 
 	TypedArgument fromMArgument(MArgument m, MArgumentType t);
 
 	void toMArgument(const TypedArgument& tma, MArgument& res);
 
 	template<MArgumentType T>
-	WrapperType<T> toWrapperType(const PrimitiveType<T>& value) {
+	WrapperType<T> toWrapperType(const CType<T>& value) {
 		if constexpr (T == MArgumentType::Complex) {
 			return {value->ri[0], value->ri[1]};
 		} else if constexpr (T == MArgumentType::UTF8String) {
 			return {value};
-		} else if constexpr (isContainerType<T> && T != MArgumentType::SparseArray) {
+		} else if constexpr (ContainerTypeQ<T> && T != MArgumentType::SparseArray) {
 			return {value, Ownership::LibraryLink};
 		} else {
 			return value;
@@ -83,12 +69,12 @@ namespace LLU {
 	}
 
 	template<MArgumentType T>
-	PrimitiveType<T> toPrimitiveType(const WrapperType<T>& value) {
+	CType<T> toPrimitiveType(const WrapperType<T>& value) {
 		if constexpr (T == MArgumentType::Complex) {
 			return {value.real(), value.imag()};
 		} else if constexpr (T == MArgumentType::UTF8String) {
 			return const_cast<char*>(value.data());
-		} else if constexpr (isContainerType<T> && T != MArgumentType::SparseArray) {
+		} else if constexpr (ContainerTypeQ<T> && T != MArgumentType::SparseArray) {
 			return value.abandonContainer();
 		} else {
 			return value;

@@ -69,7 +69,7 @@ namespace LLU {
 	// Teach LLU how to send Person object as result of the library function. DataStore is used as the actual MArgument type.
 	template<>
 	void MArgumentManager::set<Person>(const Person& p) {
-		DataList<LLU::TypedArgument> personDS;
+		DataList<LLU::NodeType::Any> personDS;
 		personDS.push_back(p.name);
 		personDS.push_back(static_cast<mint>(p.age));
 		personDS.push_back(p.height);
@@ -108,7 +108,7 @@ namespace LLU {
 	};
 
 	template<>
-	struct MArgumentManager::CustomType<std::vector<Person>> { using CorrespondingTypes = std::tuple<DataList<LLU::TypedArgument>>; };
+	struct MArgumentManager::CustomType<std::vector<Person>> { using CorrespondingTypes = std::tuple<DataList<LLU::NodeType::Any>>; };
 
 	template<>
 	struct MArgumentManager::Getter<std::vector<Person>> {
@@ -116,7 +116,7 @@ namespace LLU {
 			auto dl = mngr.get<DataList<LLU::GenericDataList>>(index);
 			std::vector<Person> res;
 			std::transform(std::begin(dl), std::end(dl), std::back_inserter(res), [](auto& node) {
-				DataList<LLU::TypedArgument> d(std::move(node.value())); // move DataStore from node to a new DataList, node will not be used again
+				DataList<LLU::NodeType::Any> d(std::move(node.value())); // move DataStore from node to a new DataList, node will not be used again
 				auto it {d.begin()};
 				std::string name = std::get_if<std::string_view>((it++)->valuePtr())->data();
 				auto age = static_cast<uint8_t>(*std::get_if<mint>((it++)->valuePtr()));

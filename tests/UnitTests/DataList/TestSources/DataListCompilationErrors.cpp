@@ -31,7 +31,7 @@ LIBRARY_LINK_FUNCTION(TryToAddMArgument) {
 		LLU::MArgumentManager mngr {Argc, Args, Res};
 		auto dsIn = mngr.getDataList<double>(0);
 
-		LLU::Argument<LLU::MArgumentType::MArgument>::addDataStoreNode(dsIn.getContainer(), "NoName",
+		LLU::PrimitiveWrapper<LLU::MArgumentType::MArgument>::addDataStoreNode(dsIn.getContainer(), "NoName",
 																	   Args[0]);	// compile time error - attempting to use deleted function
 
 		mngr.setDataList(dsIn);

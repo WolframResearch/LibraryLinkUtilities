@@ -9,8 +9,10 @@
 #define LLUTILS_MARGUMENT_H
 
 #include <string>
+#include <variant>
 
 #include "LLU/LibraryData.h"
+#include "LLU/Utilities.hpp"
 
 namespace LLU {
 
@@ -31,12 +33,29 @@ namespace LLU {
 		DataStore = MType_DataStore
 	};
 
-	/**
-	 * @brief Helper template variable that says if an MArgumentType is a LibraryLink container type
-	 */
-	template<MArgumentType T>
-	constexpr bool isContainerType = (T == MArgumentType::Tensor || T == MArgumentType::Image || T == MArgumentType::NumericArray ||
-									  T == MArgumentType::DataStore || T == MArgumentType::SparseArray);
+	namespace Argument {
+		using PrimitiveAny = std::variant<std::monostate, mbool, mint, mreal, mcomplex, MTensor, MSparseArray, MNumericArray, MImage, char*, DataStore>;
+
+		template<typename T>
+		constexpr MArgumentType PrimitiveIndex = static_cast<MArgumentType>(variant_index<PrimitiveAny, T>());
+
+		template<typename T>
+		constexpr bool PrimitiveQ = (variant_index<PrimitiveAny, T>() < std::variant_size_v<PrimitiveAny>);
+
+		/**
+		 * @brief 	Type alias that binds given MArgumentType (enumerated value) to the corresponding type of MArgument.
+		 * @tparam 	T - any value of type MArgumentType
+		 */
+		template<MArgumentType T>
+		using CType = std::conditional_t<T == MArgumentType::MArgument, MArgument, std::variant_alternative_t<static_cast<size_t>(T), PrimitiveAny>>;
+
+		/**
+		 * @brief Helper template variable that says if an MArgumentType is a LibraryLink container type
+		 */
+		template<MArgumentType T>
+		constexpr bool ContainerTypeQ = (T == MArgumentType::Tensor || T == MArgumentType::Image || T == MArgumentType::NumericArray ||
+										 T == MArgumentType::DataStore || T == MArgumentType::SparseArray);
+	}
 
 	/**
 	 * @brief Helper template variable that is always false. Useful in metaprogramming.
@@ -44,92 +63,24 @@ namespace LLU {
 	template<MArgumentType T>
 	constexpr bool alwaysFalse = false;
 
-	/**
-	 * @brief 	Structure that binds given MArgumentType to the actual C++ type it represents.
-	 * @tparam 	T - any value of type MArgumentType
-	 */
-	template<MArgumentType T>
-	struct MType;
-
-	/// @cond
-	template<>
-	struct MType<MArgumentType::MArgument> {
-		using type = MArgument;
-		const std::string name = "MArgument";
-	};
-	template<>
-	struct MType<MArgumentType::Boolean> {
-		using type = mbool;
-		const std::string name = "Boolean";
-	};
-	template<>
-	struct MType<MArgumentType::Integer> {
-		using type = mint;
-		const std::string name = "Integer";
-	};
-	template<>
-	struct MType<MArgumentType::Real> {
-		using type = mreal;
-		const std::string name = "Real";
-	};
-	template<>
-	struct MType<MArgumentType::Complex> {
-		using type = mcomplex;
-		const std::string name = "Complex";
-	};
-	template<>
-	struct MType<MArgumentType::Tensor> {
-		using type = MTensor;
-		const std::string name = "Tensor";
-	};
-	template<>
-	struct MType<MArgumentType::DataStore> {
-		using type = DataStore;
-		const std::string name = "DataStore";
-	};
-	template<>
-	struct MType<MArgumentType::SparseArray> {
-		using type = MSparseArray;
-		const std::string name = "SparseArray";
-	};
-	template<>
-	struct MType<MArgumentType::NumericArray> {
-		using type = MNumericArray;
-		const std::string name = "NumericArray";
-	};
-	template<>
-	struct MType<MArgumentType::Image> {
-		using type = MImage;
-		const std::string name = "Image";
-	};
-	template<>
-	struct MType<MArgumentType::UTF8String> {
-		using type = char*;
-		const std::string name = "UTF8String";
-	};
-	/// @endcond
-
-	/// Type alias for convenience
-	template<MArgumentType T>
-	using MType_t = typename MType<T>::type;
 
 	/**
-	 * @class	Argument
+	 * @class	PrimitiveWrapper
 	 * @brief	Small class that wraps a reference to MArgument and provides proper API to work with this MArgument.
 	 * @tparam 	T - any value of type MArgumentType
 	 */
 	template<MArgumentType T>
-	class Argument {
+	class PrimitiveWrapper {
 	public:
 		/// This is the actual type of data stored in \c arg
-		using value_type = MType_t<T>;
+		using value_type = Argument::CType<T>;
 
 	public:
 		/**
-		 * @brief 	Construct Argument from a reference to MArgument
+		 * @brief 	Construct PrimitiveWrapper from a reference to MArgument
 		 * @param 	a - reference to MArgument
 		 */
-		explicit Argument(MArgument& a) : arg(a) {}
+		explicit PrimitiveWrapper(MArgument& a) : arg(a) {}
 
 		/**
 		 * @brief 	Get the value stored in MArgument
@@ -179,25 +130,25 @@ namespace LLU {
 	};
 
 	template<MArgumentType T>
-	void Argument<T>::addToDataStore(DataStore ds, const std::string& name, MArgumentType) const {
+	void PrimitiveWrapper<T>::addToDataStore(DataStore ds, const std::string& name, MArgumentType) const {
 		addDataStoreNode(ds, name, get());
 	}
 
-	/* Explicit specialization for member functions of Argument class */
+	/* Explicit specialization for member functions of PrimitiveWrapper class */
 
 #define ARGUMENT_DEFINE_SPECIALIZATIONS_OF_MEMBER_FUNCTIONS(ArgType)                                              \
 	template<>                                                                                                    \
-	auto Argument<MArgumentType::ArgType>::get()->typename Argument::value_type&;                                 \
+	auto PrimitiveWrapper<MArgumentType::ArgType>::get()->typename PrimitiveWrapper::value_type&;                                 \
 	template<>                                                                                                    \
-	auto Argument<MArgumentType::ArgType>::get() const->const typename Argument::value_type&;                     \
+	auto PrimitiveWrapper<MArgumentType::ArgType>::get() const->const typename PrimitiveWrapper::value_type&;                     \
 	template<>                                                                                                    \
-	void Argument<MArgumentType::ArgType>::addDataStoreNode(DataStore ds, std::string_view name, value_type val); \
+	void PrimitiveWrapper<MArgumentType::ArgType>::addDataStoreNode(DataStore ds, std::string_view name, value_type val); \
 	template<>                                                                                                    \
-	void Argument<MArgumentType::ArgType>::addDataStoreNode(DataStore ds, value_type val);                        \
+	void PrimitiveWrapper<MArgumentType::ArgType>::addDataStoreNode(DataStore ds, value_type val);                        \
 	template<>                                                                                                    \
-	auto Argument<MArgumentType::ArgType>::getAddress() const->typename Argument::value_type*;                    \
+	auto PrimitiveWrapper<MArgumentType::ArgType>::getAddress() const->typename PrimitiveWrapper::value_type*;                    \
 	template<>                                                                                                    \
-	void Argument<MArgumentType::ArgType>::set(typename Argument::value_type newValue);
+	void PrimitiveWrapper<MArgumentType::ArgType>::set(typename PrimitiveWrapper::value_type newValue);
 
 	ARGUMENT_DEFINE_SPECIALIZATIONS_OF_MEMBER_FUNCTIONS(Boolean)
 	ARGUMENT_DEFINE_SPECIALIZATIONS_OF_MEMBER_FUNCTIONS(Integer)
@@ -211,19 +162,19 @@ namespace LLU {
 	ARGUMENT_DEFINE_SPECIALIZATIONS_OF_MEMBER_FUNCTIONS(UTF8String)
 
 	template<>
-	auto Argument<MArgumentType::MArgument>::get() -> typename Argument::value_type&;
+	auto PrimitiveWrapper<MArgumentType::MArgument>::get() -> typename PrimitiveWrapper::value_type&;
 	template<>
-	auto Argument<MArgumentType::MArgument>::get() const -> const typename Argument::value_type&;
+	auto PrimitiveWrapper<MArgumentType::MArgument>::get() const -> const typename PrimitiveWrapper::value_type&;
 	template<>
-	void Argument<MArgumentType::MArgument>::addDataStoreNode(DataStore ds, std::string_view name, value_type val) = delete;
+	void PrimitiveWrapper<MArgumentType::MArgument>::addDataStoreNode(DataStore ds, std::string_view name, value_type val) = delete;
 	template<>
-	void Argument<MArgumentType::MArgument>::addDataStoreNode(DataStore ds, value_type val) = delete;
+	void PrimitiveWrapper<MArgumentType::MArgument>::addDataStoreNode(DataStore ds, value_type val) = delete;
 	template<>
-	auto Argument<MArgumentType::MArgument>::getAddress() const -> typename Argument::value_type*;
+	auto PrimitiveWrapper<MArgumentType::MArgument>::getAddress() const -> typename PrimitiveWrapper::value_type*;
 	template<>
-	void Argument<MArgumentType::MArgument>::set(typename Argument::value_type newValue);
+	void PrimitiveWrapper<MArgumentType::MArgument>::set(typename PrimitiveWrapper::value_type newValue);
 	template<>
-	void Argument<MArgumentType::MArgument>::addToDataStore(DataStore ds, const std::string& name, MArgumentType) const;
+	void PrimitiveWrapper<MArgumentType::MArgument>::addToDataStore(DataStore ds, const std::string& name, MArgumentType) const;
 
 #undef ARGUMENT_DEFINE_SPECIALIZATIONS_OF_MEMBER_FUNCTIONS
 

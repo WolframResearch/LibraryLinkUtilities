@@ -97,7 +97,7 @@ namespace LLU {
 			{ErrorName::DLPushBackTypeError, "Element to be added to the DataList has incorrect type"},
 
 			// MArgument errors:
-			{ErrorName::ArgumentCreateNull, "Trying to create Argument object from nullptr"},
+			{ErrorName::ArgumentCreateNull, "Trying to create PrimitiveWrapper object from nullptr"},
 			{ErrorName::ArgumentAddNodeMArgument, "Trying to add DataStore Node of type MArgument (aka MType_Undef)"},
 
 			// ProgressMonitor errors:
