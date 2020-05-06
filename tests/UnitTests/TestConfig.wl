@@ -27,7 +27,7 @@ options := {
 			"Windows",
 				"/O2 /EHsc /W3 /std:" <> $CppVersion <> " /D_SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING",
 			"Unix",
-				"-O2 -Wall --pedantic -fvisibility=hidden -std=" <> $CppVersion,
+				"-fPIC -O2 -Wall --pedantic -fvisibility=hidden -std=" <> $CppVersion,
 			"MacOSX",
 				"-mmacosx-version-min=10.12 -O2 -Wall -Wextra --pedantic -fvisibility=hidden -std=" <> $CppVersion
 		],
