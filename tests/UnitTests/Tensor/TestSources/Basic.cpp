@@ -144,7 +144,6 @@ LIBRARY_LINK_FUNCTION(EchoElement) {
 		mngr.setInteger(na.at(coordsVec));
 	} catch (const LibraryLinkError& e) {
 		err = e.which();
-		std::cout << e.what() << std::endl;
 	} catch (...) {
 		err = ErrorCode::FunctionError;
 	}

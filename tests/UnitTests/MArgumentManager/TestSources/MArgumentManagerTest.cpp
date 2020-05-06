@@ -4,6 +4,7 @@
  * @brief	Source code for unit tests of MArgumentManager
  */
 #include <functional>
+#include <iostream>
 #include <tuple>
 
 #include <LLU/Containers/Iterators/DataList.hpp>
