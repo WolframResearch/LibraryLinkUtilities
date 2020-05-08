@@ -51,6 +51,8 @@ TestExecute[
 	ds1 = Developer`DataStore[bool, int, real, complex, tensor, sparse, numeric, image, string, ds0];
 	ds2 = Developer`DataStore @@ Thread[Take[Alphabet[], Length[ds1]] -> List @@ ds1];
 	ds3 = ArrayReshape[RandomWord[10], {2, 5}] /. List -> Developer`DataStore;
+	
+	Off[General::stop]
 ];
 
 
@@ -60,7 +62,7 @@ Test[
 	,
 	$Failed
 	,
-	{CreateLibrary::cmperr..} (* On Linux there should be 6 errors, but MSVC does not like generic lambdas so it spits out more errors *)
+	{Repeated[CreateLibrary::cmperr, {3,4}]} (* There should be between 3 and 4 compilation errors *)
 	,
 	TestID -> "DataListTestSuite-20180903-Y8Z5P1"
 ];
@@ -471,7 +473,8 @@ Test[
 	PullAndPush2[ds1]
 	,
 	Developer`DataStore[
-		bool, int, real, complex, tensor, "Tensor" -> True, sparse, numeric, "NumericArray" -> True, image, "Image" -> True, string, "String" -> True, ds0, "DataList" -> True
+		bool, int, real, complex,
+		tensor, "Tensor" -> True, sparse, numeric, "NumericArray" -> True, image, "Image" -> True, string, "String" -> True, ds0, "DataList" -> True
 	]
 	,
 	TestID -> "DataListTestSuite-20200505-L9U9K6"
@@ -489,6 +492,21 @@ Test[
 	0
 	,
 	TestID -> "DataListTestSuite-20200505-Z7Z9O7"
+];
+
+Test[
+	`LLU`PacletFunctionSet[FromInitList, {}, "DataStore"];
+	FromInitList[]
+	,
+	Developer`DataStore[
+		Developer`DataStore["a" -> True, "b" -> False], 
+		Developer`DataStore[2, 3, 5, 7, 11], 
+		Developer`DataStore["a" -> 2.34, "b" -> 3.14], 
+		Developer`DataStore[2. + 3.*I, 3. + 0.*I, 5.1 - 1.23*I, 7. + 0.*I, 0. + 11.*I], 
+		Developer`DataStore["a" -> "x", "b" -> "y"]
+	]
+	,
+	TestID->"DataListTestSuite-20200508-D7S0D5"
 ];
 
 (* Timing tests *)

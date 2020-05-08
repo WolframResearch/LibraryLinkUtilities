@@ -190,7 +190,7 @@ LIBRARY_WSTP_FUNCTION(ReverseListOfStringsWSTP) {
 }
 
 LLU_LIBRARY_FUNCTION(SeparateKeysAndValues) {
-	auto dsIn = mngr.getDataList<std::complex<double>>(0);
+	auto dsIn = mngr.getDataList<LLU::NodeType::Complex>(0);
 	DataList<LLU::NodeType::UTF8String> keys;
 	DataList<LLU::NodeType::Complex> values;
 
@@ -430,4 +430,17 @@ LLU_LIBRARY_FUNCTION(PullAndPush2) {
 	dsOut.push_back("DataList", rawDS);
 
 	mngr.set(dsOut);
+}
+
+LLU_LIBRARY_FUNCTION(FromInitList) {
+	using namespace std::complex_literals;
+	GenericDataList res;
+
+	res.push_back(DataList<LLU::NodeType::Boolean> {{"a", 2}, {"b", false}});
+	res.push_back(DataList<LLU::NodeType::Integer> {2, 3, 5, 7, 11});
+	res.push_back(DataList<LLU::NodeType::Real> {{"a", 2.34}, {"b", 3.14}});
+	res.push_back(DataList<LLU::NodeType::Complex> {2. + 3i, 3, 5.1 - 1.23i, 7, 11i});
+	res.push_back(DataList<LLU::NodeType::UTF8String> {{"a","x"},{"b","y"}});
+
+	mngr.set(res);
 }
