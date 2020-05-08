@@ -17,10 +17,12 @@
 
 namespace LLU {
 
+	/// An enum listing possible owners of a LibraryLink container.
+	/// Ownership determines the memory management of a container.
 	enum struct Ownership : uint8_t {
-		LibraryLink,
-		Library,
-		Shared
+		LibraryLink, 	///< LibraryLink is responsible for managing the container's memory. Corresponds to Automatic and "Constant" passing.
+		Library,	///< The library (LLU) is responsible for managing the container's memory. Used for Manual passing and containers created by the library.
+		Shared		///< When the container is shared LLU only needs to decrease share count when it's done. Only used for arguments passed as "Shared".
 	};
 
 	/**
@@ -37,15 +39,14 @@ namespace LLU {
 
 	public:
 		/**
-		 * @brief Default constructor.
-		 * @details Triggers compile-time error unless PassingMode is Manual. Wrappers with all other passing modes can only be constructed given existing
-		 * raw containers, so they cannot be empty.
+		 * @brief Default constructor, creates an empty wrapper.
 		 */
 		MContainerBase() = default;
 
 		/**
-		 * @brief Create MContainerBase from a raw container
+		 * @brief Create MContainerBase from a raw container and its owner.
 		 * @param c - raw LibraryLink container (MTensor, MNumericArray, etc.), passing a nullptr will trigger an exception
+		 * @param owner - who manages the raw container's memory
 		 */
 		MContainerBase(Container c, Ownership owner) : container {c}, owner {owner} {
 			if (!c) {
@@ -53,29 +54,22 @@ namespace LLU {
 			}
 		}
 
-		/**
-		 * @brief Copy-constructor, performs a deep copy of the raw container.
-		 * @param mc - MContainerBase to be copied
-		 */
+		/// Container wrappers are non-copyable, they act somewhat like unique_ptr around the raw container
 		MContainerBase(const MContainerBase& mc) = delete;
 
 		/**
-		 * @brief Move-constructor
+		 * @brief Move-constructor steals the raw container keeping the ownership info
 		 * @param mc - MContainerBase to be moved-from, it's internal container becomes nullptr
 		 */
 		MContainerBase(MContainerBase&& mc) noexcept : container {mc.container}, owner { mc.owner} {
 			mc.container = nullptr;
 		}
 
-		/**
-		 * @brief Copy-assignment operator, performs a deep copy of the raw container.
-		 * @param mc - MContainerBase to be copied
-		 * @return reference to this object
-		 */
+		/// Copy-assignment is deleted, same as copy-constructor
 		MContainerBase& operator=(const MContainerBase& mc) = delete;
 
 		/**
-		 * @brief Move-assignment operator
+		 * @brief Move-assignment operator disposes of the current raw container and steals the new one keeping its ownership intact
 		 * @param mc - MContainerBase to be moved-from, it's internal container becomes nullptr
 		 * @return reference to this object
 		 */
@@ -85,7 +79,7 @@ namespace LLU {
 			return *this;
 		}
 
-		/// Default destructor
+		/// Destructor takes appropriate action depending on the ownership info
 		virtual ~MContainerBase() noexcept {
 			if (owner == Ownership::Shared) {
 				disown();
@@ -114,7 +108,7 @@ namespace LLU {
 		}
 
 		/**
-		 *   @brief Return share count of internal container.
+		 *   @brief Return share count of internal container, if present and 0 otherwise
 		 **/
 		mint shareCount() const noexcept {
 			if (container) {
@@ -138,6 +132,10 @@ namespace LLU {
 			}
 		}
 
+		/**
+		 * @brief   Get ownership information
+		 * @return  the owner of the internal container
+		 */
 		[[nodiscard]] Ownership getOwner() const noexcept {
 			return owner;
 		}
@@ -195,8 +193,9 @@ namespace LLU {
 		}
 
 		/**
-		 * @brief   Set new internal container. The ownership state of this wrapper is not changed
+		 * @brief   Set a new internal container safely disposing of the old one.
 		 * @param   newCont - new internal container
+		 * @param   newOwnerMode - owner of the new container
 		 */
 		void reset(Container newCont, Ownership newOwnerMode = Ownership::Library) noexcept {
 			switch (owner) {
@@ -213,10 +212,15 @@ namespace LLU {
 		}
 
 	private:
+		/// Make a deep copy of the raw container
 		virtual Container cloneImpl() const = 0;
 
 		virtual mint shareCountImpl() const = 0;
 
+		/**
+		 * @brief   Pass the raw container as result of a library function.
+		 * @param   res - MArgument that will store the result of library function
+		 */
 		virtual void passImpl(MArgument& res) const = 0;
 
 		/// Raw LibraryLink container (MTensor, MImage, DataStore, etc.)

@@ -19,7 +19,6 @@ namespace LLU {
 	
 	/**
 	 *  @brief  MContainer specialization for MTensor
-	 *  @tparam PassingMode - passing policy
 	 */
 	template<>
 	class MContainer<MArgumentType::Tensor> : public TensorInterface, public MContainerBase<MArgumentType::Tensor> {
@@ -37,14 +36,13 @@ namespace LLU {
 		 * @param   dims - new GenericTensor dimensions
 		 * @see     <http://reference.wolfram.com/language/LibraryLink/ref/callback/MTensor_new.html>
 		 */
-		MContainer(mint type, mint rank, const mint* dims) {
-			Container tmp {};
-			if (LibraryData::API()->MTensor_new(type, rank, dims, &tmp)) {
-				ErrorManager::throwException(ErrorName::TensorNewError);
-			}
-			this->reset(tmp);
-		}
+		MContainer(mint type, mint rank, const mint* dims);
 
+		/**
+		 * @brief   Clone this MContainer, performs a deep copy of the underlying MTensor.
+		 * @note    The cloned MContainer always belongs to the library (Ownership::Library) because LibraryLink has no idea of its existence.
+		 * @return  new MContainer, by value
+		 */
 		MContainer clone() const {
 			return MContainer {cloneContainer(), Ownership::Library};
 		}
@@ -70,14 +68,8 @@ namespace LLU {
 		}
 
 		/// @copydoc TensorInterface::rawData()
-		void* rawData() const override {
-			switch (type()) {
-				case MType_Integer: return LibraryData::API()->MTensor_getIntegerData(this->getContainer());
-				case MType_Real: return LibraryData::API()->MTensor_getRealData(this->getContainer());
-				case MType_Complex: return LibraryData::API()->MTensor_getComplexData(this->getContainer());
-				default: ErrorManager::throwException(ErrorName::TensorTypeError);
-			}
-		}
+		void* rawData() const override;
+
 	private:
 
 		/**
@@ -88,24 +80,16 @@ namespace LLU {
 			return LibraryData::API()->MTensor_shareCount(this->getContainer());
 		}
 
-		/**
-		 *   @copydoc   MContainerBase::pass
-		 **/
+		/// @copydoc   MContainerBase::pass(MArgument&)
 		void passImpl(MArgument& res) const noexcept override {
 			MArgument_setMTensor(res, this->getContainer());
 		}
 
 		/**
-		 *   @copydoc   MContainerBase::clone()
+		 *   @copydoc   Make a deep copy of the raw container
 		 *   @see 		<http://reference.wolfram.com/language/LibraryLink/ref/callback/MTensor_clone.html>
 		 **/
-		Container cloneImpl() const override {
-			Container tmp {};
-			if (LibraryData::API()->MTensor_clone(this->getContainer(), &tmp)) {
-				ErrorManager::throwException(ErrorName::TensorCloneError);
-			}
-			return tmp;
-		}
+		Container cloneImpl() const override;
 	};
 
 }

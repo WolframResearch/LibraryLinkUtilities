@@ -18,7 +18,6 @@ namespace LLU {
 
 	/**
 	 *  @brief  MContainer specialization for MNumericArray
-	 *  @tparam PassingMode - passing policy
 	 */
 	template<>
 	class MContainer<MArgumentType::NumericArray> : public NumericArrayInterface, public MContainerBase<MArgumentType::NumericArray> {
@@ -38,32 +37,23 @@ namespace LLU {
 		 * @param   dims - new GenericNumericArray dimensions
 		 * @see     <http://reference.wolfram.com/language/LibraryLink/ref/callback/MNumericArray_new.html>
 		 */
-		MContainer(numericarray_data_t type, mint rank, const mint* dims) {
-			Container tmp {};
-			if (LibraryData::NumericArrayAPI()->MNumericArray_new(type, rank, dims, &tmp)) {
-				ErrorManager::throwException(ErrorName::NumericArrayNewError);
-			}
-			this->reset(tmp);
-		}
+		MContainer(numericarray_data_t type, mint rank, const mint* dims);
 
 		/**
 		 * @brief   Convert this object to a new GenericNumericArray of given datatype, using specified conversion method
 		 * @param   t - destination data type
 		 * @param   method - conversion method
 		 * @param   param - conversion method parameter (aka tolerance)
-		 * @return  converted GenericNumericArray with Manual passing mode
+		 * @return  converted GenericNumericArray owned by the Library
 		 * @see     <http://reference.wolfram.com/language/LibraryLink/ref/callback/MNumericArray_convertType.html>
 		 */
-		GenericNumericArray convert(numericarray_data_t t, NA::ConversionMethod method, double param) const {
-			Container newNA = nullptr;
-			auto err = LibraryData::NumericArrayAPI()->MNumericArray_convertType(&newNA, this->getContainer(), t,
-																				 static_cast<numericarray_convert_method_t>(method), param);
-			if (err) {
-				ErrorManager::throwException(ErrorName::NumericArrayConversionError, "Conversion to type " + std::to_string(static_cast<int>(t)) + " failed.");
-			}
-			return {newNA, Ownership::Library};
-		}
+		GenericNumericArray convert(numericarray_data_t t, NA::ConversionMethod method, double param) const;
 
+		/**
+		 * @brief   Clone this MContainer, performs a deep copy of the underlying MNumericArray.
+		 * @note    The cloned MContainer always belongs to the library (Ownership::Library) because LibraryLink has no idea of its existence.
+		 * @return  new MContainer, by value
+		 */
 		MContainer clone() const {
 			return MContainer {cloneContainer(), Ownership::Library};
 		}
@@ -96,16 +86,10 @@ namespace LLU {
 	private:
 
 		/**
-		 *   @copydoc   MContainerBase::clone()
+		 *   @copydoc   Make a deep copy of the raw container
 		 *   @see 		<http://reference.wolfram.com/language/LibraryLink/ref/callback/MNumericArray_clone.html>
 		 **/
-		Container cloneImpl() const override {
-			Container tmp {};
-			if (LibraryData::NumericArrayAPI()->MNumericArray_clone(this->getContainer(), &tmp)) {
-				ErrorManager::throwException(ErrorName::NumericArrayCloneError);
-			}
-			return tmp;
-		}
+		Container cloneImpl() const override;
 
 		/**
 		 * @copydoc MContainerBase::shareCount()
