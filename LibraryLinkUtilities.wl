@@ -451,7 +451,10 @@ iLoadLibraryFunction[symbol_, loading_, loader_, libraryName_, args___, opts : O
 	Module[{loadingOpts, assignmentHead},
 		loadingOpts = FilterRules[{opts}, Options[loader]];
 		assignmentHead = If[lazyLoadingQ[loading], LazyLoad, Set];
-		Clear[symbol];
+		(* symbol could be a general assignable LHS, such as Association, or Constructor[MyExpression] *)
+		If[Developer`SymbolQ[symbol],
+			Clear[symbol];
+		];
 		assignmentHead[
 			symbol,
 			(
@@ -538,7 +541,7 @@ declareLazyVersion[WSTPFunctionSet];
  * This will evaluate the second argument only once, when f is first used.
  *)
 Attributes[LazyLoad] = {HoldAll};
-LazyLoad[f_?Developer`SymbolQ, expr_] := (f := f = expr);
+LazyLoad[f_, expr_] := (f := f = expr);
 
 
 (* ::SubSection:: *)
