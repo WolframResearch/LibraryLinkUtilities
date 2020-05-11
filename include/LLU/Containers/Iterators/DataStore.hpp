@@ -35,9 +35,9 @@ namespace LLU {
 	public:
 		using value_type = GenericDataNode;
 		using reference = value_type;
-		using iterator_category = std::forward_iterator_tag;
+		using iterator_category = std::input_iterator_tag;
 		using pointer = void*;
-		using difference_type = void;
+		using difference_type = mint;
 
 		DataStoreIterator(DataStoreNode n) : node{n} {}
 

@@ -22,14 +22,14 @@ options := {
 	"IncludeDirectories" -> { $LLUIncDir },
 	"Libraries" -> { $LLULib },
 	"LibraryDirectories" -> { $LLULibDir },
-	"SystemCompileOptions" ->
+	"CompileOptions" ->
 		Switch[$OperatingSystem,
 			"Windows",
-				"/O2 /EHsc /W3 /std:" <> $CppVersion <> " /D_SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING",
+				"/EHsc /W3 /std:" <> $CppVersion <> " /D_SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING",
 			"Unix",
-				"-fPIC -O2 -Wall --pedantic -fvisibility=hidden -std=" <> $CppVersion,
+				"-Wall --pedantic -fvisibility=hidden -std=" <> $CppVersion,
 			"MacOSX",
-				"-mmacosx-version-min=10.12 -O2 -Wall -Wextra --pedantic -fvisibility=hidden -std=" <> $CppVersion
+				"-mmacosx-version-min=10.12 -Wall -Wextra --pedantic -fvisibility=hidden -std=" <> $CppVersion
 		],
 	"ShellOutputFunction" -> Print,
 	"ShellCommandFunction" -> Print,

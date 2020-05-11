@@ -428,7 +428,7 @@ Test[
 Test[
 	CheckSizeChange[5]
 	,
-	{5, 5, 5, 5, 5}
+	{5, 5, 5}
 	,
 	TestID -> "DataListTestSuite-20200401-L5V4B8"
 ];

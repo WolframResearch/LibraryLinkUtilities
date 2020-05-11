@@ -15,7 +15,7 @@
 #include <vector>
 
 #include "LLU/Containers/Generic/DataStore.hpp"
-#include "LLU/Containers/Iterators/DataNode.hpp"
+#include "LLU/Containers/Iterators/DataList.hpp"
 #include "LLU/ErrorLog/ErrorManager.h"
 #include "LLU/LibraryData.h"
 #include "LLU/MArgument.h"
@@ -35,12 +35,10 @@ namespace LLU {
 	template<typename T>
 	class DataList : public MContainer<MArgumentType::DataStore> {
 	public:
-		using ProxyContainer = std::vector<DataNode<T>>;
-		using iterator = typename ProxyContainer::iterator;
-		using const_iterator = typename ProxyContainer::const_iterator;
-		using reverse_iterator = typename ProxyContainer::reverse_iterator;
-		using const_reverse_iterator = typename ProxyContainer::const_reverse_iterator;
-		using size_type = typename ProxyContainer::size_type;
+		using iterator = DataListIterator<T>;
+		using const_iterator = iterator;
+		using value_iterator = DataListValueIterator<T>;
+		using name_iterator = DataListNameIterator;
 		using value_type = T;
 
 	public:
@@ -66,103 +64,49 @@ namespace LLU {
 
 		DataList clone() const;
 
-		/**
-		 * @brief 	Get size of the DataList, which is the number of nodes in the list
-		 */
-		size_type size() const {
-			return proxy.size();
-		}
-
-		/**
-		 *	@brief Get iterator at the beginning of underlying data
-		 **/
-		iterator begin() {
-			return proxy.begin();
-		}
 
 		/**
 		 *	@brief Get constant iterator at the beginning of underlying data
 		 **/
-		const_iterator begin() const {
-			return proxy.begin();
+		iterator begin() const {
+			return front();
 		}
 
 		/**
 		 *	@brief Get constant iterator at the beginning of underlying data
 		 **/
 		const_iterator cbegin() const {
-			return proxy.cbegin();
-		}
-
-		/**
-		 *	@brief Get iterator after the end of underlying data
-		 **/
-		iterator end() {
-			return proxy.end();
+			return begin();
 		}
 
 		/**
 		 *	@brief Get constant iterator after the end of underlying data
 		 **/
-		const_iterator end() const {
-			return proxy.end();
+		iterator end() const {
+			return nullptr;
 		}
 
 		/**
 		 *	@brief Get constant reverse iterator after the end of underlying data
 		 **/
 		const_iterator cend() const {
-			return proxy.cend();
+			return end();
 		}
 
-		/**
-		 *	@brief Get constant reverse iterator at the beginning of underlying data
-		 **/
-		reverse_iterator rbegin() {
-			return proxy.rbegin();
+		value_iterator valueBegin() const {
+			return front();
 		}
 
-		/**
-		 *	@brief Get constant reverse iterator at the beginning of underlying data
-		 **/
-		const_reverse_iterator rbegin() const {
-			return proxy.rbegin();
+		value_iterator valueEnd() const {
+			return nullptr;
 		}
 
-		/**
-		 *	@brief Get reverse iterator after the end of underlying data
-		 **/
-		reverse_iterator rend() {
-			return proxy.rend();
+		name_iterator nameBegin() const {
+			return front();
 		}
 
-		/**
-		 *	@brief Get constant reverse iterator after the end of underlying data
-		 **/
-		const_reverse_iterator rend() const {
-			return proxy.rend();
-		}
-
-		DataNode<T>& operator[](size_type index) {
-			return proxy[index];
-		}
-
-		const DataNode<T>& operator[](size_type index) const {
-			return proxy[index];
-		}
-
-		DataNode<T>& at(size_type index) {
-			if (index >= size()) {
-				ErrorManager::throwException(ErrorName::DimensionsError);
-			}
-			return proxy[index];
-		}
-
-		const DataNode<T>& at(size_type index) const {
-			if (index >= size()) {
-				ErrorManager::throwException(ErrorName::DimensionsError);
-			}
-			return proxy[index];
+		name_iterator nameEnd() const {
+			return nullptr;
 		}
 
 		/**
@@ -178,21 +122,30 @@ namespace LLU {
 		 */
 		void push_back(std::string_view name, value_type nodeData);
 
-	private:
-		/**
-		 * @brief 	Recreate private proxy list from the internal DataStore
-		 */
-		void makeProxy();
+		std::vector<T> values() const {
+			return {valueBegin(), valueEnd()};
+		}
 
-		/// private proxy list with top-level wrappers of each node of the internal DataStore
-		ProxyContainer proxy;
+		std::vector<std::string> names() const {
+			return {nameBegin(), nameEnd()};
+		}
+
+		std::vector<DataNode<T>> toVector() const {
+			return {cbegin(), cend()};
+		}
 	};
 
 	/* Definitions od DataList methods */
 
 	template<typename T>
 	DataList<T>::DataList(GenericDataList gds) : GenericDataList(std::move(gds)) {
-		makeProxy();
+		if constexpr (!std::is_same_v<T, LLU::NodeType::Any>) {
+			std::for_each(GenericDataList::cbegin(), GenericDataList::cend(), [](auto node) {
+				if (node.type() != Argument::WrapperIndex<T>) {
+					ErrorManager::throwException(ErrorName::DLInvalidNodeType);
+				}
+			});
+		}
 	}
 
 	template<typename T>
@@ -210,32 +163,18 @@ namespace LLU {
 	}
 
 	template<typename T>
-	void DataList<T>::makeProxy() {
-		auto size = length();
-		auto currentNode = front();
-		for (mint i = 0; i < size; ++i) {
-			proxy.emplace_back(currentNode);
-			currentNode = LibraryData::DataStoreAPI()->DataStoreNode_getNextNode(currentNode);
-		}
-	}
-
-	template<typename T>
 	DataList<T> DataList<T>::clone() const {
 		return DataList {cloneContainer(), Ownership::Library};
 	}
 
 	template<typename T>
 	void DataList<T>::push_back(value_type nodeData) {
-		Argument::TypedArgument t {std::move(nodeData)};
-		GenericDataList::push_back(t);
-		proxy.emplace_back(this->back(), std::move(t));
+		GenericDataList::push_back(std::move(nodeData));
 	}
 
 	template<typename T>
 	void DataList<T>::push_back(std::string_view name, value_type nodeData) {
-		Argument::TypedArgument t {std::move(nodeData)};
-		GenericDataList::push_back(name, t);
-		proxy.emplace_back(this->back(), std::move(t));
+		GenericDataList::push_back(name, std::move(nodeData));
 	}
 
 }

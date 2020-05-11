@@ -9,6 +9,7 @@
 
 #include <type_traits>
 
+#include <LLU/Containers/Generic/DataStore.hpp>
 #include <LLU/TypedMArgument.h>
 
 namespace LLU {
@@ -30,19 +31,12 @@ namespace LLU {
 		 */
 		explicit DataNode(DataStoreNode dsn);
 
-		DataNode(DataStoreNode dsn, Argument::TypedArgument arg);
-
 		/**
 		 * @brief 	Get node value
 		 * @return 	Returns a reference to node value
 		 */
 		T& value() {
-			if constexpr (isGeneric) {
-				return nodeArg;
-			} else {
-				// After the constructor is done, nodeArg will always hold an object of type T, so no validation needed
-				return *std::get_if<T>(&nodeArg);
-			}
+			return nodeArg;
 		}
 
 		/**
@@ -50,20 +44,7 @@ namespace LLU {
 		 * @return 	Returns a reference to node value
 		 */
 		const T& value() const {
-			if constexpr (isGeneric) {
-				return nodeArg;
-			} else {
-				// After the constructor is done, nodeArg will always hold an object of type T, so no validation needed
-				return *std::get_if<T>(&nodeArg);
-			}
-		}
-
-		T* valuePtr() {
-			return std::addressof(value());
-		}
-
-		const T* valuePtr() const {
-			return std::addressof(value());
+			return nodeArg;
 		}
 
 		std::string_view name() const {
@@ -100,7 +81,7 @@ namespace LLU {
 
 	private:
 		GenericDataNode node;
-		Argument::TypedArgument nodeArg;
+		T nodeArg;
 	};
 
 	/* Definitions od DataNode methods */
@@ -109,22 +90,17 @@ namespace LLU {
 		if (!dsn) {
 			ErrorManager::throwException(ErrorName::DLNullRawNode);
 		}
-		nodeArg = node.value();
 		if constexpr (!isGeneric) {
-			if (!std::holds_alternative<T>(nodeArg)) {
+			auto nodeVariant = node.value();
+			if (!std::holds_alternative<T>(nodeVariant)) {
 				ErrorManager::throwException(ErrorName::DLInvalidNodeType);
 			}
+			nodeArg = std::move(*std::get_if<T>(&nodeVariant));
+		} else{
+			nodeArg = std::move(node.value());
 		}
 	}
 
-	template<typename T>
-	DataNode<T>::DataNode(DataStoreNode dsn, Argument::TypedArgument arg) : node {dsn}, nodeArg {std::move(arg)} {
-		if constexpr (!isGeneric) {
-			if (!std::holds_alternative<T>(nodeArg)) {
-				ErrorManager::throwException(ErrorName::DLInvalidNodeType);
-			}
-		}
-	}
 
 }/* namespace LLU */
 
