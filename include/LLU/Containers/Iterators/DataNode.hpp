@@ -31,6 +31,8 @@ namespace LLU {
 		 */
 		explicit DataNode(DataStoreNode dsn);
 
+		explicit DataNode(GenericDataNode gn);
+
 		/**
 		 * @brief 	Get node value
 		 * @return 	Returns a reference to node value
@@ -70,12 +72,12 @@ namespace LLU {
 		}
 
 		template <std::size_t N>
-		decltype(auto) get() const {
+		decltype(auto) get() {
 			static_assert(N < 2, "Bad structure binding attempt to a DataNode.");
 			if constexpr (N == 0) {
 				return name();
 			} else {
-				return (value());
+				return (nodeArg);
 			}
 		}
 
@@ -86,8 +88,11 @@ namespace LLU {
 
 	/* Definitions od DataNode methods */
 	template<typename T>
-	DataNode<T>::DataNode(DataStoreNode dsn) : node {dsn} {
-		if (!dsn) {
+	DataNode<T>::DataNode(DataStoreNode dsn) : DataNode(GenericDataNode {dsn}) {}
+
+	template<typename T>
+	DataNode<T>::DataNode(GenericDataNode gn) : node {gn} {
+		if (!node) {
 			ErrorManager::throwException(ErrorName::DLNullRawNode);
 		}
 		if constexpr (!isGeneric) {

@@ -68,6 +68,9 @@ namespace LLU {
 
 		using DataListIteratorPrimitive::DataListIteratorPrimitive;
 
+		template<typename T>
+		explicit NodeNameIterator(const NodeIterator<T>& it) : DataListIteratorPrimitive {it} {}
+
 		reference operator*() const {
 			return node.name();
 		}
@@ -90,6 +93,8 @@ namespace LLU {
 		using reference = value_type;
 
 		using DataListIteratorPrimitive::DataListIteratorPrimitive;
+
+		explicit NodeValueIterator(const NodeIterator<T>& it) : DataListIteratorPrimitive {it} {}
 
 		reference operator*() const {
 			if constexpr (std::is_same_v<T, Argument::Typed::Any>) {
