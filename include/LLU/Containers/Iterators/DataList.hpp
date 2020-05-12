@@ -40,7 +40,7 @@ namespace LLU {
 
 
 	template<typename T>
-	struct DataListIterator : Detail::DataListIteratorPrimitive {
+	struct NodeIterator : Detail::DataListIteratorPrimitive {
 		using value_type = DataNode<T>;
 		using reference = value_type;
 
@@ -50,19 +50,19 @@ namespace LLU {
 			return reference {node.node};
 		}
 
-		DataListIterator& operator++() {
+		NodeIterator& operator++() {
 			node = node.next();
 			return *this;
 		}
 
-		DataListIterator operator++(int) {
-			DataListIterator tmp {node.node};
+		NodeIterator operator++(int) {
+			NodeIterator tmp {node.node};
 			++(*this);
 			return tmp;
 		}
 	};
 
-	struct DataListNameIterator : Detail::DataListIteratorPrimitive {
+	struct NodeNameIterator : Detail::DataListIteratorPrimitive {
 		using value_type = std::string_view ;
 		using reference = value_type;
 
@@ -72,20 +72,20 @@ namespace LLU {
 			return node.name();
 		}
 
-		DataListNameIterator& operator++() {
+		NodeNameIterator& operator++() {
 			node = node.next();
 			return *this;
 		}
 
-		DataListNameIterator operator++(int) {
-			DataListNameIterator tmp {node.node};
+		NodeNameIterator operator++(int) {
+			NodeNameIterator tmp {node.node};
 			++(*this);
 			return tmp;
 		}
 	};
 
 	template<typename T>
-	struct DataListValueIterator : Detail::DataListIteratorPrimitive {
+	struct NodeValueIterator : Detail::DataListIteratorPrimitive {
 		using value_type = T;
 		using reference = value_type;
 
@@ -99,13 +99,13 @@ namespace LLU {
 			}
 		}
 
-		DataListValueIterator& operator++() {
+		NodeValueIterator& operator++() {
 			node = node.next();
 			return *this;
 		}
 
-		DataListValueIterator operator++(int) {
-			DataListValueIterator tmp {node.node};
+		NodeValueIterator operator++(int) {
+			NodeValueIterator tmp {node.node};
 			++(*this);
 			return tmp;
 		}

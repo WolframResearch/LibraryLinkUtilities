@@ -35,10 +35,10 @@ namespace LLU {
 	template<typename T>
 	class DataList : public MContainer<MArgumentType::DataStore> {
 	public:
-		using iterator = DataListIterator<T>;
+		using iterator = NodeIterator<T>;
 		using const_iterator = iterator;
-		using value_iterator = DataListValueIterator<T>;
-		using name_iterator = DataListNameIterator;
+		using value_iterator = NodeValueIterator<T>;
+		using name_iterator = NodeNameIterator;
 		using value_type = T;
 
 	public:

@@ -116,7 +116,7 @@ namespace LLU {
 			auto dl = mngr.get<DataList<LLU::NodeType::DataStore>>(index);
 			std::vector<Person> res;
 			std::transform(dl.valueBegin(), dl.valueEnd(), std::back_inserter(res), [](LLU::GenericDataList ds) {
-				DataListValueIterator<LLU::NodeType::Any> it {ds.begin()};
+				NodeValueIterator<LLU::NodeType::Any> it {ds.begin()};
 				std::string name { (it++).as<LLU::NodeType::UTF8String>() };
 				auto age = static_cast<uint8_t>((it++).as<mint>());
 				auto height = (it++).as<double>() ;
