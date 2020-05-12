@@ -177,6 +177,56 @@ namespace LLU {
 		GenericDataList::push_back(name, std::move(nodeData));
 	}
 
+	template<typename T>
+	struct ValueAdaptor {
+		using iterator = NodeValueIterator<T>;
+
+		explicit ValueAdaptor(DataList<T>& d) : dl{d} {};
+
+		iterator begin() const {
+			return dl.valueBegin();
+		}
+
+		iterator cbegin() {
+			return dl.valueBegin();
+		}
+
+		iterator end() const {
+			return dl.valueEnd();
+		}
+
+		iterator end() {
+			return dl.valueEnd();
+		}
+	private:
+		DataList<T>& dl;
+	};
+
+	template<typename T>
+	struct NameAdaptor {
+		using iterator = NodeNameIterator;
+
+		explicit NameAdaptor(DataList<T>& d) : dl{d} {};
+
+		iterator begin() const {
+			return dl.nameBegin();
+		}
+
+		iterator cbegin() {
+			return dl.nameBegin();
+		}
+
+		iterator end() const {
+			return dl.nameEnd();
+		}
+
+		iterator end() {
+			return dl.nameEnd();
+		}
+
+	private:
+		DataList<T>& dl;
+	};
 }
 
 #endif	  // LLUTILS_DATALIST_H
