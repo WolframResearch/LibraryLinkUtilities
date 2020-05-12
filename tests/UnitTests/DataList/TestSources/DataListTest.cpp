@@ -79,16 +79,17 @@ LLU_LIBRARY_FUNCTION(EmptyDataStore) {
 
 template<typename InContainer, typename OutContainer = InContainer>
 void reverseListOfString(LLU::MArgumentManager& mngr) {
+	using NodeT = LLU::NodeType::UTF8String;
+
 	auto dsIn = mngr.get<InContainer>(0);
 	OutContainer dsOut;
 
 	for (auto node : dsIn) {
 		std::string_view s;
-		if constexpr (std::is_same_v<InContainer, DataList<std::string_view>>) {
+		if constexpr (std::is_same_v<InContainer, DataList<NodeT>>) {
 			s = node.value();
 		} else {
-			auto v = node.value();
-			s = *std::get_if<std::string_view>(&v);
+			s = node.template as<NodeT>();
 		}
 		std::string reversed {s.rbegin(), s.rend()};	// create reversed copy
 		dsOut.push_back(std::string_view(reversed));
@@ -368,9 +369,9 @@ LLU_LIBRARY_FUNCTION(PullAndPush) {
 	mngr.set(dsOut);
 }
 
-LLU::NodeType::Any* getValuePtrAndAdvance(GenericDataList::iterator& node) {
-	static LLU::NodeType::Any value;
-	return std::addressof(value = (*node++).value());
+template<typename T>
+T getValueAndAdvance(GenericDataList::iterator& node) {
+	return (*node++).as<T>();
 }
 
 LLU_LIBRARY_FUNCTION(PullAndPush2) {
@@ -383,51 +384,51 @@ LLU_LIBRARY_FUNCTION(PullAndPush2) {
 	auto node = dsIn.begin();
 
 	// get and push Boolean
-	auto b = *std::get_if<bool>(getValuePtrAndAdvance(node));
+	auto b = (*node++).as<bool>();
 	dsOut.push_back(b);
 
 	// get and push Integer
-	auto i = *std::get_if<mint>(getValuePtrAndAdvance(node));
+	auto i = (*node++).as<mint>();
 	dsOut.push_back(i);
 
 	// get and push Real
-	auto d = *std::get_if<double>(getValuePtrAndAdvance(node));
+	auto d = (*node++).as<double>();
 	dsOut.push_back(d);
 
 	// get and push Complex
-	auto c = *std::get_if<std::complex<double>>(getValuePtrAndAdvance(node));
+	auto c = (*node++).as<std::complex<double>>();
 	dsOut.push_back(c);
 
 	// get and push Tensor
-	auto t = std::move(*std::get_if<LLU::GenericTensor>(getValuePtrAndAdvance(node)));
+	auto t = (*node++).as<LLU::GenericTensor>();
 	auto rawT = toPrimitiveType<MArgumentType::Tensor>(t);
 	dsOut.push_back(t.clone());
 	dsOut.push_back("Tensor", rawT); // rawT is a pointer type, it gets converted to bool and send as Boolean node
 
 	// get and push SparseArray
-	auto sa = *std::get_if<MSparseArray>(getValuePtrAndAdvance(node));
+	auto sa = (*node++).as<MSparseArray>();
 	dsOut.push_back(sa);
 
 	// get and push NumericArray
-	auto na = std::move(*std::get_if<LLU::GenericNumericArray>(getValuePtrAndAdvance(node)));
+	auto na = (*node++).as<LLU::GenericNumericArray>();
 	auto rawNA = toPrimitiveType<MArgumentType::NumericArray>(na);
 	dsOut.push_back(na.clone());
 	dsOut.push_back("NumericArray", rawNA);
 
 	// get and push Image
-	auto im = std::move(*std::get_if<LLU::GenericImage>(getValuePtrAndAdvance(node)));
+	auto im = (*node++).as<LLU::GenericImage>();
 	auto rawIm = toPrimitiveType<MArgumentType::Image>(im);
 	dsOut.push_back(im.clone());
 	dsOut.push_back("Image", rawIm);
 
 	// get and push String
-	auto str = *std::get_if<std::string_view>(getValuePtrAndAdvance(node));
+	auto str = (*node++).as<std::string_view>();
 	auto rawStr = toPrimitiveType<MArgumentType::UTF8String>(str);
 	dsOut.push_back(str);
 	dsOut.push_back("String", rawStr);
 
 	// get and push DataStore
-	auto ds = std::move(*std::get_if<LLU::GenericDataList>(getValuePtrAndAdvance(node)));
+	auto ds = (*node++).as<LLU::GenericDataList>();
 	auto rawDS = toPrimitiveType<MArgumentType::DataStore>(ds);
 	dsOut.push_back(ds.clone());
 	dsOut.push_back("DataList", rawDS);

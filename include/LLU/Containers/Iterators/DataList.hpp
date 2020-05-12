@@ -27,16 +27,7 @@ namespace LLU {
 
 			DataListIteratorPrimitive(DataStoreNode n) : node{n} {}
 
-			DataListIteratorPrimitive& operator++() {
-				node = node.next();
-				return *this;
-			}
-
-			DataListIteratorPrimitive operator++(int) {
-				DataListIteratorPrimitive tmp {node.node};
-				++(*this);
-				return tmp;
-			}
+			DataListIteratorPrimitive(DataStoreIterator it) : node{*it} {}
 
 			friend bool operator==(const DataListIteratorPrimitive& lhs, const DataListIteratorPrimitive& rhs) {
 				return lhs.node == rhs.node;
@@ -58,6 +49,17 @@ namespace LLU {
 		reference operator*() const {
 			return reference {node.node};
 		}
+
+		DataListIterator& operator++() {
+			node = node.next();
+			return *this;
+		}
+
+		DataListIterator operator++(int) {
+			DataListIterator tmp {node.node};
+			++(*this);
+			return tmp;
+		}
 	};
 
 	struct DataListNameIterator : Detail::DataListIteratorPrimitive {
@@ -69,6 +71,17 @@ namespace LLU {
 		reference operator*() const {
 			return node.name();
 		}
+
+		DataListNameIterator& operator++() {
+			node = node.next();
+			return *this;
+		}
+
+		DataListNameIterator operator++(int) {
+			DataListNameIterator tmp {node.node};
+			++(*this);
+			return tmp;
+		}
 	};
 
 	template<typename T>
@@ -79,12 +92,32 @@ namespace LLU {
 		using DataListIteratorPrimitive::DataListIteratorPrimitive;
 
 		reference operator*() const {
-			auto v = node.value();
 			if constexpr (std::is_same_v<T, Argument::Typed::Any>) {
-				return v;
+				return  node.value();
 			} else {
-				return *std::get_if<T>(std::addressof(v));
+				return as<T>();
 			}
+		}
+
+		DataListValueIterator& operator++() {
+			node = node.next();
+			return *this;
+		}
+
+		DataListValueIterator operator++(int) {
+			DataListValueIterator tmp {node.node};
+			++(*this);
+			return tmp;
+		}
+
+		template<typename U>
+		U as() const {
+			auto v = node.value();
+			auto* ptr = std::get_if<U>(std::addressof(v));
+			if (!ptr) {
+				ErrorManager::throwException(ErrorName::DLInvalidNodeType);
+			}
+			return std::move(*ptr);
 		}
 	};
 

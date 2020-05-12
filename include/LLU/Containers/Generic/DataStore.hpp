@@ -221,6 +221,16 @@ namespace LLU {
 			PrimitiveWrapper<Type>::addDataStoreNode(getContainer(), name, Argument::toPrimitiveType<Type>(nodeValue));
 		}
 	}
+
+	template<typename T>
+	T GenericDataNode::as() const {
+		auto v = value();
+		auto* ptr = std::get_if<T>(std::addressof(v));
+		if (!ptr) {
+			ErrorManager::throwException(ErrorName::DLInvalidNodeType);
+		}
+		return std::move(*ptr);
+	}
 }
 
 #endif	  // LLU_INCLUDE_LLU_CONTAINERS_GENERIC_DATASTORE

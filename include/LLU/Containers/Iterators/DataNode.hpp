@@ -91,11 +91,7 @@ namespace LLU {
 			ErrorManager::throwException(ErrorName::DLNullRawNode);
 		}
 		if constexpr (!isGeneric) {
-			auto nodeVariant = node.value();
-			if (!std::holds_alternative<T>(nodeVariant)) {
-				ErrorManager::throwException(ErrorName::DLInvalidNodeType);
-			}
-			nodeArg = std::move(*std::get_if<T>(&nodeVariant));
+			nodeArg = std::move(node.as<T>());
 		} else{
 			nodeArg = std::move(node.value());
 		}

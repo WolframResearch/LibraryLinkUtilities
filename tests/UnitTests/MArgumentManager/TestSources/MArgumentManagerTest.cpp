@@ -113,14 +113,13 @@ namespace LLU {
 	template<>
 	struct MArgumentManager::Getter<std::vector<Person>> {
 		static std::vector<Person> get(const MArgumentManager& mngr, size_type index) {
-			auto dl = mngr.get<DataList<LLU::GenericDataList>>(index);
+			auto dl = mngr.get<DataList<LLU::NodeType::DataStore>>(index);
 			std::vector<Person> res;
-			std::transform(std::begin(dl), std::end(dl), std::back_inserter(res), [](auto& node) {
-				DataList<LLU::NodeType::Any> d(std::move(node.value())); // move DataStore from node to a new DataList, node will not be used again
-				auto it {d.begin()};
-				std::string name = std::get_if<std::string_view>((it++)->valuePtr())->data();
-				auto age = static_cast<uint8_t>(*std::get_if<mint>((it++)->valuePtr()));
-				double height = *std::get_if<double>((it++)->valuePtr());
+			std::transform(dl.valueBegin(), dl.valueEnd(), std::back_inserter(res), [](LLU::GenericDataList ds) {
+				DataListValueIterator<LLU::NodeType::Any> it {ds.begin()};
+				std::string name { (it++).as<LLU::NodeType::UTF8String>() };
+				auto age = static_cast<uint8_t>((it++).as<mint>());
+				auto height = (it++).as<double>() ;
 				return Person { std::move(name), age, height };
 			});
 			return res;

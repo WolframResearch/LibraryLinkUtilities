@@ -26,6 +26,10 @@ namespace LLU {
 
 		Argument::TypedArgument value() const;
 
+		// defined in Containers/GenericDataStore.hpp because the definition of GenericDataList must be available
+		template<typename T>
+		T as() const;
+
 		operator bool() const;
 	};
 
