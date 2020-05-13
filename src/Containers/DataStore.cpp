@@ -43,7 +43,7 @@ namespace LLU {
 
 	void MContainer<MArgumentType::DataStore>::push_back(std::string_view name, const Argument::TypedArgument& node) {
 		switch (static_cast<MArgumentType>(node.index())) {
-			case MArgumentType::MArgument: ErrorManager::throwException(ErrorName::FunctionError);	  // TODO add specific error
+			case MArgumentType::MArgument: ErrorManager::throwException(ErrorName::DLInvalidNodeType);
 			case MArgumentType::Boolean: PrimitiveWrapper<MArgumentType::Boolean>::addDataStoreNode(getContainer(), name, *std::get_if<bool>(&node)); break;
 			case MArgumentType::Integer: PrimitiveWrapper<MArgumentType::Integer>::addDataStoreNode(getContainer(), name, *std::get_if<mint>(&node)); break;
 			case MArgumentType::Real: PrimitiveWrapper<MArgumentType::Real>::addDataStoreNode(getContainer(), name, *std::get_if<double>(&node)); break;
@@ -65,7 +65,7 @@ namespace LLU {
 				PrimitiveWrapper<MArgumentType::Image>::addDataStoreNode(getContainer(), name, std::get_if<GenericImage>(&node)->abandonContainer());
 				break;
 			case MArgumentType::UTF8String: {
-				auto* data = std::get_if<std::string_view>(&node)->data();
+				const auto * data = std::get_if<std::string_view>(&node)->data();
 				PrimitiveWrapper<MArgumentType::UTF8String>::addDataStoreNode(getContainer(), name, const_cast<char*>(data));
 			} break;
 			case MArgumentType::DataStore:
@@ -76,7 +76,7 @@ namespace LLU {
 
 	void MContainer<MArgumentType::DataStore>::push_back(const Argument::TypedArgument& node) {
 		switch (static_cast<MArgumentType>(node.index())) {
-			case MArgumentType::MArgument: ErrorManager::throwException(ErrorName::FunctionError);	  // TODO add specific error
+			case MArgumentType::MArgument: ErrorManager::throwException(ErrorName::DLInvalidNodeType);
 			case MArgumentType::Boolean: PrimitiveWrapper<MArgumentType::Boolean>::addDataStoreNode(getContainer(), *std::get_if<bool>(&node)); break;
 			case MArgumentType::Integer: PrimitiveWrapper<MArgumentType::Integer>::addDataStoreNode(getContainer(), *std::get_if<mint>(&node)); break;
 			case MArgumentType::Real: PrimitiveWrapper<MArgumentType::Real>::addDataStoreNode(getContainer(), *std::get_if<double>(&node)); break;
@@ -97,7 +97,7 @@ namespace LLU {
 				PrimitiveWrapper<MArgumentType::Image>::addDataStoreNode(getContainer(), std::get_if<GenericImage>(&node)->abandonContainer());
 				break;
 			case MArgumentType::UTF8String: {
-				auto* data = std::get_if<std::string_view>(&node)->data();
+				const auto * data = std::get_if<std::string_view>(&node)->data();
 				PrimitiveWrapper<MArgumentType::UTF8String>::addDataStoreNode(getContainer(), const_cast<char*>(data));
 			} break;
 			case MArgumentType::DataStore:

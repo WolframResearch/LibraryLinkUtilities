@@ -31,12 +31,12 @@ namespace LLU::Argument {
 			case MArgumentType::UTF8String: return std::string_view {MArgument_getUTF8String(m)};
 			case MArgumentType::DataStore: return GenericDataList {MArgument_getDataStore(m), Ownership::LibraryLink};
 		}
-		ErrorManager::throwException(ErrorName::FunctionError); //TODO add specific error
+		ErrorManager::throwException(ErrorName::TypeError);
 	}
 
 	void toMArgument(const TypedArgument& tma, MArgument& res) {
 		switch (static_cast<MArgumentType>(tma.index())) {
-			case MArgumentType::MArgument: ErrorManager::throwException(ErrorName::FunctionError); //TODO add specific error;
+			case MArgumentType::MArgument: ErrorManager::throwException(ErrorName::TypeError);
 			case MArgumentType::Boolean: MArgument_setBoolean(res, *std::get_if<bool>(&tma)); break;
 			case MArgumentType::Integer: MArgument_setInteger(res, *std::get_if<mint>(&tma)); break;
 			case MArgumentType::Real: MArgument_setReal(res, *std::get_if<double>(&tma)); break;
