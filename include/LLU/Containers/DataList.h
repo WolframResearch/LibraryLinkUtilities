@@ -24,13 +24,13 @@
 namespace LLU {
 
 	namespace NodeType = Argument::Typed;
+
 	/**
 	 * @class	DataList
 	 * @brief 	Top-level wrapper over LibraryLink's DataStore.
-	 * 			Designed to be strongly typed i.e. to wrap only homogeneous DataStores but by passing MArgumentType::MArgument as template parameter it will
-	 * work with arbitrary DataStores.
-	 * @tparam 	T - type of data stored in each node, see the enum type \c MArgumentType
-	 * @tparam 	PassingMode - policy for memory management of the internal container
+	 * @detail  Designed to be strongly typed i.e. to wrap only homogeneous DataStores but by passing NodeType::Any as template parameter it will
+	 *          work with arbitrary DataStores.
+	 * @tparam 	T - type of data stored in each node, see the \c NodeType namespace for possible node types
 	 */
 	template<typename T>
 	class DataList : public MContainer<MArgumentType::DataStore> {
@@ -45,7 +45,7 @@ namespace LLU {
 		using GenericDataList::GenericDataList;
 
 		/**
-		 * @brief	Create DataList wrapping around an existing GenericDataList with matching passing policy
+		 * @brief	Create DataList wrapping around an existing GenericDataList
 		 * @param 	gds - GenericDataList
 		 */
 		explicit DataList(GenericDataList gds);
@@ -53,19 +53,26 @@ namespace LLU {
 		/**
 		 * @brief	Create DataList from list of values. Keys will be set to empty strings.
 		 * @param 	initList - list of values to put in the DataList
+		 * @notice  This constructor can only be used if value_type is copyable.
 		 */
 		DataList(std::initializer_list<value_type> initList);
 
 		/**
 		 * @brief	Create DataList from list of keys and corresponding values.
 		 * @param 	initList - list of pairs key - value to put in the DataList
+		 * @notice  This constructor can only be used if value_type is copyable.
 		 */
 		DataList(std::initializer_list<std::pair<std::string, value_type>> initList);
 
+		/**
+		 * @brief   Clone this DataList, performing a deep copy of the underlying DataStore.
+		 * @note    The cloned DataStore always belongs to the library (Ownership::Library) because LibraryLink has no idea of its existence.
+		 * @return  new DataList
+		 */
 		[[nodiscard]] DataList clone() const;
 
 		/**
-		 *	@brief Get constant iterator at the beginning of underlying data
+		 *	@brief Get iterator at the beginning of underlying data
 		 **/
 		iterator begin() const {
 			return iterator {front()};
@@ -79,7 +86,7 @@ namespace LLU {
 		}
 
 		/**
-		 *	@brief Get constant iterator after the end of underlying data
+		 *	@brief Get iterator after the end of underlying data
 		 **/
 		iterator end() const {
 			return iterator {nullptr};
@@ -92,18 +99,30 @@ namespace LLU {
 			return const_iterator {end()};
 		}
 
+		/**
+		 * @brief   Get proxy iterator over node values pointing to the first node.
+		 */
 		value_iterator valueBegin() const {
 			return value_iterator {front()};
 		}
 
+		/**
+		 * @brief   Get proxy iterator over node values pointing past the last node.
+		 */
 		value_iterator valueEnd() const {
 			return value_iterator {nullptr};
 		}
 
+		/**
+		 * @brief   Get proxy iterator over node names (keys) pointing to the first node.
+		 */
 		name_iterator nameBegin() const {
 			return name_iterator {front()};
 		}
 
+		/**
+		 * @brief   Get proxy iterator over node names (keys) pointing past the last node.
+		 */
 		name_iterator nameEnd() const {
 			return name_iterator {nullptr};
 		}
@@ -121,14 +140,26 @@ namespace LLU {
 		 */
 		void push_back(std::string_view name, value_type nodeData);
 
+		/**
+		 * @brief   Return a vector of DataList node values.
+		 * @return  a std::vector of node values
+		 */
 		std::vector<T> values() const {
 			return {valueBegin(), valueEnd()};
 		}
 
+		/**
+		 * @brief   Return a vector of DataList node names.
+		 * @return  a std::vector of node names
+		 */
 		std::vector<std::string> names() const {
 			return {nameBegin(), nameEnd()};
 		}
 
+		/**
+		 * @brief   Return a vector of DataList nodes.
+		 * @return  a std::vector of nodes in the form of DataNode<T> objects
+		 */
 		std::vector<DataNode<T>> toVector() const {
 			return {cbegin(), cend()};
 		}
@@ -176,56 +207,57 @@ namespace LLU {
 		GenericDataList::push_back(name, std::move(nodeData));
 	}
 
+
+	namespace Detail {
+		template<typename T, typename IteratorType>
+		struct IteratorAdaptor {
+			using iterator = IteratorType;
+
+			explicit IteratorAdaptor(DataList<T>& d) : dl {d} {};
+
+			iterator begin() const {
+				return iterator {dl.begin()};
+			}
+
+			iterator cbegin() {
+				return iterator {dl.begin()};
+			}
+
+			iterator end() const {
+				return iterator {dl.end()};
+			}
+
+			iterator end() {
+				return iterator {dl.end()};
+			}
+
+		private:
+			DataList<T>& dl;
+		};
+	}
+
+	/**
+	 * @struct
+	 * @brief   Iterator adaptor for DataList that makes begin() and end() return proxy iterators for node values.
+	 *          Mostly useful in range-based for loops.
+	 * @tparam  T - a DataList node value type
+	 */
 	template<typename T>
-	struct ValueAdaptor {
-		using iterator = NodeValueIterator<T>;
-
-		explicit ValueAdaptor(DataList<T>& d) : dl{d} {};
-
-		iterator begin() const {
-			return dl.valueBegin();
-		}
-
-		iterator cbegin() {
-			return dl.valueBegin();
-		}
-
-		iterator end() const {
-			return dl.valueEnd();
-		}
-
-		iterator end() {
-			return dl.valueEnd();
-		}
-	private:
-		DataList<T>& dl;
+	struct ValueAdaptor : Detail::IteratorAdaptor<T, NodeValueIterator<T>> {
+		explicit ValueAdaptor(DataList<T>& d) : Detail::IteratorAdaptor<T, NodeValueIterator<T>> {d} {};
 	};
 
+	/**
+	 * @struct
+	 * @brief   Iterator adaptor for DataList that makes begin() and end() return proxy iterators for node names.
+	 *          Mostly useful in range-based for loops.
+	 * @tparam  T - a DataList node value type
+	 */
 	template<typename T>
-	struct NameAdaptor {
-		using iterator = NodeNameIterator;
-
-		explicit NameAdaptor(DataList<T>& d) : dl{d} {};
-
-		iterator begin() const {
-			return dl.nameBegin();
-		}
-
-		iterator cbegin() {
-			return dl.nameBegin();
-		}
-
-		iterator end() const {
-			return dl.nameEnd();
-		}
-
-		iterator end() {
-			return dl.nameEnd();
-		}
-
-	private:
-		DataList<T>& dl;
+	struct NameAdaptor : Detail::IteratorAdaptor<T, NodeNameIterator> {
+		explicit NameAdaptor(DataList<T>& d) : Detail::IteratorAdaptor<T, NodeNameIterator> {d} {};
 	};
+
 }
 
 #endif	  // LLUTILS_DATALIST_H

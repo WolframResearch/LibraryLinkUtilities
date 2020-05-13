@@ -107,9 +107,11 @@ namespace LLU {
 		Tensor(InputIt first, InputIt last, MArrayDimensions dims);
 
 		/**
-		 *  @brief  Create new Tensor from MTensor
-		 *  @param  t - MTensor
-		 */
+		 *   @brief     Constructs Tensor based on MTensor
+		 *   @param[in] na - LibraryLink structure to be wrapped
+		 *   @param[in] owner - who manages the memory the raw MTensor
+		 *   @throws    ErrorName::TensorTypeError - if the Tensor template type \b T does not match the actual data type of the MTensor
+		 **/
 		Tensor(MTensor t, Ownership mode);
 
 		/**
@@ -124,6 +126,11 @@ namespace LLU {
 		 */
 		Tensor() = default;
 
+		/**
+		 * @brief   Clone this Tensor, performing a deep copy of the underlying MTensor.
+		 * @note    The cloned MTensor always belongs to the library (Ownership::Library) because LibraryLink has no idea of its existence.
+		 * @return  new Tensor
+		 */
 		Tensor clone() const {
 			return Tensor {cloneContainer(), Ownership::Library};
 		}

@@ -157,18 +157,36 @@ namespace LLU {
 		/**
 		 *   @brief         Constructs Image based on MImage
 		 *   @param[in]     mi - LibraryLink structure to be wrapped
+		 *   @param[in]     owner - who manages the memory the raw MImage
 		 *   @throws		ErrorName::ImageTypeError - if template parameter \b T does not match MImage data type
 		 *   @throws		ErrorName::ImageSizeError - if constructor failed to calculate image dimensions properly
 		 **/
 		Image(MImage mi, Ownership owner) : Image(GenericImage(mi, owner)) {};
 
+		/// Default constructor - creates an empty wrapper
 		Image() = default;
 
+		/**
+		 * @brief   Clone this Image, performing a deep copy of the underlying MImage.
+		 * @note    The cloned MImage always belongs to the library (Ownership::Library) because LibraryLink has no idea of its existence.
+		 * @return  new Image
+		 */
 		Image clone() const;
 
+		/**
+		 *   @brief     Copy this image with type conversion and explicitly specified interleaving
+		 *   @tparam    U - any type that Image supports
+		 *   @param[in] interleaved - whether the newly created Image should be interleaved
+		 *   @return    newly created Image of type U and specified interleaving
+		 **/
 		template<typename U>
 		Image<U> convert(bool interleaved) const;
 
+		/**
+		 *   @brief     Copy this image with type conversion and other properties (dimensions, interleaving, color space, etc.) untouched
+		 *   @tparam    U - any type that Image supports
+		 *   @return    newly created Image of type U
+		 **/
 		template<typename U>
 		Image<U> convert() const;
 

@@ -111,9 +111,11 @@ namespace LLU {
 		NumericArray(InputIt first, InputIt last, MArrayDimensions dims);
 
 		/**
-		 *
-		 * @param na
-		 */
+		 *   @brief     Constructs NumericArray based on MNumericArray
+		 *   @param[in] na - LibraryLink structure to be wrapped
+		 *   @param[in] owner - who manages the memory the raw MNumericArray
+		 *   @throws    ErrorName::NumericArrayTypeError - if the NumericArray template type \b T does not match the actual data type of the MNumericArray
+		 **/
 		NumericArray(MNumericArray na, Ownership mode);
 
 		/**
@@ -137,6 +139,11 @@ namespace LLU {
 		 */
 		NumericArray() = default;
 
+		/**
+		 * @brief   Clone this NumericArray, performing a deep copy of the underlying MNumericArray.
+		 * @note    The cloned MNumericArray always belongs to the library (Ownership::Library) because LibraryLink has no idea of its existence.
+		 * @return  new NumericArray
+		 */
 		NumericArray clone() const {
 			return NumericArray {cloneContainer(), Ownership::Library};
 		}
