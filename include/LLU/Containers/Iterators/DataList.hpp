@@ -25,12 +25,12 @@ namespace LLU {
 
 			GenericDataNode node;
 
-			DataListIteratorPrimitive(DataStoreNode n) : node{n} {}
+			explicit DataListIteratorPrimitive(DataStoreNode n) : node{n} {}
 
-			DataListIteratorPrimitive(DataStoreIterator it) : node{*it} {}
+			explicit DataListIteratorPrimitive(const DataStoreIterator& it) : node{*it} {}
 
 			friend bool operator==(const DataListIteratorPrimitive& lhs, const DataListIteratorPrimitive& rhs) {
-				return lhs.node == rhs.node;
+				return lhs.node.node == rhs.node.node;
 			}
 			friend bool operator!=(const DataListIteratorPrimitive& lhs, const DataListIteratorPrimitive& rhs) {
 				return !(lhs == rhs);

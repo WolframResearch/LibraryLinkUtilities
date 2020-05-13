@@ -18,19 +18,19 @@ namespace LLU {
 	struct GenericDataNode {
 		DataStoreNode node;
 
-		GenericDataNode next() const noexcept;
+		[[nodiscard]] GenericDataNode next() const noexcept;
 
-		MArgumentType type() const noexcept;
+		[[nodiscard]] MArgumentType type() const noexcept;
 
-		std::string_view name() const noexcept;
+		[[nodiscard]] std::string_view name() const noexcept;
 
-		Argument::TypedArgument value() const;
+		[[nodiscard]] Argument::TypedArgument value() const;
 
 		// defined in Containers/GenericDataStore.hpp because the definition of GenericDataList must be available
 		template<typename T>
 		T as() const;
 
-		operator bool() const;
+		explicit operator bool() const;
 	};
 
 	class DataStoreIterator {
@@ -43,7 +43,7 @@ namespace LLU {
 		using pointer = void*;
 		using difference_type = mint;
 
-		DataStoreIterator(DataStoreNode n) : node{n} {}
+		explicit DataStoreIterator(DataStoreNode n) : node{n} {}
 
 		reference operator*() const {
 			return reference {node};

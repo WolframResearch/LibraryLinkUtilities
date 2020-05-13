@@ -62,51 +62,50 @@ namespace LLU {
 		 */
 		DataList(std::initializer_list<std::pair<std::string, value_type>> initList);
 
-		DataList clone() const;
-
+		[[nodiscard]] DataList clone() const;
 
 		/**
 		 *	@brief Get constant iterator at the beginning of underlying data
 		 **/
 		iterator begin() const {
-			return front();
+			return iterator {front()};
 		}
 
 		/**
 		 *	@brief Get constant iterator at the beginning of underlying data
 		 **/
 		const_iterator cbegin() const {
-			return begin();
+			return const_iterator {begin()};
 		}
 
 		/**
 		 *	@brief Get constant iterator after the end of underlying data
 		 **/
 		iterator end() const {
-			return nullptr;
+			return iterator {nullptr};
 		}
 
 		/**
 		 *	@brief Get constant reverse iterator after the end of underlying data
 		 **/
 		const_iterator cend() const {
-			return end();
+			return const_iterator {end()};
 		}
 
 		value_iterator valueBegin() const {
-			return front();
+			return value_iterator {front()};
 		}
 
 		value_iterator valueEnd() const {
-			return nullptr;
+			return value_iterator {nullptr};
 		}
 
 		name_iterator nameBegin() const {
-			return front();
+			return name_iterator {front()};
 		}
 
 		name_iterator nameEnd() const {
-			return nullptr;
+			return name_iterator {nullptr};
 		}
 
 		/**

@@ -49,12 +49,12 @@ namespace LLU {
 			return nodeArg;
 		}
 
-		std::string_view name() const {
+		[[nodiscard]] std::string_view name() const {
 			return node.name();
 		}
 
-		bool hasNext() const {
-			return node.next();
+		[[nodiscard]] bool hasNext() const {
+			return static_cast<bool>(node.next());
 		}
 
 		template<typename U = T>

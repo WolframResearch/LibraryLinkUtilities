@@ -84,12 +84,12 @@ namespace LLU {
 
 		/// Proxy iterator to the first element of the DataStore
 		iterator begin() const {
-			return front();
+			return iterator {front()};
 		}
 
 		/// Proxy iterator past the last element of the DataStore
 		iterator end() const {
-			return nullptr;
+			return iterator {nullptr};
 		}
 
 		/// @copydoc begin()
