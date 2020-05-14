@@ -38,7 +38,10 @@ namespace LLU {
 		};
 	}
 
-
+	/**
+	 * @brief   Simple proxy input iterator that goes over a DataStore and returns proxy DataNodes when dereferenced
+	 * @tparam  T - data node type, see LLU::NodeType namespace for supported node types
+	 */
 	template<typename T>
 	struct NodeIterator : Detail::DataListIteratorPrimitive {
 		using value_type = DataNode<T>;
@@ -47,7 +50,7 @@ namespace LLU {
 		using DataListIteratorPrimitive::DataListIteratorPrimitive;
 
 		reference operator*() const {
-			return reference {node.node};
+			return reference {node};
 		}
 
 		NodeIterator& operator++() {
@@ -56,12 +59,16 @@ namespace LLU {
 		}
 
 		NodeIterator operator++(int) {
-			NodeIterator tmp {node.node};
+			NodeIterator tmp {node};
 			++(*this);
 			return tmp;
 		}
 	};
 
+	/**
+	 * @brief   Simple proxy input iterator that goes over a DataStore and returns node names when dereferenced
+	 * @tparam  T - data node type, see LLU::NodeType namespace for supported node types
+	 */
 	struct NodeNameIterator : Detail::DataListIteratorPrimitive {
 		using value_type = std::string_view ;
 		using reference = value_type;
@@ -87,6 +94,10 @@ namespace LLU {
 		}
 	};
 
+	/**
+	 * @brief   Simple proxy input iterator that goes over a DataStore and returns node values of requested type when dereferenced
+	 * @tparam  T - data node type, see LLU::NodeType namespace for supported node types
+	 */
 	template<typename T>
 	struct NodeValueIterator : Detail::DataListIteratorPrimitive {
 		using value_type = T;

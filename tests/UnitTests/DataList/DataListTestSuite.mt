@@ -316,6 +316,15 @@ Test[
 ];
 
 Test[
+	`LLU`PacletFunctionSet[SeparateKeysAndValuesViaAdaptors, {"DataStore"}, "DataStore"];
+	SeparateKeysAndValuesViaAdaptors[Developer`DataStore["a" -> 1 + 2.5 * I, "b" -> -3. - 6.I, 2I]]
+	,
+	Developer`DataStore["Keys" -> Developer`DataStore["a", "b", ""], "Values" -> Developer`DataStore[1. + 2.5 * I, -3. - 6.I, 2.I]]
+	,
+	TestID -> "DataListTestSuite-20200513-G3Y0I0"
+];
+
+Test[
 	GetKeys[Developer`DataStore[]]
 	,
 	Developer`DataStore[]

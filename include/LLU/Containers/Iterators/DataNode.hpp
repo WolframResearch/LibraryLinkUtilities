@@ -17,7 +17,6 @@ namespace LLU {
 	/**
 	 * @class	DataNode
 	 * @brief	Wrapper over DataStoreNode structure from LibraryLink.
-	 * 			It stores node name in std::string and node value as MArgument, getters for both are provided.
 	 */
 	template<typename T>
 	class DataNode {
@@ -31,6 +30,10 @@ namespace LLU {
 		 */
 		explicit DataNode(DataStoreNode dsn);
 
+		/**
+		 * @brief 	Create DataNode from raw GenericDataNode
+		 * @param 	gn - generic data node
+		 */
 		explicit DataNode(GenericDataNode gn);
 
 		/**
@@ -49,25 +52,36 @@ namespace LLU {
 			return nodeArg;
 		}
 
+		/**
+		 * @brief   Get node name
+		 * @return  string_view to the node name
+		 * @note    If you store the result of this function make sure it does not outlive the underlying DataStore node, otherwise make a string copy
+		 */
 		[[nodiscard]] std::string_view name() const {
 			return node.name();
 		}
 
+		/**
+		 * @brief   Check if this node has a successor
+		 * @return  true iff the current node is not the last one in its DataList
+		 */
 		[[nodiscard]] bool hasNext() const {
 			return static_cast<bool>(node.next());
 		}
 
-		template<typename U = T>
-		DataNode<U> next() const {
-			return {node.next()};
+		/**
+		 * @brief   Get next node as GenericDataNode (because the next node may not necessarily have value of type T)
+		 * @return  GenericDataNode wrapper of next node, or empty if this is the last node
+		 */
+		[[nodiscard]] GenericDataNode next() const {
+			return node.next();
 		}
 
 		/**
-		 * @brief 	Get the actual type of node value stored in MArgument.
-		 * 			This is useful when working on a "generic" DataList of type MArgumentType::MArgument, otherwise it should always return MArgType
+		 * @brief 	Get the actual type of node value. This is useful when working on a "generic" DataList.
 		 * @return	Actual type of node value
 		 */
-		MArgumentType valueType() noexcept {
+		MArgumentType type() noexcept {
 			return node.type();
 		}
 
@@ -82,7 +96,7 @@ namespace LLU {
 		}
 
 	private:
-		GenericDataNode node;
+		GenericDataNode node {};
 		T nodeArg;
 	};
 
@@ -95,10 +109,10 @@ namespace LLU {
 		if (!node) {
 			ErrorManager::throwException(ErrorName::DLNullRawNode);
 		}
-		if constexpr (!isGeneric) {
-			nodeArg = std::move(node.as<T>());
-		} else{
+		if constexpr (isGeneric) {
 			nodeArg = std::move(node.value());
+		} else{
+			nodeArg = std::move(node.as<T>());
 		}
 	}
 
