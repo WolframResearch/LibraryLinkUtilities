@@ -30,6 +30,10 @@
 
 namespace LLU {
 
+	/**
+	 * @brief   Enumerated type representing different modes in which a container can be passed from LibraryLink to the library
+	 * @see     <https://reference.wolfram.com/language/LibraryLink/tutorial/InteractionWithWolframLanguage.html#97446640>
+	 */
 	enum class Passing {
 		Automatic,
 		Constant,
@@ -133,9 +137,9 @@ namespace LLU {
 
 		/**
 		 *	@brief		Get MArgument of type MNumericArray at position \p index and wrap it into generic MContainer wrapper
-		 * 	@tparam 	Mode - passing policy to be used
+		 * 	@tparam 	Mode - passing mode to be used
 		 * 	@param 		index - position of desired MArgument in \c Args
-		 * 	@return		MContainer wrapper of MNumericArray with given passing policy
+		 * 	@return		MContainer wrapper of MNumericArray with given passing mode
 		 */
 		template<Passing Mode = Passing::Automatic>
 		GenericNumericArray getGenericNumericArray(size_type index) const;
@@ -162,9 +166,9 @@ namespace LLU {
 
 		/**
 		 *	@brief		Get MArgument of type MTensor at position \p index and wrap it into generic MContainer wrapper
-		 * 	@tparam 	Mode - passing policy to be used
+		 * 	@tparam 	Mode - passing mode to be used
 		 * 	@param 		index - position of desired MArgument in \c Args
-		 * 	@return		MContainer wrapper of MTensor with given passing policy
+		 * 	@return		MContainer wrapper of MTensor with given passing mode
 		 */
 		template<Passing Mode = Passing::Automatic>
 		GenericTensor getGenericTensor(size_type index) const;
@@ -191,9 +195,9 @@ namespace LLU {
 
 		/**
 		 *	@brief		Get MArgument of type MImage at position \p index and wrap it into generic MContainer wrapper
-		 * 	@tparam 	Mode - passing policy to be used
+		 * 	@tparam 	Mode - passing mode to be used
 		 * 	@param 		index - position of desired MArgument in \c Args
-		 * 	@return		MContainer wrapper of MImage with given passing policy
+		 * 	@return		MContainer wrapper of MImage with given passing mode
 		 */
 		template<Passing Mode = Passing::Automatic>
 		GenericImage getGenericImage(size_type index) const;
@@ -220,9 +224,9 @@ namespace LLU {
 
 		/**
 		 *	@brief		Get MArgument of type DataStore at position \p index and wrap it into generic MContainer wrapper
-		 * 	@tparam 	Mode - passing policy to be used
+		 * 	@tparam 	Mode - passing mode to be used
 		 * 	@param 		index - position of desired MArgument in \c Args
-		 * 	@return		MContainer wrapper of DataStore with given passing policy
+		 * 	@return		MContainer wrapper of DataStore with given passing mode
 		 */
 		template<Passing Mode = Passing::Automatic>
 		GenericDataList getGenericDataList(size_type index) const;
@@ -260,9 +264,15 @@ namespace LLU {
 
 		/************************************ MArgument generic "getters" ************************************/
 
+		/**
+		 * @brief   Helper struct to "attach" a passing mode to container type when passing it as template argument to MArgumentManager::getTuple
+		 * @tparam  Container - any generic or strongly typed container wrapper type (e.g. GenericImage, Tensor<mint>, etc.)
+		 * @tparam  Mode - passing mode for the container
+		 */
 		template<class Container, Passing Mode>
 		struct Managed {};
 
+	private:
 		template<typename T>
 		struct RequestedTypeImpl {
 			using type = T;
@@ -273,6 +283,7 @@ namespace LLU {
 			using type = Container;
 		};
 
+	public:
 		template<typename T>
 		using RequestedType = typename RequestedTypeImpl<T>::type;
 
@@ -759,9 +770,9 @@ namespace LLU {
 		void acquireUTF8String(size_type index) const;
 
 		/**
-		 *
-		 * @param m
-		 * @return
+		 * @brief   Convert passing mode to ownership info
+		 * @param   m - passing mode
+		 * @return  ownership corresponding to given passing mode ("Manual" -> Library, "Shared" -> Shared, else LibraryLink)
 		 */
 		static constexpr Ownership getOwner(Passing m) noexcept {
 			if (m == Passing::Manual) {
