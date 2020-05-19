@@ -62,7 +62,7 @@ Test[
 	,
 	$Failed
 	,
-	{Repeated[CreateLibrary::cmperr, {3,4}]} (* There should be between 3 and 4 compilation errors *)
+	{Repeated[CreateLibrary::cmperr, {1,4}]} (* There should be between 1 and 4 compilation errors *)
 	,
 	TestID -> "DataListTestSuite-20180903-Y8Z5P1"
 ];
