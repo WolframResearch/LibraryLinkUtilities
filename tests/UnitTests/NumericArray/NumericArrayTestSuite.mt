@@ -51,7 +51,7 @@ Test[
 ];
 
 Test[
-	testDimensions[{}]
+	Catch @ testDimensions[{}]
 	,
 	Failure["DimensionsError", <|
 		"MessageTemplate" -> "An error caused by inconsistent dimensions or by exceeding array bounds.",
@@ -146,7 +146,7 @@ Test[
 ]
 
 Test[
-	accumulateIntegers[NumericArray[{3.5}]]
+	Catch @ accumulateIntegers[NumericArray[{3.5}]]
 	,
 	Failure["FunctionError", <|"MessageTemplate" -> "An error occurred in the library function.", "MessageParameters" -> <||>, "ErrorCode" -> 6, "Parameters" -> {}|>]
 	,
@@ -162,7 +162,7 @@ Test[
 ]
 
 TestMatch[
-	convertMethodName[9]
+	Catch @ convertMethodName[9]
 	,
 	_Failure
 	,
@@ -179,7 +179,7 @@ Test[
 ]
 
 TestMatch[
-	convert[NumericArray[{3.5}], 1 (* Check *), 0]
+	Catch @ convert[NumericArray[{3.5}], 1 (* Check *), 0]
 	,
 	Failure["NumericArrayConversionError", <|
 		"MessageTemplate" -> "Failed to convert NumericArray from different type.",

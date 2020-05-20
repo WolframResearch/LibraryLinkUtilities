@@ -199,12 +199,12 @@ $InitializePacletLibrary[libPath_?StringQ] := (
 	SetPacletLibrary[SafeLibraryLoad[libPath]];
 
 	(* Initialize error handling part of LLU by loading errors from the C++ code *)
-	WSTPFunctionSet[$GetCErrorCodes, "sendRegisteredErrors", "Throws" -> True];
+	WSTPFunctionSet[$GetCErrorCodes, "sendRegisteredErrors"];
 	RegisterCppErrors[];
 
 	(* Load library functions for initializing different parts of LLU. *)
-	PacletFunctionSet[$SetLoggerContext, "setLoggerContext", {String}, String, "Optional" -> True, "Throws" -> True];
-	PacletFunctionSet[$SetExceptionDetailsContext, "setExceptionDetailsContext", {String}, String, "Throws" -> True];
+	PacletFunctionSet[$SetLoggerContext, "setLoggerContext", {String}, String, "Optional" -> True];
+	PacletFunctionSet[$SetExceptionDetailsContext, "setExceptionDetailsContext", {String}, String];
 	(* Tell C++ part of LLU in which context were top-level symbols loaded. *)
 	SetContexts[$LLULoadingContext, $LLULoadingContext <> "Private`"];
 	$PacletLibrary
@@ -403,7 +403,7 @@ Join[
 	Options[SafeLibraryFunctionLoad],
 	{
 		"ProgressMonitor" -> None,
-		"Throws" -> False
+		"Throws" -> True
 	}
 ];
 
@@ -482,8 +482,7 @@ guessFunctionNameFromSymbol[symbol_] := StringReplace["$" ~~ s_ :> s] @ SymbolNa
  * Options:
  * All options for PacletFunctionLoad and SafeLibraryFunctionLoad are accepted.
  *)
-Options[PacletFunctionSet] =
-	Union[Options[PacletFunctionLoad], Options[SafeLibraryFunctionLoad]];
+Options[PacletFunctionSet] = Options[PacletFunctionLoad];
 
 Attributes[PacletFunctionSet] = {HoldFirst};
 PacletFunctionSet[symbol_, libraryName_, funcNameInLib_?StringQ, paramTypes_, retType_, opts : OptionsPattern[]] :=

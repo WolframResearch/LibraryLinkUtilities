@@ -103,7 +103,7 @@ Test[
 ]
 
 Test[
-	BoolAnd[True, True, True, True, Pi]
+	Catch @ BoolAnd[True, True, True, True, Pi]
 	,
 	Failure["WSWrongSymbolForBool", <|
 		"MessageTemplate" -> "Tried to read something else than \"True\" or \"False\" as boolean.",

@@ -145,7 +145,7 @@ Test[
 ];
 
 TestMatch[
-	EmptyWrapper[]
+	Catch @ EmptyWrapper[]
 	,
 	Failure["CreateFromNullError", <|
 		"MessageTemplate" -> "Attempting to create a generic container from nullptr.",

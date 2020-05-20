@@ -114,7 +114,7 @@ TestMatch[
 (*********************************************************** C++ code failures **************************************************************)
 
 TestMatch[
-	ReadData = `LLU`PacletFunctionLoad["ReadData", {String}, "Void"];
+	ReadData = `LLU`PacletFunctionLoad["ReadData", {String}, "Void", "Throws" -> False];
 	ReadData["test.txt"]
 	,
 	Failure["DataFileError", <|
@@ -141,7 +141,7 @@ TestMatch[
 ];
 
 TestMatch[
-	ReadData2 = `LLU`PacletFunctionLoad["ReadDataLocalWLD", {String}, "Void"];
+	ReadData2 = `LLU`PacletFunctionLoad["ReadDataLocalWLD", {String}, "Void", "Throws" -> False];
 	ReadData2["test.txt"]
 	,
 	Failure["DataFileError", <|
@@ -168,7 +168,7 @@ TestMatch[
 ];
 
 TestMatch[
-	RepeatedTemplate = `LLU`PacletFunctionLoad["RepeatedTemplate", {}, "Void"];
+	`LLU`PacletFunctionSet[RepeatedTemplate, {}, "Void", "Throws" -> False];
 	RepeatedTemplate[]
 	,
 	Failure["RepeatedTemplateError", <|
@@ -182,8 +182,8 @@ TestMatch[
 ];
 
 TestMatch[
-	NumberedSlots = `LLU`PacletFunctionLoad["NumberedSlots", {}, "Void"];
-	NumberedSlots[]
+	`LLU`PacletFunctionSet[NumberedSlots, {}, "Void"];
+	Catch @ NumberedSlots[]
 	,
 	Failure["NumberedSlotsError", <|
 		"MessageTemplate" -> "First slot is `1` and second is `2`.",
@@ -196,8 +196,8 @@ TestMatch[
 ];
 
 TestMatch[
-	RepeatedNumberTemplate = `LLU`PacletFunctionLoad["RepeatedNumberTemplate", {}, "Void"];
-	RepeatedNumberTemplate[]
+	`LLU`PacletFunctionSet[RepeatedNumberTemplate, {}, "Void"];
+	Catch @ RepeatedNumberTemplate[]
 	,
 	Failure["RepeatedNumberTemplateError", <|
 		"MessageTemplate" -> "Cannot accept `` nor `` because `1` is unacceptable. So are `2` and ``.",
@@ -207,6 +207,10 @@ TestMatch[
 	|>]
 	,
 	TestID -> "ErrorReportingTestSuite-20190320-R9L9R5"
+];
+
+TestExecute[
+	SetOptions[`LLU`PacletFunctionLoad, "Throws" -> False];
 ];
 
 TestMatch[
@@ -251,12 +255,15 @@ TestMatch[
 	TestID -> "ErrorReportingTestSuite-20190320-C0V5L0"
 ];
 
+TestExecute[
+	SetOptions[`LLU`PacletFunctionLoad, "Throws" -> True];
+];
 
 (* Unit tests of ErrorManager::throwCustomException *)
 
 TestMatch[
 	ReadDataWithLoggingError = `LLU`PacletFunctionLoad["ReadDataWithLoggingError", {String}, "Void"];
-	ReadDataWithLoggingError["test.txt"]
+	Catch @ ReadDataWithLoggingError["test.txt"]
 	,
 	Failure["DataFileError", <|
 		"MessageTemplate" -> "Data in file `fname` in line `lineNumber` is invalid because `reason`.",
@@ -269,7 +276,7 @@ TestMatch[
 ];
 
 TestMatch[
-	ReadDataWithLoggingError["ThisFileHasExtremelyLongName.txt"]
+	Catch @ ReadDataWithLoggingError["ThisFileHasExtremelyLongName.txt"]
 	,
 	Failure["DataFileError", <|
 		"MessageTemplate" -> "Data in file `fname` in line `lineNumber` is invalid because `reason`.",
@@ -282,7 +289,7 @@ TestMatch[
 ];
 
 TestMatch[
-	ReadDataWithLoggingError["Secret:Data"]
+	Catch @ ReadDataWithLoggingError["Secret:Data"]
 	,
 	Failure["DataFileError", <|
 		"MessageTemplate" -> "Data in file `fname` in line `lineNumber` is invalid because `reason`.",
@@ -331,7 +338,7 @@ Test[
 
 TestMatch[
 	ReadDataDelayedParametersTransfer = `LLU`PacletFunctionLoad["ReadDataDelayedParametersTransfer", {String}, "Void"];
-	ReadDataDelayedParametersTransfer["somefile.txt"]
+	Catch @ ReadDataDelayedParametersTransfer["somefile.txt"]
 	,
 	Failure["DataFileError", <|
 		"MessageTemplate" -> "Data in file `fname` in line `lineNumber` is invalid because `reason`.",
@@ -345,7 +352,7 @@ TestMatch[
 
 TestMatch[
 	EmptyLibDataException = `LLU`PacletFunctionLoad["EmptyLibDataException", {}, "Void"];
-	EmptyLibDataException[]
+	Catch @ EmptyLibDataException[]
 	,
 	Failure["LibDataError", <|
 		"MessageTemplate" -> "WolframLibraryData is not set. Make sure to call LibraryData::setLibraryData in WolframLibrary_initialize.",
@@ -465,7 +472,7 @@ TestExecute[
 ];
 
 TestMatch[
-	Reap @ GreaterAt["file.txt", {5, 6, 7, 8, 9}, -1, 3]
+	Reap @ Catch @ GreaterAt["file.txt", {5, 6, 7, 8, 9}, -1, 3]
 	,
 	{
 		Failure["TensorIndexError", <|
@@ -561,7 +568,7 @@ TestExecute[
 ];
 
 Test[
-	Reap @ GreaterAtW["file.txt", {5, 6, 7, 8, 9}, -1, 3]
+	Reap @ Catch @ GreaterAtW["file.txt", {5, 6, 7, 8, 9}, -1, 3]
 	,
 	{
 		Failure["TensorIndexError", <|
@@ -612,7 +619,7 @@ TestMatch[
 
 TestMatch[
 	TestLogSymbol = {};
-	{LogDemo[-1, 6, 7, 8, 9], TestLogSymbol}
+	{Catch @ LogDemo[-1, 6, 7, 8, 9], TestLogSymbol}
 	,
 	{
 		Failure["MArgumentIndexError",
