@@ -172,7 +172,7 @@ Test[
 ];
 
 Test[
-	Catch @ MyExpression[500] @ getText[]
+	`LLU`CatchAll @ MyExpression[500] @ getText[]
 	,
 	Failure["InvalidManagedExpressionID",
 		<|
@@ -187,7 +187,7 @@ Test[
 ];
 
 Test[
-	Catch @ MyExpression`getText[NotMyExpression[1]]
+	`LLU`CatchAll @ MyExpression`getText[NotMyExpression[1]]
 	,
 	Failure["UnexpectedManagedExpression",
 		<|
@@ -304,7 +304,7 @@ Test[
 ];
 
 Test[
-	Catch @ ReleaseExpression @ MyExpression[500]
+	`LLU`CatchAll @ ReleaseExpression @ MyExpression[500]
 	,
 	Failure["InvalidManagedExpressionID",
 		<|
@@ -409,7 +409,7 @@ Test[
 ];
 
 VerificationTest[
-	c = Catch @ `LLU`NewManagedExpression[Serializable]["Jestem C."]; (* The factory function will throw and the C++ object will not be created *)
+	c = `LLU`CatchAll @ `LLU`NewManagedExpression[Serializable]["Jestem C."]; (* The factory function will throw and the C++ object will not be created *)
 	FailureQ[c]
 	,
 	TestID -> "ManagedExpressionsTestSuite-20200420-T5J0L7"

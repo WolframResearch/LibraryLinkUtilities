@@ -182,8 +182,10 @@ TestMatch[
 ];
 
 TestMatch[
-	`LLU`PacletFunctionSet[NumberedSlots, {}, "Void"];
-	Catch @ NumberedSlots[]
+	Block[{`LLU`Config`$Throws = False},
+		`LLU`PacletFunctionSet[NumberedSlots, {}, "Void"];
+	];
+	NumberedSlots[]
 	,
 	Failure["NumberedSlotsError", <|
 		"MessageTemplate" -> "First slot is `1` and second is `2`.",
@@ -197,7 +199,7 @@ TestMatch[
 
 TestMatch[
 	`LLU`PacletFunctionSet[RepeatedNumberTemplate, {}, "Void"];
-	Catch @ RepeatedNumberTemplate[]
+	Catch[RepeatedNumberTemplate[], _`LLU`Exception]
 	,
 	Failure["RepeatedNumberTemplateError", <|
 		"MessageTemplate" -> "Cannot accept `` nor `` because `1` is unacceptable. So are `2` and ``.",
@@ -210,7 +212,7 @@ TestMatch[
 ];
 
 TestExecute[
-	SetOptions[`LLU`PacletFunctionLoad, "Throws" -> False];
+	`LLU`Config`$Throws = False;
 ];
 
 TestMatch[
@@ -256,14 +258,14 @@ TestMatch[
 ];
 
 TestExecute[
-	SetOptions[`LLU`PacletFunctionLoad, "Throws" -> True];
+	`LLU`Config`$Throws = True;
 ];
 
 (* Unit tests of ErrorManager::throwCustomException *)
 
 TestMatch[
 	ReadDataWithLoggingError = `LLU`PacletFunctionLoad["ReadDataWithLoggingError", {String}, "Void"];
-	Catch @ ReadDataWithLoggingError["test.txt"]
+	Catch[ReadDataWithLoggingError["test.txt"], _`LLU`Exception]
 	,
 	Failure["DataFileError", <|
 		"MessageTemplate" -> "Data in file `fname` in line `lineNumber` is invalid because `reason`.",
@@ -276,7 +278,7 @@ TestMatch[
 ];
 
 TestMatch[
-	Catch @ ReadDataWithLoggingError["ThisFileHasExtremelyLongName.txt"]
+	`LLU`CatchException["*Error"] @ ReadDataWithLoggingError["ThisFileHasExtremelyLongName.txt"]
 	,
 	Failure["DataFileError", <|
 		"MessageTemplate" -> "Data in file `fname` in line `lineNumber` is invalid because `reason`.",
@@ -289,14 +291,9 @@ TestMatch[
 ];
 
 TestMatch[
-	Catch @ ReadDataWithLoggingError["Secret:Data"]
+	Catch[ReadDataWithLoggingError["Secret:Data"], _`LLU`Exception, #1["Message"]&]
 	,
-	Failure["DataFileError", <|
-		"MessageTemplate" -> "Data in file `fname` in line `lineNumber` is invalid because `reason`.",
-		"MessageParameters" -> <|"fname" -> "Secret:Data", "lineNumber" -> 0, "reason" -> "file name contains a possibly problematic character \":\""|>,
-		"ErrorCode" -> n_?CppErrorCodeQ,
-		"Parameters" -> {}
-	|>]
+	"Data in file Secret:Data in line 0 is invalid because file name contains a possibly problematic character \":\"."
 	,
 	TestID -> "ErrorReportingTestSuite-20190404-K3J3E1"
 ];
@@ -338,7 +335,7 @@ Test[
 
 TestMatch[
 	ReadDataDelayedParametersTransfer = `LLU`PacletFunctionLoad["ReadDataDelayedParametersTransfer", {String}, "Void"];
-	Catch @ ReadDataDelayedParametersTransfer["somefile.txt"]
+	`LLU`CatchException["DataFileError"] @ ReadDataDelayedParametersTransfer["somefile.txt"]
 	,
 	Failure["DataFileError", <|
 		"MessageTemplate" -> "Data in file `fname` in line `lineNumber` is invalid because `reason`.",
@@ -352,7 +349,7 @@ TestMatch[
 
 TestMatch[
 	EmptyLibDataException = `LLU`PacletFunctionLoad["EmptyLibDataException", {}, "Void"];
-	Catch @ EmptyLibDataException[]
+	`LLU`CatchAll @ EmptyLibDataException[]
 	,
 	Failure["LibDataError", <|
 		"MessageTemplate" -> "WolframLibraryData is not set. Make sure to call LibraryData::setLibraryData in WolframLibrary_initialize.",
@@ -472,7 +469,7 @@ TestExecute[
 ];
 
 TestMatch[
-	Reap @ Catch @ GreaterAt["file.txt", {5, 6, 7, 8, 9}, -1, 3]
+	Reap @ `LLU`CatchAll @ GreaterAt["file.txt", {5, 6, 7, 8, 9}, -1, 3]
 	,
 	{
 		Failure["TensorIndexError", <|
@@ -568,7 +565,7 @@ TestExecute[
 ];
 
 Test[
-	Reap @ Catch @ GreaterAtW["file.txt", {5, 6, 7, 8, 9}, -1, 3]
+	Reap @ `LLU`CatchAll @ GreaterAtW["file.txt", {5, 6, 7, 8, 9}, -1, 3]
 	,
 	{
 		Failure["TensorIndexError", <|
@@ -619,7 +616,7 @@ TestMatch[
 
 TestMatch[
 	TestLogSymbol = {};
-	{Catch @ LogDemo[-1, 6, 7, 8, 9], TestLogSymbol}
+	{`LLU`CatchAll @ LogDemo[-1, 6, 7, 8, 9], TestLogSymbol}
 	,
 	{
 		Failure["MArgumentIndexError",

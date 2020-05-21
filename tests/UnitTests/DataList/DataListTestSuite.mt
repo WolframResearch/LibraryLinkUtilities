@@ -274,7 +274,7 @@ Test[
 
 
 TestMatch[
-	Catch @ ReverseListOfStrings[Developer`DataStore["aaaa", "b", 2]]
+	`LLU`CatchAll @ ReverseListOfStrings[Developer`DataStore["aaaa", "b", 2]]
 	,
 	Failure["DLInvalidNodeType", <|
 		"MessageTemplate" -> "DataStoreNode passed to Node wrapper carries data of invalid type",
