@@ -36,7 +36,7 @@ if(NOT TARGET LLU)
 	#===== Mathematica (WSTP/LibraryLink) ========
 	#=============================================
 
-	find_package(Mathematica 12.0 COMPONENTS WolframLibrary WSTP OPTIONAL_COMPONENTS wolframscript MODULE)
+	find_package(Mathematica 12.0 COMPONENTS WolframLibrary WSTP MODULE)
 
 	#=============================================
 	#=========== MAIN PACLET LIBRARY =============

@@ -1,3 +1,14 @@
+# Wolfram/Common.cmake
+#
+# A collection of short utility functions that may be helpful for Mathematica paclets that use CMake.
+# Most of the functions here are specifically tailored for paclets developed at Wolfram but the following utilities might be useful in general case:
+#
+# set_machine_flags
+# set_rpath
+# set_default_cxx_properties
+# set_windows_static_runtime
+# install_dependency_files
+
 include_guard()
 
 function(get_default_mathematica_dir MATHEMATICA_VERSION DEFAULT_MATHEMATICA_INSTALL_DIR)
@@ -443,17 +454,3 @@ macro(fail_if_dne FILE_OR_DIR)
 		endif()
 	endif()
 endmacro()
-
-# Locate wolframscript executable, preferably within MATHEMATICA_INSTALL_DIR, if defined
-function(find_wolframscript WOLFRAMSCRIPT_EXE)
-	set(CMAKE_FIND_APPBUNDLE NEVER)
-
-	find_program(_WOLFRAMSCRIPT_EXE
-			NAMES wolframscript
-			HINTS ${MATHEMATICA_INSTALL_DIR}
-			PATH_SUFFIXES Executables MacOS
-			DOC "Path to wolframscript executable."
-			)
-
-	set(${WOLFRAMSCRIPT_EXE} ${_WOLFRAMSCRIPT_EXE} PARENT_SCOPE)
-endfunction()

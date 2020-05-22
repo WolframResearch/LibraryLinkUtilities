@@ -1,3 +1,7 @@
+# Wolfram/PacletUtilities.cmake
+#
+# A set of tools for installing files into proper Wolfram Language paclets.
+#
 
 macro(set_if_undefined VAR VALUE)
 	if(NOT ${VAR})

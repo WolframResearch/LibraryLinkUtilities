@@ -1,3 +1,8 @@
+# Wolfram/CVSUtilities.cmake
+#
+# A collection of functions for easy checkout of CVS dependencies, specifically for paclets developed at Wolfram.
+#
+
 #Helper function to check whether given CVS module exists.
 function(cvsmoduleQ MODULE WORKINGDIR RES)
 	execute_process(

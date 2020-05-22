@@ -6,16 +6,38 @@
 # - DIR/Executables/Mathematica is an executable file
 # - DIR/Executables/WolframKernel is an executable file
 #
+# You can specify custom location to search for Wolfram Library either by specifying WOLFRAM_LIBRARY_PATH explicitly,
+# or if that variable is not set, by providing MATHEMATICA_INSTALL_DIR variable with a path to Mathematica installation.
+#
 # This module will define the following variables
 #
 #    Mathematica_FOUND
 #    Mathematica_VERSION
 #    Mathematica_INSTALL_DIR
 #    Mathematica_EXE
-#    Mathematica_KERNEL_EXE
 #
-# You can specify custom location to search for Wolfram Library either by specifying WOLFRAM_LIBRARY_PATH explicitly,
-# or if that variable is not set, by providing MATHEMATICA_INSTALL_DIR variable with a path to Mathematica installation.
+# And for specific components, if they were requested:
+#
+# WolframLibrary:
+#    Mathematica_WolframLibrary_FOUND
+#    WolframLibrary_FOUND
+#    WolframLibrary_INCLUDE_DIRS
+#    WolframLibrary_VERSION
+#
+#    and the imported target WolframLibrary::WolframLibrary
+#
+# WSTP:
+#    Mathematica_WSTP_FOUND
+#    WSTP_FOUND
+#    WSTP_INCLUDE_DIRS
+#    WSTP_LIBRARIES
+#    WSTP_VERSION
+#
+#    and the imported target WSTP::WSTP
+#
+# wolframscript:
+#    Mathematica_wolframscript_FOUND
+#    Mathematica_wolframscript_EXE
 #
 # Author: Rafal Chojna - rafalc@wolfram.com
 
@@ -42,22 +64,15 @@ function(parse_mathematica_version M_DIRECTORY VERSION)
 endfunction()
 
 macro(find_mathematica_from_hint)
-	if (NOT Mathematica_ROOT AND MATHEMATICA_DIR)
-		set(Mathematica_ROOT ${MATHEMATICA_DIR})
-	endif()
-
-	cmake_print_variables(Mathematica_ROOT)
-
-
 	if(Mathematica_ROOT OR MATHEMATICA_DIR OR MATHEMATICA_INSTALL_DIR)
-		find_program(_MATHEMATICA_EXE
+		find_program(Mathematica_EXE
 			NAMES ${_MMA_FIND_NAMES}
 			HINTS ${Mathematica_ROOT} ${MATHEMATICA_DIR} ${MATHEMATICA_INSTALL_DIR}
 			PATH_SUFFIXES ${_MMA_FIND_SUFFIXES}
 			DOC ${_MMA_FIND_DOC}
 			NO_DEFAULT_PATH)
 
-		if(NOT _MATHEMATICA_EXE)
+		if(NOT Mathematica_EXE)
 			message(WARNING
 				"Could not find Mathematica in requested location \n${Mathematica_ROOT}${MATHEMATICA_DIR}${MATHEMATICA_INSTALL_DIR}\n"
 				"Looking in default directories...")
@@ -66,7 +81,7 @@ macro(find_mathematica_from_hint)
 endmacro()
 
 macro(find_mathematica_on_path)
-	find_program(_MATHEMATICA_EXE
+	find_program(Mathematica_EXE
 		NAMES ${_MMA_FIND_NAMES}
 		PATH_SUFFIXES ${_MMA_FIND_SUFFIXES}
 		DOC ${_MMA_FIND_DOC})
@@ -74,11 +89,23 @@ endmacro()
 
 function(find_mathematica_in_default_dir MATHEMATICA_VERSION)
 	get_default_mathematica_dir(${MATHEMATICA_VERSION} _DEFAULT_DIR)
-	find_program(_MATHEMATICA_EXE
+	find_program(Mathematica_EXE
 		NAMES ${_MMA_FIND_NAMES}
 		HINTS ${_DEFAULT_DIR}
 		PATH_SUFFIXES ${_MMA_FIND_SUFFIXES}
 		DOC ${_MMA_FIND_DOC}
+		NO_DEFAULT_PATH)
+endfunction()
+
+# Locate wolframscript executable, preferably within MATHEMATICA_INSTALL_DIR, if defined
+function(find_wolframscript)
+	set(CMAKE_FIND_APPBUNDLE NEVER)
+
+	find_program(Mathematica_wolframscript_EXE
+		NAMES wolframscript
+		HINTS ${Mathematica_INSTALL_DIR}
+		PATH_SUFFIXES Executables MacOS
+		DOC "Path to wolframscript executable."
 		NO_DEFAULT_PATH)
 endfunction()
 
@@ -97,32 +124,35 @@ endforeach()
 # Finally, try looking for Mathematica on the system path and wherever CMake looks by default
 find_mathematica_on_path()
 
-cmake_print_variables(_MATHEMATICA_EXE)
+#cmake_print_variables(Mathematica_EXE)
 
-if (_MATHEMATICA_EXE)
-	get_filename_component(_MATHEMATICA_EXE_REALPATH ${_MATHEMATICA_EXE} REALPATH)
+if (Mathematica_EXE)
+	get_filename_component(Mathematica_EXE_REALPATH ${Mathematica_EXE} REALPATH)
 
-	cmake_print_variables(_MATHEMATICA_EXE_REALPATH)
+#	cmake_print_variables(Mathematica_EXE_REALPATH)
 
-	get_filename_component(_MATHEMATICA_EXE_DIRECTORY ${_MATHEMATICA_EXE_REALPATH} DIRECTORY)
+	get_filename_component(Mathematica_EXE_DIRECTORY ${Mathematica_EXE_REALPATH} DIRECTORY)
 
 	if(WIN32)
 		# On Windows executables are in the installation directory
-		set(_MATHEMATICA_DIRECTORY ${_MATHEMATICA_EXE_DIRECTORY})
+		set(_MATHEMATICA_DIRECTORY ${Mathematica_EXE_DIRECTORY})
 	else()
 		# Jump one level up from the Executables directory
-		get_filename_component(_MATHEMATICA_DIRECTORY ${_MATHEMATICA_EXE_DIRECTORY} DIRECTORY)
+		get_filename_component(_MATHEMATICA_DIRECTORY ${Mathematica_EXE_DIRECTORY} DIRECTORY)
 	endif()
 
-	cmake_print_variables(_MATHEMATICA_DIRECTORY)
+#	cmake_print_variables(_MATHEMATICA_DIRECTORY)
 
-	parse_mathematica_version(${_MATHEMATICA_DIRECTORY} MMA_VERSION_STRING)
+	parse_mathematica_version(${_MATHEMATICA_DIRECTORY} Mathematica_Version)
 
-	cmake_print_variables(MMA_VERSION_STRING)
+#	cmake_print_variables(Mathematica_Version)
 
-	cmake_print_variables(Mathematica_FIND_COMPONENTS)
+#	cmake_print_variables(Mathematica_FIND_COMPONENTS)
 
-	set(MATHEMATICA_INSTALL_DIR ${_MATHEMATICA_DIRECTORY})
+	set(Mathematica_INSTALL_DIR ${_MATHEMATICA_DIRECTORY})
+
+	# For backwards compatibility
+	set(MATHEMATICA_INSTALL_DIR ${Mathematica_INSTALL_DIR})
 endif()
 
 foreach(_COMP IN LISTS Mathematica_FIND_COMPONENTS)
@@ -148,9 +178,9 @@ endforeach()
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(Mathematica
 		REQUIRED_VARS
-			_MATHEMATICA_EXE
+			Mathematica_EXE
 		VERSION_VAR
-			MMA_VERSION_STRING
+			Mathematica_Version
 		FAIL_MESSAGE
-			"Could NOT find Mathematica, please set the path to Mathematica installation folder in the variable MATHEMATICA_DIR"
+			"Could not find Mathematica, please set the path to Mathematica installation folder in the variable MATHEMATICA_DIR"
 		HANDLE_COMPONENTS)

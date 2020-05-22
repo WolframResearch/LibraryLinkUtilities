@@ -34,17 +34,22 @@ set(TEST_MODULES
         )
 
 
-find_wolframscript(WOLFRAMSCRIPT_EXE)
-message(STATUS "Unit tests will be run with: ${WOLFRAMSCRIPT_EXE}")
+find_package(Mathematica 12.0 COMPONENTS wolframscript)
+if (Mathematica_wolframscript_EXE)
+	message(STATUS "Unit tests will be run with: ${Mathematica_wolframscript_EXE}")
 
-foreach (UnitTest ${TEST_MODULES})
-    set(MODULE_CODE "
-			Needs[\"MUnit`\"]\;
-			allPassed = MUnit`TestRun[\"${UnitTest}TestSuite.mt\"]
-			Quit[1 - Boole[allPassed]]
-		")
-    add_test(NAME ${UnitTest}
-            WORKING_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}/${UnitTest}"
-            COMMAND ${WOLFRAMSCRIPT_EXE} -code ${MODULE_CODE}
-            )
-endforeach ()
+	foreach (UnitTest ${TEST_MODULES})
+	    set(MODULE_CODE "
+				Needs[\"MUnit`\"]\;
+				allPassed = MUnit`TestRun[\"${UnitTest}TestSuite.mt\"]
+				Quit[1 - Boole[allPassed]]
+			")
+	    add_test(NAME ${UnitTest}
+	            WORKING_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}/${UnitTest}"
+	            COMMAND ${Mathematica_wolframscript_EXE} -code ${MODULE_CODE}
+	            )
+	endforeach ()
+
+else()
+	message(STATUS "Could not find wolframscript. Unit tests target will not be generated.")
+endif()
