@@ -20,6 +20,16 @@
 # Author: Rafal Chojna - rafalc@wolfram.com
 
 include(CMakePrintHelpers)
+include("${CMAKE_CURRENT_LIST_DIR}/Wolfram/Common.cmake")
+
+set(_MMA_CONSIDERED_VERSIONS 12.2;12.1;12.0) # LLU requires Mathematica 12.0+, so we do not look for older versions
+set(_MMA_FIND_NAMES Mathematica mathematica)
+set(_MMA_FIND_SUFFIXES Executables)
+set(_MMA_FIND_DOC "Location of Mathematica executable")
+
+###############################################################################
+# Helper functions and macros
+###############################################################################
 
 function(parse_mathematica_version M_DIRECTORY VERSION)
 	find_file(VERSION_ID_FILE .VersionID ${M_DIRECTORY})
@@ -31,20 +41,61 @@ function(parse_mathematica_version M_DIRECTORY VERSION)
 	set(${VERSION} ${VERSION_ID_STRING} PARENT_SCOPE)
 endfunction()
 
-if (NOT Mathematica_ROOT AND MATHEMATICA_DIR)
-	set(Mathematica_ROOT ${MATHEMATICA_DIR})
-endif()
+macro(find_mathematica_from_hint)
+	if (NOT Mathematica_ROOT AND MATHEMATICA_DIR)
+		set(Mathematica_ROOT ${MATHEMATICA_DIR})
+	endif()
 
-cmake_print_variables(Mathematica_ROOT)
-find_program(_MATHEMATICA_EXE
-		NAMES
-			Mathematica mathematica
-		HINTS
-			${Mathematica_ROOT}
-		PATH_SUFFIXES
-			Executables
-		DOC
-			"Location of Mathematica executable")
+	cmake_print_variables(Mathematica_ROOT)
+
+
+	if(Mathematica_ROOT OR MATHEMATICA_DIR OR MATHEMATICA_INSTALL_DIR)
+		find_program(_MATHEMATICA_EXE
+			NAMES ${_MMA_FIND_NAMES}
+			HINTS ${Mathematica_ROOT} ${MATHEMATICA_DIR} ${MATHEMATICA_INSTALL_DIR}
+			PATH_SUFFIXES ${_MMA_FIND_SUFFIXES}
+			DOC ${_MMA_FIND_DOC}
+			NO_DEFAULT_PATH)
+
+		if(NOT _MATHEMATICA_EXE)
+			message(WARNING
+				"Could not find Mathematica in requested location \n${Mathematica_ROOT}${MATHEMATICA_DIR}${MATHEMATICA_INSTALL_DIR}\n"
+				"Looking in default directories...")
+		endif()
+	endif()
+endmacro()
+
+macro(find_mathematica_on_path)
+	find_program(_MATHEMATICA_EXE
+		NAMES ${_MMA_FIND_NAMES}
+		PATH_SUFFIXES ${_MMA_FIND_SUFFIXES}
+		DOC ${_MMA_FIND_DOC})
+endmacro()
+
+function(find_mathematica_in_default_dir MATHEMATICA_VERSION)
+	get_default_mathematica_dir(${MATHEMATICA_VERSION} _DEFAULT_DIR)
+	find_program(_MATHEMATICA_EXE
+		NAMES ${_MMA_FIND_NAMES}
+		HINTS ${_DEFAULT_DIR}
+		PATH_SUFFIXES ${_MMA_FIND_SUFFIXES}
+		DOC ${_MMA_FIND_DOC}
+		NO_DEFAULT_PATH)
+endfunction()
+
+###############################################################################
+# Action starts here
+###############################################################################
+
+# First, respect user-provided hints
+find_mathematica_from_hint()
+
+# If no hint provided, search default installation directories
+foreach(_MMA_VER IN LISTS _MMA_CONSIDERED_VERSIONS)
+	find_mathematica_in_default_dir(${_MMA_VER})
+endforeach()
+
+# Finally, try looking for Mathematica on the system path and wherever CMake looks by default
+find_mathematica_on_path()
 
 cmake_print_variables(_MATHEMATICA_EXE)
 
@@ -54,7 +105,14 @@ if (_MATHEMATICA_EXE)
 	cmake_print_variables(_MATHEMATICA_EXE_REALPATH)
 
 	get_filename_component(_MATHEMATICA_EXE_DIRECTORY ${_MATHEMATICA_EXE_REALPATH} DIRECTORY)
-	get_filename_component(_MATHEMATICA_DIRECTORY ${_MATHEMATICA_EXE_DIRECTORY} DIRECTORY)
+
+	if(WIN32)
+		# On Windows executables are in the installation directory
+		set(_MATHEMATICA_DIRECTORY ${_MATHEMATICA_EXE_DIRECTORY})
+	else()
+		# Jump one level up from the Executables directory
+		get_filename_component(_MATHEMATICA_DIRECTORY ${_MATHEMATICA_EXE_DIRECTORY} DIRECTORY)
+	endif()
 
 	cmake_print_variables(_MATHEMATICA_DIRECTORY)
 
