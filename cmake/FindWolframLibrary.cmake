@@ -41,8 +41,6 @@ find_path(WolframLibrary_INCLUDE_DIR
 	DOC "Path to the WolframLibrary.h and other header files from Wolfram Library"
 )
 
-#TODO maybe add checks for other Wolfram*Library.h?
-
 if(WolframLibrary_FOUND)
 	file(STRINGS "${WolframLibrary_INCLUDE_DIR}/WolframLibrary.h" _WOLFLIB_HEADER_CONTENTS REGEX "#define WolframLibraryVersion ")
 	string(REGEX REPLACE ".*#define WolframLibraryVersion ([0-9]+).*" "\\1" WolframLibrary_VERSION "${_WOLFLIB_HEADER_CONTENTS}")
