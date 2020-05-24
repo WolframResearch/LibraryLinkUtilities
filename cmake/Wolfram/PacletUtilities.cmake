@@ -106,8 +106,8 @@ function(add_paclet_target TARGET_NAME)
 	cmake_parse_arguments(MAKE_PACLET "${OPTIONS}" "${ONE_VALUE_ARGS}" "${MULTI_VALUE_ARGS}" ${ARGN})
 	required_arg(MAKE_PACLET_NAME "Paclet name must be provided.")
 
-	find_wolframscript(WOLFRAMSCRIPT)
-	if(NOT WOLFRAMSCRIPT)
+	find_package(Mathematica 12.0 QUIET COMPONENTS wolframscript)
+	if (NOT Mathematica_wolframscript_EXE)
 		message(WARNING "Could not find wolframscript. \"paclet\" target will not be created.")
 		return()
 	endif()
@@ -170,7 +170,7 @@ function(add_paclet_target TARGET_NAME)
 	string(CONFIGURE "${WL_CODE}" WL_CODE)
 
 	add_custom_target(${TARGET_NAME}
-			COMMAND ${WOLFRAMSCRIPT} -code "${WL_CODE}"
+			COMMAND ${Mathematica_wolframscript_EXE} -code "${WL_CODE}"
 			WORKING_DIRECTORY ${CMAKE_INSTALL_PREFIX}
 			COMMENT "Creating .paclet file${VERIFICATION_MESSAGE}..."
 			VERBATIM
