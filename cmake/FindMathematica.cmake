@@ -46,7 +46,7 @@ include("${CMAKE_CURRENT_LIST_DIR}/Wolfram/Common.cmake")
 
 set(_MMA_CONSIDERED_VERSIONS 12.2;12.1;12.0) # LLU requires Mathematica 12.0+, so we do not look for older versions
 set(_MMA_FIND_NAMES Mathematica mathematica)
-set(_MMA_FIND_SUFFIXES Executables)
+set(_MMA_FIND_SUFFIXES Executables MacOS Contents/MacOS)
 set(_MMA_FIND_DOC "Location of Mathematica executable")
 
 ###############################################################################
@@ -54,16 +54,27 @@ set(_MMA_FIND_DOC "Location of Mathematica executable")
 ###############################################################################
 
 function(parse_mathematica_version M_DIRECTORY VERSION)
-	find_file(VERSION_ID_FILE .VersionID ${M_DIRECTORY})
-	if(NOT VERSION_ID_FILE)
+	if(APPLE)
+		find_file(VERSION_FILE Info.plist PATHS ${M_DIRECTORY} PATH_SUFFIXES Contents NO_DEFAULT_PATH)
+	else()
+		find_file(VERSION_FILE .VersionID ${M_DIRECTORY})
+	endif()
+	if(NOT VERSION_FILE)
 		set(${VERSION} "${VERSION}-NOTFOUND" PARENT_SCOPE)
 		return()
 	endif()
-	file(STRINGS ${VERSION_ID_FILE} VERSION_ID_STRING)
+	if(APPLE)
+		file(READ ${VERSION_FILE} _VERSION_INFO)
+		string(REGEX REPLACE ".*<key>CFBundleVersion</key>[ \n\t\r]+<string>([0-9\\.]+)</string>.*" "\\1" VERSION_ID_STRING "${_VERSION_INFO}")
+	else()
+		file(STRINGS ${VERSION_FILE} VERSION_ID_STRING)
+	endif()
 	set(${VERSION} ${VERSION_ID_STRING} PARENT_SCOPE)
 endfunction()
 
 macro(find_mathematica_from_hint)
+	cmake_print_variables(Mathematica_ROOT MATHEMATICA_DIR MATHEMATICA_INSTALL_DIR)
+
 	if(Mathematica_ROOT OR MATHEMATICA_DIR OR MATHEMATICA_INSTALL_DIR)
 		find_program(Mathematica_EXE
 			NAMES ${_MMA_FIND_NAMES}
@@ -100,11 +111,11 @@ endfunction()
 # Locate wolframscript executable, preferably within MATHEMATICA_INSTALL_DIR, if defined
 function(find_wolframscript)
 	set(CMAKE_FIND_APPBUNDLE NEVER)
-
+	cmake_print_variables(Mathematica_INSTALL_DIR)
 	find_program(Mathematica_wolframscript_EXE
 		NAMES wolframscript
 		HINTS ${Mathematica_INSTALL_DIR}
-		PATH_SUFFIXES Executables MacOS
+		PATH_SUFFIXES ${_MMA_FIND_SUFFIXES}
 		DOC "Path to wolframscript executable."
 		NO_DEFAULT_PATH)
 endfunction()
