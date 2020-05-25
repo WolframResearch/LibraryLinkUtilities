@@ -13,7 +13,7 @@
 #     WolframLibrary::WolframLibrary
 #
 # You can specify custom location to search for Wolfram Library either by specifying WOLFRAM_LIBRARY_PATH explicitly,
-# or if that variable is not set, by providing MATHEMATICA_INSTALL_DIR variable with a path to Mathematica installation.
+# or if that variable is not set, by providing Mathematica_INSTALL_DIR variable with a path to Mathematica installation.
 #
 # Author: Rafal Chojna - rafalc@wolfram.com
 
@@ -24,8 +24,8 @@ else()
 	set(_WOLFLIB_LIBRARY_PATH "$ENV{WOLFRAM_LIBRARY_PATH}")
 endif()
 
-if(NOT _WOLFLIB_LIBRARY_PATH AND MATHEMATICA_INSTALL_DIR)
-	set(_WOLFLIB_LIBRARY_PATH "${MATHEMATICA_INSTALL_DIR}/SystemFiles/IncludeFiles/C")
+if(NOT _WOLFLIB_LIBRARY_PATH AND Mathematica_INSTALL_DIR)
+	set(_WOLFLIB_LIBRARY_PATH "${Mathematica_INSTALL_DIR}/SystemFiles/IncludeFiles/C")
 endif()
 
 if (_WOLFLIB_LIBRARY_PATH)

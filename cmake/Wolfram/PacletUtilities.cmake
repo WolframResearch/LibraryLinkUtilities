@@ -78,12 +78,12 @@ endfunction()
 # Installs paclet into a Mathematica layout if requested.
 macro(install_paclet_to_layout PACLET_NAME INSTALLQ)
 	if(${INSTALLQ})
-		if(EXISTS "${MATHEMATICA_INSTALL_DIR}")
+		if(EXISTS "${Mathematica_INSTALL_DIR}")
 			install(DIRECTORY "${CMAKE_INSTALL_PREFIX}/${PACLET_NAME}"
-					DESTINATION "${MATHEMATICA_INSTALL_DIR}/SystemFiles/Links"
+					DESTINATION "${Mathematica_INSTALL_DIR}/SystemFiles/Links"
 					)
 		else()
-			message(WARNING "Failed to install paclet to layout: \"${MATHEMATICA_INSTALL_DIR}\" does not exist.")
+			message(WARNING "Failed to install paclet to layout: \"${Mathematica_INSTALL_DIR}\" does not exist.")
 		endif()
 	endif()
 endmacro()
@@ -130,7 +130,8 @@ function(add_paclet_target TARGET_NAME)
 			SetOptions[$Output, FormatType -> OutputForm];
 			pacDir = "${MAKE_PACLET_NAME}";
 			If[Not @ DirectoryQ[pacDir],
-				Print["Paclet directory \" <> pacDir <> \" does not exist."]
+				Print["Paclet directory \"" <> pacDir <> "\" does not exist. Make sure you ran the install target."];
+				Exit[1]
 			];
 			paclet = CreatePacletArchive[pacDir];
 			If[FailureQ[paclet],
@@ -160,7 +161,7 @@ function(add_paclet_target TARGET_NAME)
 				]
 			];
 			If["${RUN_TESTS}" === "TRUE",
-				Print["Running test file: ${TEST_FILE}."];
+				Print["Running test file ${TEST_FILE}"];
 				Get["${TEST_FILE}"]
 			];
 			Exit[0]

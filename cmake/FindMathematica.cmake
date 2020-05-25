@@ -7,7 +7,7 @@
 # - DIR/Executables/WolframKernel is an executable file
 #
 # You can specify custom location to search for Wolfram Library either by specifying WOLFRAM_LIBRARY_PATH explicitly,
-# or if that variable is not set, by providing MATHEMATICA_INSTALL_DIR variable with a path to Mathematica installation.
+# or if that variable is not set, by providing Mathematica_INSTALL_DIR variable with a path to Mathematica installation.
 #
 # This module will define the following variables
 #
@@ -73,19 +73,19 @@ function(parse_mathematica_version M_DIRECTORY VERSION)
 endfunction()
 
 macro(find_mathematica_from_hint)
-	cmake_print_variables(Mathematica_ROOT MATHEMATICA_DIR MATHEMATICA_INSTALL_DIR)
+	cmake_print_variables(Mathematica_ROOT Mathematica_INSTALL_DIR)
 
-	if(Mathematica_ROOT OR MATHEMATICA_DIR OR MATHEMATICA_INSTALL_DIR)
+	if(Mathematica_ROOT OR Mathematica_INSTALL_DIR)
 		find_program(Mathematica_EXE
 			NAMES ${_MMA_FIND_NAMES}
-			HINTS ${Mathematica_ROOT} ${MATHEMATICA_DIR} ${MATHEMATICA_INSTALL_DIR}
+			HINTS ${Mathematica_ROOT} ${Mathematica_INSTALL_DIR}
 			PATH_SUFFIXES ${_MMA_FIND_SUFFIXES}
 			DOC ${_MMA_FIND_DOC}
 			NO_DEFAULT_PATH)
 
 		if(NOT Mathematica_EXE)
 			message(WARNING
-				"Could not find Mathematica in requested location \n${Mathematica_ROOT}${MATHEMATICA_DIR}${MATHEMATICA_INSTALL_DIR}\n"
+				"Could not find Mathematica in requested location \n${Mathematica_ROOT}${Mathematica_INSTALL_DIR}\n"
 				"Looking in default directories...")
 		endif()
 	endif()
@@ -108,7 +108,7 @@ function(find_mathematica_in_default_dir MATHEMATICA_VERSION)
 		NO_DEFAULT_PATH)
 endfunction()
 
-# Locate wolframscript executable, preferably within MATHEMATICA_INSTALL_DIR, if defined
+# Locate wolframscript executable, preferably within Mathematica_INSTALL_DIR, if defined
 function(find_wolframscript)
 	set(CMAKE_FIND_APPBUNDLE NEVER)
 	cmake_print_variables(Mathematica_INSTALL_DIR)
@@ -160,10 +160,7 @@ if (Mathematica_EXE)
 
 #	cmake_print_variables(Mathematica_FIND_COMPONENTS)
 
-	set(Mathematica_INSTALL_DIR ${_MATHEMATICA_DIRECTORY})
-
-	# For backwards compatibility
-	set(MATHEMATICA_INSTALL_DIR ${Mathematica_INSTALL_DIR})
+	set(Mathematica_INSTALL_DIR ${_MATHEMATICA_DIRECTORY} CACHE PATH "Path to the root folder of Mathematica installation.")
 endif()
 
 foreach(_COMP IN LISTS Mathematica_FIND_COMPONENTS)
@@ -193,5 +190,5 @@ find_package_handle_standard_args(Mathematica
 		VERSION_VAR
 			Mathematica_Version
 		FAIL_MESSAGE
-			"Could not find Mathematica, please set the path to Mathematica installation folder in the variable MATHEMATICA_DIR"
+			"Could not find Mathematica, please set the path to Mathematica installation folder in the variable Mathematica_INSTALL_DIR"
 		HANDLE_COMPONENTS)
