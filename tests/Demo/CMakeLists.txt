@@ -36,6 +36,9 @@ set(DEMO_SOURCE_FILES ${DEMO_SOURCE_DIR}/demo.cpp)
 #add the main library
 add_library(Demo SHARED ${DEMO_SOURCE_FILES})
 
+#in paclets we usually skip the "lib" prefix to get the same library name on all platforms
+set_property(TARGET Demo PROPERTY PREFIX "")
+
 set_target_properties(Demo PROPERTIES
 		CXX_STANDARD 17
 		CXX_STANDARD_REQUIRED YES

@@ -11,7 +11,7 @@ Begin["`Private`"];
 $BaseDemoDirectory = FileNameDrop[$InputFileName, -2];
 Get[FileNameJoin[{$BaseDemoDirectory, "LibraryResources", "LibraryLinkUtilities.wl"}]];
 
-`LLU`InitializePacletLibrary["libDemo"];
+`LLU`InitializePacletLibrary["Demo"];
 
 `LLU`LazyPacletFunctionSet @@@ {
 	{CaesarCipherEncode, "CaesarCipherEncode", {String, Integer}, String},
