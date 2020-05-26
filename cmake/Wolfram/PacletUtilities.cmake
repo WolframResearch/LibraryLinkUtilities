@@ -113,7 +113,7 @@ function(add_paclet_target TARGET_NAME)
 	endif()
 
 	if(MAKE_PACLET_VERIFY)
-		set(VERIFICATION_MESSAGE " and verifying PacletInfo contents.")
+		set(VERIFICATION_MESSAGE " and verifying PacletInfo contents")
 	endif()
 
 	if(MAKE_PACLET_TEST_FILE)
@@ -130,7 +130,7 @@ function(add_paclet_target TARGET_NAME)
 			SetOptions[$Output, FormatType -> OutputForm];
 			pacDir = "${MAKE_PACLET_NAME}";
 			If[Not @ DirectoryQ[pacDir],
-				Print["Paclet directory \"" <> pacDir <> "\" does not exist. Make sure you ran the install target."];
+				Print @ StringJoin @ {"Paclet directory \"", pacDir, "\" does not exist. Make sure you ran the install target."};
 				Exit[1]
 			];
 			paclet = CreatePacletArchive[pacDir];
