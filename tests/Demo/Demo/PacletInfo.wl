@@ -1,6 +1,6 @@
 (* PacletInfo file template
  * Contains placeholders (@xxx@) that will be replaced at configuration time by CMake (in the function called install_paclet_files).
- * The PacletInfo.wl file with proper values substituted will be then copied to the final paclet layout.
+ * The PacletInfo.wl file will be then copied to the final paclet layout with proper values substituted.
  *)
 Paclet[
 	"Name" -> "@CMAKE_PROJECT_NAME@",

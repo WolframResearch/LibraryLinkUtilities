@@ -100,7 +100,7 @@ endfunction()
 
 
 function(add_paclet_target TARGET_NAME)
-	set(OPTIONS VERIFY INSTALL TEST_LOADING)
+	set(OPTIONS VERIFY INSTALL)
 	set(ONE_VALUE_ARGS NAME TEST_FILE)
 	set(MULTI_VALUE_ARGS)
 	cmake_parse_arguments(MAKE_PACLET "${OPTIONS}" "${ONE_VALUE_ARGS}" "${MULTI_VALUE_ARGS}" ${ARGN})

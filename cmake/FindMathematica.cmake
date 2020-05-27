@@ -1,13 +1,17 @@
 # FindMathematica.cmake
 #
-# Finds an installation of Mathematica. By "installation of Mathematica" we mean a directory DIR such that:
+# Finds Mathematica executable together with other components of the installation, if requested. The following locations are searched:
+#   - location specified via Mathematica_ROOT or Mathematica_INSTALL_DIR
+#   - default install directory for given OS
+#   - system path
 #
-# - DIR/.VersionID is a text file containing a version number of the form X.Y.Z.A
-# - DIR/Executables/Mathematica is an executable file
-# - DIR/Executables/WolframKernel is an executable file
+# Supported components are:
+#   - WolframLibrary
+#   - WSTP
+#   - wolframscript
 #
-# You can specify custom location to search for Wolfram Library either by specifying WOLFRAM_LIBRARY_PATH explicitly,
-# or if that variable is not set, by providing Mathematica_INSTALL_DIR variable with a path to Mathematica installation.
+# Components are searched for in the same installation where Mathematica executable was found but this can be overriden by specifying WOLFRAM_LIBRARY_PATH
+# or WSTP_PATH as custom locations of Wolfram Library and WSTP, respectively.
 #
 # This module will define the following variables
 #
@@ -41,7 +45,7 @@
 #
 # Author: Rafal Chojna - rafalc@wolfram.com
 
-include(CMakePrintHelpers)
+
 include("${CMAKE_CURRENT_LIST_DIR}/Wolfram/Common.cmake")
 
 set(_MMA_CONSIDERED_VERSIONS 12.2;12.1;12.0) # LLU requires Mathematica 12.0+, so we do not look for older versions
@@ -73,8 +77,6 @@ function(parse_mathematica_version M_DIRECTORY VERSION)
 endfunction()
 
 macro(find_mathematica_from_hint)
-	cmake_print_variables(Mathematica_ROOT Mathematica_INSTALL_DIR)
-
 	if(Mathematica_ROOT OR Mathematica_INSTALL_DIR)
 		find_program(Mathematica_EXE
 			NAMES ${_MMA_FIND_NAMES}
@@ -111,7 +113,7 @@ endfunction()
 # Locate wolframscript executable, preferably within Mathematica_INSTALL_DIR, if defined
 function(find_wolframscript)
 	set(CMAKE_FIND_APPBUNDLE NEVER)
-	cmake_print_variables(Mathematica_INSTALL_DIR)
+
 	find_program(Mathematica_wolframscript_EXE
 		NAMES wolframscript
 		HINTS ${Mathematica_INSTALL_DIR}
@@ -135,12 +137,8 @@ endforeach()
 # Finally, try looking for Mathematica on the system path and wherever CMake looks by default
 find_mathematica_on_path()
 
-#cmake_print_variables(Mathematica_EXE)
-
 if (Mathematica_EXE)
 	get_filename_component(Mathematica_EXE_REALPATH ${Mathematica_EXE} REALPATH)
-
-#	cmake_print_variables(Mathematica_EXE_REALPATH)
 
 	get_filename_component(Mathematica_EXE_DIRECTORY ${Mathematica_EXE_REALPATH} DIRECTORY)
 
@@ -152,13 +150,7 @@ if (Mathematica_EXE)
 		get_filename_component(_MATHEMATICA_DIRECTORY ${Mathematica_EXE_DIRECTORY} DIRECTORY)
 	endif()
 
-#	cmake_print_variables(_MATHEMATICA_DIRECTORY)
-
 	parse_mathematica_version(${_MATHEMATICA_DIRECTORY} Mathematica_Version)
-
-#	cmake_print_variables(Mathematica_Version)
-
-#	cmake_print_variables(Mathematica_FIND_COMPONENTS)
 
 	set(Mathematica_INSTALL_DIR ${_MATHEMATICA_DIRECTORY} CACHE PATH "Path to the root folder of Mathematica installation.")
 endif()
