@@ -199,7 +199,22 @@ TestMatch[
 
 TestMatch[
 	`LLU`PacletFunctionSet[RepeatedNumberTemplate, {}, "Void"];
-	Catch[RepeatedNumberTemplate[], _`LLU`Exception]
+	Catch[RepeatedNumberTemplate[], "LLUExceptionTag"]
+	,
+	Failure["RepeatedNumberTemplateError", <|
+		"MessageTemplate" -> "Cannot accept `` nor `` because `1` is unacceptable. So are `2` and ``.",
+		"MessageParameters" -> {"x", "y", "z"},
+		"ErrorCode" -> n_?CppErrorCodeQ,
+		"Parameters" -> {}
+	|>]
+	,
+	TestID -> "ErrorReportingTestSuite-20190320-R9L9R5"
+];
+
+TestMatch[
+	Block[{`LLU`Config`$ExceptionTagString = "MyException"},
+		Catch[RepeatedNumberTemplate[], "MyException"]
+	]
 	,
 	Failure["RepeatedNumberTemplateError", <|
 		"MessageTemplate" -> "Cannot accept `` nor `` because `1` is unacceptable. So are `2` and ``.",
@@ -265,7 +280,7 @@ TestExecute[
 
 TestMatch[
 	ReadDataWithLoggingError = `LLU`PacletFunctionLoad["ReadDataWithLoggingError", {String}, "Void"];
-	Catch[ReadDataWithLoggingError["test.txt"], _`LLU`Exception]
+	Catch[ReadDataWithLoggingError["test.txt"], _]
 	,
 	Failure["DataFileError", <|
 		"MessageTemplate" -> "Data in file `fname` in line `lineNumber` is invalid because `reason`.",
@@ -278,7 +293,7 @@ TestMatch[
 ];
 
 TestMatch[
-	`LLU`CatchException["*Error"] @ ReadDataWithLoggingError["ThisFileHasExtremelyLongName.txt"]
+	Catch[ReadDataWithLoggingError["ThisFileHasExtremelyLongName.txt"], _String?(StringMatchQ["LLU*"])]
 	,
 	Failure["DataFileError", <|
 		"MessageTemplate" -> "Data in file `fname` in line `lineNumber` is invalid because `reason`.",
@@ -291,7 +306,7 @@ TestMatch[
 ];
 
 TestMatch[
-	Catch[ReadDataWithLoggingError["Secret:Data"], _`LLU`Exception, #1["Message"]&]
+	Catch[ReadDataWithLoggingError["Secret:Data"], "LLUExceptionTag", #1["Message"]&]
 	,
 	"Data in file Secret:Data in line 0 is invalid because file name contains a possibly problematic character \":\"."
 	,
@@ -333,9 +348,13 @@ Test[
 	TestID -> "ErrorReportingTestSuite-20190404-O3A4K4"
 ];
 
+TestExecute[
+	`LLU`Config`$ExceptionTagFunction = First;
+]
+
 TestMatch[
 	ReadDataDelayedParametersTransfer = `LLU`PacletFunctionLoad["ReadDataDelayedParametersTransfer", {String}, "Void"];
-	`LLU`CatchException["DataFileError"] @ ReadDataDelayedParametersTransfer["somefile.txt"]
+	Catch[ReadDataDelayedParametersTransfer["somefile.txt"], "DataFileError"]
 	,
 	Failure["DataFileError", <|
 		"MessageTemplate" -> "Data in file `fname` in line `lineNumber` is invalid because `reason`.",
@@ -349,7 +368,7 @@ TestMatch[
 
 TestMatch[
 	EmptyLibDataException = `LLU`PacletFunctionLoad["EmptyLibDataException", {}, "Void"];
-	`LLU`CatchAll @ EmptyLibDataException[]
+	Catch[EmptyLibDataException[], _String?(StringMatchQ["*Error"])]
 	,
 	Failure["LibDataError", <|
 		"MessageTemplate" -> "WolframLibraryData is not set. Make sure to call LibraryData::setLibraryData in WolframLibrary_initialize.",
@@ -360,6 +379,10 @@ TestMatch[
 	,
 	TestID -> "ErrorReportingTestSuite-20200114-M9D6F9"
 ];
+
+TestExecute[
+	`LLU`Config`$ExceptionTagFunction := `LLU`Config`$ExceptionTagString&;
+]
 
 (*********************************************************** Logging tests **************************************************************)
 TestExecute[
@@ -377,7 +400,7 @@ TestExecute[
 ];
 
 Test[
-	GreaterAt = `LLU`PacletFunctionLoad["GreaterAt", {String, {_, 1}, Integer, Integer}, "Boolean"];
+	GreaterAt = `LLU`PacletFunctionLoad["GreaterAt", {String, {_, 1}, Integer, Integer}, "Boolean", "Throws" -> False];
 	GreaterAt["file.txt", {5, 6, 7, 8, 9}, 1, 3];
 	TestLogSymbol
 	,
@@ -469,7 +492,7 @@ TestExecute[
 ];
 
 TestMatch[
-	Reap @ `LLU`CatchAll @ GreaterAt["file.txt", {5, 6, 7, 8, 9}, -1, 3]
+	Reap @ GreaterAt["file.txt", {5, 6, 7, 8, 9}, -1, 3]
 	,
 	{
 		Failure["TensorIndexError", <|
@@ -547,6 +570,9 @@ TestExecute[
 
 	Get[FileNameJoin[{$LLUSharedDir, "LibraryLinkUtilities.wl"}]];
 	`LLU`InitializePacletLibrary[libLogWarning];
+		
+	`LLU`Config`$Throws = False;
+
 	GreaterAtW = `LLU`PacletFunctionLoad["GreaterAt", {String, {_, 1}, Integer, Integer}, "Boolean"];
 ];
 
@@ -565,7 +591,7 @@ TestExecute[
 ];
 
 Test[
-	Reap @ `LLU`CatchAll @ GreaterAtW["file.txt", {5, 6, 7, 8, 9}, -1, 3]
+	Reap @ GreaterAtW["file.txt", {5, 6, 7, 8, 9}, -1, 3]
 	,
 	{
 		Failure["TensorIndexError", <|
@@ -616,7 +642,7 @@ TestMatch[
 
 TestMatch[
 	TestLogSymbol = {};
-	{`LLU`CatchAll @ LogDemo[-1, 6, 7, 8, 9], TestLogSymbol}
+	{LogDemo[-1, 6, 7, 8, 9], TestLogSymbol}
 	,
 	{
 		Failure["MArgumentIndexError",

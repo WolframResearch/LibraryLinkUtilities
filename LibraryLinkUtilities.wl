@@ -23,16 +23,12 @@ LazyInitializePacletLibrary::usage = "Lazy version of InitializePacletLibrary
 RegisterPacletErrors::usage = "RegisterPacletErrors[errors_?AssociationQ]
 	Adds custom top-level errors. Errors are specified in the form
 	<| \"ErrorName\" -> \"Message\" |>";
-CreatePacletFailure::usage = "CreatePacletFailure[type_?StringQ, opts:OptionsPattern[]]
+
+CreatePacletFailure::usage = "CreatePacletFailure[type_?StringQ, opts]
 	Emits a Failure object for the custom error named by type.";
 
-Exception::usage = "By default, all Throws emitted from within LLU will use a tag of the form Exception[<ErrorName>], where <ErrorName> is the string
-used as the key when registering the error. Developers may change the default tag by modifying LLU`Config`$ExceptionTagFunction.";
-
-CatchException::usage =
-"CatchException[pattern_, expr_] is a wrapper over System`Catch[expr] that will catch only Throws with the tag matching LLU`Exception[pattern].";
-
-CatchAll::usage = "CatchAll[expr_] is a wrapper over System`Catch[expr] that will catch all Throws with the tag of the form LLU`Exception[_].";
+ThrowPacletFailure::usage = "ThrowPacletFailure[type_?StringQ, opts]
+Throws a tagged Failure object for the custom error named by type. The tag is provided by LLU`Config`$ExceptionTagFunction and can be customized.";
 
 (* ---------------- Configuration ------------------------------------------ *)
 
@@ -643,18 +639,8 @@ Block[{slotNames, slotValues},
 
 ThrowPacletFailure[type_?StringQ, opts : OptionsPattern[CreatePacletFailure]] :=
 	With[{failure = CreatePacletFailure[type, opts]},
-		Throw[failure, Config["$ExceptionTagFunction"][failure]];
+		Throw @@ {failure, Config["$ExceptionTagFunction"][failure]};
 	];
-
-
-SetAttributes[CatchException, HoldAllComplete];
-CatchException[a__] := Function[x, CatchException[a, x], HoldAll];
-
-CatchException[tagPattern_String, body_] := Catch[body, Exception[_?(StringMatchQ[tagPattern])]];
-CatchException[tagPattern_, body_] := Catch[body, Exception[tagPattern]];
-
-SetAttributes[CatchAll, HoldFirst];
-CatchAll[body_] := CatchException[_, body];
 
 (* ::SubSection:: *)
 (* CatchLibraryLinkError *)
@@ -710,7 +696,9 @@ Begin["`Config`"];
 
 $Throws = True;
 
-$ExceptionTagFunction := Exception @* First; (* Extract the tag from given Failure expr and wrap it with `LLU`Exception head. *)
+$ExceptionTagString = "LLUExceptionTag";
+
+$ExceptionTagFunction := $ExceptionTagString&;
 
 End[];
 

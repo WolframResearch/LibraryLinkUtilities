@@ -58,6 +58,8 @@ TestExecute[
 
 	(* Create new instance of MyExpression *)
 	globalExpr = `LLU`NewManagedExpression[MyExpression]["I will live through all tests"];
+
+	`LLU`Config`$ExceptionTagFunction = Nothing&;
 ];
 
 Test[
@@ -172,7 +174,7 @@ Test[
 ];
 
 Test[
-	`LLU`CatchAll @ MyExpression[500] @ getText[]
+	Catch @ MyExpression[500] @ getText[]
 	,
 	Failure["InvalidManagedExpressionID",
 		<|
@@ -187,7 +189,7 @@ Test[
 ];
 
 Test[
-	`LLU`CatchAll @ MyExpression`getText[NotMyExpression[1]]
+	Catch @ MyExpression`getText[NotMyExpression[1]]
 	,
 	Failure["UnexpectedManagedExpression",
 		<|
@@ -304,7 +306,7 @@ Test[
 ];
 
 Test[
-	`LLU`CatchAll @ ReleaseExpression @ MyExpression[500]
+	Catch @ ReleaseExpression @ MyExpression[500]
 	,
 	Failure["InvalidManagedExpressionID",
 		<|
@@ -409,7 +411,7 @@ Test[
 ];
 
 VerificationTest[
-	c = `LLU`CatchAll @ `LLU`NewManagedExpression[Serializable]["Jestem C."]; (* The factory function will throw and the C++ object will not be created *)
+	c = Catch @ `LLU`NewManagedExpression[Serializable]["Jestem C."]; (* The factory function will throw and the C++ object will not be created *)
 	FailureQ[c]
 	,
 	TestID -> "ManagedExpressionsTestSuite-20200420-T5J0L7"

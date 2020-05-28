@@ -86,7 +86,7 @@ Test[
 ]
 
 Test[
-	`LLU`WSTPFunctionSet[BoolAnd];
+	`LLU`WSTPFunctionSet[BoolAnd, "Throws" -> False];
 	BoolAnd[True, True, True, False]
 	,
 	False
@@ -103,7 +103,7 @@ Test[
 ]
 
 Test[
-	`LLU`CatchAll @ BoolAnd[True, True, True, True, Pi]
+	BoolAnd[True, True, True, True, Pi]
 	,
 	Failure["WSWrongSymbolForBool", <|
 		"MessageTemplate" -> "Tried to read something else than \"True\" or \"False\" as boolean.",
