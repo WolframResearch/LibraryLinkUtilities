@@ -691,7 +691,7 @@ End[]; (* `Private` *)
 (* ::SubSection:: *)
 (* Config *)
 (* ------------------------------------------------------------------------- *)
-
+(* Config` context contains symbols intended to be modified by paclet developers to better fit their needs. *)
 Begin["`Config`"];
 
 $Throws = True;
