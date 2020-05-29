@@ -60,7 +60,11 @@ TestMatch[
 ];
 
 TestMatch[
-	`LLU`CreatePacletFailure["StaticTopLevelError", "MessageParameters" -> <|"X" -> 3|>, "Parameters" -> {"p1", "p2"}]
+	Catch[
+		`LLU`ThrowPacletFailure["StaticTopLevelError", "MessageParameters" -> <|"X" -> 3|>, "Parameters" -> {"p1", "p2"}]
+		,
+		"LLUExceptionTag"
+	]
 	,
 	Failure["StaticTopLevelError", <|
 		"MessageTemplate" -> "This top-level error has a static error message.",
@@ -73,7 +77,13 @@ TestMatch[
 ];
 
 TestMatch[
-	`LLU`CreatePacletFailure["StaticTopLevelError", "MessageParameters" -> "Must be Association or List", "Parameters" -> {1, 2}]
+	Block[{`LLU`$ExceptionTagFunction = First},
+		Catch[
+			`LLU`ThrowPacletFailure["StaticTopLevelError", "MessageParameters" -> "Must be Association or List", "Parameters" -> {1, 2}]
+			,
+			_String?(StringEndsQ["Error"])
+		]
+	]
 	,
 	Failure["StaticTopLevelError", <|
 		"MessageTemplate" -> "This top-level error has a static error message.",
@@ -99,7 +109,11 @@ TestMatch[
 ];
 
 TestMatch[
-	`LLU`CreatePacletFailure["TopLevelNumberedSlotsError", "MessageParameters" -> {"x", "y", "z"}]
+	Catch[
+		`LLU`ThrowPacletFailure["TopLevelNumberedSlotsError", MyTag[17], "MessageParameters" -> {"x", "y", "z"}]
+		,
+		_MyTag
+	]
 	,
 	Failure["TopLevelNumberedSlotsError", <|
 		"MessageTemplate" -> "Slot number one: `1`, number two: `2`.",

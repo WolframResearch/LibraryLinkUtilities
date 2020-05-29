@@ -28,7 +28,9 @@ CreatePacletFailure::usage = "CreatePacletFailure[type_?StringQ, opts]
 	Emits a Failure object for the custom error named by type.";
 
 ThrowPacletFailure::usage = "ThrowPacletFailure[type_?StringQ, opts]
-Throws a tagged Failure object for the custom error named by type. The tag is provided by LLU`$ExceptionTagFunction and can be customized.";
+Throws a tagged Failure object for the custom error named by type. The tag is provided by LLU`$ExceptionTagFunction and can be customized.
+ThrowPacletFailure[type_?StringQ, tag_, opts]
+Throws a Failure object for the custom error named by type with explicitly specified tag (second argument to Throw).";
 
 (* ---------------- Configuration ------------------------------------------ *)
 
@@ -640,6 +642,11 @@ Block[{slotNames, slotValues, msgParams, selectedSlotValues, params = {}},
 ThrowPacletFailure[type_?StringQ, opts : OptionsPattern[CreatePacletFailure]] :=
 	With[{failure = CreatePacletFailure[type, opts]},
 		Throw @@ {failure, $ExceptionTagFunction[failure]};
+	];
+
+ThrowPacletFailure[type_?StringQ, tag_, opts : OptionsPattern[CreatePacletFailure]] :=
+	With[{failure = CreatePacletFailure[type, opts]},
+		Throw[failure, tag];
 	];
 
 (* ::SubSection:: *)
