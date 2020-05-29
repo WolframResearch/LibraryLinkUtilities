@@ -60,9 +60,9 @@ LLU_LIBRARY_FUNCTION(GetManagedExpressionCount) {
 }
 
 LLU_LIBRARY_FUNCTION(GetManagedExpressionTexts) {
-	LLU::DataList<LLU::MArgumentType::UTF8String> texts;
+	LLU::DataList<std::string_view> texts;
 	for (const auto& expr : MyExpressionStore) {
-		texts.push_back(std::to_string(expr.first), const_cast<char*>(expr.second->getText().c_str()));
+		texts.push_back(std::to_string(expr.first), expr.second->getText());
 	}
 	mngr.set(texts);
 }

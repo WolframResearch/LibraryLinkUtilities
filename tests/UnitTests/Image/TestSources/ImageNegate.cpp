@@ -18,9 +18,9 @@ template<>
 constexpr double negator<double> = 1.;
 
 struct ImageNegator {
-	template<typename T, class P>
-	void operator()(LLU::Image<T, P> in, LLU::MArgumentManager& mngr) {
-		LLU::Image<T> out {in};
+	template<typename T>
+	void operator()(LLU::Image<T> in, LLU::MArgumentManager& mngr) {
+		LLU::Image<T> out {in.clone()};
 
 		std::transform(std::cbegin(in), std::cend(in), std::begin(out), [](T inElem) { return negator<T> - inElem; });
 		mngr.setImage(out);
@@ -37,12 +37,12 @@ LLU_LIBRARY_FUNCTION(ImageNegate) {
 }
 
 LLU_LIBRARY_FUNCTION(NegateImages) {
-	auto imgList = mngr.getDataList<MArgumentType::Image>(0);
-	LLU::DataList<MArgumentType::Image> outList;
+	auto imgList = mngr.getDataList<LLU::GenericImage>(0);
+	LLU::DataList<LLU::GenericImage> outList;
 	for (auto&& node : imgList) {
-		MImage img = node.getValue();
+		auto& img = node.value();
 		LLU::asTypedImage(img, ImageNegator{});
-		outList.push_back(img);
+		outList.push_back(std::move(img));
 	}
 	mngr.set(outList);
 }

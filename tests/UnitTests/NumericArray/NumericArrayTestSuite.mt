@@ -185,7 +185,7 @@ TestMatch[
 		"MessageTemplate" -> "Failed to convert NumericArray from different type.",
 		"MessageParameters" -> <||>,
 		"ErrorCode" -> _?CppErrorCodeQ,
-		"Parameters" -> {}|>
+		"Parameters" -> _?ListQ|>
 	]
 	,
 	TestID -> "NumericArrayTestSuite-20190910-D8W3R2"

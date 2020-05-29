@@ -14,9 +14,6 @@
 
 #include "LLU/Containers/Generic/Tensor.hpp"
 #include "LLU/Containers/MArray.hpp"
-#include "LLU/Containers/Passing/Automatic.hpp"
-#include "LLU/Containers/Passing/Manual.hpp"
-#include "LLU/Containers/Passing/PassingPolicy.hpp"
 #include "LLU/LibraryData.h"
 #include "LLU/Utilities.hpp"
 
@@ -49,8 +46,8 @@ namespace LLU {
 	 *
 	 * @tparam	T - type of underlying data
 	 */
-	template<typename T, class PassingMode = Passing::Manual>
-	class Tensor : public TypedTensor<T>, public GenericTensor<PassingMode> {
+	template<typename T>
+	class Tensor : public TypedTensor<T>, public GenericTensor {
 	public:
 		/**
 		 *   @brief         Constructs flat Tensor based on a list of elements
@@ -110,24 +107,19 @@ namespace LLU {
 		Tensor(InputIt first, InputIt last, MArrayDimensions dims);
 
 		/**
-		 *  @brief  Create new Tensor from MTensor
-		 *  @param  t - MTensor
-		 */
-		explicit Tensor(MTensor t);
+		 *   @brief     Constructs Tensor based on MTensor
+		 *   @param[in] na - LibraryLink structure to be wrapped
+		 *   @param[in] owner - who manages the memory the raw MTensor
+		 *   @throws    ErrorName::TensorTypeError - if the Tensor template type \b T does not match the actual data type of the MTensor
+		 **/
+		Tensor(MTensor t, Ownership mode);
 
 		/**
 		 *   @brief     Create new Tensor from a GenericTensor
 		 *   @param[in] t - generic Tensor to be wrapped into Tensor class
 		 *   @throws	ErrorName::TensorTypeError - if the Tensor template type \b T does not match the actual data type of the generic Tensor
 		 **/
-		explicit Tensor(GenericTensor<PassingMode> t);
-
-		/**
-		 *   @brief         Create new Tensor from Tensor of different passing policy by making a copy
-		 *   @param[in]     other - const reference to a generic Tensor
-		 **/
-		template<class P>
-		explicit Tensor(const Tensor<T, P>& other);
+		explicit Tensor(GenericTensor t);
 
 		/**
 		 *  @brief  Default constructor, creates a Tensor that does not wrap over any raw MTensor
@@ -135,41 +127,15 @@ namespace LLU {
 		Tensor() = default;
 
 		/**
-		 *   @brief        	Copy constructor
-		 *   @param[in]     other - const reference to a Tensor of matching type
-		 **/
-		Tensor(const Tensor& other) = default;
-
-		/**
-		 *   @brief         Move constructor
-		 *   @param[in]     other - rvalue reference to a Tensor of matching type
-		 **/
-		Tensor(Tensor&& other) noexcept = default;
-
-		/**
-		 *   @brief	Free internal MTensor if necessary
-		 **/
-		~Tensor() = default;
-
-		/// Default move-assignment operator
-		Tensor& operator=(Tensor&&) noexcept = default;
-
-		/// Default copy-assignment operator
-		Tensor& operator=(const Tensor&) = default;
-
-		/**
-		 *   @brief         Copy-assignment operator
-		 *   @param[in]     other - const reference to a Tensor of matching type
-		 **/
-		template<class P>
-		Tensor& operator=(const Tensor<T, P>& other) {
-			TypedTensor<T>::operator=(other);
-			GenericBase::operator=(other);
-			return *this;
+		 * @brief   Clone this Tensor, performing a deep copy of the underlying MTensor.
+		 * @note    The cloned MTensor always belongs to the library (Ownership::Library) because LibraryLink has no idea of its existence.
+		 * @return  new Tensor
+		 */
+		Tensor clone() const {
+			return Tensor {cloneContainer(), Ownership::Library};
 		}
-
 	private:
-		using GenericBase = MContainer<MArgumentType::Tensor, PassingMode>;
+		using GenericBase = MContainer<MArgumentType::Tensor>;
 
 		/// @copydoc MContainerBase::getContainer()
 		MTensor getInternal() const noexcept override {
@@ -177,40 +143,37 @@ namespace LLU {
 		}
 	};
 
-	template<typename T, class PassingMode>
-	Tensor<T, PassingMode>::Tensor(std::initializer_list<T> v) : Tensor(std::begin(v), std::end(v), {static_cast<mint>(v.size())}) {}
+	template<typename T>
+	Tensor<T>::Tensor(std::initializer_list<T> v) : Tensor(std::begin(v), std::end(v), {static_cast<mint>(v.size())}) {}
 
-	template<typename T, class PassingMode>
+	template<typename T>
 	template<class InputIt, typename>
-	Tensor<T, PassingMode>::Tensor(InputIt first, InputIt last) : Tensor(first, last, {static_cast<mint>(std::distance(first, last))}) {}
+	Tensor<T>::Tensor(InputIt first, InputIt last) : Tensor(first, last, {static_cast<mint>(std::distance(first, last))}) {}
 
-	template<typename T, class PassingMode>
-	Tensor<T, PassingMode>::Tensor(T init, MArrayDimensions dims)
+	template<typename T>
+	Tensor<T>::Tensor(T init, MArrayDimensions dims)
 		: TypedTensor<T>(std::move(dims)), GenericBase(TensorType<T>, this->rank(), this->dims.data()) {
 		std::fill(this->begin(), this->end(), init);
 	}
 
-	template<typename T, class PassingMode>
+	template<typename T>
 	template<class InputIt, typename>
-	Tensor<T, PassingMode>::Tensor(InputIt first, InputIt last, MArrayDimensions dims)
+	Tensor<T>::Tensor(InputIt first, InputIt last, MArrayDimensions dims)
 		: TypedTensor<T>(std::move(dims)), GenericBase(TensorType<T>, this->rank(), this->dims.data()) {
 		if (std::distance(first, last) != this->getFlattenedLength())
 			ErrorManager::throwException(ErrorName::TensorNewError, "Length of data range does not match specified dimensions");
 		std::copy(first, last, this->begin());
 	}
 
-	template<typename T, class PassingMode>
-	Tensor<T, PassingMode>::Tensor(GenericBase t) : TypedTensor<T>({t.getDimensions(), t.getRank()}), GenericBase(std::move(t)) {
+	template<typename T>
+	Tensor<T>::Tensor(GenericBase t) : TypedTensor<T>({t.getDimensions(), t.getRank()}), GenericBase(std::move(t)) {
 		if (TensorType<T> != GenericBase::type())
 			ErrorManager::throwException(ErrorName::TensorTypeError);
 	}
 
-	template<typename T, class PassingMode>
-	template<class P>
-	Tensor<T, PassingMode>::Tensor(const Tensor<T, P>& other) : TypedTensor<T>(other), GenericBase(other) {}
+	template<typename T>
+	Tensor<T>::Tensor(MTensor t, Ownership mode) : Tensor(GenericBase {t, mode}) {}
 
-	template<typename T, class PassingMode>
-	Tensor<T, PassingMode>::Tensor(MTensor t) : Tensor(GenericBase {t}) {}
 
 } /* namespace LLU */
 

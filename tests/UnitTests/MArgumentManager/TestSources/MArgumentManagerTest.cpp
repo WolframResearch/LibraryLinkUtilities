@@ -4,6 +4,7 @@
  * @brief	Source code for unit tests of MArgumentManager
  */
 #include <functional>
+#include <iostream>
 #include <tuple>
 
 #include <LLU/Containers/Iterators/DataList.hpp>
@@ -68,10 +69,10 @@ namespace LLU {
 	// Teach LLU how to send Person object as result of the library function. DataStore is used as the actual MArgument type.
 	template<>
 	void MArgumentManager::set<Person>(const Person& p) {
-		DataList<MArgumentType::MArgument> personDS;
-		personDS.push_back<MArgumentType::UTF8String>(const_cast<char*>(p.name.c_str()));
-		personDS.push_back<MArgumentType::Integer>(p.age);
-		personDS.push_back<MArgumentType::Real>(p.height);
+		DataList<LLU::NodeType::Any> personDS;
+		personDS.push_back(p.name);
+		personDS.push_back(static_cast<mint>(p.age));
+		personDS.push_back(p.height);
 		set(personDS);
 	}
 }
@@ -96,30 +97,29 @@ LLU_LIBRARY_FUNCTION(PredictChild) {
 // Fun with vectors - partial end explicit specializations of MArgumentManager::Getter (undocumented feature)
 namespace LLU {
 	template<typename T>
-	struct MArgumentManager::CustomType<std::vector<T>> { using CorrespondingTypes = std::tuple<NumericArray<T, Passing::Constant>>; };
+	struct MArgumentManager::CustomType<std::vector<T>> { using CorrespondingTypes = std::tuple<NumericArray<T>>; };
 
 	template<typename T>
 	struct MArgumentManager::Getter<std::vector<T>> {
 		static std::vector<T> get(const MArgumentManager& mngr, size_type index) {
-			auto na = mngr.get<NumericArray<T, LLU::Passing::Constant>>(index);
+			auto na = mngr.get<Managed<NumericArray<T>, LLU::Passing::Constant>>(index);
 			return { std::cbegin(na), std::cend(na) };
 		}
 	};
 
 	template<>
-	struct MArgumentManager::CustomType<std::vector<Person>> { using CorrespondingTypes = std::tuple<DataList<MArgumentType::MArgument>>; };
+	struct MArgumentManager::CustomType<std::vector<Person>> { using CorrespondingTypes = std::tuple<DataList<LLU::NodeType::Any>>; };
 
 	template<>
 	struct MArgumentManager::Getter<std::vector<Person>> {
 		static std::vector<Person> get(const MArgumentManager& mngr, size_type index) {
-			auto dl = mngr.get<DataList<MArgumentType::DataStore>>(index);
+			auto dl = mngr.get<DataList<LLU::NodeType::DataStore>>(index);
 			std::vector<Person> res;
-			std::transform(std::begin(dl), std::end(dl), std::back_inserter(res), [](DataNode<MArgumentType::DataStore>& node) {
-				DataList<MArgumentType::MArgument, Passing::Automatic> p {node.getValue()};
-				NodeValueIterator<MArgumentType::MArgument> it = p.begin();
-				std::string name = Argument<MArgumentType::UTF8String>(*it++).get();
-				auto age = static_cast<uint8_t>(Argument<MArgumentType::Integer>(*it++).get());
-				double height = Argument<MArgumentType::Real>(*it++).get();
+			std::transform(dl.valueBegin(), dl.valueEnd(), std::back_inserter(res), [](LLU::GenericDataList ds) {
+				NodeValueIterator<LLU::NodeType::Any> it {ds.begin()};
+				std::string name { (it++).as<LLU::NodeType::UTF8String>() };
+				auto age = static_cast<uint8_t>((it++).as<mint>());
+				auto height = (it++).as<double>() ;
 				return Person { std::move(name), age, height };
 			});
 			return res;

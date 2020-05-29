@@ -21,8 +21,7 @@ namespace LLU {
 	public:
 		NumericArrayView() = default;
 
-		template<class Passing>
-		/* implicit */ NumericArrayView(const GenericNumericArray<Passing>& gNA) : na{gNA.getContainer()} {}
+		/* implicit */ NumericArrayView(const GenericNumericArray& gNA) : na{gNA.getContainer()} {}
 
 		/* implicit */ NumericArrayView(MNumericArray mna) : na{mna} {}
 
@@ -60,8 +59,7 @@ namespace LLU {
 	public:
 		NumericArrayTypedView() = default;
 
-		template<class Passing>
-		/* implicit */ NumericArrayTypedView(const GenericNumericArray<Passing>& gNA) : NumericArrayView(gNA) {
+		/* implicit */ NumericArrayTypedView(const GenericNumericArray& gNA) : NumericArrayView(gNA) {
 			if (NumericArrayType<T> != type()) {
 				ErrorManager::throwException(ErrorName::NumericArrayTypeError);
 			}

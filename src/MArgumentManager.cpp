@@ -12,7 +12,6 @@
 #include <algorithm>
 
 #include "LLU/Containers/MArray.hpp"
-#include "LLU/Containers/Passing/Shared.hpp"
 #include "LLU/LibraryData.h"
 
 namespace LLU {

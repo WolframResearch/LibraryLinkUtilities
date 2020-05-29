@@ -598,7 +598,7 @@ Block[{msgParam, param, errorCode, msgTemplate, errorType},
 		];
 	$ErrorCount++;
 	If[errorCode < 0, (* if failure comes from the C++ code, extract message template parameters *)
-		msgParam = GetCCodeFailureParams[msgTemplate];
+		{msgParam, param} = GetCCodeFailureParams[msgTemplate];
 	];
 	Failure[errorType,
 		<|
@@ -617,23 +617,25 @@ Block[{msgParam, param, errorCode, msgTemplate, errorType},
 Clear @ $LastFailureParameters;
 
 GetCCodeFailureParams[msgTemplate_String?StringQ] :=
-Block[{slotNames, slotValues},
+Block[{slotNames, slotValues, msgParams, selectedSlotValues, params = {}},
 	slotNames = Cases[First @ StringTemplate[msgTemplate], TemplateSlot[s_] -> s];
 	slotNames = DeleteDuplicates[slotNames];
 	slotValues = If[ListQ[$LastFailureParameters], $LastFailureParameters, {}];
 	$LastFailureParameters = {};
- 	If[MatchQ[slotNames, {_Integer..}],
+ 	msgParams = If[MatchQ[slotNames, {_Integer..}],
 		(* for numbered slots return just a list of slot template values *)
-		slotValues
+	    slotValues
 		, (* otherwise, return an Association with slot names as keys *)
-		(* If too many slot values came from C++ code - drop some, otherwise - pad with empty strings *)
-		slotValues = PadRight[slotValues, Length[slotNames], ""];
+		(* If too many slot values came from C++ code - store the excess in "Params", otherwise - pad with empty strings *)
+		{selectedSlotValues, params} = TakeList[slotValues, {UpTo[Length[slotNames]], All}];
+		selectedSlotValues = PadRight[slotValues, Length[slotNames], ""];
 		If[VectorQ[slotNames, StringQ],
-			AssociationThread[slotNames, slotValues]
+			AssociationThread[slotNames, selectedSlotValues]
 			, (* mixed slots are not officially supported but let's do the best we can *)
-			MapThread[If[StringQ[#1], <|#1 -> #2|>, #2]&, {slotNames, slotValues}]
+			MapThread[If[StringQ[#1], <|#1 -> #2|>, #2]&, {slotNames, selectedSlotValues}]
 		]
-	]
+	];
+	{msgParams, params}
 ];
 
 
