@@ -28,13 +28,14 @@ CreatePacletFailure::usage = "CreatePacletFailure[type_?StringQ, opts]
 	Emits a Failure object for the custom error named by type.";
 
 ThrowPacletFailure::usage = "ThrowPacletFailure[type_?StringQ, opts]
-Throws a tagged Failure object for the custom error named by type. The tag is provided by LLU`Config`$ExceptionTagFunction and can be customized.";
+Throws a tagged Failure object for the custom error named by type. The tag is provided by LLU`$ExceptionTagFunction and can be customized.";
 
 (* ---------------- Configuration ------------------------------------------ *)
 
-`Config`$Throws::usage = "Default value for the \"Throws\" option for loading library functions.";
+$Throws::usage = "Default value for the \"Throws\" option for loading library functions. Notice that this setting does not affect LLU API functions
+(e.g. RegisterPacletErrors, InitializePacletLibrary, etc.) as they always throw on failure.";
 
-`Config`$ExceptionTagFunction::usage = "Function to be applied to a Failure returned by a library function to determine the second argument to Throw[].";
+$ExceptionTagFunction::usage = "Function to be applied to a Failure returned by a library function to determine the second argument to Throw[].";
 
 (* ---------------- Loading libraries and library functions ---------------- *)
 
@@ -292,9 +293,6 @@ SetContexts[loggerContext_?StringQ, exceptionContext_?StringQ] := (
 	SetExceptionDetailsContext[exceptionContext];
 );
 
-(* Helper function to extract a symbol from `LLU`Config context *)
-Config[symbol_String] := Symbol[$LLULoadingContext <> "Config`" <> symbol];
-
 (* ::Section:: *)
 (* Developer API *)
 (* ------------------------------------------------------------------------- *)
@@ -416,7 +414,7 @@ Join[
 	Options[SafeLibraryFunctionLoad],
 	{
 		"ProgressMonitor" -> None,
-		"Throws" :> Config["$Throws"]
+		"Throws" :> $Throws
 	}
 ];
 
@@ -641,7 +639,7 @@ Block[{slotNames, slotValues, msgParams, selectedSlotValues, params = {}},
 
 ThrowPacletFailure[type_?StringQ, opts : OptionsPattern[CreatePacletFailure]] :=
 	With[{failure = CreatePacletFailure[type, opts]},
-		Throw @@ {failure, Config["$ExceptionTagFunction"][failure]};
+		Throw @@ {failure, $ExceptionTagFunction[failure]};
 	];
 
 (* ::SubSection:: *)
@@ -693,16 +691,13 @@ End[]; (* `Private` *)
 (* ::SubSection:: *)
 (* Config *)
 (* ------------------------------------------------------------------------- *)
-(* Config` context contains symbols intended to be modified by paclet developers to better fit their needs. *)
-Begin["`Config`"];
+(* Symbols intended to be modified by paclet developers to better fit their needs. *)
 
 $Throws = True;
 
 $ExceptionTagString = "LLUExceptionTag";
 
 $ExceptionTagFunction := $ExceptionTagString&;
-
-End[];
 
 (* ::SubSection:: *)
 (* Logging *)

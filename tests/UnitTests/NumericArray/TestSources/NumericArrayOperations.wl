@@ -3,7 +3,7 @@ lib = CreateLibrary[{"NumericArrayOperations.cpp"}, "NumericArrayOperations", op
 Get[FileNameJoin[{$LLUSharedDir, "LibraryLinkUtilities.wl"}]];
 `LLU`InitializePacletLibrary[lib];
 
-`LLU`Config`$Throws = False;
+`LLU`$Throws = False; (* library functions will not throw unless overriden on a per-function basis *)
 
 emptyVector = `LLU`PacletFunctionLoad["CreateEmptyVector", {}, NumericArray];
 emptyMatrix = `LLU`PacletFunctionLoad["CreateEmptyMatrix", {}, NumericArray];

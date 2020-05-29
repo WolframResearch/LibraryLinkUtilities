@@ -182,7 +182,7 @@ TestMatch[
 ];
 
 TestMatch[
-	Block[{`LLU`Config`$Throws = False},
+	Block[{`LLU`$Throws = False},
 		`LLU`PacletFunctionSet[NumberedSlots, {}, "Void"];
 	];
 	NumberedSlots[]
@@ -212,7 +212,7 @@ TestMatch[
 ];
 
 TestMatch[
-	Block[{`LLU`Config`$ExceptionTagString = "MyException"},
+	Block[{`LLU`$ExceptionTagString = "MyException"},
 		Catch[RepeatedNumberTemplate[], "MyException"]
 	]
 	,
@@ -227,7 +227,7 @@ TestMatch[
 ];
 
 TestExecute[
-	`LLU`Config`$Throws = False;
+	`LLU`$Throws = False;
 ];
 
 TestMatch[
@@ -273,7 +273,7 @@ TestMatch[
 ];
 
 TestExecute[
-	`LLU`Config`$Throws = True;
+	`LLU`$Throws = True;
 ];
 
 (* Unit tests of ErrorManager::throwCustomException *)
@@ -349,7 +349,7 @@ Test[
 ];
 
 TestExecute[
-	`LLU`Config`$ExceptionTagFunction = First;
+	`LLU`$ExceptionTagFunction = First;
 ]
 
 TestMatch[
@@ -381,7 +381,7 @@ TestMatch[
 ];
 
 TestExecute[
-	`LLU`Config`$ExceptionTagFunction := `LLU`Config`$ExceptionTagString&;
+	`LLU`$ExceptionTagFunction := `LLU`$ExceptionTagString&;
 ]
 
 (*********************************************************** Logging tests **************************************************************)
@@ -571,7 +571,7 @@ TestExecute[
 	Get[FileNameJoin[{$LLUSharedDir, "LibraryLinkUtilities.wl"}]];
 	`LLU`InitializePacletLibrary[libLogWarning];
 		
-	`LLU`Config`$Throws = False;
+	`LLU`$Throws = False;
 
 	GreaterAtW = `LLU`PacletFunctionLoad["GreaterAt", {String, {_, 1}, Integer, Integer}, "Boolean"];
 ];

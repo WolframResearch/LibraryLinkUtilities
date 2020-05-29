@@ -1,6 +1,6 @@
 (* Wolfram Language Test file *)
 TestRequirement[$VersionNumber >= 12.0]
-Catch[TestExecute[
+CatchAll @ TestExecute[
 	currentDirectory = DirectoryName[$CurrentFile];
 	Get[FileNameJoin[{ParentDirectory[currentDirectory], "TestConfig.wl"}]];
 	sourceDirectory = FileNameJoin[{currentDirectory, "TestSources"}];
@@ -9,7 +9,7 @@ Catch[TestExecute[
 	na = NumericArray[{1, 2, 3, 4}];
 	
 	Off[General::stop];
-, _];
+];
 
 (****************************NumericArray Operations****************************************)
 
@@ -51,7 +51,7 @@ Test[
 ];
 
 Test[
-	Catch @ testDimensions[{}]
+	testDimensions[{}]
 	,
 	Failure["DimensionsError", <|
 		"MessageTemplate" -> "An error caused by inconsistent dimensions or by exceeding array bounds.",
@@ -146,7 +146,7 @@ Test[
 ]
 
 Test[
-	Catch @ accumulateIntegers[NumericArray[{3.5}]]
+	accumulateIntegers[NumericArray[{3.5}]]
 	,
 	Failure["FunctionError", <|"MessageTemplate" -> "An error occurred in the library function.", "MessageParameters" -> <||>, "ErrorCode" -> 6, "Parameters" -> {}|>]
 	,
@@ -162,7 +162,7 @@ Test[
 ]
 
 TestMatch[
-	Catch @ convertMethodName[9]
+	convertMethodName[9]
 	,
 	_Failure
 	,
@@ -179,7 +179,7 @@ Test[
 ]
 
 TestMatch[
-	Catch @ convert[NumericArray[{3.5}], 1 (* Check *), 0]
+	convert[NumericArray[{3.5}], 1 (* Check *), 0]
 	,
 	Failure["NumericArrayConversionError", <|
 		"MessageTemplate" -> "Failed to convert NumericArray from different type.",
