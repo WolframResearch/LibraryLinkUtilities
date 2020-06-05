@@ -110,11 +110,11 @@ namespace LLU {
 		extern const std::string DLNullRawNode;			 ///< DataStoreNode passed to Node wrapper was null
 		extern const std::string DLInvalidNodeType;		 ///< DataStoreNode passed to Node wrapper carries data of invalid type
 		extern const std::string DLGetNodeDataError;	 ///< DataStoreNode_getData failed
-		extern const std::string DLNullRawDataStore;	 ///< DataStore passed to DataList was null
+		extern const std::string DLSharedDataStore;	 	 ///< Trying to create a Shared DataStore. DataStore can only be passed as Automatic or Manual.
 		extern const std::string DLPushBackTypeError;	 ///< Element to be added to the DataList has incorrect type
 
 		// MArgument errors:
-		extern const std::string ArgumentCreateNull;		  ///< Trying to create Argument object from nullptr
+		extern const std::string ArgumentCreateNull;		  ///< Trying to create PrimitiveWrapper object from nullptr
 		extern const std::string ArgumentAddNodeMArgument;	  ///< Trying to add DataStore Node of type MArgument (aka MType_Undef)
 
 		// ProgressMonitor errors:
@@ -123,6 +123,7 @@ namespace LLU {
 		// ManagedExpression errors:
 		extern const std::string ManagedExprInvalidID;	  ///< Given number is not an ID of any existing managed expression
 		extern const std::string MLEDynamicTypeError;	  ///< Invalid dynamic type requested for a Managed Library Expression
+		extern const std::string MLENullInstance; 		  ///< Missing managed object for a valid ID
 
 		// FileUtilities errors:
 		extern const std::string PathNotValidated;		///< Given file path could not be validated under desired open mode

@@ -18,25 +18,21 @@ TestExecute[
 
 	Get[FileNameJoin[{$LLUSharedDir, "LibraryLinkUtilities.wl"}]];
 
-	RegisterPacletErrors[lib, <|
-		"StaticTopLevelError" -> "This top-level error has a static error message.",
-		"TopLevelNamedSlotsError" -> "Hi `name`! Error occurred `when`.",
-		"TopLevelNumberedSlotsError" -> "Slot number one: `1`, number two: `2`."
-	|>];
+	`LLU`InitializePacletLibrary[lib];
 
 	Off[General::stop]; (* because we want to see all error messages from CreateLibrary *)
 
-	IsOwnerAutomatic = SafeLibraryFunction["IsOwnerAutomatic", {Image}, "Boolean"];
-	IsOwnerManual = SafeLibraryFunction["IsOwnerManual", {{Integer, _, "Manual"}}, "Boolean"];
-	IsOwnerShared = SafeLibraryFunction["IsOwnerShared", {{NumericArray, "Shared"}}, "Boolean"];
+	OwnerAutomatic = `LLU`PacletFunctionLoad["IsOwnerAutomatic", {Image}, "Boolean"];
+	OwnerManual = `LLU`PacletFunctionLoad["IsOwnerManual", {{Integer, _, "Manual"}}, "Boolean"];
+	OwnerShared = `LLU`PacletFunctionLoad["IsOwnerShared", {{NumericArray, "Shared"}}, "Boolean"];
 
-	CloneAutomatic = SafeLibraryFunction["CloneAutomatic", {Image}, Image];
-	CloneManual = SafeLibraryFunction["CloneManual", {{Integer, _, "Manual"}}, {Integer, _}];
-	CloneShared = SafeLibraryFunction["CloneShared", {{NumericArray, "Shared"}}, NumericArray];
+	CloneAutomatic = `LLU`PacletFunctionLoad["CloneAutomatic", {Image}, Image];
+	CloneManual = `LLU`PacletFunctionLoad["CloneManual", {{Integer, _, "Manual"}}, {Integer, _}];
+	CloneShared = `LLU`PacletFunctionLoad["CloneShared", {{NumericArray, "Shared"}}, NumericArray];
 
-	MoveAutomatic = SafeLibraryFunction["MoveAutomatic", {Image}, Image];
-	MoveManual = SafeLibraryFunction["MoveManual", {{Integer, _, "Manual"}}, {Integer, _}];
-	MoveShared = SafeLibraryFunction["MoveShared", {{NumericArray, "Shared"}}, NumericArray];
+	MoveAutomatic = `LLU`PacletFunctionLoad["MoveAutomatic", {Image}, Image];
+	MoveManual = `LLU`PacletFunctionLoad["MoveManual", {{Integer, _, "Manual"}}, {Integer, _}];
+	MoveShared = `LLU`PacletFunctionLoad["MoveShared", {{NumericArray, "Shared"}}, NumericArray];
 
 	img = RandomImage[];
 	tensor = {1, 2, 3, 4, 5};
@@ -61,26 +57,20 @@ Test[
 	TestID -> "GenericContainersTestSuite-20190712-R8A2K9"
 ];
 
-ExactTest[
-	IsOwnerAutomatic[img]
-	,
-	False
+VerificationTest[
+	OwnerAutomatic[img]
 	,
 	TestID -> "GenericContainersTestSuite-20190724-V1C6L5"
 ];
 
-ExactTest[
-	IsOwnerManual[tensor]
-	,
-	True
+VerificationTest[
+	OwnerManual[tensor]
 	,
 	TestID -> "GenericContainersTestSuite-20190724-V7L9Q7"
 ];
 
-ExactTest[
-	IsOwnerShared[na]
-	,
-	True
+VerificationTest[
+	OwnerShared[na]
 	,
 	TestID -> "GenericContainersTestSuite-20190724-D2Q7F2"
 ];
@@ -137,16 +127,18 @@ Test[
 	TestLogSymbol
 	,
 	{
-		"[Debug] GenericContainersTest.cpp:68 (MoveAutomatic): Automatic arg is owner: False",
-		"[Debug] GenericContainersTest.cpp:70 (MoveAutomatic): Automatic arg is owner: False, clone is owner: False",
-		"[Debug] GenericContainersTest.cpp:72 (MoveAutomatic): Automatic arg is owner: False, clone is owner: False",
-		"[Debug] GenericContainersTest.cpp:79 (MoveManual): Manual arg is owner: True",
-		"[Debug] GenericContainersTest.cpp:83 (MoveManual): Manual arg is owner: False, clone is owner: True",
-		"[Debug] GenericContainersTest.cpp:85 (MoveManual): Manual arg is owner: False, clone is owner: False",
-		"[Debug] GenericContainersTest.cpp:92 (MoveShared): Shared arg is owner: True",
-		"[Debug] GenericContainersTest.cpp:94 (MoveShared): Shared arg is owner: False, clone is owner: True",
-		"[Debug] GenericContainersTest.cpp:96 (MoveShared): Shared arg is owner: False, clone is owner: True"
+		"(MoveAutomatic): Automatic arg owner: LibraryLink",
+		"(MoveAutomatic): Automatic arg owner: LibraryLink, clone owner: LibraryLink",
+		"(MoveAutomatic): Automatic arg owner: LibraryLink, clone owner: LibraryLink",
+		"(MoveManual): Manual arg owner: Library",
+		"(MoveManual): Manual arg owner: Library, clone owner: Library",
+		"(MoveManual): Manual arg owner: Library, clone owner: LibraryLink",
+		"(MoveShared): Shared arg owner: Shared",
+		"(MoveShared): Shared arg owner: Shared, clone owner: Shared",
+		"(MoveShared): Shared arg owner: Shared, clone owner: Shared"
 	}
+	,
+	SameTest -> LoggerStringTest
 	,
 	TestID -> "GenericContainersTestSuite-20190906-W5T3O4"
 ];

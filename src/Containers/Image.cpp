@@ -7,11 +7,39 @@
  *
  */
 
+#include "LLU/Containers/Generic/Image.hpp"
 #include "LLU/Containers/Image.h"
 
 #include <cstdint>
 
 namespace LLU {
+
+	MContainer<MArgumentType::Image>::MContainer(mint slices, mint width, mint height, mint channels, imagedata_t type, colorspace_t colorSpace,
+												 mbool interleaving) {
+		Container tmp {};
+		if (slices ? LibraryData::ImageAPI()->MImage_new3D(slices, width, height, channels, type, colorSpace, interleaving, &tmp)
+				   : LibraryData::ImageAPI()->MImage_new2D(width, height, channels, type, colorSpace, interleaving, &tmp)) {
+			ErrorManager::throwException(ErrorName::ImageNewError);
+		}
+		this->reset(tmp);
+	}
+
+	GenericImage GenericImage::convert(imagedata_t t, mbool interleavingQ) const {
+		auto newImage = LibraryData::ImageAPI()->MImage_convertType(this->getContainer(), t, interleavingQ);
+		if (!newImage) {
+			ErrorManager::throwException(ErrorName::ImageNewError, "Conversion to type " + std::to_string(static_cast<int>(t)) + " failed.");
+		}
+		return {newImage, Ownership::Library};
+	}
+
+	auto GenericImage::cloneImpl() const -> Container {
+		Container tmp {};
+		if (LibraryData::ImageAPI()->MImage_clone(this->getContainer(), &tmp)) {
+			ErrorManager::throwException(ErrorName::ImageCloneError);
+		}
+		return tmp;
+	}
+
 	/// @cond
 	//
 	//	Template specializations for Bit images

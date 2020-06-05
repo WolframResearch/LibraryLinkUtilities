@@ -53,9 +53,9 @@ LIBRARY_LINK_FUNCTION(CloneTensor) {
 		MArgumentManager mngr(libData, Argc, Args, Res);
 		mngr.operateOnTensor(0, [&mngr](auto&& t1) {
 			using T = typename std::decay_t<decltype(t1)>::value_type;
-			Tensor<T, LLU::Passing::Manual> t2 {t1};	// test copy constructor
+			Tensor<T> t2 {t1.clone()};
 			Tensor<T> t3;
-			t3 = t2;	// test copy assignment
+			t3 = t2.clone();
 			mngr.setTensor(t3);
 		});
 	} catch (const LibraryLinkError& e) {
@@ -83,13 +83,13 @@ LIBRARY_LINK_FUNCTION(TestDimensions2) {
 	auto err = ErrorCode::NoError;
 	try {
 		MArgumentManager mngr(libData, Argc, Args, Res);
-		DataList<MArgumentType::Tensor> naList;
+		DataList<GenericTensor> naList;
 
 		std::vector<std::vector<mint>> dimsList {{0}, {3}, {3, 0}, {3, 2}, {3, 2, 0}, {3, 2, 4}};
 
 		for (auto& dims : dimsList) {
 			Tensor<double> na(0.0, dims);
-			naList.push_back(na);
+			naList.push_back(std::move(na));
 		}
 
 		mngr.setDataList(naList);
@@ -144,7 +144,6 @@ LIBRARY_LINK_FUNCTION(EchoElement) {
 		mngr.setInteger(na.at(coordsVec));
 	} catch (const LibraryLinkError& e) {
 		err = e.which();
-		std::cout << e.what() << std::endl;
 	} catch (...) {
 		err = ErrorCode::FunctionError;
 	}
@@ -231,7 +230,7 @@ LLU_LIBRARY_FUNCTION(GetLargest) {
 	auto largest = getLargest(tens);
 	mngr.set(static_cast<mint>(std::distance(std::cbegin(tens), largest)));
 
-	// perform some random assignments and copies to see it they compile
+	// perform some random assignments and copies to see if they compile
 	std::swap(tens[0], tens[1]);
 	TensorView iv = std::move(tens[2]);
 	tens[2] = iv;

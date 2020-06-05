@@ -13,6 +13,7 @@
 #include <cstdint>
 #include <type_traits>
 #include <utility>
+#include <variant>
 
 #include "LLU/LibraryData.h"
 
@@ -92,6 +93,25 @@ namespace LLU {
 	template<typename Container, typename T>
 	constexpr bool is_iterable_container_with_matching_type_v =
 		conjunction<std::is_class<Container>, has_value_type<Container>, is_iterable<Container>, has_matching_type<Container, T>>::value;
+
+	/**
+	 * @brief   Get index of given type in the variant
+	 * @tparam  VariantType - any variant type
+	 * @tparam  T - any type, if T is repeated in the variant, index of the first occurrence will be returned
+	 * @tparam  index - implementation detail, do not specify explicitly
+	 * @return  index of given type in the variant or out-of-bound value if the type is not a variant member
+	 * @see     https://stackoverflow.com/questions/52303316/get-index-by-type-in-stdvariant
+	 */
+	template<typename VariantType, typename T, std::size_t index = 0>
+	constexpr std::size_t variant_index() {
+		if constexpr (index >= std::variant_size_v<VariantType>) {
+			return index;
+		} else if (std::is_same_v<std::variant_alternative_t<index, VariantType>, T>) {
+			return index;
+		} else {
+			return variant_index<VariantType, T, index + 1>();
+		}
+	}
 
 	/**
 	 * @brief 	Dummy function called on otherwise unused parameters to eliminate compiler warnings.
@@ -216,6 +236,10 @@ namespace LLU {
 				case MNumericArray_Type_Real64: return NumericArrayFromEnum<MNumericArray_Type_Real64>::typeName;
 				case MNumericArray_Type_Complex_Real32: return NumericArrayFromEnum<MNumericArray_Type_Complex_Real32>::typeName;
 				case MNumericArray_Type_Complex_Real64: return NumericArrayFromEnum<MNumericArray_Type_Complex_Real64>::typeName;
+				default:
+					// In V12.2 MNumericArray_Type_Real16 and MNumericArray_Type_Complex_Real16 have been introduced but they are not supported in the Kernel.
+					// We add a default case to avoid compiler warnings.
+					return "Undefined";
 			}
 			return "Undefined";
 		}

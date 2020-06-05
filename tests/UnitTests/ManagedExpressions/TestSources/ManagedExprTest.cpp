@@ -39,14 +39,20 @@ private:
 
 DEFINE_MANAGED_STORE_AND_SPECIALIZATION(MyExpression)
 
+// Forward declare an abstract class and define its Store. The class is defined below.
+struct Serializable;
+LLU::ManagedExpressionStore<Serializable> SerializableStore;
+
 EXTERN_C DLLEXPORT int WolframLibrary_initialize(WolframLibraryData libData) {
 	LLU::LibraryData::setLibraryData(libData);
 	MyExpressionStore.registerType("MyExpression");
+	SerializableStore.registerType("Serializable");
 	return 0;
 }
 
 EXTERN_C DLLEXPORT void WolframLibrary_uninitialize(WolframLibraryData libData) {
 	MyExpressionStore.unregisterType(libData);
+	SerializableStore.unregisterType(libData);
 }
 
 LLU_LIBRARY_FUNCTION(GetManagedExpressionCount) {
@@ -54,9 +60,9 @@ LLU_LIBRARY_FUNCTION(GetManagedExpressionCount) {
 }
 
 LLU_LIBRARY_FUNCTION(GetManagedExpressionTexts) {
-	LLU::DataList<LLU::MArgumentType::UTF8String> texts;
+	LLU::DataList<std::string_view> texts;
 	for (const auto& expr : MyExpressionStore) {
-		texts.push_back(std::to_string(expr.first), const_cast<char*>(expr.second->getText().c_str()));
+		texts.push_back(std::to_string(expr.first), expr.second->getText());
 	}
 	mngr.set(texts);
 }
@@ -235,4 +241,54 @@ LIBRARY_LINK_FUNCTION(GetCounter) {
 		err = e.which();
 	}
 	return err;
+}
+
+// Define a hierarchy of classes with an "abstract" base class which would be the Managed one
+struct Serializable {
+	Serializable() = default;
+	Serializable(const Serializable&) = default;
+	Serializable(Serializable&&) = default;
+	Serializable& operator=(const Serializable&) = default;
+	Serializable& operator=(Serializable&&) noexcept = default;
+	virtual ~Serializable() = default;
+
+	virtual std::string to_string() = 0;
+};
+
+struct A : Serializable {
+	std::string to_string() override { return "Hello! I'm A."; }
+};
+
+struct B : Serializable {
+	explicit B(mint m) : m {m} {}
+	std::string to_string() override { return "Hello! I'm B. I hold " + std::to_string(m) + "."; }
+private:
+	mint m;
+};
+
+template<>
+inline void LLU::manageInstanceCallback<Serializable>(WolframLibraryData, mbool mode, mint id) {
+	SerializableStore.manageInstance(mode, id);
+}
+
+// A factory function that returns either A or B object (depending on the argument) via a pointer to abstract base class
+std::unique_ptr<Serializable> getSerializable(std::string_view s) {
+	if (s.find_first_of("aA") != std::string_view::npos) {
+		return std::make_unique<A>();
+	}
+	auto pos = s.find_last_of("bB");
+	if (pos == std::string_view::npos) {
+		LLU::ErrorManager::throwException(LLU::ErrorName::FunctionError);
+	}
+	return std::make_unique<B>(pos);
+}
+
+LLU_LIBRARY_FUNCTION(CreateSerializableExpression) {
+	auto [id, text] = mngr.getTuple<mint, std::string>();
+	SerializableStore.createInstance(id, getSerializable(text));
+}
+
+LLU_LIBRARY_FUNCTION(Serialize) {
+	auto& myExpr = mngr.getManagedExpression(0, SerializableStore);
+	mngr.set(myExpr.to_string());
 }

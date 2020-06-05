@@ -8,7 +8,7 @@ LLU_LIBRARY_FUNCTION(EchoImage1) {
 	mngr.operateOnImage(0, [&mngr](auto im1) {
 		using T = typename std::remove_reference_t<decltype(im1)>::value_type;
 		auto im2 {std::move(im1)};	  // test move constructor
-		LLU::Image<T, LLU::Passing::Manual> im3;
+		LLU::Image<T> im3;
 		im3 = std::move(im2);	 // test move assignment
 		mngr.setImage(im3);
 	});
@@ -48,7 +48,7 @@ LLU_LIBRARY_FUNCTION(EchoImage3) {
 
 LLU_LIBRARY_FUNCTION(ConvertImageToByte) {
 	mngr.operateOnImage(0, [&mngr](auto&& in) {
-		LLU::Image<std::uint8_t> out(in);
+		auto out {in.template convert<std::uint8_t>()};
 		mngr.setImage(out);
 	});
 }
@@ -57,7 +57,7 @@ LLU_LIBRARY_FUNCTION(UnifyImageTypes) {
 	mngr.operateOnImage(0, [&mngr](auto&& in) {
 		using T = typename std::remove_reference_t<decltype(in)>::value_type;
 		mngr.operateOnImage(1, [&mngr](auto&& in2) {
-			LLU::Image<T> out(in2);
+			LLU::Image<T> out {in2.template convert<T>()};
 			mngr.setImage(out);
 		});
 	});
@@ -66,14 +66,14 @@ LLU_LIBRARY_FUNCTION(UnifyImageTypes) {
 LLU_LIBRARY_FUNCTION(CloneImage) {
 	mngr.operateOnImage(0, [&mngr](auto&& im1) {
 		using T = typename std::remove_reference_t<decltype(im1)>::value_type;
-		LLU::Image<T, LLU::Passing::Manual> im2 {im1};	  // test copy constructor
+		LLU::Image<T> im2 {im1.clone()};
 		LLU::Image<T> im3;
-		im3 = im2;	  // test copy assignment
+		im3 = im2.clone();
 		mngr.setImage(im3);
 	});
 }
 
 LLU_LIBRARY_FUNCTION(EmptyWrapper) {
 	LLU::Unused(mngr);
-	LLU::Image<std::uint8_t> im {nullptr};	  // this should trigger an exception
+	LLU::Image<std::uint8_t> im {nullptr, LLU::Ownership::Library};	  // this should trigger an exception
 }

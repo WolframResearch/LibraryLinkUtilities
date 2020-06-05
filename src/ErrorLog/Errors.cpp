@@ -79,7 +79,7 @@ namespace LLU {
 		LLU_DEFINE_ERROR_NAME(DLNullRawNode);
 		LLU_DEFINE_ERROR_NAME(DLInvalidNodeType);
 		LLU_DEFINE_ERROR_NAME(DLGetNodeDataError);
-		LLU_DEFINE_ERROR_NAME(DLNullRawDataStore);
+		LLU_DEFINE_ERROR_NAME(DLSharedDataStore);
 		LLU_DEFINE_ERROR_NAME(DLPushBackTypeError);
 
 		LLU_DEFINE_ERROR_NAME(ArgumentCreateNull);
@@ -89,6 +89,7 @@ namespace LLU {
 
 		LLU_DEFINE_ERROR_NAME(ManagedExprInvalidID);
 		LLU_DEFINE_ERROR_NAME(MLEDynamicTypeError);
+		LLU_DEFINE_ERROR_NAME(MLENullInstance);
 
 		LLU_DEFINE_ERROR_NAME(PathNotValidated);
 		LLU_DEFINE_ERROR_NAME(InvalidOpenMode);

@@ -75,20 +75,20 @@ LLU_LIBRARY_FUNCTION(OpenInvalidMode) {
 
 LLU_LIBRARY_FUNCTION(WriteStrings) {
 	auto filePath = mngr.getString(0);
-	auto wordList = mngr.getDataList<LLU::MArgumentType::UTF8String>(1);
+	auto wordList = mngr.getDataList<std::string_view>(1);
 	auto f = LLU::openFileStream(filePath, std::ios::out|std::ios::trunc);
 	for (auto&& word : wordList) {
-		f << word.getValue() << "\n";
+		f << word.value() << "\n";
 	}
 }
 
 LLU_LIBRARY_FUNCTION(ReadStrings) {
 	auto filePath = mngr.getString(0);
 	auto f = LLU::openFileStream(filePath, std::ios::in);
-	LLU::DataList<LLU::MArgumentType::UTF8String> wordList;
+	LLU::DataList<std::string_view> wordList;
 	std::string word;
 	while (f >> word) {
-		wordList.push_back(const_cast<char*>(word.c_str()));
+		wordList.push_back(word);
 	}
 	mngr.set(wordList);
 }

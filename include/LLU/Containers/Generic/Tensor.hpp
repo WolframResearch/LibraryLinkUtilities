@@ -11,22 +11,20 @@
 
 namespace LLU {
 
-	template<class PassingMode>
-	class MContainer<MArgumentType::Tensor, PassingMode>;
+	template<>
+	class MContainer<MArgumentType::Tensor>;
 
 	/// MContainer specialization for MTensor is called GenericTensor
-	template<class PassingMode>
-	using GenericTensor = MContainer<MArgumentType::Tensor, PassingMode>;
+	using GenericTensor = MContainer<MArgumentType::Tensor>;
 	
 	/**
 	 *  @brief  MContainer specialization for MTensor
-	 *  @tparam PassingMode - passing policy
 	 */
-	template<class PassingMode>
-	class MContainer<MArgumentType::Tensor, PassingMode> : public TensorInterface, public MContainerBase<MArgumentType::Tensor, PassingMode> {
+	template<>
+	class MContainer<MArgumentType::Tensor> : public TensorInterface, public MContainerBase<MArgumentType::Tensor> {
 	public:
 		/// Inherit constructors from MContainerBase
-		using MContainerBase<MArgumentType::Tensor, PassingMode>::MContainerBase;
+		using MContainerBase<MArgumentType::Tensor>::MContainerBase;
 
 		/// Default constructor, the MContainer does not manage any instance of MTensor.
 		MContainer() = default;
@@ -38,46 +36,16 @@ namespace LLU {
 		 * @param   dims - new GenericTensor dimensions
 		 * @see     <http://reference.wolfram.com/language/LibraryLink/ref/callback/MTensor_new.html>
 		 */
-		MContainer(mint type, mint rank, const mint* dims) {
-			RawContainer tmp {};
-			if (LibraryData::API()->MTensor_new(type, rank, dims, &tmp)) {
-				ErrorManager::throwException(ErrorName::TensorNewError);
-			}
-			this->setContainer(tmp);
-		}
+		MContainer(mint type, mint rank, const mint* dims);
 
 		/**
-		 * @brief   Create GenericTensor from another GenericTensor with different passing mode.
-		 * @tparam  P - some passing mode
-		 * @param   mc - different GenericTensor
+		 * @brief   Clone this MContainer, performs a deep copy of the underlying MTensor.
+		 * @note    The cloned MContainer always belongs to the library (Ownership::Library) because LibraryLink has no idea of its existence.
+		 * @return  new MContainer, by value
 		 */
-		template<class P>
-		explicit MContainer(const MContainer<MArgumentType::Tensor, P>& mc) : Base(mc) {}
-
-		MContainer(const MContainer& mc) = default;
-
-		MContainer(MContainer&& mc) noexcept = default;
-
-		MContainer& operator=(const MContainer&) = default;
-
-		MContainer& operator=(MContainer&& mc) noexcept = default;
-
-		/**
-		 * @brief   Assign a GenericTensor with different passing mode.
-		 * @tparam  P - some passing mode
-		 * @param   mc - different GenericTensor
-		 * @return  this
-		 */
-		template<class P>
-		MContainer& operator=(const MContainer<MArgumentType::Tensor, P>& mc) {
-			Base::operator=(mc);
-			return *this;
+		MContainer clone() const {
+			return MContainer {cloneContainer(), Ownership::Library};
 		}
-
-		/// Destructor which triggers the appropriate cleanup action which depends on the PassingMode
-		~MContainer() {
-			this->cleanup();
-		};
 
 		/// @copydoc TensorInterface::getRank()
 		mint getRank() const override {
@@ -100,17 +68,9 @@ namespace LLU {
 		}
 
 		/// @copydoc TensorInterface::rawData()
-		void* rawData() const override {
-			switch (type()) {
-				case MType_Integer: return LibraryData::API()->MTensor_getIntegerData(this->getContainer());
-				case MType_Real: return LibraryData::API()->MTensor_getRealData(this->getContainer());
-				case MType_Complex: return LibraryData::API()->MTensor_getComplexData(this->getContainer());
-				default: ErrorManager::throwException(ErrorName::TensorTypeError);
-			}
-		}
+		void* rawData() const override;
+
 	private:
-		using Base = MContainerBase<MArgumentType::Tensor, PassingMode>;
-		using RawContainer = typename Base::Container;
 
 		/**
 		 * @copydoc MContainerBase::shareCount()
@@ -120,40 +80,16 @@ namespace LLU {
 			return LibraryData::API()->MTensor_shareCount(this->getContainer());
 		}
 
-		/**
-		 *   @copydoc   MContainerBase::disown()
-		 *   @see 		<http://reference.wolfram.com/language/LibraryLink/ref/callback/MTensor_disown.html>
-		 **/
-		void disownImpl() const noexcept override {
-			LibraryData::API()->MTensor_disown(this->getContainer());
-		}
-
-		/**
-		 *   @copydoc   MContainerBase::free()
-		 *   @see 		<http://reference.wolfram.com/language/LibraryLink/ref/callback/MTensor_free.html>
-		 **/
-		void freeImpl() const noexcept override {
-			LibraryData::API()->MTensor_free(this->getContainer());
-		}
-
-		/**
-		 *   @copydoc   MContainerBase::pass
-		 **/
+		/// @copydoc   MContainerBase::pass(MArgument&)
 		void passImpl(MArgument& res) const noexcept override {
 			MArgument_setMTensor(res, this->getContainer());
 		}
 
 		/**
-		 *   @copydoc   MContainerBase::clone()
+		 *   @copydoc   Make a deep copy of the raw container
 		 *   @see 		<http://reference.wolfram.com/language/LibraryLink/ref/callback/MTensor_clone.html>
 		 **/
-		RawContainer cloneImpl() const override {
-			RawContainer tmp {};
-			if (LibraryData::API()->MTensor_clone(this->getContainer(), &tmp)) {
-				ErrorManager::throwException(ErrorName::TensorCloneError);
-			}
-			return tmp;
-		}
+		Container cloneImpl() const override;
 	};
 
 }

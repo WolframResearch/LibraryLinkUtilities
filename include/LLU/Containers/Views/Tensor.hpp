@@ -21,8 +21,7 @@ namespace LLU {
 	public:
 		TensorView() = default;
 
-		template<class Passing>
-		/* implicit */ TensorView(const GenericTensor<Passing>& gTen) : t {gTen.getContainer()} {}
+		/* implicit */ TensorView(const GenericTensor& gTen) : t {gTen.getContainer()} {}
 
 		/* implicit */ TensorView(MTensor mt) : t {mt} {}
 
@@ -65,8 +64,7 @@ namespace LLU {
 	public:
 		TensorTypedView() = default;
 
-		template<class Passing>
-		/* implicit */ TensorTypedView(const GenericTensor<Passing>& gTen) : TensorView(gTen) {
+		/* implicit */ TensorTypedView(const GenericTensor& gTen) : TensorView(gTen) {
 			if (TensorType<T> != type()) {
 				ErrorManager::throwException(ErrorName::TensorTypeError);
 			}

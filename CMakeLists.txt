@@ -87,7 +87,10 @@ if(NOT TARGET LLU)
         ${LLU_SOURCE_DIR}/ErrorLog/ErrorManager.cpp
 		${LLU_SOURCE_DIR}/ErrorLog/Errors.cpp
 		${LLU_SOURCE_DIR}/ErrorLog/Logger.cpp
-		${LLU_SOURCE_DIR}/FileUtilities.cpp)
+		${LLU_SOURCE_DIR}/FileUtilities.cpp
+		${LLU_SOURCE_DIR}/TypedMArgument.cpp
+		${LLU_SOURCE_DIR}/Containers/DataStore.cpp
+		${LLU_SOURCE_DIR}/Containers/NumericArray.cpp)
 
 	#add the main library
 	add_library(LLU ${LLU_SOURCE_FILES})
@@ -127,7 +130,7 @@ if(NOT TARGET LLU)
 
 	# tell all targets importing LLU that public part of LLU uses C++17 features
 	target_compile_features(LLU
-		PUBLIC
+		INTERFACE
 			cxx_std_17
 	)
 

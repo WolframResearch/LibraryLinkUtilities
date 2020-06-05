@@ -1,15 +1,15 @@
 #include <memory>
 
-#include "LLU/Containers/Passing/Shared.hpp"
 #include "LLU/Containers/Tensor.h"
 #include "LLU/LibraryLinkFunctionMacro.h"
 #include "LLU/MArgumentManager.h"
 
 using namespace LLU;
 
-using SharedTensorPtr = std::unique_ptr<Tensor<double, Passing::Shared>>;
+namespace {
+	std::unique_ptr<Tensor<double>> tensor {};
+}
 
-static SharedTensorPtr tensor {};
 
 EXTERN_C DLLEXPORT mint WolframLibrary_getVersion() {
 	return WolframLibraryVersion;
@@ -25,7 +25,7 @@ EXTERN_C DLLEXPORT int loadRealArray(WolframLibraryData libData, mint Argc, MArg
 	try {
 		MArgumentManager mngr(Argc, Args, Res);
 		auto genericTensor = mngr.getGenericTensor<Passing::Shared>(0);
-		tensor = std::make_unique<Tensor<double, Passing::Shared>>(std::move(genericTensor));
+		tensor = std::make_unique<Tensor<double>>(std::move(genericTensor));
 	} catch (const LibraryLinkError& e) {
 		err = e.which();
 	} catch (...) {
@@ -113,7 +113,7 @@ LIBRARY_LINK_FUNCTION(copyShared) {
 		MArgumentManager mngr(Argc, Args, Res);
 		auto sharedTensor = mngr.getTensor<double, Passing::Shared>(0);
 		auto sc = sharedTensor.shareCount();
-		Tensor<double> copy {sharedTensor};	   // create deep copy of the shared Tensor. The new Tensor is not Shared
+		Tensor<double> copy {sharedTensor.clone()};	   // create deep copy of the shared Tensor. The new Tensor is not Shared
 		mngr.setInteger(100 * sc + 10 * sharedTensor.shareCount() + copy.shareCount());
 	} catch (const LibraryLinkError& e) {
 		err = e.which();

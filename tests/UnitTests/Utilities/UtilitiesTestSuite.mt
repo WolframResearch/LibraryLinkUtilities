@@ -22,25 +22,26 @@ TestExecute[
 	];
 
 	Get[FileNameJoin[{$LLUSharedDir, "LibraryLinkUtilities.wl"}]];
-
-	`LLU`RegisterPacletErrors[lib, <||>];
+	`LLU`InitializePacletLibrary[lib];
 
 	`LLU`Logger`PrintLogFunctionSelector := Block[{`LLU`Logger`FormattedLog = `LLU`Logger`LogToShortString},
 		`LLU`Logger`PrintLogToSymbol[LogSymbol][##]
 	]&;
 
+	`LLU`PacletFunctionSet @@@ {
+		(* Load a number of library functions. We do not provide library path, so the one passed to InitializePacletLibrary will be used. *)
+		{$OpenRead, "OpenForReading", {String}, Integer},
+		{$OpenWrite, "OpenForWriting", {String}, Integer},
+		{$OpenInvalidMode, "OpenInvalidMode", {String}, Integer},
 
-	$OpenRead = `LLU`SafeLibraryFunction["OpenForReading", {String}, Integer];
-	$OpenWrite = `LLU`SafeLibraryFunction["OpenForWriting", {String}, Integer];
-	$OpenInvalidMode = `LLU`SafeLibraryFunction["OpenInvalidMode", {String}, Integer];
+		(* If the function name is the same as symbol name only without the leading "$", the function name can be omitted. *)
+		{$ReadStrings, {String}, "DataStore"},
+		{$WriteStrings, {String, "DataStore"}, "Void"},
+		{$OpenManagedFile, {`LLU`Managed[MyFile], String, Integer}, "Void", "Throws" -> True},
+		{$OpenManagedFileStream, {`LLU`Managed[FileStream], String, Integer}, "Void", "Throws" -> True}
+	};
 
-	$ReadStrings = `LLU`SafeLibraryFunction["ReadStrings", {String}, "DataStore"];
-	$WriteStrings = `LLU`SafeLibraryFunction["WriteStrings", {String, "DataStore"}, "Void"];
-
-	$OpenManagedFile = `LLU`SafeLibraryFunction["OpenManagedFile", {`LLU`Managed[MyFile], String, Integer}, "Void", "Throws" -> True];
 	`LLU`Constructor[MyFile] = $OpenManagedFile;
-
-	$OpenManagedFileStream = `LLU`SafeLibraryFunction["OpenManagedFileStream", {`LLU`Managed[FileStream], String, Integer}, "Void", "Throws" -> True];
 	`LLU`Constructor[FileStream] = $OpenManagedFileStream;
 
 	f = FileNameJoin[{$TemporaryDirectory, "some_file_that-hopefully-does_not_exist"}];
@@ -52,13 +53,16 @@ TestExecute[
 	FailureOnWindowsManagedExprOtherwiseQ[expr_] := If[$OperatingSystem == "Windows", FailureQ, ManagedLibraryExpressionQ][expr];
 
 	(* UTF conversion utilities *)
-	$WideStringUTF8UTF16Conversion = `LLU`SafeLibraryFunction["WideStringUTF8UTF16Conversion", {}, "Boolean"];
-	$Char16UTF8UTF16Conversion = `LLU`SafeLibraryFunction["Char16UTF8UTF16Conversion", {}, "Boolean"];
-	$StringToUTF16Bytes = `LLU`SafeLibraryFunction["UTF8ToUTF16Bytes", {String}, NumericArray];
-	$UTF16BytesToString = `LLU`SafeLibraryFunction["UTF16BytesToUTF8", {NumericArray}, String];
-	$Char32UTF8UTF32Conversion = `LLU`SafeLibraryFunction["Char32UTF8UTF32Conversion", {}, "Boolean"];
-	$StringToUTF32Bytes = `LLU`SafeLibraryFunction["UTF8ToUTF32Bytes", {String}, NumericArray];
-	$UTF32BytesToString = `LLU`SafeLibraryFunction["UTF32BytesToUTF8", {NumericArray}, String];
+	`LLU`PacletFunctionSet @@@ {
+		(* Load encoding-related library functions explicitly providing a path to the library. *)
+		{$WideStringUTF8UTF16Conversion, lib, "WideStringUTF8UTF16Conversion", {}, "Boolean"},
+		{$Char16UTF8UTF16Conversion, lib, "Char16UTF8UTF16Conversion", {}, "Boolean"},
+		{$StringToUTF16Bytes, lib, "UTF8ToUTF16Bytes", {String}, NumericArray},
+		{$UTF16BytesToString, lib, "UTF16BytesToUTF8", {NumericArray}, String},
+		{$Char32UTF8UTF32Conversion, lib, "Char32UTF8UTF32Conversion", {}, "Boolean"},
+		{$StringToUTF32Bytes, lib, "UTF8ToUTF32Bytes", {String}, NumericArray},
+		{$UTF32BytesToString, lib, "UTF32BytesToUTF8", {NumericArray}, String}
+	};
 ];
 
 TestExecute[
