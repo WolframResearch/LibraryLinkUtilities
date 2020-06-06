@@ -13,71 +13,69 @@
 
 #include "LLU/Utilities.hpp"
 
-namespace LLU {
+namespace LLU::WS {
 
-	namespace WS {
+	template<typename T>
+	struct ReleaseList {
+		using Func = std::function<void(WSLINK, T*, int)>;
 
-		template<typename T>
-		struct ReleaseList {
-			using Func = std::function<void(WSLINK, T*, int)>;
+		ReleaseList() = default;
+		ReleaseList(WSLINK m, int l) : m(m), length(l) {}
 
-			ReleaseList() = default;
-			ReleaseList(WSLINK m, int l) : m(m), length(l) {}
+		void operator()(T* data) {
+			Release(m, data, length);
+		}
 
-			void operator()(T* data) {
-				Release(m, data, length);
-			}
+		int getLength() const {
+			return length;
+		}
 
-			int getLength() const {
-				return length;
-			}
+	private:
+		static Func Release;
 
-		private:
-			static Func Release;
+		WSLINK m = nullptr;
+		int length = 0;
+	};
 
-			WSLINK m = nullptr;
-			int length = 0;
-		};
+	template<typename T>
+	struct ReleaseArray {
+		using Func = std::function<void(WSLINK, T*, int*, char**, int)>;
 
-		template<typename T>
-		struct ReleaseArray {
-			using Func = std::function<void(WSLINK, T*, int*, char**, int)>;
+		ReleaseArray() = default;
+		ReleaseArray(WSLINK m, int* d, char** h, int r) : m(m), dims(d), heads(h), rank(r) {}
 
-			ReleaseArray() = default;
-			ReleaseArray(WSLINK m, int* d, char** h, int r) : m(m), dims(d), heads(h), rank(r) {}
+		void operator()(T* data) {
+			Release(m, data, dims, heads, rank);
+		}
 
-			void operator()(T* data) {
-				Release(m, data, dims, heads, rank);
-			}
+		int* getDims() const {
+			return dims;
+		}
 
-			int* getDims() const {
-				return dims;
-			}
+		char** getHeads() const {
+			return heads;
+		}
 
-			char** getHeads() const {
-				return heads;
-			}
+		int getRank() const {
+			return rank;
+		}
 
-			int getRank() const {
-				return rank;
-			}
+	private:
+		static Func Release;
 
-		private:
-			static Func Release;
+		WSLINK m = nullptr;
+		int* dims = nullptr;
+		char** heads = nullptr;
+		int rank = 0;
+	};
 
-			WSLINK m = nullptr;
-			int* dims = nullptr;
-			char** heads = nullptr;
-			int rank = 0;
-		};
+	template<typename T>
+	typename ReleaseArray<T>::Func ReleaseArray<T>::Release =
+		[](WSLINK, T*, int*, char**, int) { static_assert(dependent_false_v<T>, "Trying to use WS::ReleaseArray<T>::Release for unsupported type T"); };
 
-		template<typename T>
-		typename ReleaseArray<T>::Func ReleaseArray<T>::Release =
-			[](WSLINK, T*, int*, char**, int) { static_assert(dependent_false_v<T>, "Trying to use WS::ReleaseArray<T>::Release for unsupported type T"); };
-
-		template<typename T>
-		typename ReleaseList<T>::Func ReleaseList<T>::Release =
-			[](WSLINK, T*, int) { static_assert(dependent_false_v<T>, "Trying to use WS::ReleaseList<T>::Release for unsupported type T"); };
+	template<typename T>
+	typename ReleaseList<T>::Func ReleaseList<T>::Release =
+		[](WSLINK, T*, int) { static_assert(dependent_false_v<T>, "Trying to use WS::ReleaseList<T>::Release for unsupported type T"); };
 
 #ifndef _WIN32
 
@@ -87,52 +85,51 @@ namespace LLU {
 	template<>                                                  \
 	ReleaseList<T>::Func ReleaseList<T>::Release;
 
-		WS_RELEASE_DECLARE_SPECIALIZATIONS_OF_STATIC_MEMBERS(unsigned char)
-		WS_RELEASE_DECLARE_SPECIALIZATIONS_OF_STATIC_MEMBERS(short)
-		WS_RELEASE_DECLARE_SPECIALIZATIONS_OF_STATIC_MEMBERS(int)
-		WS_RELEASE_DECLARE_SPECIALIZATIONS_OF_STATIC_MEMBERS(wsint64)
-		WS_RELEASE_DECLARE_SPECIALIZATIONS_OF_STATIC_MEMBERS(float)
-		WS_RELEASE_DECLARE_SPECIALIZATIONS_OF_STATIC_MEMBERS(double)
+	WS_RELEASE_DECLARE_SPECIALIZATIONS_OF_STATIC_MEMBERS(unsigned char)
+	WS_RELEASE_DECLARE_SPECIALIZATIONS_OF_STATIC_MEMBERS(short)
+	WS_RELEASE_DECLARE_SPECIALIZATIONS_OF_STATIC_MEMBERS(int)
+	WS_RELEASE_DECLARE_SPECIALIZATIONS_OF_STATIC_MEMBERS(wsint64)
+	WS_RELEASE_DECLARE_SPECIALIZATIONS_OF_STATIC_MEMBERS(float)
+	WS_RELEASE_DECLARE_SPECIALIZATIONS_OF_STATIC_MEMBERS(double)
 #else
 
-		template<>
-		ReleaseArray<unsigned char>::Func ReleaseArray<unsigned char>::Release = WSReleaseInteger8Array;
+	template<>
+	ReleaseArray<unsigned char>::Func ReleaseArray<unsigned char>::Release = WSReleaseInteger8Array;
 
-		template<>
-		ReleaseList<unsigned char>::Func ReleaseList<unsigned char>::Release = WSReleaseInteger8List;
+	template<>
+	ReleaseList<unsigned char>::Func ReleaseList<unsigned char>::Release = WSReleaseInteger8List;
 
-		template<>
-		ReleaseArray<short>::Func ReleaseArray<short>::Release = WSReleaseInteger16Array;
+	template<>
+	ReleaseArray<short>::Func ReleaseArray<short>::Release = WSReleaseInteger16Array;
 
-		template<>
-		ReleaseList<short>::Func ReleaseList<short>::Release = WSReleaseInteger16List;
+	template<>
+	ReleaseList<short>::Func ReleaseList<short>::Release = WSReleaseInteger16List;
 
-		template<>
-		ReleaseArray<int>::Func ReleaseArray<int>::Release = WSReleaseInteger32Array;
+	template<>
+	ReleaseArray<int>::Func ReleaseArray<int>::Release = WSReleaseInteger32Array;
 
-		template<>
-		ReleaseList<int>::Func ReleaseList<int>::Release = WSReleaseInteger32List;
+	template<>
+	ReleaseList<int>::Func ReleaseList<int>::Release = WSReleaseInteger32List;
 
-		template<>
-		ReleaseArray<wsint64>::Func ReleaseArray<wsint64>::Release = WSReleaseInteger64Array;
+	template<>
+	ReleaseArray<wsint64>::Func ReleaseArray<wsint64>::Release = WSReleaseInteger64Array;
 
-		template<>
-		ReleaseList<wsint64>::Func ReleaseList<wsint64>::Release = WSReleaseInteger64List;
+	template<>
+	ReleaseList<wsint64>::Func ReleaseList<wsint64>::Release = WSReleaseInteger64List;
 
-		template<>
-		ReleaseArray<float>::Func ReleaseArray<float>::Release = WSReleaseReal32Array;
+	template<>
+	ReleaseArray<float>::Func ReleaseArray<float>::Release = WSReleaseReal32Array;
 
-		template<>
-		ReleaseList<float>::Func ReleaseList<float>::Release = WSReleaseReal32List;
+	template<>
+	ReleaseList<float>::Func ReleaseList<float>::Release = WSReleaseReal32List;
 
-		template<>
-		ReleaseArray<double>::Func ReleaseArray<double>::Release = WSReleaseReal64Array;
+	template<>
+	ReleaseArray<double>::Func ReleaseArray<double>::Release = WSReleaseReal64Array;
 
-		template<>
-		ReleaseList<double>::Func ReleaseList<double>::Release = WSReleaseReal64List;
+	template<>
+	ReleaseList<double>::Func ReleaseList<double>::Release = WSReleaseReal64List;
 #endif
-	} /* namespace WS */
 
-} /* namespace LLU */
+} /* namespace LLU::WS */
 
 #endif /* LLU_WSTP_WSRELEASE_H_ */

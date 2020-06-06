@@ -13,64 +13,55 @@
 
 #include "LLU/Utilities.hpp"
 
-namespace LLU {
+namespace LLU::WS {
 
-	namespace WS {
+	/**
+	 * @struct 	IsSupportedInWSArithmetic
+	 * @tparam	T - any type
+	 * @brief	Utility trait class that determines whether type T is a suitable data type for functions like WSPut*Array, WSGet*List, WSPutScalar, etc.
+	 */
+	template<typename T>
+	inline constexpr bool IsSupportedInWSArithmetic = false;
 
-		/**
-		 * @struct 	IsSupportedInWSArithmetic
-		 * @tparam	T - any type
-		 * @brief	Utility trait class that determines whether type T is a suitable data type for functions like WSPut*Array, WSGet*List, WSPutScalar, etc.
-		 */
-		template<typename T>
-		struct IsSupportedInWSArithmetic : std::false_type {};
+	/// @cond
+	template<>
+	inline constexpr bool IsSupportedInWSArithmetic<unsigned char> = true;
+	template<>
+	inline constexpr bool IsSupportedInWSArithmetic<short> = true;
+	template<>
+	inline constexpr bool IsSupportedInWSArithmetic<int> = true;
+	template<>
+	inline constexpr bool IsSupportedInWSArithmetic<wsint64> = true;
+	template<>
+	inline constexpr bool IsSupportedInWSArithmetic<float> = true;
+	template<>
+	inline constexpr bool IsSupportedInWSArithmetic<double> = true;
+	/// @endcond
 
-		/// @cond
-		template<>
-		struct IsSupportedInWSArithmetic<unsigned char> : std::true_type {};
-		template<>
-		struct IsSupportedInWSArithmetic<short> : std::true_type {};
-		template<>
-		struct IsSupportedInWSArithmetic<int> : std::true_type {};
-		template<>
-		struct IsSupportedInWSArithmetic<wsint64> : std::true_type {};
-		template<>
-		struct IsSupportedInWSArithmetic<float> : std::true_type {};
-		template<>
-		struct IsSupportedInWSArithmetic<double> : std::true_type {};
-		/// @endcond
+	template<typename T>
+	constexpr bool ScalarSupportedTypeQ = IsSupportedInWSArithmetic<remove_cv_ref<T>>;
 
-		template<typename T, typename U>
-		using ScalarSupportedTypeQ = std::enable_if_t<IsSupportedInWSArithmetic<remove_cv_ref<T>>::value, U>;
+	/**
+	 * @struct 	IsSupportedInWSString
+	 * @tparam	T - any type
+	 * @brief	Utility trait class that determines whether type T is a suitable character type for WSPut*String and WSGet*String
+	 */
+	template<typename T>
+	struct IsSupportedInWSString : std::false_type {};
 
-		template<typename T, typename U>
-		using NotScalarSupportedTypeQ = std::enable_if_t<!IsSupportedInWSArithmetic<remove_cv_ref<T>>::value, U>;
+	/// @cond
+	template<>
+	struct IsSupportedInWSString<char> : std::true_type {};
+	template<>
+	struct IsSupportedInWSString<unsigned char> : std::true_type {};
+	template<>
+	struct IsSupportedInWSString<unsigned short> : std::true_type {};
+	template<>
+	struct IsSupportedInWSString<unsigned int> : std::true_type {};
+	/// @endcond
 
-		template<typename T, typename U>
-		using ScalarNotSupportedTypeQ = std::enable_if_t<std::is_arithmetic<T>::value && !IsSupportedInWSArithmetic<remove_cv_ref<T>>::value, U>;
-
-		/**
-		 * @struct 	IsSupportedInWSString
-		 * @tparam	T - any type
-		 * @brief	Utility trait class that determines whether type T is a suitable character type for WSPut*String and WSGet*String
-		 */
-		template<typename T>
-		struct IsSupportedInWSString : std::false_type {};
-
-		/// @cond
-		template<>
-		struct IsSupportedInWSString<char> : std::true_type {};
-		template<>
-		struct IsSupportedInWSString<unsigned char> : std::true_type {};
-		template<>
-		struct IsSupportedInWSString<unsigned short> : std::true_type {};
-		template<>
-		struct IsSupportedInWSString<unsigned int> : std::true_type {};
-		/// @endcond
-
-		template<typename T, typename U>
-		using StringTypeQ = std::enable_if_t<IsSupportedInWSString<remove_cv_ref<T>>::value, U>;
-	}
-}
+	template<typename T, typename U>
+	using StringTypeQ = std::enable_if_t<IsSupportedInWSString<remove_cv_ref<T>>::value, U>;
+}  // namespace LLU::WS
 
 #endif /* LLU_WSTP_UTILITYTYPETRAITS_HPP_ */

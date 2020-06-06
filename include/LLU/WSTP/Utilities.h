@@ -63,7 +63,7 @@ namespace LLU {
 			 * Get Symbol name/head.
 			 * @return head
 			 */
-			const std::string& getHead() const;
+			[[nodiscard]] const std::string& getHead() const;
 
 			/**
 			 * Set Symbol name/head.
@@ -107,7 +107,7 @@ namespace LLU {
 			 * @brief	Get argument count.
 			 * @return 	number of arguments this function takes
 			 */
-			int getArgc() const;
+			[[nodiscard]] int getArgc() const;
 
 			/**
 			 * @brief Set argument count.
@@ -145,7 +145,7 @@ namespace LLU {
 			Missing() : Function("Missing") {}
 			explicit Missing(std::string r) : Function("Missing", 1), reason(std::move(r)) {}
 
-			const std::string& why() const {
+			[[nodiscard]] const std::string& why() const {
 				return reason;
 			}
 
@@ -175,18 +175,18 @@ namespace LLU {
 
 		template<WS::Encoding EIn, WS::Encoding EOut>
 		WSStream<EIn, EOut>& Rule(WSStream<EIn, EOut>& ms, Direction dir) {
-			if (dir == Direction::Put)
+			if (dir == Direction::Put) {
 				return ms << Function("Rule", 2);
-			else
-				return ms >> Function("Rule", 2);
+			}
+			return ms >> Function("Rule", 2);
 		}
 
 		template<WS::Encoding EIn, WS::Encoding EOut>
 		WSStream<EIn, EOut>& Null(WSStream<EIn, EOut>& ms, Direction dir) {
-			if (dir == Direction::Put)
+			if (dir == Direction::Put) {
 				return ms << Symbol("Null");
-			else
-				return ms >> Symbol("Null");
+			}
+			return ms >> Symbol("Null");
 		}
 
 		/**
@@ -225,7 +225,7 @@ namespace LLU {
 		 * @return	a number of expression stored in the loopback link
 		 */
 		int countExpressionsInLoopbackLink(WSLINK& lpbckLink);
-	}
-}
+	}  // namespace WS
+}  // namespace LLU
 
 #endif /* LLU_WSTP_UTILITIES_H_ */

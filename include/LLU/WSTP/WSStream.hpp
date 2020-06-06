@@ -20,11 +20,11 @@
 #include "LLU/ErrorLog/Errors.h"
 #include "LLU/Utilities.hpp"
 
-#include "Get.h"
-#include "Put.h"
-#include "Strings.h"
-#include "Utilities.h"
-#include "UtilityTypeTraits.hpp"
+#include "LLU/WSTP/Get.h"
+#include "LLU/WSTP/Put.h"
+#include "LLU/WSTP/Strings.h"
+#include "LLU/WSTP/Utilities.h"
+#include "LLU/WSTP/UtilityTypeTraits.hpp"
 
 namespace LLU {
 
@@ -215,23 +215,13 @@ namespace LLU {
 
 		/**
 		 *   @brief			Sends a std::vector via WSTP, it is interpreted as a List in Mathematica
-		 *   @tparam		T - vector element type, it has to be a simple type that is supported in WSPut*List
+		 *   @tparam		T - vector element type (types supported in WSPut*List will be handled more efficiently)
 		 *   @param[in] 	l - std::vector to be sent
 		 *
 		 *   @throws 		ErrorName::WSPutListError
 		 **/
 		template<typename T>
-		WS::ScalarSupportedTypeQ<T, WSStream&> operator<<(const std::vector<T>& l);
-
-		/**
-		 *   @brief			Sends a std::vector via WSTP, it is interpreted as a List in Mathematica
-		 *   @tparam		T - vector element type, this overload will handle any type not supported in WSPut*List
-		 *   @param[in] 	l - std::vector to be sent
-		 *
-		 *   @throws 		ErrorName::WSPutListError
-		 **/
-		template<typename T>
-		WS::NotScalarSupportedTypeQ<T, WSStream&> operator<<(const std::vector<T>& l);
+		WSStream& operator<<(const std::vector<T>& l);
 
 		/**
 		 *   @brief			Sends a WSTP string
@@ -301,35 +291,24 @@ namespace LLU {
 		 *   @brief			Sends a std::map via WSTP, it is translated to an Association in Mathematica
 		 *   @tparam		K - map key type, must be supported in WSStream
 		 *   @tparam		V - map value type, must be supported in WSStream
-		 *   @param[in] 	m - map to be sent as Association
+		 *   @param[in] 	map - map to be sent as Association
 		 *
 		 *   @throws 		ErrorName::WSPutFunctionError plus whatever can be thrown sending keys and values
 		 **/
 		template<typename K, typename V>
-		WSStream& operator<<(const std::map<K, V>& m);
+		WSStream& operator<<(const std::map<K, V>& map);
 
 		/**
-		 *   @brief			Sends a scalar value (int, float, double, etc)
+		 *   @brief			Sends a scalar value (int, float, double, etc) if it is supported by WSTP
+		 *   If you need to send value of type not supported by WSTP (like unsigned int) you must either explicitly cast
+		 *   or provide your own overload.
 		 *   @tparam		T - scalar type
 		 *   @param[in] 	value - numeric value to be sent
 		 *
 		 *   @throws 		ErrorName::WSPutScalarError
 		 **/
-		template<typename T>
-		WS::ScalarSupportedTypeQ<T, WSStream&> operator<<(T value);
-
-		/**
-		 *   @brief			Overload for scalar values that cannot be sent via WSTP without conversion
-		 *   @tparam		T - scalar type
-		 *   @param[in] 	value - numeric value
-		 *
-		 *   @note			Trying to use this overload will always trigger compilation error.
-		 *   If you need to send value of type not supported by WSTP (like unsigned int) you must either explicitly cast
-		 *   or provide your own overload.
-		 *
-		 **/
-		template<typename T>
-		WS::ScalarNotSupportedTypeQ<T, WSStream&> operator<<(T value);
+		template<typename T, typename = std::enable_if_t<std::is_arithmetic_v<T>>>
+		WSStream& operator<<(T value);
 
 		/**
 		 *   @brief			Sends any container (a class with begin(), end() and size()) as List
@@ -441,23 +420,13 @@ namespace LLU {
 
 		/**
 		 *   @brief			Receives a List from WSTP and assigns it to std::vector
-		 *   @tparam		T - vector element type, it has to be a simple type that is supported in WSGet*List
+		 *   @tparam		T - vector element type (types supported in WSGet*List will be handled more efficiently)
 		 *   @param[out] 	l - argument to which the List received from WSTP will be assigned
 		 *
 		 *   @throws 		ErrorName::WSGetListError
 		 **/
 		template<typename T>
-		WS::ScalarSupportedTypeQ<T, WSStream&> operator>>(std::vector<T>& l);
-
-		/**
-		 *   @brief			Receives a List from WSTP and assigns it to std::vector
-		 *   @tparam		T - vector element type, it can be any type supported by WSTP
-		 *   @param[out] 	l - argument to which the List received from WSTP will be assigned
-		 *
-		 *   @throws 		ErrorName::WSGetListError
-		 **/
-		template<typename T>
-		WS::NotScalarSupportedTypeQ<T, WSStream&> operator>>(std::vector<T>& l);
+		WSStream& operator>>(std::vector<T>& l);
 
 		/**
 		 *   @brief			Receives a WSTP string
@@ -498,37 +467,26 @@ namespace LLU {
 		 *   @brief			Receives a std::map via WSTP
 		 *   @tparam		K - map key type, must be supported in WSStream
 		 *   @tparam		V - map value type, must be supported in WSStream
-		 *   @param[out] 	m - argument to which the std::map received from WSTP will be assigned
+		 *   @param[out] 	map - argument to which the std::map received from WSTP will be assigned
 		 *
 		 *   @throws 		ErrorName::WSGetFunctionError plus whatever can be thrown receiving keys and values
 		 *
 		 *   @note			The top-level Association must have all values of the same type because this is how std::map works
 		 **/
 		template<typename K, typename V>
-		WSStream& operator>>(std::map<K, V>& m);
+		WSStream& operator>>(std::map<K, V>& map);
 
 		/**
-		 *   @brief			Receives a scalar value (int, float, double, etc)
+		 *   @brief			Receives a scalar value (int, float, double, etc) if it is supported by WSTP
+		 *   If you need to receive value of type not supported by WSTP (like unsigned int) you must either explicitly cast
+		 *   or provide your own overload.
 		 *   @tparam		T - scalar type
 		 *   @param[out] 	value - argument to which the value received from WSTP will be assigned
 		 *
 		 *   @throws 		ErrorName::WSGetScalarError
 		 **/
-		template<typename T>
-		WS::ScalarSupportedTypeQ<T, WSStream&> operator>>(T& value);
-
-		/**
-		 *   @brief			Overload for scalar values that cannot be received via WSTP without conversion
-		 *   @tparam		T - scalar type
-		 *   @param[in] 	value - numeric value
-		 *
-		 *   @note			Trying to use this overload will always trigger compilation error.
-		 *   If you need to receive value of type not supported by WSTP (like unsigned int) you must either explicitly cast
-		 *   or provide your own overload.
-		 *
-		 **/
-		template<typename T>
-		WS::ScalarNotSupportedTypeQ<T, WSStream&> operator>>(T& value);
+		template<typename T, typename = std::enable_if_t<std::is_arithmetic_v<T>>>
+		WSStream& operator>>(T& value);
 
 	private:
 		/**
@@ -566,7 +524,7 @@ namespace LLU {
 
 	private:
 		/// Internal low-level handle to the currently active WSTP, it is assumed that the handle is valid.
-		WSLINK m;
+		WSLINK m {};
 
 		/// WSTP does not natively support sending expression of unknown length, so to simulate this behavior we can use a helper loopback link to store
 		/// arguments until we know how many of them there are. But to be able to send nested expressions of unknown length we need more than one helper link.
@@ -612,7 +570,7 @@ namespace LLU {
 
 	template<WS::Encoding EIn, WS::Encoding EOut>
 	int WSStream<EIn, EOut>::testHead(const std::string& head) {
-		int argcount;
+		int argcount {};
 		check(WSTestHead(m, head.c_str(), &argcount), ErrorName::WSTestHeadError, "Expected \"" + head + "\"");
 		return argcount;
 	}
@@ -675,7 +633,7 @@ namespace LLU {
 		currentExprDropped = false;
 
 		// create a new LoopbackLink for the expression
-		auto loopback = WS::getNewLoopback(m);
+		auto* loopback = WS::getNewLoopback(m);
 
 		// store expression head together with the link on the stack
 		loopbackStack.emplace(expr.getHead(), loopback);
@@ -687,7 +645,7 @@ namespace LLU {
 	}
 
 	template<WS::Encoding EIn, WS::Encoding EOut>
-	auto WSStream<EIn, EOut>::operator<<(const WS::DropExpr&) -> WSStream& {
+	auto WSStream<EIn, EOut>::operator<<(const WS::DropExpr& /*tag*/) -> WSStream& {
 		// check if the stack has reasonable size
 		if (loopbackStack.size() < 2) {
 			WS::throwLLUException(ErrorName::WSLoopbackStackSizeError,
@@ -705,7 +663,7 @@ namespace LLU {
 	}
 
 	template<WS::Encoding EIn, WS::Encoding EOut>
-	auto WSStream<EIn, EOut>::operator<<(const WS::EndExpr&) -> WSStream& {
+	auto WSStream<EIn, EOut>::operator<<(const WS::EndExpr& /*tag*/) -> WSStream& {
 
 		// if the expression has been dropped at some point, then just reset the flag and do nothing as the loopback link no longer exists
 		if (currentExprDropped) {
@@ -727,7 +685,7 @@ namespace LLU {
 		refreshCurrentWSLINK();
 
 		// now count the expressions accumulated in the loopback link and send them to the parent link after the head
-		WSLINK& exprArgs = std::get<WSLINK>(currentPartialExpr);
+		auto& exprArgs = std::get<WSLINK>(currentPartialExpr);
 		auto argCnt = WS::countExpressionsInLoopbackLink(exprArgs);
 		*this << WS::Function(std::get<std::string>(currentPartialExpr), argCnt);
 		check(WSTransferToEndOfLoopbackLink(m, exprArgs), ErrorName::WSTransferToLoopbackError,
@@ -778,17 +736,14 @@ namespace LLU {
 
 	template<WS::Encoding EIn, WS::Encoding EOut>
 	template<typename T>
-	auto WSStream<EIn, EOut>::operator<<(const std::vector<T>& l) -> WS::ScalarSupportedTypeQ<T, WSStream&> {
-		WS::PutList<T>::put(m, l.data(), static_cast<int>(l.size()));
-		return *this;
-	}
-
-	template<WS::Encoding EIn, WS::Encoding EOut>
-	template<typename T>
-	auto WSStream<EIn, EOut>::operator<<(const std::vector<T>& l) -> WS::NotScalarSupportedTypeQ<T, WSStream&> {
-		*this << WS::List(static_cast<int>(l.size()));
-		for (const auto& elem : l) {
-			*this << elem;
+	auto WSStream<EIn, EOut>::operator<<(const std::vector<T>& l) -> WSStream& {
+		if constexpr (WS::ScalarSupportedTypeQ<T>) {
+			WS::PutList<T>::put(m, l.data(), static_cast<int>(l.size()));
+		} else {
+			*this << WS::List(static_cast<int>(l.size()));
+			for (const auto& elem : l) {
+				*this << elem;
+			}
 		}
 		return *this;
 	}
@@ -829,24 +784,21 @@ namespace LLU {
 	}
 
 	template<WS::Encoding EIn, WS::Encoding EOut>
-	template<typename T>
-	auto WSStream<EIn, EOut>::operator<<(T value) -> WS::ScalarSupportedTypeQ<T, WSStream&> {
-		WS::PutScalar<T>::put(m, value);
-		return *this;
-	}
-
-	template<WS::Encoding EIn, WS::Encoding EOut>
-	template<typename T>
-	auto WSStream<EIn, EOut>::operator<<(T) -> WS::ScalarNotSupportedTypeQ<T, WSStream&> {
-		static_assert(dependent_false_v<T>, "Calling operator<< with unsupported type.");
+	template<typename T, typename>
+	auto WSStream<EIn, EOut>::operator<<(T value) -> WSStream& {
+		if constexpr (WS::ScalarSupportedTypeQ<T>) {
+			WS::PutScalar<T>::put(m, value);
+		} else {
+			static_assert(dependent_false_v<T>, "Calling operator<< with unsupported scalar type.");
+		}
 		return *this;
 	}
 
 	template<WS::Encoding EIn, WS::Encoding EOut>
 	template<typename K, typename V>
-	auto WSStream<EIn, EOut>::operator<<(const std::map<K, V>& m) -> WSStream& {
-		*this << WS::Association(static_cast<int>(m.size()));
-		for (const auto& elem : m) {
+	auto WSStream<EIn, EOut>::operator<<(const std::map<K, V>& map) -> WSStream& {
+		*this << WS::Association(static_cast<int>(map.size()));
+		for (const auto& elem : map) {
 			*this << WS::Rule << elem.first << elem.second;
 		}
 		return *this;
@@ -872,7 +824,7 @@ namespace LLU {
 		if (!s.getHead().empty()) {
 			check(WSTestSymbol(m, s.getHead().c_str()), ErrorName::WSTestSymbolError, "Cannot get symbol: \"" + s.getHead() + "\"");
 		} else {
-			const char* head;
+			const char* head {};
 			check(WSGetSymbol(m, &head), ErrorName::WSGetSymbolError, "Cannot get symbol");
 			s.setHead(head);
 			WSReleaseSymbol(m, head);
@@ -895,8 +847,8 @@ namespace LLU {
 				testHead(f.getHead().c_str(), f.getArgc());
 			}
 		} else {
-			const char* head;
-			int argc;
+			const char* head {};
+			int argc {};
 			check(WSGetFunction(m, &head, &argc), ErrorName::WSGetFunctionError, "Cannot get function");
 			f.setHead(head);
 			WSReleaseSymbol(m, head);
@@ -949,24 +901,21 @@ namespace LLU {
 
 	template<WS::Encoding EIn, WS::Encoding EOut>
 	template<typename T>
-	auto WSStream<EIn, EOut>::operator>>(std::vector<T>& l) -> WS::ScalarSupportedTypeQ<T, WSStream&> {
-		auto list = WS::GetList<T>::get(m);
-		T* start = list.get();
-		auto listLen = list.get_deleter().getLength();
-		l = std::vector<T> {start, start + listLen};
-		return *this;
-	}
-
-	template<WS::Encoding EIn, WS::Encoding EOut>
-	template<typename T>
-	auto WSStream<EIn, EOut>::operator>>(std::vector<T>& l) -> WS::NotScalarSupportedTypeQ<T, WSStream&> {
-		WS::List inList;
-		*this >> inList;
-		std::vector<T> res(inList.getArgc());
-		for (auto& elem : res) {
-			*this >> elem;
+	auto WSStream<EIn, EOut>::operator>>(std::vector<T>& l) -> WSStream& {
+		if constexpr (WS::ScalarSupportedTypeQ<T>) {
+			auto list = WS::GetList<T>::get(m);
+			T* start = list.get();
+			auto listLen = list.get_deleter().getLength();
+			l = std::vector<T> {start, start + listLen};
+		} else {
+			WS::List inList;
+			*this >> inList;
+			std::vector<T> res(inList.getArgc());
+			for (auto& elem : res) {
+				*this >> elem;
+			}
+			l = std::move(res);
 		}
-		l = std::move(res);
 		return *this;
 	}
 
@@ -986,7 +935,7 @@ namespace LLU {
 
 	template<WS::Encoding EIn, WS::Encoding EOut>
 	template<typename K, typename V>
-	auto WSStream<EIn, EOut>::operator>>(std::map<K, V>& m) -> WSStream& {
+	auto WSStream<EIn, EOut>::operator>>(std::map<K, V>& map) -> WSStream& {
 		auto elemCount = testHead("Association");
 		for (auto i = 0; i < elemCount; ++i) {
 			*this >> WS::Rule;
@@ -994,22 +943,19 @@ namespace LLU {
 			*this >> key;
 			V value;
 			*this >> value;
-			m.emplace(std::move(key), std::move(value));
+			map.emplace(std::move(key), std::move(value));
 		}
 		return *this;
 	}
 
 	template<WS::Encoding EIn, WS::Encoding EOut>
-	template<typename T>
-	auto WSStream<EIn, EOut>::operator>>(T& value) -> WS::ScalarSupportedTypeQ<T, WSStream&> {
-		value = WS::GetScalar<T>::get(m);
-		return *this;
-	}
-
-	template<WS::Encoding EIn, WS::Encoding EOut>
-	template<typename T>
-	auto WSStream<EIn, EOut>::operator>>(T&) -> WS::ScalarNotSupportedTypeQ<T, WSStream&> {
-		static_assert(dependent_false_v<T>, "Calling operator>> with unsupported type.");
+	template<typename T, typename>
+	auto WSStream<EIn, EOut>::operator>>(T& value) -> WSStream& {
+		if constexpr (WS::ScalarSupportedTypeQ<T>) {
+			value = WS::GetScalar<T>::get(m);
+		} else {
+			static_assert(dependent_false_v<T>, "Calling operator>> with unsupported type.");
+		}
 		return *this;
 	}
 
