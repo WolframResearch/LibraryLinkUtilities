@@ -32,6 +32,11 @@ namespace LLU {
 		ThreadsafeQueue(const ThreadsafeQueue& other) = delete;
 		ThreadsafeQueue& operator=(const ThreadsafeQueue& other) = delete;
 
+		ThreadsafeQueue(ThreadsafeQueue&& other) noexcept = default;
+		ThreadsafeQueue& operator=(ThreadsafeQueue&& other) noexcept = default;
+
+		~ThreadsafeQueue() = default;
+
 		/**
 		 * @brief   Get data from the queue if available.
 		 * If data is not available in the queue, the calling thread will not wait.

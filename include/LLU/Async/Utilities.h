@@ -49,6 +49,7 @@ namespace LLU::Async {
 		FunctionWrapper& operator=(FunctionWrapper&& other) noexcept = default;
 		FunctionWrapper(const FunctionWrapper&) = delete;
 		FunctionWrapper& operator=(const FunctionWrapper&) = delete;
+		~FunctionWrapper() = default;
 
 		void operator()() {
 			impl->call();
@@ -117,6 +118,6 @@ namespace LLU::Async {
 			pausedWorkers.notify_all();
 		}
 	};
-}
+} // namespace LLU::Async
 
 #endif	  // LLU_ASYNC_UTILITIES_H
