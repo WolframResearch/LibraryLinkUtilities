@@ -4,18 +4,18 @@
  * @date	April 28, 2020
  * @brief
  */
-#ifndef LIBRARYLINKUTILITIES_TYPEDMARGUMENT_H
-#define LIBRARYLINKUTILITIES_TYPEDMARGUMENT_H
+#ifndef LLU_TYPEDMARGUMENT_H
+#define LLU_TYPEDMARGUMENT_H
 
 #include <complex>
 #include <string_view>
 #include <variant>
 
-#include <LLU/Containers/Generic/Image.hpp>
-#include <LLU/Containers/Generic/NumericArray.hpp>
-#include <LLU/Containers/Generic/Tensor.hpp>
-#include <LLU/MArgument.h>
-#include <LLU/Utilities.hpp>
+#include "LLU/Containers/Generic/Image.hpp"
+#include "LLU/Containers/Generic/NumericArray.hpp"
+#include "LLU/Containers/Generic/Tensor.hpp"
+#include "LLU/MArgument.h"
+#include "LLU/Utilities.hpp"
 
 template<>
 class LLU::MContainer<LLU::MArgumentType::DataStore>;
@@ -41,28 +41,28 @@ namespace LLU::Argument {
 		using Image = MContainer<MArgumentType::Image>;
 		using UTF8String = std::string_view;
 		using DataStore = MContainer<MArgumentType::DataStore>;
-	}
+	} // namespace Typed
 
 	/// C++ wrapper over LibraryLink's MArgument, which is a plain union
 	using TypedArgument = std::variant<std::monostate, Typed::Boolean, Typed::Integer, Typed::Real, Typed::Complex, Typed::Tensor, Typed::SparseArray,
 									   Typed::NumericArray, Typed::Image, Typed::UTF8String, Typed::DataStore>;
 	namespace Typed {
 		using Any = TypedArgument;
-	}
+	} // namespace Typed
 
 	/**
 	 * @brief   Index of a wrapper type in the TypedArgument variant or std::variant_size_v<TypedArgument> otherwise.
 	 * @tparam  T - any type
 	 */
 	template<typename T>
-	constexpr MArgumentType WrapperIndex = static_cast<MArgumentType>(variant_index<TypedArgument, T>());
+	inline constexpr MArgumentType WrapperIndex = static_cast<MArgumentType>(variant_index<TypedArgument, T>());
 
 	/**
 	 * @brief   Type trait to determine if given type is a "wrapper type" (i.e. if it is a member of TypedArgument variant)
 	 * @tparam  T - any type
 	 */
 	template<typename T>
-	constexpr bool WrapperQ = std::is_same_v<T, TypedArgument> || (variant_index<TypedArgument, T>() < std::variant_size_v<TypedArgument>);
+	inline constexpr bool WrapperQ = std::is_same_v<T, TypedArgument> || (variant_index<TypedArgument, T>() < std::variant_size_v<TypedArgument>);
 
 	/**
 	 * @brief   Get wrapper type corresponding to primitive LibraryLink argument type T
@@ -127,6 +127,6 @@ namespace LLU::Argument {
 			return value;
 		}
 	}
-}
+} // namespace LLU::Argument
 
-#endif	  // LIBRARYLINKUTILITIES_TYPEDMARGUMENT_H
+#endif // LLU_TYPEDMARGUMENT_H

@@ -6,8 +6,8 @@
  * you may get shorter compilation times by including only what you actually use.
  */
 
-#ifndef LLUTILS_LLU_H_
-#define LLUTILS_LLU_H_
+#ifndef LLU_LLU_H
+#define LLU_LLU_H
 
 /* Containers */
 #include "LLU/Containers/DataList.h"
@@ -30,4 +30,4 @@
 /* Others */
 #include "LLU/FileUtilities.h"
 
-#endif /* LLUTILS_LLU_H_ */
+#endif // LLU_LLU_H

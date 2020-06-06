@@ -2,12 +2,12 @@
  * @file	MArgumentManager.h
  * @author	Rafal Chojna <rafalc@wolfram.com>
  *
- * @brief	Declaration of MArgumentManager class
+ * @brief	Definition of MArgumentManager class
  *
  */
 
-#ifndef LLUTILS_MARGUMENTMANAGER_H_
-#define LLUTILS_MARGUMENTMANAGER_H_
+#ifndef LLU_MARGUMENTMANAGER_H
+#define LLU_MARGUMENTMANAGER_H
 
 #include <complex>
 #include <cstdint>
@@ -349,6 +349,7 @@ namespace LLU {
 		 *   @brief         Set \c result as output MArgument and check for overflow
 		 *   @tparam		T - integral type to be casted to \b mint
 		 *   @param[in]     result - value to be returned to LibraryLink
+		 *   @return        true iff overflow occurred and the value had to be clipped
 		 **/
 		template<typename T>
 		bool setMintAndCheck(T result) const noexcept;
@@ -542,7 +543,7 @@ namespace LLU {
 		 * @param 	step - step value for progress monitor
 		 * @return	A new instance of ProgressMonitor class.
 		 * @warning If you haven't specified "ProgressMonitor" option when loading the library function
-		 * 			with SafeLibraryFunction, then the behavior of \c getProgressMonitor is undefined.
+		 * 			with PacletFunctionSet, then the behavior of \c getProgressMonitor is undefined.
 		 */
 		ProgressMonitor getProgressMonitor(double step = .1) const;
 
@@ -873,13 +874,13 @@ namespace LLU {
 		if (result >= MINT_MAX) {
 			setInteger(MINT_MAX);
 			return true;
-		} else if (result <= MINT_MIN) {
+		}
+		if (result <= MINT_MIN) {
 			setInteger(MINT_MIN);
 			return true;
-		} else {
-			setInteger(result);
-			return false;
 		}
+		setInteger(result);
+		return false;
 	}
 
 	template<typename T, Passing Mode>
@@ -1058,4 +1059,4 @@ namespace LLU {
 
 } /* namespace LLU */
 
-#endif /* LLUTILS_MARGUMENTMANAGER_H_ */
+#endif // LLU_MARGUMENTMANAGER_H

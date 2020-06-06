@@ -5,8 +5,8 @@
  * @brief	Template class and utilities to work with MArgument in type-safe manner.
  */
 
-#ifndef LLUTILS_MARGUMENT_H
-#define LLUTILS_MARGUMENT_H
+#ifndef LLU_MARGUMENT_H
+#define LLU_MARGUMENT_H
 
 #include <string>
 #include <variant>
@@ -37,10 +37,10 @@ namespace LLU {
 		using PrimitiveAny = std::variant<std::monostate, mbool, mint, mreal, mcomplex, MTensor, MSparseArray, MNumericArray, MImage, char*, DataStore>;
 
 		template<typename T>
-		constexpr MArgumentType PrimitiveIndex = static_cast<MArgumentType>(variant_index<PrimitiveAny, T>());
+		inline constexpr MArgumentType PrimitiveIndex = static_cast<MArgumentType>(variant_index<PrimitiveAny, T>());
 
 		template<typename T>
-		constexpr bool PrimitiveQ = (variant_index<PrimitiveAny, T>() < std::variant_size_v<PrimitiveAny>);
+		inline constexpr bool PrimitiveQ = (variant_index<PrimitiveAny, T>() < std::variant_size_v<PrimitiveAny>);
 
 		/**
 		 * @brief 	Type alias that binds given MArgumentType (enumerated value) to the corresponding type of MArgument.
@@ -53,15 +53,15 @@ namespace LLU {
 		 * @brief Helper template variable that says if an MArgumentType is a LibraryLink container type
 		 */
 		template<MArgumentType T>
-		constexpr bool ContainerTypeQ = (T == MArgumentType::Tensor || T == MArgumentType::Image || T == MArgumentType::NumericArray ||
+		inline constexpr bool ContainerTypeQ = (T == MArgumentType::Tensor || T == MArgumentType::Image || T == MArgumentType::NumericArray ||
 										 T == MArgumentType::DataStore || T == MArgumentType::SparseArray);
-	}
+	} // namespace Argument
 
 	/**
-	 * @brief Helper template variable that is always false. Useful in metaprogramming.
+	 * @brief Helper template variable that is always false. Useful in meta-programming.
 	 */
 	template<MArgumentType T>
-	constexpr bool alwaysFalse = false;
+	inline constexpr bool alwaysFalse = false;
 
 
 	/**
@@ -92,13 +92,13 @@ namespace LLU {
 		 * @brief 	Get the read-only value stored in MArgument
 		 * @return 	Const reference to the value stored in MArgument
 		 */
-		const value_type& get() const;
+		[[nodiscard]] const value_type& get() const;
 
 		/**
 		 * @brief 	Get address of the value stored in MArgument. Every MArgument actually stores a pointer.
 		 * @return	Pointer to the value stored in MArgument
 		 */
-		value_type* getAddress() const;
+		[[nodiscard]] value_type* getAddress() const;
 
 		/**
 		 * @brief 	Set new value of type T in MArgument. Memory management is entirely user's responsibility.
@@ -111,8 +111,9 @@ namespace LLU {
 		 * The optional parameter should only be used by explicit specialization of this function for T equal to MArgumentType::MArgument
 		 * @param 	ds - DataStore with values of type T
 		 * @param 	name - name for the new node in the DataStore
+		 * @param   actualType - actual type of the value stored, it is always T except in generic case where T is MArgumentType::MArgument
 		 */
-		void addToDataStore(DataStore ds, const std::string& name, MArgumentType = T) const;
+		void addToDataStore(DataStore ds, const std::string& name, MArgumentType actualType = T) const;
 
 		/**
 		 * @brief 	Add \c val to the DataStore \c ds inside a node named \c name
@@ -130,7 +131,7 @@ namespace LLU {
 	};
 
 	template<MArgumentType T>
-	void PrimitiveWrapper<T>::addToDataStore(DataStore ds, const std::string& name, MArgumentType) const {
+	void PrimitiveWrapper<T>::addToDataStore(DataStore ds, const std::string& name, [[maybe_unused]] MArgumentType actualType) const {
 		addDataStoreNode(ds, name, get());
 	}
 
@@ -180,4 +181,4 @@ namespace LLU {
 
 }	 // namespace LLU
 
-#endif	  // LLUTILS_MARGUMENT_H
+#endif // LLU_MARGUMENT_H

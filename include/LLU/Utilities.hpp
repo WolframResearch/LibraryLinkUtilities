@@ -6,8 +6,8 @@
  * @brief	Short but generally useful functions
  *
  */
-#ifndef LLUTILS_UTILITIES_H_
-#define LLUTILS_UTILITIES_H_
+#ifndef LLU_UTILITIES_HPP
+#define LLU_UTILITIES_HPP
 
 #include <complex>
 #include <cstdint>
@@ -79,7 +79,8 @@ namespace LLU {
 	struct is_iterable : std::false_type {};
 
 	template<typename Container>
-	struct is_iterable<Container, std::void_t<decltype(*std::begin(std::declval<Container>())), decltype(std::end(std::declval<Container>()))>> : std::true_type {};
+	struct is_iterable<Container, std::void_t<decltype(*std::begin(std::declval<Container>())), decltype(std::end(std::declval<Container>()))>>
+		: std::true_type {};
 
 	template<typename Container, typename T>
 	constexpr bool is_iterable_container_with_matching_type_v =
@@ -277,4 +278,4 @@ namespace LLU {
 
 } /* namespace LLU */
 
-#endif /* LLUTILS_UTILITIES_H_ */
+#endif // LLU_UTILITIES_HPP

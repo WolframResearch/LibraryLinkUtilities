@@ -3,8 +3,8 @@
  * @author	Rafal Chojna <rafalc@wolfram.com>
  * @brief	Definition of ProgressMonitor class
  */
-#ifndef LLUTILS_PROGRESSMONITOR_H
-#define LLUTILS_PROGRESSMONITOR_H
+#ifndef LLU_PROGRESSMONITOR_H
+#define LLU_PROGRESSMONITOR_H
 
 #include "LLU/Containers/Tensor.h"
 
@@ -21,22 +21,25 @@ namespace LLU {
 	class ProgressMonitor {
 	public:
 		using SharedTensor = Tensor<double>;
+
 		/**
 		 * @brief Construct a new ProgressMonitor
 		 * @param sharedIndicator - shared Tensor of type \c double. If tensor length is smaller than 1, the behavior is undefined.
 		 * @param step - by how much to modify the progress value in operator++ and operator--
 		 */
-		explicit ProgressMonitor(SharedTensor sharedIndicator, double step = .1);
+		explicit ProgressMonitor(SharedTensor sharedIndicator, double step = defaultStep);
 
 		/**
 		 * @brief Copy-constructor is disabled because ProgressMonitor shares a Tensor with WL Kernel.
 		 */
-		ProgressMonitor(ProgressMonitor&) = delete;
+		ProgressMonitor(const ProgressMonitor&) = delete;
+		ProgressMonitor& operator=(const ProgressMonitor&) = delete;
 
 		/**
 		 * @brief Default move-constructor.
 		 */
 		ProgressMonitor(ProgressMonitor&&) = default;
+		ProgressMonitor& operator=(ProgressMonitor&&) = default;
 
 		/**
 		 * @brief Default destructor.
@@ -99,6 +102,9 @@ namespace LLU {
 		ProgressMonitor& operator-=(double progress);
 
 	private:
+		/// By default, progress changes by .1 each time
+		static constexpr double defaultStep = .1;
+
 		/// This tensor stores current progress as the first element.
 		SharedTensor sharedIndicator;
 
@@ -106,5 +112,5 @@ namespace LLU {
 		double step;
 	};
 
-}
-#endif	  // LLUTILS_PROGRESSMONITOR_H
+} // namespace LLU
+#endif // LLU_PROGRESSMONITOR_H

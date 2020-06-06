@@ -4,8 +4,8 @@
  * @date	July 17, 2019
  * @brief
  */
-#ifndef LIBRARYLINKUTILITIES_MANAGEDEXPRESSION_HPP
-#define LIBRARYLINKUTILITIES_MANAGEDEXPRESSION_HPP
+#ifndef LLU_MANAGEDEXPRESSION_HPP
+#define LLU_MANAGEDEXPRESSION_HPP
 
 #include <memory>
 #include <unordered_map>
@@ -125,8 +125,8 @@ namespace LLU {
 		 * @param id - id to be checked
 		 * @return true iff the instance with given id is in the store
 		 */
-		bool hasInstance(mint id) const {
-			return store.count(id);
+		[[nodiscard]] bool hasInstance(mint id) const {
+			return store.count(id) == 1;
 		}
 
 		/**
@@ -153,7 +153,7 @@ namespace LLU {
 		 * Get symbol name that is used in the WL to represent Managed Expressions stored in this Store
 		 * @return symbol name
 		 */
-		const std::string& getExpressionName() const noexcept {
+		[[nodiscard]] const std::string& getExpressionName() const noexcept {
 			return expressionName;
 		}
 
@@ -259,6 +259,6 @@ namespace LLU {
 		std::string expressionName;
 	};
 
-}
+} // namespace LLU
 
-#endif	  // LIBRARYLINKUTILITIES_MANAGEDEXPRESSION_HPP
+#endif // LLU_MANAGEDEXPRESSION_HPP
