@@ -6,8 +6,8 @@
  * @brief	Template base class for C++ wrappers of LibraryLink containers
  *
  */
-#ifndef LLUTILS_MARRAY_HPP_
-#define LLUTILS_MARRAY_HPP_
+#ifndef LLU_CONTAINERS_MARRAY_HPP_
+#define LLU_CONTAINERS_MARRAY_HPP_
 
 #include <initializer_list>
 #include <ostream>
@@ -16,10 +16,9 @@
 #include <vector>
 
 #include "LLU/Containers/Iterators/IterableContainer.hpp"
+#include "LLU/Containers/MArrayDimensions.h"
 #include "LLU/LibraryData.h"
 #include "LLU/Utilities.hpp"
-
-#include "MArrayDimensions.h"
 
 namespace LLU {
 
@@ -58,28 +57,28 @@ namespace LLU {
 		/**
 		 *	@brief Get container rank
 		 **/
-		mint rank() const noexcept {
+		[[nodiscard]] mint rank() const noexcept {
 			return dims.rank();
 		}
 
 		/**
 		 *	@brief Check whether container is empty
 		 **/
-		mint empty() const noexcept {
+		[[nodiscard]] mint empty() const noexcept {
 			return dims.flatCount() == 0;
 		}
 
 		/**
 		 *  @brief  Get dimension value at position \p index
 		 */
-		mint dimension(mint index) const {
+		[[nodiscard]] mint dimension(mint index) const {
 			return dims.get(index);
 		}
 
 		/**
 		 *  @brief  Get a const reference to dimensions object
 		 */
-		const MArrayDimensions& dimensions() const {
+		[[nodiscard]] const MArrayDimensions& dimensions() const {
 			return dims;
 		}
 
@@ -133,7 +132,7 @@ namespace LLU {
 		MArrayDimensions dims;
 
 	private:
-		mint getSize() const noexcept override {
+		[[nodiscard]] mint getSize() const noexcept override {
 			return dims.flatCount();
 		}
 	};
@@ -175,4 +174,4 @@ namespace LLU {
 
 } /* namespace LLU */
 
-#endif /* LLUTILS_MARRAY_HPP_ */
+#endif /* LLU_CONTAINERS_MARRAY_HPP_ */

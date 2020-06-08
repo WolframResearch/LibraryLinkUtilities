@@ -6,8 +6,8 @@
  * @brief	Templated C++ wrapper for MTensor
  *
  */
-#ifndef LLUTILS_TENSOR_H_
-#define LLUTILS_TENSOR_H_
+#ifndef LLU_CONTAINERS_TENSOR_H_
+#define LLU_CONTAINERS_TENSOR_H_
 
 #include <initializer_list>
 #include <type_traits>
@@ -34,7 +34,7 @@ namespace LLU {
 		T* getData() const noexcept override;
 
 		/// Get the raw MTensor, must be implemented in subclasses.
-		virtual MTensor getInternal() const = 0;
+		[[nodiscard]] virtual MTensor getInternal() const = 0;
 	};
 
 	/**
@@ -177,4 +177,4 @@ namespace LLU {
 
 } /* namespace LLU */
 
-#endif /* LLUTILS_TENSOR_H_ */
+#endif /* LLU_CONTAINERS_TENSOR_H_ */

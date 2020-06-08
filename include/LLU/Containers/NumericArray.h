@@ -6,8 +6,8 @@
  * @brief	Templated C++ wrapper for MNumericArray
  *
  */
-#ifndef LLUTILS_NUMERICARRAY_H_
-#define LLUTILS_NUMERICARRAY_H_
+#ifndef LLU_CONTAINERS_NUMERICARRAY_H_
+#define LLU_CONTAINERS_NUMERICARRAY_H_
 
 #include <initializer_list>
 #include <type_traits>
@@ -37,7 +37,7 @@ namespace LLU {
 			return static_cast<T*>(LibraryData::NumericArrayAPI()->MNumericArray_getData(this->getInternal()));
 		}
 
-		virtual MNumericArray getInternal() const = 0;
+		[[nodiscard]] virtual MNumericArray getInternal() const = 0;
 	};
 
 	/**
@@ -193,4 +193,4 @@ namespace LLU {
 
 } /* namespace LLU */
 
-#endif /* LLUTILS_NUMERICARRAY_H_ */
+#endif /* LLU_CONTAINERS_NUMERICARRAY_H_ */

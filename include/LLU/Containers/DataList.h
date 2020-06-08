@@ -5,8 +5,8 @@
  * @brief	Definition of templated DataStore wrapper called DataList.
  */
 
-#ifndef LLUTILS_DATALIST_H
-#define LLUTILS_DATALIST_H
+#ifndef LLU_CONTAINERS_DATALIST_H
+#define LLU_CONTAINERS_DATALIST_H
 
 #include <initializer_list>
 #include <string>
@@ -260,4 +260,4 @@ namespace LLU {
 
 }
 
-#endif	  // LLUTILS_DATALIST_H
+#endif	  // LLU_CONTAINERS_DATALIST_H

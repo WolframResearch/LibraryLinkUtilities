@@ -3,8 +3,8 @@
  * @brief
  */
 
-#ifndef LLUTILS_MARRAYDIMENSIONS_H_
-#define LLUTILS_MARRAYDIMENSIONS_H_
+#ifndef LLU_CONTAINERS_MARRAYDIMENSIONS_H_
+#define LLU_CONTAINERS_MARRAYDIMENSIONS_H_
 
 #include <initializer_list>
 #include <type_traits>
@@ -28,7 +28,7 @@ namespace LLU {
 		MArrayDimensions() = default;
 
 		/**
-		 * 	@brief		Constructs uninitialized container with given dimensions
+		 * 	@brief		Constructs MArrayDimensions from a list of dimensions
 		 *	@param[in]	dims - list of MArray dimensions
 		 *	@throws		ErrorName::DimensionsError - if \c dims are invalid
 		 *	@throws		ErrorName::FunctionError - if any of Wolfram*Library structures was not initialized
@@ -36,23 +36,22 @@ namespace LLU {
 		MArrayDimensions(std::initializer_list<mint> dims);
 
 		/**
-		 * 	@brief		Constructs uninitialized container with given dimensions
+		 * 	@brief		Constructs MArrayDimensions from a C-style list (raw pointer + length)
 		 *	@param[in]	dimensions - pointer to the memory where consecutive dimensions are stored
 		 *	@param[in]	rank - length of the \p dims array
 		 *	@throws		ErrorName::DimensionsError - if \c dims are invalid
 		 *	@throws		ErrorName::FunctionError - if any of Wolfram*Library structures was not initialized
 		 **/
-		template<typename T, typename = typename std::enable_if_t<std::is_integral<T>::value>>
+		template<typename T, typename = typename std::enable_if_t<std::is_integral_v<T>>>
 		MArrayDimensions(const T* dimensions, mint rank);
 
 		/**
-		 * 	@brief		Constructs uninitialized container with given dimensions
-		 *	@param[in]	dimensions - container with MArray dimensions
-		 *	@tparam		Container - any type of container that has member \b value_type and this type is convertible to mint
+		 * 	@brief		Constructs MArrayDimensions from a vector of dimensions
+		 *	@param[in]	dimensions - vector with MArray dimensions
 		 *	@throws		ErrorName::DimensionsError - if \c dims are invalid
 		 *	@throws		ErrorName::FunctionError - if any of Wolfram*Library structures was not initialized
 		 **/
-		template<typename T, typename = typename std::enable_if_t<std::is_integral<T>::value>>
+		template<typename T, typename = typename std::enable_if_t<std::is_integral_v<T>>>
 		/* implicit */ MArrayDimensions(const std::vector<T>& dimensions);
 
 		/**
@@ -67,21 +66,21 @@ namespace LLU {
 		/**
 		 *	@brief Get container rank
 		 **/
-		mint rank() const noexcept {
+		[[nodiscard]] mint rank() const noexcept {
 			return static_cast<mint>(dims.size());
 		}
 
 		/**
 		 *	@brief Get raw pointer to container dimensions
 		 **/
-		const mint* data() const noexcept {
+		[[nodiscard]] const mint* data() const noexcept {
 			return dims.data();
 		}
 
 		/**
 		 *	@brief Get container dimensions in the form of const& to \b std::vector
 		 **/
-		const std::vector<mint>& get() const noexcept {
+		[[nodiscard]] const std::vector<mint>& get() const noexcept {
 			return dims;
 		}
 
@@ -90,7 +89,7 @@ namespace LLU {
 		 *	@param[in]	dim - index of desired dimension
 		 *	@throws		indexError() - if \c dim is out-of-bounds
 		 **/
-		mint get(mint dim) const {
+		[[nodiscard]] mint get(mint dim) const {
 			if (dim >= rank() || dim < 0) {
 				ErrorManager::throwException(ErrorName::MArrayDimensionIndexError, dim);
 			}
@@ -101,27 +100,27 @@ namespace LLU {
 		 *	@brief 		Convert coordinates of an element in a multidimensional MArray to the corresponding index in a flat list of elements
 		 *	@param[in]	indices - vector with coordinates of desired data element
 		 **/
-		mint getIndex(const std::vector<mint>& indices) const;
+		[[nodiscard]] mint getIndex(const std::vector<mint>& indices) const;
 
 		/**
 		 *	@brief 		Check if given coordinates are valid for this container
 		 *	@param[in]	indices - vector with coordinates of desired data element
 		 *	@throws		indexError() - if \c indices are out-of-bounds
 		 **/
-		mint getIndexChecked(const std::vector<mint>& indices) const;
+		[[nodiscard]] mint getIndexChecked(const std::vector<mint>& indices) const;
 
 		/**
 		 * @brief   Check if given index is valid i.e. it does not exceed container bounds
 		 * @param   index - index of the desired element
 		 * @return  index if it is valid, otherwise an exception is thrown
 		 */
-		mint getIndexChecked(mint index) const;
+		[[nodiscard]] mint getIndexChecked(mint index) const;
 
 		/**
 		 *  @brief  Get total number of elements
 		 * @return  flattened length of the container
 		 */
-		mint flatCount() const noexcept {
+		[[nodiscard]] mint flatCount() const noexcept {
 			return flattenedLength;
 		}
 
@@ -157,7 +156,7 @@ namespace LLU {
 		mint checkContainerSize(std::initializer_list<mint> v) const;
 
 		/// Calculate total array length based on current value of dims
-		mint totalLengthFromDims() const noexcept;
+		[[nodiscard]] mint totalLengthFromDims() const noexcept;
 	};
 
 	template<typename T, typename>
@@ -190,4 +189,4 @@ namespace LLU {
 
 } /* namespace LLU */
 
-#endif /* LLUTILS_MARRAYDIMENSIONS_H_ */
+#endif /* LLU_CONTAINERS_MARRAYDIMENSIONS_H_ */
