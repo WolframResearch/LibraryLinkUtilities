@@ -5,8 +5,8 @@
  * @brief	Error class and error codes used by LibraryLink Utilities classes
  *
  */
-#ifndef LLUTILS_LIBRARYLINKERROR_H_
-#define LLUTILS_LIBRARYLINKERROR_H_
+#ifndef LLU_ERRORLOG_LIBRARYLINKERROR_H_
+#define LLU_ERRORLOG_LIBRARYLINKERROR_H_
 
 #include <stdexcept>
 #include <string>
@@ -53,35 +53,35 @@ namespace LLU {
 		/**
 		 *   @brief Get the value of error code
 		 **/
-		IdType id() const noexcept {
+		[[nodiscard]] IdType id() const noexcept {
 			return errorId;
 		}
 
 		/**
 		 *   @brief Alias for id() to preserve backwards compatibility
 		 **/
-		IdType which() const noexcept {
+		[[nodiscard]] IdType which() const noexcept {
 			return errorId;
 		}
 
 		/**
 		 *   @brief Get the value of error code
 		 **/
-		const std::string& name() const noexcept {
+		[[nodiscard]] const std::string& name() const noexcept {
 			return type;
 		}
 
 		/**
 		 *   @brief Get the value of error code
 		 **/
-		const std::string& message() const noexcept {
+		[[nodiscard]] const std::string& message() const noexcept {
 			return messageTemplate;
 		}
 
 		/**
 		 *   @brief Get debug info
 		 **/
-		const std::string& debug() const noexcept {
+		[[nodiscard]] const std::string& debug() const noexcept {
 			return debugInfo;
 		}
 
@@ -166,4 +166,4 @@ namespace LLU {
 	}
 } /* namespace LLU */
 
-#endif /* LLUTILS_LIBRARYLINKERROR_H_ */
+#endif /* LLU_ERRORLOG_LIBRARYLINKERROR_H_ */

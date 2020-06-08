@@ -3,8 +3,8 @@
  * @author	Rafal Chojna <rafalc@wolfram.com>
  * @brief	Define Logger namespace containing logging related declarations and convenience macros.
  */
-#ifndef LLUTILS_LOGGER_H
-#define LLUTILS_LOGGER_H
+#ifndef LLU_ERRORLOG_LOGGER_H
+#define LLU_ERRORLOG_LOGGER_H
 
 #include <initializer_list>
 #include <mutex>
@@ -161,4 +161,4 @@ namespace LLU {
 	}
 
 }
-#endif	  // LLUTILS_LOGGER_H
+#endif	  // LLU_ERRORLOG_LOGGER_H

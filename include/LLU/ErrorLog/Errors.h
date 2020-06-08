@@ -4,8 +4,8 @@
  * @date	March 31, 2019
  * @brief	Definitions of error names and error codes used across LLU.
  */
-#ifndef LLUTILS_ERRORS_H
-#define LLUTILS_ERRORS_H
+#ifndef LLU_ERRORLOG_ERRORS_H
+#define LLU_ERRORLOG_ERRORS_H
 
 #include <string>
 
@@ -133,4 +133,4 @@ namespace LLU {
 
 }
 
-#endif	  // LLUTILS_ERRORS_H
+#endif	  // LLU_ERRORLOG_ERRORS_H
