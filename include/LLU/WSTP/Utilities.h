@@ -13,8 +13,7 @@
 #include "wstp.h"
 
 #include "LLU/ErrorLog/Errors.h"
-
-#include "EncodingTraits.hpp"
+#include "LLU/WSTP/EncodingTraits.hpp"
 
 namespace LLU {
 

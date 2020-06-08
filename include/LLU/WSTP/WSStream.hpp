@@ -264,7 +264,7 @@ namespace LLU {
 		 *
 		 **/
 		template<typename T>
-		WS::StringTypeQ<T, WSStream&> operator<<(const std::basic_string<T>& s);
+		WSStream& operator<<(const std::basic_string<T>& s);
 
 		/**
 		 *   @brief			Sends a character array (or a string literal)
@@ -275,8 +275,8 @@ namespace LLU {
 		 *   @see			http://reference.wolfram.com/language/guide/WSTPCFunctionsForExchangingStrings.html
 		 *   @throws 		ErrorName::WSPutStringError
 		 **/
-		template<typename T, std::size_t N>
-		WS::StringTypeQ<T, WSStream&> operator<<(const T (&s)[N]);
+		template<typename T, std::size_t N, typename = std::enable_if_t<WS::StringTypeQ<T>>>
+		WSStream& operator<<(const T (&s)[N]);
 
 		/**
 		 *   @brief			Sends a C-string
@@ -320,8 +320,8 @@ namespace LLU {
 		 *   @note			Size() is not technically necessary, but needed for performance reason. Most STL containers have size() anyway.
 		 **/
 		template<typename Container>
-		auto operator<<(const Container& c) -> typename std::enable_if_t<sizeof(c.begin()) == sizeof(c.end()) && (sizeof(c.size()) > 0), WSStream&> {
-			this->sendRange(c.begin(), c.end());
+		auto operator<<(const Container& c) -> std::enable_if_t<std::is_void_v<std::void_t<decltype(c.begin(), c.end(), c.size())>>, WSStream&> {
+			sendRange(c.begin(), c.end());
 			return *this;
 		}
 
@@ -450,7 +450,7 @@ namespace LLU {
 		 *   @note			std::string is just std::basic_string<char>
 		 **/
 		template<typename T>
-		WS::StringTypeQ<T, WSStream&> operator>>(std::basic_string<T>& s);
+		WSStream& operator>>(std::basic_string<T>& s);
 
 		/**
 		 *	 @brief			Receives a value of type T
@@ -757,14 +757,18 @@ namespace LLU {
 
 	template<WS::Encoding EIn, WS::Encoding EOut>
 	template<typename T>
-	auto WSStream<EIn, EOut>::operator<<(const std::basic_string<T>& s) -> WS::StringTypeQ<T, WSStream&> {
-		WS::String<EOut>::put(m, s.c_str(), static_cast<int>(s.size()));
+	auto WSStream<EIn, EOut>::operator<<(const std::basic_string<T>& s) -> WSStream& {
+		if constexpr (WS::StringTypeQ<T>) {
+			WS::String<EOut>::put(m, s.c_str(), static_cast<int>(s.size()));
+		} else {
+			static_assert(dependent_false_v<T>, "Calling operator<< with unsupported character type.");
+		}
 		return *this;
 	}
 
 	template<WS::Encoding EIn, WS::Encoding EOut>
-	template<typename T, std::size_t N>
-	auto WSStream<EIn, EOut>::operator<<(const T (&s)[N]) -> WS::StringTypeQ<T, WSStream&> {
+	template<typename T, std::size_t N, typename>
+	auto WSStream<EIn, EOut>::operator<<(const T (&s)[N]) -> WSStream& {
 		WS::String<EOut>::put(m, s, N);
 		return *this;
 	}
@@ -928,8 +932,12 @@ namespace LLU {
 
 	template<WS::Encoding EIn, WS::Encoding EOut>
 	template<typename T>
-	auto WSStream<EIn, EOut>::operator>>(std::basic_string<T>& s) -> WS::StringTypeQ<T, WSStream&> {
-		s = WS::String<EIn>::template getString<T>(m);
+	auto WSStream<EIn, EOut>::operator>>(std::basic_string<T>& s) -> WSStream& {
+		if constexpr (WS::StringTypeQ<T>) {
+			s = WS::String<EIn>::template getString<T>(m);
+		} else {
+			static_assert(dependent_false_v<T>, "Calling operator>> with unsupported character type.");
+		}
 		return *this;
 	}
 

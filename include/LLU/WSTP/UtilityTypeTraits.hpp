@@ -16,52 +16,51 @@
 namespace LLU::WS {
 
 	/**
-	 * @struct 	IsSupportedInWSArithmetic
+	 * @brief	Utility trait that determines whether type T is a suitable data type for functions like WSPut*Array, WSGet*List, WSPutScalar, etc.
 	 * @tparam	T - any type
-	 * @brief	Utility trait class that determines whether type T is a suitable data type for functions like WSPut*Array, WSGet*List, WSPutScalar, etc.
 	 */
 	template<typename T>
-	inline constexpr bool IsSupportedInWSArithmetic = false;
+	inline constexpr bool supportedInWSArithmeticQ = false;
 
 	/// @cond
 	template<>
-	inline constexpr bool IsSupportedInWSArithmetic<unsigned char> = true;
+	inline constexpr bool supportedInWSArithmeticQ<unsigned char> = true;
 	template<>
-	inline constexpr bool IsSupportedInWSArithmetic<short> = true;
+	inline constexpr bool supportedInWSArithmeticQ<short> = true;
 	template<>
-	inline constexpr bool IsSupportedInWSArithmetic<int> = true;
+	inline constexpr bool supportedInWSArithmeticQ<int> = true;
 	template<>
-	inline constexpr bool IsSupportedInWSArithmetic<wsint64> = true;
+	inline constexpr bool supportedInWSArithmeticQ<wsint64> = true;
 	template<>
-	inline constexpr bool IsSupportedInWSArithmetic<float> = true;
+	inline constexpr bool supportedInWSArithmeticQ<float> = true;
 	template<>
-	inline constexpr bool IsSupportedInWSArithmetic<double> = true;
+	inline constexpr bool supportedInWSArithmeticQ<double> = true;
 	/// @endcond
 
 	template<typename T>
-	constexpr bool ScalarSupportedTypeQ = IsSupportedInWSArithmetic<remove_cv_ref<T>>;
+	constexpr bool ScalarSupportedTypeQ = supportedInWSArithmeticQ<remove_cv_ref<T>>;
 
 	/**
-	 * @struct 	IsSupportedInWSString
+	 * @brief	Utility trait that determines whether type T is a suitable character type for WSPut*String and WSGet*String
 	 * @tparam	T - any type
-	 * @brief	Utility trait class that determines whether type T is a suitable character type for WSPut*String and WSGet*String
 	 */
 	template<typename T>
-	struct IsSupportedInWSString : std::false_type {};
+	inline constexpr bool supportedInWSStringQ = false;
 
 	/// @cond
 	template<>
-	struct IsSupportedInWSString<char> : std::true_type {};
+	inline constexpr bool supportedInWSStringQ<char> = true;
 	template<>
-	struct IsSupportedInWSString<unsigned char> : std::true_type {};
+	inline constexpr bool supportedInWSStringQ<unsigned char> = true;
 	template<>
-	struct IsSupportedInWSString<unsigned short> : std::true_type {};
+	inline constexpr bool supportedInWSStringQ<unsigned short> = true;
 	template<>
-	struct IsSupportedInWSString<unsigned int> : std::true_type {};
+	inline constexpr bool supportedInWSStringQ<unsigned int> = true;
 	/// @endcond
 
-	template<typename T, typename U>
-	using StringTypeQ = std::enable_if_t<IsSupportedInWSString<remove_cv_ref<T>>::value, U>;
+	template<typename T>
+	constexpr bool StringTypeQ = supportedInWSStringQ<remove_cv_ref<T>>;
+
 }  // namespace LLU::WS
 
 #endif /* LLU_WSTP_UTILITYTYPETRAITS_HPP_ */
