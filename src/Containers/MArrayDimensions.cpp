@@ -55,11 +55,10 @@ namespace LLU {
 		return flatIndex;
 	}
 
-	mint MArrayDimensions::checkContainerSize(std::initializer_list<mint> v) const {
+	void MArrayDimensions::checkContainerSize(std::initializer_list<mint> v) const {
 		if (v.size() <= 0 || v.size() > static_cast<decltype(v)::size_type>((std::numeric_limits<mint>::max)())) {
 			ErrorManager::throwException(ErrorName::DimensionsError);
 		}
-		return static_cast<mint>(v.size());
 	}
 
 	mint MArrayDimensions::totalLengthFromDims() const noexcept {

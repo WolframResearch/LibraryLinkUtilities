@@ -153,7 +153,7 @@ namespace LLU {
 		 *	@param[in]	v - an initializer list
 		 *	@throws		ErrorName::DimensionsError - if \c v is too big
 		 **/
-		mint checkContainerSize(std::initializer_list<mint> v) const;
+		void checkContainerSize(std::initializer_list<mint> v) const;
 
 		/// Calculate total array length based on current value of dims
 		[[nodiscard]] mint totalLengthFromDims() const noexcept;
