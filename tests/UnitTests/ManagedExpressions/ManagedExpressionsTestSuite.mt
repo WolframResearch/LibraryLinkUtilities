@@ -426,3 +426,27 @@ VerificationTest[
 	,
 	TestID -> "ManagedExpressionsTestSuite-20200420-W2O0L8"
 ];
+
+TestExecute[
+	Clear[f];
+	f[1] = 1;
+	f[2][2] = 2;
+	f[3][2] = 3;
+	f /: g[f[3]] = 3;
+	f::x = "x";
+	SetAttributes[f, Orderless];
+];
+
+Test[
+	`LLU`Private`clearLHS[f[2]];
+	{DownValues[f], SubValues[f], UpValues[f]}
+	,
+	{{HoldPattern[f[1]] :> 1}, {HoldPattern[f[2][2]] :> 2, HoldPattern[f[3][2]] :> 3}, {HoldPattern[g[f[3]]] :> 3}}
+];
+
+Test[
+	`LLU`Private`clearLHS[f];
+	{DownValues[f], SubValues[f], UpValues[f], Messages[f], Attributes[f]}
+	,
+	{{}, {}, {}, {HoldPattern[f::x] :> "x"}, {Orderless}}
+];

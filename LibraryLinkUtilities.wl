@@ -473,16 +473,11 @@ guessFunctionNameFromSymbol[symbol_] := StringReplace["$" ~~ s_ :> s] @ SymbolNa
 (* symbol could be a general LHS, such as Constructor[MyExpression] *)
 Attributes[clearLHS] = {HoldFirst};
 clearLHS[symbol_] :=
-	If[Developer`SymbolQ[symbol],
+	If[Developer`HoldSymbolQ[symbol],
 		Clear[symbol];
 		,
-		With[{head = Head[Unevaluated[symbol]]},
-			If[Developer`SymbolQ[head],
-				Function[values,
-					values[head] = Delete[values[head], First /@ Position[First /@ values[head], HoldPattern[symbol]]];
-				] /@ {DownValues, UpValues, SubValues};
-			]
-		]
+		(* this is quieted to avoid messaging when symbol has no definitions *)
+		Quiet[Unset[symbol], Unset::norep];
 	];
 
 
