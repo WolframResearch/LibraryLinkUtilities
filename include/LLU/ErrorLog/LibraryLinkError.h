@@ -51,14 +51,14 @@ namespace LLU {
 		/**
 		 *   @brief Get the value of error code
 		 **/
-		[[nodiscard]] IdType id() const noexcept {
+		IdType id() const noexcept {
 			return errorId;
 		}
 
 		/**
 		 *   @brief Alias for id() to preserve backwards compatibility
 		 **/
-		[[nodiscard]] IdType which() const noexcept {
+		IdType which() const noexcept {
 			return errorId;
 		}
 

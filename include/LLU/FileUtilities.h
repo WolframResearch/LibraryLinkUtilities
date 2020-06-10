@@ -138,7 +138,7 @@ namespace LLU {
 		 * Base share policy - shared read access when file opened readonly, exclusive access otherwise.
 		 * @return _SH_SECURED on Windows and 0 on other platforms where it is not used anyway
 		 */
-		[[nodiscard]] virtual int flag(std::ios::openmode /*mode*/) const;
+		virtual int flag(std::ios::openmode /*mode*/) const;
 	};
 
 	/**
@@ -147,7 +147,7 @@ namespace LLU {
 	 * @note    This policy allows for reading from the file when other applications are writing to it which may have unexpected consequences.
 	 */
 	struct AlwaysReadExclusiveWrite : SharePolicy {
-		[[nodiscard]] int flag(std::ios::openmode m) const override;
+		int flag(std::ios::openmode m) const override;
 	};
 
 	/**

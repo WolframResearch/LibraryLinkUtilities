@@ -129,11 +129,11 @@ namespace LLU::WS {
 			String<E>::Release(m, data, length);
 		}
 
-		[[nodiscard]] int getLength() const {
+		int getLength() const {
 			return length;
 		}
 
-		[[nodiscard]] int getCharacters() const {
+		int getCharacters() const {
 			return chars;
 		}
 

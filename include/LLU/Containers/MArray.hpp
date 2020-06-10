@@ -57,7 +57,7 @@ namespace LLU {
 		/**
 		 *	@brief Get container rank
 		 **/
-		[[nodiscard]] mint rank() const noexcept {
+		mint rank() const noexcept {
 			return dims.rank();
 		}
 
@@ -71,14 +71,14 @@ namespace LLU {
 		/**
 		 *  @brief  Get dimension value at position \p index
 		 */
-		[[nodiscard]] mint dimension(mint index) const {
+		mint dimension(mint index) const {
 			return dims.get(index);
 		}
 
 		/**
 		 *  @brief  Get a const reference to dimensions object
 		 */
-		[[nodiscard]] const MArrayDimensions& dimensions() const {
+		const MArrayDimensions& dimensions() const {
 			return dims;
 		}
 
@@ -132,7 +132,7 @@ namespace LLU {
 		MArrayDimensions dims;
 
 	private:
-		[[nodiscard]] mint getSize() const noexcept override {
+		mint getSize() const noexcept override {
 			return dims.flatCount();
 		}
 	};

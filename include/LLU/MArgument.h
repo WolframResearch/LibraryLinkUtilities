@@ -92,13 +92,13 @@ namespace LLU {
 		 * @brief 	Get the read-only value stored in MArgument
 		 * @return 	Const reference to the value stored in MArgument
 		 */
-		[[nodiscard]] const value_type& get() const;
+		const value_type& get() const;
 
 		/**
 		 * @brief 	Get address of the value stored in MArgument. Every MArgument actually stores a pointer.
 		 * @return	Pointer to the value stored in MArgument
 		 */
-		[[nodiscard]] value_type* getAddress() const;
+		value_type* getAddress() const;
 
 		/**
 		 * @brief 	Set new value of type T in MArgument. Memory management is entirely user's responsibility.

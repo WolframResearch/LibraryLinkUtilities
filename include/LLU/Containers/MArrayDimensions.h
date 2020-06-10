@@ -66,21 +66,21 @@ namespace LLU {
 		/**
 		 *	@brief Get container rank
 		 **/
-		[[nodiscard]] mint rank() const noexcept {
+		mint rank() const noexcept {
 			return static_cast<mint>(dims.size());
 		}
 
 		/**
 		 *	@brief Get raw pointer to container dimensions
 		 **/
-		[[nodiscard]] const mint* data() const noexcept {
+		const mint* data() const noexcept {
 			return dims.data();
 		}
 
 		/**
 		 *	@brief Get container dimensions in the form of const& to \b std::vector
 		 **/
-		[[nodiscard]] const std::vector<mint>& get() const noexcept {
+		const std::vector<mint>& get() const noexcept {
 			return dims;
 		}
 
@@ -89,7 +89,7 @@ namespace LLU {
 		 *	@param[in]	dim - index of desired dimension
 		 *	@throws		indexError() - if \c dim is out-of-bounds
 		 **/
-		[[nodiscard]] mint get(mint dim) const {
+		mint get(mint dim) const {
 			if (dim >= rank() || dim < 0) {
 				ErrorManager::throwException(ErrorName::MArrayDimensionIndexError, dim);
 			}
@@ -100,27 +100,27 @@ namespace LLU {
 		 *	@brief 		Convert coordinates of an element in a multidimensional MArray to the corresponding index in a flat list of elements
 		 *	@param[in]	indices - vector with coordinates of desired data element
 		 **/
-		[[nodiscard]] mint getIndex(const std::vector<mint>& indices) const;
+		mint getIndex(const std::vector<mint>& indices) const;
 
 		/**
 		 *	@brief 		Check if given coordinates are valid for this container
 		 *	@param[in]	indices - vector with coordinates of desired data element
 		 *	@throws		indexError() - if \c indices are out-of-bounds
 		 **/
-		[[nodiscard]] mint getIndexChecked(const std::vector<mint>& indices) const;
+		mint getIndexChecked(const std::vector<mint>& indices) const;
 
 		/**
 		 * @brief   Check if given index is valid i.e. it does not exceed container bounds
 		 * @param   index - index of the desired element
 		 * @return  index if it is valid, otherwise an exception is thrown
 		 */
-		[[nodiscard]] mint getIndexChecked(mint index) const;
+		mint getIndexChecked(mint index) const;
 
 		/**
 		 *  @brief  Get total number of elements
 		 * @return  flattened length of the container
 		 */
-		[[nodiscard]] mint flatCount() const noexcept {
+		mint flatCount() const noexcept {
 			return flattenedLength;
 		}
 

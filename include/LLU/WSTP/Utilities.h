@@ -62,7 +62,7 @@ namespace LLU {
 			 * Get Symbol name/head.
 			 * @return head
 			 */
-			[[nodiscard]] const std::string& getHead() const;
+			const std::string& getHead() const;
 
 			/**
 			 * Set Symbol name/head.
@@ -106,7 +106,7 @@ namespace LLU {
 			 * @brief	Get argument count.
 			 * @return 	number of arguments this function takes
 			 */
-			[[nodiscard]] int getArgc() const;
+			int getArgc() const;
 
 			/**
 			 * @brief Set argument count.
@@ -144,7 +144,7 @@ namespace LLU {
 			Missing() : Function("Missing") {}
 			explicit Missing(std::string r) : Function("Missing", 1), reason(std::move(r)) {}
 
-			[[nodiscard]] const std::string& why() const {
+			const std::string& why() const {
 				return reason;
 			}
 

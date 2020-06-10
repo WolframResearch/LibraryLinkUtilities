@@ -26,7 +26,7 @@ namespace LLU::WS {
 			Release(m, data, length);
 		}
 
-		[[nodiscard]] int getLength() const {
+		int getLength() const {
 			return length;
 		}
 
@@ -48,15 +48,15 @@ namespace LLU::WS {
 			Release(m, data, dims, heads, rank);
 		}
 
-		[[nodiscard]] int* getDims() const {
+		int* getDims() const {
 			return dims;
 		}
 
-		[[nodiscard]] char** getHeads() const {
+		char** getHeads() const {
 			return heads;
 		}
 
-		[[nodiscard]] int getRank() const {
+		int getRank() const {
 			return rank;
 		}
 

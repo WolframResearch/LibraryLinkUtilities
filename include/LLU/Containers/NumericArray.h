@@ -37,7 +37,7 @@ namespace LLU {
 			return static_cast<T*>(LibraryData::NumericArrayAPI()->MNumericArray_getData(this->getInternal()));
 		}
 
-		[[nodiscard]] virtual MNumericArray getInternal() const = 0;
+		virtual MNumericArray getInternal() const = 0;
 	};
 
 	/**

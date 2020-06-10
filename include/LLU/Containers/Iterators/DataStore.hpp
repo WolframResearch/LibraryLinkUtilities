@@ -22,11 +22,11 @@ namespace LLU {
 	struct GenericDataNode {
 		DataStoreNode node;
 
-		[[nodiscard]] GenericDataNode next() const noexcept;
+		GenericDataNode next() const noexcept;
 
-		[[nodiscard]] MArgumentType type() const noexcept;
+		MArgumentType type() const noexcept;
 
-		[[nodiscard]] std::string_view name() const noexcept;
+		std::string_view name() const noexcept;
 
 		[[nodiscard]] Argument::TypedArgument value() const;
 

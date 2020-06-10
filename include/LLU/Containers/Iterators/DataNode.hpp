@@ -57,7 +57,7 @@ namespace LLU {
 		 * @return  string_view to the node name
 		 * @note    If you store the result of this function make sure it does not outlive the underlying DataStore node, otherwise make a string copy
 		 */
-		[[nodiscard]] std::string_view name() const {
+		std::string_view name() const {
 			return node.name();
 		}
 
@@ -65,7 +65,7 @@ namespace LLU {
 		 * @brief   Check if this node has a successor
 		 * @return  true iff the current node is not the last one in its DataList
 		 */
-		[[nodiscard]] bool hasNext() const {
+		bool hasNext() const {
 			return static_cast<bool>(node.next());
 		}
 
@@ -73,7 +73,7 @@ namespace LLU {
 		 * @brief   Get next node as GenericDataNode (because the next node may not necessarily have value of type T)
 		 * @return  GenericDataNode wrapper of next node, or empty if this is the last node
 		 */
-		[[nodiscard]] GenericDataNode next() const {
+		GenericDataNode next() const {
 			return node.next();
 		}
 

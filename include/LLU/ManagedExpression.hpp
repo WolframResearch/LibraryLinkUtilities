@@ -153,7 +153,7 @@ namespace LLU {
 		 * Get symbol name that is used in the WL to represent Managed Expressions stored in this Store
 		 * @return symbol name
 		 */
-		[[nodiscard]] const std::string& getExpressionName() const noexcept {
+		const std::string& getExpressionName() const noexcept {
 			return expressionName;
 		}
 

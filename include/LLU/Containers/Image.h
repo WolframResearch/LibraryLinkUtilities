@@ -89,7 +89,7 @@ namespace LLU {
 		}
 
 		/// Get the raw MImage, must be implemented in subclasses.
-		[[nodiscard]] virtual MImage getInternal() const = 0;
+		virtual MImage getInternal() const = 0;
 
 		/// Throw Image-specific error for accessing data under invalid index
 		[[noreturn]] void indexError() const {

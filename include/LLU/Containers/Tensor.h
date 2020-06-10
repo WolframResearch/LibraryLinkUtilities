@@ -34,7 +34,7 @@ namespace LLU {
 		T* getData() const noexcept override;
 
 		/// Get the raw MTensor, must be implemented in subclasses.
-		[[nodiscard]] virtual MTensor getInternal() const = 0;
+		virtual MTensor getInternal() const = 0;
 	};
 
 	/**

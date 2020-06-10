@@ -46,21 +46,21 @@ public:
 	/**
 	 *	@brief Get raw pointer to underlying data
 	 **/
-	[[nodiscard]] value_type* data() noexcept {
+	value_type* data() noexcept {
 		return getData();
 	}
 
 	/**
 	 *	@brief Get raw pointer to const underlying data
 	 **/
-	[[nodiscard]] const value_type* data() const noexcept {
+	const value_type* data() const noexcept {
 		return getData();
 	}
 
 	/**
 	 *	@brief Get total number of elements in the container
 	 **/
-	[[nodiscard]] mint size() const noexcept {
+	mint size() const noexcept {
 		return getSize();
 	}
 
@@ -213,7 +213,7 @@ private:
 	/**
 	 *	@brief	Get total number of elements in the underlying data
 	 **/
-	[[nodiscard]] virtual mint getSize() const noexcept = 0;
+	virtual mint getSize() const noexcept = 0;
 };
 
 #endif	  // LLU_CONTAINERS_ITERATORS_ITERABLECONTAINER_HPP
