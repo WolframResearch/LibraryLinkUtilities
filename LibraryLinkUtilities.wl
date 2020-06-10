@@ -465,7 +465,7 @@ iLoadLibraryFunction[symbol_, loading_, loader_, libraryName_, args___, opts : O
 	Module[{loadingOpts, assignmentHead},
 		loadingOpts = FilterRules[{opts}, Options[loader]];
 		assignmentHead = If[lazyLoadingQ[loading], LazyLoad, Set];
-		Clear[symbol];
+		clearLHS[symbol];
 		assignmentHead[
 			symbol,
 			(
@@ -483,6 +483,16 @@ iLoadLibraryFunction[symbol_, loading_, loader_, libraryName_, args___, opts : O
 
 Attributes[guessFunctionNameFromSymbol] = {HoldFirst};
 guessFunctionNameFromSymbol[symbol_] := StringReplace["$" ~~ s_ :> s] @ SymbolName[Unevaluated[symbol]];
+
+(* symbol could be a general LHS, such as Constructor[MyExpression] *)
+Attributes[clearLHS] = {HoldFirst};
+clearLHS[symbol_] :=
+	If[Developer`HoldSymbolQ[symbol],
+		Clear[symbol];
+		,
+		(* this is quieted to avoid messaging when symbol has no definitions *)
+		Quiet[Unset[symbol], Unset::norep];
+	];
 
 
 (* PacletFunctionSet[resultSymbol_, lib_, f_, fParams_, fResultType_, opts___] attempts to load an exported function f from a dynamic library lib and assign
@@ -551,7 +561,7 @@ declareLazyVersion[WSTPFunctionSet];
  * This will evaluate the second argument only once, when f is first used.
  *)
 Attributes[LazyLoad] = {HoldAll};
-LazyLoad[f_?Developer`SymbolQ, expr_] := (f := f = expr);
+LazyLoad[f_, expr_] := (f := f = expr);
 
 
 (* ::SubSection:: *)
