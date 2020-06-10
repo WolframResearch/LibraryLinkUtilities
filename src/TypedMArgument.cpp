@@ -5,12 +5,12 @@
  * @brief
  */
 
-#include <LLU/TypedMArgument.h>
+#include "LLU/TypedMArgument.h"
 
-#include <LLU/Containers/Generic/DataStore.hpp>
-#include <LLU/Containers/Generic/Image.hpp>
-#include <LLU/Containers/Generic/NumericArray.hpp>
-#include <LLU/Containers/Generic/Tensor.hpp>
+#include "LLU/Containers/Generic/DataStore.hpp"
+#include "LLU/Containers/Generic/Image.hpp"
+#include "LLU/Containers/Generic/NumericArray.hpp"
+#include "LLU/Containers/Generic/Tensor.hpp"
 
 namespace LLU::Argument {
 
@@ -29,6 +29,7 @@ namespace LLU::Argument {
 			case MArgumentType::NumericArray: return GenericNumericArray {MArgument_getMNumericArray(m), Ownership::LibraryLink};
 			case MArgumentType::Image: return GenericImage {MArgument_getMImage(m), Ownership::LibraryLink};
 			case MArgumentType::UTF8String: return std::string_view {MArgument_getUTF8String(m)};
+			//NOLINTNEXTLINE(cppcoreguidelines-pro-type-cstyle-cast): c-style cast used in a macro in WolframIOLibraryFunctions.h
 			case MArgumentType::DataStore: return GenericDataList {MArgument_getDataStore(m), Ownership::LibraryLink};
 		}
 		ErrorManager::throwException(ErrorName::TypeError);
@@ -50,8 +51,10 @@ namespace LLU::Argument {
 			case MArgumentType::SparseArray: MArgument_setMSparseArray(res, *std::get_if<MSparseArray>(&tma)); break;
 			case MArgumentType::NumericArray: MArgument_setMNumericArray(res, std::get_if<GenericNumericArray>(&tma)->abandonContainer()); break;
 			case MArgumentType::Image: MArgument_setMImage(res, std::get_if<GenericImage>(&tma)->abandonContainer()); break;
+			// NOLINTNEXTLINE(cppcoreguidelines-pro-type-const-cast): LibraryLink will not modify the string, so const_cast is safe here
 			case MArgumentType::UTF8String: MArgument_setUTF8String(res, const_cast<char*>(std::get_if<std::string_view>(&tma)->data())); break;
+			//NOLINTNEXTLINE(cppcoreguidelines-pro-type-cstyle-cast): c-style cast used in a macro in WolframIOLibraryFunctions.h
 			case MArgumentType::DataStore: MArgument_setDataStore(res, std::get_if<GenericDataList>(&tma)->abandonContainer()); break;
 		}
 	}
-}
+}  // namespace LLU::Argument

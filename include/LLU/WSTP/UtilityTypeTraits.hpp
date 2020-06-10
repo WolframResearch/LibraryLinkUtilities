@@ -38,7 +38,7 @@ namespace LLU::WS {
 	/// @endcond
 
 	template<typename T>
-	constexpr bool ScalarSupportedTypeQ = supportedInWSArithmeticQ<remove_cv_ref<T>>;
+	inline constexpr bool ScalarSupportedTypeQ = supportedInWSArithmeticQ<remove_cv_ref<T>>;
 
 	/**
 	 * @brief	Utility trait that determines whether type T is a suitable character type for WSPut*String and WSGet*String
@@ -59,7 +59,7 @@ namespace LLU::WS {
 	/// @endcond
 
 	template<typename T>
-	constexpr bool StringTypeQ = supportedInWSStringQ<remove_cv_ref<T>>;
+	inline constexpr bool StringTypeQ = supportedInWSStringQ<remove_cv_ref<T>>;
 
 }  // namespace LLU::WS
 

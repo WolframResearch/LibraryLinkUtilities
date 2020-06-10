@@ -38,7 +38,7 @@ namespace LLU {
 	 * will trigger compilation error.
 	 */
 	template<class T>
-	void manageInstanceCallback(WolframLibraryData, mbool, mint) {
+	void manageInstanceCallback(WolframLibraryData /*libData*/, mbool /*mode*/, mint /*id*/) {
 		static_assert(dependent_false_v<T>, "Use of unspecialized ManageInstance function.");
 	}
 

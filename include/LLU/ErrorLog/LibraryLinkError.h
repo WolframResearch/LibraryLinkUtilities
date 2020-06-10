@@ -33,12 +33,15 @@ namespace LLU {
 		using IdType = int;
 
 		LibraryLinkError(const LibraryLinkError& e);
+		LibraryLinkError& operator=(const LibraryLinkError& e);
 
 		LibraryLinkError(LibraryLinkError&& e) noexcept
-			: std::runtime_error(e), errorId(e.errorId), type(e.type), messageTemplate(e.messageTemplate), debugInfo(e.debugInfo),
+			: std::runtime_error(e.what()), errorId(e.errorId), type(e.type), messageTemplate(e.messageTemplate), debugInfo(std::move(e.debugInfo)),
 			  messageParams(e.messageParams) {
 			e.messageParams = nullptr;
 		}
+
+		LibraryLinkError& operator=(LibraryLinkError&& e) noexcept;
 
 		~LibraryLinkError() override;
 

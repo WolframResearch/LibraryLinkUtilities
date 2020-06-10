@@ -101,6 +101,13 @@ namespace LLU {
 		 */
 		ProgressMonitor& operator-=(double progress);
 
+		/**
+		 * @brief   Return default step for the ProgressMonitor
+		 * @return  default step value (0.1)
+		 */
+		static constexpr double getDefaultStep() noexcept {
+			return defaultStep;
+		}
 	private:
 		/// By default, progress changes by .1 each time
 		static constexpr double defaultStep = .1;

@@ -31,7 +31,7 @@ namespace LLU {
 	}
 
 	void ProgressMonitor::checkAbort() {
-		if (LibraryData::API()->AbortQ()) {
+		if (LibraryData::API()->AbortQ() != 0) {
 			ErrorManager::throwException(ErrorName::Aborted);
 		}
 	}
@@ -56,4 +56,4 @@ namespace LLU {
 		return *this;
 	}
 
-}
+}  // namespace LLU

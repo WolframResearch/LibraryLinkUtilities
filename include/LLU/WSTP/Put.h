@@ -4,16 +4,16 @@
  * @author	Rafal Chojna <rafalc@wolfram.com>
  * @brief	Header file with classes related to sending data through WSTP.
  */
-#ifndef LLU_WSTP_WSPUT_H_
-#define LLU_WSTP_WSPUT_H_
+#ifndef LLU_WSTP_PUT_H_
+#define LLU_WSTP_PUT_H_
 
 #include <functional>
 
 #include "wstp.h"
 
 #include "LLU/ErrorLog/Errors.h"
-#include "LLU/WSTP/Utilities.h"
 #include "LLU/Utilities.hpp"
+#include "LLU/WSTP/Utilities.h"
 
 namespace LLU::WS {
 
@@ -26,6 +26,7 @@ namespace LLU::WS {
 		}
 
 		static void put(WSLINK m, const T* array, const int* dims, char** heads, int len) {
+			// NOLINTNEXTLINE(cppcoreguidelines-pro-type-const-cast): ArrayF treats heads as read-only, so this cast is safe
 			checkError(m, ArrayF(m, array, dims, const_cast<const char**>(heads), len), ErrorName::WSPutArrayError, ArrayFName);
 		}
 
@@ -274,4 +275,4 @@ namespace LLU::WS {
 #endif
 } /* namespace LLU::WS */
 
-#endif /* LLU_WSTP_WSPUT_H_ */
+#endif /* LLU_WSTP_PUT_H_ */

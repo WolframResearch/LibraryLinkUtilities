@@ -330,20 +330,20 @@ namespace LLU {
 		 *   @brief         Set \c result as output MArgument
 		 *   @param[in]     result - boolean value to be returned to LibraryLink
 		 **/
-		void setBoolean(bool result) const noexcept;
+		void setBoolean(bool result) noexcept;
 
 		/**
 		 *   @brief         Set \c result as output MArgument
 		 *   @param[in]     result - value of type \b double to be returned to LibraryLink
 		 **/
-		void setReal(double result) const noexcept;
+		void setReal(double result) noexcept;
 
 		/**
 		 *   @brief         Set \c result as output MArgument
 		 *   @param[in]     result - value of type \b mint to be returned to LibraryLink
 		 *   @warning		\c result will be implicitly casted to \b mint with no overflow check
 		 **/
-		void setInteger(mint result) const noexcept;
+		void setInteger(mint result) noexcept;
 
 		/**
 		 *   @brief         Set \c result as output MArgument and check for overflow
@@ -352,13 +352,13 @@ namespace LLU {
 		 *   @return        true iff overflow occurred and the value had to be clipped
 		 **/
 		template<typename T>
-		bool setMintAndCheck(T result) const noexcept;
+		bool setMintAndCheck(T result) noexcept;
 
 		/**
 		 *   @brief         Set \c c as output MArgument
 		 *   @param[in]     c - value of type \b std::complex<double> to be returned to LibraryLink
 		 **/
-		void setComplex(std::complex<double> c) const noexcept;
+		void setComplex(std::complex<double> c) noexcept;
 
 		/**
 		 *   @brief         Set \c str as output MArgument
@@ -545,7 +545,7 @@ namespace LLU {
 		 * @warning If you haven't specified "ProgressMonitor" option when loading the library function
 		 * 			with PacletFunctionSet, then the behavior of \c getProgressMonitor is undefined.
 		 */
-		ProgressMonitor getProgressMonitor(double step = .1) const;
+		ProgressMonitor getProgressMonitor(double step = ProgressMonitor::getDefaultStep()) const;
 
 		/**
 		 *   @brief         Get type of MNumericArray at position \c index in \c Args
@@ -686,7 +686,7 @@ namespace LLU {
 		 */
 		template<typename T>
 		struct Setter {
-			static void set(MArgumentManager&, const T&) {
+			static void set(MArgumentManager& /*mngr*/, const T& /*value*/) {
 				static_assert(dependent_false_v<T>, "Unrecognized MArgument type passed as template parameter to MArgumentManager::set.");
 			}
 		};
@@ -696,7 +696,7 @@ namespace LLU {
 		struct MArgPackGetter {
 			template<size_type... Indices>
 			static std::tuple<ArgTypes...>
-			getImpl(const MArgumentManager& mngr, std::array<size_type, sizeof...(ArgTypes)> inds, std::index_sequence<Indices...>) {
+			getImpl(const MArgumentManager& mngr, std::array<size_type, sizeof...(ArgTypes)> inds, std::index_sequence<Indices...> /*seq*/) {
 				if (sizeof...(ArgTypes) > static_cast<size_type>(mngr.argc)) {
 					ErrorManager::throwException(ErrorName::MArgumentIndexError);
 				}
@@ -716,10 +716,10 @@ namespace LLU {
 		template<typename T>
 		struct CustomMArgumentTypeDetector {
 			template<typename U>
-			static std::true_type isSpecialized(typename CustomType<U>::CorrespondingTypes*) { return {}; }
+			static std::true_type isSpecialized(typename CustomType<U>::CorrespondingTypes* /*dummy*/) { return {}; }
 
 			template<typename>
-			static std::false_type isSpecialized(...) { return {}; }
+			static std::false_type isSpecialized(...) { return {}; } // NOLINT(cert-dcl50-cpp)
 
 			static constexpr bool value = decltype(isSpecialized<T>(nullptr))::value;
 		};
@@ -870,7 +870,7 @@ namespace LLU {
 #undef MARGUMENTMANAGER_GENERATE_GET_SPECIALIZATION_FOR_CONTAINER
 
 	template<typename T>
-	bool MArgumentManager::setMintAndCheck(T result) const noexcept {
+	bool MArgumentManager::setMintAndCheck(T result) noexcept {
 		if (result >= MINT_MAX) {
 			setInteger(MINT_MAX);
 			return true;

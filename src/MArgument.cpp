@@ -37,15 +37,25 @@ namespace LLU {
 		MArgSetPrefix##ArgType(arg, newValue);                                                                             \
 	}
 
+	//NOLINTNEXTLINE(cppcoreguidelines-pro-type-const-cast): const_cast forced by LibraryLink API
 	ARGUMENT_DEFINE_SPECIALIZATIONS_OF_MEMBER_FUNCTIONS(Boolean, MArgument_get, MArgument_set, addNamedBoolean, addBoolean)
+	//NOLINTNEXTLINE(cppcoreguidelines-pro-type-const-cast)
 	ARGUMENT_DEFINE_SPECIALIZATIONS_OF_MEMBER_FUNCTIONS(Integer, MArgument_get, MArgument_set, addNamedInteger, addInteger)
+	//NOLINTNEXTLINE(cppcoreguidelines-pro-type-const-cast)
 	ARGUMENT_DEFINE_SPECIALIZATIONS_OF_MEMBER_FUNCTIONS(Real, MArgument_get, MArgument_set, addNamedReal, addReal)
+	//NOLINTNEXTLINE(cppcoreguidelines-pro-type-const-cast)
 	ARGUMENT_DEFINE_SPECIALIZATIONS_OF_MEMBER_FUNCTIONS(Complex, MArgument_get, MArgument_set, addNamedComplex, addComplex)
+	//NOLINTNEXTLINE(cppcoreguidelines-pro-type-const-cast, cppcoreguidelines-pro-type-cstyle-cast): c-style cast used in a macro in WolframIOLibraryFunctions.h
 	ARGUMENT_DEFINE_SPECIALIZATIONS_OF_MEMBER_FUNCTIONS(DataStore, MArgument_get, MArgument_set, addNamedDataStore, addDataStore)
+	//NOLINTNEXTLINE(cppcoreguidelines-pro-type-const-cast)
 	ARGUMENT_DEFINE_SPECIALIZATIONS_OF_MEMBER_FUNCTIONS(UTF8String, MArgument_get, MArgument_set, addNamedString, addString)
+	//NOLINTNEXTLINE(cppcoreguidelines-pro-type-const-cast)
 	ARGUMENT_DEFINE_SPECIALIZATIONS_OF_MEMBER_FUNCTIONS(Tensor, MArgument_getM, MArgument_setM, addNamedMTensor, addMTensor)
+	//NOLINTNEXTLINE(cppcoreguidelines-pro-type-const-cast)
 	ARGUMENT_DEFINE_SPECIALIZATIONS_OF_MEMBER_FUNCTIONS(SparseArray, MArgument_getM, MArgument_setM, addNamedMSparseArray, addMSparseArray)
+	//NOLINTNEXTLINE(cppcoreguidelines-pro-type-const-cast)
 	ARGUMENT_DEFINE_SPECIALIZATIONS_OF_MEMBER_FUNCTIONS(NumericArray, MArgument_getM, MArgument_setM, addNamedMNumericArray, addMNumericArray)
+	//NOLINTNEXTLINE(cppcoreguidelines-pro-type-const-cast)
 	ARGUMENT_DEFINE_SPECIALIZATIONS_OF_MEMBER_FUNCTIONS(Image, MArgument_getM, MArgument_setM, addNamedMImage, addMImage)
 
 #undef ARGUMENT_DEFINE_SPECIALIZATIONS_OF_MEMBER_FUNCTIONS
@@ -67,8 +77,8 @@ namespace LLU {
 		arg = newValue;
 	}
 	template<>
-	void PrimitiveWrapper<MArgumentType::MArgument>::addToDataStore(DataStore ds, const std::string& name, MArgumentType T) const {
-		switch (T) {
+	void PrimitiveWrapper<MArgumentType::MArgument>::addToDataStore(DataStore ds, const std::string& name, MArgumentType actualType) const {
+		switch (actualType) {
 			case MArgumentType::MArgument: ErrorManager::throwException(ErrorName::ArgumentAddNodeMArgument);
 			case MArgumentType::Boolean: PrimitiveWrapper<MArgumentType::Boolean>(arg).addToDataStore(ds, name); break;
 			case MArgumentType::Integer: PrimitiveWrapper<MArgumentType::Integer>(arg).addToDataStore(ds, name); break;
@@ -83,4 +93,4 @@ namespace LLU {
 		}
 	}
 
-}
+}  // namespace LLU

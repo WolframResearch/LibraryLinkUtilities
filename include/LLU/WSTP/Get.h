@@ -4,8 +4,8 @@
  * @author	Rafal Chojna <rafalc@wolfram.com>
  * @brief	Header file with classes related to reading data from WSTP.
  */
-#ifndef LLU_WSTP_WSGET_H_
-#define LLU_WSTP_WSGET_H_
+#ifndef LLU_WSTP_GET_H_
+#define LLU_WSTP_GET_H_
 
 #include <functional>
 #include <memory>
@@ -14,9 +14,9 @@
 #include "wstp.h"
 
 #include "LLU/ErrorLog/Errors.h"
+#include "LLU/Utilities.hpp"
 #include "LLU/WSTP/Release.h"
 #include "LLU/WSTP/Utilities.h"
-#include "LLU/Utilities.hpp"
 
 namespace LLU::WS {
 
@@ -289,4 +289,4 @@ namespace LLU::WS {
 
 } /* namespace LLU::WS */
 
-#endif /* LLU_WSTP_WSGET_H_ */
+#endif /* LLU_WSTP_GET_H_ */

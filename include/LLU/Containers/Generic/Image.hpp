@@ -2,8 +2,8 @@
  * @file
  * @brief GenericImage definition and implementation
  */
-#ifndef LLU_INCLUDE_LLU_CONTAINERS_GENERIC_IMAGE
-#define LLU_INCLUDE_LLU_CONTAINERS_GENERIC_IMAGE
+#ifndef LLU_CONTAINERS_GENERIC_IMAGE_HPP
+#define LLU_CONTAINERS_GENERIC_IMAGE_HPP
 
 #include "LLU/Containers/Generic/Base.hpp"
 #include "LLU/Containers/Interfaces.h"
@@ -68,7 +68,7 @@ namespace LLU {
 		 * @see     <http://reference.wolfram.com/language/LibraryLink/ref/callback/MImage_convertType.html>
 		 */
 		GenericImage convert(imagedata_t t) const {
-			return convert(t, interleavedQ());
+			return convert(t, static_cast<mbool>(interleavedQ()));
 		}
 
 		/**
@@ -107,12 +107,12 @@ namespace LLU {
 
 		/// @copydoc ImageInterface::alphaChannelQ()
 		bool alphaChannelQ() const override {
-			return LibraryData::ImageAPI()->MImage_alphaChannelQ(this->getContainer());
+			return LibraryData::ImageAPI()->MImage_alphaChannelQ(this->getContainer()) != 0;
 		}
 
 		/// @copydoc ImageInterface::interleavedQ()
 		bool interleavedQ() const override {
-			return LibraryData::ImageAPI()->MImage_interleavedQ(this->getContainer());
+			return LibraryData::ImageAPI()->MImage_interleavedQ(this->getContainer()) != 0;
 		}
 
 		/// @copydoc ImageInterface::is3D()
@@ -161,6 +161,6 @@ namespace LLU {
 		}
 	};
 
-}
+}  // namespace LLU
 
-#endif	  // LLU_INCLUDE_LLU_CONTAINERS_GENERIC_IMAGE
+#endif	  // LLU_CONTAINERS_GENERIC_IMAGE_HPP

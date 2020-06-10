@@ -3,8 +3,8 @@
  * @brief   GenericTensor definition and implementation
  */
 
-#ifndef LLU_INCLUDE_LLU_CONTAINERS_GENERIC_TENSOR
-#define LLU_INCLUDE_LLU_CONTAINERS_GENERIC_TENSOR
+#ifndef LLU_CONTAINERS_GENERIC_TENSOR_HPP
+#define LLU_CONTAINERS_GENERIC_TENSOR_HPP
 
 #include "LLU/Containers/Generic/Base.hpp"
 #include "LLU/Containers/Interfaces.h"
@@ -92,6 +92,6 @@ namespace LLU {
 		Container cloneImpl() const override;
 	};
 
-}
+}  // namespace LLU
 
-#endif	  // LLU_INCLUDE_LLU_CONTAINERS_GENERIC_TENSOR
+#endif	  // LLU_CONTAINERS_GENERIC_TENSOR_HPP

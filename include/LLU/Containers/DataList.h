@@ -234,7 +234,7 @@ namespace LLU {
 		private:
 			DataList<T>& dl;
 		};
-	}
+	}  // namespace Detail
 
 	/**
 	 * @struct
@@ -258,6 +258,6 @@ namespace LLU {
 		explicit NameAdaptor(DataList<T>& d) : Detail::IteratorAdaptor<T, NodeNameIterator> {d} {};
 	};
 
-}
+}  // namespace LLU
 
 #endif	  // LLU_CONTAINERS_DATALIST_H

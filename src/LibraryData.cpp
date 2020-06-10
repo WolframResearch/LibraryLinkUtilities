@@ -46,4 +46,4 @@ namespace LLU {
 		return API()->ioLibraryFunctions;
 	}
 
-}
+}  // namespace LLU

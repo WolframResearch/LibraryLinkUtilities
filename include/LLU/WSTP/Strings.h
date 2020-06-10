@@ -14,9 +14,9 @@
 #include "wstp.h"
 
 #include "LLU/ErrorLog/Errors.h"
+#include "LLU/Utilities.hpp"
 #include "LLU/WSTP/EncodingTraits.hpp"
 #include "LLU/WSTP/Utilities.h"
-#include "LLU/Utilities.hpp"
 
 namespace LLU::WS {
 
@@ -64,6 +64,7 @@ namespace LLU::WS {
 		template<typename T>
 		static void put(WSLINK m, const T* string, int len) {
 			static_assert(CharacterTypesCompatible<E, T>, "Character type does not match the encoding in WS::String<E>::put");
+			// NOLINTNEXTLINE(cppcoreguidelines-pro-type-reinterpret-cast): sorry :(
 			auto* expectedStr = reinterpret_cast<const CharT*>(string);
 			checkError(m, Put(m, expectedStr, len), ErrorName::WSPutStringError, PutFName);
 		}
@@ -84,6 +85,7 @@ namespace LLU::WS {
 			auto strData {get(m)};
 
 			auto bytes = strData.get_deleter().getLength();
+			// NOLINTNEXTLINE(cppcoreguidelines-pro-type-reinterpret-cast): sorry :(
 			auto* expectedData = reinterpret_cast<const T*>(strData.get());
 			auto strlen = static_cast<typename StringType::size_type>(bytes);
 

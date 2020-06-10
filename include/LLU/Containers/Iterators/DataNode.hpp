@@ -4,13 +4,13 @@
  * @date	May 06, 2020
  * @brief
  */
-#ifndef LIBRARYLINKUTILITIES_CONTAINERS_ITERATORS_DATANODE_HPP
-#define LIBRARYLINKUTILITIES_CONTAINERS_ITERATORS_DATANODE_HPP
+#ifndef LLU_CONTAINERS_ITERATORS_DATANODE_HPP
+#define LLU_CONTAINERS_ITERATORS_DATANODE_HPP
 
 #include <type_traits>
 
-#include <LLU/Containers/Generic/DataStore.hpp>
-#include <LLU/TypedMArgument.h>
+#include "LLU/Containers/Generic/DataStore.hpp"
+#include "LLU/TypedMArgument.h"
 
 namespace LLU {
 
@@ -129,4 +129,4 @@ namespace std {
 	};
 }
 
-#endif	  // LIBRARYLINKUTILITIES_CONTAINERS_ITERATORS_DATANODE_HPP
+#endif	  // LLU_CONTAINERS_ITERATORS_DATANODE_HPP

@@ -3,8 +3,8 @@
  * @author	Rafal Chojna <rafalc@wolfram.com>
  * @brief   Implementation of the IterableContainer class.
  */
-#ifndef LLU_ITERATORS__ITERABLECONTAINER_HPP
-#define LLU_ITERATORS__ITERABLECONTAINER_HPP
+#ifndef LLU_CONTAINERS_ITERATORS_ITERABLECONTAINER_HPP
+#define LLU_CONTAINERS_ITERATORS_ITERABLECONTAINER_HPP
 
 #include <iterator>
 #include <vector>
@@ -40,33 +40,27 @@ public:
 	using const_reference = const value_type&;
 
 public:
-
 	// Provide special member functions
-	IterableContainer() = default;
 	virtual ~IterableContainer() = default;
-	IterableContainer(const IterableContainer&) = default;
-	IterableContainer& operator=(const IterableContainer&) = default;
-	IterableContainer(IterableContainer&&) noexcept = default;
-	IterableContainer& operator=(IterableContainer&&) noexcept = default;
 	
 	/**
 	 *	@brief Get raw pointer to underlying data
 	 **/
-	value_type* data() noexcept {
+	[[nodiscard]] value_type* data() noexcept {
 		return getData();
 	}
 
 	/**
 	 *	@brief Get raw pointer to const underlying data
 	 **/
-	const value_type* data() const noexcept {
+	[[nodiscard]] const value_type* data() const noexcept {
 		return getData();
 	}
 
 	/**
 	 *	@brief Get total number of elements in the container
 	 **/
-	mint size() const noexcept {
+	[[nodiscard]] mint size() const noexcept {
 		return getSize();
 	}
 
@@ -206,7 +200,7 @@ public:
 	 * Copy contents of the data to a std::vector of matching type
 	 * @return	std::vector with the copy of the data
 	 */
-	std::vector<value_type> asVector() const {
+	[[nodiscard]] std::vector<value_type> asVector() const {
 		return std::vector<value_type> {cbegin(), cend()};
 	}
 
@@ -219,7 +213,7 @@ private:
 	/**
 	 *	@brief	Get total number of elements in the underlying data
 	 **/
-	virtual mint getSize() const noexcept = 0;
+	[[nodiscard]] virtual mint getSize() const noexcept = 0;
 };
 
-#endif	  // LLU_ITERATORS__ITERABLECONTAINER_HPP
+#endif	  // LLU_CONTAINERS_ITERATORS_ITERABLECONTAINER_HPP

@@ -242,6 +242,6 @@ namespace LLU {
 		static_assert(alwaysFalse<Type>, "Trying to instantiate unspecialized MContainer template.");
 	};
 #endif
-}
+}  // namespace LLU
 
 #endif	  // LLU_CONTAINERS_GENERIC_BASE_HPP

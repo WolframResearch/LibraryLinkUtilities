@@ -120,6 +120,7 @@ namespace LLU::Argument {
 		if constexpr (T == MArgumentType::Complex) {
 			return {value.real(), value.imag()};
 		} else if constexpr (T == MArgumentType::UTF8String) {
+			// NOLINTNEXTLINE(cppcoreguidelines-pro-type-const-cast): LibraryLink will not modify the string, so const_cast is safe here
 			return const_cast<char*>(value.data());
 		} else if constexpr (ContainerTypeQ<T> && T != MArgumentType::SparseArray) {
 			return value.abandonContainer();

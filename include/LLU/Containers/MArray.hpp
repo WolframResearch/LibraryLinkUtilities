@@ -64,7 +64,7 @@ namespace LLU {
 		/**
 		 *	@brief Check whether container is empty
 		 **/
-		[[nodiscard]] mint empty() const noexcept {
+		[[nodiscard]] bool empty() const noexcept {
 			return dims.flatCount() == 0;
 		}
 
@@ -166,8 +166,9 @@ namespace LLU {
 	template<typename T>
 	std::ostream& operator<<(std::ostream& os, const MArray<T>& c) {
 		os << "{ ";
-		for (auto elem : c)
+		for (auto elem : c) {
 			os << elem << " ";
+		}
 		os << "}";
 		return os;
 	}

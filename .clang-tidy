@@ -1,28 +1,40 @@
 ---
-Checks: *,
-  -abseil-*,
-  -android-*,
-  -cppcoreguidelines-avoid-c-arrays,  #because we need to match WSTP and LibraryLink API types
-  -fuchsia-*,
+Checks: >
+  -*,
+  bugprone-*,
+  cert-*,
+  -cert-dcl21-cpp,
+  -cert-oop11-cpp,
+  cppcoreguidelines-*,
+  -cppcoreguidelines-avoid-c-arrays,
+  -cppcoreguidelines-owning-memory,
+  google-*,
+  -google-readability-braces-around-statements,
   -google-runtime-references,
-  -google-runtime-int, # because in many places we need to match WSTP and LibraryLink API types exactly
+  -google-runtime-int,
+  hicpp-*,
   -hicpp-avoid-c-arrays,
-  -linuxkernel-*,
+  -hicpp-braces-around-statements,
+  -hicpp-explicit-conversions,
+  -hicpp-special-member-functions,
+  llvm-*,
+  -llvm-namespace-comment,
+  misc-*,
+  modernize-*,
   -modernize-avoid-c-arrays,
+  -modernize-use-nodiscard,
   -modernize-use-trailing-return-type,
-  -mpi-*,
-  -objc-*,
-  -openmp-*,
-  -readability-redundant-access-specifiers,
-  -zircon-*,
+  performance-*,
+  portability-*,
+  readability-*,
+  -readability-magic-numbers,
+  -readability-redundant-access-specifiers
 WarningsAsErrors: false
 HeaderFilterRegex: ''
 AnalyzeTemporaryDtors: false
 FormatStyle:     file
 User:            rafal
 CheckOptions:
-  - key:             cert-dcl16-c.NewSuffixes
-    value:           'L;LL;LU;LLU'
   - key:             cppcoreguidelines-avoid-magic-numbers.IgnoredFloatingPointValues
     value:           '1.0;100.0;'
   - key:             cppcoreguidelines-avoid-magic-numbers.IgnoredIntegerValues
@@ -39,4 +51,6 @@ CheckOptions:
     value:           '1'
   - key:             readability-implicit-bool-conversion.AllowPointerConditions
     value:           '1'
+  - key:             readability-uppercase-literal-suffix.NewSuffixes
+    value:           'L;LL;LU;LLU'
 ...

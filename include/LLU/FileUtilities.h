@@ -138,7 +138,7 @@ namespace LLU {
 		 * Base share policy - shared read access when file opened readonly, exclusive access otherwise.
 		 * @return _SH_SECURED on Windows and 0 on other platforms where it is not used anyway
 		 */
-		[[nodiscard]] virtual int flag(std::ios::openmode) const;
+		[[nodiscard]] virtual int flag(std::ios::openmode /*mode*/) const;
 	};
 
 	/**

@@ -4,8 +4,8 @@
  * @author	Rafal Chojna <rafalc@wolfram.com>
  * @brief	Header file with classes responsible for releasing memory allocated by WSTP when receiving data.
  */
-#ifndef LLU_WSTP_WSRELEASE_H_
-#define LLU_WSTP_WSRELEASE_H_
+#ifndef LLU_WSTP_RELEASE_H_
+#define LLU_WSTP_RELEASE_H_
 
 #include <functional>
 
@@ -26,7 +26,7 @@ namespace LLU::WS {
 			Release(m, data, length);
 		}
 
-		int getLength() const {
+		[[nodiscard]] int getLength() const {
 			return length;
 		}
 
@@ -48,15 +48,15 @@ namespace LLU::WS {
 			Release(m, data, dims, heads, rank);
 		}
 
-		int* getDims() const {
+		[[nodiscard]] int* getDims() const {
 			return dims;
 		}
 
-		char** getHeads() const {
+		[[nodiscard]] char** getHeads() const {
 			return heads;
 		}
 
-		int getRank() const {
+		[[nodiscard]] int getRank() const {
 			return rank;
 		}
 
@@ -70,12 +70,14 @@ namespace LLU::WS {
 	};
 
 	template<typename T>
-	typename ReleaseArray<T>::Func ReleaseArray<T>::Release =
-		[](WSLINK, T*, int*, char**, int) { static_assert(dependent_false_v<T>, "Trying to use WS::ReleaseArray<T>::Release for unsupported type T"); };
+	typename ReleaseArray<T>::Func ReleaseArray<T>::Release = [](WSLINK /*link*/, T* /*array*/, int* /*dims*/, char** /*heads*/, int /*rank*/) {
+		static_assert(dependent_false_v<T>, "Trying to use WS::ReleaseArray<T>::Release for unsupported type T");
+	};
 
 	template<typename T>
-	typename ReleaseList<T>::Func ReleaseList<T>::Release =
-		[](WSLINK, T*, int) { static_assert(dependent_false_v<T>, "Trying to use WS::ReleaseList<T>::Release for unsupported type T"); };
+	typename ReleaseList<T>::Func ReleaseList<T>::Release = [](WSLINK /*link*/, T* /*list*/, int /*length*/) {
+		static_assert(dependent_false_v<T>, "Trying to use WS::ReleaseList<T>::Release for unsupported type T");
+	};
 
 #ifndef _WIN32
 
@@ -132,4 +134,4 @@ namespace LLU::WS {
 
 } /* namespace LLU::WS */
 
-#endif /* LLU_WSTP_WSRELEASE_H_ */
+#endif /* LLU_WSTP_RELEASE_H_ */

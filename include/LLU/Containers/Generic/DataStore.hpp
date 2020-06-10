@@ -3,14 +3,13 @@
  * @brief   Definition and implementation of generic DataStore wrapper.
  */
 
-#ifndef LLU_INCLUDE_LLU_CONTAINERS_GENERIC_DATASTORE
-#define LLU_INCLUDE_LLU_CONTAINERS_GENERIC_DATASTORE
+#ifndef LLU_CONTAINERS_GENERIC_DATASTORE_HPP
+#define LLU_CONTAINERS_GENERIC_DATASTORE_HPP
 
-#include <LLU/Containers/Generic/Base.hpp>
-#include <LLU/Containers/Iterators/DataStore.hpp>
-
-#include <LLU/MArgument.h>
-#include <LLU/TypedMArgument.h>
+#include "LLU/Containers/Generic/Base.hpp"
+#include "LLU/Containers/Iterators/DataStore.hpp"
+#include "LLU/MArgument.h"
+#include "LLU/TypedMArgument.h"
 
 namespace LLU {
 
@@ -194,6 +193,7 @@ namespace LLU {
 
 		/// @copydoc   MContainerBase::pass(MArgument&)
 		void passImpl(MArgument& res) const noexcept override {
+			//NOLINTNEXTLINE(cppcoreguidelines-pro-type-cstyle-cast): c-style cast used in a macro in WolframIOLibraryFunctions.h
 			MArgument_setDataStore(res, this->getContainer());
 		}
 	};
@@ -231,6 +231,6 @@ namespace LLU {
 		}
 		return std::move(*ptr);
 	}
-}
+}  // namespace LLU
 
-#endif	  // LLU_INCLUDE_LLU_CONTAINERS_GENERIC_DATASTORE
+#endif	  // LLU_CONTAINERS_GENERIC_DATASTORE_HPP

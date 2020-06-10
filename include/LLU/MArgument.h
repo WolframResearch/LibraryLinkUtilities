@@ -175,7 +175,7 @@ namespace LLU {
 	template<>
 	void PrimitiveWrapper<MArgumentType::MArgument>::set(typename PrimitiveWrapper::value_type newValue);
 	template<>
-	void PrimitiveWrapper<MArgumentType::MArgument>::addToDataStore(DataStore ds, const std::string& name, MArgumentType) const;
+	void PrimitiveWrapper<MArgumentType::MArgument>::addToDataStore(DataStore ds, const std::string& name, MArgumentType actualType) const;
 
 #undef ARGUMENT_DEFINE_SPECIALIZATIONS_OF_MEMBER_FUNCTIONS
 

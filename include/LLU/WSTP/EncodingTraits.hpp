@@ -89,7 +89,7 @@ namespace LLU::WS {
 	 * We say that character type T is compatible with encoding E as long as the size of T is the same as size of CharType<E>.
 	 */
 	template<Encoding E, typename T>
-	constexpr bool CharacterTypesCompatible = (sizeof(T) == sizeof(CharType<E>));
+	inline constexpr bool CharacterTypesCompatible = (sizeof(T) == sizeof(CharType<E>));
 
 	/**
 	 * @struct StringTypeStruct

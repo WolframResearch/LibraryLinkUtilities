@@ -56,7 +56,6 @@ namespace LLU {
 	template<typename Container>
 	using enable_if_integral_elements = typename std::enable_if_t<std::is_integral<typename std::remove_reference_t<Container>::value_type>::value>;
 
-
 	template<typename Container, typename = std::void_t<>>
 	struct has_value_type : std::false_type {};
 
@@ -73,7 +72,7 @@ namespace LLU {
 	struct has_size<Container, std::void_t<decltype(std::declval<Container>().size())>> : std::true_type {};
 
 	template<typename Container>
-	constexpr bool has_size_v = has_size<Container>::value;
+	inline constexpr bool has_size_v = has_size<Container>::value;
 
 	template<typename Container, typename = std::void_t<>>
 	struct is_iterable : std::false_type {};
@@ -83,7 +82,7 @@ namespace LLU {
 		: std::true_type {};
 
 	template<typename Container, typename T>
-	constexpr bool is_iterable_container_with_matching_type_v =
+	inline constexpr bool is_iterable_container_with_matching_type_v =
 		std::conjunction<std::is_class<Container>, has_value_type<Container>, is_iterable<Container>, has_matching_type<Container, T>>::value;
 
 	/**
@@ -96,6 +95,7 @@ namespace LLU {
 	 */
 	template<typename VariantType, typename T, std::size_t index = 0>
 	constexpr std::size_t variant_index() {
+		// NOLINTNEXTLINE(bugprone-branch-clone): for some reason this did not work when first two branches were combined into one
 		if constexpr (index >= std::variant_size_v<VariantType>) {
 			return index;
 		} else if (std::is_same_v<std::variant_alternative_t<index, VariantType>, T>) {
@@ -110,7 +110,7 @@ namespace LLU {
 	 * @tparam 	Ts - variadic template parameter, any number of arbitrary types
 	 */
 	template<typename... Ts>
-	void Unused([[maybe_unused]] Ts&&...args) {}
+	void Unused([[maybe_unused]] Ts&&... args) {}
 
 	/**
 	 * @brief	Get a type that inherits from false_type and ignores the template parameter completely
@@ -124,7 +124,7 @@ namespace LLU {
 	 * Useful utility for static_assert.
 	 */
 	template<typename T>
-	constexpr bool dependent_false_v = dependent_false<T>::value;
+	inline constexpr bool dependent_false_v = dependent_false<T>::value;
 
 	/// Utility structure that matches an MNumericArray data type with corresponding C++ type
 	template<numericarray_data_t>
@@ -235,47 +235,66 @@ namespace LLU {
 			}
 			return "Undefined";
 		}
-	} // namespace NA
-
+	}	 // namespace NA
 
 	/// Utility variable template that matches a C++ type with a corresponding MImage data type
 	template<typename T>
-	constexpr imagedata_t ImageType = MImage_Type_Undef;
+	inline constexpr imagedata_t ImageType = MImage_Type_Undef;
 	/// @cond
-	template<>constexpr imagedata_t ImageType<int8_t> = MImage_Type_Bit;
-	template<>constexpr imagedata_t ImageType<uint8_t> = MImage_Type_Bit8;
-	template<>constexpr imagedata_t ImageType<uint16_t> = MImage_Type_Bit16;
-	template<>constexpr imagedata_t ImageType<float> = MImage_Type_Real32;
-	template<>constexpr imagedata_t ImageType<double> = MImage_Type_Real;
+	template<>
+	inline constexpr imagedata_t ImageType<int8_t> = MImage_Type_Bit;
+	template<>
+	inline constexpr imagedata_t ImageType<uint8_t> = MImage_Type_Bit8;
+	template<>
+	inline constexpr imagedata_t ImageType<uint16_t> = MImage_Type_Bit16;
+	template<>
+	inline constexpr imagedata_t ImageType<float> = MImage_Type_Real32;
+	template<>
+	inline constexpr imagedata_t ImageType<double> = MImage_Type_Real;
 	/// @endcond
 
 	/// Utility structure that matches a C++ type with a corresponding MNumericArray data type
 	template<typename T>
-	constexpr numericarray_data_t NumericArrayType = MNumericArray_Type_Undef;
+	inline constexpr numericarray_data_t NumericArrayType = MNumericArray_Type_Undef;
 	/// @cond
-	template<> constexpr numericarray_data_t NumericArrayType<int8_t> = MNumericArray_Type_Bit8;
-	template<> constexpr numericarray_data_t NumericArrayType<uint8_t> = MNumericArray_Type_UBit8;
-	template<> constexpr numericarray_data_t NumericArrayType<int16_t> = MNumericArray_Type_Bit16;
-	template<> constexpr numericarray_data_t NumericArrayType<uint16_t> = MNumericArray_Type_UBit16;
-	template<> constexpr numericarray_data_t NumericArrayType<int32_t> = MNumericArray_Type_Bit32;
-	template<> constexpr numericarray_data_t NumericArrayType<uint32_t> = MNumericArray_Type_UBit32;
-	template<> constexpr numericarray_data_t NumericArrayType<int64_t> = MNumericArray_Type_Bit64;
-	template<> constexpr numericarray_data_t NumericArrayType<uint64_t> = MNumericArray_Type_UBit64;
-	template<> constexpr numericarray_data_t NumericArrayType<float> = MNumericArray_Type_Real32;
-	template<> constexpr numericarray_data_t NumericArrayType<double> = MNumericArray_Type_Real64;
-	template<> constexpr numericarray_data_t NumericArrayType<std::complex<float>> = MNumericArray_Type_Complex_Real32;
-	template<> constexpr numericarray_data_t NumericArrayType<std::complex<double>> = MNumericArray_Type_Complex_Real64;
+	template<>
+	inline constexpr numericarray_data_t NumericArrayType<int8_t> = MNumericArray_Type_Bit8;
+	template<>
+	inline constexpr numericarray_data_t NumericArrayType<uint8_t> = MNumericArray_Type_UBit8;
+	template<>
+	inline constexpr numericarray_data_t NumericArrayType<int16_t> = MNumericArray_Type_Bit16;
+	template<>
+	inline constexpr numericarray_data_t NumericArrayType<uint16_t> = MNumericArray_Type_UBit16;
+	template<>
+	inline constexpr numericarray_data_t NumericArrayType<int32_t> = MNumericArray_Type_Bit32;
+	template<>
+	inline constexpr numericarray_data_t NumericArrayType<uint32_t> = MNumericArray_Type_UBit32;
+	template<>
+	inline constexpr numericarray_data_t NumericArrayType<int64_t> = MNumericArray_Type_Bit64;
+	template<>
+	inline constexpr numericarray_data_t NumericArrayType<uint64_t> = MNumericArray_Type_UBit64;
+	template<>
+	inline constexpr numericarray_data_t NumericArrayType<float> = MNumericArray_Type_Real32;
+	template<>
+	inline constexpr numericarray_data_t NumericArrayType<double> = MNumericArray_Type_Real64;
+	template<>
+	inline constexpr numericarray_data_t NumericArrayType<std::complex<float>> = MNumericArray_Type_Complex_Real32;
+	template<>
+	inline constexpr numericarray_data_t NumericArrayType<std::complex<double>> = MNumericArray_Type_Complex_Real64;
 	/// @endcond
 
 	/// Utility structure that matches a C++ type with a corresponding MTensor data type
 	template<typename T>
-	constexpr mint TensorType = MType_Undef;
+	inline constexpr mint TensorType = MType_Undef;
 	/// @cond
-	template<> constexpr mint TensorType<mint> = MType_Integer;
-	template<> constexpr mint TensorType<double> = MType_Real;
-	template<> constexpr mint TensorType<std::complex<double>> = MType_Complex;
+	template<>
+	inline constexpr mint TensorType<mint> = MType_Integer;
+	template<>
+	inline constexpr mint TensorType<double> = MType_Real;
+	template<>
+	inline constexpr mint TensorType<std::complex<double>> = MType_Complex;
 	/// @endcond
 
 } /* namespace LLU */
 
-#endif // LLU_UTILITIES_HPP
+#endif	  // LLU_UTILITIES_HPP
