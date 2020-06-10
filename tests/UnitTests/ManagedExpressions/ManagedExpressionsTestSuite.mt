@@ -58,6 +58,9 @@ TestExecute[
 
 	(* Create new instance of MyExpression *)
 	globalExpr = `LLU`NewManagedExpression[MyExpression]["I will live through all tests"];
+
+	(* In some rare cases you may want LLU to issue single-argument Throws. It can be achieved by modifying $ExceptionTagFunction as follows: *)
+	`LLU`$ExceptionTagFunction = Nothing&;
 ];
 
 Test[
@@ -379,7 +382,7 @@ Test[
 ];
 
 TestExecute[
-	`LLU`LazyPacletFunctionSet[`LLU`Constructor[Serializable], "CreateSerializableExpression", {`LLU`Managed[Serializable], String}, "Void", "Throws" -> True];
+	`LLU`LazyPacletFunctionSet[`LLU`Constructor[Serializable], "CreateSerializableExpression", {`LLU`Managed[Serializable], String}, "Void"];
 	`LLU`LazyPacletFunctionSet[Serialize, {`LLU`Managed[Serializable]}, String];
 ];
 

@@ -23,8 +23,22 @@ LazyInitializePacletLibrary::usage = "Lazy version of InitializePacletLibrary
 RegisterPacletErrors::usage = "RegisterPacletErrors[errors_?AssociationQ]
 	Adds custom top-level errors. Errors are specified in the form
 	<| \"ErrorName\" -> \"Message\" |>";
-CreatePacletFailure::usage = "CreatePacletFailure[type_?StringQ, opts:OptionsPattern[]]
+
+CreatePacletFailure::usage = "CreatePacletFailure[type_?StringQ, opts]
 	Emits a Failure object for the custom error named by type.";
+
+ThrowPacletFailure::usage = "ThrowPacletFailure[type_?StringQ, opts]
+Throws a tagged Failure object for the custom error named by type. The tag is provided by LLU`$ExceptionTagFunction, which is a function that operates
+on the to-be-thrown Failure object and can be customized.
+ThrowPacletFailure[type_?StringQ, tag_, opts]
+Throws a Failure object for the custom error named by type with explicitly specified tag (second argument to Throw).";
+
+(* ---------------- Configuration ------------------------------------------ *)
+
+$Throws::usage = "Default value for the \"Throws\" option for loading library functions. Notice that this setting does not affect LLU API functions
+(e.g. RegisterPacletErrors, InitializePacletLibrary, etc.) as they always throw on failure.";
+
+$ExceptionTagFunction::usage = "Function to be applied to a Failure returned by a library function to determine the second argument to Throw[].";
 
 (* ---------------- Loading libraries and library functions ---------------- *)
 
@@ -199,12 +213,12 @@ $InitializePacletLibrary[libPath_?StringQ] := (
 	SetPacletLibrary[SafeLibraryLoad[libPath]];
 
 	(* Initialize error handling part of LLU by loading errors from the C++ code *)
-	WSTPFunctionSet[$GetCErrorCodes, "sendRegisteredErrors", "Throws" -> True];
+	WSTPFunctionSet[$GetCErrorCodes, "sendRegisteredErrors"];
 	RegisterCppErrors[];
 
 	(* Load library functions for initializing different parts of LLU. *)
-	PacletFunctionSet[$SetLoggerContext, "setLoggerContext", {String}, String, "Optional" -> True, "Throws" -> True];
-	PacletFunctionSet[$SetExceptionDetailsContext, "setExceptionDetailsContext", {String}, String, "Throws" -> True];
+	PacletFunctionSet[$SetLoggerContext, "setLoggerContext", {String}, String, "Optional" -> True];
+	PacletFunctionSet[$SetExceptionDetailsContext, "setExceptionDetailsContext", {String}, String];
 	(* Tell C++ part of LLU in which context were top-level symbols loaded. *)
 	SetContexts[$LLULoadingContext, $LLULoadingContext <> "Private`"];
 	$PacletLibrary
@@ -353,7 +367,7 @@ SafeLibraryLoad[lib_] :=
 	Quiet @ Check[
 		LibraryLoad[lib]
 		,
-		Throw @ CreatePacletFailure[
+		ThrowPacletFailure[
 			"LibraryLoadFailure",
 			"MessageParameters" -> <|"LibraryName" -> lib, "Details" -> ToString @ LibraryLink`$LibraryError|>
 		];
@@ -392,7 +406,7 @@ SafeLibraryFunctionLoad[libName_?StringQ, fname_?StringQ, fParams_, retType_, op
 		If[TrueQ @ OptionValue["Optional"],
 			Missing["NotInLibrary"]
 			,
-			Throw @ CreatePacletFailure[
+			ThrowPacletFailure[
 				"FunctionLoadFailure",
 				"MessageParameters" -> <|"FunctionName" -> fname, "LibraryName" -> libName, "Details" -> ToString @ LibraryLink`$LibraryError|>]
 		]
@@ -403,7 +417,7 @@ Join[
 	Options[SafeLibraryFunctionLoad],
 	{
 		"ProgressMonitor" -> None,
-		"Throws" -> False
+		"Throws" :> $Throws
 	}
 ];
 
@@ -426,7 +440,7 @@ Module[{errorHandler, pmSymbol, newParams, f, functionOptions, loadOptions},
 	    errorHandler @* SafeLibraryFunctionLoad[libName, fname, fParams, retType, loadOptions]
 	    , (* else *)
 	    If[Not @ Developer`SymbolQ @ ReleaseHold @ pmSymbol,
-		    Throw @ CreatePacletFailure["ProgressMonInvalidValue"];
+		    ThrowPacletFailure["ProgressMonInvalidValue"];
 	    ];
 	    newParams = Append[fParams, {Real, 1, "Shared"}];
 	    f = errorHandler @* SafeLibraryFunctionLoad[libName, fname, newParams, retType, loadOptions];
@@ -492,8 +506,7 @@ clearLHS[symbol_] :=
  * Options:
  * All options for PacletFunctionLoad and SafeLibraryFunctionLoad are accepted.
  *)
-Options[PacletFunctionSet] =
-	Union[Options[PacletFunctionLoad], Options[SafeLibraryFunctionLoad]];
+Options[PacletFunctionSet] = Options[PacletFunctionLoad];
 
 Attributes[PacletFunctionSet] = {HoldFirst};
 PacletFunctionSet[symbol_, libraryName_, funcNameInLib_?StringQ, paramTypes_, retType_, opts : OptionsPattern[]] :=
@@ -566,7 +579,7 @@ RegisterPacletErrors[errors_?AssociationQ] :=
 	];
 
 RegisterPacletErrors[___] :=
-	Throw @ CreatePacletFailure["RegisterFailure"];
+	ThrowPacletFailure["RegisterFailure"];
 
 
 (* ::SubSection:: *)
@@ -636,6 +649,17 @@ Block[{slotNames, slotValues, msgParams, selectedSlotValues, params = {}},
 	{msgParams, params}
 ];
 
+
+ThrowPacletFailure[type_?StringQ, opts : OptionsPattern[CreatePacletFailure]] :=
+	With[{failure = CreatePacletFailure[type, opts]},
+		Throw @@ {failure, $ExceptionTagFunction[failure]};
+	];
+
+ThrowPacletFailure[type_?StringQ, tag_, opts : OptionsPattern[CreatePacletFailure]] :=
+	With[{failure = CreatePacletFailure[type, opts]},
+		Throw[failure, tag];
+	];
+
 (* ::SubSection:: *)
 (* CatchLibraryLinkError *)
 (* ------------------------------------------------------------------------- *)
@@ -674,13 +698,24 @@ With[{result = Quiet[f, {
 	}]},
 
 	If[Head[result] === LibraryFunctionError,
-		Throw @ CreatePacletFailure[ErrorCodeToName[result[[2]]]]
+		ThrowPacletFailure[ErrorCodeToName[result[[2]]]]
 		, (* else *)
 		result
 	]
 ];
 
 End[]; (* `Private` *)
+
+(* ::SubSection:: *)
+(* Config *)
+(* ------------------------------------------------------------------------- *)
+(* Symbols intended to be modified by paclet developers to better fit their needs. *)
+
+$Throws = True;
+
+$ExceptionTagString = "LLUExceptionTag";
+
+$ExceptionTagFunction := $ExceptionTagString&;
 
 (* ::SubSection:: *)
 (* Logging *)
@@ -871,12 +906,12 @@ MArgumentTransform[Managed[expectedHead_]] := Replace[{
 	expectedHead[id_Integer] :> If[ManagedLibraryExpressionQ[expectedHead[id]],
 		id
 		,
-		Throw @ CreatePacletFailure["InvalidManagedExpressionID", "MessageParameters" -> <|"Expr" -> expectedHead[id]|>]
+		ThrowPacletFailure["InvalidManagedExpressionID", "MessageParameters" -> <|"Expr" -> expectedHead[id]|>]
 	]
 	,
 	id_Integer :> id (* Passing bare IDs of Managed Expressions is supported but may be more error prone than passing proper MLEs *)
 	,
-	e_ :> Throw @ CreatePacletFailure["UnexpectedManagedExpression", "MessageParameters" -> <|"Expected" -> expectedHead, "Actual" -> e|>]
+	e_ :> ThrowPacletFailure["UnexpectedManagedExpression", "MessageParameters" -> <|"Expected" -> expectedHead, "Actual" -> e|>]
 }];
 
 Constructor;

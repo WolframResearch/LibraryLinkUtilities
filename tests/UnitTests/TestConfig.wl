@@ -96,3 +96,12 @@ MemoryLeakTestWithMessages[expression_, repetitions_Integer?Positive] :=
 			{repetitions}
 		]
 	];
+	
+SetAttributes[CatchException, HoldAllComplete];
+CatchException[a__] := Function[x, CatchException[a, x], HoldAll];
+
+CatchException[tagPattern_String, body_] := Catch[body, _String?(StringMatchQ[tagPattern])];
+CatchException[tagPattern_, body_] := Catch[body, tagPattern];
+
+SetAttributes[CatchAll, HoldFirst];
+CatchAll[body_] := CatchException[_, body];

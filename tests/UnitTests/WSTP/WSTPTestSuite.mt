@@ -86,7 +86,7 @@ Test[
 ]
 
 Test[
-	`LLU`WSTPFunctionSet[BoolAnd];
+	`LLU`WSTPFunctionSet[BoolAnd, "Throws" -> False];
 	BoolAnd[True, True, True, False]
 	,
 	False
