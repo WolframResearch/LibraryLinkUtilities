@@ -7,9 +7,8 @@
 #include "LLU/ErrorLog/ErrorManager.h"
 
 #include "LLU/LibraryData.h"
-#include "LLU/WSTP/WSStream.hpp"
 #include "LLU/WSTP/Utilities.h"
-#include "LLU/Utilities.hpp"
+#include "LLU/WSTP/WSStream.hpp"
 
 namespace LLU {
 
@@ -131,8 +130,8 @@ namespace LLU {
 		return e;
 	}
 
-	void ErrorManager::registerPacletErrors(const std::vector<ErrorStringData>& errs) {
-		for (auto&& err : errs) {
+	void ErrorManager::registerPacletErrors(const std::vector<ErrorStringData>& errors) {
+		for (auto&& err : errors) {
 			set(err);
 		}
 	}
@@ -190,4 +189,4 @@ namespace LLU {
 		}
 		return err;
 	}
-}
+}  // namespace LLU

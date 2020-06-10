@@ -11,8 +11,8 @@
 #include <unordered_map>
 #include <utility>
 
-#include <LLU/LibraryData.h>
-#include <LLU/Utilities.hpp>
+#include "LLU/LibraryData.h"
+#include "LLU/Utilities.hpp"
 
 /**
  * Use this macro to define an instance of ManagedExpressionStore corresponding to your class

@@ -9,11 +9,29 @@
 #include <limits>
 #include <numeric>
 
+namespace {
+	/**
+	 *	@brief 		Check if initializer list size will fit into \b mint
+	 *	@param[in]	v - an initializer list
+	 *	@throws		ErrorName::DimensionsError - if \c v is too big
+	 **/
+	void checkInitializerListSize(std::initializer_list<mint> v) {
+		if (v.size() <= 0 || v.size() > static_cast<decltype(v)::size_type>((std::numeric_limits<mint>::max)())) {
+			LLU::ErrorManager::throwException(LLU::ErrorName::DimensionsError);
+		}
+	}
+
+	[[noreturn]] void indexError(mint index) {
+		LLU::ErrorManager::throwException(LLU::ErrorName::MArrayElementIndexError, index);
+	}
+
+}  // namespace
+
 namespace LLU {
 
 	MArrayDimensions::MArrayDimensions(std::initializer_list<mint> dimensions) {
 		dims = dimensions;
-		checkContainerSize(dimensions);
+		checkInitializerListSize(dimensions);
 		flattenedLength = totalLengthFromDims();
 		fillOffsets();
 	}
@@ -55,18 +73,8 @@ namespace LLU {
 		return flatIndex;
 	}
 
-	void MArrayDimensions::checkContainerSize(std::initializer_list<mint> v) const {
-		if (v.size() <= 0 || v.size() > static_cast<decltype(v)::size_type>((std::numeric_limits<mint>::max)())) {
-			ErrorManager::throwException(ErrorName::DimensionsError);
-		}
-	}
-
 	mint MArrayDimensions::totalLengthFromDims() const noexcept {
 		return std::accumulate(std::begin(dims), std::end(dims), static_cast<mint>(1), std::multiplies<>());
-	}
-
-	void MArrayDimensions::indexError(mint index) const {
-		ErrorManager::throwException(ErrorName::MArrayElementIndexError, index);
 	}
 
 } /* namespace LLU */

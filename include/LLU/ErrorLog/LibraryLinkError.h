@@ -32,15 +32,10 @@ namespace LLU {
 	public:
 		using IdType = int;
 
-		LibraryLinkError(const LibraryLinkError& e);
-		LibraryLinkError& operator=(const LibraryLinkError& e);
+		LibraryLinkError(const LibraryLinkError& e) noexcept;
+		LibraryLinkError& operator=(const LibraryLinkError& e) noexcept;
 
-		LibraryLinkError(LibraryLinkError&& e) noexcept
-			: std::runtime_error(e.what()), errorId(e.errorId), type(e.type), messageTemplate(e.messageTemplate), debugInfo(std::move(e.debugInfo)),
-			  messageParams(e.messageParams) {
-			e.messageParams = nullptr;
-		}
-
+		LibraryLinkError(LibraryLinkError&& e) noexcept;
 		LibraryLinkError& operator=(LibraryLinkError&& e) noexcept;
 
 		~LibraryLinkError() override;
@@ -49,8 +44,8 @@ namespace LLU {
 		 * Set debug info
 		 * @param dbg - additional information helpful in debugging
 		 */
-		void setDebugInfo(std::string dbg) {
-			debugInfo = std::move(dbg);
+		void setDebugInfo(const std::string& dbg) {
+			debugInfo = std::runtime_error {dbg};
 		}
 
 		/**
@@ -70,22 +65,22 @@ namespace LLU {
 		/**
 		 *   @brief Get the value of error code
 		 **/
-		[[nodiscard]] const std::string& name() const noexcept {
-			return type;
+		[[nodiscard]] std::string name() const noexcept {
+			return what();
 		}
 
 		/**
 		 *   @brief Get the value of error code
 		 **/
-		[[nodiscard]] const std::string& message() const noexcept {
-			return messageTemplate;
+		[[nodiscard]] std::string message() const noexcept {
+			return messageTemplate.what();
 		}
 
 		/**
 		 *   @brief Get debug info
 		 **/
-		[[nodiscard]] const std::string& debug() const noexcept {
-			return debugInfo;
+		[[nodiscard]] std::string debug() const noexcept {
+			return debugInfo.what();
 		}
 
 		/**
@@ -133,8 +128,8 @@ namespace LLU {
 		 *   @param[in]		msg - error description
 		 *   @warning		This is constructor is not supposed to be used directly by paclet developers. All errors should be thrown by ErrorManager.
 		 **/
-		LibraryLinkError(IdType which, std::string t, std::string msg)
-			: std::runtime_error(t), errorId(which), type(std::move(t)), messageTemplate(std::move(msg)) {}
+		LibraryLinkError(IdType which, const std::string& t, const std::string& msg)
+			: std::runtime_error(t), errorId(which), messageTemplate(msg.c_str()) {}
 
 		/**
 		 * @brief	Helper functions that opens a loopback link given a WSTP environment
@@ -149,10 +144,9 @@ namespace LLU {
 		/// Context for the exceptionDetailsSymbol. It needs to be adjustable because every paclet loads LLU into its own context.
 		static std::string exceptionDetailsSymbolContext;
 
-		const IdType errorId;
-		const std::string type;
-		const std::string messageTemplate;
-		std::string debugInfo;
+		IdType errorId;
+		std::runtime_error messageTemplate;
+		std::runtime_error debugInfo {""};
 		WSLINK messageParams = nullptr;
 	};
 

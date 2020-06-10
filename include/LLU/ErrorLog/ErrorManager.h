@@ -14,8 +14,8 @@
 #include <utility>
 #include <vector>
 
-#include <LLU/ErrorLog/LibraryLinkError.h>
-#include <LLU/LibraryData.h>
+#include "LLU/ErrorLog/LibraryLinkError.h"
+#include "LLU/LibraryData.h"
 
 namespace LLU {
 

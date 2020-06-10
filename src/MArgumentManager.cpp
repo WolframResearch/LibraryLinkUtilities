@@ -160,6 +160,7 @@ namespace LLU {
 			ErrorManager::throwExceptionWithDebugInfo(ErrorName::MArgumentIndexError,
 			                                          "Index " + std::to_string(index) + " out-of-bound when accessing LibraryLink argument");
 		}
+		// NOLINTNEXTLINE(cppcoreguidelines-pro-bounds-pointer-arithmetic): to be fixed in C++20 with std::span
 		return args[index];
 	}
 

@@ -29,11 +29,11 @@ namespace LLU {
 
 		/**
 		 * 	@brief		Constructs MArrayDimensions from a list of dimensions
-		 *	@param[in]	dims - list of MArray dimensions
+		 *	@param[in]	dimensions - list of MArray dimensions
 		 *	@throws		ErrorName::DimensionsError - if \c dims are invalid
 		 *	@throws		ErrorName::FunctionError - if any of Wolfram*Library structures was not initialized
 		 **/
-		MArrayDimensions(std::initializer_list<mint> dims);
+		MArrayDimensions(std::initializer_list<mint> dimensions);
 
 		/**
 		 * 	@brief		Constructs MArrayDimensions from a C-style list (raw pointer + length)
@@ -138,8 +138,6 @@ namespace LLU {
 		void fillOffsets();
 
 	private:
-		[[noreturn]] void indexError(mint index) const;
-
 		/**
 		 *	@brief 		Check if container size will fit into \b mint
 		 *	@param[in]	s - container size
@@ -147,13 +145,6 @@ namespace LLU {
 		 **/
 		template<typename T>
 		mint checkContainerSize(T s) const;
-
-		/**
-		 *	@brief 		Check if initializer list size will fit into \b mint
-		 *	@param[in]	v - an initializer list
-		 *	@throws		ErrorName::DimensionsError - if \c v is too big
-		 **/
-		void checkContainerSize(std::initializer_list<mint> v) const;
 
 		/// Calculate total array length based on current value of dims
 		[[nodiscard]] mint totalLengthFromDims() const noexcept;
