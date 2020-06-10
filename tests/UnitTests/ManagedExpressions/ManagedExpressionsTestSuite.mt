@@ -58,6 +58,9 @@ TestExecute[
 
 	(* Create new instance of MyExpression *)
 	globalExpr = `LLU`NewManagedExpression[MyExpression]["I will live through all tests"];
+
+	(* In some rare cases you may want LLU to issue single-argument Throws. It can be achieved by modifying $ExceptionTagFunction as follows: *)
+	`LLU`$ExceptionTagFunction = Nothing&;
 ];
 
 Test[
@@ -379,8 +382,8 @@ Test[
 ];
 
 TestExecute[
-	`LLU`Constructor[Serializable] = `LLU`PacletFunctionLoad["CreateSerializableExpression", {`LLU`Managed[Serializable], String}, "Void", "Throws" -> True];
-	`LLU`PacletFunctionSet[Serialize, {`LLU`Managed[Serializable]}, String];
+	`LLU`LazyPacletFunctionSet[`LLU`Constructor[Serializable], "CreateSerializableExpression", {`LLU`Managed[Serializable], String}, "Void"];
+	`LLU`LazyPacletFunctionSet[Serialize, {`LLU`Managed[Serializable]}, String];
 ];
 
 Test[
@@ -425,4 +428,28 @@ VerificationTest[
 	Not @ `LLU`ManagedQ[Serializable][c]
 	,
 	TestID -> "ManagedExpressionsTestSuite-20200420-W2O0L8"
+];
+
+TestExecute[
+	Clear[f];
+	f[1] = 1;
+	f[2][2] = 2;
+	f[3][2] = 3;
+	f /: g[f[3]] = 3;
+	f::x = "x";
+	SetAttributes[f, Orderless];
+];
+
+Test[
+	`LLU`Private`clearLHS[f[2]];
+	{DownValues[f], SubValues[f], UpValues[f]}
+	,
+	{{HoldPattern[f[1]] :> 1}, {HoldPattern[f[2][2]] :> 2, HoldPattern[f[3][2]] :> 3}, {HoldPattern[g[f[3]]] :> 3}}
+];
+
+Test[
+	`LLU`Private`clearLHS[f];
+	{DownValues[f], SubValues[f], UpValues[f], Messages[f], Attributes[f]}
+	,
+	{{}, {}, {}, {HoldPattern[f::x] :> "x"}, {Orderless}}
 ];

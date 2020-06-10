@@ -30,15 +30,15 @@ TestExecute[
 
 	`LLU`PacletFunctionSet @@@ {
 		(* Load a number of library functions. We do not provide library path, so the one passed to InitializePacletLibrary will be used. *)
-		{$OpenRead, "OpenForReading", {String}, Integer},
-		{$OpenWrite, "OpenForWriting", {String}, Integer},
-		{$OpenInvalidMode, "OpenInvalidMode", {String}, Integer},
+		{$OpenRead, "OpenForReading", {String}, Integer, "Throws" -> False},
+		{$OpenWrite, "OpenForWriting", {String}, Integer, "Throws" -> False},
+		{$OpenInvalidMode, "OpenInvalidMode", {String}, Integer, "Throws" -> False},
 
 		(* If the function name is the same as symbol name only without the leading "$", the function name can be omitted. *)
 		{$ReadStrings, {String}, "DataStore"},
 		{$WriteStrings, {String, "DataStore"}, "Void"},
-		{$OpenManagedFile, {`LLU`Managed[MyFile], String, Integer}, "Void", "Throws" -> True},
-		{$OpenManagedFileStream, {`LLU`Managed[FileStream], String, Integer}, "Void", "Throws" -> True}
+		{$OpenManagedFile, {`LLU`Managed[MyFile], String, Integer}, "Void"},
+		{$OpenManagedFileStream, {`LLU`Managed[FileStream], String, Integer}, "Void"}
 	};
 
 	`LLU`Constructor[MyFile] = $OpenManagedFile;

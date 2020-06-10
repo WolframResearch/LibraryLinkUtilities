@@ -60,7 +60,11 @@ TestMatch[
 ];
 
 TestMatch[
-	`LLU`CreatePacletFailure["StaticTopLevelError", "MessageParameters" -> <|"X" -> 3|>, "Parameters" -> {"p1", "p2"}]
+	Catch[
+		`LLU`ThrowPacletFailure["StaticTopLevelError", "MessageParameters" -> <|"X" -> 3|>, "Parameters" -> {"p1", "p2"}]
+		,
+		"LLUExceptionTag"
+	]
 	,
 	Failure["StaticTopLevelError", <|
 		"MessageTemplate" -> "This top-level error has a static error message.",
@@ -73,7 +77,13 @@ TestMatch[
 ];
 
 TestMatch[
-	`LLU`CreatePacletFailure["StaticTopLevelError", "MessageParameters" -> "Must be Association or List", "Parameters" -> {1, 2}]
+	Block[{`LLU`$ExceptionTagFunction = First},
+		Catch[
+			`LLU`ThrowPacletFailure["StaticTopLevelError", "MessageParameters" -> "Must be Association or List", "Parameters" -> {1, 2}]
+			,
+			_String?(StringEndsQ["Error"])
+		]
+	]
 	,
 	Failure["StaticTopLevelError", <|
 		"MessageTemplate" -> "This top-level error has a static error message.",
@@ -99,7 +109,11 @@ TestMatch[
 ];
 
 TestMatch[
-	`LLU`CreatePacletFailure["TopLevelNumberedSlotsError", "MessageParameters" -> {"x", "y", "z"}]
+	Catch[
+		`LLU`ThrowPacletFailure["TopLevelNumberedSlotsError", MyTag[17], "MessageParameters" -> {"x", "y", "z"}]
+		,
+		_MyTag
+	]
 	,
 	Failure["TopLevelNumberedSlotsError", <|
 		"MessageTemplate" -> "Slot number one: `1`, number two: `2`.",
@@ -114,7 +128,7 @@ TestMatch[
 (*********************************************************** C++ code failures **************************************************************)
 
 TestMatch[
-	ReadData = `LLU`PacletFunctionLoad["ReadData", {String}, "Void"];
+	ReadData = `LLU`PacletFunctionLoad["ReadData", {String}, "Void", "Throws" -> False];
 	ReadData["test.txt"]
 	,
 	Failure["DataFileError", <|
@@ -141,7 +155,7 @@ TestMatch[
 ];
 
 TestMatch[
-	ReadData2 = `LLU`PacletFunctionLoad["ReadDataLocalWLD", {String}, "Void"];
+	ReadData2 = `LLU`PacletFunctionLoad["ReadDataLocalWLD", {String}, "Void", "Throws" -> False];
 	ReadData2["test.txt"]
 	,
 	Failure["DataFileError", <|
@@ -168,7 +182,7 @@ TestMatch[
 ];
 
 TestMatch[
-	RepeatedTemplate = `LLU`PacletFunctionLoad["RepeatedTemplate", {}, "Void"];
+	`LLU`PacletFunctionSet[RepeatedTemplate, {}, "Void", "Throws" -> False];
 	RepeatedTemplate[]
 	,
 	Failure["RepeatedTemplateError", <|
@@ -182,7 +196,9 @@ TestMatch[
 ];
 
 TestMatch[
-	NumberedSlots = `LLU`PacletFunctionLoad["NumberedSlots", {}, "Void"];
+	Block[{`LLU`$Throws = False},
+		`LLU`PacletFunctionSet[NumberedSlots, {}, "Void"];
+	];
 	NumberedSlots[]
 	,
 	Failure["NumberedSlotsError", <|
@@ -196,8 +212,8 @@ TestMatch[
 ];
 
 TestMatch[
-	RepeatedNumberTemplate = `LLU`PacletFunctionLoad["RepeatedNumberTemplate", {}, "Void"];
-	RepeatedNumberTemplate[]
+	`LLU`PacletFunctionSet[RepeatedNumberTemplate, {}, "Void"];
+	Catch[RepeatedNumberTemplate[], "LLUExceptionTag"]
 	,
 	Failure["RepeatedNumberTemplateError", <|
 		"MessageTemplate" -> "Cannot accept `` nor `` because `1` is unacceptable. So are `2` and ``.",
@@ -207,6 +223,25 @@ TestMatch[
 	|>]
 	,
 	TestID -> "ErrorReportingTestSuite-20190320-R9L9R5"
+];
+
+TestMatch[
+	Block[{`LLU`$ExceptionTagString = "MyException"},
+		Catch[RepeatedNumberTemplate[], "MyException"]
+	]
+	,
+	Failure["RepeatedNumberTemplateError", <|
+		"MessageTemplate" -> "Cannot accept `` nor `` because `1` is unacceptable. So are `2` and ``.",
+		"MessageParameters" -> {"x", "y", "z"},
+		"ErrorCode" -> n_?CppErrorCodeQ,
+		"Parameters" -> {}
+	|>]
+	,
+	TestID -> "ErrorReportingTestSuite-20190320-R9L9R5"
+];
+
+TestExecute[
+	`LLU`$Throws = False;
 ];
 
 TestMatch[
@@ -251,12 +286,15 @@ TestMatch[
 	TestID -> "ErrorReportingTestSuite-20190320-C0V5L0"
 ];
 
+TestExecute[
+	`LLU`$Throws = True;
+];
 
 (* Unit tests of ErrorManager::throwCustomException *)
 
 TestMatch[
 	ReadDataWithLoggingError = `LLU`PacletFunctionLoad["ReadDataWithLoggingError", {String}, "Void"];
-	ReadDataWithLoggingError["test.txt"]
+	Catch[ReadDataWithLoggingError["test.txt"], _]
 	,
 	Failure["DataFileError", <|
 		"MessageTemplate" -> "Data in file `fname` in line `lineNumber` is invalid because `reason`.",
@@ -269,7 +307,7 @@ TestMatch[
 ];
 
 TestMatch[
-	ReadDataWithLoggingError["ThisFileHasExtremelyLongName.txt"]
+	Catch[ReadDataWithLoggingError["ThisFileHasExtremelyLongName.txt"], _String?(StringMatchQ["LLU*"])]
 	,
 	Failure["DataFileError", <|
 		"MessageTemplate" -> "Data in file `fname` in line `lineNumber` is invalid because `reason`.",
@@ -282,14 +320,9 @@ TestMatch[
 ];
 
 TestMatch[
-	ReadDataWithLoggingError["Secret:Data"]
+	Catch[ReadDataWithLoggingError["Secret:Data"], "LLUExceptionTag", #1["Message"]&]
 	,
-	Failure["DataFileError", <|
-		"MessageTemplate" -> "Data in file `fname` in line `lineNumber` is invalid because `reason`.",
-		"MessageParameters" -> <|"fname" -> "Secret:Data", "lineNumber" -> 0, "reason" -> "file name contains a possibly problematic character \":\""|>,
-		"ErrorCode" -> n_?CppErrorCodeQ,
-		"Parameters" -> {}
-	|>]
+	"Data in file Secret:Data in line 0 is invalid because file name contains a possibly problematic character \":\"."
 	,
 	TestID -> "ErrorReportingTestSuite-20190404-K3J3E1"
 ];
@@ -329,9 +362,13 @@ Test[
 	TestID -> "ErrorReportingTestSuite-20190404-O3A4K4"
 ];
 
+TestExecute[
+	`LLU`$ExceptionTagFunction = First;
+]
+
 TestMatch[
 	ReadDataDelayedParametersTransfer = `LLU`PacletFunctionLoad["ReadDataDelayedParametersTransfer", {String}, "Void"];
-	ReadDataDelayedParametersTransfer["somefile.txt"]
+	Catch[ReadDataDelayedParametersTransfer["somefile.txt"], "DataFileError"]
 	,
 	Failure["DataFileError", <|
 		"MessageTemplate" -> "Data in file `fname` in line `lineNumber` is invalid because `reason`.",
@@ -345,7 +382,7 @@ TestMatch[
 
 TestMatch[
 	EmptyLibDataException = `LLU`PacletFunctionLoad["EmptyLibDataException", {}, "Void"];
-	EmptyLibDataException[]
+	Catch[EmptyLibDataException[], _String?(StringMatchQ["*Error"])]
 	,
 	Failure["LibDataError", <|
 		"MessageTemplate" -> "WolframLibraryData is not set. Make sure to call LibraryData::setLibraryData in WolframLibrary_initialize.",
@@ -356,6 +393,10 @@ TestMatch[
 	,
 	TestID -> "ErrorReportingTestSuite-20200114-M9D6F9"
 ];
+
+TestExecute[
+	`LLU`$ExceptionTagFunction := `LLU`$ExceptionTagString&;
+]
 
 (*********************************************************** Logging tests **************************************************************)
 TestExecute[
@@ -373,7 +414,7 @@ TestExecute[
 ];
 
 Test[
-	GreaterAt = `LLU`PacletFunctionLoad["GreaterAt", {String, {_, 1}, Integer, Integer}, "Boolean"];
+	GreaterAt = `LLU`PacletFunctionLoad["GreaterAt", {String, {_, 1}, Integer, Integer}, "Boolean", "Throws" -> False];
 	GreaterAt["file.txt", {5, 6, 7, 8, 9}, 1, 3];
 	TestLogSymbol
 	,
@@ -543,6 +584,9 @@ TestExecute[
 
 	Get[FileNameJoin[{$LLUSharedDir, "LibraryLinkUtilities.wl"}]];
 	`LLU`InitializePacletLibrary[libLogWarning];
+		
+	`LLU`$Throws = False;
+
 	GreaterAtW = `LLU`PacletFunctionLoad["GreaterAt", {String, {_, 1}, Integer, Integer}, "Boolean"];
 ];
 

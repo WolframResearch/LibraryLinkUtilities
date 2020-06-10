@@ -19,7 +19,7 @@ TestExecute[
 
 	`LLU`InitializePacletLibrary[lib];
 
-	PassDataStore = `LLU`PacletFunctionLoad["PassDataStore", {"DataStore", "Boolean"}, "DataStore"];
+	PassDataStore = `LLU`PacletFunctionLoad["PassDataStore", {"DataStore", "Boolean"}, "DataStore", "Throws" -> False];
 	JoinDataStores = `LLU`PacletFunctionLoad["JoinDataStores", {"DataStore", "DataStore", "Boolean"}, "DataStore"];
 	TestSelfReferencialDataStore = `LLU`PacletFunctionLoad["TestSelfReferencialDataStore", {"DataStore"}, "DataStore"];
 	ReverseListOfStringsWSTP = `LLU`PacletFunctionLoad["ReverseListOfStringsWSTP", LinkObject, LinkObject];
@@ -279,7 +279,10 @@ Test[
 
 
 TestMatch[
-	ReverseListOfStrings[Developer`DataStore["aaaa", "b", 2]]
+	Catch[
+		ReverseListOfStrings[Developer`DataStore["aaaa", "b", 2]],
+		_String
+	]
 	,
 	Failure["DLInvalidNodeType", <|
 		"MessageTemplate" -> "DataStoreNode passed to Node wrapper carries data of invalid type",

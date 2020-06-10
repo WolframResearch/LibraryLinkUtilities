@@ -71,7 +71,7 @@ TestMatch[
 	(* First evaluation of a library function symbol will load that function after it builds and loads the library as part of the pre-load routine. *)
 	SleepyThreads
 	,
-	Composition[`LLU`Private`CatchLibraryFunctionError, LibraryFunction[___]]
+	Composition[`LLU`Private`CatchAndThrowLibraryFunctionError, LibraryFunction[___]]
 	,
 	loader::init (* The loader function issues a message so that we can easily identify all places where it runs. *)
 	,
