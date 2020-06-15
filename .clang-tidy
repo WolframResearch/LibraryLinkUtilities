@@ -37,16 +37,8 @@ AnalyzeTemporaryDtors: false
 FormatStyle:     file
 User:            rafal
 CheckOptions:
-  - key:             cppcoreguidelines-avoid-magic-numbers.IgnoredFloatingPointValues
-    value:           '1.0;100.0;'
-  - key:             cppcoreguidelines-avoid-magic-numbers.IgnoredIntegerValues
-    value:           '1;2;3;4;'
   - key:             cppcoreguidelines-macro-usage.AllowedRegexp
-    value:           '^DEBUG_*'
-  - key:             cppcoreguidelines-macro-usage.CheckCapsOnly
-    value:           '1'
-  - key:             cppcoreguidelines-macro-usage.IgnoreCommandLineMacros
-    value:           '1'
+    value:           '^DEBUG_*|^LLU_*|ARGUMENT_DEFINE_SPECIALIZATIONS_OF_MEMBER_FUNCTIONS'
   - key:             misc-non-private-member-variables-in-classes.IgnoreClassesWithAllMemberVariablesBeingPublic
     value:           '1'
   - key:             cppcoreguidelines-special-member-functions.AllowSoleDefaultDtor
