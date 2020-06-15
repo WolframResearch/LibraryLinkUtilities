@@ -6,7 +6,7 @@ $installDir = FileNameJoin[{$baseDir, "install"}];
 (* Path to directory containing include folder fFilerom LibraryLinkUtilities installation *)
 $LLUIncDir = FileNameJoin[{$installDir, "include"}];
 
-$lib = FileNames[RegularExpression[".*LLU\\.(a|lib)"], $installDir, 2];
+$lib = FileNames[RegularExpression[".*LLU\\.(a|lib|" <> System`Dump`LibraryExtension[] <> ")"], $installDir, 2];
 If[Length[$lib] =!= 1,
 	Throw["Could not find LLU library."];
 ];
