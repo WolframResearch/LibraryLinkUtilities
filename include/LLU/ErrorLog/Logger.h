@@ -147,7 +147,7 @@ namespace LLU {
 		mls << WS::Function("EvaluatePacket", 1);
 		mls << WS::Function(getSymbol(), 4 + sizeof...(T));
 		mls << L << line << fileName << function;
-		static_cast<void>(std::initializer_list<int> {(mls << args, 0)...});
+		Unused((mls << ... << args));
 		libData->processWSLINK(mls.get());
 		auto pkt = WSNextPacket(mls.get());
 		if (pkt == RETURNPKT) {

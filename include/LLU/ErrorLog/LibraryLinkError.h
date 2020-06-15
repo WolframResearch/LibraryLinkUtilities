@@ -157,9 +157,9 @@ namespace LLU {
 			return;
 		}
 		WSStream<WS::Encoding::UTF8> loopback {messageParams};
-		auto messageParamsCount = sizeof...(T);
+		constexpr auto messageParamsCount = sizeof...(T);
 		loopback << WS::List(static_cast<int>(messageParamsCount));
-		static_cast<void>(std::initializer_list<int> {(loopback << params, 0)...});
+		Unused((loopback << ... << params));
 	}
 } /* namespace LLU */
 
