@@ -121,10 +121,11 @@ namespace LLU {
 
 namespace std {
 	template<typename T>
-	struct tuple_size<LLU::DataNode<T>> : std::integral_constant<std::size_t, 2> {};
+	class tuple_size<LLU::DataNode<T>> : public std::integral_constant<std::size_t, 2> {};
 
 	template<std::size_t N, typename T>
-	struct tuple_element<N, LLU::DataNode<T>> {
+	class tuple_element<N, LLU::DataNode<T>> {
+	public:
 		using type = decltype(std::declval<LLU::DataNode<T>>().template get<N>());
 	};
 }
