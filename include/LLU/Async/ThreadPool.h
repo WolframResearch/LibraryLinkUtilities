@@ -47,8 +47,8 @@ namespace LLU {
 		// Thread pool is non-copyable
 		BasicThreadPool(const BasicThreadPool&) = delete;
 		BasicThreadPool& operator=(const BasicThreadPool&) = delete;
-		BasicThreadPool(BasicThreadPool&&) noexcept = default;
-		BasicThreadPool& operator=(BasicThreadPool&&) noexcept = default;
+		BasicThreadPool(BasicThreadPool&&) = delete;
+		BasicThreadPool& operator=(BasicThreadPool&&) = delete;
 
 		~BasicThreadPool() {
 			done = true;
@@ -118,9 +118,9 @@ namespace LLU {
 		// Thread pool is non-copyable
 		GenericThreadPool(const GenericThreadPool&) = delete;
 		GenericThreadPool& operator=(const GenericThreadPool&) = delete;
-		GenericThreadPool(GenericThreadPool&&) noexcept = default;
-		GenericThreadPool& operator=(GenericThreadPool&&) noexcept = default;
-		
+		GenericThreadPool(GenericThreadPool&&) = delete;
+		GenericThreadPool& operator=(GenericThreadPool&&) = delete;
+
 		~GenericThreadPool() {
 			done = true;
 			resume();

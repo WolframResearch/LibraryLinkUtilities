@@ -28,15 +28,6 @@ namespace LLU {
 		 */
 		ThreadsafeQueue() : head(new Node), tail(head.get()) {}
 
-		/// The queue is non-copyable
-		ThreadsafeQueue(const ThreadsafeQueue& other) = delete;
-		ThreadsafeQueue& operator=(const ThreadsafeQueue& other) = delete;
-
-		ThreadsafeQueue(ThreadsafeQueue&& other) noexcept = default;
-		ThreadsafeQueue& operator=(ThreadsafeQueue&& other) noexcept = default;
-
-		~ThreadsafeQueue() = default;
-
 		/**
 		 * @brief   Get data from the queue if available.
 		 * If data is not available in the queue, the calling thread will not wait.
@@ -103,7 +94,7 @@ namespace LLU {
 		std::unique_lock<std::mutex> waitForData() {
 			std::unique_lock<std::mutex> head_lock(head_mutex);
 			data_cond.wait(head_lock, [&] { return head.get() != getTail(); });
-			return std::move(head_lock);
+			return head_lock;
 		}
 
 		std::unique_ptr<Node> waitPopHead() {
