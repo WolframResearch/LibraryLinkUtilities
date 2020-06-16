@@ -319,8 +319,9 @@ namespace LLU {
 		 *
 		 *   @note			Size() is not technically necessary, but needed for performance reason. Most STL containers have size() anyway.
 		 **/
-		template<typename Container>
-		auto operator<<(const Container& c) -> std::enable_if_t<std::is_void_v<std::void_t<decltype(c.begin(), c.end(), c.size())>>, WSStream&> {
+		template<typename Container, typename = std::void_t<
+										 decltype(std::declval<Container>().begin(), std::declval<Container>().end(), std::declval<Container>().size())>>
+		WSStream& operator<<(const Container& c) {
 			sendRange(c.begin(), c.end());
 			return *this;
 		}
