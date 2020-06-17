@@ -60,7 +60,7 @@ if(NOT TARGET LLU)
 		${LLU_SOURCE_DIR}/WSTP/Utilities.cpp
 		${LLU_SOURCE_DIR}/MArgument.cpp
 		${LLU_SOURCE_DIR}/ProgressMonitor.cpp
-        ${LLU_SOURCE_DIR}/ErrorLog/ErrorManager.cpp
+		${LLU_SOURCE_DIR}/ErrorLog/ErrorManager.cpp
 		${LLU_SOURCE_DIR}/ErrorLog/Errors.cpp
 		${LLU_SOURCE_DIR}/ErrorLog/Logger.cpp
 		${LLU_SOURCE_DIR}/FileUtilities.cpp
@@ -73,11 +73,11 @@ if(NOT TARGET LLU)
 
 	#compilation options
 	set_target_properties(LLU PROPERTIES
-	    CXX_STANDARD 17
-	    CXX_STANDARD_REQUIRED YES
-	    CXX_EXTENSIONS NO
+		CXX_STANDARD 17
+		CXX_STANDARD_REQUIRED YES
+		CXX_EXTENSIONS NO
 		CXX_VISIBILITY_PRESET hidden
-	    POSITION_INDEPENDENT_CODE YES
+		POSITION_INDEPENDENT_CODE YES
 	)
 
 	if(MSVC)
@@ -132,9 +132,9 @@ if(NOT TARGET LLU)
 	# Installation instructions
 
 	# By default install to "install" directory
-	if (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+	if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
 		set(CMAKE_INSTALL_PREFIX "${CMAKE_CURRENT_SOURCE_DIR}/install" CACHE PATH "Library install prefix" FORCE)
-	endif ()
+	endif()
 
 	include(GNUInstallDirs)
 	set(INSTALL_CONFIGDIR cmake/LLU)
@@ -187,20 +187,6 @@ if(NOT TARGET LLU)
 	)
 
 	##############################################
-	## Exporting from the build tree
-
-	#configure_file(${CMAKE_CURRENT_LIST_DIR}/cmake/FindWolframLibrary.cmake ${CMAKE_CURRENT_BINARY_DIR}/FindWolframLibrary.cmake COPYONLY)
-	#configure_file(${CMAKE_CURRENT_LIST_DIR}/cmake/FindWSTP.cmake ${CMAKE_CURRENT_BINARY_DIR}/FindWSTP.cmake COPYONLY)
-
-	export(EXPORT LLU-targets
-		FILE ${CMAKE_CURRENT_BINARY_DIR}/LLUTargets.cmake
-		NAMESPACE LLU::
-	)
-
-	#Register package in user's package registry
-	export(PACKAGE LLU)
-
-	##############################################
 	## Create target for unit tests
 
 	enable_testing()
@@ -212,10 +198,10 @@ if(NOT TARGET LLU)
 			"${CMAKE_COMMAND}" -E env CTEST_OUTPUT_ON_FAILURE=1 ${CMAKE_CTEST_COMMAND} -C ${CMAKE_BUILD_TYPE}
 	)
 
-    ##############################################
-    ## Create target for Sphinx documentation build
+	##############################################
+	## Create target for Sphinx documentation build
 
-    add_subdirectory("docs")
+	add_subdirectory("docs")
 
 endif() #end IF NOT TARGET LLU
 
