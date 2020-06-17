@@ -58,30 +58,37 @@ namespace LLU {
 		return stringArgs[index].get();
 	}
 
+	namespace {
+		void setStringAsMArgument(MArgument& res, const std::string& str) {
+			// NOLINTNEXTLINE(cppcoreguidelines-pro-type-const-cast): LibraryLink will not modify the string, so const_cast is safe here
+			MArgument_setUTF8String(res, const_cast<char*>(str.c_str()));
+		}
+	}
+
 	void MArgumentManager::setString(const std::string& str) {
 		stringResultBuffer = str;
-		MArgument_setUTF8String(res, const_cast<char*>(stringResultBuffer.c_str()));
+		setStringAsMArgument(res, stringResultBuffer);
 	}
 
 	void MArgumentManager::setString(std::string&& str) {
 		stringResultBuffer = std::move(str);
-		MArgument_setUTF8String(res, const_cast<char*>(stringResultBuffer.c_str()));
+		setStringAsMArgument(res, stringResultBuffer);
 	}
 
 	void MArgumentManager::setString(const char* str) {
 		stringResultBuffer = str;
-		MArgument_setUTF8String(res, const_cast<char*>(stringResultBuffer.c_str()));
+		setStringAsMArgument(res, stringResultBuffer);
 	}
 
-	void MArgumentManager::setBoolean(bool result) const noexcept {
+	void MArgumentManager::setBoolean(bool result) noexcept {
 		MArgument_setBoolean(res, result ? True : False);
 	}
 
-	void MArgumentManager::setReal(double result) const noexcept {
+	void MArgumentManager::setReal(double result) noexcept {
 		MArgument_setReal(res, result);
 	}
 
-	void MArgumentManager::setInteger(mint result) const noexcept {
+	void MArgumentManager::setInteger(mint result) noexcept {
 		MArgument_setInteger(res, result);
 	}
 
@@ -90,7 +97,7 @@ namespace LLU {
 		return {mc->ri[0], mc->ri[1]};
 	}
 
-	void MArgumentManager::setComplex(std::complex<double> c) const noexcept {
+	void MArgumentManager::setComplex(std::complex<double> c) noexcept {
 		mcomplex mc {{c.real(), c.imag()}};
 		MArgument_setComplex(res, mc);
 	}
@@ -108,23 +115,29 @@ namespace LLU {
 	}
 
 	DataStore MArgumentManager::getDataStore(size_type index) const {
+		//NOLINTNEXTLINE(cppcoreguidelines-pro-type-cstyle-cast): c-style cast used in a macro in WolframIOLibraryFunctions.h
 		return MArgument_getDataStore(getArgs(index));
 	}
 
-	void MArgumentManager::setMNumericArray(MNumericArray ra) {
-		MArgument_setMNumericArray(res, ra);
+	void MArgumentManager::setMNumericArray(MNumericArray na) {
+		MArgument_setMNumericArray(res, na);
 	}
 
 	void MArgumentManager::setMTensor(MTensor t) {
 		MArgument_setMTensor(res, t);
 	}
 
-	void MArgumentManager::setMImage(MImage mi) {
-		MArgument_setMImage(res, mi);
+	void MArgumentManager::setMImage(MImage im) {
+		MArgument_setMImage(res, im);
 	}
 
 	void MArgumentManager::setDataStore(DataStore ds) {
+		//NOLINTNEXTLINE(cppcoreguidelines-pro-type-cstyle-cast): c-style cast used in a macro in WolframIOLibraryFunctions.h
 		MArgument_setDataStore(res, ds);
+	}
+
+	void MArgumentManager::setSparseArray(MSparseArray sa) {
+		MArgument_setMSparseArray(res, sa);
 	}
 
 	numericarray_data_t MArgumentManager::getNumericArrayType(size_type index) const {
@@ -143,9 +156,11 @@ namespace LLU {
 	}
 
 	MArgument MArgumentManager::getArgs(size_type index) const {
-		if (index >= static_cast<size_type >(argc))
+		if (index >= static_cast<size_type >(argc)) {
 			ErrorManager::throwExceptionWithDebugInfo(ErrorName::MArgumentIndexError,
-													  "Index " + std::to_string(index) + " out-of-bound when accessing LibraryLink argument");
+			                                          "Index " + std::to_string(index) + " out-of-bound when accessing LibraryLink argument");
+		}
+		// NOLINTNEXTLINE(cppcoreguidelines-pro-bounds-pointer-arithmetic): to be fixed in C++20 with std::span
 		return args[index];
 	}
 

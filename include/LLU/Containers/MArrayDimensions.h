@@ -3,8 +3,8 @@
  * @brief
  */
 
-#ifndef LLUTILS_MARRAYDIMENSIONS_H_
-#define LLUTILS_MARRAYDIMENSIONS_H_
+#ifndef LLU_CONTAINERS_MARRAYDIMENSIONS_H_
+#define LLU_CONTAINERS_MARRAYDIMENSIONS_H_
 
 #include <initializer_list>
 #include <type_traits>
@@ -28,31 +28,30 @@ namespace LLU {
 		MArrayDimensions() = default;
 
 		/**
-		 * 	@brief		Constructs uninitialized container with given dimensions
-		 *	@param[in]	dims - list of MArray dimensions
+		 * 	@brief		Constructs MArrayDimensions from a list of dimensions
+		 *	@param[in]	dimensions - list of MArray dimensions
 		 *	@throws		ErrorName::DimensionsError - if \c dims are invalid
 		 *	@throws		ErrorName::FunctionError - if any of Wolfram*Library structures was not initialized
 		 **/
-		MArrayDimensions(std::initializer_list<mint> dims);
+		MArrayDimensions(std::initializer_list<mint> dimensions);
 
 		/**
-		 * 	@brief		Constructs uninitialized container with given dimensions
+		 * 	@brief		Constructs MArrayDimensions from a C-style list (raw pointer + length)
 		 *	@param[in]	dimensions - pointer to the memory where consecutive dimensions are stored
 		 *	@param[in]	rank - length of the \p dims array
 		 *	@throws		ErrorName::DimensionsError - if \c dims are invalid
 		 *	@throws		ErrorName::FunctionError - if any of Wolfram*Library structures was not initialized
 		 **/
-		template<typename T, typename = typename std::enable_if_t<std::is_integral<T>::value>>
+		template<typename T, typename = typename std::enable_if_t<std::is_integral_v<T>>>
 		MArrayDimensions(const T* dimensions, mint rank);
 
 		/**
-		 * 	@brief		Constructs uninitialized container with given dimensions
-		 *	@param[in]	dimensions - container with MArray dimensions
-		 *	@tparam		Container - any type of container that has member \b value_type and this type is convertible to mint
+		 * 	@brief		Constructs MArrayDimensions from a vector of dimensions
+		 *	@param[in]	dimensions - vector with MArray dimensions
 		 *	@throws		ErrorName::DimensionsError - if \c dims are invalid
 		 *	@throws		ErrorName::FunctionError - if any of Wolfram*Library structures was not initialized
 		 **/
-		template<typename T, typename = typename std::enable_if_t<std::is_integral<T>::value>>
+		template<typename T, typename = typename std::enable_if_t<std::is_integral_v<T>>>
 		/* implicit */ MArrayDimensions(const std::vector<T>& dimensions);
 
 		/**
@@ -139,8 +138,6 @@ namespace LLU {
 		void fillOffsets();
 
 	private:
-		[[noreturn]] void indexError(mint index) const;
-
 		/**
 		 *	@brief 		Check if container size will fit into \b mint
 		 *	@param[in]	s - container size
@@ -149,15 +146,8 @@ namespace LLU {
 		template<typename T>
 		mint checkContainerSize(T s) const;
 
-		/**
-		 *	@brief 		Check if initializer list size will fit into \b mint
-		 *	@param[in]	v - an initializer list
-		 *	@throws		ErrorName::DimensionsError - if \c v is too big
-		 **/
-		mint checkContainerSize(std::initializer_list<mint> v) const;
-
 		/// Calculate total array length based on current value of dims
-		mint totalLengthFromDims() const noexcept;
+		[[nodiscard]] mint totalLengthFromDims() const noexcept;
 	};
 
 	template<typename T, typename>
@@ -190,4 +180,4 @@ namespace LLU {
 
 } /* namespace LLU */
 
-#endif /* LLUTILS_MARRAYDIMENSIONS_H_ */
+#endif /* LLU_CONTAINERS_MARRAYDIMENSIONS_H_ */

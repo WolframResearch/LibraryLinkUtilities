@@ -6,8 +6,8 @@
  * @brief	Templated C++ wrapper for MTensor
  *
  */
-#ifndef LLUTILS_TENSOR_H_
-#define LLUTILS_TENSOR_H_
+#ifndef LLU_CONTAINERS_TENSOR_H_
+#define LLU_CONTAINERS_TENSOR_H_
 
 #include <initializer_list>
 #include <type_traits>
@@ -160,15 +160,17 @@ namespace LLU {
 	template<class InputIt, typename>
 	Tensor<T>::Tensor(InputIt first, InputIt last, MArrayDimensions dims)
 		: TypedTensor<T>(std::move(dims)), GenericBase(TensorType<T>, this->rank(), this->dims.data()) {
-		if (std::distance(first, last) != this->getFlattenedLength())
+		if (std::distance(first, last) != this->getFlattenedLength()) {
 			ErrorManager::throwException(ErrorName::TensorNewError, "Length of data range does not match specified dimensions");
+		}
 		std::copy(first, last, this->begin());
 	}
 
 	template<typename T>
 	Tensor<T>::Tensor(GenericBase t) : TypedTensor<T>({t.getDimensions(), t.getRank()}), GenericBase(std::move(t)) {
-		if (TensorType<T> != GenericBase::type())
+		if (TensorType<T> != GenericBase::type()) {
 			ErrorManager::throwException(ErrorName::TensorTypeError);
+		}
 	}
 
 	template<typename T>
@@ -177,4 +179,4 @@ namespace LLU {
 
 } /* namespace LLU */
 
-#endif /* LLUTILS_TENSOR_H_ */
+#endif /* LLU_CONTAINERS_TENSOR_H_ */

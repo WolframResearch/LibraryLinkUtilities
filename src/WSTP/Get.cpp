@@ -10,180 +10,181 @@
 
 #include "wstp.h"
 
-namespace LLU {
+namespace LLU::WS {
 
-	namespace WS {
+    /* ***************************************************************** */
+    /* ********* Template specializations for  unsigned char  ********** */
+    /* ***************************************************************** */
 
-		/* ***************************************************************** */
-		/* ********* Template specializations for  unsigned char  ********** */
-		/* ***************************************************************** */
+    /* GetArray */
 
-		/* GetArray */
+    template<>
+    GetArray<unsigned char>::Func GetArray<unsigned char>::ArrayF = WSGetInteger8Array;
 
-		template<>
-		GetArray<unsigned char>::Func GetArray<unsigned char>::ArrayF = WSGetInteger8Array;
+    template<>
+    const std::string GetArray<unsigned char>::ArrayFName = "WSGetInteger8Array";
 
-		template<>
-		const std::string GetArray<unsigned char>::ArrayFName = "WSGetInteger8Array";
+    /* GetList */
 
-		/* GetList */
+    template<>
+    GetList<unsigned char>::Func GetList<unsigned char>::ListF = WSGetInteger8List;
 
-		template<>
-		GetList<unsigned char>::Func GetList<unsigned char>::ListF = WSGetInteger8List;
+    template<>
+    const std::string GetList<unsigned char>::ListFName = "WSGetInteger8List";
 
-		template<>
-		const std::string GetList<unsigned char>::ListFName = "WSGetInteger8List";
+    /* GetScalar */
 
-		/* GetScalar */
+    template<>
+    GetScalar<unsigned char>::Func GetScalar<unsigned char>::ScalarF = WSGetInteger8;
 
-		template<>
-		GetScalar<unsigned char>::Func GetScalar<unsigned char>::ScalarF = WSGetInteger8;
+    template<>
+    const std::string GetScalar<unsigned char>::ScalarFName = "WSGetInteger8";
 
-		template<>
-		const std::string GetScalar<unsigned char>::ScalarFName = "WSGetInteger8";
 
-		/* ***************************************************************** */
-		/* ******* Template specializations for  (unsigned) short  ********* */
-		/* ***************************************************************** */
+    /* ***************************************************************** */
+    /* ******* Template specializations for  (unsigned) short  ********* */
+    /* ***************************************************************** */
 
-		/* GetArray */
+    /* GetArray */
 
-		template<>
-		GetArray<short>::Func GetArray<short>::ArrayF = WSGetInteger16Array;
+    template<>
+    GetArray<short>::Func GetArray<short>::ArrayF = WSGetInteger16Array;
 
-		template<>
-		const std::string GetArray<short>::ArrayFName = "WSGetInteger16Array";
+    template<>
+    const std::string GetArray<short>::ArrayFName = "WSGetInteger16Array";
 
-		/* GetList */
+    /* GetList */
 
-		template<>
-		GetList<short>::Func GetList<short>::ListF = WSGetInteger16List;
+    template<>
+    GetList<short>::Func GetList<short>::ListF = WSGetInteger16List;
 
-		template<>
-		const std::string GetList<short>::ListFName = "WSGetInteger16List";
+    template<>
+    const std::string GetList<short>::ListFName = "WSGetInteger16List";
 
-		/* GetScalar */
+    /* GetScalar */
 
-		template<>
-		GetScalar<short>::Func GetScalar<short>::ScalarF = WSGetInteger16;
+    template<>
+    GetScalar<short>::Func GetScalar<short>::ScalarF = WSGetInteger16;
 
-		template<>
-		const std::string GetScalar<short>::ScalarFName = "WSGetInteger16";
+    template<>
+    const std::string GetScalar<short>::ScalarFName = "WSGetInteger16";
 
-		/* ***************************************************************** */
-		/* ******** Template specializations for  (unsigned) int  ********** */
-		/* ***************************************************************** */
 
-		/* GetArray */
+    /* ***************************************************************** */
+    /* ******** Template specializations for  (unsigned) int  ********** */
+    /* ***************************************************************** */
 
-		template<>
-		GetArray<int>::Func GetArray<int>::ArrayF = WSGetInteger32Array;
+    /* GetArray */
 
-		template<>
-		const std::string GetArray<int>::ArrayFName = "WSGetInteger32Array";
+    template<>
+    GetArray<int>::Func GetArray<int>::ArrayF = WSGetInteger32Array;
 
-		/* GetList */
+    template<>
+    const std::string GetArray<int>::ArrayFName = "WSGetInteger32Array";
 
-		template<>
-		GetList<int>::Func GetList<int>::ListF = WSGetInteger32List;
+    /* GetList */
 
-		template<>
-		const std::string GetList<int>::ListFName = "WSGetInteger32List";
+    template<>
+    GetList<int>::Func GetList<int>::ListF = WSGetInteger32List;
 
-		/* GetScalar */
+    template<>
+    const std::string GetList<int>::ListFName = "WSGetInteger32List";
 
-		template<>
-		GetScalar<int>::Func GetScalar<int>::ScalarF = WSGetInteger32;
+    /* GetScalar */
 
-		template<>
-		const std::string GetScalar<int>::ScalarFName = "WSGetInteger32";
+    template<>
+    GetScalar<int>::Func GetScalar<int>::ScalarF = WSGetInteger32;
 
-		/* ***************************************************************** */
-		/* *********** Template specializations for  wsint64  ************** */
-		/* ***************************************************************** */
+    template<>
+    const std::string GetScalar<int>::ScalarFName = "WSGetInteger32";
 
-		/* GetArray */
 
-		template<>
-		GetArray<wsint64>::Func GetArray<wsint64>::ArrayF = WSGetInteger64Array;
+    /* ***************************************************************** */
+    /* *********** Template specializations for  wsint64  ************** */
+    /* ***************************************************************** */
 
-		template<>
-		const std::string GetArray<wsint64>::ArrayFName = "WSGetInteger64Array";
+    /* GetArray */
 
-		/* GetList */
+    template<>
+    GetArray<wsint64>::Func GetArray<wsint64>::ArrayF = WSGetInteger64Array;
 
-		template<>
-		GetList<wsint64>::Func GetList<wsint64>::ListF = WSGetInteger64List;
+    template<>
+    const std::string GetArray<wsint64>::ArrayFName = "WSGetInteger64Array";
 
-		template<>
-		const std::string GetList<wsint64>::ListFName = "WSGetInteger64List";
+    /* GetList */
 
-		/* GetScalar */
+    template<>
+    GetList<wsint64>::Func GetList<wsint64>::ListF = WSGetInteger64List;
 
-		template<>
-		GetScalar<wsint64>::Func GetScalar<wsint64>::ScalarF = WSGetInteger64;
+    template<>
+    const std::string GetList<wsint64>::ListFName = "WSGetInteger64List";
 
-		template<>
-		const std::string GetScalar<wsint64>::ScalarFName = "WSGetInteger64";
+    /* GetScalar */
 
-		/* ***************************************************************** */
-		/* ************ Template specializations for  float  *************** */
-		/* ***************************************************************** */
+    template<>
+    GetScalar<wsint64>::Func GetScalar<wsint64>::ScalarF = WSGetInteger64;
 
-		/* GetArray */
+    template<>
+    const std::string GetScalar<wsint64>::ScalarFName = "WSGetInteger64";
 
-		template<>
-		GetArray<float>::Func GetArray<float>::ArrayF = WSGetReal32Array;
 
-		template<>
-		const std::string GetArray<float>::ArrayFName = "WSGetReal32Array";
+    /* ***************************************************************** */
+    /* ************ Template specializations for  float  *************** */
+    /* ***************************************************************** */
 
-		/* GetList */
+    /* GetArray */
 
-		template<>
-		GetList<float>::Func GetList<float>::ListF = WSGetReal32List;
+    template<>
+    GetArray<float>::Func GetArray<float>::ArrayF = WSGetReal32Array;
 
-		template<>
-		const std::string GetList<float>::ListFName = "WSGetReal32List";
+    template<>
+    const std::string GetArray<float>::ArrayFName = "WSGetReal32Array";
 
-		/* GetScalar */
+    /* GetList */
 
-		template<>
-		GetScalar<float>::Func GetScalar<float>::ScalarF = WSGetReal32;
+    template<>
+    GetList<float>::Func GetList<float>::ListF = WSGetReal32List;
 
-		template<>
-		const std::string GetScalar<float>::ScalarFName = "WSGetReal32";
+    template<>
+    const std::string GetList<float>::ListFName = "WSGetReal32List";
 
-		/* ***************************************************************** */
-		/* *********** Template specializations for  double  *************** */
-		/* ***************************************************************** */
+    /* GetScalar */
 
-		/* GetArray */
+    template<>
+    GetScalar<float>::Func GetScalar<float>::ScalarF = WSGetReal32;
 
-		template<>
-		GetArray<double>::Func GetArray<double>::ArrayF = WSGetReal64Array;
+    template<>
+    const std::string GetScalar<float>::ScalarFName = "WSGetReal32";
 
-		template<>
-		const std::string GetArray<double>::ArrayFName = "WSGetReal64Array";
 
-		/* GetList */
+    /* ***************************************************************** */
+    /* *********** Template specializations for  double  *************** */
+    /* ***************************************************************** */
 
-		template<>
-		GetList<double>::Func GetList<double>::ListF = WSGetReal64List;
+    /* GetArray */
 
-		template<>
-		const std::string GetList<double>::ListFName = "WSGetReal64List";
+    template<>
+    GetArray<double>::Func GetArray<double>::ArrayF = WSGetReal64Array;
 
-		/* GetScalar */
+    template<>
+    const std::string GetArray<double>::ArrayFName = "WSGetReal64Array";
 
-		template<>
-		GetScalar<double>::Func GetScalar<double>::ScalarF = WSGetReal64;
+    /* GetList */
 
-		template<>
-		const std::string GetScalar<double>::ScalarFName = "WSGetReal64";
+    template<>
+    GetList<double>::Func GetList<double>::ListF = WSGetReal64List;
 
-	}
+    template<>
+    const std::string GetList<double>::ListFName = "WSGetReal64List";
 
-} /* namespace LLU */
+    /* GetScalar */
+
+    template<>
+    GetScalar<double>::Func GetScalar<double>::ScalarF = WSGetReal64;
+
+    template<>
+    const std::string GetScalar<double>::ScalarFName = "WSGetReal64";
+
+} /* namespace LLU::WS */
 
 #endif

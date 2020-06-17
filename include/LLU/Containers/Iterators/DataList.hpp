@@ -4,8 +4,8 @@
  * @date	September 07, 2018
  * @brief	Special iterators for DataLists. Iteration over keys, values, reversed iteration.
  */
-#ifndef LLU_ITERATORS_DATALIST_HPP
-#define LLU_ITERATORS_DATALIST_HPP
+#ifndef LLU_CONTAINERS_ITERATORS_DATALIST_HPP
+#define LLU_CONTAINERS_ITERATORS_DATALIST_HPP
 
 #include <iterator>
 #include <list>
@@ -36,7 +36,7 @@ namespace LLU {
 				return !(lhs == rhs);
 			}
 		};
-	}
+	}  // namespace Detail
 
 	/**
 	 * @brief   Simple proxy input iterator that goes over a DataStore and returns proxy DataNodes when dereferenced
@@ -139,4 +139,4 @@ namespace LLU {
 
 }	 // namespace LLU
 
-#endif	  // LLU_ITERATORS_DATALIST_HPP
+#endif	  // LLU_CONTAINERS_ITERATORS_DATALIST_HPP

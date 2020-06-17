@@ -2,8 +2,8 @@
  * @file
  * @brief GenericNumericArray definition and implementation
  */
-#ifndef LLU_INCLUDE_LLU_CONTAINERS_GENERIC_NUMERICARRAY
-#define LLU_INCLUDE_LLU_CONTAINERS_GENERIC_NUMERICARRAY
+#ifndef LLU_CONTAINERS_GENERIC_NUMERICARRAY_HPP
+#define LLU_CONTAINERS_GENERIC_NUMERICARRAY_HPP
 
 #include "LLU/Containers/Generic/Base.hpp"
 #include "LLU/Containers/Interfaces.h"
@@ -107,6 +107,6 @@ namespace LLU {
 		}
 	};
 
-}
+}  // namespace LLU
 
-#endif	  // LLU_INCLUDE_LLU_CONTAINERS_GENERIC_NUMERICARRAY
+#endif	  // LLU_CONTAINERS_GENERIC_NUMERICARRAY_HPP

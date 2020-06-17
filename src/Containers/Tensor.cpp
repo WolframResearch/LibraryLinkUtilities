@@ -15,7 +15,7 @@ namespace LLU {
 
 	MContainer<MArgumentType::Tensor>::MContainer(mint type, mint rank, const mint* dims) {
 		Container tmp {};
-		if (LibraryData::API()->MTensor_new(type, rank, dims, &tmp)) {
+		if (0 != LibraryData::API()->MTensor_new(type, rank, dims, &tmp)) {
 			ErrorManager::throwException(ErrorName::TensorNewError);
 		}
 		this->reset(tmp);
@@ -32,7 +32,7 @@ namespace LLU {
 
 	auto GenericTensor::cloneImpl() const -> Container {
 		Container tmp {};
-		if (LibraryData::API()->MTensor_clone(this->getContainer(), &tmp)) {
+		if (0 != LibraryData::API()->MTensor_clone(this->getContainer(), &tmp)) {
 			ErrorManager::throwException(ErrorName::TensorCloneError);
 		}
 		return tmp;
@@ -51,6 +51,7 @@ namespace LLU {
 
 	template<>
 	std::complex<double>* TypedTensor<std::complex<double>>::getData() const noexcept {
+		// NOLINTNEXTLINE(cppcoreguidelines-pro-type-reinterpret-cast): std::complex<double> is binary compatible with mcomplex
 		return reinterpret_cast<std::complex<double>*>(LibraryData::API()->MTensor_getComplexData(this->getInternal()));
 	}
 	/// @endcond

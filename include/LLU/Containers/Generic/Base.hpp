@@ -136,7 +136,7 @@ namespace LLU {
 		 * @brief   Get ownership information
 		 * @return  the owner of the internal container
 		 */
-		[[nodiscard]] Ownership getOwner() const noexcept {
+		Ownership getOwner() const noexcept {
 			return owner;
 		}
 
@@ -242,6 +242,6 @@ namespace LLU {
 		static_assert(alwaysFalse<Type>, "Trying to instantiate unspecialized MContainer template.");
 	};
 #endif
-}
+}  // namespace LLU
 
 #endif	  // LLU_CONTAINERS_GENERIC_BASE_HPP

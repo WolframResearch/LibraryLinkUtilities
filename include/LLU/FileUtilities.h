@@ -138,7 +138,7 @@ namespace LLU {
 		 * Base share policy - shared read access when file opened readonly, exclusive access otherwise.
 		 * @return _SH_SECURED on Windows and 0 on other platforms where it is not used anyway
 		 */
-		virtual int flag(std::ios::openmode) const;
+		virtual int flag(std::ios::openmode /*mode*/) const;
 	};
 
 	/**
@@ -173,6 +173,6 @@ namespace LLU {
 	 * @throw   ErrorName::OpenFileFailed if the file could not be opened
 	 */
 	std::fstream openFileStream(const std::string& fileName, std::ios::openmode mode, const SharePolicy& shp = AlwaysReadExclusiveWrite {});
-}
+} // namespace LLU
 
 #endif	  // LLU_FILEUTILITIES_H

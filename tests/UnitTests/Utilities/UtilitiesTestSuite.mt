@@ -173,9 +173,9 @@ VerificationTest[
 
 VerificationTest[
 	Block[{fs, fs2, fs3},
-		fs = Catch @ `LLU`NewManagedExpression[FileStream][f, 0 (* read-access*)];
-		fs2 = Catch @ `LLU`NewManagedExpression[FileStream][f, 1 (* write-access*)];
-		fs3 = Catch @ `LLU`NewManagedExpression[FileStream][f, 0 (* read-access*)];
+		fs = CatchAll @ `LLU`NewManagedExpression[FileStream][f, 0 (* read-access*)];
+		fs2 = CatchAll @ `LLU`NewManagedExpression[FileStream][f, 1 (* write-access*)];
+		fs3 = CatchAll @ `LLU`NewManagedExpression[FileStream][f, 0 (* read-access*)];
 		ManagedLibraryExpressionQ[fs] && FailureOnWindowsManagedExprOtherwiseQ[fs2] && ManagedLibraryExpressionQ[fs3]
 	]
 	,
@@ -184,9 +184,9 @@ VerificationTest[
 
 VerificationTest[
 	Block[{fs, fs2, fs3},
-		fs = Catch @ `LLU`NewManagedExpression[FileStream][f, 1 (* write-access*)];
-		fs2 = Catch @ `LLU`NewManagedExpression[FileStream][f, 1 (* write-access*)];
-		fs3 = Catch @ `LLU`NewManagedExpression[FileStream][f, 0 (* read-access*)];
+		fs = CatchAll @ `LLU`NewManagedExpression[FileStream][f, 1 (* write-access*)];
+		fs2 = CatchAll @ `LLU`NewManagedExpression[FileStream][f, 1 (* write-access*)];
+		fs3 = CatchAll @ `LLU`NewManagedExpression[FileStream][f, 0 (* read-access*)];
 		ManagedLibraryExpressionQ[fs] && FailureOnWindowsManagedExprOtherwiseQ[fs2] && FailureOnWindowsManagedExprOtherwiseQ[fs3]
 	]
 	,

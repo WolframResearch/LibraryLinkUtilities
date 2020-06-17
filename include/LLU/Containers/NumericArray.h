@@ -6,8 +6,8 @@
  * @brief	Templated C++ wrapper for MNumericArray
  *
  */
-#ifndef LLUTILS_NUMERICARRAY_H_
-#define LLUTILS_NUMERICARRAY_H_
+#ifndef LLU_CONTAINERS_NUMERICARRAY_H_
+#define LLU_CONTAINERS_NUMERICARRAY_H_
 
 #include <initializer_list>
 #include <type_traits>
@@ -173,15 +173,17 @@ namespace LLU {
 	template<class InputIt, typename>
 	NumericArray<T>::NumericArray(InputIt first, InputIt last, MArrayDimensions dims)
 		: TypedNumericArray<T>(std::move(dims)), GenericBase(NumericArrayType<T>, this->rank(), this->dims.data()) {
-		if (std::distance(first, last) != this->dims.flatCount())
+		if (std::distance(first, last) != this->dims.flatCount()) {
 			ErrorManager::throwException(ErrorName::NumericArrayNewError, "Length of data range does not match specified dimensions");
+		}
 		std::copy(first, last, this->begin());
 	}
 
 	template<typename T>
 	NumericArray<T>::NumericArray(GenericBase na) : TypedNumericArray<T>({na.getDimensions(), na.getRank()}), GenericBase(std::move(na)) {
-		if (NumericArrayType<T> != GenericBase::type())
+		if (NumericArrayType<T> != GenericBase::type()) {
 			ErrorManager::throwException(ErrorName::NumericArrayTypeError);
+		}
 	}
 
 	template<typename T>
@@ -193,4 +195,4 @@ namespace LLU {
 
 } /* namespace LLU */
 
-#endif /* LLUTILS_NUMERICARRAY_H_ */
+#endif /* LLU_CONTAINERS_NUMERICARRAY_H_ */

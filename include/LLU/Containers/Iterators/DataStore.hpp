@@ -4,14 +4,14 @@
  * @date	May 04, 2020
  * @brief
  */
-#ifndef LIBRARYLINKUTILITIES_CONTAINERS_ITERATORS_DATASTORE_HPP
-#define LIBRARYLINKUTILITIES_CONTAINERS_ITERATORS_DATASTORE_HPP
+#ifndef LLU_CONTAINERS_ITERATORS_DATASTORE_HPP
+#define LLU_CONTAINERS_ITERATORS_DATASTORE_HPP
 
 #include <iterator>
 
-#include <LLU/LibraryData.h>
-#include <LLU/MArgument.h>
-#include <LLU/TypedMArgument.h>
+#include "LLU/LibraryData.h"
+#include "LLU/MArgument.h"
+#include "LLU/TypedMArgument.h"
 
 namespace LLU {
 
@@ -22,11 +22,11 @@ namespace LLU {
 	struct GenericDataNode {
 		DataStoreNode node;
 
-		[[nodiscard]] GenericDataNode next() const noexcept;
+		GenericDataNode next() const noexcept;
 
-		[[nodiscard]] MArgumentType type() const noexcept;
+		MArgumentType type() const noexcept;
 
-		[[nodiscard]] std::string_view name() const noexcept;
+		std::string_view name() const noexcept;
 
 		[[nodiscard]] Argument::TypedArgument value() const;
 
@@ -43,7 +43,7 @@ namespace LLU {
 
 	/**
 	 * @class   DataStoreIterator
-	 * @brief   Proxy input iterator over DataStoreNodes, when dereferenced yields GeneridDataNode proxy objects.
+	 * @brief   Proxy input iterator over DataStoreNodes, when dereferenced yields GenericDataNode proxy objects.
 	 */
 	class DataStoreIterator {
 		DataStoreNode node;
@@ -83,6 +83,6 @@ namespace LLU {
 			return !(lhs == rhs);
 		}
 	};
-}
+}  // namespace LLU
 
-#endif	  // LIBRARYLINKUTILITIES_CONTAINERS_ITERATORS_DATASTORE_HPP
+#endif	  // LLU_CONTAINERS_ITERATORS_DATASTORE_HPP

@@ -4,8 +4,8 @@
  * @date	March 31, 2019
  * @brief	Definitions of error names and error codes used across LLU.
  */
-#ifndef LLUTILS_ERRORS_H
-#define LLUTILS_ERRORS_H
+#ifndef LLU_ERRORLOG_ERRORS_H
+#define LLU_ERRORLOG_ERRORS_H
 
 #include <string>
 
@@ -25,7 +25,7 @@ namespace LLU {
 		constexpr int RankError = 2;		  ///< same as LIBRARY_RANK_ERROR
 		constexpr int TypeError = 1;		  ///< same as LIBRARY_TYPE_ERROR
 		constexpr int NoError = 0;			  ///< same as LIBRARY_NO_ERROR
-	}
+	}  // namespace ErrorCode
 
 	/**
 	 * @brief Names of all errors used across LLU
@@ -129,8 +129,8 @@ namespace LLU {
 		extern const std::string PathNotValidated;		///< Given file path could not be validated under desired open mode
 		extern const std::string InvalidOpenMode;		///< Specified open mode is invalid
 		extern const std::string OpenFileFailed;		///< Could not open file
-	}
+	}  // namespace ErrorName
 
-}
+}  // namespace LLU
 
-#endif	  // LLUTILS_ERRORS_H
+#endif	  // LLU_ERRORLOG_ERRORS_H

@@ -6,8 +6,8 @@
  * @brief	Templated C++ wrapper for MImage
  *
  */
-#ifndef LLUTILS_IMAGE_H_
-#define LLUTILS_IMAGE_H_
+#ifndef LLU_CONTAINERS_IMAGE_H_
+#define LLU_CONTAINERS_IMAGE_H_
 
 #include <array>
 
@@ -268,4 +268,4 @@ namespace LLU {
 	}
 } /* namespace LLU */
 
-#endif /* LLUTILS_IMAGE_H_ */
+#endif /* LLU_CONTAINERS_IMAGE_H_ */

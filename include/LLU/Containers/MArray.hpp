@@ -6,8 +6,8 @@
  * @brief	Template base class for C++ wrappers of LibraryLink containers
  *
  */
-#ifndef LLUTILS_MARRAY_HPP_
-#define LLUTILS_MARRAY_HPP_
+#ifndef LLU_CONTAINERS_MARRAY_HPP_
+#define LLU_CONTAINERS_MARRAY_HPP_
 
 #include <initializer_list>
 #include <ostream>
@@ -16,10 +16,9 @@
 #include <vector>
 
 #include "LLU/Containers/Iterators/IterableContainer.hpp"
+#include "LLU/Containers/MArrayDimensions.h"
 #include "LLU/LibraryData.h"
 #include "LLU/Utilities.hpp"
-
-#include "MArrayDimensions.h"
 
 namespace LLU {
 
@@ -65,7 +64,7 @@ namespace LLU {
 		/**
 		 *	@brief Check whether container is empty
 		 **/
-		mint empty() const noexcept {
+		[[nodiscard]] bool empty() const noexcept {
 			return dims.flatCount() == 0;
 		}
 
@@ -167,12 +166,13 @@ namespace LLU {
 	template<typename T>
 	std::ostream& operator<<(std::ostream& os, const MArray<T>& c) {
 		os << "{ ";
-		for (auto elem : c)
+		for (auto elem : c) {
 			os << elem << " ";
+		}
 		os << "}";
 		return os;
 	}
 
 } /* namespace LLU */
 
-#endif /* LLUTILS_MARRAY_HPP_ */
+#endif /* LLU_CONTAINERS_MARRAY_HPP_ */

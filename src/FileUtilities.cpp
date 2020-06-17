@@ -4,23 +4,23 @@
  * @brief
  */
 
-#include <LLU/NoMinMaxWindows.h>
-#include <LLU/FileUtilities.h>
+#include "LLU/NoMinMaxWindows.h"
+#include "LLU/FileUtilities.h"
 
 #ifdef _WIN32
 #include <share.h>
 #endif
 
-#include <LLU/ErrorLog/ErrorManager.h>
-#include <LLU/LibraryData.h>
-#include <LLU/Utilities.hpp>
+#include "LLU/ErrorLog/ErrorManager.h"
+#include "LLU/LibraryData.h"
+#include "LLU/Utilities.hpp"
 
 namespace LLU {
 
 	namespace {
 		std::string openModeString(std::ios::openmode mode) {
 			using std::ios;
-			bool isBinary = mode & ios::binary;
+			bool isBinary = (mode & ios::binary) != 0;
 			mode &= ~ios::binary;
 			std::string result;
 			if (mode == ios::in) {
@@ -57,20 +57,21 @@ namespace LLU {
 			}
 			return result;
 		}
-	}
+	}  // namespace
 
 	FilePtr claimFile(std::FILE* f) {
 		return FilePtr(f, [](std::FILE* fp) { return fp ? std::fclose(fp) : 0; });
 	}
 
 	void validatePath(const std::string& fileName, std::ios::openmode mode) {
-		char pathMode = (mode & std::ios::out) || (mode & std::ios::app) ? 'W' : 'R';
+		char pathMode = (mode & std::ios::out) != 0 || (mode & std::ios::app) != 0 ? 'W' : 'R';
+		// NOLINTNEXTLINE(cppcoreguidelines-pro-type-const-cast): LibraryLink will not modify the string, so const_cast is safe here
 		if (LibraryData::API()->validatePath(const_cast<char*>(fileName.c_str()), pathMode) == False) {
 			ErrorManager::throwException(ErrorName::PathNotValidated, fileName);
 		}
 	}
 
-	int SharePolicy::flag(std::ios::openmode) const {
+	int SharePolicy::flag(std::ios::openmode /*mode*/) const {
 #ifdef _WIN32
 		return _SH_SECURE;
 #else
@@ -111,4 +112,4 @@ namespace LLU {
 		return openFileStream<char>(fileName, mode, shp);
 	}
 
-}
+}  // namespace LLU

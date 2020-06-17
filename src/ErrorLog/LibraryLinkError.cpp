@@ -7,8 +7,8 @@
  */
 #include "LLU/ErrorLog/LibraryLinkError.h"
 
-#include "LLU/LLU.h"
 #include "LLU/LibraryLinkFunctionMacro.h"
+#include "LLU/MArgumentManager.h"
 #include "LLU/WSTP/WSStream.hpp"
 
 namespace LLU {
@@ -29,25 +29,50 @@ namespace LLU {
 
 	WSLINK LibraryLinkError::openLoopback(WSENV env) {
 		int err = WSEUNKNOWN;
-		auto link = WSLoopbackOpen(env, &err);
+		auto* link = WSLoopbackOpen(env, &err);
 		if (err != WSEOK) {
 			link = nullptr;
 		}
 		return link;
 	}
 
-	LibraryLinkError::LibraryLinkError(const LibraryLinkError& e)
-		: std::runtime_error(e), errorId(e.errorId), type(e.type), messageTemplate(e.messageTemplate), debugInfo(e.debugInfo) {
+	LibraryLinkError::LibraryLinkError(const LibraryLinkError& e) noexcept
+		: std::runtime_error(e), errorId(e.errorId), messageTemplate(e.messageTemplate), debugInfo(e.debugInfo) {
 		if (e.messageParams) {
 			messageParams = openLoopback(WSLinkEnvironment(e.messageParams));
 			if (!messageParams) {
 				return;
 			}
-			auto mark = WSCreateMark(e.messageParams);
+			auto* mark = WSCreateMark(e.messageParams);
 			WSTransferToEndOfLoopbackLink(messageParams, e.messageParams);
 			WSSeekMark(e.messageParams, mark, 0);
 			WSDestroyMark(e.messageParams, mark);
 		}
+	}
+
+	LibraryLinkError& LibraryLinkError::operator=(const LibraryLinkError& e) noexcept {
+		LibraryLinkError tmp {e};
+		*this = std::move(tmp);
+		return *this;
+	}
+
+	LibraryLinkError::LibraryLinkError(LibraryLinkError&& e) noexcept
+		// NOLINTNEXTLINE(performance-move-constructor-init) : deliberate and harmless
+		: std::runtime_error(e), errorId(e.errorId), messageTemplate(e.messageTemplate), debugInfo(e.debugInfo), messageParams(e.messageParams) {
+		e.messageParams = nullptr;
+	}
+
+	LibraryLinkError& LibraryLinkError::operator=(LibraryLinkError&& e) noexcept {
+		std::runtime_error::operator=(e);
+		errorId = e.errorId;
+		messageTemplate = e.messageTemplate;
+		debugInfo = e.debugInfo;
+		if (messageParams) {
+			WSClose(messageParams);
+		}
+		messageParams = e.messageParams;
+		e.messageParams = nullptr;
+		return *this;
 	}
 
 	LibraryLinkError::~LibraryLinkError() {
@@ -63,7 +88,7 @@ namespace LLU {
 				mls << WS::Function("EvaluatePacket", 1);
 				mls << WS::Function("Set", 2);
 				mls << WS::Symbol(WLSymbol);
-				if (!WSTransferToEndOfLoopbackLink(mls.get(), messageParams)) {
+				if (WSTransferToEndOfLoopbackLink(mls.get(), messageParams) == 0) {
 					return ErrorCode::FunctionError;
 				}
 				libData->processWSLINK(mls.get());

@@ -377,6 +377,14 @@ Test[
 ];
 
 Test[
+	GetValuesReversed[Developer`DataStore[{3}, {4}, {5}]]
+	,
+	Developer`DataStore[{5}, {4}, {3}]
+	,
+	TestID->"DataListTestSuite-20180908-C7DJ8D"
+];
+
+Test[
 	FrameDims[Developer`DataStore[RandomImage[1., 100], RandomImage[1., 300], RandomImage[1., 200]]]
 	,
 	NumericArray[{{100, 100}, {300, 300}, {200, 200}}, "UnsignedInteger64"]

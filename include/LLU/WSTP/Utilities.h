@@ -13,8 +13,7 @@
 #include "wstp.h"
 
 #include "LLU/ErrorLog/Errors.h"
-
-#include "EncodingTraits.hpp"
+#include "LLU/WSTP/EncodingTraits.hpp"
 
 namespace LLU {
 
@@ -125,7 +124,7 @@ namespace LLU {
 		 */
 		struct Association : Function {
 			Association() : Function("Association") {}
-			Association(int argCount) : Function("Association", argCount) {}
+            explicit Association(int argCount) : Function("Association", argCount) {}
 		};
 
 		/**
@@ -134,7 +133,7 @@ namespace LLU {
 		 */
 		struct List : Function {
 			List() : Function("List") {}
-			List(int argCount) : Function("List", argCount) {}
+            explicit List(int argCount) : Function("List", argCount) {}
 		};
 
 		/**
@@ -143,7 +142,7 @@ namespace LLU {
 		 */
 		struct Missing : Function {
 			Missing() : Function("Missing") {}
-			Missing(std::string r) : Function("Missing", 1), reason(std::move(r)) {}
+			explicit Missing(std::string r) : Function("Missing", 1), reason(std::move(r)) {}
 
 			const std::string& why() const {
 				return reason;
@@ -175,18 +174,18 @@ namespace LLU {
 
 		template<WS::Encoding EIn, WS::Encoding EOut>
 		WSStream<EIn, EOut>& Rule(WSStream<EIn, EOut>& ms, Direction dir) {
-			if (dir == Direction::Put)
+			if (dir == Direction::Put) {
 				return ms << Function("Rule", 2);
-			else
-				return ms >> Function("Rule", 2);
+			}
+			return ms >> Function("Rule", 2);
 		}
 
 		template<WS::Encoding EIn, WS::Encoding EOut>
 		WSStream<EIn, EOut>& Null(WSStream<EIn, EOut>& ms, Direction dir) {
-			if (dir == Direction::Put)
+			if (dir == Direction::Put) {
 				return ms << Symbol("Null");
-			else
-				return ms >> Symbol("Null");
+			}
+			return ms >> Symbol("Null");
 		}
 
 		/**
@@ -225,7 +224,7 @@ namespace LLU {
 		 * @return	a number of expression stored in the loopback link
 		 */
 		int countExpressionsInLoopbackLink(WSLINK& lpbckLink);
-	}
-}
+	}  // namespace WS
+}  // namespace LLU
 
 #endif /* LLU_WSTP_UTILITIES_H_ */

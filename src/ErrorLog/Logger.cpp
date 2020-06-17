@@ -5,8 +5,8 @@
  */
 #include "LLU/ErrorLog/Logger.h"
 
-#include "LLU/LLU.h"
 #include "LLU/LibraryLinkFunctionMacro.h"
+#include "LLU/MArgumentManager.h"
 
 namespace LLU {
 	std::mutex Logger::mlinkGuard;
@@ -28,11 +28,9 @@ namespace LLU {
 			auto newContext = mngr.getString(0);
 			Logger::setContext(newContext);
 			mngr.setString(Logger::getSymbol());
-		} catch (LibraryLinkError& e) {
-			err = e.which();
-		} catch (...) {
+		} catch (LibraryLinkError& e) { err = e.which(); } catch (...) {
 			err = ErrorCode::FunctionError;
 		}
 		return err;
 	}
-}
+}	 // namespace LLU
