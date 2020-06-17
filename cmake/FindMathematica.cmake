@@ -53,6 +53,10 @@ set(_MMA_FIND_NAMES Mathematica mathematica)
 set(_MMA_FIND_SUFFIXES Executables MacOS Contents/MacOS)
 set(_MMA_FIND_DOC "Location of Mathematica executable")
 
+if(NOT Mathematica_ROOT AND MATHEMATICA_INSTALL_DIR)
+	set(Mathematica_ROOT ${MATHEMATICA_INSTALL_DIR})
+endif()
+
 ###############################################################################
 # Helper functions and macros
 ###############################################################################
