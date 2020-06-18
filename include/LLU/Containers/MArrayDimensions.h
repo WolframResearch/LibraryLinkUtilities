@@ -151,7 +151,7 @@ namespace LLU {
 	};
 
 	template<typename T, typename>
-	MArrayDimensions::MArrayDimensions(const T* dimensions, mint rank) : MArrayDimensions(dimensions, dimensions + rank) {}
+	MArrayDimensions::MArrayDimensions(const T* dimensions, mint rank) : MArrayDimensions(dimensions, std::next(dimensions, rank)) {}
 
 	template<typename T, typename>
 	MArrayDimensions::MArrayDimensions(const std::vector<T>& dimensions) : MArrayDimensions(std::cbegin(dimensions), std::cend(dimensions)) {}

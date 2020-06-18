@@ -106,8 +106,9 @@ void accumulateInPool(LLU::MArgumentManager& mngr) {
 		std::vector<std::future<T>> partialResults {static_cast<size_t>(numJobs) - 1};
 		auto blockBegin = std::cbegin(typedNA);
 		for (int i = 0; i < numJobs - 1; ++i) {
-			partialResults[i] = tp.submit(std::accumulate<typename NumericArray<T>::const_iterator, T>, blockBegin, blockBegin + jobSize, T {});
-			blockBegin += jobSize;
+			auto blockEnd = std::next(blockBegin, jobSize);
+			partialResults[i] = tp.submit(std::accumulate<typename NumericArray<T>::const_iterator, T>, blockBegin, blockEnd, T {});
+			blockBegin = blockEnd;
 		}
 		T remainderSum = std::accumulate(blockBegin, std::cend(typedNA), T {});
 		T totalSum =
