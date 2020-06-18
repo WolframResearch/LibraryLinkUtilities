@@ -8,6 +8,7 @@ Checks: >
   -cert-oop11-cpp,
   cppcoreguidelines-*,
   -cppcoreguidelines-avoid-c-arrays,
+  -cppcoreguidelines-non-private-member-variables-in-classes,
   -cppcoreguidelines-owning-memory,
   google-*,
   -google-readability-braces-around-statements,
@@ -38,11 +39,13 @@ FormatStyle:     file
 User:            rafal
 CheckOptions:
   - key:             cppcoreguidelines-macro-usage.AllowedRegexp
-    value:           '^DEBUG_*|^LLU_*|ARGUMENT_DEFINE_SPECIALIZATIONS_OF_MEMBER_FUNCTIONS'
+    value:           '^DEBUG_*|^LLU_*|^WS_*|LIBRARY_(.*)_FUNCTION|^DEFINE_MANAGED_STORE_AND_SPECIALIZATION'
   - key:             misc-non-private-member-variables-in-classes.IgnoreClassesWithAllMemberVariablesBeingPublic
     value:           '1'
   - key:             cppcoreguidelines-special-member-functions.AllowSoleDefaultDtor
     value:           '1'
+  - key:             performance-unnecessary-value-param.AllowedTypes
+    value:           'MArrayDimensions'
   - key:             readability-implicit-bool-conversion.AllowPointerConditions
     value:           '1'
   - key:             readability-uppercase-literal-suffix.NewSuffixes
