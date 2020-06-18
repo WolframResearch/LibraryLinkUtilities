@@ -71,6 +71,12 @@ namespace LLU::Async {
 
 	public:
 		explicit ThreadJoiner(std::vector<std::thread>& threadsToJoin) : threads(threadsToJoin) {}
+
+		ThreadJoiner(const ThreadJoiner&) = delete;
+		ThreadJoiner& operator=(const ThreadJoiner&) = delete;
+		ThreadJoiner(ThreadJoiner&&) = delete;
+		ThreadJoiner& operator=(ThreadJoiner&&) = delete;
+
 		~ThreadJoiner() {
 			for (auto& t : threads) {
 				if (t.joinable()) {
@@ -91,6 +97,7 @@ namespace LLU::Async {
 	template<typename FunctionType, typename... Args>
 	std::packaged_task<std::invoke_result_t<FunctionType, Args...>()> getPackagedTask(FunctionType&& f, Args&&... args) {
 		using result_type = std::invoke_result_t<FunctionType, Args...>;
+		// NOLINTNEXTLINE(modernize-avoid-bind): perfect forwarding capture of a parameter pack in a lambda is not trivial
 		auto boundF = std::bind(std::forward<FunctionType>(f), std::forward<Args>(args)...);
 		return std::packaged_task<result_type()> {std::move(boundF)};
 	}

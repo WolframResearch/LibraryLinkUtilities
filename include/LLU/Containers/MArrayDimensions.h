@@ -52,7 +52,7 @@ namespace LLU {
 		 *	@throws		ErrorName::FunctionError - if any of Wolfram*Library structures was not initialized
 		 **/
 		template<typename T, typename = typename std::enable_if_t<std::is_integral_v<T>>>
-		/* implicit */ MArrayDimensions(const std::vector<T>& dimensions);
+		explicit MArrayDimensions(const std::vector<T>& dimensions);
 
 		/**
 		 * @brief   Create new dimensions from a range

@@ -839,7 +839,7 @@ namespace LLU {
 
 	template<WS::Encoding EIn, WS::Encoding EOut>
 	auto WSStream<EIn, EOut>::operator>>(const WS::Function& f) -> WSStream& {
-		testHead(f.getHead().c_str(), f.getArgc());
+		testHead(f.getHead(), f.getArgc());
 		return *this;
 	}
 
@@ -847,9 +847,9 @@ namespace LLU {
 	auto WSStream<EIn, EOut>::operator>>(WS::Function& f) -> WSStream& {
 		if (!f.getHead().empty()) {
 			if (f.getArgc() < 0) {
-				f.setArgc(testHead(f.getHead().c_str()));
+				f.setArgc(testHead(f.getHead()));
 			} else {
-				testHead(f.getHead().c_str(), f.getArgc());
+				testHead(f.getHead(), f.getArgc());
 			}
 		} else {
 			const char* head {};
