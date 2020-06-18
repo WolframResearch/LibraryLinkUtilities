@@ -173,7 +173,7 @@ LIBRARY_LINK_FUNCTION(changeSharedNumericArray) {
 	return err;
 }
 
-EXTERN_C DLLEXPORT int getSharedNumericArray(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument Res) {
+EXTERN_C DLLEXPORT int getSharedNumericArray(WolframLibraryData /*libData*/, mint Argc, MArgument* Args, MArgument Res) {
 	auto err = ErrorCode::NoError;
 	try {
 		MArgumentManager mngr(Argc, Args, Res);
@@ -190,7 +190,7 @@ EXTERN_C DLLEXPORT int getSharedNumericArray(WolframLibraryData libData, mint Ar
 
 struct ZeroReal64 {
 	template<typename T>
-	void operator()(NumericArray<T>&&, MArgumentManager&) {
+	void operator()(NumericArray<T>&& /*unused*/, MArgumentManager& /*unused*/) {
 		LLU::ErrorManager::throwException(LLU::ErrorName::FunctionError);
 	}
 
@@ -201,7 +201,7 @@ struct ZeroReal64 {
 };
 
 // reset NumericArray
-EXTERN_C DLLEXPORT int numericZeroData(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument Res) {
+EXTERN_C DLLEXPORT int numericZeroData(WolframLibraryData /*libData*/, mint Argc, MArgument* Args, MArgument Res) {
 	auto err = ErrorCode::NoError;
 	try {
 		MArgumentManager mngr(Argc, Args, Res);
@@ -216,7 +216,7 @@ EXTERN_C DLLEXPORT int numericZeroData(WolframLibraryData libData, mint Argc, MA
 
 struct AccumulateIntegers {
 	template<typename T>
-	std::enable_if_t<!std::is_integral<T>::value> operator()(const NumericArray<T>&, MArgumentManager&) {
+	std::enable_if_t<!std::is_integral<T>::value> operator()(const NumericArray<T>& /*unused*/, MArgumentManager& /*unused*/) {
 		LLU::ErrorManager::throwException(LLU::ErrorName::FunctionError);
 	}
 
@@ -228,7 +228,7 @@ struct AccumulateIntegers {
 };
 
 // sum elements of a NumericArray but only if it is of integer type
-EXTERN_C DLLEXPORT int accumulateIntegers(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument Res) {
+EXTERN_C DLLEXPORT int accumulateIntegers(WolframLibraryData /*libData*/, mint Argc, MArgument* Args, MArgument Res) {
 	auto err = ErrorCode::NoError;
 	try {
 		MArgumentManager mngr(Argc, Args, Res);
@@ -388,7 +388,7 @@ LLU_LIBRARY_FUNCTION(EmptyView) {
 	mngr.set(t);
 }
 
-mint largestDimension(NumericArrayView na) {
+mint largestDimension(const NumericArrayView& na) {
 	return *std::max_element(na.getDimensions(), na.getDimensions() + na.getRank());
 }
 

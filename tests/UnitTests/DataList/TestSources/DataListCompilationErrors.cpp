@@ -31,11 +31,11 @@ LLU_LIBRARY_FUNCTION(AddMTensorByType) {
 	auto dsIn = mngr.getGenericDataList(0);
 	dsIn.push_back(LLU::Tensor<mint> {2, 3, 4, 5, 6});	   // OK
 
-	auto rawMTensor = LLU::Tensor<mint> {2, 3, 4, 5, 6}.abandonContainer();
+	auto* rawMTensor = LLU::Tensor<mint> {2, 3, 4, 5, 6}.abandonContainer();
 	dsIn.push_back<LLU::MArgumentType::Tensor>(rawMTensor);  // OK
 	dsIn.push_back(rawMTensor);  // static assert failure
 
-	auto rawMNumericArray = LLU::NumericArray<mint> {2, 3, 4, 5, 6}.abandonContainer();
+	auto* rawMNumericArray = LLU::NumericArray<mint> {2, 3, 4, 5, 6}.abandonContainer();
 	dsIn.push_back(rawMNumericArray);  // static assert failure
 	mngr.set(dsIn);
 }

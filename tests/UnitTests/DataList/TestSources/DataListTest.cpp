@@ -32,7 +32,7 @@ EXTERN_C DLLEXPORT int WolframLibrary_initialize(WolframLibraryData libData) {
 }
 
 /* Uninitialize Library */
-EXTERN_C DLLEXPORT void WolframLibrary_uninitialize(WolframLibraryData) {}
+EXTERN_C DLLEXPORT void WolframLibrary_uninitialize(WolframLibraryData /*unused*/) {}
 
 /* Returns an input or a copy of an input */
 LLU_LIBRARY_FUNCTION(PassDataStore) {

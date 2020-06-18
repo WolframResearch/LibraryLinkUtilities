@@ -267,7 +267,7 @@ private:
 };
 
 template<>
-inline void LLU::manageInstanceCallback<Serializable>(WolframLibraryData, mbool mode, mint id) {
+inline void LLU::manageInstanceCallback<Serializable>(WolframLibraryData /*unused*/, mbool mode, mint id) {
 	SerializableStore.manageInstance(mode, id);
 }
 

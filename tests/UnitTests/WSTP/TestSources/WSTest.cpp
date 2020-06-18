@@ -45,7 +45,7 @@ void readAndWriteScalarMax(WSTPStream& m) {
 //
 // Scalars
 //
-EXTERN_C DLLEXPORT int SameInts(WolframLibraryData libData, WSLINK mlp) {
+EXTERN_C DLLEXPORT int SameInts(WolframLibraryData /*libData*/, WSLINK mlp) {
 	auto err = ErrorCode::NoError;
 	try {
 		WSTPStream m(mlp, "List", 4);
@@ -62,7 +62,7 @@ EXTERN_C DLLEXPORT int SameInts(WolframLibraryData libData, WSLINK mlp) {
 	return err;
 }
 
-EXTERN_C DLLEXPORT int MaxInts(WolframLibraryData libData, WSLINK mlp) {
+EXTERN_C DLLEXPORT int MaxInts(WolframLibraryData /*libData*/, WSLINK mlp) {
 	auto err = ErrorCode::NoError;
 	try {
 		WSTPStream m(mlp, "List", 4);
@@ -79,7 +79,7 @@ EXTERN_C DLLEXPORT int MaxInts(WolframLibraryData libData, WSLINK mlp) {
 	return err;
 }
 
-EXTERN_C DLLEXPORT int WriteMint(WolframLibraryData libData, WSLINK mlp) {
+EXTERN_C DLLEXPORT int WriteMint(WolframLibraryData /*libData*/, WSLINK mlp) {
 	auto err = ErrorCode::NoError;
 	try {
 		WSTPStream m(mlp);
@@ -95,7 +95,7 @@ EXTERN_C DLLEXPORT int WriteMint(WolframLibraryData libData, WSLINK mlp) {
 	return err;
 }
 
-EXTERN_C DLLEXPORT int SameFloats(WolframLibraryData libData, WSLINK mlp) {
+EXTERN_C DLLEXPORT int SameFloats(WolframLibraryData /*libData*/, WSLINK mlp) {
 	auto err = ErrorCode::NoError;
 	try {
 		WSTPStream m(mlp, "List", 2);
@@ -110,7 +110,7 @@ EXTERN_C DLLEXPORT int SameFloats(WolframLibraryData libData, WSLINK mlp) {
 	return err;
 }
 
-EXTERN_C DLLEXPORT int BoolAnd(WolframLibraryData libData, WSLINK mlp) {
+EXTERN_C DLLEXPORT int BoolAnd(WolframLibraryData /*libData*/, WSLINK mlp) {
 	auto err = ErrorCode::NoError;
 	try {
 		WSTPStream ml(mlp);
@@ -121,7 +121,7 @@ EXTERN_C DLLEXPORT int BoolAnd(WolframLibraryData libData, WSLINK mlp) {
 		// Read all bools in a loop and calculate conjunction. No short-circuit
 		bool res = true;
 		for (auto i = 0; i < l.getArgc(); ++i) {
-			bool b;
+			bool b = 0;
 			ml >> b;
 			res &= b;
 		}
@@ -157,7 +157,7 @@ void reverseList(WSTPStream& m) {
 	m << result;
 }
 
-EXTERN_C DLLEXPORT int GetReversed8(WolframLibraryData libData, WSLINK mlp) {
+EXTERN_C DLLEXPORT int GetReversed8(WolframLibraryData /*libData*/, WSLINK mlp) {
 	auto err = ErrorCode::NoError;
 	try {
 		WSTPStream ml(mlp, "List", 1);
@@ -170,7 +170,7 @@ EXTERN_C DLLEXPORT int GetReversed8(WolframLibraryData libData, WSLINK mlp) {
 	return err;
 }
 
-EXTERN_C DLLEXPORT int GetReversed16(WolframLibraryData libData, WSLINK mlp) {
+EXTERN_C DLLEXPORT int GetReversed16(WolframLibraryData /*libData*/, WSLINK mlp) {
 	auto err = ErrorCode::NoError;
 	try {
 		WSTPStream ml(mlp, "List", 1);
@@ -183,7 +183,7 @@ EXTERN_C DLLEXPORT int GetReversed16(WolframLibraryData libData, WSLINK mlp) {
 	return err;
 }
 
-EXTERN_C DLLEXPORT int GetReversed32(WolframLibraryData libData, WSLINK mlp) {
+EXTERN_C DLLEXPORT int GetReversed32(WolframLibraryData /*libData*/, WSLINK mlp) {
 	auto err = ErrorCode::NoError;
 	try {
 		WSTPStream ml(mlp, "List", 1);
@@ -196,7 +196,7 @@ EXTERN_C DLLEXPORT int GetReversed32(WolframLibraryData libData, WSLINK mlp) {
 	return err;
 }
 
-EXTERN_C DLLEXPORT int GetReversed64(WolframLibraryData libData, WSLINK mlp) {
+EXTERN_C DLLEXPORT int GetReversed64(WolframLibraryData /*libData*/, WSLINK mlp) {
 	auto err = ErrorCode::NoError;
 	try {
 		WSTPStream ml(mlp, "List", 1);
@@ -209,7 +209,7 @@ EXTERN_C DLLEXPORT int GetReversed64(WolframLibraryData libData, WSLINK mlp) {
 	return err;
 }
 
-EXTERN_C DLLEXPORT int GetReversedDouble(WolframLibraryData libData, WSLINK mlp) {
+EXTERN_C DLLEXPORT int GetReversedDouble(WolframLibraryData /*libData*/, WSLINK mlp) {
 	auto err = ErrorCode::NoError;
 	try {
 		WSTPStream ml(mlp, "List", 1);
@@ -222,7 +222,7 @@ EXTERN_C DLLEXPORT int GetReversedDouble(WolframLibraryData libData, WSLINK mlp)
 	return err;
 }
 
-EXTERN_C DLLEXPORT int GetFloatList(WolframLibraryData libData, WSLINK mlp) {
+EXTERN_C DLLEXPORT int GetFloatList(WolframLibraryData /*libData*/, WSLINK mlp) {
 	auto err = ErrorCode::NoError;
 	try {
 		WSTPStream ml(mlp, "List", 1);
@@ -239,7 +239,7 @@ EXTERN_C DLLEXPORT int GetFloatList(WolframLibraryData libData, WSLINK mlp) {
 // Arrays
 //
 
-EXTERN_C DLLEXPORT int GetSame8(WolframLibraryData libData, WSLINK mlp) {
+EXTERN_C DLLEXPORT int GetSame8(WolframLibraryData /*libData*/, WSLINK mlp) {
 	auto err = ErrorCode::NoError;
 	try {
 		WSTPStream ml(mlp, "List", 1);
@@ -252,7 +252,7 @@ EXTERN_C DLLEXPORT int GetSame8(WolframLibraryData libData, WSLINK mlp) {
 	return err;
 }
 
-EXTERN_C DLLEXPORT int GetSame16(WolframLibraryData libData, WSLINK mlp) {
+EXTERN_C DLLEXPORT int GetSame16(WolframLibraryData /*libData*/, WSLINK mlp) {
 	auto err = ErrorCode::NoError;
 	try {
 		WSTPStream ml(mlp, "List", 1);
@@ -265,7 +265,7 @@ EXTERN_C DLLEXPORT int GetSame16(WolframLibraryData libData, WSLINK mlp) {
 	return err;
 }
 
-EXTERN_C DLLEXPORT int GetSame32(WolframLibraryData libData, WSLINK mlp) {
+EXTERN_C DLLEXPORT int GetSame32(WolframLibraryData /*libData*/, WSLINK mlp) {
 	auto err = ErrorCode::NoError;
 	try {
 		WSTPStream ml(mlp, "List", 1);
@@ -278,7 +278,7 @@ EXTERN_C DLLEXPORT int GetSame32(WolframLibraryData libData, WSLINK mlp) {
 	return err;
 }
 
-EXTERN_C DLLEXPORT int GetSame64(WolframLibraryData libData, WSLINK mlp) {
+EXTERN_C DLLEXPORT int GetSame64(WolframLibraryData /*libData*/, WSLINK mlp) {
 	auto err = ErrorCode::NoError;
 	try {
 		WSTPStream ml(mlp, "List", 1);
@@ -291,7 +291,7 @@ EXTERN_C DLLEXPORT int GetSame64(WolframLibraryData libData, WSLINK mlp) {
 	return err;
 }
 
-EXTERN_C DLLEXPORT int GetSameDouble(WolframLibraryData libData, WSLINK mlp) {
+EXTERN_C DLLEXPORT int GetSameDouble(WolframLibraryData /*libData*/, WSLINK mlp) {
 	auto err = ErrorCode::NoError;
 	try {
 		WSTPStream ml(mlp, "List", 1);
@@ -317,7 +317,7 @@ void reshapeArray(WSTPStream& m) {
 	m << a;
 }
 
-EXTERN_C DLLEXPORT int Reshape8(WolframLibraryData libData, WSLINK mlp) {
+EXTERN_C DLLEXPORT int Reshape8(WolframLibraryData /*libData*/, WSLINK mlp) {
 	auto err = ErrorCode::NoError;
 	try {
 		WSTPStream ml(mlp, "List", 1);
@@ -330,7 +330,7 @@ EXTERN_C DLLEXPORT int Reshape8(WolframLibraryData libData, WSLINK mlp) {
 	return err;
 }
 
-EXTERN_C DLLEXPORT int Reshape16(WolframLibraryData libData, WSLINK mlp) {
+EXTERN_C DLLEXPORT int Reshape16(WolframLibraryData /*libData*/, WSLINK mlp) {
 	auto err = ErrorCode::NoError;
 	try {
 		WSTPStream ml(mlp, "List", 1);
@@ -343,7 +343,7 @@ EXTERN_C DLLEXPORT int Reshape16(WolframLibraryData libData, WSLINK mlp) {
 	return err;
 }
 
-EXTERN_C DLLEXPORT int Reshape32(WolframLibraryData libData, WSLINK mlp) {
+EXTERN_C DLLEXPORT int Reshape32(WolframLibraryData /*libData*/, WSLINK mlp) {
 	auto err = ErrorCode::NoError;
 	try {
 		WSTPStream ml(mlp, "List", 1);
@@ -356,7 +356,7 @@ EXTERN_C DLLEXPORT int Reshape32(WolframLibraryData libData, WSLINK mlp) {
 	return err;
 }
 
-EXTERN_C DLLEXPORT int Reshape64(WolframLibraryData libData, WSLINK mlp) {
+EXTERN_C DLLEXPORT int Reshape64(WolframLibraryData /*libData*/, WSLINK mlp) {
 	auto err = ErrorCode::NoError;
 	try {
 		WSTPStream ml(mlp, "List", 1);
@@ -369,7 +369,7 @@ EXTERN_C DLLEXPORT int Reshape64(WolframLibraryData libData, WSLINK mlp) {
 	return err;
 }
 
-EXTERN_C DLLEXPORT int ReshapeDouble(WolframLibraryData libData, WSLINK mlp) {
+EXTERN_C DLLEXPORT int ReshapeDouble(WolframLibraryData /*libData*/, WSLINK mlp) {
 	auto err = ErrorCode::NoError;
 	try {
 		WSTPStream ml(mlp, "List", 1);
@@ -382,7 +382,7 @@ EXTERN_C DLLEXPORT int ReshapeDouble(WolframLibraryData libData, WSLINK mlp) {
 	return err;
 }
 
-EXTERN_C DLLEXPORT int ComplexToList(WolframLibraryData libData, WSLINK mlp) {
+EXTERN_C DLLEXPORT int ComplexToList(WolframLibraryData /*libData*/, WSLINK mlp) {
 	auto err = ErrorCode::NoError;
 	try {
 		WSTPStream ml(mlp, "List", 1);
@@ -408,7 +408,7 @@ EXTERN_C DLLEXPORT int ComplexToList(WolframLibraryData libData, WSLINK mlp) {
 	return err;
 }
 
-EXTERN_C DLLEXPORT int ReceiveAndFreeArray(WolframLibraryData libData, WSLINK mlp) {
+EXTERN_C DLLEXPORT int ReceiveAndFreeArray(WolframLibraryData /*libData*/, WSLINK mlp) {
 	auto err = ErrorCode::NoError;
 	try {
 		WSTPStream ml(mlp, "List", 1);
@@ -451,7 +451,7 @@ void repeatString(WSStream<WS::Encoding::UTF32>& ml) {
 	ml << t + s.erase(0, 1);
 }
 
-EXTERN_C DLLEXPORT int RepeatString(WolframLibraryData libData, WSLINK mlp) {
+EXTERN_C DLLEXPORT int RepeatString(WolframLibraryData /*libData*/, WSLINK mlp) {
 	auto err = ErrorCode::NoError;
 	try {
 		WSStream<WS::Encoding::Native> ml(mlp, "List", 1);
@@ -464,7 +464,7 @@ EXTERN_C DLLEXPORT int RepeatString(WolframLibraryData libData, WSLINK mlp) {
 	return err;
 }
 
-EXTERN_C DLLEXPORT int RepeatUTF8(WolframLibraryData libData, WSLINK mlp) {
+EXTERN_C DLLEXPORT int RepeatUTF8(WolframLibraryData /*libData*/, WSLINK mlp) {
 	auto err = ErrorCode::NoError;
 	try {
 		WSStream<WS::Encoding::UTF8> ml(mlp, "List", 1);
@@ -477,7 +477,7 @@ EXTERN_C DLLEXPORT int RepeatUTF8(WolframLibraryData libData, WSLINK mlp) {
 	return err;
 }
 
-EXTERN_C DLLEXPORT int RepeatUTF16(WolframLibraryData libData, WSLINK mlp) {
+EXTERN_C DLLEXPORT int RepeatUTF16(WolframLibraryData /*libData*/, WSLINK mlp) {
 	auto err = ErrorCode::NoError;
 	try {
 		WSStream<WS::Encoding::UTF16> ml(mlp, "List", 1);
@@ -490,7 +490,7 @@ EXTERN_C DLLEXPORT int RepeatUTF16(WolframLibraryData libData, WSLINK mlp) {
 	return err;
 }
 
-EXTERN_C DLLEXPORT int RepeatUTF32(WolframLibraryData libData, WSLINK mlp) {
+EXTERN_C DLLEXPORT int RepeatUTF32(WolframLibraryData /*libData*/, WSLINK mlp) {
 	auto err = ErrorCode::NoError;
 	try {
 		WSStream<WS::Encoding::UTF32> ml(mlp, "List", 1);
@@ -519,7 +519,7 @@ void appendString(WSStream<WS::Encoding::Native>& ml) {
 	ml << s + appendix;
 }
 
-EXTERN_C DLLEXPORT int AppendString(WolframLibraryData libData, WSLINK mlp) {
+EXTERN_C DLLEXPORT int AppendString(WolframLibraryData /*libData*/, WSLINK mlp) {
 	auto err = ErrorCode::NoError;
 	try {
 		WSStream<WS::Encoding::Native> ml(mlp, "List", 1);
@@ -533,7 +533,7 @@ EXTERN_C DLLEXPORT int AppendString(WolframLibraryData libData, WSLINK mlp) {
 	return err;
 }
 
-EXTERN_C DLLEXPORT int AppendUTF8(WolframLibraryData libData, WSLINK mlp) {
+EXTERN_C DLLEXPORT int AppendUTF8(WolframLibraryData /*libData*/, WSLINK mlp) {
 	auto err = ErrorCode::NoError;
 	try {
 		WSStream<WS::Encoding::UTF8> ml(mlp, "List", 1);
@@ -546,7 +546,7 @@ EXTERN_C DLLEXPORT int AppendUTF8(WolframLibraryData libData, WSLINK mlp) {
 	return err;
 }
 
-EXTERN_C DLLEXPORT int AppendUTF16(WolframLibraryData libData, WSLINK mlp) {
+EXTERN_C DLLEXPORT int AppendUTF16(WolframLibraryData /*libData*/, WSLINK mlp) {
 	auto err = ErrorCode::NoError;
 	try {
 		WSStream<WS::Encoding::UTF16> ml(mlp, "List", 1);
@@ -559,7 +559,7 @@ EXTERN_C DLLEXPORT int AppendUTF16(WolframLibraryData libData, WSLINK mlp) {
 	return err;
 }
 
-EXTERN_C DLLEXPORT int AppendUTF32(WolframLibraryData libData, WSLINK mlp) {
+EXTERN_C DLLEXPORT int AppendUTF32(WolframLibraryData /*libData*/, WSLINK mlp) {
 	auto err = ErrorCode::NoError;
 	try {
 		WSStream<WS::Encoding::UTF32> ml(mlp, "List", 1);
@@ -572,7 +572,7 @@ EXTERN_C DLLEXPORT int AppendUTF32(WolframLibraryData libData, WSLINK mlp) {
 	return err;
 }
 
-EXTERN_C DLLEXPORT int ReceiveAndFreeString(WolframLibraryData libData, WSLINK mlp) {
+EXTERN_C DLLEXPORT int ReceiveAndFreeString(WolframLibraryData /*libData*/, WSLINK mlp) {
 	auto err = ErrorCode::NoError;
 	try {
 		WSTPStream ml(mlp, "List", 1);
@@ -587,7 +587,7 @@ EXTERN_C DLLEXPORT int ReceiveAndFreeString(WolframLibraryData libData, WSLINK m
 	return err;
 }
 
-EXTERN_C DLLEXPORT int GetAndPutUTF8(WolframLibraryData libData, WSLINK mlp) {
+EXTERN_C DLLEXPORT int GetAndPutUTF8(WolframLibraryData /*libData*/, WSLINK mlp) {
 	auto err = ErrorCode::NoError;
 	try {
 		WSStream<WS::Encoding::UTF8> ml(mlp, "List", 2);
@@ -620,7 +620,7 @@ EXTERN_C DLLEXPORT int GetAndPutUTF8(WolframLibraryData libData, WSLINK mlp) {
 // Symbols and Arbitrary Functions
 //
 
-EXTERN_C DLLEXPORT int GetList(WolframLibraryData libData, WSLINK mlp) {
+EXTERN_C DLLEXPORT int GetList(WolframLibraryData /*libData*/, WSLINK mlp) {
 	auto err = ErrorCode::NoError;
 	try {
 		WSStream<WS::Encoding::Byte> ml(mlp, "List", 0);
@@ -636,7 +636,7 @@ EXTERN_C DLLEXPORT int GetList(WolframLibraryData libData, WSLINK mlp) {
 	return err;
 }
 
-EXTERN_C DLLEXPORT int ReverseSymbolsOrder(WolframLibraryData libData, WSLINK mlp) {
+EXTERN_C DLLEXPORT int ReverseSymbolsOrder(WolframLibraryData /*libData*/, WSLINK mlp) {
 	auto err = ErrorCode::NoError;
 	try {
 		WSTPStream ml(mlp);
@@ -666,7 +666,7 @@ EXTERN_C DLLEXPORT int ReverseSymbolsOrder(WolframLibraryData libData, WSLINK ml
 	return err;
 }
 
-EXTERN_C DLLEXPORT int TakeLibraryFunction(WolframLibraryData libData, WSLINK mlp) {
+EXTERN_C DLLEXPORT int TakeLibraryFunction(WolframLibraryData /*libData*/, WSLINK mlp) {
 	auto err = ErrorCode::NoError;
 	try {
 		WSStream<WS::Encoding::UTF8> ml(mlp, "List", 1);
@@ -691,7 +691,7 @@ EXTERN_C DLLEXPORT int TakeLibraryFunction(WolframLibraryData libData, WSLINK ml
 	return err;
 }
 
-EXTERN_C DLLEXPORT int GetSet(WolframLibraryData libData, WSLINK mlp) {
+EXTERN_C DLLEXPORT int GetSet(WolframLibraryData /*libData*/, WSLINK mlp) {
 	auto err = ErrorCode::NoError;
 	try {
 		WSStream<WS::Encoding::UTF8> ml(mlp);
@@ -771,7 +771,7 @@ LIBRARY_WSTP_FUNCTION(UnknownLengthList) {
 	try {
 		WSTPStream ml(mlp, 1);
 
-		int modulus;
+		int modulus = 0;
 		ml >> modulus;
 
 		std::random_device rd;
@@ -780,7 +780,7 @@ LIBRARY_WSTP_FUNCTION(UnknownLengthList) {
 
 		ml << WS::BeginExpr("List");
 
-		int r;
+		int r = 0;
 		while ((r = distr(gen)) % modulus != 0) {
 			ml << r;
 		}
@@ -800,7 +800,7 @@ LIBRARY_WSTP_FUNCTION(RaggedArray) {
 	try {
 		WSTPStream ml(mlp, 1);
 
-		int len;
+		int len = 0;
 		ml >> len;
 
 		ml << WS::BeginExpr("List");
@@ -886,14 +886,15 @@ LIBRARY_WSTP_FUNCTION(ListOfStringsTiming) {
 		std::vector<std::string> listOfStrings;
 		ml >> listOfStrings;
 
-		bool useBeginExpr;
+		bool useBeginExpr {};
 		ml >> useBeginExpr;
 
 		useBeginExpr ? (ml << WS::BeginExpr("List")) : (ml << WS::List(static_cast<int>(repetitions * listOfStrings.size())));
 
 		for (int i = 0; i < repetitions; ++i) {
-			for (auto&& s : listOfStrings)
+			for (auto&& s : listOfStrings) {
 				ml << s;
+			}
 		}
 
 		if (useBeginExpr) {

@@ -14,7 +14,7 @@ public:
 		f = LLU::openFile(path, mode); // open with default Import/Export policy
 	}
 private:
-	LLU::FilePtr f {nullptr, [](FILE*) { return 0; }};
+	LLU::FilePtr f {nullptr, [](FILE* /*unused*/) { return 0; }};
 };
 
 class FileStream {

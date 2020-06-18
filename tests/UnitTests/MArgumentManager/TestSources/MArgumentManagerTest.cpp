@@ -27,7 +27,7 @@ namespace LLU {
 	void MArgumentManager::set<float>(const float& f) {
 		set(static_cast<double>(f));
 	}
-}
+}	 // namespace LLU
 
 LLU_LIBRARY_FUNCTION(AsFloat) {
 	auto [f1] = mngr.getTuple<float>();
@@ -75,7 +75,7 @@ namespace LLU {
 		personDS.push_back(p.height);
 		set(personDS);
 	}
-}
+}	 // namespace LLU
 
 LLU_LIBRARY_FUNCTION(DescribePerson2) {
 	auto person = mngr.get<Person>(0);
@@ -132,7 +132,7 @@ namespace LLU {
 			mngr.set(NumericArray<T>{ std::cbegin(v), std::cend(v) });
 		}
 	};
-}
+}	 // namespace LLU
 
 LLU_LIBRARY_FUNCTION(GetTallest) {
 	auto people = mngr.get<std::vector<Person>>(0); // non-empty collection of Persons

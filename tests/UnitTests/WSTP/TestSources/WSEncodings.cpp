@@ -64,7 +64,7 @@ LIBRARY_WSTP_FUNCTION(CharacterCodes) {
 	auto err = ErrorCode::NoError;
 	try {
 		WSStream<WS::Encoding::Byte> ml(mlp, 1);
-		auto mark = WSCreateMark(mlp);
+		auto* mark = WSCreateMark(mlp);
 		ml << WS::Association(6);	 // there are 6 encodings available
 		forAllEncodingsDo<StringToCharCodes>(ml, mark);
 
@@ -91,7 +91,7 @@ LIBRARY_WSTP_FUNCTION(AllEncodingsRoundtrip) {
 	auto err = ErrorCode::NoError;
 	try {
 		WSStream<WS::Encoding::Byte> ml(mlp, 1);
-		auto mark = WSCreateMark(mlp);
+		auto* mark = WSCreateMark(mlp);
 		ml << WS::Association(6);	 // there are 6 encodings available
 		forAllEncodingsDo<EncodingRoundtrip>(ml, mark);
 	} catch (LibraryLinkError& e) {
