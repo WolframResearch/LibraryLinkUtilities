@@ -140,6 +140,6 @@ namespace LLU {
 	auto asTypedImage(MImage img, F&& callable) {
 		return asTypedImage(ImageView {img}, std::forward<F>(callable));
 	}
-}
+}  // namespace LLU
 
 #endif	  // LLU_CONTAINERS_VIEWS_IMAGE_HPP

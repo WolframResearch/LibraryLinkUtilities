@@ -112,6 +112,6 @@ namespace LLU {
 	auto asTypedNumericArray(MNumericArray na, F&& callable) {
 		return asTypedNumericArray(NumericArrayView {na}, std::forward<F>(callable));
 	}
-}
+}  // namespace LLU
 
 #endif	  // LLU_CONTAINERS_VIEWS_NUMERICARRAY_HPP

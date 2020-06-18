@@ -107,6 +107,6 @@ namespace LLU {
 		return asTypedTensor(TensorView {t}, std::forward<F>(callable));
 	}
 
-}
+}  // namespace LLU
 
 #endif	  // LLU_CONTAINERS_VIEWS_TENSOR_HPP
