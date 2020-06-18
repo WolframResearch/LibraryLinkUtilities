@@ -22,9 +22,9 @@ namespace LLU {
 	public:
 		ImageView() = default;
 
-		/* implicit */ ImageView(const GenericImage& gIm) : m {gIm.getContainer()} {}
+		ImageView(const GenericImage& gIm) : m {gIm.getContainer()} {}	  // NOLINT: implicit conversion to a view is useful and harmless
 
-		/* implicit */ ImageView(MImage mi) : m {mi} {}
+		ImageView(MImage mi) : m {mi} {}	// NOLINT
 
 		/// @copydoc ImageInterface::colorspace()
 		colorspace_t colorspace() const override {
@@ -53,12 +53,12 @@ namespace LLU {
 
 		/// @copydoc ImageInterface::alphaChannelQ()
 		bool alphaChannelQ() const override {
-			return LibraryData::ImageAPI()->MImage_alphaChannelQ(m);
+			return LibraryData::ImageAPI()->MImage_alphaChannelQ(m) == True;
 		}
 
 		/// @copydoc ImageInterface::interleavedQ()
 		bool interleavedQ() const override {
-			return LibraryData::ImageAPI()->MImage_interleavedQ(m);
+			return LibraryData::ImageAPI()->MImage_interleavedQ(m) == True;
 		}
 
 		/// @copydoc ImageInterface::is3D()
@@ -96,19 +96,19 @@ namespace LLU {
 		ImageTypedView() = default;
 
 		template<class Passing>
-		/* implicit */ ImageTypedView(const GenericImage& gIm) : ImageView(gIm) {
+		ImageTypedView(const GenericImage& gIm) : ImageView(gIm) {	  // NOLINT: implicit conversion to a view is useful and harmless
 			if (ImageType<T> != type()) {
 				ErrorManager::throwException(ErrorName::ImageTypeError);
 			}
 		}
 
-		/* implicit */ ImageTypedView(ImageView iv) : ImageView(std::move(iv)) {
+		ImageTypedView(ImageView iv) : ImageView(std::move(iv)) {	 // NOLINT
 			if (ImageType<T> != type()) {
 				ErrorManager::throwException(ErrorName::ImageTypeError);
 			}
 		}
 
-		/* implicit */ ImageTypedView(MImage mi) : ImageView(mi) {
+		ImageTypedView(MImage mi) : ImageView(mi) {	   // NOLINT
 			if (ImageType<T> != type()) {
 				ErrorManager::throwException(ErrorName::ImageTypeError);
 			}
