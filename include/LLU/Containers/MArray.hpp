@@ -128,10 +128,9 @@ namespace LLU {
 		 **/
 		const T& at(const std::vector<mint>& indices) const;
 
-	protected:
+	private:
 		MArrayDimensions dims;
 
-	private:
 		mint getSize() const noexcept override {
 			return dims.flatCount();
 		}
