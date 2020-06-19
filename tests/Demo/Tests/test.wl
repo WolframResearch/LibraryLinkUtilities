@@ -21,13 +21,13 @@ $tests = Hold @ {
 	],
 
 	VerificationTest[
-		f = Demo`CaesarCipherEncode["HelloWorld", -1];
+		f = Catch[Demo`CaesarCipherEncode["HelloWorld", -1], "LLUExceptionTag"];
 		FailureQ[f] && First[f] === "NegativeShiftError"
 	],
 
 	VerificationTest[
-		f = Demo`CaesarCipherEncode["HelloWorld", -1];
-		FailureQ[f] && First[f] === "NegativeShiftError"
+		f = Catch[Demo`CaesarCipherEncode["HelloWorld\[HappySmiley]", 2], "LLUExceptionTag"];
+		FailureQ[f] && First[f] === "InvalidCharacterError"
 	]
 };
 
