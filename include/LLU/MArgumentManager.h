@@ -716,12 +716,12 @@ namespace LLU {
 		template<typename T>
 		struct CustomMArgumentTypeDetector {
 			template<typename U>
-			static std::true_type isSpecialized(typename CustomType<U>::CorrespondingTypes* /*dummy*/) { return {}; }
+			static std::true_type isSpecialized(typename CustomType<U>::CorrespondingTypes* /*unused*/) { return {}; }
 
 			template<typename>
-			static std::false_type isSpecialized(...) { return {}; } // NOLINT(cert-dcl50-cpp)
+			static std::false_type isSpecialized(...) { return {}; } // NOLINT(cert-dcl50-cpp): this is a common idiom
 
-			static constexpr bool value = decltype(isSpecialized<T>(nullptr))::value;
+			static constexpr bool value = decltype(isSpecialized<T>(nullptr))::value; // NOLINT(cppcoreguidelines-pro-type-vararg): this is a common idiom
 		};
 
 		template<typename T>
