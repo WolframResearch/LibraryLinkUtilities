@@ -14,11 +14,11 @@ Checks: >
   -google-readability-braces-around-statements,
   -google-runtime-references,
   -google-runtime-int,
-  hicpp-*,
-  -hicpp-avoid-c-arrays,
-  -hicpp-braces-around-statements,
-  -hicpp-explicit-conversions,
-  -hicpp-special-member-functions,
+  hicpp-avoid-goto
+  hicpp-exception-baseclass
+  hicpp-multiway-paths-covered
+  hicpp-no-assembler
+  hicpp-signed-bitwise
   llvm-*,
   -llvm-namespace-comment,
   -llvm-qualified-auto,
