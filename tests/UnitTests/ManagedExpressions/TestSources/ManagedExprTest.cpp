@@ -18,6 +18,12 @@ public:
 	MyExpression(mint myID, std::string text) : id {myID}, text {std::move(text)} {
 		LLU_DEBUG("MyExpression[", id, "] created.");
 	}
+
+	MyExpression(const MyExpression&) = delete;
+	MyExpression& operator=(const MyExpression&) = delete;
+	MyExpression(MyExpression&&) = default;
+	MyExpression& operator=(MyExpression&&) = default;
+
 	virtual ~MyExpression() {
 		LLU_DEBUG("MyExpression[", id, "] is dying now.");
 	}
@@ -26,14 +32,16 @@ public:
 		return text;
 	}
 
+	mint getID() const noexcept {
+		return id;
+	}
+
 	virtual void setText(std::string newText) {
 		text = std::move(newText);
 	}
 
-protected:
-	mint id;
-
 private:
+	mint id;
 	std::string text;
 };
 
@@ -197,13 +205,17 @@ LIBRARY_WSTP_FUNCTION(SetTextWS) {
 
 class MyChildExpression : public MyExpression {
 public:
-	MyChildExpression(mint myID, std::string text) : MyExpression(myID, "") {
-		setText(std::move(text));
-		LLU_DEBUG("MyChildExpression[", id, "] created.");
+	MyChildExpression(mint myID, std::string text) : MyExpression(myID, childTextPrefix + std::move(text)) {
+		LLU_DEBUG("MyChildExpression[", getID(), "] created.");
 	}
 
+	MyChildExpression(const MyChildExpression&) = delete;
+	MyChildExpression& operator=(const MyChildExpression&) = delete;
+	MyChildExpression(MyChildExpression&&) = default;
+	MyChildExpression& operator=(MyChildExpression&&) = default;
+
 	~MyChildExpression() override {
-		LLU_DEBUG("MyChildExpression[", id, "] is dying now.");
+		LLU_DEBUG("MyChildExpression[", getID(), "] is dying now.");
 	}
 
 	mint getCounter() {
@@ -211,10 +223,11 @@ public:
 	}
 
 	void setText(std::string newText) override {
-		MyExpression::setText(std::string {"I'm a subclass! Here is your text: "} + std::move(newText));
+		MyExpression::setText(childTextPrefix + std::move(newText));
 	}
 
 private:
+	inline static const std::string childTextPrefix {"I'm a subclass! Here is your text: "};
 	mint counter = 0;
 };
 

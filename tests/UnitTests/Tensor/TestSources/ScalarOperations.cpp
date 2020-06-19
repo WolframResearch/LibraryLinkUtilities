@@ -67,6 +67,6 @@ LIBRARY_LINK_FUNCTION(getSubpartT) {
 	if (auto err = LLU::LibraryData::API()->MTensor_getMTensor(T0.getContainer(), pos.data(), 2, &T1); err != LIBRARY_NO_ERROR) {
 		return err;
 	}
-	mngr.set(T1);
+	mngr.setMTensor(T1);
 	return LLU::ErrorCode::NoError;
 }

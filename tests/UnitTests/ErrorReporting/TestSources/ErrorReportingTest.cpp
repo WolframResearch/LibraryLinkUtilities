@@ -36,8 +36,6 @@ EXTERN_C DLLEXPORT int ReadData(WolframLibraryData /*unused*/, mint Argc, MArgum
 		ErrorManager::throwException("DataFileError", fileName, fileNameLen, "data type is not supported");
 	} catch (const LibraryLinkError& e) {
 		err = e.which();
-	} catch (...) {
-		err = LLErrorCode::FunctionError;
 	}
 	return err;
 }
@@ -51,8 +49,6 @@ LIBRARY_LINK_FUNCTION(ReadDataLocalWLD) {
 		ErrorManager::throwException(libData, "DataFileError", fileName, fileNameLen, "data type is not supported");
 	} catch (const LibraryLinkError& e) {
 		err = e.which();
-	} catch (...) {
-		err = LLErrorCode::FunctionError;
 	}
 	return err;
 }
@@ -63,8 +59,6 @@ EXTERN_C DLLEXPORT int RepeatedTemplate(WolframLibraryData /*unused*/, mint /*un
 		ErrorManager::throwException("RepeatedTemplateError", "x", "y", "z");
 	} catch (const LibraryLinkError& e) {
 		err = e.which();
-	} catch (...) {
-		err = LLErrorCode::FunctionError;
 	}
 	return err;
 }
@@ -75,8 +69,6 @@ EXTERN_C DLLEXPORT int NumberedSlots(WolframLibraryData /*unused*/, mint /*unuse
 		ErrorManager::throwException("NumberedSlotsError", 1, std::vector<std::string> {"2", "3", "4"});
 	} catch (const LibraryLinkError& e) {
 		err = e.which();
-	} catch (...) {
-		err = LLErrorCode::FunctionError;
 	}
 	return err;
 }
@@ -87,8 +79,6 @@ EXTERN_C DLLEXPORT int RepeatedNumberTemplate(WolframLibraryData /*unused*/, min
 		ErrorManager::throwException("RepeatedNumberTemplateError", "x", "y", "z");
 	} catch (const LibraryLinkError& e) {
 		err = e.which();
-	} catch (...) {
-		err = LLErrorCode::FunctionError;
 	}
 	return err;
 }
@@ -99,8 +89,6 @@ EXTERN_C DLLEXPORT int TooManyValues(WolframLibraryData /*unused*/, mint /*unuse
 		ErrorManager::throwException("NumberedSlotsError", 1, 2, 3, 4, 5);
 	} catch (const LibraryLinkError& e) {
 		err = e.which();
-	} catch (...) {
-		err = LLErrorCode::FunctionError;
 	}
 	return err;
 }
@@ -111,8 +99,6 @@ EXTERN_C DLLEXPORT int TooFewValues(WolframLibraryData /*unused*/, mint /*unused
 		ErrorManager::throwException("NumberedSlotsError");
 	} catch (const LibraryLinkError& e) {
 		err = e.which();
-	} catch (...) {
-		err = LLErrorCode::FunctionError;
 	}
 	return err;
 }
@@ -123,8 +109,6 @@ EXTERN_C DLLEXPORT int MixedSlots(WolframLibraryData /*unused*/, mint /*unused*/
 		ErrorManager::throwException("MixedSlotsError", 1, 2, 3, 4);
 	} catch (const LibraryLinkError& e) {
 		err = e.which();
-	} catch (...) {
-		err = LLErrorCode::FunctionError;
 	}
 	return err;
 }

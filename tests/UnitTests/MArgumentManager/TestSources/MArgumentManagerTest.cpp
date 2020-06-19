@@ -24,8 +24,8 @@ namespace LLU {
 	}
 
 	template<>
-	void MArgumentManager::set<float>(const float& f) {
-		set(static_cast<double>(f));
+	void MArgumentManager::set<float>(const float& arg) {
+		set(static_cast<double>(arg));
 	}
 }	 // namespace LLU
 
@@ -68,11 +68,11 @@ namespace LLU {
 
 	// Teach LLU how to send Person object as result of the library function. DataStore is used as the actual MArgument type.
 	template<>
-	void MArgumentManager::set<Person>(const Person& p) {
+	void MArgumentManager::set<Person>(const Person& arg) {
 		DataList<LLU::NodeType::Any> personDS;
-		personDS.push_back(p.name);
-		personDS.push_back(static_cast<mint>(p.age));
-		personDS.push_back(p.height);
+		personDS.push_back(arg.name);
+		personDS.push_back(static_cast<mint>(arg.age));
+		personDS.push_back(arg.height);
 		set(personDS);
 	}
 }	 // namespace LLU

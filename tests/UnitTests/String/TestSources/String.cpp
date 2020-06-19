@@ -37,7 +37,8 @@ LIBRARY_LINK_FUNCTION(CapitalizeFirst) {
 	LLU::MArgumentManager mngr(libData, Argc, Args, Res);
 
 	auto* in = mngr.getCString(0);
-	in[0] = std::toupper(static_cast<unsigned char>(in[0]));
+	char& firstChar = *in;
+	firstChar = static_cast<char>(std::toupper(static_cast<unsigned char>(firstChar)));
 	mngr.setString(in);
 	return LIBRARY_NO_ERROR;
 }
@@ -47,7 +48,7 @@ LIBRARY_LINK_FUNCTION(CapitalizeAll) {
 
 	auto in = mngr.getString(0);
 	for (auto& c : in) {
-		c = std::toupper(static_cast<unsigned char>(c));
+		c = static_cast<char>(std::toupper(static_cast<unsigned char>(c)));
 	}
 	mngr.setString(in);
 	return LIBRARY_NO_ERROR;
