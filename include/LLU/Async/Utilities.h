@@ -35,7 +35,7 @@ namespace LLU::Async {
 		};
 
 	public:
-		template<typename F>
+		template<typename F, typename = std::enable_if_t<!std::is_same_v<std::remove_cv<F>, FunctionWrapper>>>
 		explicit FunctionWrapper(F&& f) : impl {std::make_unique<TypeErasedCallable<F>>(std::forward<F>(f))} {}
 
 		template<typename F, typename... Args>

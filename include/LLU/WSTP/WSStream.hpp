@@ -911,7 +911,7 @@ namespace LLU {
 			auto list = WS::GetList<T>::get(m);
 			T* start = list.get();
 			auto listLen = list.get_deleter().getLength();
-			l = std::vector<T> {start, start + listLen};
+			l = std::vector<T> {start, std::next(start, listLen)};
 		} else {
 			WS::List inList;
 			*this >> inList;
