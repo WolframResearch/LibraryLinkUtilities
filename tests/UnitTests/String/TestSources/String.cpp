@@ -54,22 +54,6 @@ LIBRARY_LINK_FUNCTION(CapitalizeAll) {
 	return LIBRARY_NO_ERROR;
 }
 
-LIBRARY_LINK_FUNCTION(RoundTripCString) {
-	LLU::MArgumentManager mngr(libData, Argc, Args, Res);
-
-	auto* in = mngr.getCString(0);
-	mngr.setString(in);
-	return LIBRARY_NO_ERROR;
-}
-
-LIBRARY_LINK_FUNCTION(RoundTripString) {
-	LLU::MArgumentManager mngr(libData, Argc, Args, Res);
-
-	auto in = mngr.getString(0);
-	mngr.setString(in);
-	return LIBRARY_NO_ERROR;
-}
-
 EXTERN_C DLLEXPORT int StringLength(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument Res) {
 	LLU::MArgumentManager mngr(libData, Argc, Args, Res);
 

@@ -79,34 +79,34 @@ TestMatch[
 ];
 
 TestMatch[
-	AbsoluteTiming[SleepyThreads[8, 80, 100]] (* sleep 100ms 80 times which totals to 8s, divided onto 8 threads, so it should take slightly more than 1s *)
+	AbsoluteTiming[SleepyThreads[8, 40, 100]] (* sleep 100ms 40 times which totals to 4s, divided onto 8 threads, so it should take slightly more than 0.5s *)
 	,
-	{ t_, Null } /; (t >= 1 && t < 1.5)
+	{ t_, Null } /; (t >= 0.49 && t < 0.6)
 	,
 	TestID -> "AsyncTestSuite-20200401-Y8E2H0"
 ];
 
 TestMatch[
-	AbsoluteTiming[SleepyThreadsWithPause[8, 80, 100]] (* it should take slightly more than 1s + 1s paused, so >2s *)
+	AbsoluteTiming[SleepyThreadsWithPause[8, 40, 100]] (* it should take slightly more than 0.5s + 1s paused, so >1.5s *)
 	,
-	{ t_, Null } /; (t >= 2 && t < 2.5)
+	{ t_, Null } /; (t >= 1.49 && t < 2)
 	,
 	TestID -> "AsyncTestSuite-20200113-X6B2Q8"
 ];
 
 TestMatch[
-	AbsoluteTiming[SleepyThreadsBasic[8, 80, 100]]
+	AbsoluteTiming[SleepyThreadsBasic[8, 40, 100]]
 	,
-	{ t_, Null } /; (t >= 1 && t < 1.5)
+	{ t_, Null } /; (t >= 0.49 && t < 0.6)
 	,
 	TestID -> "AsyncTestSuite-20200115-S8F3X4"
 ];
 
 VerificationTest[
-	data = NumericArray[RandomInteger[{-100, 100}, 50000000], "Integer16"];
+	data = NumericArray[RandomInteger[{-100, 100}, 10000000], "Integer16"];
 	{systemTime, sum} = RepeatedTiming @ SequentialAccumulate[data];
 	Print["SequentialAccumulate[] time for Integer16 = ", systemTime];
-	{parallelTime, parallelSum} = RepeatedTiming @ ParallelAccumulate[data, 8, 50000];
+	{parallelTime, parallelSum} = RepeatedTiming @ ParallelAccumulate[data, 8, 5000];
 	Print["ParallelAccumulate[] time for Integer16 = ", parallelTime];
 	parallelSum == sum
 	,
@@ -114,10 +114,10 @@ VerificationTest[
 ];
 
 VerificationTest[
-	data = NumericArray[RandomComplex[{-100 - 100I, 100 + 100I}, 50000000], "ComplexReal64"];
+	data = NumericArray[RandomComplex[{-100 - 100I, 100 + 100I}, 10000000], "ComplexReal64"];
 	{systemTime, sum} = RepeatedTiming @ SequentialAccumulate[data];
 	Print["SequentialAccumulate[] time for ComplexReal64 = ", systemTime];
-	{parallelTime, parallelSum} = RepeatedTiming @ ParallelAccumulate[data, 8, 50000];
+	{parallelTime, parallelSum} = RepeatedTiming @ ParallelAccumulate[data, 8, 5000];
 	Print["ParallelAccumulate[] time for ComplexReal64 = ", parallelTime];
 	Abs[First @ Normal[parallelSum - sum]] < 0.00001
 	,
@@ -125,12 +125,12 @@ VerificationTest[
 ];
 
 VerificationTest[
-	data = NumericArray[RandomInteger[{-100, 100}, 50000000], "Integer32"];
+	data = NumericArray[RandomInteger[{-100, 100}, 10000000], "Integer32"];
 	{systemTime, sum} = RepeatedTiming @ SequentialAccumulate[data];
 	Print["SequentialAccumulate[] time for Integer32 = ", systemTime];
-	parallelTime = First @ RepeatedTiming @ ParallelAccumulate[data, 8, 50000];
+	parallelTime = First @ RepeatedTiming @ ParallelAccumulate[data, 8, 5000];
 	Print["ParallelAccumulate[] time for Integer32 = ", parallelTime];
-	{parallelTime, parallelSum} = RepeatedTiming @ ParallelAccumulateBasic[data, 8, 50000];
+	{parallelTime, parallelSum} = RepeatedTiming @ ParallelAccumulateBasic[data, 8, 5000];
 	Print["ParallelAccumulate[] with basic pool time for Integer32 = ", parallelTime];
 	parallelSum == sum
 	,
@@ -163,10 +163,10 @@ VerificationTest[
 *)
 
 VerificationTest[
-	data = NumericArray[RandomInteger[{0, 40}, 50000000], "UnsignedInteger64"];
+	data = NumericArray[RandomInteger[{0, 40}, 10000000], "UnsignedInteger64"];
 	{systemTime, lcmSeq} = RepeatedTiming @ SequentialLcm[data];
 	Print["SequentialLcm[] time = ", systemTime];
-	{parallelTime, parallelLcm} = RepeatedTiming @ ParallelLcm[data, 12, 50000];
+	{parallelTime, parallelLcm} = RepeatedTiming @ ParallelLcm[data, 12, 5000];
 	Print["ParallelLcm[] time = ", parallelTime];
 	(parallelLcm == lcmSeq) && (First @ Normal[parallelLcm] == LCM @@ Normal[data])
 	,

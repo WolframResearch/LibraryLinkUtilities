@@ -247,11 +247,10 @@ Test[
 
 Test[ (* Test if releasing memory works, if not the memory usage should drastically increase after this test *)
 	`LLU`WSTPFunctionSet[ReceiveAndFreeArray, "ReceiveAndFreeArray"];
-	r = RandomReal[1., {1000, 1000, 100}];
-	Do[ReceiveAndFreeArray[r], 50];
-	Clear[r];
+	r = RandomReal[1., {100, 100, 100}];
+	MemoryLeakTest[ReceiveAndFreeArray[r]]
 	,
-	Null
+	0
 	,
 	TestID -> "WSTPTestSuite-20171205-D4D6S4"
 ]
@@ -336,9 +335,9 @@ Test[
 Test[ (* Test if releasing strings works, if not the memory usage should drastically increase after this test *)
 	`LLU`WSTPFunctionSet[ReceiveAndFreeString, "ReceiveAndFreeString"];
 	s = StringJoin[RandomChoice[CharacterRange["A", "z"], 10000]];
-	Do[ReceiveAndFreeString[s], 100]
+	MemoryLeakTest @ ReceiveAndFreeString[s]
 	,
-	Null
+	0
 	,
 	TestID -> "WSTPTestSuite-20171205-T6V1J3"
 ]
