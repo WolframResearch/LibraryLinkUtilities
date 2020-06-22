@@ -1,3 +1,4 @@
+# IDEs metadata
 .project
 .cproject
 .settings/
@@ -5,9 +6,11 @@
 .vs/
 CMakeSettings.json
 .idea/
-**/build-local.properties
-tests/Demo/bin
+
+# Other
 Debug/
 lib/
 build*/
+cmake-build*/
+tests/Demo/build*/
 install/

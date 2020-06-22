@@ -17,22 +17,25 @@ TestExecute[
 
 	Get[FileNameJoin[{$LLUSharedDir, "LibraryLinkUtilities.wl"}]];
 
-	`LLU`RegisterPacletErrors[lib, <||>];
+	`LLU`InitializePacletLibrary[lib];
 
-	PassDataStore = `LLU`SafeLibraryFunction["PassDataStore", {"DataStore", "Boolean"}, "DataStore"];
-	JoinDataStores = `LLU`SafeLibraryFunction["JoinDataStores", {"DataStore", "DataStore", "Boolean"}, "DataStore"];
-	TestSelfReferencialDataStore = `LLU`SafeLibraryFunction["TestSelfReferencialDataStore", {"DataStore"}, "DataStore"];
-	ReverseListOfStringsWSTP = `LLU`SafeWSTPFunction["ReverseListOfStringsWSTP"];
-	ReverseListOfStringsLibraryLink = `LLU`SafeLibraryFunction["ReverseListOfStringsLibraryLink", {"DataStore"}, "DataStore"];
-	ReverseListOfStrings = `LLU`SafeLibraryFunction["ReverseListOfStrings", {"DataStore"}, "DataStore"];
-	SeparateKeysAndValues = `LLU`SafeLibraryFunction["SeparateKeysAndValues", {"DataStore"}, "DataStore"];
-	GetKeys = `LLU`SafeLibraryFunction["GetKeys", {"DataStore"}, "DataStore"];
-	GetValuesReversed = `LLU`SafeLibraryFunction["GetValuesReversed", {"DataStore"}, "DataStore"];
-	FrameDims = `LLU`SafeLibraryFunction["FrameDims", {"DataStore"}, NumericArray];
-	StringsThroughVectorReversed = `LLU`SafeLibraryFunction["StringsThroughVectorReversed", {"DataStore"}, "DataStore"];
-	IntsToNumericArray = `LLU`SafeLibraryFunction["IntsToNumericArray", {"DataStore"}, NumericArray];
-	GetLength = `LLU`SafeLibraryFunction["GetLength", {"DataStore"}, Integer];
-	CheckSizeChange = `LLU`SafeLibraryFunction["CheckSizeChange", {Integer}, {Integer, 1}];
+	PassDataStore = `LLU`PacletFunctionLoad["PassDataStore", {"DataStore", "Boolean"}, "DataStore", "Throws" -> False];
+	JoinDataStores = `LLU`PacletFunctionLoad["JoinDataStores", {"DataStore", "DataStore", "Boolean"}, "DataStore"];
+	TestSelfReferencialDataStore = `LLU`PacletFunctionLoad["TestSelfReferencialDataStore", {"DataStore"}, "DataStore"];
+	ReverseListOfStringsWSTP = `LLU`PacletFunctionLoad["ReverseListOfStringsWSTP", LinkObject, LinkObject];
+	ReverseListOfStringsLibraryLink = `LLU`PacletFunctionLoad["ReverseListOfStringsLibraryLink", {"DataStore"}, "DataStore"];
+	ReverseListOfStringsGeneric = `LLU`PacletFunctionLoad["ReverseListOfStringsGeneric", {"DataStore"}, "DataStore"];
+	ReverseListOfStringsGenericIn = `LLU`PacletFunctionLoad["ReverseListOfStringsGenericIn", {"DataStore"}, "DataStore"];
+	ReverseListOfStringsGenericOut = `LLU`PacletFunctionLoad["ReverseListOfStringsGenericOut", {"DataStore"}, "DataStore"];
+	ReverseListOfStrings = `LLU`PacletFunctionLoad["ReverseListOfStrings", {"DataStore"}, "DataStore"];
+	SeparateKeysAndValues = `LLU`PacletFunctionLoad["SeparateKeysAndValues", {"DataStore"}, "DataStore"];
+	GetKeys = `LLU`PacletFunctionLoad["GetKeys", {"DataStore"}, "DataStore"];
+	GetValuesReversed = `LLU`PacletFunctionLoad["GetValuesReversed", {"DataStore"}, "DataStore"];
+	FrameDims = `LLU`PacletFunctionLoad["FrameDims", {"DataStore"}, NumericArray];
+	StringsThroughVectorReversed = `LLU`PacletFunctionLoad["StringsThroughVectorReversed", {"DataStore"}, "DataStore"];
+	IntsToNumericArray = `LLU`PacletFunctionLoad["IntsToNumericArray", {"DataStore"}, NumericArray];
+	GetLength = `LLU`PacletFunctionLoad["GetLength", {"DataStore"}, Integer];
+	CheckSizeChange = `LLU`PacletFunctionLoad["CheckSizeChange", {Integer}, {Integer, 1}];
 
 	(* Test data used across multiple tests *)
 	bool = True;
@@ -43,11 +46,13 @@ TestExecute[
 	tensor = RandomReal[1, {3, 2}];
 	numeric = NumericArray[RandomInteger[{0, 255}, {2, 3}], "UnsignedInteger8"];
 	image = RandomImage[1, {2, 3}, ColorSpace -> "CMYK"];
-	(*sparse = SparseArray[{{1, 1} -> 1, {2, 2} -> 2, {3, 3} -> 3, {1, 3} -> 4}];*)
-	ds0 = Developer`DataStore[bool, int, real, complex, string, tensor, (*numeric,*) image(*, sparse*)];
-	ds1 = Developer`DataStore[bool, int, real, complex, string, tensor, (*numeric,*) image, (*sparse,*) ds0];
+	sparse = SparseArray[{{1, 1} -> 1, {2, 2} -> 2, {3, 3} -> 3, {1, 3} -> 4}];
+	ds0 = Developer`DataStore[bool, int, real, complex, tensor, sparse, numeric, image, string];
+	ds1 = Developer`DataStore[bool, int, real, complex, tensor, sparse, numeric, image, string, ds0];
 	ds2 = Developer`DataStore @@ Thread[Take[Alphabet[], Length[ds1]] -> List @@ ds1];
 	ds3 = ArrayReshape[RandomWord[10], {2, 5}] /. List -> Developer`DataStore;
+	
+	Off[General::stop]
 ];
 
 
@@ -57,7 +62,7 @@ Test[
 	,
 	$Failed
 	,
-	{CreateLibrary::cmperr..} (* On Linux there should be 6 errors, but MSVC does not like generic lambdas so it spits out more errors *)
+	{Repeated[CreateLibrary::cmperr, {1,4}]} (* There should be between 1 and 4 compilation errors *)
 	,
 	TestID -> "DataListTestSuite-20180903-Y8Z5P1"
 ];
@@ -65,7 +70,7 @@ Test[
 (* Basic tests *)
 
 Test[
-	EmptyDataStore = `LLU`SafeLibraryFunction["EmptyDataStore", {}, "DataStore"];
+	EmptyDataStore = `LLU`PacletFunctionLoad["EmptyDataStore", {}, "DataStore"];
 	EmptyDataStore[]
 	,
 	Developer`DataStore[]
@@ -274,7 +279,10 @@ Test[
 
 
 TestMatch[
-	ReverseListOfStrings[Developer`DataStore["aaaa", "b", 2]]
+	Catch[
+		ReverseListOfStrings[Developer`DataStore["aaaa", "b", 2]],
+		_String
+	]
 	,
 	Failure["DLInvalidNodeType", <|
 		"MessageTemplate" -> "DataStoreNode passed to Node wrapper carries data of invalid type",
@@ -295,11 +303,28 @@ Test[
 ];
 
 Test[
+	ReverseListOfStrings[Developer`DataStore["alpha", "beta", "gamma"]]
+	,
+	Developer`DataStore["ahpla", "ateb", "ammag"]
+	,
+	TestID -> "DataListTestSuite-20200429-S3Y8K2"
+];
+
+Test[
 	SeparateKeysAndValues[Developer`DataStore["a" -> 1 + 2.5 * I, "b" -> -3. - 6.I, 2I]]
 	,
 	Developer`DataStore["Keys" -> Developer`DataStore["a", "b", ""], "Values" -> Developer`DataStore[1. + 2.5 * I, -3. - 6.I, 2.I]]
 	,
 	TestID -> "DataListTestSuite-20180907-U7I7O8"
+];
+
+Test[
+	`LLU`PacletFunctionSet[SeparateKeysAndValuesViaAdaptors, {"DataStore"}, "DataStore"];
+	SeparateKeysAndValuesViaAdaptors[Developer`DataStore["a" -> 1 + 2.5 * I, "b" -> -3. - 6.I, 2I]]
+	,
+	Developer`DataStore["Keys" -> Developer`DataStore["a", "b", ""], "Values" -> Developer`DataStore[1. + 2.5 * I, -3. - 6.I, 2.I]]
+	,
+	TestID -> "DataListTestSuite-20200513-G3Y0I0"
 ];
 
 Test[
@@ -349,6 +374,14 @@ Test[
 	Developer`DataStore[NumericArray[{3, 5, 7}, "UnsignedInteger8"], 1]
 	,
 	TestID -> "DataListTestSuite-20180908-C7I2J6"
+];
+
+Test[
+	GetValuesReversed[Developer`DataStore[{3}, {4}, {5}]]
+	,
+	Developer`DataStore[{5}, {4}, {3}]
+	,
+	TestID->"DataListTestSuite-20180908-C7DJ8D"
 ];
 
 Test[
@@ -415,24 +448,113 @@ Test[
 Test[
 	CheckSizeChange[5]
 	,
-	{5, 5, 5, 5}
+	{5, 5, 5}
 	,
 	TestID -> "DataListTestSuite-20200401-L5V4B8"
 ];
 
-(* Timing tests *)
 Test[
-	los = RandomWord["CommonWords", 300000];
-	ds = Developer`DataStore @@ los;
-	{timeWSTP, r1} = RepeatedTiming[ReverseListOfStringsWSTP[los]];
-	{timeDataStore, r2} = RepeatedTiming[ReverseListOfStringsLibraryLink[ds]];
-	{timeDataList, r3} = RepeatedTiming[ReverseListOfStrings[ds]];
-	Print["Time when sending list via WSTP: " <> ToString[timeWSTP] <> "s."];
-	Print["Time when sending list via DataStore: " <> ToString[timeDataStore] <> "s."];
-	Print["Time when sending list via DataList: " <> ToString[timeDataList] <> "s."];
-	r1
+	`LLU`PacletFunctionSet[PullAndPush, {"DataStore"}, "DataStore"];
+	oldDS1 = ds1;
+	PullAndPush[ds1]
 	,
-	List @@ r3
+	Developer`DataStore[
+		bool, bool, "bool" -> bool, "mbool" -> bool, 
+		int, "mint" -> int, 
+		real, "mreal" -> real, 
+		complex, complex, "complex" -> complex, "mcomplex" -> complex,
+		tensor, "Tensor" -> tensor,
+		sparse, "MSparseArray" -> sparse, 
+		numeric, "NumericArray" -> numeric,
+		image, "Image" -> image,
+		string, string, "String" -> string, "RawString" -> string,
+		ds0, "DataList" -> ds0
+	]
+	,
+	TestID -> "DataListTestSuite-20200401-L5KJGB"
+];
+
+VerificationTest[
+	oldDS1 == ds1
+	,
+	TestID->"DataListTestSuite-20200505-N8W6E1"
+];
+
+Test[
+	MemoryLeakTest[PullAndPush[ds1]]
+	,
+	0
+	,
+	TestID -> "DataListTestSuite-20180904-J9J5U5"
+];
+
+Test[
+	`LLU`PacletFunctionSet[PullAndPush2, {"DataStore"}, "DataStore"];
+	PullAndPush2[ds1]
+	,
+	Developer`DataStore[
+		bool, int, real, complex,
+		tensor, "Tensor" -> True, sparse, numeric, "NumericArray" -> True, image, "Image" -> True, string, "String" -> True, ds0, "DataList" -> True
+	]
+	,
+	TestID -> "DataListTestSuite-20200505-L9U9K6"
+];
+
+VerificationTest[
+	oldDS1 == ds1
+	,
+	TestID->"DataListTestSuite-20200505-O3V6J8"
+];
+
+Test[
+	MemoryLeakTest[PullAndPush2[ds1]]
+	,
+	0
+	,
+	TestID -> "DataListTestSuite-20200505-Z7Z9O7"
+];
+
+Test[
+	`LLU`PacletFunctionSet[FromInitList, {}, "DataStore"];
+	FromInitList[]
+	,
+	Developer`DataStore[
+		Developer`DataStore["a" -> True, "b" -> False], 
+		Developer`DataStore[2, 3, 5, 7, 11], 
+		Developer`DataStore["a" -> 2.34, "b" -> 3.14], 
+		Developer`DataStore[2. + 3.*I, 3. + 0.*I, 5.1 - 1.23*I, 7. + 0.*I, 0. + 11.*I], 
+		Developer`DataStore["a" -> "x", "b" -> "y"]
+	]
+	,
+	TestID->"DataListTestSuite-20200508-D7S0D5"
+];
+
+(* Timing tests *)
+VerificationTest[
+	getSlowdown[x_] := ToString[N[(x/timeDataStore - 1) * 100]] <> "% slower than DataStore.";
+	SeedRandom[0];
+	los = RandomWord["CommonWords", 900000];
+	ds = Developer`DataStore @@ los;
+
+	{timeDataStore, r2} = RepeatedTiming[ReverseListOfStringsLibraryLink[ds], 3];
+	Print["Reverse strings - DataStore: " <> ToString[timeDataStore] <> "s."];
+
+	{timeGeneric, r3} = RepeatedTiming[ReverseListOfStringsGeneric[ds], 3];
+	Print["Reverse strings - GenericDataList: " <> ToString[timeGeneric] <> "s. " <> getSlowdown[timeGeneric]];
+
+	{timeGenericOut, r5} = RepeatedTiming[ReverseListOfStringsGenericOut[ds], 3];
+	Print["Reverse strings - [In]DataList/[Out]GenericDataList: " <> ToString[timeGenericOut] <> "s. " <> getSlowdown[timeGenericOut]];
+
+	{timeGenericIn, r4} = RepeatedTiming[ReverseListOfStringsGenericIn[ds], 3];
+	Print["Reverse strings - [In]GenericDataList/[Out]DataList: " <> ToString[timeGenericIn] <> "s. " <> getSlowdown[timeGenericIn]];
+
+	{timeDataList, r6} = RepeatedTiming[ReverseListOfStrings[ds], 3];
+	Print["Reverse strings - DataList: " <> ToString[timeDataList] <> "s. " <> getSlowdown[timeDataList]];
+
+	{timeWSTP, r1} = RepeatedTiming[ReverseListOfStringsWSTP[los], 3];
+	Print["Reverse strings - WSTP: " <> ToString[timeWSTP] <> "s. " <> getSlowdown[timeWSTP]];
+
+	r1 == List @@ r2 == List @@ r3 == List @@ r4 == List @@ r5 == List @@ r6
 	,
 	TestID -> "DataListTestSuite-20180906-W5N4V0"
 ];
@@ -440,13 +562,12 @@ Test[
 
 
 (* Memory leak tests *)
-
 Test[
 	MemoryLeakTest[PassDataStore[ds0, #]] & /@ {False, True}
 	,
 	{ 0, 0 }
 	,
-	TestID -> "DataListTestSuite-20180904-J9J5U5"
+	TestID -> "DataListTestSuite-20200505-E5A4L8"
 ];
 
 Test[
@@ -475,10 +596,10 @@ Test[
 
 Test[
 	LibraryFunctionUnload[Last @ PassDataStore];
-	PassDataStore = `LLU`SafeLibraryFunction["PassDataStore", {{"DataStore", "Manual"}, "Boolean"}, "DataStore"];
+	PassDataStore = `LLU`PacletFunctionLoad["PassDataStore", {{"DataStore", "Manual"}, "Boolean"}, "DataStore"];
 	MemoryLeakTest[PassDataStore[ds0, #]] & /@ {False, True}
 	,
-	{ 0, n_ } /; n > 0  (* when copy is made we expect a leak, because the C++ code is not aware of the "Manual" passing of the input DataStore *)
+	{ 0, n_ } /; n > 0   (* when copy is made we expect a leak, because the C++ code is not aware of the "Manual" passing of the input DataStore *)
 	,
 	TestID -> "DataListTestSuite-20180908-C4W5X3"
 	,

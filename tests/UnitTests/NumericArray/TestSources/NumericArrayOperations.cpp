@@ -1,4 +1,5 @@
 #include <iostream>
+#include <list>
 #include <memory>
 #include <numeric>
 #include <type_traits>
@@ -15,7 +16,7 @@ using LLU::MArgumentManager;
 using LLU::NumericArray;
 using LLU::NumericArrayView;
 
-static std::unique_ptr<LLU::GenericNumericArray<LLU::Passing::Shared>> shared_numeric;
+static std::unique_ptr<LLU::GenericNumericArray> shared_numeric;
 
 EXTERN_C DLLEXPORT mint WolframLibrary_getVersion() {
 	return WolframLibraryVersion;
@@ -46,14 +47,14 @@ LIBRARY_LINK_FUNCTION(CreateEmptyMatrix) {
 }
 
 struct MoveTester {
-	LLU::DataList<LLU::MArgumentType::NumericArray, LLU::Passing::Manual>& result;
+	LLU::DataList<LLU::GenericNumericArray>& result;
 
-	template<typename T, typename P>
-	void operator()(NumericArray<T, P> na) {
+	template<typename T>
+	void operator()(NumericArray<T> na) {
 		auto na2 {std::move(na)};	 // test move constructor
 		NumericArray<T> na3;
-		na3 = std::move(na2);	 // test move assignment, but this will only move when P is Passing::Manual, otherwise it has to make a copy
-		result.push_back(na3);
+		na3 = std::move(na2);	 // test move assignment
+		result.push_back(std::move(na3));
 	}
 };
 
@@ -61,7 +62,7 @@ LIBRARY_LINK_FUNCTION(echoNumericArrays) {
 	auto err = ErrorCode::NoError;
 	try {
 		MArgumentManager mngr(Argc, Args, Res);
-		LLU::DataList<LLU::MArgumentType::NumericArray, LLU::Passing::Manual> result;
+		LLU::DataList<LLU::GenericNumericArray> result;
 
 		MoveTester mt {result};
 
@@ -124,14 +125,14 @@ LIBRARY_LINK_FUNCTION(newNumericArray) {
 }
 
 struct CopyTester {
-	LLU::DataList<LLU::MArgumentType::NumericArray, LLU::Passing::Manual>& result;
+	LLU::DataList<LLU::GenericNumericArray>& result;
 
-	template<typename T, typename P>
-	void operator()(NumericArray<T, P> na) {
-		NumericArray<T, LLU::Passing::Manual> na2 {na};	   // test copy constructor
+	template<typename T>
+	void operator()(NumericArray<T> na) {
+		NumericArray<T> na2 {na.clone()};
 		NumericArray<T> na3;
-		na3 = na2;	  // test copy assignment
-		result.push_back(na3);
+		na3 = na2.clone();
+		result.push_back(na3.clone());
 	}
 };
 
@@ -140,7 +141,7 @@ LIBRARY_LINK_FUNCTION(cloneNumericArrays) {
 	auto err = ErrorCode::NoError;
 	try {
 		MArgumentManager mngr(Argc, Args, Res);
-		LLU::DataList<LLU::MArgumentType::NumericArray, LLU::Passing::Manual> result;
+		LLU::DataList<LLU::GenericNumericArray> result;
 
 		CopyTester mt {result};
 
@@ -162,7 +163,7 @@ LIBRARY_LINK_FUNCTION(changeSharedNumericArray) {
 	try {
 		MArgumentManager mngr(Argc, Args, Res);
 		auto oldShareCount = shared_numeric ? shared_numeric->shareCount() : 0;
-		shared_numeric = std::make_unique<LLU::GenericNumericArray<LLU::Passing::Shared>>(mngr.getGenericNumericArray<LLU::Passing::Shared>(0));
+		shared_numeric = std::make_unique<LLU::GenericNumericArray>(mngr.getGenericNumericArray<LLU::Passing::Shared>(0));
 		mngr.set(10 * oldShareCount + shared_numeric->shareCount());
 	} catch (const LibraryLinkError& e) {
 		err = e.which();
@@ -188,13 +189,12 @@ EXTERN_C DLLEXPORT int getSharedNumericArray(WolframLibraryData libData, mint Ar
 }
 
 struct ZeroReal64 {
-	template<typename T, class P>
-	void operator()(NumericArray<T, P>&&, MArgumentManager&) {
+	template<typename T>
+	void operator()(NumericArray<T>&&, MArgumentManager&) {
 		LLU::ErrorManager::throwException(LLU::ErrorName::FunctionError);
 	}
 
-	template<class P>
-	void operator()(NumericArray<double, P>&& ra, MArgumentManager& mngr) {
+	void operator()(NumericArray<double>&& ra, MArgumentManager& mngr) {
 		std::fill(ra.begin(), ra.end(), 0.0);
 		mngr.setNumericArray(ra);
 	}
@@ -215,13 +215,13 @@ EXTERN_C DLLEXPORT int numericZeroData(WolframLibraryData libData, mint Argc, MA
 }
 
 struct AccumulateIntegers {
-	template<typename T, class P>
-	std::enable_if_t<!std::is_integral<T>::value> operator()(const NumericArray<T, P>&, MArgumentManager&) {
+	template<typename T>
+	std::enable_if_t<!std::is_integral<T>::value> operator()(const NumericArray<T>&, MArgumentManager&) {
 		LLU::ErrorManager::throwException(LLU::ErrorName::FunctionError);
 	}
 
-	template<typename T, class P>
-	std::enable_if_t<std::is_integral<T>::value> operator()(const NumericArray<T, P>& ra, MArgumentManager& mngr) {
+	template<typename T>
+	std::enable_if_t<std::is_integral<T>::value> operator()(const NumericArray<T>& ra, MArgumentManager& mngr) {
 		auto result = std::accumulate(ra.begin(), ra.end(), static_cast<T>(0));
 		mngr.setInteger(result);
 	}
@@ -318,13 +318,13 @@ LIBRARY_LINK_FUNCTION(TestDimensions2) {
 	auto err = ErrorCode::NoError;
 	try {
 		MArgumentManager mngr(Argc, Args, Res);
-		LLU::DataList<LLU::MArgumentType::NumericArray> naList;
+		LLU::DataList<LLU::GenericNumericArray> naList;
 
 		std::vector<std::vector<mint>> dimsList {{0}, {3}, {3, 0}, {3, 2}, {3, 2, 0}, {3, 2, 4}};
 
 		for (auto& dims : dimsList) {
 			NumericArray<float> na(0.0f, dims);
-			naList.push_back(na);
+			naList.push_back(std::move(na));
 		}
 		mngr.setDataList(naList);
 	} catch (const LibraryLinkError& e) {

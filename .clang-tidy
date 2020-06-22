@@ -1,0 +1,50 @@
+---
+Checks: >
+  -*,
+  bugprone-*,
+  cert-*,
+  -cert-dcl21-cpp,
+  -cert-err58-cpp,
+  -cert-oop11-cpp,
+  cppcoreguidelines-*,
+  -cppcoreguidelines-avoid-c-arrays,
+  -cppcoreguidelines-owning-memory,
+  google-*,
+  -google-readability-braces-around-statements,
+  -google-runtime-references,
+  -google-runtime-int,
+  hicpp-*,
+  -hicpp-avoid-c-arrays,
+  -hicpp-braces-around-statements,
+  -hicpp-explicit-conversions,
+  -hicpp-special-member-functions,
+  llvm-*,
+  -llvm-namespace-comment,
+  -llvm-qualified-auto,
+  misc-*,
+  modernize-*,
+  -modernize-avoid-c-arrays,
+  -modernize-use-nodiscard,
+  -modernize-use-trailing-return-type,
+  performance-*,
+  portability-*,
+  readability-*,
+  -readability-magic-numbers,
+  -readability-redundant-access-specifiers
+WarningsAsErrors: false
+HeaderFilterRegex: ''
+AnalyzeTemporaryDtors: false
+FormatStyle:     file
+User:            rafal
+CheckOptions:
+  - key:             cppcoreguidelines-macro-usage.AllowedRegexp
+    value:           '^DEBUG_*|^LLU_*|ARGUMENT_DEFINE_SPECIALIZATIONS_OF_MEMBER_FUNCTIONS'
+  - key:             misc-non-private-member-variables-in-classes.IgnoreClassesWithAllMemberVariablesBeingPublic
+    value:           '1'
+  - key:             cppcoreguidelines-special-member-functions.AllowSoleDefaultDtor
+    value:           '1'
+  - key:             readability-implicit-bool-conversion.AllowPointerConditions
+    value:           '1'
+  - key:             readability-uppercase-literal-suffix.NewSuffixes
+    value:           'L;LL;LU;LLU'
+...

@@ -4,8 +4,8 @@
  * @date	March 21, 2019
  * @brief	Definition of the ErrorManager class responsible for error registration and throwing.
  */
-#ifndef LLUTILS_ERRORMANAGER_H
-#define LLUTILS_ERRORMANAGER_H
+#ifndef LLU_ERRORLOG_ERRORMANAGER_H
+#define LLU_ERRORLOG_ERRORMANAGER_H
 
 #include <algorithm>
 #include <initializer_list>
@@ -14,8 +14,8 @@
 #include <utility>
 #include <vector>
 
-#include <LLU/ErrorLog/LibraryLinkError.h>
-#include <LLU/LibraryData.h>
+#include "LLU/ErrorLog/LibraryLinkError.h"
+#include "LLU/LibraryData.h"
 
 namespace LLU {
 
@@ -215,7 +215,8 @@ namespace LLU {
 	}
 
 	template<typename... T>
-	[[noreturn]] void ErrorManager::throwExceptionWithDebugInfo(WolframLibraryData libData, const std::string& errorName, const std::string& debugInfo, T&&... args) {
+	[[noreturn]] void
+	ErrorManager::throwExceptionWithDebugInfo(WolframLibraryData libData, const std::string& errorName, const std::string& debugInfo, T&&... args) {
 		auto e = findError(errorName);
 		e.setDebugInfo(debugInfo);
 		if (libData && sizeof...(args) > 0) {
@@ -229,4 +230,4 @@ namespace LLU {
 
 } /* namespace LLU */
 
-#endif	  // LLUTILS_ERRORMANAGER_H
+#endif	  // LLU_ERRORLOG_ERRORMANAGER_H

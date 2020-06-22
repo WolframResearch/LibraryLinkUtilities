@@ -193,6 +193,6 @@ namespace LLU {
 		 */
 		virtual void* rawData() const = 0;
 	};
-}
+}  // namespace LLU
 
 #endif	  // LLU_CONTAINERS_INTERFACES_H

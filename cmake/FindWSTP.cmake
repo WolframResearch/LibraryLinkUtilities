@@ -14,11 +14,11 @@
 #     WSTP::WSTP
 #
 # You can specify custom location to search for WSTP either by specifying WOLFRAM_WSTP_PATH explicitly,
-# or if that variable is not set, by providing MATHEMATICA_INSTALL_DIR variable with a path to Mathematica installation.
+# or if that variable is not set, by providing Mathematica_INSTALL_DIR variable with a path to Mathematica installation.
 #
 # Author: Rafal Chojna - rafalc@wolfram.com
 
-include(WolframUtilities)
+include(Wolfram/Common)
 
 detect_system_id(_WOLFSTP_SYSTEMID)
 
@@ -28,8 +28,8 @@ else()
 	set(_WOLFSTP_LIBRARY_PATH "$ENV{WOLFRAM_WSTP_PATH}")
 endif()
 
-if(NOT _WOLFSTP_LIBRARY_PATH AND MATHEMATICA_INSTALL_DIR)
-	set(_WOLFSTP_LIBRARY_PATH "${MATHEMATICA_INSTALL_DIR}/SystemFiles/Links/WSTP/DeveloperKit/${_WOLFSTP_SYSTEMID}/CompilerAdditions")
+if(NOT _WOLFSTP_LIBRARY_PATH AND Mathematica_INSTALL_DIR)
+	set(_WOLFSTP_LIBRARY_PATH "${Mathematica_INSTALL_DIR}/SystemFiles/Links/WSTP/DeveloperKit/${_WOLFSTP_SYSTEMID}/CompilerAdditions")
 endif()
 
 if(_WOLFSTP_LIBRARY_PATH)
@@ -52,10 +52,7 @@ if(WSTP_INCLUDE_DIR)
 
 	set(WSTP_VERSION_STRING "${WSTP_VERSION_MAJOR}.${WSTP_VERSION_MINOR}")
 
-	include(WolframUtilities)
 	get_wstp_library_name(${WSTP_VERSION_MAJOR} _WOLFSTP_LIB_NAME)
-
-	message(STATUS "Looking for ${_WOLFSTP_LIB_NAME} in ${_WOLFSTP_LIBRARY_PATH}")
 
 	find_library(WSTP_LIBRARY
 		NAMES "wstp" ${_WOLFSTP_LIB_NAME}

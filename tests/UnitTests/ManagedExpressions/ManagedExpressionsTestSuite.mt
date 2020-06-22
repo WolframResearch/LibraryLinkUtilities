@@ -22,18 +22,18 @@ TestExecute[
 
 	Get[FileNameJoin[{$LLUSharedDir, "LibraryLinkUtilities.wl"}]];
 
-	RegisterPacletErrors[lib, <||>];
+	`LLU`InitializePacletLibrary[lib];
 
 	`LLU`Logger`PrintLogFunctionSelector := Block[{`LLU`Logger`FormattedLog = `LLU`Logger`LogToShortString},
 		`LLU`Logger`PrintLogToSymbol[LogSymbol][##]
 	]&;
 
-	GetManagedExpressionCount = `LLU`SafeLibraryFunction["GetManagedExpressionCount", {}, Integer];
-	GetManagedExpressionTexts = `LLU`SafeLibraryFunction["GetManagedExpressionTexts", {}, "DataStore"];
-	ReleaseExpression = `LLU`SafeLibraryFunction["ReleaseExpression", {`LLU`Managed[MyExpression]}, Integer];
+	GetManagedExpressionCount = `LLU`PacletFunctionLoad["GetManagedExpressionCount", {}, Integer];
+	GetManagedExpressionTexts = `LLU`PacletFunctionLoad["GetManagedExpressionTexts", {}, "DataStore"];
+	ReleaseExpression = `LLU`PacletFunctionLoad["ReleaseExpression", {`LLU`Managed[MyExpression]}, Integer];
 
-	$CreateNewMyExpression = `LLU`SafeLibraryFunction["OpenManagedMyExpression", {`LLU`Managed[MyExpression], String}, "Void"];
-	$CreateNewMyChildExpression = `LLU`SafeLibraryFunction["OpenManagedMyChildExpression", {`LLU`Managed[MyExpression], String}, "Void"];
+	$CreateNewMyExpression = `LLU`PacletFunctionLoad["OpenManagedMyExpression", {`LLU`Managed[MyExpression], String}, "Void"];
+	$CreateNewMyChildExpression = `LLU`PacletFunctionLoad["OpenManagedMyChildExpression", {`LLU`Managed[MyExpression], String}, "Void"];
 
 	(* Register a constructor for new Managed Expression. This step could be more automated if we agree that for each class X that shall be managed there is
 	 * an interface function "OpenManagedX" defined in the library.
@@ -43,21 +43,24 @@ TestExecute[
 	`LLU`Constructor[MyExpression] = CreateMyExpression;
 
 	(* Load library functions that wrap MyExpression member functions *)
-	`LLU`LoadMemberFunction[MyExpression][getText, "GetText", {}, String];
-	`LLU`LoadMemberFunction[MyExpression][setText, "SetText", {String}, "Void"];
-	`LLU`LoadWSTPMemberFunction[MyExpression][setTextWS, "SetTextWS"];
-	`LLU`LoadMemberFunction[MyExpression][getCounter, "GetCounter", {}, Integer]; (* this member only works with MLEs that are of type MyChildExpression in C++ *)
+	`LLU`LazyMemberFunctionSet[MyExpression][getText, "GetText", {}, String];
+	`LLU`LazyMemberFunctionSet[MyExpression][setText, "SetText", {String}, "Void"];
+	`LLU`LazyWSTPMemberFunctionSet[MyExpression][setTextWS, "SetTextWS"];
+	`LLU`LazyMemberFunctionSet[MyExpression][getCounter, "GetCounter", {}, Integer]; (* this member only works with MLEs that are of type MyChildExpression in C++ *)
 
 	(* Load other library functions *)
-	joinText = `LLU`SafeLibraryFunction["JoinText", {`LLU`Managed[MyExpression], `LLU`Managed[MyExpression]}, String];
-	getMyExpressionStoreName = `LLU`SafeLibraryFunction["GetMyExpressionStoreName", {}, String];
-	swapText = `LLU`SafeWSTPFunction["SwapText"];
+	joinText = `LLU`PacletFunctionLoad["JoinText", {`LLU`Managed[MyExpression], `LLU`Managed[MyExpression]}, String];
+	getMyExpressionStoreName = `LLU`PacletFunctionLoad["GetMyExpressionStoreName", {}, String];
+	swapText = `LLU`PacletFunctionLoad["SwapText", LinkObject, LinkObject];
 
 	ManagedMyExprQ = `LLU`ManagedQ[MyExpression];
 	ManagedMyExprIDQ = `LLU`ManagedIDQ[MyExpression];
 
 	(* Create new instance of MyExpression *)
 	globalExpr = `LLU`NewManagedExpression[MyExpression]["I will live through all tests"];
+
+	(* In some rare cases you may want LLU to issue single-argument Throws. It can be achieved by modifying $ExceptionTagFunction as follows: *)
+	`LLU`$ExceptionTagFunction = Nothing&;
 ];
 
 Test[
@@ -176,8 +179,8 @@ Test[
 	,
 	Failure["InvalidManagedExpressionID",
 		<|
-			"MessageTemplate" -> "`expr` is not a valid ManagedExpression.",
-			"MessageParameters" -> <|"expr" -> MyExpression[500]|>,
+			"MessageTemplate" -> "`Expr` is not a valid ManagedExpression.",
+			"MessageParameters" -> <|"Expr" -> MyExpression[500]|>,
 			"ErrorCode" -> 25,
 			"Parameters" -> {}
 		|>
@@ -191,8 +194,8 @@ Test[
 	,
 	Failure["UnexpectedManagedExpression",
 		<|
-			"MessageTemplate" -> "Expected managed `expected`, got `actual`.",
-			"MessageParameters" -> <|"expected" -> MyExpression, "actual" -> NotMyExpression[1]|>,
+			"MessageTemplate" -> "Expected managed `Expected`, got `Actual`.",
+			"MessageParameters" -> <|"Expected" -> MyExpression, "Actual" -> NotMyExpression[1]|>,
 			"ErrorCode" -> 26,
 			"Parameters" -> {}
 		|>
@@ -308,8 +311,8 @@ Test[
 	,
 	Failure["InvalidManagedExpressionID",
 		<|
-			"MessageTemplate" -> "`expr` is not a valid ManagedExpression.",
-			"MessageParameters" -> <|"expr" -> MyExpression[500]|>,
+			"MessageTemplate" -> "`Expr` is not a valid ManagedExpression.",
+			"MessageParameters" -> <|"Expr" -> MyExpression[500]|>,
 			"ErrorCode" -> 25,
 			"Parameters" -> {}
 		|>
@@ -357,7 +360,7 @@ Test[
 
 Test[
 	(* Reload the getText member. MyExpression`getText will be Cleared and then reloaded. *)
-	`LLU`LoadMemberFunction[MyExpression][getText, "GetText", {}, String];
+	`LLU`MemberFunctionSet[MyExpression][getText, "GetText", {}, String];
 	globalExpr @ getText[]
 	,
 	"I will live through all tests"
@@ -367,13 +370,86 @@ Test[
 
 Test[
 	getText = 3;
-	(* When the symbol for member function is taken, LoadMemberFunction will fail silently.
+	(* When the symbol for member function is taken, MemberFunctionSet will fail silently.
 	 * You can no longer use the "member function" syntax, but you can still access the member function with full context. 
 	 *)
-	`LLU`LoadMemberFunction[MyExpression][getText, "GetText", {}, String];
+	`LLU`MemberFunctionSet[MyExpression][getText, "GetText", {}, String];
 	{globalExpr @ getText[], MyExpression`getText @ globalExpr}
 	,
 	{globalExpr[3[]], "I will live through all tests"}
 	,
 	TestID -> "ManagedExpressionsTestSuite-20190911-R4ZHG9"
+];
+
+TestExecute[
+	`LLU`LazyPacletFunctionSet[`LLU`Constructor[Serializable], "CreateSerializableExpression", {`LLU`Managed[Serializable], String}, "Void"];
+	`LLU`LazyPacletFunctionSet[Serialize, {`LLU`Managed[Serializable]}, String];
+];
+
+Test[
+	a = `LLU`NewManagedExpression[Serializable]["I am an A."]
+	,
+	Serializable[1]
+	,
+	TestID -> "ManagedExpressionsTestSuite-20200420-N6L0O5"
+];
+
+Test[
+	Serialize[a]
+	,
+	"Hello! I'm A."
+	,
+	TestID -> "ManagedExpressionsTestSuite-20200420-D8B7D8"
+];
+
+Test[
+	b = `LLU`NewManagedExpression[Serializable]["Yo soy B."];
+	Serialize[b]
+	,
+	"Hello! I'm B. I hold 7."
+	,
+	TestID -> "ManagedExpressionsTestSuite-20200420-B9Q4H7"
+];
+
+VerificationTest[
+	c = Catch @ `LLU`NewManagedExpression[Serializable]["Jestem C."]; (* The factory function will throw and the C++ object will not be created *)
+	FailureQ[c]
+	,
+	TestID -> "ManagedExpressionsTestSuite-20200420-T5J0L7"
+];
+
+VerificationTest[
+	Not @ `LLU`ManagedIDQ[Serializable][3] (* Since the creation of managed expression failed, it must not be registered as MLE *)
+	,
+	TestID -> "ManagedExpressionsTestSuite-20200420-R0M2X2"
+];
+
+VerificationTest[
+	Not @ `LLU`ManagedQ[Serializable][c]
+	,
+	TestID -> "ManagedExpressionsTestSuite-20200420-W2O0L8"
+];
+
+TestExecute[
+	Clear[f];
+	f[1] = 1;
+	f[2][2] = 2;
+	f[3][2] = 3;
+	f /: g[f[3]] = 3;
+	f::x = "x";
+	SetAttributes[f, Orderless];
+];
+
+Test[
+	`LLU`Private`clearLHS[f[2]];
+	{DownValues[f], SubValues[f], UpValues[f]}
+	,
+	{{HoldPattern[f[1]] :> 1}, {HoldPattern[f[2][2]] :> 2, HoldPattern[f[3][2]] :> 3}, {HoldPattern[g[f[3]]] :> 3}}
+];
+
+Test[
+	`LLU`Private`clearLHS[f];
+	{DownValues[f], SubValues[f], UpValues[f], Messages[f], Attributes[f]}
+	,
+	{{}, {}, {}, {HoldPattern[f::x] :> "x"}, {Orderless}}
 ];

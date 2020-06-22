@@ -2,30 +2,28 @@
  * @file
  * @brief GenericImage definition and implementation
  */
-#ifndef LLU_INCLUDE_LLU_CONTAINERS_GENERIC_IMAGE
-#define LLU_INCLUDE_LLU_CONTAINERS_GENERIC_IMAGE
+#ifndef LLU_CONTAINERS_GENERIC_IMAGE_HPP
+#define LLU_CONTAINERS_GENERIC_IMAGE_HPP
 
 #include "LLU/Containers/Generic/Base.hpp"
 #include "LLU/Containers/Interfaces.h"
 
 namespace LLU {
 
-	template<class PassingMode>
-	class MContainer<MArgumentType::Image, PassingMode>;
+	template<>
+	class MContainer<MArgumentType::Image>;
 
 	/// MContainer specialization for MImage is called GenericImage
-	template<class PassingMode>
-	using GenericImage = MContainer<MArgumentType::Image, PassingMode>;
+	using GenericImage = MContainer<MArgumentType::Image>;
 
 	/**
 	 *  @brief  MContainer specialization for MImage
-	 *  @tparam PassingMode - passing policy
 	 */
-	template<class PassingMode>
-	class MContainer<MArgumentType::Image, PassingMode> : public ImageInterface, public MContainerBase<MArgumentType::Image, PassingMode> {
+	template<>
+	class MContainer<MArgumentType::Image> : public ImageInterface, public MContainerBase<MArgumentType::Image> {
 	public:
 		/// Inherit constructors from MContainerBase
-		using MContainerBase<MArgumentType::Image, PassingMode>::MContainerBase;
+		using MContainerBase<MArgumentType::Image>::MContainerBase;
 
 		/// Default constructor, the MContainer does not manage any instance of MImage.
 		MContainer() = default;
@@ -52,71 +50,34 @@ namespace LLU {
 		 * @param colorSpace - image color space
 		 * @param interleaving - whether the image data should be interleaved or not
 		 */
-		MContainer(mint slices, mint width, mint height, mint channels, imagedata_t type, colorspace_t colorSpace, mbool interleaving) {
-			RawContainer tmp {};
-			if (slices ? LibraryData::ImageAPI()->MImage_new3D(slices, width, height, channels, type, colorSpace, interleaving, &tmp)
-					   : LibraryData::ImageAPI()->MImage_new2D(width, height, channels, type, colorSpace, interleaving, &tmp)) {
-				ErrorManager::throwException(ErrorName::ImageNewError);
-			}
-			this->setContainer(tmp);
-		}
-
-		/**
-		 * @brief   Create GenericImage from another GenericImage with different passing mode.
-		 * @tparam  P - some passing mode
-		 * @param   mc - different GenericImage
-		 */
-		template<class P>
-		explicit MContainer(const MContainer<MArgumentType::Image, P>& mc) : Base(mc) {}
-
-		MContainer(const MContainer& mc) = default;
-
-		MContainer(MContainer&& mc) noexcept = default;
-
-		MContainer& operator=(const MContainer&) = default;
-
-		MContainer& operator=(MContainer&&) noexcept = default;
-
-		/**
-		 * @brief   Assign a GenericImage with different passing mode.
-		 * @tparam  P - some passing mode
-		 * @param   mc - different GenericImage
-		 * @return  this
-		 */
-		template<class P>
-		MContainer& operator=(const MContainer<MArgumentType::Image, P>& mc) {
-			Base::operator=(mc);
-			return *this;
-		}
-
-		/// Destructor which triggers the appropriate cleanup action which depends on the PassingMode
-		~MContainer() override {
-			this->cleanup();
-		};
+		MContainer(mint slices, mint width, mint height, mint channels, imagedata_t type, colorspace_t colorSpace, mbool interleaving);
 
 		/**
 		 * @brief   Convert this object to a new GenericImage of given datatype, optionally changing interleaving
 		 * @param   t - destination data type
 		 * @param   interleavingQ - whether the converted GenericImage should be interleaved or not
-		 * @return  converted GenericImage with Manual passing mode
+		 * @return  converted GenericImage owned by the Library
 		 * @see     <http://reference.wolfram.com/language/LibraryLink/ref/callback/MImage_convertType.html>
 		 */
-		GenericImage<Passing::Manual> convert(imagedata_t t, mbool interleavingQ) const {
-			auto newImage = LibraryData::ImageAPI()->MImage_convertType(this->getContainer(), t, interleavingQ);
-			if (!newImage) {
-				ErrorManager::throwException(ErrorName::ImageNewError, "Conversion to type " + std::to_string(static_cast<int>(t)) + " failed.");
-			}
-			return newImage;
-		}
+		GenericImage convert(imagedata_t t, mbool interleavingQ) const;
 
 		/**
 		 * @brief   Convert this object to a new GenericImage of given datatype
 		 * @param   t - destination data type
-		 * @return  converted GenericImage with Manual passing mode
+		 * @return  converted GenericImage owned by the Library
 		 * @see     <http://reference.wolfram.com/language/LibraryLink/ref/callback/MImage_convertType.html>
 		 */
-		GenericImage<Passing::Manual> convert(imagedata_t t) const {
-			return convert(t, interleavedQ());
+		GenericImage convert(imagedata_t t) const {
+			return convert(t, static_cast<mbool>(interleavedQ()));
+		}
+
+		/**
+		 * @brief   Clone this MContainer, performs a deep copy of the underlying MImage.
+		 * @note    The cloned MContainer always belongs to the library (Ownership::Library) because LibraryLink has no idea of its existence.
+		 * @return  new MContainer, by value
+		 */
+		MContainer clone() const {
+			return MContainer {cloneContainer(), Ownership::Library};
 		}
 
 		/// @copydoc ImageInterface::colorspace()
@@ -146,12 +107,12 @@ namespace LLU {
 
 		/// @copydoc ImageInterface::alphaChannelQ()
 		bool alphaChannelQ() const override {
-			return LibraryData::ImageAPI()->MImage_alphaChannelQ(this->getContainer());
+			return LibraryData::ImageAPI()->MImage_alphaChannelQ(this->getContainer()) != 0;
 		}
 
 		/// @copydoc ImageInterface::interleavedQ()
 		bool interleavedQ() const override {
-			return LibraryData::ImageAPI()->MImage_interleavedQ(this->getContainer());
+			return LibraryData::ImageAPI()->MImage_interleavedQ(this->getContainer()) != 0;
 		}
 
 		/// @copydoc ImageInterface::is3D()
@@ -179,20 +140,12 @@ namespace LLU {
 			return LibraryData::ImageAPI()->MImage_getRawData(this->getContainer());
 		}
 	private:
-		using Base = MContainerBase<MArgumentType::Image, PassingMode>;
-		using RawContainer = typename Base::Container;
 
 		/**
-		 *   @copydoc   MContainerBase::clone()
+		 *   @brief     Make a deep copy of the raw container
 		 *   @see 		<http://reference.wolfram.com/language/LibraryLink/ref/callback/MImage_clone.html>
 		 **/
-		RawContainer cloneImpl() const override {
-			RawContainer tmp {};
-			if (LibraryData::ImageAPI()->MImage_clone(this->getContainer(), &tmp)) {
-				ErrorManager::throwException(ErrorName::ImageCloneError);
-			}
-			return tmp;
-		}
+		Container cloneImpl() const override;
 
 		/**
 		 * @copydoc MContainerBase::shareCount()
@@ -202,30 +155,12 @@ namespace LLU {
 			return LibraryData::ImageAPI()->MImage_shareCount(this->getContainer());
 		}
 
-		/**
-		 *   @copydoc   MContainerBase::disown()
-		 *   @see 		<http://reference.wolfram.com/language/LibraryLink/ref/callback/MImage_disown.html>
-		 **/
-		void disownImpl() const noexcept override {
-			LibraryData::ImageAPI()->MImage_disown(this->getContainer());
-		}
-
-		/**
-		 *   @copydoc   MContainerBase::free()
-		 *   @see 		<http://reference.wolfram.com/language/LibraryLink/ref/callback/MImage_free.html>
-		 **/
-		void freeImpl() const noexcept override {
-			LibraryData::ImageAPI()->MImage_free(this->getContainer());
-		}
-
-		/**
-		 *   @copydoc   MContainerBase::pass
-		 **/
+		/// @copydoc   MContainerBase::pass(MArgument&)
 		void passImpl(MArgument& res) const noexcept override {
 			MArgument_setMImage(res, this->getContainer());
 		}
 	};
 
-}
+}  // namespace LLU
 
-#endif	  // LLU_INCLUDE_LLU_CONTAINERS_GENERIC_IMAGE
+#endif	  // LLU_CONTAINERS_GENERIC_IMAGE_HPP

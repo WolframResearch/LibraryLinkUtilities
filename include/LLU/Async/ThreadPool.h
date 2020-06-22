@@ -44,6 +44,12 @@ namespace LLU {
 			}
 		}
 
+		// Thread pool is non-copyable
+		BasicThreadPool(const BasicThreadPool&) = delete;
+		BasicThreadPool& operator=(const BasicThreadPool&) = delete;
+		BasicThreadPool(BasicThreadPool&&) = delete;
+		BasicThreadPool& operator=(BasicThreadPool&&) = delete;
+
 		~BasicThreadPool() {
 			done = true;
 			for ([[maybe_unused]] auto& t : threads) {
@@ -108,6 +114,12 @@ namespace LLU {
 				throw;
 			}
 		}
+
+		// Thread pool is non-copyable
+		GenericThreadPool(const GenericThreadPool&) = delete;
+		GenericThreadPool& operator=(const GenericThreadPool&) = delete;
+		GenericThreadPool(GenericThreadPool&&) = delete;
+		GenericThreadPool& operator=(GenericThreadPool&&) = delete;
 
 		~GenericThreadPool() {
 			done = true;

@@ -22,8 +22,7 @@ namespace LLU {
 	public:
 		ImageView() = default;
 
-		template<class Passing>
-		/* implicit */ ImageView(const GenericImage<Passing>& gIm) : m {gIm.getContainer()} {}
+		/* implicit */ ImageView(const GenericImage& gIm) : m {gIm.getContainer()} {}
 
 		/* implicit */ ImageView(MImage mi) : m {mi} {}
 
@@ -97,7 +96,7 @@ namespace LLU {
 		ImageTypedView() = default;
 
 		template<class Passing>
-		/* implicit */ ImageTypedView(const GenericImage<Passing>& gIm) : ImageView(gIm) {
+		/* implicit */ ImageTypedView(const GenericImage& gIm) : ImageView(gIm) {
 			if (ImageType<T> != type()) {
 				ErrorManager::throwException(ErrorName::ImageTypeError);
 			}

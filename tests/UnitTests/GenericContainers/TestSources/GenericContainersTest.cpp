@@ -7,8 +7,36 @@
 #include <LLU/LLU.h>
 #include <LLU/LibraryLinkFunctionMacro.h>
 
-using namespace LLU::Passing;
+using LLU::Ownership;
+using LLU::Passing;
 using namespace LLU::ErrorCode;
+
+std::string to_string(Ownership o) {
+	switch (o) {
+		case Ownership::LibraryLink:
+			return "LibraryLink";
+		case Ownership::Library:
+			return "Library";
+		case Ownership::Shared:
+			return "Shared";
+	}
+	return "Unknown";
+}
+
+template<class Container>
+bool isShared(const Container& c) noexcept {
+	return c.getOwner() == Ownership::Shared;
+}
+
+template<class Container>
+bool libraryOwnedQ(const Container& c) noexcept {
+	return c.getOwner() == Ownership::Library;
+}
+
+template<class Container>
+bool libraryLinkOwnedQ(const Container& c) noexcept {
+	return c.getOwner() == Ownership::LibraryLink;
+}
 
 EXTERN_C DLLEXPORT int WolframLibrary_initialize(WolframLibraryData libData) {
 	LLU::LibraryData::setLibraryData(libData);
@@ -18,81 +46,81 @@ EXTERN_C DLLEXPORT int WolframLibrary_initialize(WolframLibraryData libData) {
 LIBRARY_LINK_FUNCTION(IsOwnerAutomatic) {
 	LLU::MArgumentManager mngr {libData, Argc, Args, Res};
 	auto img = mngr.getGenericImage(0);
-	mngr.set(img.isOwner());
+	mngr.set(libraryLinkOwnedQ(img));
 	return NoError;
 }
 
 LIBRARY_LINK_FUNCTION(IsOwnerManual) {
 	LLU::MArgumentManager mngr {libData, Argc, Args, Res};
-	auto t = mngr.getGenericTensor<Manual>(0);
-	mngr.set(t.isOwner());
+	auto t = mngr.getGenericTensor<Passing::Manual>(0);
+	mngr.set(libraryOwnedQ(t));
 	return NoError;
 }
 
 LIBRARY_LINK_FUNCTION(IsOwnerShared) {
 	LLU::MArgumentManager mngr {libData, Argc, Args, Res};
-	auto na = mngr.getGenericNumericArray<Shared>(0);
-	mngr.set(na.isOwner());
+	auto na = mngr.getGenericNumericArray<Passing::Shared>(0);
+	mngr.set(isShared(na));
 	return NoError;
 }
 
 LIBRARY_LINK_FUNCTION(CloneAutomatic) {
 	LLU::MArgumentManager mngr {libData, Argc, Args, Res};
 	auto img = mngr.getGenericImage(0);
-	LLU::GenericImage<Manual> clone {img};
+	LLU::GenericImage clone {img.clone()};
 	mngr.set(clone);
-	return (!img.isOwner() && !clone.isOwner()) ? NoError : MemoryError;
+	return (libraryLinkOwnedQ(img) && libraryLinkOwnedQ(clone)) ? NoError : MemoryError;
 }
 
 LIBRARY_LINK_FUNCTION(CloneManual) {
 	LLU::MArgumentManager mngr {libData, Argc, Args, Res};
-	auto t = mngr.getGenericTensor<Manual>(0);
-	LLU::GenericTensor<Manual> clone {t};
+	auto t = mngr.getGenericTensor<Passing::Manual>(0);
+	LLU::GenericTensor clone {t.clone()};
 	LLU::Tensor<mint> tensor {std::move(t)};
 	tensor[0] = -324;
 	mngr.set(clone);
-	return (!t.isOwner() && tensor.isOwner() && !clone.isOwner()) ? NoError : MemoryError;
+	return (libraryOwnedQ(t) && libraryOwnedQ(tensor) && libraryLinkOwnedQ(clone)) ? NoError : MemoryError;
 }
 
 LIBRARY_LINK_FUNCTION(CloneShared) {
 	LLU::MArgumentManager mngr {libData, Argc, Args, Res};
-	auto na = mngr.getGenericNumericArray<Shared>(0);
-	LLU::GenericNumericArray<Manual> clone {na};
+	auto na = mngr.getGenericNumericArray<Passing::Shared>(0);
+	LLU::GenericNumericArray clone {na.clone()};
 	mngr.set(clone);
-	return (na.isOwner() && !clone.isOwner()) ? NoError : MemoryError;
+	return (isShared(na) && libraryLinkOwnedQ(clone)) ? NoError : MemoryError;
 }
 
 LIBRARY_LINK_FUNCTION(MoveAutomatic) {
 	LLU::MArgumentManager mngr {libData, Argc, Args, Res};
 	auto img = mngr.getGenericImage(0);
-	LLU_DEBUG("Automatic arg is owner: ", img.isOwner());
-	LLU::GenericImage<Automatic> clone = std::move(img);	// we can create Automatic container if we move from another Automatic
-	LLU_DEBUG("Automatic arg is owner: ", img.isOwner(), ", clone is owner: ", clone.isOwner());
+	LLU_DEBUG("Automatic arg owner: ", to_string(img.getOwner()));
+	LLU::GenericImage clone = std::move(img);	// we can create Automatic container if we move from another Automatic
+	LLU_DEBUG("Automatic arg owner: ", to_string(img.getOwner()), ", clone owner: ", to_string(clone.getOwner()));
 	mngr.set(clone);
-	LLU_DEBUG("Automatic arg is owner: ", img.isOwner(), ", clone is owner: ", clone.isOwner());
-	return (!img.isOwner() && !clone.isOwner()) ? NoError : MemoryError;
+	LLU_DEBUG("Automatic arg owner: ", to_string(img.getOwner()), ", clone owner: ", to_string(clone.getOwner()));
+	return (libraryLinkOwnedQ(img) && libraryLinkOwnedQ(clone)) ? NoError : MemoryError;
 }
 
 LIBRARY_LINK_FUNCTION(MoveManual) {
 	LLU::MArgumentManager mngr {libData, Argc, Args, Res};
-	auto t = mngr.getGenericTensor<Manual>(0);
-	LLU_DEBUG("Manual arg is owner: ", t.isOwner());
+	auto t = mngr.getGenericTensor<Passing::Manual>(0);
+	LLU_DEBUG("Manual arg owner: ", to_string(t.getOwner()));
 	LLU::Tensor<mint> tensor {std::move(t)};
 	tensor[0] = -324;
-	LLU::GenericTensor<Manual> clone = std::move(tensor);
-	LLU_DEBUG("Manual arg is owner: ", t.isOwner(), ", clone is owner: ", clone.isOwner());
+	LLU::GenericTensor clone = std::move(tensor);
+	LLU_DEBUG("Manual arg owner: ", to_string(t.getOwner()), ", clone owner: ", to_string(clone.getOwner()));
 	mngr.set(clone);
-	LLU_DEBUG("Manual arg is owner: ", t.isOwner(), ", clone is owner: ", clone.isOwner());
-	return (!t.isOwner() && !tensor.isOwner() && !clone.isOwner()) ? NoError : MemoryError;
+	LLU_DEBUG("Manual arg owner: ", to_string(t.getOwner()), ", clone owner: ", to_string(clone.getOwner()));
+	return (libraryOwnedQ(t) && libraryOwnedQ(tensor) && libraryLinkOwnedQ(clone)) ? NoError : MemoryError;
 }
 
 LIBRARY_LINK_FUNCTION(MoveShared) {
 	LLU::MArgumentManager mngr {libData, Argc, Args, Res};
-	auto na = mngr.getGenericNumericArray<Shared>(0);
-	LLU_DEBUG("Shared arg is owner: ", na.isOwner());
-	LLU::GenericNumericArray<Shared> clone = std::move(na);
-	LLU_DEBUG("Shared arg is owner: ", na.isOwner(), ", clone is owner: ", clone.isOwner());
+	auto na = mngr.getGenericNumericArray<Passing::Shared>(0);
+	LLU_DEBUG("Shared arg owner: ", to_string(na.getOwner()));
+	LLU::GenericNumericArray clone = std::move(na);
+	LLU_DEBUG("Shared arg owner: ", to_string(na.getOwner()), ", clone owner: ", to_string(clone.getOwner()));
 	mngr.set(clone);
-	LLU_DEBUG("Shared arg is owner: ", na.isOwner(), ", clone is owner: ", clone.isOwner());
-	return (!na.isOwner() && clone.isOwner()) ? NoError : MemoryError;
+	LLU_DEBUG("Shared arg owner: ", to_string(na.getOwner()), ", clone owner: ", to_string(clone.getOwner()));
+	return (isShared(na) && isShared(clone)) ? NoError : MemoryError;
 }

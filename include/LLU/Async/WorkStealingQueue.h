@@ -51,6 +51,6 @@ namespace LLU {
 			return true;
 		}
 	};
-}
+} // namespace LLU
 
 #endif	  // LLU_ASYNC_WORKSTEALINGQUEUE_H

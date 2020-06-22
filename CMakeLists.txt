@@ -5,7 +5,7 @@
 ###### Author: Rafal Chojna - rafalc@wolfram.com
 #################################################################################
 
-cmake_minimum_required(VERSION 3.8.0)
+cmake_minimum_required(VERSION 3.12.0)
 
 #set minimum MacOS target version if not defined as environment variable
 if(APPLE AND NOT DEFINED ENV{MACOSX_DEPLOYMENT_TARGET})
@@ -16,22 +16,9 @@ project(LLU VERSION 2.2.0 LANGUAGES CXX)
 
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 
-include(WolframUtilities)
-
 #LLU is designed to be used as a static library but if you really want to try shared, swith to ON
 option(BUILD_SHARED_LIBS "Whether to build LLU as a shared library (default is static).")
 mark_as_advanced(BUILD_SHARED_LIBS)
-
-#Mathematica version
-set(MATHEMATICA_VERSION 12.1 CACHE STRING "Mathematica version")
-
-#Mathematica location
-if(NOT MATHEMATICA_INSTALL_DIR)
-	get_default_mathematica_dir(${MATHEMATICA_VERSION} _MATHEMATICA_INSTALL_DIR)
-else()
-	set(_MATHEMATICA_INSTALL_DIR ${MATHEMATICA_INSTALL_DIR})
-endif()
-set(MATHEMATICA_INSTALL_DIR ${_MATHEMATICA_INSTALL_DIR} CACHE PATH "Mathematica installation" FORCE)
 
 # set default build type to Release
 if(NOT CMAKE_BUILD_TYPE)
@@ -45,21 +32,11 @@ set(CMAKE_VERBOSE_MAKEFILE OFF CACHE BOOL "Verbose")
 #guard to prevent this file from running twice
 if(NOT TARGET LLU)
 
-	detect_system_id(DEFAULT_SYSTEMID)
-	message(STATUS "Detected SystemID: " "${DEFAULT_SYSTEMID}")
-	set(SYSTEMID ${DEFAULT_SYSTEMID} CACHE STRING "Wolfram System ID")
-
 	#=============================================
-	#================== WSTP =====================
+	#===== Mathematica (WSTP/LibraryLink) ========
 	#=============================================
 
-	find_package(WSTP 4.25 REQUIRED MODULE)
-
-	#=============================================
-	#=============== LIBRARYLINK =================
-	#=============================================
-
-	find_package(WolframLibrary 5 REQUIRED MODULE)
+	find_package(Mathematica 12.0 COMPONENTS WolframLibrary WSTP MODULE)
 
 	#=============================================
 	#=========== MAIN PACLET LIBRARY =============
@@ -83,21 +60,24 @@ if(NOT TARGET LLU)
 		${LLU_SOURCE_DIR}/WSTP/Utilities.cpp
 		${LLU_SOURCE_DIR}/MArgument.cpp
 		${LLU_SOURCE_DIR}/ProgressMonitor.cpp
-        ${LLU_SOURCE_DIR}/ErrorLog/ErrorManager.cpp
+		${LLU_SOURCE_DIR}/ErrorLog/ErrorManager.cpp
 		${LLU_SOURCE_DIR}/ErrorLog/Errors.cpp
 		${LLU_SOURCE_DIR}/ErrorLog/Logger.cpp
-		${LLU_SOURCE_DIR}/FileUtilities.cpp)
+		${LLU_SOURCE_DIR}/FileUtilities.cpp
+		${LLU_SOURCE_DIR}/TypedMArgument.cpp
+		${LLU_SOURCE_DIR}/Containers/DataStore.cpp
+		${LLU_SOURCE_DIR}/Containers/NumericArray.cpp)
 
 	#add the main library
 	add_library(LLU ${LLU_SOURCE_FILES})
 
 	#compilation options
 	set_target_properties(LLU PROPERTIES
-	    CXX_STANDARD 14
-	    CXX_STANDARD_REQUIRED YES
-	    CXX_EXTENSIONS NO
+		CXX_STANDARD 17
+		CXX_STANDARD_REQUIRED YES
+		CXX_EXTENSIONS NO
 		CXX_VISIBILITY_PRESET hidden
-	    POSITION_INDEPENDENT_CODE YES
+		POSITION_INDEPENDENT_CODE YES
 	)
 
 	if(MSVC)
@@ -126,7 +106,7 @@ if(NOT TARGET LLU)
 
 	# tell all targets importing LLU that public part of LLU uses C++17 features
 	target_compile_features(LLU
-		PUBLIC
+		INTERFACE
 			cxx_std_17
 	)
 
@@ -146,18 +126,15 @@ if(NOT TARGET LLU)
 			WolframLibrary::WolframLibrary
 	)
 
-	if (NOT WIN32)
-		set_rpath(LLU "")
-	endif ()
 	set_machine_flags(LLU)
 
 	##############################################
 	# Installation instructions
 
 	# By default install to "install" directory
-	if (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+	if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
 		set(CMAKE_INSTALL_PREFIX "${CMAKE_CURRENT_SOURCE_DIR}/install" CACHE PATH "Library install prefix" FORCE)
-	endif ()
+	endif()
 
 	include(GNUInstallDirs)
 	set(INSTALL_CONFIGDIR cmake/LLU)
@@ -194,10 +171,11 @@ if(NOT TARGET LLU)
 	)
 
 	#Install the config, configversion and custom find modules
+	install(DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/cmake/Wolfram DESTINATION ${INSTALL_CONFIGDIR})
 	install(FILES
+		${CMAKE_CURRENT_LIST_DIR}/cmake/FindMathematica.cmake
 		${CMAKE_CURRENT_LIST_DIR}/cmake/FindWolframLibrary.cmake
 		${CMAKE_CURRENT_LIST_DIR}/cmake/FindWSTP.cmake
-		${CMAKE_CURRENT_LIST_DIR}/cmake/WolframUtilities.cmake
 		${CMAKE_CURRENT_BINARY_DIR}/LLUConfig.cmake
 		${CMAKE_CURRENT_BINARY_DIR}/LLUConfigVersion.cmake
 		DESTINATION ${INSTALL_CONFIGDIR}
@@ -207,21 +185,6 @@ if(NOT TARGET LLU)
 		"${CMAKE_CURRENT_LIST_DIR}/LibraryLinkUtilities.wl"
 		DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}
 	)
-
-	##############################################
-	## Exporting from the build tree
-
-	configure_file(${CMAKE_CURRENT_LIST_DIR}/cmake/WolframUtilities.cmake ${CMAKE_CURRENT_BINARY_DIR}/WolframUtilities.cmake COPYONLY)
-	configure_file(${CMAKE_CURRENT_LIST_DIR}/cmake/FindWolframLibrary.cmake ${CMAKE_CURRENT_BINARY_DIR}/FindWolframLibrary.cmake COPYONLY)
-	configure_file(${CMAKE_CURRENT_LIST_DIR}/cmake/FindWSTP.cmake ${CMAKE_CURRENT_BINARY_DIR}/FindWSTP.cmake COPYONLY)
-
-	export(EXPORT LLU-targets
-		FILE ${CMAKE_CURRENT_BINARY_DIR}/LLUTargets.cmake
-		NAMESPACE LLU::
-	)
-
-	#Register package in user's package registry
-	export(PACKAGE LLU)
 
 	##############################################
 	## Create target for unit tests
@@ -235,8 +198,8 @@ if(NOT TARGET LLU)
 			"${CMAKE_COMMAND}" -E env CTEST_OUTPUT_ON_FAILURE=1 ${CMAKE_CTEST_COMMAND} -C ${CMAKE_BUILD_TYPE}
 	)
 
-    ################################################################
-    ## Create target for Sphinx documentation build if requested
+	################################################################
+	## Create target for Sphinx documentation build if requested
 
 	option(BUILD_DOCS "Create target for generating LLU documentation." OFF)
 	if (BUILD_DOCS)

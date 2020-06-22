@@ -15,36 +15,67 @@ TestExecute[
 	(* Thread pool functionality requires C++17 *)
 	$CppVersion = "c++17";
 
-	(* Compile the test library *)
-	lib = CCompilerDriver`CreateLibrary[
-		FileNameJoin[{currentDirectory, "TestSources", #}]& /@ {"PoolTest.cpp"},
-		"Async",
-		options,
-		"Defines" -> {"LLU_LOG_DEBUG"}
-	];
-
 	Get[FileNameJoin[{$LLUSharedDir, "LibraryLinkUtilities.wl"}]];
 
-	`LLU`RegisterPacletErrors[lib, <||>];
+	(* A function that will build the test library and load it initializing LLU. We don't want it to run immediately. It must be evaluated only once,
+	 * right before any of the library functions is first used. *)
+	loader[] := With[
+		{
+			(* Compile the test library *)
+			lib = CCompilerDriver`CreateLibrary[
+				FileNameJoin[{currentDirectory, "TestSources", #}]& /@ {"PoolTest.cpp"},
+				"Async",
+				options,
+				"Defines" -> {"LLU_LOG_DEBUG"}
+			]
+		},
+		loader::init = "Initializing Async unit test library.";
+		Message[loader::init];
+		`LLU`Logger`FormattedLog := `LLU`Logger`LogToShortString;
+		lib
+	];
+	`LLU`LazyInitializePacletLibrary[loader[]];
 
-	`LLU`Logger`FormattedLog := `LLU`Logger`LogToShortString;
-	(* SleepyThreads[n, m, t] spawns n threads and performs m jobs on them, where each job is just sleeping t milliseconds *)
-	SleepyThreads = `LLU`SafeLibraryFunction["SleepyThreads", {Integer, Integer, Integer}, "Void"];
-	(* SleepyThreadsWithPause[n, m, t] works same as SleepyThreads but pauses the pool for 1 second, submits all tasks and then resumes. *)
-	SleepyThreadsWithPause = `LLU`SafeLibraryFunction["SleepyThreadsWithPause", {Integer, Integer, Integer}, "Void"];
-	(* Same as SleepyThreads only using Basic thread pool. *)
-	SleepyThreadsBasic = `LLU`SafeLibraryFunction["SleepyThreadsBasic", {Integer, Integer, Integer}, "Void"];
+	`LLU`LazyPacletFunctionSet @@@ {
+		(* SleepyThreads[n, m, t] spawns n threads and performs m jobs on them, where each job is just sleeping t milliseconds *)
+		{SleepyThreads, {Integer, Integer, Integer}, "Void"},
+		(* SleepyThreadsWithPause[n, m, t] works same as SleepyThreads but pauses the pool for 1 second, submits all tasks and then resumes. *)
+		{SleepyThreadsWithPause, {Integer, Integer, Integer}, "Void"},
+		(* Same as SleepyThreads only using Basic thread pool. *)
+		{SleepyThreadsBasic, {Integer, Integer, Integer}, "Void"},
 
-	(* ParallelAccumulate[NA, n, bs] separates a NumericArray NA into blocks of bs elements and sums them in parallel on n threads.
-	 * Returns a one-element NumericArray with the sum of all elements of NA *)
-	ParallelAccumulate = `LLU`SafeLibraryFunction["Accumulate", {{NumericArray, "Constant"}, Integer, Integer}, NumericArray];
-	SequentialAccumulate = `LLU`SafeLibraryFunction["AccumulateSequential", {{NumericArray, "Constant"}}, NumericArray];
-	ParallelAccumulateBasic = `LLU`SafeLibraryFunction["AccumulateBasic", {{NumericArray, "Constant"}, Integer, Integer}, NumericArray];
+		(* ParallelAccumulate[NA, n, bs] separates a NumericArray NA into blocks of bs elements and sums them in parallel on n threads.
+		 * Returns a one-element NumericArray with the sum of all elements of NA *)
+		{ParallelAccumulate, "Accumulate", {{NumericArray, "Constant"}, Integer, Integer}, NumericArray},
+		{SequentialAccumulate, "AccumulateSequential", {{NumericArray, "Constant"}}, NumericArray},
+		{ParallelAccumulateBasic, "AccumulateBasic", {{NumericArray, "Constant"}, Integer, Integer}, NumericArray},
 
-	(* ParallelLcm[NA, n, bs] calculates LCM of all "UnsignedIntegers64" in NA recursively, running in parallel on n threads.
-     * This function tests running async jobs on a thread pool that can themselves submit new jobs to the pool. *)
-	ParallelLcm = `LLU`SafeLibraryFunction["LcmParallel", {{NumericArray, "Constant"}, Integer, Integer}, NumericArray];
-	SequentialLcm = `LLU`SafeLibraryFunction["LcmSequential", {{NumericArray, "Constant"}}, NumericArray];
+		(* ParallelLcm[NA, n, bs] calculates LCM of all "UnsignedIntegers64" in NA recursively, running in parallel on n threads.
+	     * This function tests running async jobs on a thread pool that can themselves submit new jobs to the pool. *)
+		{ParallelLcm, "LcmParallel", {{NumericArray, "Constant"}, Integer, Integer}, NumericArray},
+		{SequentialLcm, "LcmSequential", {{NumericArray, "Constant"}}, NumericArray}
+	};
+];
+
+Test[
+	(* At this point the library has not been initialized and not even compiled yet.
+	 * Evaluating $PacletLibrary will cause the library (set in LazyInitializePacletLibrary) to be loaded. *)
+	Select[Compile`LoadedLibraries[], FileBaseName[#] === "Async" &]
+	,
+	{}
+	,
+	TestID -> "AsyncTestSuite-20190718-I7S1K0"
+];
+
+TestMatch[
+	(* First evaluation of a library function symbol will load that function after it builds and loads the library as part of the pre-load routine. *)
+	SleepyThreads
+	,
+	Composition[`LLU`Private`CatchAndThrowLibraryFunctionError, LibraryFunction[___]]
+	,
+	loader::init (* The loader function issues a message so that we can easily identify all places where it runs. *)
+	,
+	TestID -> "AsyncTestSuite-20200401-Z5G9U3"
 ];
 
 TestMatch[
@@ -52,7 +83,7 @@ TestMatch[
 	,
 	{ t_, Null } /; (t >= 1 && t < 1.5)
 	,
-	TestID -> "AsyncTestSuite-20190718-I7S1K0"
+	TestID -> "AsyncTestSuite-20200401-Y8E2H0"
 ];
 
 TestMatch[

@@ -1,6 +1,6 @@
 (* Wolfram Language Test file *)
 TestRequirement[$VersionNumber >= 12.0]
-Catch @ TestExecute[
+CatchAll @ TestExecute[
 	currentDirectory = DirectoryName[$CurrentFile];
 	Get[FileNameJoin[{ParentDirectory[currentDirectory], "TestConfig.wl"}]];
 	sourceDirectory = FileNameJoin[{currentDirectory, "TestSources"}];
@@ -9,7 +9,7 @@ Catch @ TestExecute[
 	na = NumericArray[{1, 2, 3, 4}];
 	
 	Off[General::stop];
-]
+];
 
 (****************************NumericArray Operations****************************************)
 
@@ -185,7 +185,7 @@ TestMatch[
 		"MessageTemplate" -> "Failed to convert NumericArray from different type.",
 		"MessageParameters" -> <||>,
 		"ErrorCode" -> _?CppErrorCodeQ,
-		"Parameters" -> {}|>
+		"Parameters" -> _?ListQ|>
 	]
 	,
 	TestID -> "NumericArrayTestSuite-20190910-D8W3R2"

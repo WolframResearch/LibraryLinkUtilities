@@ -6,8 +6,8 @@
  * @brief	Include windows.h without \c min and \c max macros
  *
  */
-#ifndef LLUTILS_NOMINMAXWINDOWS_H_
-#define LLUTILS_NOMINMAXWINDOWS_H_
+#ifndef LLU_NOMINMAXWINDOWS_H
+#define LLU_NOMINMAXWINDOWS_H
 
 #ifdef _WIN32
 
@@ -22,4 +22,4 @@
 
 #endif
 
-#endif /* LLUTILS_NOMINMAXWINDOWS_H_ */
+#endif // LLU_NOMINMAXWINDOWS_H

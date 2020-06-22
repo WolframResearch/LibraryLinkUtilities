@@ -10,16 +10,16 @@
  * @see		https://stackoverflow.com/questions/45590594/generic-lambda-in-extern-c-function
  */
 
-#ifndef LLUTILS_LIBRARYLINKFUNCTIONMACRO_H_
-#define LLUTILS_LIBRARYLINKFUNCTIONMACRO_H_
+#ifndef LLU_LIBRARYLINKFUNCTIONMACRO_H
+#define LLU_LIBRARYLINKFUNCTIONMACRO_H
 
 #define LIBRARY_LINK_FUNCTION(name)                                               \
 	EXTERN_C DLLEXPORT int name(WolframLibraryData, mint, MArgument*, MArgument); \
-	int name(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument Res)
+	int name([[maybe_unused]] WolframLibraryData libData, mint Argc, MArgument* Args, MArgument Res)
 
 #define LIBRARY_WSTP_FUNCTION(name)                     \
 	EXTERN_C DLLEXPORT int name(WolframLibraryData, WSLINK); \
-	int name(WolframLibraryData libData, WSLINK mlp)
+	int name([[maybe_unused]] WolframLibraryData libData, WSLINK mlp)
 
 #define LLU_LIBRARY_FUNCTION(name)                                      \
 	void impl_##name(LLU::MArgumentManager&); /* forward declaration */ \
@@ -37,4 +37,4 @@
 	}                                                                   \
 	void impl_##name(LLU::MArgumentManager& mngr)
 
-#endif /* LLUTILS_LIBRARYLINKFUNCTIONMACRO_H_ */
+#endif // LLU_LIBRARYLINKFUNCTIONMACRO_H

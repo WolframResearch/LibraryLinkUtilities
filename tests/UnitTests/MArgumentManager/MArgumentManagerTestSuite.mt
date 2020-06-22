@@ -23,7 +23,7 @@ TestExecute[
 
 	Get[FileNameJoin[{$LLUSharedDir, "LibraryLinkUtilities.wl"}]];
 
-	`LLU`RegisterPacletErrors[lib, <||>];
+	`LLU`InitializePacletLibrary[lib];
 
 	(* Person expression takes 3 arguments: name, age and height e.g. Person["James", 20, 1.75],
 	 * so it decays to 3 LibraryLink arguments: String, Integer and Real. *)
@@ -34,20 +34,20 @@ TestExecute[
 		(Sequence @@ (`LLU`MArgumentTransform[Person] /@ #)) &
 	];
 
-	$DescribePerson = `LLU`SafeLibraryFunction["DescribePerson", {String, Integer, Real}, String];
-	$DescribePerson2 = `LLU`SafeLibraryFunction["DescribePerson2", {Person}, String];
-	$ComparePeople = `LLU`SafeLibraryFunction["ComparePeople", {Couple}, String];
+	$DescribePerson = `LLU`PacletFunctionLoad["DescribePerson", {String, Integer, Real}, String];
+	$DescribePerson2 = `LLU`PacletFunctionLoad["DescribePerson2", {Person}, String];
+	$ComparePeople = `LLU`PacletFunctionLoad["ComparePeople", {Couple}, String];
 
-	$RepeatString = `LLU`SafeLibraryFunction["LL_repeatString", {String, Integer}, String];
-	$DoNothing = `LLU`SafeLibraryFunction["LL_doNothing", {}, "Void"];
+	$RepeatString = `LLU`PacletFunctionLoad["LL_repeatString", {String, Integer}, String];
+	$DoNothing = `LLU`PacletFunctionLoad["LL_doNothing", {}, "Void"];
 
-	$GetPersonDescription = `LLU`SafeLibraryFunction["GetPersonDescription", {Person}, String];
+	$GetPersonDescription = `LLU`PacletFunctionLoad["GetPersonDescription", {Person}, String];
 
 	john = Person["John", 42, 1.83];
 	james = Person["James", 43, 1.73];
 
 	`LLU`MResultType[Person, "DataStore", (Person @@ #)&];
-	$PredictChild = `LLU`SafeLibraryFunction["PredictChild", {Couple}, Person];
+	$PredictChild = `LLU`PacletFunctionLoad["PredictChild", {Couple}, Person];
 ];
 
 
@@ -66,7 +66,7 @@ TestMatch[
 (* Basic tests *)
 
 Test[
-	`LLU`SelectSpecialArgs[{`LLU`Managed[x], String, "UTF8String"}]
+	`LLU`Private`SelectSpecialArgs[{`LLU`Managed[x], String, "UTF8String"}]
 	,
 	<|1 -> `LLU`Managed[x]|>
 	,
@@ -74,7 +74,7 @@ Test[
 ];
 
 Test[
-	`LLU`SelectSpecialArgs[{String, Person, {_, _}, NotRegisteredSoNotSpecialArg, Couple}]
+	`LLU`Private`SelectSpecialArgs[{String, Person, {_, _}, NotRegisteredSoNotSpecialArg, Couple}]
 	,
 	<|2 -> Person, 5 -> Couple|>
 	,
@@ -82,8 +82,8 @@ Test[
 ];
 
 Test[
-	args = `LLU`SelectSpecialArgs[{String, Person, {_, _}, Couple}];
-	{`LLU`ArgumentParser[args]["hello", john, Range[7], Couple[james, john]]}
+	args = `LLU`Private`SelectSpecialArgs[{String, Person, {_, _}, Couple}];
+	{`LLU`Private`ArgumentParser[args]["hello", john, Range[7], Couple[james, john]]}
 	,
 	{"hello", "John", 42, 1.83, {1, 2, 3, 4, 5, 6, 7}, "James", 43, 1.73, "John", 42, 1.83}
 	,
@@ -91,14 +91,14 @@ Test[
 ];
 
 VerificationTest[
-	$AsFloat = `LLU`SafeLibraryFunction["AsFloat", {Real}, Real];
+	$AsFloat = `LLU`PacletFunctionLoad["AsFloat", {Real}, Real];
 	Abs[$AsFloat[1.23456] - 1.23456] < 10^-7
 	,
 	TestID -> "MArgumentManagerTestSuite-20200309-R1Y5I7"
 ];
 
 VerificationTest[
-	$Transform = `LLU`SafeLibraryFunction["Transform", {Real, Integer, Real}, Real];
+	$Transform = `LLU`PacletFunctionLoad["Transform", {Real, Integer, Real}, Real];
 	a = 3.14;
 	n = 42;
 	b = 56.789;
@@ -185,8 +185,8 @@ Test[
 ];
 
 TestExecute[
-	$GetTallest = `LLU`SafeLibraryFunction["GetTallest", {"DataStore"}, String];
-	$Sort = `LLU`SafeLibraryFunction["Sort", {{NumericArray, "Constant"}, {NumericArray, "Constant"}}, NumericArray];
+	$GetTallest = `LLU`PacletFunctionLoad["GetTallest", {"DataStore"}, String];
+	$Sort = `LLU`PacletFunctionLoad["Sort", {{NumericArray, "Constant"}, {NumericArray, "Constant"}}, NumericArray];
 ];
 
 Test[

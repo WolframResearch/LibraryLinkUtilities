@@ -1,16 +1,23 @@
-# WolframUtilities.cmake
+# Wolfram/Common.cmake
 #
-# Set of short utility functions that may be helpful for Mathematica paclets that use CMake
+# A collection of short utility functions that may be helpful for Mathematica paclets that use CMake.
+# Most of the functions here are specifically tailored for paclets developed at Wolfram but the following utilities might be useful in general case:
 #
-# Author: Rafal Chojna - rafalc@wolfram.com
+# set_machine_flags
+# set_rpath
+# set_default_cxx_properties
+# set_windows_static_runtime
+# install_dependency_files
+
+include_guard()
 
 function(get_default_mathematica_dir MATHEMATICA_VERSION DEFAULT_MATHEMATICA_INSTALL_DIR)
 	set(_M_INSTALL_DIR NOTFOUND)
 	if(APPLE)
-	 	find_path(_M_INSTALL_DIR "Contents" PATHS 
-			"/Applications/Mathematica ${MATHEMATICA_VERSION}.app"
-			"/Applications/Mathematica.app"
-		)
+		find_path(_M_INSTALL_DIR "Contents" PATHS
+				"/Applications/Mathematica ${MATHEMATICA_VERSION}.app"
+				"/Applications/Mathematica.app"
+				)
 		set(_M_INSTALL_DIR "${_M_INSTALL_DIR}/Contents")
 	elseif(WIN32)
 		set(_M_INSTALL_DIR "C:/Program\ Files/Wolfram\ Research/Mathematica/${MATHEMATICA_VERSION}")
@@ -135,23 +142,6 @@ function(get_wstp_library_name WSTP_INTERFACE_VERSION WSTP_LIB_NAME)
 	set(${WSTP_LIB_NAME} "${WSTP_LIBRARY}" PARENT_SCOPE)
 endfunction()
 
-# not sure if this one is needed, keep it just in case
-function(additional_paclet_dependencies SYSTEM_ID EXTRA_LIBS)
-	if (${SYSTEM_ID} STREQUAL "MacOSX-x86-64")
-		set(EXTRA_LIBS "c++" "-framework Foundation" PARENT_SCOPE)
-	elseif (${SYSTEM_ID} STREQUAL "Linux")
-		# nothing for now
-	elseif (${SYSTEM_ID} STREQUAL "Linux-x86-64")
-		# nothing for now
-	elseif (${SYSTEM_ID} STREQUAL "Linux-ARM")
-		# nothing for now
-	elseif (${SYSTEM_ID} STREQUAL "Windows")
-		# nothing for now
-	elseif (${SYSTEM_ID} STREQUAL "Windows-x86-64")
-		# nothing for now
-	endif ()
-endfunction()
-
 # On linux, set the linker flags to use the nonshared version of stdc++ if found.
 # This supports old runtimes lacking new c++ language features.
 function(add_cpp_nonshared_library TARGET_NAME)
@@ -203,222 +193,6 @@ function(set_rpath TARGET_NAME NEW_RPATH)
 	set_target_properties(${TARGET_NAME} PROPERTIES INSTALL_RPATH ${NEW_RPATH})
 endfunction()
 
-#Helper function to check whether given CVS module exists.
-function(cvsmoduleQ MODULE WORKINGDIR RES)
-	execute_process(
-		COMMAND cvs -d $ENV{CVSROOT} rdiff -r HEAD ${MODULE}
-		WORKING_DIRECTORY ${WORKINGDIR}
-		RESULT_VARIABLE _RES
-		OUTPUT_QUIET ERROR_QUIET
-	)
-	if("${_RES}" STREQUAL "0")
-		set(${RES} TRUE PARENT_SCOPE)
-	else()
-		set(${RES} FALSE PARENT_SCOPE)
-	endif()
-endfunction()
-
-# Helper function to download content from CVS.
-function(download_cvs_content content_name download_path module_path DOWNLOAD_LOCATION_OUT)
-	include(FetchContent)
-	FetchContent_declare(
-		${content_name}
-		SOURCE_DIR "${download_path}"
-		CVS_REPOSITORY $ENV{CVSROOT}
-		CVS_MODULE "${module_path}"
-	)
-	string(TOLOWER ${content_name} lc_content_name)
-	FetchContent_getproperties(${content_name})
-	if(NOT ${lc_content_name}_POPULATED)
-		message(STATUS "Downloading CVS module: ${module_path}")
-		FetchContent_populate(${content_name})
-	endif()
-	# store the download location in a variable
-	set(${DOWNLOAD_LOCATION_OUT} "${${lc_content_name}_SOURCE_DIR}" PARENT_SCOPE)
-endfunction()
-
-# Download a library from Wolfram's CVS repository and set PACKAGE_LOCATION to the download location.
-# If a Source directory exists in the component root directory and DOWNLOAD_CVS_SOURCE is ON, it will be downloaded.
-function(get_library_from_cvs PACKAGE_NAME PACKAGE_VERSION PACKAGE_SYSTEM_ID PACKAGE_BUILD_PLATFORM PACKAGE_LOCATION)
-
-	message(STATUS "Looking for CVS library: ${PACKAGE_NAME} version ${PACKAGE_VERSION}")
-
-	# Specifying false value for SystemId or BuildPlatform allows all systems or platforms to be downloaded.
-	set(_PACKAGE_PATH_SUFFIX ${PACKAGE_VERSION})
-	if(PACKAGE_SYSTEM_ID)
-		set(_PACKAGE_PATH_SUFFIX ${_PACKAGE_PATH_SUFFIX}/${PACKAGE_SYSTEM_ID})
-		if(PACKAGE_BUILD_PLATFORM)
-			set(_PACKAGE_PATH_SUFFIX ${_PACKAGE_PATH_SUFFIX}/${PACKAGE_BUILD_PLATFORM})
-		endif()
-	endif()
-
-	# Download component library
-	download_cvs_content(${PACKAGE_NAME}
-		"${${PACKAGE_LOCATION}}/${_PACKAGE_PATH_SUFFIX}"
-		"Components/${PACKAGE_NAME}/${_PACKAGE_PATH_SUFFIX}"
-		_PACKAGE_LOCATION
-	)
-
-	set(${PACKAGE_LOCATION} "${_PACKAGE_LOCATION}" PARENT_SCOPE)
-	message(STATUS "${PACKAGE_NAME} downloaded to ${_PACKAGE_LOCATION}")
-
-	if(DOWNLOAD_CVS_SOURCE)
-		# Check if a Source directory exists
-		cvsmoduleQ(Components/${PACKAGE_NAME}/${PACKAGE_VERSION}/Source "${${PACKAGE_LOCATION}}" HAS_SOURCE)
-		if(HAS_SOURCE)
-			# Download component source
-			download_cvs_content(${PACKAGE_NAME}_SOURCE
-				"${${PACKAGE_LOCATION}}/${PACKAGE_VERSION}/Source"
-				"Components/${PACKAGE_NAME}/${PACKAGE_VERSION}/Source"
-				_PACKAGE_SOURCE_LOCATION
-			)
-		endif()
-	endif()
-endfunction()
-
-# Splits comma delimited string STR and saves list to variable LIST
-function(split_string_to_list STR LIST)
-	string(REPLACE " " "" _STR ${STR})
-	string(REPLACE "," ";" _STR ${_STR})
-	set(${LIST} ${_STR} PARENT_SCOPE)
-endfunction()
-
-# Finds library.conf and for each library therein sets:
-# ${LIBRARY_NAME}_SYSTEMID
-# ${LIBRARY_NAME}_VERSION
-# ${LIBRARY_NAME}_BUILD_PLATFORM
-# Also sets DOWNLOAD_CVS_SOURCE variable to control Source download (default is OFF for Release config, ON otherwise).
-function(find_and_parse_library_conf)
-	if(NOT DEFINED DOWNLOAD_CVS_SOURCE)
-		if("${CMAKE_BUILD_TYPE}" STREQUAL Release)
-			set(DOWNLOAD_CVS_SOURCE OFF CACHE BOOL "Download CVS Source directory for all dependencies if it exists.")
-		else()
-			set(DOWNLOAD_CVS_SOURCE ON CACHE BOOL "Download CVS Source directory for all dependencies if it exists.")
-		endif()
-	endif()
-
-	# path to library.conf. Located in scripts directory by default, but custom location can be passed in.
-	if(ARGC GREATER_EQUAL 1)
-		set(LIBRARY_CONF "${ARGV0}")
-	else()
-		set(LIBRARY_CONF "${CMAKE_CURRENT_SOURCE_DIR}/scripts/library.conf")
-	endif()
-	if(NOT EXISTS ${LIBRARY_CONF})
-		message(FATAL_ERROR "Unable to find ${LIBRARY_CONF}")
-	endif()
-
-	file(STRINGS ${LIBRARY_CONF} _LIBRARY_CONF_STRINGS)
-	# lines beginning with '#' shall be ignored.
-	list(FILTER _LIBRARY_CONF_STRINGS EXCLUDE REGEX "^#")
-
-	set(_LIBRARY_CONF_LIBRARY_LIST ${_LIBRARY_CONF_STRINGS})
-	list(FILTER _LIBRARY_CONF_LIBRARY_LIST INCLUDE REGEX "\\[Library\\]")
-
-	string(REGEX REPLACE
-		"\\[Library\\][ \t]+(.*)" "\\1" 
-		_LIBRARY_CONF_LIBRARY_LIST "${_LIBRARY_CONF_LIBRARY_LIST}"
-	)
-	split_string_to_list(${_LIBRARY_CONF_LIBRARY_LIST} _LIBRARY_CONF_LIBRARY_LIST)
-
-	detect_system_id(SYSTEMID)
-
-	foreach(LIBRARY ${_LIBRARY_CONF_LIBRARY_LIST})
-		string(TOUPPER ${LIBRARY} _LIBRARY)
-
-		set(LIB_SYSTEMID ${_LIBRARY}_SYSTEMID)
-		set(LIB_VERSION ${_LIBRARY}_VERSION)
-		set(LIB_BUILD_PLATFORM ${_LIBRARY}_BUILD_PLATFORM)
-
-		if(NOT ${LIB_SYSTEMID})
-			set(${LIB_SYSTEMID} ${SYSTEMID})
-		endif()
-
-		set(_LIBRARY_CONF_LIBRARY_STRING ${_LIBRARY_CONF_STRINGS})
-		list(FILTER _LIBRARY_CONF_LIBRARY_STRING INCLUDE REGEX "${${LIB_SYSTEMID}}[ \t]+${LIBRARY}")
-
-		if(NOT _LIBRARY_CONF_LIBRARY_STRING)
-			list(APPEND UNUSED_LIBRARIES ${LIBRARY})
-			message(STATUS "Skipping library ${LIBRARY}")
-			continue()
-		endif()
-
-		string(REGEX REPLACE
-			"${${LIB_SYSTEMID}}[ \t]+${LIBRARY}[ \t]+([A-Za-z0-9.]+)[ \t]+([A-Za-z0-9_\\-]+)" "\\1;\\2"
-			_LIB_VERSION_BUILD_PLATFORM "${_LIBRARY_CONF_LIBRARY_STRING}"
-		)
-
-		list(GET _LIB_VERSION_BUILD_PLATFORM 0 _LIB_VERSION)
-		list(GET _LIB_VERSION_BUILD_PLATFORM 1 _LIB_BUILD_PLATFORM)
-
-		set(${LIB_VERSION} ${_LIB_VERSION} PARENT_SCOPE)
-		set(${LIB_BUILD_PLATFORM} ${_LIB_BUILD_PLATFORM} PARENT_SCOPE)
-		set(${LIB_SYSTEMID} ${${LIB_SYSTEMID}} PARENT_SCOPE)
-	endforeach()
-endfunction()
-
-# Resolve full path to a CVS dependency, downloading if necessary
-# Prioritize ${LIB_NAME}_DIR, ${LIB_NAME}_LOCATION, CVS_COMPONENTS_DIR, then CVS download
-# Do not download if ${LIB_NAME}_DIR or ${LIB_NAME}_LOCATION are set
-# ${LIB_NAME}_VERSION|SYSTEMID|BUILD_PLATFORM are expected to be previously set
-function(find_cvs_dependency LIB_NAME)
-
-	# helper variables
-	string(TOUPPER ${LIB_NAME} _LIB_NAME)
-	set(LIB_DIR "${${_LIB_NAME}_DIR}")
-	set(LIB_LOCATION "${${_LIB_NAME}_LOCATION}")
-	set(LIB_VERSION ${${_LIB_NAME}_VERSION})
-	set(LIB_SYSTEMID ${${_LIB_NAME}_SYSTEMID})
-	set(LIB_BUILD_PLATFORM ${${_LIB_NAME}_BUILD_PLATFORM})
-	set(_LIB_DIR_SUFFIX ${LIB_VERSION}/${LIB_SYSTEMID}/${LIB_BUILD_PLATFORM})
-
-	if(NOT LIB_SYSTEMID)
-		message(STATUS "[find_cvs_dependency] ${LIB_NAME}_SYSTEMID not defined. Returning.")
-		return()
-	endif()
-
-	# Check if there is a full path to the dependency with version, system id and build platform.
-	if(NOT ${LIB_DIR} STREQUAL "")
-		if(NOT EXISTS ${LIB_DIR})
-			message(FATAL_ERROR "Specified full path to Lib does not exist: ${LIB_DIR}")
-		endif()
-		return()
-	endif()
-
-	# Check if there is a path to the Lib component
-	if(NOT ${LIB_LOCATION} STREQUAL "")
-		if(NOT EXISTS ${LIB_LOCATION})
-			message(FATAL_ERROR "Specified location of Lib does not exist: ${LIB_LOCATION}")
-		elseif(EXISTS ${LIB_LOCATION}/${_LIB_DIR_SUFFIX})
-			set(${_LIB_NAME}_DIR ${LIB_LOCATION}/${_LIB_DIR_SUFFIX} PARENT_SCOPE)
-			return()
-		endif()
-	endif()
-
-	# Check if there is a path to CVS modules
-	if(CVS_COMPONENTS_DIR)
-		set(_CVS_COMPONENTS_DIR ${CVS_COMPONENTS_DIR})
-	elseif(DEFINED ENV{CVS_COMPONENTS_DIR})
-		set(_CVS_COMPONENTS_DIR $ENV{CVS_COMPONENTS_DIR})
-	endif()
-
-	if(_CVS_COMPONENTS_DIR)
-		if(NOT EXISTS ${_CVS_COMPONENTS_DIR})
-			message(FATAL_ERROR "Specified location of CVS components does not exist: ${_CVS_COMPONENTS_DIR}")
-		elseif(EXISTS ${_CVS_COMPONENTS_DIR}/${LIB_NAME}/${_LIB_DIR_SUFFIX})
-			set(${_LIB_NAME}_DIR ${_CVS_COMPONENTS_DIR}/${LIB_NAME}/${_LIB_DIR_SUFFIX} PARENT_SCOPE)
-			return()
-		endif()
-	endif()
-
-	# Finally download component from cvs
-	# Set location of library sources checked out from cvs
-	set(LIB_LOCATION "${CMAKE_BINARY_DIR}/Components/${LIB_NAME}")
-	set(${_LIB_NAME}_LOCATION ${LIB_LOCATION} CACHE PATH "Location of ${LIB_NAME} root directory.")
-
-	get_library_from_cvs(${LIB_NAME} ${LIB_VERSION} ${LIB_SYSTEMID} ${LIB_BUILD_PLATFORM} LIB_LOCATION)
-	set(${_LIB_NAME}_DIR ${LIB_LOCATION} PARENT_SCOPE)
-endfunction()
-
 # Sets SEARCH_OPTS depending on whether the variable PATH has a value.
 function(set_search_opts_from_path PATH SEARCH_OPTS)
 	if(${PATH})
@@ -439,10 +213,10 @@ function(detect_library_type LIBRARY TYPE_VAR)
 			# On Windows, the .lib is present for both static and shared libraries, so check whether it contains exported symbols.
 			# Failing that, check whether a similarly named .dll file exists in the same directory.
 			execute_process(
-				COMMAND dumpbin /exports ${LIBRARY}
-				COMMAND grep -w Exports
-				RESULT_VARIABLE _RESULT
-				OUTPUT_VARIABLE _OUTPUT
+					COMMAND dumpbin /exports ${LIBRARY}
+					COMMAND grep -w Exports
+					RESULT_VARIABLE _RESULT
+					OUTPUT_VARIABLE _OUTPUT
 			)
 			if(_RESULT EQUAL 0)
 				if("${_OUTPUT}" MATCHES "[ \t]*Exports[ \t\r\n]*")
@@ -484,9 +258,9 @@ function(add_imported_target_detect_type TARGET_NAME LIBRARY)
 	# IMPORTED_IMPLIB is the .lib component for imported targets on Windows. See: https://cmake.org/cmake/help/latest/prop_tgt/IMPORTED_IMPLIB.html
 	string(REPLACE ".dll" ".lib" LIBRARY_LIB "${LIBRARY}")
 	set_target_properties(${TARGET_NAME} PROPERTIES
-		IMPORTED_LOCATION "${LIBRARY_DLL}"
-		IMPORTED_IMPLIB "${LIBRARY_LIB}"
-	)
+			IMPORTED_LOCATION "${LIBRARY_DLL}"
+			IMPORTED_IMPLIB "${LIBRARY_LIB}"
+			)
 	if(ARGC GREATER 2)
 		set(${ARGV2} ${LIBRARY_TYPE} PARENT_SCOPE)
 	endif()
@@ -530,20 +304,20 @@ function(install_dependency_files PACLET_NAME DEP_TARGET_NAME)
 		# Copy over dependency libraries into LibraryResources/$SystemID
 		detect_system_id(SYSTEMID)
 		install(FILES
-			${DEP_LIBS_DLL}
-			DESTINATION ${PACLET_NAME}/LibraryResources/${SYSTEMID}
-		)
+				${DEP_LIBS_DLL}
+				DESTINATION ${PACLET_NAME}/LibraryResources/${SYSTEMID}
+				)
 	endif()
 endfunction()
 
 # Sets default CXX properties and ensures stdc++_nonshared is linked on Linux (needed for RedHat if using >= c++11).
 function(set_default_cxx_properties TARGET_NAME CXX_STD)
 	set_target_properties(${TARGET_NAME} PROPERTIES
-		CXX_STANDARD ${CXX_STD}
-		CXX_STANDARD_REQUIRED YES
-		CXX_EXTENSIONS NO
-		CXX_VISIBILITY_PRESET hidden
-	)
+			CXX_STANDARD ${CXX_STD}
+			CXX_STANDARD_REQUIRED YES
+			CXX_EXTENSIONS NO
+			CXX_VISIBILITY_PRESET hidden
+			)
 	add_cpp_nonshared_library(${TARGET_NAME})
 endfunction()
 
@@ -552,18 +326,18 @@ function(set_default_compile_options TARGET_NAME OPTIMIZATION_LEVEL)
 	string(REGEX REPLACE "[/-]?(.+)" "\\1" _OPTIMIZATION_LEVEL "${OPTIMIZATION_LEVEL}")
 	if(MSVC)
 		target_compile_options(${TARGET_NAME} PRIVATE
-			"/W4"
-			"$<$<CONFIG:Debug>:/Zi>"
-			"$<$<CONFIG:Release>:/${_OPTIMIZATION_LEVEL}>"
-			"/EHsc"
-		)
+				"/W4"
+				"$<$<CONFIG:Debug>:/Zi>"
+				"$<$<CONFIG:Release>:/${_OPTIMIZATION_LEVEL}>"
+				"/EHsc"
+				)
 	else()
 		target_compile_options(${TARGET_NAME} PRIVATE
-			"-Wall"
-			"-Wextra"
-			"-pedantic"
-			"$<$<CONFIG:Release>:-${_OPTIMIZATION_LEVEL}>"
-		)
+				"-Wall"
+				"-Wextra"
+				"-pedantic"
+				"$<$<CONFIG:Release>:-${_OPTIMIZATION_LEVEL}>"
+				)
 	endif()
 endfunction()
 
@@ -596,9 +370,9 @@ function(set_min_windows_version TARGET_NAME VER)
 			message(FATAL_ERROR "Unrecognized Windows version: ${VER}")
 		endif()
 		target_compile_definitions(${TARGET_NAME} PRIVATE
-			WINVER=${_VER}
-			_WIN32_WINNT=${_VER}
-		)
+				WINVER=${_VER}
+				_WIN32_WINNT=${_VER}
+				)
 	endif()
 endfunction()
 
@@ -608,70 +382,9 @@ function(add_frameworks TARGET_NAME)
 		list(APPEND FRAMEWORKS "-framework ${framework}")
 	endforeach()
 	target_link_libraries(${TARGET_NAME} PRIVATE
-		${FRAMEWORKS}
-		"-headerpad_max_install_names"
-	)
-endfunction()
-
-# Copies paclet files to install location (CMAKE_INSTALL_PREFIX should be set appropriately before calling this).
-# Optional 3rd arg is PacletName (defaults to TARGET_NAME). Optional 4th arg is paclet location (defaults to CMAKE_CURRENT_SOURCE_DIR/PacletName).
-# "Old-style" (non-updateable) paclet layout (with PacletInfo.m in git root directory) is not supported.
-function(install_paclet_files TARGET_NAME LLU_INSTALL_DIR)
-	if(ARGC GREATER_EQUAL 3)
-		set(PACLET_NAME ${ARGV2})
-	else()
-		set(PACLET_NAME ${TARGET_NAME})
-	endif()
-	if(ARGC GREATER_EQUAL 4)
-		set(PACLET_DIRECTORY ${ARGV3})
-	else()
-		set(PACLET_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${PACLET_NAME})
-	endif()
-	#copy over the paclet directory - i.e. the main .m file, the Kernel directory, etc.
-	install(DIRECTORY ${PACLET_DIRECTORY}
-		DESTINATION ${CMAKE_INSTALL_PREFIX}
-		PATTERN ".DS_Store" EXCLUDE
-	)
-	#copy the library produced into LibraryResources/$SystemID
-	detect_system_id(SYSTEMID)
-	install(TARGETS ${TARGET_NAME}
-		LIBRARY DESTINATION ${PACLET_NAME}/LibraryResources/${SYSTEMID}
-		RUNTIME DESTINATION ${PACLET_NAME}/LibraryResources/${SYSTEMID}
-	)
-	# copy LLU top-level code
-	if(NOT "${LLU_INSTALL_DIR}" STREQUAL "")
-		install(FILES "${LLU_INSTALL_DIR}/share/LibraryLinkUtilities.wl"
-			DESTINATION "${PACLET_NAME}/LibraryResources"
-		)
-	else()
-		message(WARNING "*** Specified variable LLU_INSTALL_DIR is empty. This may be OK if the paclet is not using LLU. ***")
-	endif()
-	#copy PacletInfo.m
-	install(FILES ${PACLET_NAME}/PacletInfo.m
-		DESTINATION "${PACLET_NAME}"
-	)
-endfunction()
-
-# Installs paclet into a Mathematica layout if requested.
-function(install_paclet_to_layout PACLET_NAME INSTALLQ)
-	if(${INSTALLQ})
-		if(EXISTS "${MATHEMATICA_INSTALL_DIR}")
-			install(DIRECTORY "${CMAKE_INSTALL_PREFIX}/${PACLET_NAME}"
-				DESTINATION "${MATHEMATICA_INSTALL_DIR}/SystemFiles/Links"
+			${FRAMEWORKS}
+			"-headerpad_max_install_names"
 			)
-		else()
-			message(WARNING "Failed to install paclet to layout: \"${MATHEMATICA_INSTALL_DIR}\" does not exist.")
-		endif()
-	endif()
-endfunction()
-
-# Creates a custom 'zip' target for a paclet.
-# CMAKE_INSTALL_PREFIX should be set appropriately before calling this.
-function(create_zip_target PACLET_NAME)
-	add_custom_target(zip
-		COMMAND ${CMAKE_COMMAND} -E tar "cfv" "${CMAKE_INSTALL_PREFIX}/${PACLET_NAME}.zip" --format=zip "${CMAKE_INSTALL_PREFIX}/${PACLET_NAME}"
-		COMMENT "Creating zip..."
-	)
 endfunction()
 
 # Checks if variable VAR is set either as a regular or an environment variable and if so, sets variable RES.

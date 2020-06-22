@@ -4,8 +4,8 @@
  * This file is the only place in LLU where LibraryLink header files are included. It is done this way to solve the include order dependency issue which was
  * present in LibraryLink before WL version 12.1.
  */
-#ifndef LLUTILS_LIBRARYDATA_H
-#define LLUTILS_LIBRARYDATA_H
+#ifndef LLU_LIBRARYDATA_H
+#define LLU_LIBRARYDATA_H
 
 #include <memory>
 
@@ -103,6 +103,6 @@ namespace LLU {
 		static WolframLibraryData libData;
 	};
 
-}
+} // namespace LLU
 
-#endif	  // LLUTILS_LIBRARYDATA_H
+#endif // LLU_LIBRARYDATA_H

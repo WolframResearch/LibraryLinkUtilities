@@ -1,17 +1,24 @@
 (* Project base directory *)
 $baseDir = FileNameDrop[$CurrentFile, -3];
 
-(* Path to directory containing include folder from LibraryLinkUtilities installation *)
-$LLUIncDir = FileNameJoin[{$baseDir, "install", "include"}];
+$installDir = FileNameJoin[{$baseDir, "install"}];
+
+(* Path to directory containing include folder fFilerom LibraryLinkUtilities installation *)
+$LLUIncDir = FileNameJoin[{$installDir, "include"}];
+
+$lib = FileNames[RegularExpression[".*LLU\\.(a|lib|" <> System`Dump`LibraryExtension[] <> ")"], $installDir, 2];
+If[Length[$lib] =!= 1,
+	Throw["Could not find LLU library."];
+];
 
 (* Path to LibraryLinkUtilities static lib *)
-$LLULibDir = FileNameJoin[{$baseDir, "install", "lib"}];
+$LLULibDir = DirectoryName @ First @ $lib;
 
 (* LibraryLinkUtilities library name *)
 $LLULib = "LLU";
 
 (* Path to LibraryLinkUtilities shared resources *)
-$LLUSharedDir = FileNameJoin[{$baseDir, "install", "share"}];
+$LLUSharedDir = FileNameJoin[{$installDir, "share"}];
 
 (* C++ version to build unit tests with. Some parts of LLU require C++17. *)
 $CppVersion = "c++17";
@@ -23,10 +30,13 @@ options := {
 	"Libraries" -> { $LLULib },
 	"LibraryDirectories" -> { $LLULibDir },
 	"CompileOptions" ->
-		If[MatchQ[$SystemID, "Windows-x86-64" | "Windows"],
-			"/O2 /EHsc /W3 /std:" <> $CppVersion <> " /D_SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING"
-			,
-			"-O2 -Wall --pedantic -fvisibility=hidden -std=" <> $CppVersion
+		Switch[$OperatingSystem,
+			"Windows",
+				"/EHsc /W3 /std:" <> $CppVersion <> " /D_SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING",
+			"Unix",
+				"-Wall --pedantic -fvisibility=hidden -std=" <> $CppVersion,
+			"MacOSX",
+				"-mmacosx-version-min=10.12 -Wall -Wextra --pedantic -fvisibility=hidden -std=" <> $CppVersion
 		],
 	"ShellOutputFunction" -> Print,
 	"ShellCommandFunction" -> Print,
@@ -93,3 +103,12 @@ MemoryLeakTestWithMessages[expression_, repetitions_Integer?Positive] :=
 			{repetitions}
 		]
 	];
+	
+SetAttributes[CatchException, HoldAllComplete];
+CatchException[a__] := Function[x, CatchException[a, x], HoldAll];
+
+CatchException[tagPattern_String, body_] := Catch[body, _String?(StringMatchQ[tagPattern])];
+CatchException[tagPattern_, body_] := Catch[body, tagPattern];
+
+SetAttributes[CatchAll, HoldFirst];
+CatchAll[body_] := CatchException[_, body];

@@ -7,186 +7,188 @@
 
 #ifndef _WIN32
 
-#include "../../include/LLU/WSTP/Put.h"
+#include "LLU/WSTP/Put.h"
 
 #include "wstp.h"
 
-#include "../../include/LLU/Utilities.hpp"
+#include "LLU/Utilities.hpp"
 
-namespace LLU {
+namespace LLU::WS {
 
-	namespace WS {
+    /* ***************************************************************** */
+    /* ********* Template specializations for  unsigned char  ********** */
+    /* ***************************************************************** */
 
-		/* ***************************************************************** */
-		/* ********* Template specializations for  unsigned char  ********** */
-		/* ***************************************************************** */
+    /* PutArray */
 
-		/* PutArray */
+    template<>
+    PutArray<unsigned char>::Func PutArray<unsigned char>::ArrayF = WSPutInteger8Array;
 
-		template<>
-		PutArray<unsigned char>::Func PutArray<unsigned char>::ArrayF = WSPutInteger8Array;
+    template<>
+    const std::string PutArray<unsigned char>::ArrayFName = "WSPutInteger8Array";
 
-		template<>
-		const std::string PutArray<unsigned char>::ArrayFName = "WSPutInteger8Array";
+    /* PutList */
 
-		/* PutList */
+    template<>
+    PutList<unsigned char>::Func PutList<unsigned char>::ListF = WSPutInteger8List;
 
-		template<>
-		PutList<unsigned char>::Func PutList<unsigned char>::ListF = WSPutInteger8List;
+    template<>
+    const std::string PutList<unsigned char>::ListFName = "WSPutInteger8List";
 
-		template<>
-		const std::string PutList<unsigned char>::ListFName = "WSPutInteger8List";
+    /* PutScalar */
 
-		/* PutScalar */
+    template<>
+    PutScalar<unsigned char>::Func PutScalar<unsigned char>::ScalarF = WSPutInteger8;
 
-		template<>
-		PutScalar<unsigned char>::Func PutScalar<unsigned char>::ScalarF = WSPutInteger8;
+    template<>
+    const std::string PutScalar<unsigned char>::ScalarFName = "WSPutInteger8";
 
-		template<>
-		const std::string PutScalar<unsigned char>::ScalarFName = "WSPutInteger8";
 
-		/* ***************************************************************** */
-		/* ******* Template specializations for  (unsigned) short  ********* */
-		/* ***************************************************************** */
+    /* ***************************************************************** */
+    /* ******* Template specializations for  (unsigned) short  ********* */
+    /* ***************************************************************** */
 
-		/* PutArray */
+    /* PutArray */
 
-		template<>
-		PutArray<short>::Func PutArray<short>::ArrayF = WSPutInteger16Array;
+    template<>
+    PutArray<short>::Func PutArray<short>::ArrayF = WSPutInteger16Array;
 
-		template<>
-		const std::string PutArray<short>::ArrayFName = "WSPutInteger16Array";
+    template<>
+    const std::string PutArray<short>::ArrayFName = "WSPutInteger16Array";
 
-		/* PutList */
+    /* PutList */
 
-		template<>
-		PutList<short>::Func PutList<short>::ListF = WSPutInteger16List;
+    template<>
+    PutList<short>::Func PutList<short>::ListF = WSPutInteger16List;
 
-		template<>
-		const std::string PutList<short>::ListFName = "WSPutInteger16List";
+    template<>
+    const std::string PutList<short>::ListFName = "WSPutInteger16List";
 
-		/* PutScalar */
+    /* PutScalar */
 
-		template<>
-		PutScalar<short>::Func PutScalar<short>::ScalarF = WSPutInteger16;
+    template<>
+    PutScalar<short>::Func PutScalar<short>::ScalarF = WSPutInteger16;
 
-		template<>
-		const std::string PutScalar<short>::ScalarFName = "WSPutInteger16";
+    template<>
+    const std::string PutScalar<short>::ScalarFName = "WSPutInteger16";
 
-		/* ***************************************************************** */
-		/* ******** Template specializations for  (unsigned) int  ********** */
-		/* ***************************************************************** */
 
-		/* PutArray */
+    /* ***************************************************************** */
+    /* ******** Template specializations for  (unsigned) int  ********** */
+    /* ***************************************************************** */
 
-		template<>
-		PutArray<int>::Func PutArray<int>::ArrayF = WSPutInteger32Array;
+    /* PutArray */
 
-		template<>
-		const std::string PutArray<int>::ArrayFName = "WSPutInteger32Array";
+    template<>
+    PutArray<int>::Func PutArray<int>::ArrayF = WSPutInteger32Array;
 
-		/* PutList */
+    template<>
+    const std::string PutArray<int>::ArrayFName = "WSPutInteger32Array";
 
-		template<>
-		PutList<int>::Func PutList<int>::ListF = WSPutInteger32List;
+    /* PutList */
 
-		template<>
-		const std::string PutList<int>::ListFName = "WSPutInteger32List";
+    template<>
+    PutList<int>::Func PutList<int>::ListF = WSPutInteger32List;
 
-		/* PutScalar */
+    template<>
+    const std::string PutList<int>::ListFName = "WSPutInteger32List";
 
-		template<>
-		PutScalar<int>::Func PutScalar<int>::ScalarF = WSPutInteger32;
+    /* PutScalar */
 
-		template<>
-		const std::string PutScalar<int>::ScalarFName = "WSPutInteger32";
+    template<>
+    PutScalar<int>::Func PutScalar<int>::ScalarF = WSPutInteger32;
 
-		/* ***************************************************************** */
-		/* *********** Template specializations for  wsint64  ************** */
-		/* ***************************************************************** */
+    template<>
+    const std::string PutScalar<int>::ScalarFName = "WSPutInteger32";
 
-		/* PutArray */
 
-		template<>
-		PutArray<wsint64>::Func PutArray<wsint64>::ArrayF = WSPutInteger64Array;
+    /* ***************************************************************** */
+    /* *********** Template specializations for  wsint64  ************** */
+    /* ***************************************************************** */
 
-		template<>
-		const std::string PutArray<wsint64>::ArrayFName = "WSPutInteger64Array";
+    /* PutArray */
 
-		/* PutList */
+    template<>
+    PutArray<wsint64>::Func PutArray<wsint64>::ArrayF = WSPutInteger64Array;
 
-		template<>
-		PutList<wsint64>::Func PutList<wsint64>::ListF = WSPutInteger64List;
+    template<>
+    const std::string PutArray<wsint64>::ArrayFName = "WSPutInteger64Array";
 
-		template<>
-		const std::string PutList<wsint64>::ListFName = "WSPutInteger64List";
+    /* PutList */
 
-		/* PutScalar */
+    template<>
+    PutList<wsint64>::Func PutList<wsint64>::ListF = WSPutInteger64List;
 
-		template<>
-		PutScalar<wsint64>::Func PutScalar<wsint64>::ScalarF = WSPutInteger64;
+    template<>
+    const std::string PutList<wsint64>::ListFName = "WSPutInteger64List";
 
-		template<>
-		const std::string PutScalar<wsint64>::ScalarFName = "WSPutInteger64";
+    /* PutScalar */
 
-		/* ***************************************************************** */
-		/* ************ Template specializations for  float  *************** */
-		/* ***************************************************************** */
+    template<>
+    PutScalar<wsint64>::Func PutScalar<wsint64>::ScalarF = WSPutInteger64;
 
-		/* PutArray */
+    template<>
+    const std::string PutScalar<wsint64>::ScalarFName = "WSPutInteger64";
 
-		template<>
-		PutArray<float>::Func PutArray<float>::ArrayF = WSPutReal32Array;
 
-		template<>
-		const std::string PutArray<float>::ArrayFName = "WSPutReal32Array";
+    /* ***************************************************************** */
+    /* ************ Template specializations for  float  *************** */
+    /* ***************************************************************** */
 
-		/* PutList */
+    /* PutArray */
 
-		template<>
-		PutList<float>::Func PutList<float>::ListF = WSPutReal32List;
+    template<>
+    PutArray<float>::Func PutArray<float>::ArrayF = WSPutReal32Array;
 
-		template<>
-		const std::string PutList<float>::ListFName = "WSPutReal32List";
+    template<>
+    const std::string PutArray<float>::ArrayFName = "WSPutReal32Array";
 
-		/* PutScalar */
+    /* PutList */
 
-		template<>
-		PutScalar<float>::Func PutScalar<float>::ScalarF = WSPutReal32;
+    template<>
+    PutList<float>::Func PutList<float>::ListF = WSPutReal32List;
 
-		template<>
-		const std::string PutScalar<float>::ScalarFName = "WSPutReal32";
+    template<>
+    const std::string PutList<float>::ListFName = "WSPutReal32List";
 
-		/* ***************************************************************** */
-		/* *********** Template specializations for  double  *************** */
-		/* ***************************************************************** */
+    /* PutScalar */
 
-		/* PutArray */
+    template<>
+    PutScalar<float>::Func PutScalar<float>::ScalarF = WSPutReal32;
 
-		template<>
-		PutArray<double>::Func PutArray<double>::ArrayF = WSPutReal64Array;
+    template<>
+    const std::string PutScalar<float>::ScalarFName = "WSPutReal32";
 
-		template<>
-		const std::string PutArray<double>::ArrayFName = "WSPutReal64Array";
 
-		/* PutList */
+    /* ***************************************************************** */
+    /* *********** Template specializations for  double  *************** */
+    /* ***************************************************************** */
 
-		template<>
-		PutList<double>::Func PutList<double>::ListF = WSPutReal64List;
+    /* PutArray */
 
-		template<>
-		const std::string PutList<double>::ListFName = "WSPutReal64List";
+    template<>
+    PutArray<double>::Func PutArray<double>::ArrayF = WSPutReal64Array;
 
-		/* PutScalar */
+    template<>
+    const std::string PutArray<double>::ArrayFName = "WSPutReal64Array";
 
-		template<>
-		PutScalar<double>::Func PutScalar<double>::ScalarF = WSPutReal64;
+    /* PutList */
 
-		template<>
-		const std::string PutScalar<double>::ScalarFName = "WSPutReal64";
+    template<>
+    PutList<double>::Func PutList<double>::ListF = WSPutReal64List;
 
-	}
+    template<>
+    const std::string PutList<double>::ListFName = "WSPutReal64List";
 
-} /* namespace LLU */
+    /* PutScalar */
+
+    template<>
+    PutScalar<double>::Func PutScalar<double>::ScalarF = WSPutReal64;
+
+    template<>
+    const std::string PutScalar<double>::ScalarFName = "WSPutReal64";
+
+
+} /* namespace LLU::WS */
 
 #endif

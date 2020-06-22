@@ -7,9 +7,8 @@
 #include "LLU/ErrorLog/ErrorManager.h"
 
 #include "LLU/LibraryData.h"
-#include "LLU/WSTP/WSStream.hpp"
 #include "LLU/WSTP/Utilities.h"
-#include "LLU/Utilities.hpp"
+#include "LLU/WSTP/WSStream.hpp"
 
 namespace LLU {
 
@@ -93,11 +92,11 @@ namespace LLU {
 			{ErrorName::DLNullRawNode, "DataStoreNode passed to Node wrapper was null"},
 			{ErrorName::DLInvalidNodeType, "DataStoreNode passed to Node wrapper carries data of invalid type"},
 			{ErrorName::DLGetNodeDataError, "DataStoreNode_getData failed"},
-			{ErrorName::DLNullRawDataStore, "DataStore passed to DataList was null"},
+			{ErrorName::DLSharedDataStore, "Trying to create a Shared DataStore. DataStore can only be passed as Automatic or Manual."},
 			{ErrorName::DLPushBackTypeError, "Element to be added to the DataList has incorrect type"},
 
 			// MArgument errors:
-			{ErrorName::ArgumentCreateNull, "Trying to create Argument object from nullptr"},
+			{ErrorName::ArgumentCreateNull, "Trying to create PrimitiveWrapper object from nullptr"},
 			{ErrorName::ArgumentAddNodeMArgument, "Trying to add DataStore Node of type MArgument (aka MType_Undef)"},
 
 			// ProgressMonitor errors:
@@ -105,7 +104,8 @@ namespace LLU {
 
 			// ManagedExpression errors:
 			{ErrorName::ManagedExprInvalidID, "Given number is not an ID of any existing managed expression."},
-			{ErrorName::MLEDynamicTypeError, "Invalid dynamic type requested for a Managed Library Expression"},
+			{ErrorName::MLEDynamicTypeError, "Invalid dynamic type requested for a Managed Library Expression."},
+			{ErrorName::MLENullInstance, "Missing managed object for a valid ID."},
 
 			// FileUtilities errors:
 			{ErrorName::PathNotValidated, "File path `path` could not be validated under desired open mode."},
@@ -130,21 +130,20 @@ namespace LLU {
 		return e;
 	}
 
-	void ErrorManager::registerPacletErrors(const std::vector<ErrorStringData>& errs) {
-		for (auto&& err : errs) {
+	void ErrorManager::registerPacletErrors(const std::vector<ErrorStringData>& errors) {
+		for (auto&& err : errors) {
 			set(err);
 		}
 	}
 
 	void ErrorManager::set(const ErrorStringData& errorData) {
 		auto& errorMap = errors();
-		auto elem = errorMap.emplace(errorData.first, LibraryLinkError {nextErrorId()--, errorData.first, errorData.second});
-		if (!elem.second) {
+		if (auto [elem, success] = errorMap.emplace(errorData.first, LibraryLinkError {nextErrorId()--, errorData.first, errorData.second}); !success) {
 			// Revert nextErrorId because nothing was inserted
 			nextErrorId()++;
 
 			// Throw only if someone attempted to insert an error with existing key but different message
-			if (elem.first->second.message() != errorData.second) {
+			if (elem->second.message() != errorData.second) {
 				throw errors().find("ErrorManagerCreateNameError")->second;
 			}
 		}
@@ -179,8 +178,7 @@ namespace LLU {
 		ms << WS::EndPacket << WS::Flush;
 	}
 
-	EXTERN_C DLLEXPORT int sendRegisteredErrors(WolframLibraryData libData, WSLINK mlp) {
-		Unused(libData);
+	EXTERN_C DLLEXPORT int sendRegisteredErrors([[maybe_unused]] WolframLibraryData libData, WSLINK mlp) {
 		auto err = ErrorCode::NoError;
 		try {
 			ErrorManager::sendRegisteredErrorsViaWSTP(mlp);
@@ -191,4 +189,4 @@ namespace LLU {
 		}
 		return err;
 	}
-}
+}  // namespace LLU
