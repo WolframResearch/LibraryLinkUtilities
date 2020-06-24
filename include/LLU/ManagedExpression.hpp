@@ -2,7 +2,7 @@
  * @file	ManagedExpression.hpp
  * @author	Rafal Chojna <rafalc@wolfram.com>
  * @date	July 17, 2019
- * @brief
+ * @brief   Definition of the ManagedExpressionStore class template which provides C++ API for the Managed Expressions from LibraryLink
  */
 #ifndef LLU_MANAGEDEXPRESSION_HPP
 #define LLU_MANAGEDEXPRESSION_HPP
@@ -15,7 +15,7 @@
 #include "LLU/Utilities.hpp"
 
 /**
- * Use this macro to define an instance of ManagedExpressionStore corresponding to your class
+ * @brief Use this macro to define an instance of ManagedExpressionStore corresponding to your class
  * and a template specialization of manageInstanceCallback for the managed class.
  */
 #define DEFINE_MANAGED_STORE_AND_SPECIALIZATION(ClassName)                                        \
@@ -43,7 +43,7 @@ namespace LLU {
 	}
 
 	/**
-	 * @struct ManagedExpressionStore will keep track of instances of managed class T and will provide safe access to them
+	 * @brief ManagedExpressionStore will keep track of instances of managed class T and will provide safe access to them
 	 * @tparam T - managed class
 	 */
 	template<typename T>
@@ -259,6 +259,6 @@ namespace LLU {
 		std::string expressionName;
 	};
 
-} // namespace LLU
+}	 // namespace LLU
 
-#endif // LLU_MANAGEDEXPRESSION_HPP
+#endif	  // LLU_MANAGEDEXPRESSION_HPP

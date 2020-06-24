@@ -41,7 +41,7 @@ namespace LLU {
 		}
 	}
 
-	void MContainer<MArgumentType::DataStore>::push_back(std::string_view name, const Argument::TypedArgument& node) {
+	void MContainer<MArgumentType::DataStore>::push_back(std::string_view name, const Argument::Typed::Any& node) {
 		switch (static_cast<MArgumentType>(node.index())) {
 			case MArgumentType::MArgument: ErrorManager::throwException(ErrorName::DLInvalidNodeType);
 			case MArgumentType::Boolean:
@@ -78,7 +78,7 @@ namespace LLU {
 		}
 	}
 
-	void MContainer<MArgumentType::DataStore>::push_back(const Argument::TypedArgument& node) {
+	void MContainer<MArgumentType::DataStore>::push_back(const Argument::Typed::Any& node) {
 		switch (static_cast<MArgumentType>(node.index())) {
 			case MArgumentType::MArgument: ErrorManager::throwException(ErrorName::DLInvalidNodeType);
 			case MArgumentType::Boolean:

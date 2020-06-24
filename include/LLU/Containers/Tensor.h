@@ -108,11 +108,11 @@ namespace LLU {
 
 		/**
 		 *   @brief     Constructs Tensor based on MTensor
-		 *   @param[in] na - LibraryLink structure to be wrapped
+		 *   @param[in] t - LibraryLink structure to be wrapped
 		 *   @param[in] owner - who manages the memory the raw MTensor
 		 *   @throws    ErrorName::TensorTypeError - if the Tensor template type \b T does not match the actual data type of the MTensor
 		 **/
-		Tensor(MTensor t, Ownership mode);
+		Tensor(MTensor t, Ownership owner);
 
 		/**
 		 *   @brief     Create new Tensor from a GenericTensor
@@ -174,7 +174,7 @@ namespace LLU {
 	}
 
 	template<typename T>
-	Tensor<T>::Tensor(MTensor t, Ownership mode) : Tensor(GenericBase {t, mode}) {}
+	Tensor<T>::Tensor(MTensor t, Ownership owner) : Tensor(GenericBase {t, owner}) {}
 
 
 } /* namespace LLU */

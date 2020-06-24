@@ -53,14 +53,14 @@ namespace LLU {
 		/**
 		 * @brief	Create DataList from list of values. Keys will be set to empty strings.
 		 * @param 	initList - list of values to put in the DataList
-		 * @notice  This constructor can only be used if value_type is copyable.
+		 * @note    This constructor can only be used if value_type is copyable.
 		 */
 		DataList(std::initializer_list<value_type> initList);
 
 		/**
 		 * @brief	Create DataList from list of keys and corresponding values.
 		 * @param 	initList - list of pairs key - value to put in the DataList
-		 * @notice  This constructor can only be used if value_type is copyable.
+		 * @note    This constructor can only be used if value_type is copyable.
 		 */
 		DataList(std::initializer_list<std::pair<std::string, value_type>> initList);
 
@@ -237,7 +237,6 @@ namespace LLU {
 	}  // namespace Detail
 
 	/**
-	 * @struct
 	 * @brief   Iterator adaptor for DataList that makes begin() and end() return proxy iterators for node values.
 	 *          Mostly useful in range-based for loops.
 	 * @tparam  T - a DataList node value type
@@ -248,7 +247,6 @@ namespace LLU {
 	};
 
 	/**
-	 * @struct
 	 * @brief   Iterator adaptor for DataList that makes begin() and end() return proxy iterators for node names.
 	 *          Mostly useful in range-based for loops.
 	 * @tparam  T - a DataList node value type

@@ -86,7 +86,7 @@ namespace LLU {
 		}
 
 		/**
-		 *   @copydoc   Make a deep copy of the raw container
+		 *   @brief   Make a deep copy of the raw container
 		 *   @see 		<http://reference.wolfram.com/language/LibraryLink/ref/callback/MTensor_clone.html>
 		 **/
 		Container cloneImpl() const override;

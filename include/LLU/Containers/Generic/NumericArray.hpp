@@ -86,8 +86,8 @@ namespace LLU {
 	private:
 
 		/**
-		 *   @copydoc   Make a deep copy of the raw container
-		 *   @see 		<http://reference.wolfram.com/language/LibraryLink/ref/callback/MNumericArray_clone.html>
+		 *   @brief Make a deep copy of the raw container
+		 *   @see   <http://reference.wolfram.com/language/LibraryLink/ref/callback/MNumericArray_clone.html>
 		 **/
 		Container cloneImpl() const override;
 

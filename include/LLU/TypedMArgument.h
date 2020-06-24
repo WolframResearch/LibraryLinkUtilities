@@ -21,14 +21,12 @@ template<>
 class LLU::MContainer<LLU::MArgumentType::DataStore>;
 
 /**
- * @namespace
- * @brief   Namespace for functionality related to arguments passed from LibraryLink to library functions and their types.
+ * @brief Namespace for functionality related to arguments passed from LibraryLink to library functions and their types.
  */
 namespace LLU::Argument {
 
 	/**
-	 * @namespace
-	 * @brief   Namespace defining C++ types corresponding to primitive LibraryLink argument types.
+	 * @brief Namespace defining C++ types corresponding to primitive LibraryLink argument types.
 	 */
 	namespace Typed {
 		using Boolean = bool;
@@ -76,7 +74,7 @@ namespace LLU::Argument {
 	 * @param   m - MArgument
 	 * @param   t - index of the active member of the MArgument m
 	 * @return  a TypedArgument whose active member is a wrapper of the active member of m
-	 * @notice  When creating a wrapper of a LibraryLink container, no deep copy is being made, so in a way this function
+	 * @note    When creating a wrapper of a LibraryLink container, no deep copy is being made, so in a way this function
 	 *          acts more like a cast than a conversion.
 	 */
 	TypedArgument fromMArgument(MArgument m, MArgumentType t);
@@ -85,7 +83,7 @@ namespace LLU::Argument {
 	 * @brief       Assign current value of given TypedArgument to given MArgument.
 	 * @param[in]   tma - a TypedArgument
 	 * @param[out]  res - raw MArgument to be assigned to
-	 * @notice      When extracting the underlying raw value from a wrapper type, no deep copy is being made, so in a way this function
+	 * @note        When extracting the underlying raw value from a wrapper type, no deep copy is being made, so in a way this function
 	 *              acts more like a cast than a conversion.
 	 */
 	void toMArgument(const TypedArgument& tma, MArgument& res);
