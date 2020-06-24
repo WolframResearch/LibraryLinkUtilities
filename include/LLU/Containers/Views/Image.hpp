@@ -1,4 +1,5 @@
 /**
+ * @file
  * @author	Rafal Chojna <rafalc@wolfram.com>
  * @brief   Definition and implementation of ImageView and TypedImageView.
  */

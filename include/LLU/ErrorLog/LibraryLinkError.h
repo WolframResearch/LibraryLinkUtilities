@@ -15,7 +15,10 @@
 
 /**
  * @namespace LLU
- * @brief Main namespace of LibraryLinkUtilities
+ * @brief Main namespace of LibraryLink Utilities.
+ *
+ * Every symbol defined in LLU will be in this namespace, but one needs to remember that LLU internally includes WolframLibrary and WSTP headers which define
+ * C APIs and therefore do not use namespaces and in consequence will inject names in the global namespace.
  */
 namespace LLU {
 

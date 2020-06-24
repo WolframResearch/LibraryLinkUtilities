@@ -26,11 +26,11 @@ namespace LLU {
 	namespace NodeType = Argument::Typed;
 
 	/**
-	 * @class	DataList
-	 * @brief 	Top-level wrapper over LibraryLink's DataStore.
-	 * @detail  Designed to be strongly typed i.e. to wrap only homogeneous DataStores but by passing NodeType::Any as template parameter it will
+	 * @class   DataList
+	 * @brief   Top-level wrapper over LibraryLink's DataStore.
+	 * @details Designed to be strongly typed i.e. to wrap only homogeneous DataStores but by passing NodeType::Any as template parameter it will
 	 *          work with arbitrary DataStores.
-	 * @tparam 	T - type of data stored in each node, see the \c NodeType namespace for possible node types
+	 * @tparam  T - type of data stored in each node, see the \c NodeType namespace for possible node types
 	 */
 	template<typename T>
 	class DataList : public MContainer<MArgumentType::DataStore> {
