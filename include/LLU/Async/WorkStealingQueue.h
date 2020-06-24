@@ -8,7 +8,7 @@
 
 #include <mutex>
 
-namespace LLU {
+namespace LLU::Async {
 
 	/**
 	 * @brief Wrapper class around a queue, that provides the interface for work stealing.
@@ -51,6 +51,6 @@ namespace LLU {
 			return true;
 		}
 	};
-} // namespace LLU
+} // namespace LLU::Async
 
 #endif	  // LLU_ASYNC_WORKSTEALINGQUEUE_H

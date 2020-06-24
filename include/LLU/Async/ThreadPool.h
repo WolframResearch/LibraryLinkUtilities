@@ -19,10 +19,10 @@
 #include "LLU/Async/Utilities.h"
 #include "LLU/Async/WorkStealingQueue.h"
 
-namespace LLU {
+namespace LLU::Async {
 
 	/**
-	 * Simple thread pool class with a single queue. Threads block on the queue if there is no work to do.
+	 * @brief Simple thread pool class with a single queue. Threads block on the queue if there is no work to do.
 	 * @tparam Queue - any threadsafe queue class that provides push and waitPop methods
 	 */
 	template<typename Queue>
@@ -84,12 +84,8 @@ namespace LLU {
 		}
 	};
 
-	/// Alias for BasicThreadPool with ThreadsafeQueue storing Async::FunctionWrappers.
-	/// Good default choice for a thread pool for any paclet.
-	using BasicPool = BasicThreadPool<ThreadsafeQueue<Async::FunctionWrapper>>;
-
 	/**
-	 * Thread pool class with support of per-thread queues and work stealing. Based on A. Williams "C++ Concurrency in Action" 2nd Edition, chapter 9.
+	 * @brief Thread pool class with support of per-thread queues and work stealing. Based on A. Williams "C++ Concurrency in Action" 2nd Edition, chapter 9.
 	 * @tparam PoolQueue - any threadsafe queue class that provides push and tryPop methods
 	 * @tparam LocalQueue - any threadsafe queue class that provides push, tryPop and trySteal methods
 	 */
@@ -181,9 +177,15 @@ namespace LLU {
 		}
 	};
 
+}  // namespace LLU::Async
+
+namespace LLU {
+	/// Alias for BasicThreadPool with ThreadsafeQueue storing Async::FunctionWrappers.
+	/// Good default choice for a thread pool for any paclet.
+	using BasicPool = Async::BasicThreadPool<Async::ThreadsafeQueue<Async::FunctionWrapper>>;
+
 	/// Alias for GenericThreadPool with ThreadsafeQueue and WorkStealingQueue storing Async::FunctionWrappers.
 	/// Good choice for a thread pool if the tasks that will be executed involve submitting new tasks for the pool.
-	using ThreadPool = GenericThreadPool<ThreadsafeQueue<Async::FunctionWrapper>, WorkStealingQueue<std::deque<Async::FunctionWrapper>>>;
+	using ThreadPool = Async::GenericThreadPool<Async::ThreadsafeQueue<Async::FunctionWrapper>, Async::WorkStealingQueue<std::deque<Async::FunctionWrapper>>>;
 }
-
 #endif	  // LLU_ASYNC_THREADPOOL_H

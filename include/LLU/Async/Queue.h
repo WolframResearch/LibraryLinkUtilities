@@ -10,8 +10,7 @@
 #include <memory>
 #include <mutex>
 
-namespace LLU {
-
+namespace LLU::Async {
 	/**
 	 * @brief   ThreadsafeQueue is a linked list of nodes which supports safe concurrent access to its head (removing elements) and tail (adding new elements).
 	 * ThreadsafeQueue is described in chapter 6 of A. Williams "C++ Concurrency in Action" 2nd Edition.
@@ -168,5 +167,5 @@ namespace LLU {
 		std::lock_guard<std::mutex> head_lock(head_mutex);
 		return (head.get() == getTail());
 	}
-}
+}  // namespace LLU::Async
 #endif	  // LLU_ASYNC_QUEUE_H
