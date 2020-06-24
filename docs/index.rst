@@ -6,6 +6,7 @@
 
    Intro <self>
    basic/how_to_use
+   API reference (Doxygen) <http://algorithms.wolfram.com:8080/documentation/LLU-doxygen/index.html>
 ..   basic/unit_tests_and_demo
 ..   basic/faq
 
