@@ -66,14 +66,14 @@ namespace LLU::WS {
 			static_assert(CharacterTypesCompatible<E, T>, "Character type does not match the encoding in WS::String<E>::put");
 			// NOLINTNEXTLINE(cppcoreguidelines-pro-type-reinterpret-cast): sorry :(
 			auto* expectedStr = reinterpret_cast<const CharT*>(string);
-			checkError(m, Put(m, expectedStr, len), ErrorName::WSPutStringError, PutFName);
+			Detail::checkError(m, Put(m, expectedStr, len), ErrorName::WSPutStringError, PutFName);
 		}
 
 		static StringData<E> get(WSLINK m) {
 			const CharT* rawResult {};
 			int bytes {};
 			int characters {};
-			checkError(m, Get(m, &rawResult, &bytes, &characters), ErrorName::WSGetStringError, GetFName);
+			Detail::checkError(m, Get(m, &rawResult, &bytes, &characters), ErrorName::WSGetStringError, GetFName);
 			return {rawResult, ReleaseString<E> {m, bytes, characters}};
 		}
 
@@ -143,6 +143,7 @@ namespace LLU::WS {
 		int chars = 0;
 	};
 
+/// @cond
 #ifndef _WIN32
 
 /// Macro for declaring specializations of static members for WS::String<Encoding::E>
@@ -260,7 +261,7 @@ namespace LLU::WS {
 	const std::string String<Encoding::UTF32>::PutFName = "WSPutUTF32String";
 
 #endif
-
+/// @endcond
 } /* namespace LLU::WS */
 
 #endif /* LLU_WSTP_STRINGS_H_ */

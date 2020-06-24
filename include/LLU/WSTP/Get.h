@@ -35,7 +35,7 @@ namespace LLU::WS {
 			int* dims {};
 			char** heads {};
 			int rank {};
-			checkError(m, ArrayF(m, &rawResult, &dims, &heads, &rank), ErrorName::WSGetArrayError, ArrayFName);
+			Detail::checkError(m, ArrayF(m, &rawResult, &dims, &heads, &rank), ErrorName::WSGetArrayError, ArrayFName);
 			return {rawResult, ReleaseArray<T> {m, dims, heads, rank}};
 		}
 
@@ -51,7 +51,7 @@ namespace LLU::WS {
 		static ListData<T> get(WSLINK m) {
 			T* rawResult {};
 			int len {};
-			checkError(m, ListF(m, &rawResult, &len), ErrorName::WSGetListError, ListFName);
+			Detail::checkError(m, ListF(m, &rawResult, &len), ErrorName::WSGetListError, ListFName);
 			return {rawResult, ReleaseList<T> {m, len}};
 		}
 
@@ -66,7 +66,7 @@ namespace LLU::WS {
 
 		static T get(WSLINK m) {
 			T rawResult;
-			checkError(m, ScalarF(m, &rawResult), ErrorName::WSGetScalarError, ScalarFName);
+			Detail::checkError(m, ScalarF(m, &rawResult), ErrorName::WSGetScalarError, ScalarFName);
 			return rawResult;
 		}
 
@@ -93,6 +93,7 @@ namespace LLU::WS {
 		return 0;
 	};
 
+/// @cond
 #ifndef _WIN32
 
 #define WS_GET_DECLARE_SPECIALIZATIONS_OF_STATIC_MEMBERS(T) \
@@ -286,7 +287,7 @@ namespace LLU::WS {
 	template<>
 	const std::string GetScalar<double>::ScalarFName = "WSGetReal64";
 #endif
-
+/// @endcond
 } /* namespace LLU::WS */
 
 #endif /* LLU_WSTP_GET_H_ */

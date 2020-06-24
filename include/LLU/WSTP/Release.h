@@ -79,6 +79,7 @@ namespace LLU::WS {
 		static_assert(dependent_false_v<T>, "Trying to use WS::ReleaseList<T>::Release for unsupported type T");
 	};
 
+/// @cond
 #ifndef _WIN32
 
 #define WS_RELEASE_DECLARE_SPECIALIZATIONS_OF_STATIC_MEMBERS(T) \
@@ -131,6 +132,7 @@ namespace LLU::WS {
 	template<>
 	ReleaseList<double>::Func ReleaseList<double>::Release = WSReleaseReal64List;
 #endif
+/// @endcond
 
 } /* namespace LLU::WS */
 
