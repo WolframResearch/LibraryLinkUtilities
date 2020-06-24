@@ -6,9 +6,11 @@ set(DOCUMENTATION_SOURCE ${CMAKE_CURRENT_SOURCE_DIR})
 set(DOXYGEN_OUTPUT_DIR ${CMAKE_CURRENT_BINARY_DIR}/doxy)
 
 # Additional doxygen options
-set(DOXYGEN_GENERATE_HTML NO)
+set(DOXYGEN_GENERATE_HTML YES)
 set(DOXYGEN_GENERATE_XML YES)
 set(DOXYGEN_GENERATE_LATEX NO)
+set(CUSTOM_STYLE_DIR "@CUSTOM_STYLE_DIR@")
+
 
 # Go through LibraryLinkUtilities.doxyfile.in substituting custom values
 set(GENERATED_DOXYFILE "${DOXYGEN_OUTPUT_DIR}/LibraryLinkUtilities.doxyfile")
