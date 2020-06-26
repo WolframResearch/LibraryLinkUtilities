@@ -191,7 +191,10 @@ namespace LLU {
 			return 0;
 		}
 
-		/// @copydoc   MContainerBase::pass(MArgument&)
+		/**
+		 * @brief   Pass the internal container as result of a LibraryLink function.
+		 * @param   res - MArgument which will hold the internal container of this MContainer
+		 */
 		void passImpl(MArgument& res) const noexcept override {
 			//NOLINTNEXTLINE(cppcoreguidelines-pro-type-cstyle-cast): c-style cast used in a macro in WolframIOLibraryFunctions.h
 			MArgument_setDataStore(res, this->getContainer());
