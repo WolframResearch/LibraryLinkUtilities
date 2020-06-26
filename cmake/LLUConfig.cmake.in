@@ -13,7 +13,8 @@ include(${LLU_CMAKE_DIR}/Wolfram/PacletUtilities.cmake)
 
 list(APPEND CMAKE_MODULE_PATH ${LLU_CMAKE_DIR})
 
-find_dependency(Mathematica 12.0 REQUIRED WolframLibrary WSTP)
+find_dependency(WolframLibrary 5)
+find_dependency(WSTP 4.25)
 
 if(NOT TARGET LLU::LLU)
 	include("${LLU_CMAKE_DIR}/LLUTargets.cmake")
