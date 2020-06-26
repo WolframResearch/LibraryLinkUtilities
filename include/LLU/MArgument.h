@@ -136,7 +136,7 @@ namespace LLU {
 	}
 
 	/* Explicit specialization for member functions of PrimitiveWrapper class */
-
+/// @cond
 #define ARGUMENT_DEFINE_SPECIALIZATIONS_OF_MEMBER_FUNCTIONS(ArgType)                                              \
 	template<>                                                                                                    \
 	auto PrimitiveWrapper<MArgumentType::ArgType>::get()->typename PrimitiveWrapper::value_type&;                                 \
@@ -178,6 +178,7 @@ namespace LLU {
 	void PrimitiveWrapper<MArgumentType::MArgument>::addToDataStore(DataStore ds, const std::string& name, MArgumentType actualType) const;
 
 #undef ARGUMENT_DEFINE_SPECIALIZATIONS_OF_MEMBER_FUNCTIONS
+/// @endcond
 
 }	 // namespace LLU
 

@@ -10,7 +10,7 @@
 #include "LLU/ErrorLog/ErrorManager.h"
 
 namespace LLU {
-
+/// @cond
 #define ARGUMENT_DEFINE_SPECIALIZATIONS_OF_MEMBER_FUNCTIONS(ArgType, MArgGetPrefix, MArgSetPrefix, DSAddNamed, DSAdd)      \
 	template<>                                                                                                             \
 	auto PrimitiveWrapper<MArgumentType::ArgType>::get()->value_type& {                                                    \
@@ -92,5 +92,5 @@ namespace LLU {
 			case MArgumentType::Image: PrimitiveWrapper<MArgumentType::Image>(arg).addToDataStore(ds, name); break;
 		}
 	}
-
+/// @endcond
 }  // namespace LLU

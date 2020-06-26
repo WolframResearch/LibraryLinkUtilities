@@ -822,6 +822,7 @@ namespace LLU {
 		return static_cast<T>(MArgument_getInteger(getArgs(index)));
 	}
 
+/// @cond
 #define MARGUMENTMANAGER_GENERATE_GET_SPECIALIZATION(type, getFunction) \
 	template<>                                                          \
 	inline type MArgumentManager::get<type>(size_type index) const {    \
@@ -868,6 +869,7 @@ namespace LLU {
 	MARGUMENTMANAGER_GENERATE_GET_SPECIALIZATION_FOR_CONTAINER(DataList)
 
 #undef MARGUMENTMANAGER_GENERATE_GET_SPECIALIZATION_FOR_CONTAINER
+/// @endcond
 
 	template<typename T>
 	bool MArgumentManager::setMintAndCheck(T result) noexcept {

@@ -536,6 +536,8 @@ namespace LLU {
 		bool currentExprDropped = false;
 	};
 
+/// @cond
+
 	template<WS::Encoding EIn, WS::Encoding EOut>
 	WSStream<EIn, EOut>::WSStream(WSLINK mlp) : m(mlp), loopbackStack(std::deque<LoopbackData> {{"", mlp}}) {
 		if (!mlp) {
@@ -967,6 +969,7 @@ namespace LLU {
 		}
 		return *this;
 	}
+/// @endcond
 
 } /* namespace LLU */
 
