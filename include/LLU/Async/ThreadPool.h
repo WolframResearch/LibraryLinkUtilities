@@ -28,11 +28,17 @@ namespace LLU::Async {
 	template<typename Queue>
 	class BasicThreadPool {
 	public:
+		/// Type of the tasks processed by the Queue
 		using TaskType = typename Queue::value_type;
 
 	public:
+		/// Create a BasicThreadPool with the default number of threads (equal to the hardware concurrency)
 		BasicThreadPool() : BasicThreadPool(std::thread::hardware_concurrency()) {};
 
+		/**
+		 * Create a BasicThreadPool with given number of threads
+		 * @param threadCount - requested number of threads in the pool
+		 */
 		explicit BasicThreadPool(unsigned threadCount) : joiner(threads) {
 			try {
 				for (unsigned i = 0; i < threadCount; ++i) {
@@ -50,6 +56,10 @@ namespace LLU::Async {
 		BasicThreadPool(BasicThreadPool&&) = delete;
 		BasicThreadPool& operator=(BasicThreadPool&&) = delete;
 
+		/**
+		 * @brief   Destructor sets the "done" flag and unblocks all blocked threads by queuing a proper number of special tasks.
+		 * @details Worker threads are joined in the destructor of Async::ThreadJoiner member
+		 */
 		~BasicThreadPool() {
 			done = true;
 			for ([[maybe_unused]] auto& t : threads) {
@@ -57,6 +67,15 @@ namespace LLU::Async {
 			}
 		}
 
+		/**
+		 * Main function of the pool which accepts tasks to be evaluated by the worker threads.
+		 * A task is simply a deferred evaluation of a function call.
+		 * @tparam FunctionType - type of the function to be called in a worker thread
+		 * @tparam Args - argument types of the submitted task
+		 * @param f - function to be called as the task
+		 * @param args - argument to the function call
+		 * @return a future result of calling \p f on \p args
+		 */
 		template<typename FunctionType, typename... Args>
 		std::future<std::invoke_result_t<FunctionType, Args...>> submit(FunctionType&& f, Args&&... args) {
 			auto task = Async::getPackagedTask(std::forward<FunctionType>(f), std::forward<Args>(args)...);
@@ -65,6 +84,7 @@ namespace LLU::Async {
 			return res;
 		}
 
+		/// This is the function that each worker thread runs in a loop
 		void runPendingTask() {
 			TaskType task;
 			workQueue.waitPop(task);
@@ -92,11 +112,17 @@ namespace LLU::Async {
 	template<typename PoolQueue, typename LocalQueue>
 	class GenericThreadPool : public Async::Pausable {
 	public:
+		/// Type of the tasks processed by the Queue
 		using TaskType = typename PoolQueue::value_type;
 
 	public:
+		/// Create a GenericThreadPool with the default number of threads (equal to the hardware concurrency)
 		GenericThreadPool() : GenericThreadPool(std::thread::hardware_concurrency()) {};
 
+		/**
+		 * Create a GenericThreadPool with given number of threads
+		 * @param threadCount - requested number of threads in the pool
+		 */
 		explicit GenericThreadPool(unsigned threadCount) : joiner(threads) {
 			try {
 				for (unsigned i = 0; i < threadCount; ++i) {
@@ -117,11 +143,24 @@ namespace LLU::Async {
 		GenericThreadPool(GenericThreadPool&&) = delete;
 		GenericThreadPool& operator=(GenericThreadPool&&) = delete;
 
+		/**
+		 * @brief   Destructor sets the "done" flag and notifies all paused threads.
+		 * @details Worker threads are joined in the destructor of Async::ThreadJoiner member
+		 */
 		~GenericThreadPool() {
 			done = true;
 			resume();
 		}
 
+		/**
+		 * Main function of the pool which accepts tasks to be evaluated by the worker threads.
+		 * A task is simply a deferred evaluation of a function call.
+		 * @tparam FunctionType - type of the function to be called in a worker thread
+		 * @tparam Args - argument types of the submitted task
+		 * @param f - function to be called as the task
+		 * @param args - argument to the function call
+		 * @return a future result of calling \p f on \p args
+		 */
 		template<typename FunctionType, typename... Args>
 		std::future<std::invoke_result_t<FunctionType, Args...>> submit(FunctionType&& f, Args&&... args) {
 			auto task = Async::getPackagedTask(std::forward<FunctionType>(f), std::forward<Args>(args)...);
@@ -134,6 +173,7 @@ namespace LLU::Async {
 			return res;
 		}
 
+		/// This is the function that each worker thread runs in a loop
 		void runPendingTask() {
 			TaskType task;
 			if (popTaskFromLocalQueue(task) || popTaskFromPoolQueue(task) || popTaskFromOtherThreadQueue(task)) {
