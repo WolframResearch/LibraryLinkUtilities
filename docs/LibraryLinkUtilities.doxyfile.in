@@ -166,24 +166,14 @@ IGNORE_PREFIX          =
 #---------------------------------------------------------------------------
 # Configuration options related to the HTML output
 #---------------------------------------------------------------------------
-GENERATE_HTML          = @DOXYGEN_GENERATE_HTML@
+GENERATE_HTML          = ${DOXYGEN_GENERATE_HTML}
 HTML_OUTPUT            = html
 HTML_FILE_EXTENSION    = .html
-HTML_HEADER            = @CUSTOM_STYLE_DIR@/header.html
+HTML_HEADER            = ${HTML_HEADER}
 HTML_FOOTER            =
 HTML_STYLESHEET        =
-HTML_EXTRA_STYLESHEET  = @CUSTOM_STYLE_DIR@/style.css @CUSTOM_STYLE_DIR@/style.css.map
-HTML_EXTRA_FILES       = @CUSTOM_STYLE_DIR@/img/nav_edge_left.svg \
-                         @CUSTOM_STYLE_DIR@/img/nav_edge_right.svg \
-                         @CUSTOM_STYLE_DIR@/img/nav_edge_inter.svg \
-                         @CUSTOM_STYLE_DIR@/img/sync_off.png \
-                         @CUSTOM_STYLE_DIR@/img/sync_on.png \
-                         @CUSTOM_STYLE_DIR@/img/splitbar_handle.svg \
-                         @CUSTOM_STYLE_DIR@/img/doc.svg \
-                         @CUSTOM_STYLE_DIR@/img/mag_glass.svg \
-                         @CUSTOM_STYLE_DIR@/img/folderclosed.svg \
-                         @CUSTOM_STYLE_DIR@/img/folderopen.svg \
-                         @CUSTOM_STYLE_DIR@/js/striped_bg.js
+HTML_EXTRA_STYLESHEET  = ${HTML_EXTRA_STYLESHEET}
+HTML_EXTRA_FILES       = ${HTML_EXTRA_FILES}
 HTML_COLORSTYLE_HUE    = 220
 HTML_COLORSTYLE_SAT    = 100
 HTML_COLORSTYLE_GAMMA  = 80
@@ -278,7 +268,7 @@ MAN_LINKS              = NO
 #---------------------------------------------------------------------------
 # Configuration options related to the XML output
 #---------------------------------------------------------------------------
-GENERATE_XML           = @DOXYGEN_GENERATE_XML@
+GENERATE_XML           = ${DOXYGEN_GENERATE_XML}
 XML_OUTPUT             = xml
 XML_PROGRAMLISTING     = YES
 XML_NS_MEMB_FILE_SCOPE = NO
