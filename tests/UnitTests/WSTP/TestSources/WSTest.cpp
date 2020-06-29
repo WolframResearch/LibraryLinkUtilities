@@ -5,7 +5,7 @@
  * @brief	Source code for WSTPStream unit tests.
  */
 
-#include "LLU/NoMinMaxWindows.h"
+#include <LLU/NoMinMaxWindows.h>
 
 #include <algorithm>
 #include <iostream>
@@ -18,9 +18,9 @@
 
 #include "wstp.h"
 
-#include "LLU/ErrorLog/LibraryLinkError.h"
-#include "LLU/LibraryLinkFunctionMacro.h"
-#include "LLU/WSTP/WSStream.hpp"
+#include <LLU/ErrorLog/LibraryLinkError.h>
+#include <LLU/LibraryLinkFunctionMacro.h>
+#include <LLU/WSTP/WSStream.hpp>
 
 namespace WS = LLU::WS;
 using LLU::WSStream;

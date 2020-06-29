@@ -6,8 +6,8 @@
 #include <cctype>
 #include <string>
 
-#include "LLU/LLU.h"
-#include "LLU/LibraryLinkFunctionMacro.h"
+#include <LLU/LLU.h>
+#include <LLU/LibraryLinkFunctionMacro.h>
 
 EXTERN_C DLLEXPORT int Greetings(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument Res) {
 	LLU::MArgumentManager mngr(libData, Argc, Args, Res);

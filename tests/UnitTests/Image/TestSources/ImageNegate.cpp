@@ -1,5 +1,5 @@
-#include "LLU/LLU.h"
-#include "LLU/LibraryLinkFunctionMacro.h"
+#include <LLU/LLU.h>
+#include <LLU/LibraryLinkFunctionMacro.h>
 
 template<typename T>
 constexpr T negator = (std::numeric_limits<T>::max)();

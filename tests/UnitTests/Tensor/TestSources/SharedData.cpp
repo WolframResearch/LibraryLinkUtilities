@@ -1,8 +1,8 @@
 #include <memory>
 
-#include "LLU/Containers/Tensor.h"
-#include "LLU/LibraryLinkFunctionMacro.h"
-#include "LLU/MArgumentManager.h"
+#include <LLU/Containers/Tensor.h>
+#include <LLU/LibraryLinkFunctionMacro.h>
+#include <LLU/MArgumentManager.h>
 
 namespace {
 	std::unique_ptr<LLU::Tensor<double>> tensor {};

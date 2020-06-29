@@ -5,9 +5,9 @@
  * @brief	Source code for DataList unit tests containing functions that should fail at compile stage.
  */
 
-#include "LLU/LLU.h"
-#include "LLU/LibraryLinkFunctionMacro.h"
-#include "LLU/MArgument.h"
+#include <LLU/LLU.h>
+#include <LLU/LibraryLinkFunctionMacro.h>
+#include <LLU/MArgument.h>
 
 LLU_LIBRARY_FUNCTION(WrongNodeType) {
 	auto dsIn = mngr.getDataList<LLU::GenericTensor>(0);

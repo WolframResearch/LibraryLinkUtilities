@@ -11,11 +11,11 @@
 
 #include "wstp.h"
 
-#include "LLU/Containers/Iterators/DataList.hpp"
-#include "LLU/LLU.h"
-#include "LLU/LibraryLinkFunctionMacro.h"
-#include "LLU/Utilities.hpp"
-#include "LLU/WSTP/WSStream.hpp"
+#include <LLU/Containers/Iterators/DataList.hpp>
+#include <LLU/LLU.h>
+#include <LLU/LibraryLinkFunctionMacro.h>
+#include <LLU/Utilities.hpp>
+#include <LLU/WSTP/WSStream.hpp>
 
 namespace WS = LLU::WS;
 namespace LLErrorCode = LLU::ErrorCode;

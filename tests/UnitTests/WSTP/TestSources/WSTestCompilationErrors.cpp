@@ -8,9 +8,9 @@
 
 #include "wstp.h"
 
-#include "LLU/LLU.h"
-#include "LLU/LibraryLinkFunctionMacro.h"
-#include "LLU/WSTP/WSStream.hpp"
+#include <LLU/LLU.h>
+#include <LLU/LibraryLinkFunctionMacro.h>
+#include <LLU/WSTP/WSStream.hpp>
 
 using LLU::WSStream;
 namespace WS = LLU::WS;
