@@ -4,7 +4,7 @@
 to C/C++ libraries. LLU started as an internal Wolfram project which can now be used as a stand-alone library and is available publicly on GitHub.
 
 The following site contains [Doxygen](https://www.doxygen.nl/index.html) documentation automatically generated from the source code comments.
-It is intended to serve both users and developers of LLU therefore private class members and internal functions are often documented too. 
+It is intended to serve both users and developers of LLU therefore internal functions are often documented too. 
 
 Doxygen documentation covers the entire API and is great when you know what to look for. Before you dive into detailed description of specific 
 functions and classes it is recommended to read the tutorial-like introduction to LLU, which can be found here:
