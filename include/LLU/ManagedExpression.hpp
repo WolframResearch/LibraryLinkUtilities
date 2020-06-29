@@ -49,10 +49,14 @@ namespace LLU {
 	template<typename T>
 	class ManagedExpressionStore {
 	public:
+		/// Iterator over ManagedExpressionStore - it iterates over the underlying hash map
 		using iterator = typename std::unordered_map<mint, std::shared_ptr<T>>::iterator;
-		using const_iterator = typename std::unordered_map<mint, std::shared_ptr<T>>::const_iterator;
-		using size_type = typename std::unordered_map<mint, std::shared_ptr<T>>::size_type;
 
+		/// Constant iterator over ManagedExpressionStore - it "const-iterates" over the underlying hash map
+		using const_iterator = typename std::unordered_map<mint, std::shared_ptr<T>>::const_iterator;
+
+		/// Size type of the Store is the same as size_type of the underlying hash map
+		using size_type = typename std::unordered_map<mint, std::shared_ptr<T>>::size_type;
 	public:
 		/**
 		 * Function that will actually be called by LibraryLink when an instance of Managed Expression is created or deleted

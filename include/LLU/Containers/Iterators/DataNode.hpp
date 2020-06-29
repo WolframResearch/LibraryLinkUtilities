@@ -85,6 +85,11 @@ namespace LLU {
 			return node.type();
 		}
 
+		/**
+		 * Get N-th element of DataNode in a tuple-like way. This function enables structured bindings to DataNodes.
+		 * @tparam N - index (only 0 and 1 are valid)
+		 * @return either the node name for N == 0 or node value for N == 1
+		 */
 		template <std::size_t N>
 		decltype(auto) get() {
 			static_assert(N < 2, "Bad structure binding attempt to a DataNode.");

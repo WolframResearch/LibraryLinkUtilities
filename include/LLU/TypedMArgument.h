@@ -27,17 +27,37 @@ namespace LLU::Argument {
 
 	/**
 	 * @brief Namespace defining C++ types corresponding to primitive LibraryLink argument types.
+	 * Mainly used for node types in DataList.
 	 */
 	namespace Typed {
+		/// Boolean type, corresponds to True or False in the Wolfram Language
 		using Boolean = bool;
+
+		/// Machine integer type
 		using Integer = mint;
+
+		/// Double precision floating point type
 		using Real = double;
+
+		/// Complex number type, bitwise-compatible with mcomplex defined in WolframLibrary.h
 		using Complex = std::complex<double>;
+
+		/// Tensor stands for a GenericTensor - type agnostic wrapper over MTensor
 		using Tensor = MContainer<MArgumentType::Tensor>;
+
+		/// SparseArray type corresponds to the "raw" MSparseArray as LLU does not have its own wrapper for this structure yet
 		using SparseArray = MSparseArray;
+
+		/// NumericArray stands for a GenericNumericArray - type agnostic wrapper over MNumericArray
 		using NumericArray = MContainer<MArgumentType::NumericArray>;
+
+		/// Image stands for a GenericImage - type agnostic wrapper over MImage
 		using Image = MContainer<MArgumentType::Image>;
+
+		/// String values from LibraryLink (char*) are wrapped in std::string_view
 		using UTF8String = std::string_view;
+
+		/// DataStore stands for a GenericDataList - type agnostic wrapper over DataStore
 		using DataStore = MContainer<MArgumentType::DataStore>;
 	} // namespace Typed
 
@@ -45,6 +65,7 @@ namespace LLU::Argument {
 	using TypedArgument = std::variant<std::monostate, Typed::Boolean, Typed::Integer, Typed::Real, Typed::Complex, Typed::Tensor, Typed::SparseArray,
 									   Typed::NumericArray, Typed::Image, Typed::UTF8String, Typed::DataStore>;
 	namespace Typed {
+		/// Any is a union of all supported types. Typed::Any can be used as a template parameter for DataList to get a heterogeneous DataList.
 		using Any = TypedArgument;
 	} // namespace Typed
 

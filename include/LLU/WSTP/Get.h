@@ -20,9 +20,15 @@
 
 namespace LLU::WS {
 
+	/// ListData with of type \p T is a unique_ptr to an array of Ts with custom destructor.
+	/// It allows you to take ownership of raw list data from WSTP without making extra copies.
+	/// The destructor object also carries information about the list's length.
 	template<typename T>
 	using ListData = std::unique_ptr<T[], ReleaseList<T>>;
 
+	/// ArrayData with of type \p T is a unique_ptr to an array of Ts with custom destructor.
+	/// It allows you to take ownership of raw array data from WSTP without making extra copies.
+	/// The destructor object also carries information about the array's dimensions and heads.
 	template<typename T>
 	using ArrayData = std::unique_ptr<T[], ReleaseArray<T>>;
 

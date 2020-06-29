@@ -37,15 +37,20 @@ namespace LLU::WS {
 	template<Encoding E>
 	struct ReleaseString;
 
+	/// StringData with Encoding \p E is a unique_ptr to an array of E-encoded characters
+	/// It allows you to take ownership of raw string data from WSTP without making extra copies.
 	template<Encoding E>
 	using StringData = std::unique_ptr<const CharType<E>[], ReleaseString<E>>;
 
+	/// GetStringFuncT is a type of WSTP function that reads string from a link, e.g. WSGetByteString
 	template<typename T>
 	using GetStringFuncT = std::function<int(WSLINK, const T**, int*, int*)>;
 
+	/// PutStringFuncT is a type of WSTP function that sends string data to a link, e.g. WSPutByteString
 	template<typename T>
 	using PutStringFuncT = std::function<int(WSLINK, const T*, int)>;
 
+	/// ReleaseStringFuncT is a type of WSTP function to release string data allocated by WSTP, e.g. WSReleaseByteString
 	template<typename T>
 	using ReleaseStringFuncT = std::function<void(WSLINK, const T*, int)>;
 

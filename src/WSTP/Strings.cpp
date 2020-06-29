@@ -13,6 +13,7 @@ namespace LLU::WS {
 
 	/// Definitions of configuration parameters, see header file for detailed description
 	namespace EncodingConfig {
+		/// Default substitute code is 26, which is an ascii character called "Substitute"
 		constexpr long defaultSubstituteCode = 26;
 
 		long substituteCodeForByteEncoding = defaultSubstituteCode;

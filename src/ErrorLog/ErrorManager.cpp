@@ -178,6 +178,13 @@ namespace LLU {
 		ms << WS::EndPacket << WS::Flush;
 	}
 
+	/**
+	 * LibraryLink function that LLU will call to send all errors registered in C++ to the Wolfram Language layer.
+	 * This way LLU is able to translate exceptions from C++ to appropriate Failure expressions in the Wolfram Language.
+	 * @param libData - WolframLibraryData
+	 * @param mlp - WSTP link to transfer data
+	 * @return error code
+	 */
 	EXTERN_C DLLEXPORT int sendRegisteredErrors([[maybe_unused]] WolframLibraryData libData, WSLINK mlp) {
 		auto err = ErrorCode::NoError;
 		try {

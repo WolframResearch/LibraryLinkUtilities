@@ -188,26 +188,59 @@ namespace LLU {
 			int countExpressionsInLoopbackLink(WSLINK& lpbckLink);
 		}	 // namespace Detail
 
+		/// Helper enum for tokens that can be sent via WSTP in both directions, e.g. WS::Null
 		enum class Direction : bool { Get, Put };
 
+		/**
+		 * NewPacket is a WSStream token which tells WSTP to skip to the end of the current packet
+		 * @see     https://reference.wolfram.com/language/ref/c/WSNewPacket.html
+		 * @tparam  EIn - WSStream input encoding (will be inferred from the argument)
+		 * @tparam  EOut - WSStream output encoding (will be inferred from the argument)
+		 * @param   ms - stream object
+		 * @return  the stream object
+		 */
 		template<WS::Encoding EIn, WS::Encoding EOut>
 		WSStream<EIn, EOut>& NewPacket(WSStream<EIn, EOut>& ms) {
 			Detail::checkError(ms.get(), WSNewPacket(ms.get()), ErrorName::WSPacketHandleError, "Error in WSNewPacket");
 			return ms;
 		}
 
+		/**
+		 * EndPacket is a WSStream token which tells WSTP that the current expression is complete and is ready to be sent
+		 * @see     https://reference.wolfram.com/language/ref/c/WSEndPacket.html
+		 * @tparam  EIn - WSStream input encoding (will be inferred from the argument)
+		 * @tparam  EOut - WSStream output encoding (will be inferred from the argument)
+		 * @param   ms - stream object
+		 * @return  the stream object
+		 */
 		template<WS::Encoding EIn, WS::Encoding EOut>
 		WSStream<EIn, EOut>& EndPacket(WSStream<EIn, EOut>& ms) {
 			Detail::checkError(ms.get(), WSEndPacket(ms.get()), ErrorName::WSPacketHandleError, "Error in WSEndPacket");
 			return ms;
 		}
 
+		/**
+		 * Flush is a WSStream token which tells WSTP to flush out any buffers containing data waiting to be sent on link
+		 * @see     https://reference.wolfram.com/language/ref/c/WSFlush.html
+		 * @tparam  EIn - WSStream input encoding (will be inferred from the argument)
+		 * @tparam  EOut - WSStream output encoding (will be inferred from the argument)
+		 * @param   ms - stream object
+		 * @return  the stream object
+		 */
 		template<WS::Encoding EIn, WS::Encoding EOut>
 		WSStream<EIn, EOut>& Flush(WSStream<EIn, EOut>& ms) {
 			Detail::checkError(ms.get(), WSFlush(ms.get()), ErrorName::WSFlowControlError, "Error in WSFlush");
 			return ms;
 		}
 
+		/**
+		 * Rule is a WSStream token corresponding to a Rule expression in the WolframLanguage
+		 * @tparam  EIn - WSStream input encoding (will be inferred from the argument)
+		 * @tparam  EOut - WSStream output encoding (will be inferred from the argument)
+		 * @param   ms - stream object
+		 * @param   dir - stream direction, you don't need to specify this argument when using Rule in a WSStream::operator<< or operator>>
+		 * @return  the stream object
+		 */
 		template<WS::Encoding EIn, WS::Encoding EOut>
 		WSStream<EIn, EOut>& Rule(WSStream<EIn, EOut>& ms, Direction dir) {
 			if (dir == Direction::Put) {
@@ -216,6 +249,14 @@ namespace LLU {
 			return ms >> Function("Rule", 2);
 		}
 
+		/**
+		 * Null is a WSStream token corresponding to a Null expression in the WolframLanguage
+		 * @tparam  EIn - WSStream input encoding (will be inferred from the argument)
+		 * @tparam  EOut - WSStream output encoding (will be inferred from the argument)
+		 * @param   ms - stream object
+		 * @param   dir - stream direction, you don't need to specify this argument when using Null in a WSStream::operator<< or operator>>
+		 * @return  the stream object
+		 */
 		template<WS::Encoding EIn, WS::Encoding EOut>
 		WSStream<EIn, EOut>& Null(WSStream<EIn, EOut>& ms, Direction dir) {
 			if (dir == Direction::Put) {

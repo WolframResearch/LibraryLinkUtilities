@@ -32,6 +32,7 @@ namespace LLU {
 	private:
 		/**
 		 *   @brief Return raw pointer to underlying data
+		 *   @return  raw pointer to values of type \p T - contents of the NumericArray
 		 **/
 		T* getData() const noexcept override {
 			return static_cast<T*>(LibraryData::NumericArrayAPI()->MNumericArray_getData(this->getInternal()));

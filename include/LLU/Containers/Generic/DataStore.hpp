@@ -29,7 +29,10 @@ namespace LLU {
 		using EnableIfUnambiguousWrapperType = std::enable_if_t<!Argument::PrimitiveQ<Argument::WrapperType<T>>, int>;
 
 	public:
+		/// GenericDataList iterator is DataStoreIterator
 		using iterator = DataStoreIterator;
+
+		/// Const iterator over GenericDataList is the same as regular iterator - DataStoreIterator, because it is a proxy iterator
 		using const_iterator = iterator;
 
 		/// Inherit constructors from MContainerBase

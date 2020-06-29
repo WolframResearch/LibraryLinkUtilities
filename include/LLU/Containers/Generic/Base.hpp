@@ -35,6 +35,7 @@ namespace LLU {
 	template<MArgumentType Type>
 	class MContainerBase {
 	public:
+		/// The type of underlying LibraryLink structure (e.g. MTensor, MImage, etc.) will be called "Container"
 		using Container = Argument::CType<Type>;
 
 	public:

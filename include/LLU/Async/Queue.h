@@ -20,6 +20,7 @@ namespace LLU::Async {
 	template<typename T>
 	class ThreadsafeQueue {
 	public:
+		/// Value type of queue elements
 		using value_type = T;
 	public:
 		/**
@@ -68,6 +69,7 @@ namespace LLU::Async {
 		[[nodiscard]] bool empty() const;
 
 	private:
+		/// Internal structure that represents a single element of the queue
 		struct Node {
 			std::shared_ptr<value_type> data;
 			std::unique_ptr<Node> next;

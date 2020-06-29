@@ -13,7 +13,7 @@
 namespace LLU {
 
 	/**
-	 * @brief   Simple, light-weight, non-owning wrappper over MNumericArray.
+	 * @brief   Simple, light-weight, non-owning, data-type-agnostic wrappper over MNumericArray.
 	 *
 	 * Intended for use in functions that only need to access MNumericArray metadata, where it can alleviate the need for introducing template parameters
 	 * for MNumericArray passing mode (like in GenericNumericArray) or data type (like in NumericArray class).
@@ -22,8 +22,16 @@ namespace LLU {
 	public:
 		NumericArrayView() = default;
 
+		/**
+		 * Create a NumericArrayView from a GenericNumericArray
+		 * @param gNA - a GenericNumericArray
+		 */
 		/* implicit */ NumericArrayView(const GenericNumericArray& gNA) : na{gNA.getContainer()} {}
 
+		/**
+		 * Create a NumericArrayView from a raw MNumericArray
+		 * @param mna - a raw MNumericArray
+		 */
 		/* implicit */ NumericArrayView(MNumericArray mna) : na{mna} {}
 
 		/// @copydoc NumericArrayInterface::getRank()
@@ -55,23 +63,44 @@ namespace LLU {
 		MNumericArray na = nullptr;
 	};
 
+	/**
+	 * @brief   Simple, light-weight, non-owning wrappper over MNumericArray.
+	 * Intended for use where a temporary "upgrade" of a raw MNumericArray to a complete, strongly-typed NumericArray interface would be useful.
+	 *
+	 * @tparam  T - type of the NumericArray data
+	 */
 	template<typename T>
 	class NumericArrayTypedView : public NumericArrayView, public IterableContainer<T> {
 	public:
 		NumericArrayTypedView() = default;
 
+		/**
+		 * Create a NumericArrayTypedView from a GenericNumericArray.
+		 * @param gNA - a GenericNumericArray
+		 * @throws ErrorName::NumericArrayTypeError - if the actual datatype of \p gNA is not T
+		 */
 		/* implicit */ NumericArrayTypedView(const GenericNumericArray& gNA) : NumericArrayView(gNA) {
 			if (NumericArrayType<T> != type()) {
 				ErrorManager::throwException(ErrorName::NumericArrayTypeError);
 			}
 		}
 
+		/**
+		 * Create a NumericArrayTypedView from a NumericArrayView.
+		 * @param nav - a NumericArrayView
+		 * @throws ErrorName::NumericArrayTypeError - if the actual datatype of \p nav is not T
+		 */
 		/* implicit */ NumericArrayTypedView(NumericArrayView nav) : NumericArrayView(std::move(nav)) {
 			if (NumericArrayType<T> != type()) {
 				ErrorManager::throwException(ErrorName::NumericArrayTypeError);
 			}
 		}
 
+		/**
+		 * Create a NumericArrayTypedView from a raw MNumericArray.
+		 * @param mna - a raw MNumericArray
+		 * @throws ErrorName::NumericArrayTypeError - if the actual datatype of \p mna is not T
+		 */
 		/* implicit */ NumericArrayTypedView(MNumericArray mna) : NumericArrayView(mna) {
 			if (NumericArrayType<T> != type()) {
 				ErrorManager::throwException(ErrorName::NumericArrayTypeError);
@@ -88,6 +117,14 @@ namespace LLU {
 		}
 	};
 
+	/**
+	 * Take a NumericArray-like object \p na and a function \p callable and call the function with a NumericArrayTypedView created from \p na
+	 * @tparam  NumericArrayT - a NumericArray-like type (GenericNumericArray, NumericArrayView or MNumericAray)
+	 * @tparam  F - any callable object
+	 * @param   na - NumericArray-like object on which an operation will be performed
+	 * @param   callable - a callable object that can be called with a NumericArrayTypedView of any type
+	 * @return  result of calling \p callable on a NumericArrayTypedView over \p na
+	 */
 	template<typename NumericArrayT, typename F>
 	auto asTypedNumericArray(NumericArrayT&& na, F&& callable) {
 		switch (na.type()) {
@@ -109,10 +146,13 @@ namespace LLU {
 		}
 	}
 
+	/// @cond
+	// Specialization of asTypedNumericArray for MNumericArray
 	template<typename F>
 	auto asTypedNumericArray(MNumericArray na, F&& callable) {
 		return asTypedNumericArray(NumericArrayView {na}, std::forward<F>(callable));
 	}
+	/// @endcond
 }
 
 #endif	  // LLU_CONTAINERS_VIEWS_NUMERICARRAY_HPP

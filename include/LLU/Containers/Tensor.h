@@ -30,7 +30,10 @@ namespace LLU {
 	public:
 		using MArray<T>::MArray;
 	private:
-		/// @copydoc MArray<T>::getData()
+		/**
+		 * @brief   Get a raw pointer to underlying data
+		 * @return  raw pointer to values of type \p T - contents of the Tensor
+		 */
 		T* getData() const noexcept override;
 
 		/// Get the raw MTensor, must be implemented in subclasses.

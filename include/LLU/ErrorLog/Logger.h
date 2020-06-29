@@ -14,7 +14,7 @@
 #include "LLU/LibraryData.h"
 #include "LLU/WSTP/WSStream.hpp"
 
-// "Public" macros:
+// Configuration macros to set desired level of logging at build time:
 
 /// Define LLU_LOG_DEBUG to enable all log levels
 #ifdef LLU_LOG_DEBUG
@@ -33,23 +33,38 @@
 #define LLU_LOG_LEVEL_ERROR
 #endif
 
-// "Private" macros:
+// Convenience macros to use in the code:
 
 #ifdef LLU_LOG_LEVEL_DEBUG
 #define LLU_DEBUG(...) LLU::Logger::log<LLU::Logger::Level::Debug>(__LINE__, __FILE__, __func__, __VA_ARGS__)
 #else
+/**
+ * Log message as debug information, the log will consist of the line number, file name, function name and user-provided args.
+ * Formatting can be customized on the Wolfram Language side.
+ * @note This macro is only active with LLU_LOG_DEBUG compilation flag.
+ */
 #define LLU_DEBUG(...) ((void)0)
 #endif
 
 #ifdef LLU_LOG_LEVEL_WARNING
 #define LLU_WARNING(...) LLU::Logger::log<LLU::Logger::Level::Warning>(__LINE__, __FILE__, __func__, __VA_ARGS__)
 #else
+/**
+ * Log message as warning, the log will consist of the line number, file name, function name and user-provided args.
+ * Formatting can be customized on the Wolfram Language side.
+ * @note This macro is only active with LLU_LOG_DEBUG or LLU_LOG_WARNING compilation flag.
+ */
 #define LLU_WARNING(...) ((void)0)
 #endif
 
 #ifdef LLU_LOG_LEVEL_ERROR
 #define LLU_ERROR(...) LLU::Logger::log<LLU::Logger::Level::Error>(__LINE__, __FILE__, __func__, __VA_ARGS__)
 #else
+/**
+ * Log message as error, the log will consist of the line number, file name, function name and user-provided args.
+ * Formatting can be customized on the Wolfram Language side.
+ * @note This macro is only active with LLU_LOG_DEBUG, LLU_LOG_WARNING or LLU_LOG_ERROR compilation flag.
+ */
 #define LLU_ERROR(...) ((void)0)
 #endif
 

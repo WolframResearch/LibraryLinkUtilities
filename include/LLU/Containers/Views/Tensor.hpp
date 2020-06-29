@@ -22,8 +22,16 @@ namespace LLU {
 	public:
 		TensorView() = default;
 
+		/**
+		 * Create a NumericArrayView from a GenericNumericArray
+		 * @param gTen - a GenericNumericArray
+		 */
 		/* implicit */ TensorView(const GenericTensor& gTen) : t {gTen.getContainer()} {}
 
+		/**
+		 * Create a NumericArrayView from a raw MNumericArray
+		 * @param mt - a raw MNumericArray
+		 */
 		/* implicit */ TensorView(MTensor mt) : t {mt} {}
 
 		/// @copydoc TensorInterface::getRank()
@@ -65,18 +73,33 @@ namespace LLU {
 	public:
 		TensorTypedView() = default;
 
+		/**
+		 * Create a TensorTypedView from a GenericTensor.
+		 * @param gTen - a GenericTensor
+		 * @throws ErrorName::TensorTypeError - if the actual datatype of \p gTen is not T
+		 */
 		/* implicit */ TensorTypedView(const GenericTensor& gTen) : TensorView(gTen) {
 			if (TensorType<T> != type()) {
 				ErrorManager::throwException(ErrorName::TensorTypeError);
 			}
 		}
 
+		/**
+		 * Create a TensorTypedView from a TensorView.
+		 * @param tv - a TensorView
+		 * @throws ErrorName::TensorTypeError - if the actual datatype of \p tv is not T
+		 */
 		/* implicit */ TensorTypedView(TensorView tv) : TensorView(std::move(tv)) {
 			if (TensorType<T> != type()) {
 				ErrorManager::throwException(ErrorName::TensorTypeError);
 			}
 		}
 
+		/**
+		 * Create a TensorTypedView from a raw MTensor.
+		 * @param mt - a raw MTensor
+		 * @throws ErrorName::TensorTypeError - if the actual datatype of \p mt is not T
+		 */
 		/* implicit */ TensorTypedView(MTensor mt) : TensorView(mt) {
 			if (TensorType<T> != type()) {
 				ErrorManager::throwException(ErrorName::TensorTypeError);
@@ -93,6 +116,14 @@ namespace LLU {
 		}
 	};
 
+	/**
+	 * Take a Tensor-like object \p t and a function \p callable and call the function with a TensorTypedView created from \p t
+	 * @tparam  TensorT - a Tensor-like type (GenericTensor, TensorView or MNumericAray)
+	 * @tparam  F - any callable object
+	 * @param   t - Tensor-like object on which an operation will be performed
+	 * @param   callable - a callable object that can be called with a TensorTypedView of any type
+	 * @return  result of calling \p callable on a TensorTypedView over \p t
+	 */
 	template<typename TensorT, typename F>
 	auto asTypedTensor(TensorT&& t, F&& callable) {
 		switch (t.type()) {
@@ -103,11 +134,13 @@ namespace LLU {
 		}
 	}
 
+	/// @cond
+	// Specialization of asTypedTensor for MTensor
 	template<typename F>
 	auto asTypedTensor(MTensor t, F&& callable) {
 		return asTypedTensor(TensorView {t}, std::forward<F>(callable));
 	}
-
+	/// @endcond
 }
 
 #endif	  // LLU_CONTAINERS_VIEWS_TENSOR_HPP

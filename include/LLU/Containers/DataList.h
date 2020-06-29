@@ -35,10 +35,19 @@ namespace LLU {
 	template<typename T>
 	class DataList : public MContainer<MArgumentType::DataStore> {
 	public:
+		/// Default DataList iterator is NodeIterator<T>
 		using iterator = NodeIterator<T>;
+
+		/// All DataList iterators are proxy iterators so in a way they are all const, therefore \c const_iterator is the same as \c iterator
 		using const_iterator = iterator;
+
+		/// To iterate over node values use a proxy iterator NodeValueIterator<T>
 		using value_iterator = NodeValueIterator<T>;
+
+		/// To iterate over node names use a proxy iterator NodeNameIterator
 		using name_iterator = NodeNameIterator;
+
+		/// Value of a node is of type T
 		using value_type = T;
 
 	public:
@@ -243,6 +252,10 @@ namespace LLU {
 	 */
 	template<typename T>
 	struct ValueAdaptor : Detail::IteratorAdaptor<T, NodeValueIterator<T>> {
+		/**
+		 * Create ValueAdaptor to an existing DataList
+		 * @param d - DataList with nodes of type \p T
+		 */
 		explicit ValueAdaptor(DataList<T>& d) : Detail::IteratorAdaptor<T, NodeValueIterator<T>> {d} {};
 	};
 
@@ -253,6 +266,10 @@ namespace LLU {
 	 */
 	template<typename T>
 	struct NameAdaptor : Detail::IteratorAdaptor<T, NodeNameIterator> {
+		/**
+		 * Create NameAdaptor to an existing DataList
+		 * @param d - DataList with nodes of type \p T
+		 */
 		explicit NameAdaptor(DataList<T>& d) : Detail::IteratorAdaptor<T, NodeNameIterator> {d} {};
 	};
 

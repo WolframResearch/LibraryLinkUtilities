@@ -44,20 +44,35 @@ namespace LLU {
 	 */
 	template<typename T>
 	struct NodeIterator : Detail::DataListIteratorPrimitive {
+		/// This iterator iterates over values of type DataNode<T>
 		using value_type = DataNode<T>;
+
+		/// NodeIterator is a proxy iterator and so the reference type is the same as value_type
 		using reference = value_type;
 
 		using DataListIteratorPrimitive::DataListIteratorPrimitive;
 
+		/**
+		 * Get current proxy DataNode
+		 * @return proxy object for the currently pointed to node
+		 */
 		reference operator*() const {
 			return reference {node};
 		}
 
+		/**
+		 * Pre-increment operator
+		 * @return this
+		 */
 		NodeIterator& operator++() {
 			node = node.next();
 			return *this;
 		}
 
+		/**
+		 * Post-increment operator
+		 * @return "old" copy of the iterator object
+		 */
 		NodeIterator operator++(int) {
 			NodeIterator tmp {node};
 			++(*this);
@@ -70,23 +85,44 @@ namespace LLU {
 	 * @tparam  T - data node type, see LLU::NodeType namespace for supported node types
 	 */
 	struct NodeNameIterator : Detail::DataListIteratorPrimitive {
-		using value_type = std::string_view ;
+
+		/// This iterator iterates over node names which are represented by std::string_view
+		using value_type = std::string_view;
+
+		/// NodeIterator is a proxy iterator and so the reference type is the same as value_type
 		using reference = value_type;
 
 		using DataListIteratorPrimitive::DataListIteratorPrimitive;
 
+		/**
+		 * Create NodeNameIterator pointing to the same node as given NodeIterator<T>
+		 * @tparam  T - any type. It will be discarded as node names are always strings
+		 * @param   it - NodeIterator<T> from which a new NodeNameIterator will be created
+		 */
 		template<typename T>
 		explicit NodeNameIterator(const NodeIterator<T>& it) : DataListIteratorPrimitive {it} {}
 
+		/**
+		 * Get name of the currently pointed to node
+		 * @return proxy object with the name of the currently pointed to node
+		 */
 		reference operator*() const {
 			return node.name();
 		}
 
+		/**
+		 * Pre-increment operator
+		 * @return this
+		 */
 		NodeNameIterator& operator++() {
 			node = node.next();
 			return *this;
 		}
 
+		/**
+		 * Post-increment operator
+		 * @return "old" copy of the iterator object
+		 */
 		NodeNameIterator operator++(int) {
 			NodeNameIterator tmp {node.node};
 			++(*this);
@@ -100,13 +136,25 @@ namespace LLU {
 	 */
 	template<typename T>
 	struct NodeValueIterator : Detail::DataListIteratorPrimitive {
+		/// This iterator iterates over node values of type T
 		using value_type = T;
+
+		/// NodeValueIterator is a proxy iterator and so the reference type is the same as value_type
 		using reference = value_type;
 
 		using DataListIteratorPrimitive::DataListIteratorPrimitive;
 
+		/**
+		 * Create NodeValueIterator pointing to the same node as given NodeIterator<T>
+		 * @param it - NodeIterator<T> from which a new NodeValueIterator will be created
+		 */
 		explicit NodeValueIterator(const NodeIterator<T>& it) : DataListIteratorPrimitive {it} {}
 
+		/**
+		 * Get value of the currently pointed to node
+		 * Generic node values will be converted to T if it is their actual type or an exception will be throws otherwise
+		 * @return proxy object with the value of the currently pointed to node
+		 */
 		reference operator*() const {
 			if constexpr (std::is_same_v<T, Argument::Typed::Any>) {
 				return  node.value();
@@ -115,17 +163,30 @@ namespace LLU {
 			}
 		}
 
+		/**
+		 * Pre-increment operator
+		 * @return this
+		 */
 		NodeValueIterator& operator++() {
 			node = node.next();
 			return *this;
 		}
 
+		/**
+		 * Post-increment operator
+		 * @return "old" copy of the iterator object
+		 */
 		NodeValueIterator operator++(int) {
 			NodeValueIterator tmp {node.node};
 			++(*this);
 			return tmp;
 		}
 
+		/**
+		 * Get current node value if it actually is of type U. Only makes sense for nodes of type LLU::NodeType::Any.
+		 * @tparam U - any type from LLU::NodeType namespace
+		 * @return current node value of type U
+		 */
 		template<typename U>
 		U as() const {
 			auto v = node.value();

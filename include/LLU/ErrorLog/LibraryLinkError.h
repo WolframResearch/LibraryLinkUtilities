@@ -33,14 +33,22 @@ namespace LLU {
 		friend class ErrorManager;
 
 	public:
+		/// A type that holds error id numbers
 		using IdType = int;
 
+		/// Copy-constructor. If there are any messages parameters on the WSLINK, a deep copy is performed.
 		LibraryLinkError(const LibraryLinkError& e) noexcept;
+
+		/// Copy-assignment operator.
 		LibraryLinkError& operator=(const LibraryLinkError& e) noexcept;
 
+		/// Move-constructor. Steals messagesParams from \p e.
 		LibraryLinkError(LibraryLinkError&& e) noexcept;
+
+		/// Move-assignment operator.
 		LibraryLinkError& operator=(LibraryLinkError&& e) noexcept;
 
+		/// The destructor closes the link that was used to send message parameters, if any
 		~LibraryLinkError() override;
 
 		/**

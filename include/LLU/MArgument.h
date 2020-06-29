@@ -34,11 +34,14 @@ namespace LLU {
 	};
 
 	namespace Argument {
+		/// A variant holding all possible MArgument types
 		using PrimitiveAny = std::variant<std::monostate, mbool, mint, mreal, mcomplex, MTensor, MSparseArray, MNumericArray, MImage, char*, DataStore>;
 
+		/// PrimitiveIndex<T> is the index of type T in the PrimitiveAny variant converted to MArgumentType enum.
 		template<typename T>
 		inline constexpr MArgumentType PrimitiveIndex = static_cast<MArgumentType>(variant_index<PrimitiveAny, T>());
 
+		/// Type trait for checking if \p T is a primitive LibraryLink type (belongs to the MArgument union)
 		template<typename T>
 		inline constexpr bool PrimitiveQ = (variant_index<PrimitiveAny, T>() < std::variant_size_v<PrimitiveAny>);
 
@@ -124,6 +127,12 @@ namespace LLU {
 		 */
 		static void addDataStoreNode(DataStore ds, std::string_view name, value_type val);
 
+		/**
+		 * @brief 	Add \c val to the DataStore \c ds inside an unnamed node
+		 * This is a static method because there is no MArgument involved.
+		 * @param 	ds - DataStore with values of type T
+		 * @param 	val - value of the new node in the DataStore
+		 */
 		static void addDataStoreNode(DataStore ds, value_type val);
 
 	private:

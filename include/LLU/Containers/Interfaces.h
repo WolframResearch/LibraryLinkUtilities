@@ -17,13 +17,15 @@ namespace LLU {
 	struct ImageInterface {
 		
 		// Provide special member functions
+		/// @cond
 		ImageInterface() = default;
 		virtual ~ImageInterface() = default;
 		ImageInterface(const ImageInterface&) = default;
 		ImageInterface& operator=(const ImageInterface&) = default;
 		ImageInterface(ImageInterface&&) = default;
 		ImageInterface& operator=(ImageInterface&&) = default;
-		
+		/// @endcond
+
 		/**
 		 *   @brief Get colorspace which describes how colors are represented as numbers
 		 *   @see <http://reference.wolfram.com/language/LibraryLink/ref/callback/MImage_getColorSpace.html>
@@ -104,12 +106,14 @@ namespace LLU {
 	struct NumericArrayInterface {
 
 		// Provide special member functions
+		/// @cond
 		NumericArrayInterface() = default;
 		virtual ~NumericArrayInterface() = default;
 		NumericArrayInterface(const NumericArrayInterface&) = default;
 		NumericArrayInterface& operator=(const NumericArrayInterface&) = default;
 		NumericArrayInterface(NumericArrayInterface&&) = default;
 		NumericArrayInterface& operator=(NumericArrayInterface&&) = default;
+		/// @endcond
 
 		/**
 		 * @brief   Get rank
@@ -153,12 +157,14 @@ namespace LLU {
 	struct TensorInterface {
 
 		// Provide special member functions
+		/// @cond
 		TensorInterface() = default;
 		virtual ~TensorInterface() = default;
 		TensorInterface(const TensorInterface&) = default;
 		TensorInterface& operator=(const TensorInterface&) = default;
 		TensorInterface(TensorInterface&&) = default;
 		TensorInterface& operator=(TensorInterface&&) = default;
+		/// @endcond
 
 		/**
 		 * @brief   Get rank

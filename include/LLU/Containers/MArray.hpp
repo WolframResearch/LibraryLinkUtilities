@@ -129,6 +129,7 @@ namespace LLU {
 		const T& at(const std::vector<mint>& indices) const;
 
 	protected:
+		/// Dimensions of the array
 		MArrayDimensions dims;
 
 	private:

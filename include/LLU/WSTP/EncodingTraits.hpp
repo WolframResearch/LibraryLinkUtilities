@@ -99,6 +99,7 @@ namespace LLU::WS {
 	 */
 	template<Encoding E>
 	struct StringTypeStruct {
+		/// Alias for the basic_string specialization which naturally corresponds to encoding E
 		using type = std::basic_string<CharType<E>>;
 	};
 
