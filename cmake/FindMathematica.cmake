@@ -45,7 +45,6 @@
 #
 # Author: Rafal Chojna - rafalc@wolfram.com
 
-
 include("${CMAKE_CURRENT_LIST_DIR}/Wolfram/Common.cmake")
 
 set(_MMA_CONSIDERED_VERSIONS 12.2;12.1;12.0) # LLU requires Mathematica 12.0+, so we do not look for older versions
@@ -55,6 +54,11 @@ set(_MMA_FIND_DOC "Location of Mathematica executable")
 
 if(NOT Mathematica_ROOT AND MATHEMATICA_INSTALL_DIR)
 	set(Mathematica_ROOT ${MATHEMATICA_INSTALL_DIR})
+endif()
+
+set(_MMA_FIND_QUIETLY)
+if(Mathematica_FIND_QUIETLY)
+	set(_MMA_FIND_QUIETLY QUIET)
 endif()
 
 ###############################################################################
@@ -89,7 +93,7 @@ macro(find_mathematica_from_hint)
 			DOC ${_MMA_FIND_DOC}
 			NO_DEFAULT_PATH)
 
-		if(NOT Mathematica_EXE)
+		if(NOT Mathematica_EXE AND NOT Mathematica_FIND_QUIETLY)
 			message(WARNING
 				"Could not find Mathematica in requested location \n${Mathematica_ROOT}${Mathematica_INSTALL_DIR}\n"
 				"Looking in default directories...")
@@ -161,10 +165,10 @@ endif()
 
 foreach(_COMP IN LISTS Mathematica_FIND_COMPONENTS)
 	if(_COMP STREQUAL "WolframLibrary")
-		find_package(WolframLibrary)
+		find_package(WolframLibrary ${_MMA_FIND_QUIETLY})
 		set(Mathematica_${_COMP}_FOUND ${WolframLibrary_FOUND})
 	elseif(_COMP STREQUAL "WSTP")
-		find_package(WSTP)
+		find_package(WSTP ${_MMA_FIND_QUIETLY})
 		set(Mathematica_${_COMP}_FOUND ${WSTP_FOUND})
 	elseif(_COMP STREQUAL "wolframscript")
 		find_wolframscript(Mathematica_wolframscript_EXE)
@@ -174,7 +178,9 @@ foreach(_COMP IN LISTS Mathematica_FIND_COMPONENTS)
 			set(Mathematica_${_COMP}_FOUND FALSE)
 		endif()
 	else()
-		message(WARNING "Unknown Mathematica component \"${_COMP}\" requested.")
+		if(NOT Mathematica_FIND_QUIETLY)
+			message(WARNING "Unknown Mathematica component \"${_COMP}\" requested.")
+		endif()
 		set(Mathematica_${_COMP}_FOUND FALSE)
 	endif()
 endforeach()
