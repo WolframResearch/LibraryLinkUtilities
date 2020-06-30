@@ -306,4 +306,6 @@ breathe_projects = {
 
 breathe_default_project = "LibraryLink Utilities"
 
-breathe_domain_by_extension = {"h": "cpp"}
+breathe_domain_by_extension = {"h": "cpp", "hpp": "cpp"}
+
+breathe_order_parameters_first = True
