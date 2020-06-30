@@ -8,19 +8,22 @@ We do not provide prebuilt binaries for any platform.
 0. Prerequisites
 ==============================================
 
-Since the source code uses C++14 features, you have to make sure your compiler supports C++14. This means:
+Since the source code uses C++17 features, you have to make sure your compiler supports C++17. This roughly means:
 
- * **Visual Studio** >= 15.0
- * **gcc** >= 5.0
- * **clang** >= 3.4
+ * **Visual Studio** >= 15.7
+ * **gcc** >= 7.0
+ * **clang** >= 5
 
 Plus:
 
- * **CMake** >= 3.8.0
- * **WSTP** interface version 4 or later
- * **WolframLibrary** >= 5
+ * **CMake** >= 3.14
+ * **Mathematica** >= 12.0, or more specifically
 
-WSTP library and WolframLibrary header files can be found in any Mathematica installation. For testing, ``wolframscript`` must be available on the system.
+   - **WSTP** interface version 4 or later
+   - **WolframLibrary** >= 5
+
+WSTP library and WolframLibrary header files can be found in any Mathematica installation.
+Optionally, for running unit tests, **wolframscript** must be available on the system.
 
 1. Get source code
 =========================================

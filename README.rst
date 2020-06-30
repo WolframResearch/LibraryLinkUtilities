@@ -30,8 +30,13 @@ Wolfram Language developers for developing paclets.
 * automatic resource management
 * exception handling
 * container iterators
-* class-like interface for data structures, for example ``rank()`` as member function of ``Tensor`` class instead of separate function ``mint MTensor_getRank(MTensor)``, or a copy constructor instead of ``int MTensor_clone(MTensor, MTensor*)``
+* class-like interface for data structures, for example ``rank()`` as member function of ``Tensor`` class instead of separate function ``mint MTensor_getRank(MTensor)``
 * type safety
+* lazy loading of library functions
+* progress monitoring of library functions
+* standardized approach to exchanging custom data types between C++ and WL code
+
+and more.
 
 Example
 ----------------------------------
@@ -136,7 +141,7 @@ and this is the corresponding C++ version written with LibraryLink Utilities:
 	    auto err = LLU::ErrorCode::NoError;
 	    try {
 	        // Create manager object
-	        LLU::MArgumentManager mngr(libData, Argc, Args, Res);
+	        LLU::MArgumentManager mngr {libData, Argc, Args, Res};
 
 	        // Read string and NumericArray arguments
 	        auto string = mngr.getString(0);
@@ -154,18 +159,18 @@ and this is the corresponding C++ version written with LibraryLink Utilities:
 
 	        // before we allocate memory for the output string, we have to sum all NumericArray elements
 			// to see how many bytes are needed
-	        auto sum = std::accumulate(counts.begin(), counts.end(), static_cast<size_t>(0));
+	        auto sum = std::accumulate(std::cbegin(counts), std::cend(counts), static_cast<size_t>(0));
 
-	        // allocate memory for output string
+	        // allocate memory for the output string
 	        std::string outString;
 	        outString.reserve(sum);
 
-	        // populate output string
+	        // populate the output string
 	        for (mint i = 0; i < counts.size(); i++) {
 	            outString.append(std::string(counts[i], string[i]));
 	        }
 
-	        // clean up and set result
+	        // clean up and set the result
 	        mngr.set(std::move(outString));
 	    }
 	    catch (const LLU::LibraryLinkError& e) {
@@ -177,7 +182,7 @@ and this is the corresponding C++ version written with LibraryLink Utilities:
 Limitations with respect to LibraryLink
 ---------------------------------------------
 
-There are some LibraryLink features currently not covered by LLU, most notably:
+There are a few LibraryLink features currently not covered by LLU, most notably:
 
 - Sparse Arrays
 - Tensor subsetting: `MTensor_getTensor`

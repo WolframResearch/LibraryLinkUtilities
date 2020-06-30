@@ -26,51 +26,29 @@ Level 0
 
 These are just raw LibraryLink containers. LLU is likely unnecessary when working with raw LibraryLink containers. However, they are still supported.
 
-Level 1A
+Level 1
 ----------------------------------
 
-* :cpp:type:`template\<class PassingMode> LLU::GenericDataList`
-* :cpp:type:`template\<class PassingMode> LLU::GenericImage`
-* :cpp:type:`template\<class PassingMode> LLU::GenericNumericArray`
-* :cpp:type:`template\<class PassingMode> LLU::GenericTensor`
+* :cpp:type:`LLU::GenericDataList`
+* :cpp:type:`LLU::GenericImage`
+* :cpp:type:`LLU::GenericNumericArray`
+* :cpp:type:`LLU::GenericTensor`
 
-These are type-unaware wrappers that offer automatic memory management and basic interface like access to metadata (dimensions, rank, etc). They do not provide direct access to the underlying data.
-
-Level 1B
-----------------------------------
-
-- :cpp:class:`TypedImage\<T> <template\<typename T> LLU::TypedImage>` - type-aware interface to :cpp:class:`Image <template\<typename T, class PassingMode = Passing::Manual> LLU::Image>`
-- :cpp:class:`TypedNumericArray\<T> <template\<typename T> LLU::TypedNumericArray>` - type-aware interface to :cpp:class:`NumericArray <template\<typename T, class PassingMode = Passing::Manual> LLU::NumericArray>`
-- :cpp:class:`TypedTensor\<T> <template\<typename T> LLU::TypedTensor>` - type-aware interface to :cpp:class:`Tensor <template\<typename T, class PassingMode = Passing::Manual> LLU::Tensor>`
-
-These template classes offer iterators and data access functions for each container. They shouldn't be used directly,
-as they don't hold any data. Instead, use containers from level 2 which inherit from level 1B containers.
+These are datatype-unaware wrappers that offer automatic memory management and basic interface like access to metadata (dimensions, rank, etc).
+They do not provide direct access to the underlying data except via a ``void*``, which should be used with caution.
 
 Level 2
 ----------------------------------
 
-- :cpp:class:`DataList\<T, PassingMode> <template\<MArgumentType T, class PassingMode = Passing::Manual> LLU::DataList>`
-- :cpp:class:`Image\<T, PassingMode> <template\<typename T, class PassingMode = Passing::Manual> LLU::Image>`
-- :cpp:class:`NumericArray\<T, PassingMode> <template\<typename T, class PassingMode = Passing::Manual> LLU::NumericArray>`
-- :cpp:class:`Tensor\<T, PassingMode> <template\<typename T, class PassingMode = Passing::Manual> LLU::Tensor>`
+- :cpp:class:`DataList\<T> <template\<MArgumentType T> LLU::DataList>`
+- :cpp:class:`Image\<T> <template\<typename T> LLU::Image>`
+- :cpp:class:`NumericArray\<T> <template\<typename T> LLU::NumericArray>`
+- :cpp:class:`Tensor\<T> <template\<typename T> LLU::Tensor>`
 
-Full-fledged wrappers with automatic memory management (via Passing policies, see section below), type-safe data access, iterators, etc.
+Full-fledged wrappers with automatic memory management (see section below), type-safe data access, iterators, etc.
 
-The following table summarizes current status of LibraryLink containers and their LLU wrappers:
 
-+---------------------+--------------------------+--------------------+
-| LibraryLink element |    Generic wrapper       |   Typed wrapper    |
-+=====================+==========================+====================+
-|       MTensor       |    GenericTensor\<P\>    |    Tensor<T, P>    |
-+---------------------+--------------------------+--------------------+
-|    MNumericArray    | GenericNumericArray\<P\> | NumericArray<T, P> |
-+---------------------+--------------------------+--------------------+
-|       MImage        |    GenericImage\<P\>     |    Image<T, P>     |
-+---------------------+--------------------------+--------------------+
-|      DataStore      |   GenericDataList\<P\>   |   DataList<T, P>   |
-+---------------------+--------------------------+--------------------+
-
-Passing policies
+Memory management
 ============================
 
 When passing a container from Wolfram Language to a C++ library, one of 4 passing modes must be chosen:
@@ -91,41 +69,57 @@ for each argument and then ensure the correct action is taken (releasing/not rel
 on the combination of passing mode and whether the container has been returned from the library function to the Wolfram Language).
 This design is far from perfect because manual resource management often leads to bugs and leaks.
 
-LLU, on the other hand, encodes the passing mode in a form of template parameter for each
-container wrapper. It makes sense because passing mode is known at compile time and cannot be changed throughout
-the life cycle of a container.
+LLU defines a notion of *container ownership*:
 
-LLU defines 3 classes representing passing policies:
+.. doxygenenum:: LLU::Ownership
 
-* Passing::Automatic
-* Passing::Manual
-* Passing::Shared
+LLU ensures that at any point of time every container has a well-defined owner. The ownership is mostly static and may change only on a few occasions e.g.
+when passing a container to DataList or setting it as a result of a library function.
 
-They serve as base classes to containers and they store and update the information whether the underlying raw container
-should be freed when the wrapper ends its life.
+When a container is receiced from the Wolfram Language as an argument to a library function, the develop must inform the :cpp:class:`MArgumentManager<LLU::MArgumentManager>`
+about the passing mode used for that container. There is a separate enumeration for this purpose:
 
-There is also `Passing::Constant` which is just an alias for Passing::Automatic because from the memory management
-point of view these two policies are equivalent.
+.. doxygenenum:: LLU::Passing
+
+The ``Passing`` value is used by the :cpp:class:`MArgumentManager<LLU::MArgumentManager>` to determine the initial owner of the container.
 
 Here are some examples:
 
 .. code-block:: cpp
-   :linenos:
    :dedent: 1
 
-	Tensor<mint, Passing::Manual> t { 1, 2,  3, 4, 5 };    // fine, new MTensor is allocated and it will be freed when t goes out of scope
+    LLU::Tensor<mint> t { 1, 2, 3, 4, 5 };    // this Tensor is created (and therefore owned) by the library (LLU)
 
-	Tensor<mint, Passing::Automatic> s { 1, 2,  3, 4, 5 };     // compile-time error, you cannot create a container with Automatic mode
-	                                                           // because LibraryLink doesn't know about it and will not free it automatically
+    LLU::MArgumentManager manager {...};
+    auto tensor = manager.getTensor<double>(0);  // tensors acquired via MArgumentManager are by default owned by the LibraryLink
 
-	auto t = mngr.getGenericImage<Shared>(0);   // OK
+    auto image = manager.getGenericImage<LLU::Passing::Shared>(0);    // the image is shared between LLU and the Kernel, so LLU knows not to deallocate
+                                                                      // the underlying MImage when image goes out of scope
 
-	auto copy = t;    // compile-time error, you cannot copy a Shared container because the copy will not be shared
+    auto newImage = image.clone();    // the newImage has the same contents as image but it is not shared, it is owned by LLU
 
-	LLU::GenericImage<Manual> clone {t};   // but this is fine, we make a deep copy which is no longer Shared
 
 More examples can be found in unit tests.
 
+Views
+========================
+
+
+
+
+The following table summarizes current status of LibraryLink containers and their LLU wrappers:
+
++---------------------+--------------------------+--------------------+--------------------+-----------------------+
+|    Raw Container    |    Generic wrapper       |   Typed wrapper    |        View        |        TypedView      |
++=====================+==========================+====================+====================+=======================+
+|       MTensor       |    GenericTensor         |      Tensor<T>     |     TensorView     |     TensorTypedView   |
++---------------------+--------------------------+--------------------+--------------------+-----------------------+
+|    MNumericArray    | GenericNumericArray      |   NumericArray<T>  |  NumericArrayView  | NumericArrayTypedView |
++---------------------+--------------------------+--------------------+--------------------+-----------------------+
+|       MImage        |    GenericImage          |       Image<T>     |      ImageView     |     ImageTypedView    |
++---------------------+--------------------------+--------------------+--------------------+-----------------------+
+|      DataStore      |   GenericDataList        |      DataList<T>   |                    |                       |
++---------------------+--------------------------+--------------------+--------------------+-----------------------+
 
 Examples
 ========================
@@ -164,26 +158,26 @@ GenericDataList
 ~~~~~~~~~~~~~~~~~~~~~~~~
 .. doxygentypedef:: LLU::GenericDataList
 
-.. doxygenclass:: LLU::MContainer< MArgumentType::DataStore, PassingMode >
+.. doxygenclass:: LLU::MContainer< MArgumentType::DataStore >
    :members:
 
 GenericImage
 ~~~~~~~~~~~~~~~~~~~~~~~~
 .. doxygentypedef:: LLU::GenericImage
 
-.. doxygenclass:: LLU::MContainer< MArgumentType::Image, PassingMode >
+.. doxygenclass:: LLU::MContainer< MArgumentType::Image >
    :members:
 
 GenericNumericArray
 ~~~~~~~~~~~~~~~~~~~~~~~~
 .. doxygentypedef:: LLU::GenericNumericArray
 
-.. doxygenclass:: LLU::MContainer< MArgumentType::NumericArray, PassingMode >
+.. doxygenclass:: LLU::MContainer< MArgumentType::NumericArray >
    :members:
 
 GenericTensor
 ~~~~~~~~~~~~~~~~~~~~~~~~
 .. doxygentypedef:: LLU::GenericTensor
 
-.. doxygenclass:: LLU::MContainer< MArgumentType::Tensor, PassingMode >
+.. doxygenclass:: LLU::MContainer< MArgumentType::Tensor >
    :members:

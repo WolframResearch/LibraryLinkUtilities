@@ -28,27 +28,29 @@ In practice, what you will receive in a library function as input arguments from
 Similarly, there is one ``MArgument`` to store the result of your library function that you want to return to the Wolfram Language. You must also remember that
 some types of arguments need special treatment, for example you must call ``UTF8String_disown`` on string arguments to avoid memory leaks.
 
-Developers are encouraged to consult the `official LibraryLink guide <https://reference.wolfram.com/language/LibraryLink/tutorial/LibraryStructure.html#606935091>`_.
+Developers who are no familiar with this part of LibraryLink are encouraged to consult the `official guide <https://reference.wolfram.com/language/LibraryLink/tutorial/LibraryStructure.html#606935091>`_
+before reading on.
 
-LLU hides all those implementation details in the :cpp:class:`MArgumentManager<LLU::MArgumentManager>` class. You still need to know what are actual
-argument types but you can now extract arguments using member functions like :cpp:func:`getInteger<LLU::MArgumentManager::getInteger>`,
+LLU hides all those implementation details in the :cpp:class:`MArgumentManager<LLU::MArgumentManager>` class. You still need to know what the actual
+argument types are but you can now extract arguments using member functions like :cpp:func:`getInteger<LLU::MArgumentManager::getInteger>`,
 :cpp:func:`getString<LLU::MArgumentManager::getString>` etc. and set the resulting value with :cpp:func:`set<LLU::MArgumentManager::set>` without
 worrying about memory management.
 
 Examples
 ================
 
-Write a library function that adds two integers
+Write a library function that adds two integers. First thing you need to do is to create an instance of :cpp:class:`MArgumentManager<LLU::MArgumentManager>`
+initialized with all arguments to the library function:
 
 .. code-block:: cpp
 
    EXTERN_C DLLEXPORT int AddTwoIntegers(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
-       MArgumentManager mngr {libData, Argc, Args, Res};
+       LLU::MArgumentManager mngr {libData, Argc, Args, Res};
        auto n1 = mngr.get<mint>(0);  // get first (index = 0) argument, which is of type mint
        auto n2 = mngr.get<mint>(1);  // get second argument which is also an integer
 
        mngr.set(n1 + n2);  // set the sum of arguments to be the result
-       return ErrorCode::NoError;
+       return LLU::ErrorCode::NoError;
    }
 
 Such function, when compiled into a shared library, say :file:`myLib.so`, could be loaded into WolframLanguage and used like this:
@@ -59,6 +61,31 @@ Such function, when compiled into a shared library, say :file:`myLib.so`, could 
 
    AddInts[17, 25]
    (* = 42 *)
+
+
+Reducing boilerplate code
+=============================
+As you may know, a *LibraryLink function* is a function with one of the two supported signatures:
+
+.. code-block:: cpp
+
+  int f (WolframLibraryData libData, mint Argc, MArgument* Args, MArgument Res);
+
+or
+
+.. code-block:: cpp
+
+  int f (WolframLibraryData libData, WSLINK wslp);
+
+In `<LLU/LibraryLinkFunctionMacro.h>`:
+
+.. doxygendefine:: LIBRARY_LINK_FUNCTION
+
+.. doxygendefine:: LIBRARY_WSTP_FUNCTION
+
+Finally, there is also
+
+.. doxygendefine:: LLU_LIBRARY_FUNCTION
 
 
 User-defined types
@@ -105,7 +132,7 @@ The implementation of ``ConvertMoney`` in C++ would go along the lines:
 .. code-block:: cpp
 
    EXTERN_C DLLEXPORT int ConvertMoney(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
-       MArgumentManager mngr {libData, Argc, Args, Res};
+       LLU::MArgumentManager mngr {libData, Argc, Args, Res};
        auto amount = mngr.get<double>(0);
        auto oldCurrency = mngr.get<std::string>(1);
        auto newCurrency = mngr.get<std::string>(2);
@@ -114,7 +141,7 @@ The implementation of ``ConvertMoney`` in C++ would go along the lines:
        Money converted = myLib::convert(moneyToConvert, newCurrency);
 
        mngr.set(myLib::MoneyToDataList(converted));  // myLib::MoneyToDataList is a helper function to convert Money object to a DataList
-       return ErrorCode::NoError;
+       return LLU::ErrorCode::NoError;
    }
 
 
@@ -124,7 +151,7 @@ This is a fine code and if you are satisfied with it, you can stop reading here.
    :force:
 
    (* Load "ConvertMoney" function from "myLib.so" and assign it to ConvertMoney symbol *)
-   `LLU`LoadLibraryFunction[ConvertMoney, "myLib.so", "ConvertMoney", {"Money", String}, "Money"];
+   `LLU`PacletFunctionSet[ConvertMoney, "myLib.so", "ConvertMoney", {"Money", String}, "Money"];
 
    (* No need for separate higher-level wrapper because the types are translated by LLU now. *)
 
@@ -136,14 +163,14 @@ and in C++
 .. code-block:: cpp
 
    EXTERN_C DLLEXPORT int ConvertMoney(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
-       MArgumentManager mngr {libData, Argc, Args, Res};
+       LLU::MArgumentManager mngr {libData, Argc, Args, Res};
        auto moneyToConvert = mngr.get<Money>(0);
        auto newCurrency = mngr.get<std::string>(2);  // under the hood Money object is still sent as two values (Real + String), so new currency has index 2
 
        Money converted = myLib::convert(moneyToConvert, newCurrency);
 
        mngr.set(converted);
-       return ErrorCode::NoError;
+       return LLU::ErrorCode::NoError;
    }
 
 The point is to delegate the translation between your types and LibraryLink types to LLU, so that you can write cleaner code that does not distract readers
@@ -196,13 +223,13 @@ LLU how to work in the other direction, i.e. how to return ``Money`` objects via
 
     template<>
     void LLU::MArgumentManager::set<Money>(const Money& m) const {
-        DataList<MArgumentType::MArgument> moneyDS;
-        moneyDS.push_back<MArgumentType::Real>(m.amount);
-        moneyDS.push_back<MArgumentType::UTF8String>(const_cast<char*>(m.currency.c_str()));
+        DataList<NodeType::Any> moneyDS;
+        moneyDS.push_back(m.amount);
+        moneyDS.push_back(m.currency);
         set(moneyDS);
     }
 
-You can read more about :cpp:class:`DataList <template\<MArgumentType T, class PassingMode = Passing::Manual> LLU::DataList>` in the section
+You can read more about :cpp:class:`DataList <template\<typename T> LLU::DataList>` in the section
 about :doc:`containers`. The last step is to tell LLU how to turn incoming DataStores into Quantities in library functions that declare "Money" as return type:
 
 .. code-block:: mma
