@@ -16,10 +16,7 @@
 #include <string>
 #include <vector>
 
-#include "wstp.h"
-
-#include "WolframLibrary.h"
-
+#include "LLU/LibraryData.h"
 #include "LLU/ErrorLog/LibraryLinkError.h"
 #include "LLU/LibraryLinkFunctionMacro.h"
 #include "LLU/WSTP/WSStream.hpp"
