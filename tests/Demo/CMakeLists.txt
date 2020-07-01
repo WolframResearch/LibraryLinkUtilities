@@ -63,12 +63,14 @@ target_link_libraries(Demo PRIVATE LLU::LLU)
 install_paclet_files(
 		TARGET Demo
 		LLU_LOCATION ${LLU_ROOT}
+#		INSTALL_TO_LAYOUT  <- uncomment to have CMake install all paclet files to the SystemFiles/Links directory of your Mathematica installation
 )
 
-add_paclet_target(paclet
-		NAME Demo
-		VERIFY
-		INSTALL
-		TEST_FILE Tests/test.wl
+# Create a target that produces a proper .paclet file from the installed paclet layout. Requires Mathematica 12.1+.
+add_paclet_target(paclet            # target name
+		NAME Demo                   # paclet name
+		VERIFY                      # verify contents of the .paclet file
+		INSTALL                     # install to the user paclet directory
+		TEST_FILE Tests/test.wl     # run tests (test.wl may contain arbitrary WL code, not necessarily MUnit` tests)
 )
 

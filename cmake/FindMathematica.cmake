@@ -154,7 +154,7 @@ if (Mathematica_EXE)
 		get_filename_component(_MATHEMATICA_DIRECTORY ${Mathematica_EXE_DIRECTORY} DIRECTORY)
 	endif()
 
-	parse_mathematica_version(${_MATHEMATICA_DIRECTORY} Mathematica_Version)
+	parse_mathematica_version(${_MATHEMATICA_DIRECTORY} Mathematica_VERSION)
 
 	set(Mathematica_INSTALL_DIR ${_MATHEMATICA_DIRECTORY} CACHE PATH "Path to the root folder of Mathematica installation.")
 endif()
@@ -184,7 +184,7 @@ find_package_handle_standard_args(Mathematica
 		REQUIRED_VARS
 			Mathematica_EXE
 		VERSION_VAR
-			Mathematica_Version
+			Mathematica_VERSION
 		FAIL_MESSAGE
 			"Could not find Mathematica, please set the path to Mathematica installation folder in the variable Mathematica_INSTALL_DIR"
 		HANDLE_COMPONENTS)

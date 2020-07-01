@@ -6,7 +6,7 @@ Paclet[
 	"Name" -> "@CMAKE_PROJECT_NAME@",
 	"Version" -> "@CMAKE_PROJECT_VERSION@",
 	"Description" -> "@CMAKE_PROJECT_DESCRIPTION@",
-	"WolframVersion" -> "12.1+",
+	"WolframVersion" -> "12.0+",
 	"Updating" -> Automatic,
 	"Extensions" -> {
 		{"Kernel", Root -> "Kernel", Context -> "@CMAKE_PROJECT_NAME@`"},
