@@ -37,37 +37,27 @@ Alternatively, a zip package can be downloaded from GitHub containing a snapshot
 2. Configure
 =========================================
 
-Dependencies
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 LLU depends on WSTP and WolframLibrary so both must be installed on your system.
 Below is a quick overview of CMake variables which you can use to customize build process. Let's consider a number of possible scenarios:
 
 1. Use WSTP and WolframLibrary from a standard Mathematica installation:
 
-   If you have Mathematica **12.1** installed in a default location, the build configuration step should succeed out of the box without setting any variables.
-   If you have other versions of Mathematica installed in a default location you only need to specify ``MATHEMATICA_VERSION``, for example:
+   If you have Mathematica **12.0** or later installed in a default location or on the system PATH, the build configuration step should succeed out of the box
+   without setting any variables.
+   Otherwise, set ``Mathematica_INSTALL_DIR`` to an absolute path to Mathematica installation directory:
 
-   .. code-block:: bash
+   .. code-block:: console
 
-      cmake -DMATHEMATICA_VERSION=12.0 ..
-
-2. Use WSTP and WolframLibrary from a non-standard Mathematica installation:
-
-   .. code-block:: bash
-
-      cmake -DMATHEMATICA_INSTALL_DIR=/home/jerome/path/to/Mathematica ..
+      cmake -DMathematica_INSTALL_DIR=/home/jerome/Mathematica/12.1 ..
 
 3. Use WSTP and WolframLibrary from arbitrary locations
 
    If WSTP and WolframLibrary are not located in a Mathematica installation, two paths must be passed to CMake:
 
-   .. code-block:: bash
+   .. code-block:: console
 
       cmake -DWOLFRAM_LIBRARY_PATH=/path/to/WolframLibrary -DWOLFRAM_WSTP_PATH=/my/own/WSTP/installation ..
 
-Other Options
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Other useful cmake variables used by LLU include:
 
@@ -81,30 +71,37 @@ Other useful cmake variables used by LLU include:
 
 After successful configuration you are just one :code:`make && make install` away from the end.
 
-When you have the library installed you may want to run unit tests to confirm that everything went well. Currently there are 10 test modules defined:
+When you have the library installed you may want to run unit tests to confirm that everything went well. Currently there are 14 test modules defined:
 
+- Async
 - DataList
 - ErrorReporting
 - GenericContainers
 - Image
-- WSTP
+- ManagedExpressions
+- MArgumentManager
 - NumericArray
 - ProgressMonitor
 - Scalar
 - String
 - Tensor
+- Utilities
+- WSTP
 
-You can run all of them with :code:`make test` or :code:`ctest`. It is possible to run a specific test module, for example
+You can run all of them (except for ProgressMonitor tests which are contained in a Mathematica notebook and excluded from batch testing) with
+a :program:`ctest` command or by running the ``test`` CMake target. It is possible to run a specific test module, for example
 
-.. code-block:: bash
+.. code-block:: console
 
 	ctest -R WSTP
 
-Test targets actually call :code:`wolframscript` under the hood, it must be installed in your system. This means that :code:`make test` will not show individual test failures.
+``test`` target actually calls :code:`wolframscript` under the hood, so it must be installed in your system. This also means that the ``test`` target will not show
+individual test failures.
 
-To improve the test feedback, another CMake target called :code:`TestWithOutputOnFailure` is defined. Running:
+To improve unit test feedback, another CMake target called :code:`TestWithOutputOnFailure` is defined. Running this target (the exact command depends on the
+generator used):
 
-.. code-block:: bash
+.. code-block:: console
 
 	make TestWithOutputOnFailure
 
@@ -118,7 +115,9 @@ After LLU is installed, in your project's CMakeLists.txt call:
 
 .. code-block:: cmake
 
-   find_package(LLU)
+   set(LLU_ROOT /path/to/LLU/installation/dir)
+
+   find_package(LLU NO_MODULE PATH_SUFFIXES LLU)
 
 and later
 
@@ -130,6 +129,22 @@ The last step is to copy the file with Wolfram Language code to use the top-leve
 
 .. code-block:: cmake
 
-   install(FILES "${LLU_LOCATION}/share/LibraryLinkUtilities.wl"
+   install(FILES "${LLU_ROOT}/share/LibraryLinkUtilities.wl"
      DESTINATION "${PACLET_NAME}/LibraryResources"
    )
+
+5. Example - demo project
+=========================================
+
+All of the above can be seen in action in the demo project that is shipped with LLU in the :file:`tests/Demo` directory. The Demo project is a complete
+Wolfram Language paclet (to learn more about WL paclets and their development see `this guide <https://www.wolframcloud.com/obj/tgayley/Published/PacletDevelopment.nb>`_)
+and it can be built and used as follows:
+
+1. Install LLU as described above. Let's say you chose /my/workspace/LLU as the install directory.
+2. Navigate to :file:`tests/Demo` in the LLU source directory.
+3. Run the following commands (or equivalent for your system):
+
+.. code-block:: console
+
+	cmake -B build
+	cd build/
