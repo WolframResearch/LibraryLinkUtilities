@@ -160,5 +160,5 @@ namespace LLU {
 		log<L>(LibraryData::API(), line, fileName, function, std::forward<T>(args)...);
 	}
 
-}
+}  // namespace LLU
 #endif	  // LLU_ERRORLOG_LOGGER_H

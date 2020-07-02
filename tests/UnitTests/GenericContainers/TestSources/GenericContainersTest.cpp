@@ -9,7 +9,7 @@
 
 using LLU::Ownership;
 using LLU::Passing;
-using namespace LLU::ErrorCode;
+namespace ErrorCode = LLU::ErrorCode;
 
 std::string to_string(Ownership o) {
 	switch (o) {
@@ -47,21 +47,21 @@ LIBRARY_LINK_FUNCTION(IsOwnerAutomatic) {
 	LLU::MArgumentManager mngr {libData, Argc, Args, Res};
 	auto img = mngr.getGenericImage(0);
 	mngr.set(libraryLinkOwnedQ(img));
-	return NoError;
+	return ErrorCode::NoError;
 }
 
 LIBRARY_LINK_FUNCTION(IsOwnerManual) {
 	LLU::MArgumentManager mngr {libData, Argc, Args, Res};
 	auto t = mngr.getGenericTensor<Passing::Manual>(0);
 	mngr.set(libraryOwnedQ(t));
-	return NoError;
+	return ErrorCode::NoError;
 }
 
 LIBRARY_LINK_FUNCTION(IsOwnerShared) {
 	LLU::MArgumentManager mngr {libData, Argc, Args, Res};
 	auto na = mngr.getGenericNumericArray<Passing::Shared>(0);
 	mngr.set(isShared(na));
-	return NoError;
+	return ErrorCode::NoError;
 }
 
 LIBRARY_LINK_FUNCTION(CloneAutomatic) {
@@ -69,7 +69,7 @@ LIBRARY_LINK_FUNCTION(CloneAutomatic) {
 	auto img = mngr.getGenericImage(0);
 	LLU::GenericImage clone {img.clone()};
 	mngr.set(clone);
-	return (libraryLinkOwnedQ(img) && libraryLinkOwnedQ(clone)) ? NoError : MemoryError;
+	return (libraryLinkOwnedQ(img) && libraryLinkOwnedQ(clone)) ? ErrorCode::NoError : ErrorCode::MemoryError;
 }
 
 LIBRARY_LINK_FUNCTION(CloneManual) {
@@ -77,9 +77,10 @@ LIBRARY_LINK_FUNCTION(CloneManual) {
 	auto t = mngr.getGenericTensor<Passing::Manual>(0);
 	LLU::GenericTensor clone {t.clone()};
 	LLU::Tensor<mint> tensor {std::move(t)};
-	tensor[0] = -324;
+	tensor[0] = -1;
 	mngr.set(clone);
-	return (libraryOwnedQ(t) && libraryOwnedQ(tensor) && libraryLinkOwnedQ(clone)) ? NoError : MemoryError;
+	// NOLINTNEXTLINE(bugprone-use-after-move): deliberate use after move for testing purposes
+	return (libraryOwnedQ(t) && libraryOwnedQ(tensor) && libraryLinkOwnedQ(clone)) ? ErrorCode::NoError : ErrorCode::MemoryError;
 }
 
 LIBRARY_LINK_FUNCTION(CloneShared) {
@@ -87,7 +88,7 @@ LIBRARY_LINK_FUNCTION(CloneShared) {
 	auto na = mngr.getGenericNumericArray<Passing::Shared>(0);
 	LLU::GenericNumericArray clone {na.clone()};
 	mngr.set(clone);
-	return (isShared(na) && libraryLinkOwnedQ(clone)) ? NoError : MemoryError;
+	return (isShared(na) && libraryLinkOwnedQ(clone)) ? ErrorCode::NoError : ErrorCode::MemoryError;
 }
 
 LIBRARY_LINK_FUNCTION(MoveAutomatic) {
@@ -98,7 +99,8 @@ LIBRARY_LINK_FUNCTION(MoveAutomatic) {
 	LLU_DEBUG("Automatic arg owner: ", to_string(img.getOwner()), ", clone owner: ", to_string(clone.getOwner()));
 	mngr.set(clone);
 	LLU_DEBUG("Automatic arg owner: ", to_string(img.getOwner()), ", clone owner: ", to_string(clone.getOwner()));
-	return (libraryLinkOwnedQ(img) && libraryLinkOwnedQ(clone)) ? NoError : MemoryError;
+	// NOLINTNEXTLINE(bugprone-use-after-move): deliberate use after move for testing purposes
+	return (libraryLinkOwnedQ(img) && libraryLinkOwnedQ(clone)) ? ErrorCode::NoError : ErrorCode::MemoryError;
 }
 
 LIBRARY_LINK_FUNCTION(MoveManual) {
@@ -111,7 +113,8 @@ LIBRARY_LINK_FUNCTION(MoveManual) {
 	LLU_DEBUG("Manual arg owner: ", to_string(t.getOwner()), ", clone owner: ", to_string(clone.getOwner()));
 	mngr.set(clone);
 	LLU_DEBUG("Manual arg owner: ", to_string(t.getOwner()), ", clone owner: ", to_string(clone.getOwner()));
-	return (libraryOwnedQ(t) && libraryOwnedQ(tensor) && libraryLinkOwnedQ(clone)) ? NoError : MemoryError;
+	// NOLINTNEXTLINE(bugprone-use-after-move): deliberate use after move for testing purposes
+	return (libraryOwnedQ(t) && libraryOwnedQ(tensor) && libraryLinkOwnedQ(clone)) ? ErrorCode::NoError : ErrorCode::MemoryError;
 }
 
 LIBRARY_LINK_FUNCTION(MoveShared) {
@@ -122,5 +125,6 @@ LIBRARY_LINK_FUNCTION(MoveShared) {
 	LLU_DEBUG("Shared arg owner: ", to_string(na.getOwner()), ", clone owner: ", to_string(clone.getOwner()));
 	mngr.set(clone);
 	LLU_DEBUG("Shared arg owner: ", to_string(na.getOwner()), ", clone owner: ", to_string(clone.getOwner()));
-	return (isShared(na) && isShared(clone)) ? NoError : MemoryError;
+	// NOLINTNEXTLINE(bugprone-use-after-move): deliberate use after move for testing purposes
+	return (isShared(na) && isShared(clone)) ? ErrorCode::NoError : ErrorCode::MemoryError;
 }

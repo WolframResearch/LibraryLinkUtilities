@@ -184,6 +184,6 @@ namespace LLU {
 	/// Alias for GenericThreadPool with ThreadsafeQueue and WorkStealingQueue storing Async::FunctionWrappers.
 	/// Good choice for a thread pool if the tasks that will be executed involve submitting new tasks for the pool.
 	using ThreadPool = GenericThreadPool<ThreadsafeQueue<Async::FunctionWrapper>, WorkStealingQueue<std::deque<Async::FunctionWrapper>>>;
-}
+}  // namespace LLU
 
 #endif	  // LLU_ASYNC_THREADPOOL_H

@@ -21,9 +21,9 @@ namespace LLU {
 	public:
 		TensorView() = default;
 
-		/* implicit */ TensorView(const GenericTensor& gTen) : t {gTen.getContainer()} {}
+		TensorView(const GenericTensor& gTen) : t {gTen.getContainer()} {}	  // NOLINT: implicit conversion to a view is useful and harmless
 
-		/* implicit */ TensorView(MTensor mt) : t {mt} {}
+		TensorView(MTensor mt) : t {mt} {}	  // NOLINT
 
 		/// @copydoc TensorInterface::getRank()
 		mint getRank() const override {
@@ -51,7 +51,7 @@ namespace LLU {
 				case MType_Integer: return LibraryData::API()->MTensor_getIntegerData(t);
 				case MType_Real: return LibraryData::API()->MTensor_getRealData(t);
 				case MType_Complex: return LibraryData::API()->MTensor_getComplexData(t);
-				default: ErrorManager::throwException(ErrorName::TensorTypeError);
+				default: return nullptr;
 			}
 		}
 
@@ -64,19 +64,19 @@ namespace LLU {
 	public:
 		TensorTypedView() = default;
 
-		/* implicit */ TensorTypedView(const GenericTensor& gTen) : TensorView(gTen) {
+		TensorTypedView(const GenericTensor& gTen) : TensorView(gTen) {	   // NOLINT: implicit conversion to a view is useful and harmless
 			if (TensorType<T> != type()) {
 				ErrorManager::throwException(ErrorName::TensorTypeError);
 			}
 		}
 
-		/* implicit */ TensorTypedView(TensorView tv) : TensorView(std::move(tv)) {
+		TensorTypedView(TensorView tv) : TensorView(std::move(tv)) {	// NOLINT
 			if (TensorType<T> != type()) {
 				ErrorManager::throwException(ErrorName::TensorTypeError);
 			}
 		}
 
-		/* implicit */ TensorTypedView(MTensor mt) : TensorView(mt) {
+		TensorTypedView(MTensor mt) : TensorView(mt) {	  // NOLINT
 			if (TensorType<T> != type()) {
 				ErrorManager::throwException(ErrorName::TensorTypeError);
 			}
@@ -107,6 +107,6 @@ namespace LLU {
 		return asTypedTensor(TensorView {t}, std::forward<F>(callable));
 	}
 
-}
+}  // namespace LLU
 
 #endif	  // LLU_CONTAINERS_VIEWS_TENSOR_HPP

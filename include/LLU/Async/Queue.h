@@ -168,5 +168,5 @@ namespace LLU {
 		std::lock_guard<std::mutex> head_lock(head_mutex);
 		return (head.get() == getTail());
 	}
-}
+}  // namespace LLU
 #endif	  // LLU_ASYNC_QUEUE_H

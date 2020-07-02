@@ -1,5 +1,5 @@
-#include "LLU/LLU.h"
-#include "LLU/LibraryLinkFunctionMacro.h"
+#include <LLU/LLU.h>
+#include <LLU/LibraryLinkFunctionMacro.h>
 
 using LLU::ImageView;
 

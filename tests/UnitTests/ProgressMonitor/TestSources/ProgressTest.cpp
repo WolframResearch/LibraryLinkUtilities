@@ -6,9 +6,9 @@
 #include <chrono>
 #include <thread>
 
-#include "LLU/LLU.h"
-#include "LLU/LibraryLinkFunctionMacro.h"
-#include "LLU/ProgressMonitor.h"
+#include <LLU/LLU.h>
+#include <LLU/LibraryLinkFunctionMacro.h>
+#include <LLU/ProgressMonitor.h>
 
 using namespace std::chrono_literals;
 

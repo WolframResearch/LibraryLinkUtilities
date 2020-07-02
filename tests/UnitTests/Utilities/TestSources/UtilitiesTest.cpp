@@ -14,7 +14,7 @@ public:
 		f = LLU::openFile(path, mode); // open with default Import/Export policy
 	}
 private:
-	LLU::FilePtr f {nullptr, [](FILE*) { return 0; }};
+	LLU::FilePtr f {nullptr, [](FILE* /*unused*/) { return 0; }};
 };
 
 class FileStream {
@@ -126,7 +126,8 @@ LLU_LIBRARY_FUNCTION(Char16UTF8UTF16Conversion) {
 LLU_LIBRARY_FUNCTION(UTF8ToUTF16Bytes) {
 	auto u8str = mngr.getString(0);
 	std::u16string u16str = LLU::fromUTF8toUTF16<char16_t>(u8str);
-	LLU::NumericArray<uint16_t> u16bytes {reinterpret_cast<const uint16_t*>(u16str.data()), reinterpret_cast<const uint16_t*>(u16str.data() + u16str.length())};
+	LLU::NumericArray<uint16_t> u16bytes {0, LLU::MArrayDimensions {static_cast<mint>(u16str.length())}};
+	std::copy(u16str.cbegin(), u16str.cend(), u16bytes.begin());
 	mngr.set(u16bytes);
 }
 
@@ -156,7 +157,8 @@ LLU_LIBRARY_FUNCTION(Char32UTF8UTF32Conversion) {
 LLU_LIBRARY_FUNCTION(UTF8ToUTF32Bytes) {
 	auto u8str = mngr.getString(0);
 	std::u32string u32str = LLU::fromUTF8toUTF32<char32_t>(u8str);
-	LLU::NumericArray<uint32_t> u32bytes {reinterpret_cast<const uint32_t*>(u32str.data()), reinterpret_cast<const uint32_t*>(u32str.data() + u32str.length())};
+	LLU::NumericArray<uint32_t> u32bytes {0, LLU::MArrayDimensions {static_cast<mint>(u32str.length())}};
+	std::copy(u32str.cbegin(), u32str.cend(), u32bytes.begin());
 	mngr.set(u32bytes);
 }
 

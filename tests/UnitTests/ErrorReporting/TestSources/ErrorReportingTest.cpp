@@ -27,7 +27,7 @@ EXTERN_C DLLEXPORT int WolframLibrary_initialize(WolframLibraryData libData) {
 	return 0;
 }
 
-EXTERN_C DLLEXPORT int ReadData(WolframLibraryData, mint Argc, MArgument* Args, MArgument Res) {
+EXTERN_C DLLEXPORT int ReadData(WolframLibraryData /*unused*/, mint Argc, MArgument* Args, MArgument Res) {
 	auto err = LLErrorCode::NoError;
 	try {
 		LLU::MArgumentManager mngr(Argc, Args, Res);
@@ -36,8 +36,6 @@ EXTERN_C DLLEXPORT int ReadData(WolframLibraryData, mint Argc, MArgument* Args, 
 		ErrorManager::throwException("DataFileError", fileName, fileNameLen, "data type is not supported");
 	} catch (const LibraryLinkError& e) {
 		err = e.which();
-	} catch (...) {
-		err = LLErrorCode::FunctionError;
 	}
 	return err;
 }
@@ -51,80 +49,66 @@ LIBRARY_LINK_FUNCTION(ReadDataLocalWLD) {
 		ErrorManager::throwException(libData, "DataFileError", fileName, fileNameLen, "data type is not supported");
 	} catch (const LibraryLinkError& e) {
 		err = e.which();
-	} catch (...) {
-		err = LLErrorCode::FunctionError;
 	}
 	return err;
 }
 
-EXTERN_C DLLEXPORT int RepeatedTemplate(WolframLibraryData, mint, MArgument*, MArgument) {
+EXTERN_C DLLEXPORT int RepeatedTemplate(WolframLibraryData /*unused*/, mint /*unused*/, MArgument* /*unused*/, MArgument /*unused*/) {
 	auto err = LLErrorCode::NoError;
 	try {
 		ErrorManager::throwException("RepeatedTemplateError", "x", "y", "z");
 	} catch (const LibraryLinkError& e) {
 		err = e.which();
-	} catch (...) {
-		err = LLErrorCode::FunctionError;
 	}
 	return err;
 }
 
-EXTERN_C DLLEXPORT int NumberedSlots(WolframLibraryData, mint, MArgument*, MArgument) {
+EXTERN_C DLLEXPORT int NumberedSlots(WolframLibraryData /*unused*/, mint /*unused*/, MArgument* /*unused*/, MArgument /*unused*/) {
 	auto err = LLErrorCode::NoError;
 	try {
 		ErrorManager::throwException("NumberedSlotsError", 1, std::vector<std::string> {"2", "3", "4"});
 	} catch (const LibraryLinkError& e) {
 		err = e.which();
-	} catch (...) {
-		err = LLErrorCode::FunctionError;
 	}
 	return err;
 }
 
-EXTERN_C DLLEXPORT int RepeatedNumberTemplate(WolframLibraryData, mint, MArgument*, MArgument) {
+EXTERN_C DLLEXPORT int RepeatedNumberTemplate(WolframLibraryData /*unused*/, mint /*unused*/, MArgument* /*unused*/, MArgument /*unused*/) {
 	auto err = LLErrorCode::NoError;
 	try {
 		ErrorManager::throwException("RepeatedNumberTemplateError", "x", "y", "z");
 	} catch (const LibraryLinkError& e) {
 		err = e.which();
-	} catch (...) {
-		err = LLErrorCode::FunctionError;
 	}
 	return err;
 }
 
-EXTERN_C DLLEXPORT int TooManyValues(WolframLibraryData, mint, MArgument*, MArgument) {
+EXTERN_C DLLEXPORT int TooManyValues(WolframLibraryData /*unused*/, mint /*unused*/, MArgument* /*unused*/, MArgument /*unused*/) {
 	auto err = LLErrorCode::NoError;
 	try {
 		ErrorManager::throwException("NumberedSlotsError", 1, 2, 3, 4, 5);
 	} catch (const LibraryLinkError& e) {
 		err = e.which();
-	} catch (...) {
-		err = LLErrorCode::FunctionError;
 	}
 	return err;
 }
 
-EXTERN_C DLLEXPORT int TooFewValues(WolframLibraryData, mint, MArgument*, MArgument) {
+EXTERN_C DLLEXPORT int TooFewValues(WolframLibraryData /*unused*/, mint /*unused*/, MArgument* /*unused*/, MArgument /*unused*/) {
 	auto err = LLErrorCode::NoError;
 	try {
 		ErrorManager::throwException("NumberedSlotsError");
 	} catch (const LibraryLinkError& e) {
 		err = e.which();
-	} catch (...) {
-		err = LLErrorCode::FunctionError;
 	}
 	return err;
 }
 
-EXTERN_C DLLEXPORT int MixedSlots(WolframLibraryData, mint, MArgument*, MArgument) {
+EXTERN_C DLLEXPORT int MixedSlots(WolframLibraryData /*unused*/, mint /*unused*/, MArgument* /*unused*/, MArgument /*unused*/) {
 	auto err = LLErrorCode::NoError;
 	try {
 		ErrorManager::throwException("MixedSlotsError", 1, 2, 3, 4);
 	} catch (const LibraryLinkError& e) {
 		err = e.which();
-	} catch (...) {
-		err = LLErrorCode::FunctionError;
 	}
 	return err;
 }
@@ -224,10 +208,10 @@ LIBRARY_LINK_FUNCTION(ReadDataDelayedParametersTransfer) {
 	return err;
 }
 
-EXTERN_C DLLEXPORT int EmptyLibDataException(WolframLibraryData, mint, MArgument*, MArgument) {
+EXTERN_C DLLEXPORT int EmptyLibDataException(WolframLibraryData /*unused*/, mint /*unused*/, MArgument* /*unused*/, MArgument /*unused*/) {
 	auto err = LLErrorCode::NoError;
 	try {
-		auto currentLibData = LLU::LibraryData::API();
+		auto* currentLibData = LLU::LibraryData::API();
 		LLU::LibraryData::setLibraryData(nullptr);
 		LLU::LibraryData::API(); // this should throw an exception
 		LLU::LibraryData::setLibraryData(currentLibData);

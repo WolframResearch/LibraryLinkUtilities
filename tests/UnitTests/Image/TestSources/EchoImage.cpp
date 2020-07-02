@@ -1,8 +1,8 @@
 #include <cstdint>
 #include <type_traits>
 
-#include "LLU/LLU.h"
-#include "LLU/LibraryLinkFunctionMacro.h"
+#include <LLU/LLU.h>
+#include <LLU/LibraryLinkFunctionMacro.h>
 
 LLU_LIBRARY_FUNCTION(EchoImage1) {
 	mngr.operateOnImage(0, [&mngr](auto im1) {

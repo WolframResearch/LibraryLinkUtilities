@@ -137,7 +137,7 @@ namespace LLU {
 
 	/* Explicit specialization for member functions of PrimitiveWrapper class */
 
-#define ARGUMENT_DEFINE_SPECIALIZATIONS_OF_MEMBER_FUNCTIONS(ArgType)                                              \
+#define LLU_ARGUMENT_DEFINE_SPECIALIZATIONS_OF_MEMBER_FUNCTIONS(ArgType)                                              \
 	template<>                                                                                                    \
 	auto PrimitiveWrapper<MArgumentType::ArgType>::get()->typename PrimitiveWrapper::value_type&;                                 \
 	template<>                                                                                                    \
@@ -151,16 +151,16 @@ namespace LLU {
 	template<>                                                                                                    \
 	void PrimitiveWrapper<MArgumentType::ArgType>::set(typename PrimitiveWrapper::value_type newValue);
 
-	ARGUMENT_DEFINE_SPECIALIZATIONS_OF_MEMBER_FUNCTIONS(Boolean)
-	ARGUMENT_DEFINE_SPECIALIZATIONS_OF_MEMBER_FUNCTIONS(Integer)
-	ARGUMENT_DEFINE_SPECIALIZATIONS_OF_MEMBER_FUNCTIONS(Real)
-	ARGUMENT_DEFINE_SPECIALIZATIONS_OF_MEMBER_FUNCTIONS(Complex)
-	ARGUMENT_DEFINE_SPECIALIZATIONS_OF_MEMBER_FUNCTIONS(Tensor)
-	ARGUMENT_DEFINE_SPECIALIZATIONS_OF_MEMBER_FUNCTIONS(DataStore)
-	ARGUMENT_DEFINE_SPECIALIZATIONS_OF_MEMBER_FUNCTIONS(SparseArray)
-	ARGUMENT_DEFINE_SPECIALIZATIONS_OF_MEMBER_FUNCTIONS(NumericArray)
-	ARGUMENT_DEFINE_SPECIALIZATIONS_OF_MEMBER_FUNCTIONS(Image)
-	ARGUMENT_DEFINE_SPECIALIZATIONS_OF_MEMBER_FUNCTIONS(UTF8String)
+	LLU_ARGUMENT_DEFINE_SPECIALIZATIONS_OF_MEMBER_FUNCTIONS(Boolean)
+	LLU_ARGUMENT_DEFINE_SPECIALIZATIONS_OF_MEMBER_FUNCTIONS(Integer)
+	LLU_ARGUMENT_DEFINE_SPECIALIZATIONS_OF_MEMBER_FUNCTIONS(Real)
+	LLU_ARGUMENT_DEFINE_SPECIALIZATIONS_OF_MEMBER_FUNCTIONS(Complex)
+	LLU_ARGUMENT_DEFINE_SPECIALIZATIONS_OF_MEMBER_FUNCTIONS(Tensor)
+	LLU_ARGUMENT_DEFINE_SPECIALIZATIONS_OF_MEMBER_FUNCTIONS(DataStore)
+	LLU_ARGUMENT_DEFINE_SPECIALIZATIONS_OF_MEMBER_FUNCTIONS(SparseArray)
+	LLU_ARGUMENT_DEFINE_SPECIALIZATIONS_OF_MEMBER_FUNCTIONS(NumericArray)
+	LLU_ARGUMENT_DEFINE_SPECIALIZATIONS_OF_MEMBER_FUNCTIONS(Image)
+	LLU_ARGUMENT_DEFINE_SPECIALIZATIONS_OF_MEMBER_FUNCTIONS(UTF8String)
 
 	template<>
 	auto PrimitiveWrapper<MArgumentType::MArgument>::get() -> typename PrimitiveWrapper::value_type&;
@@ -177,7 +177,7 @@ namespace LLU {
 	template<>
 	void PrimitiveWrapper<MArgumentType::MArgument>::addToDataStore(DataStore ds, const std::string& name, MArgumentType actualType) const;
 
-#undef ARGUMENT_DEFINE_SPECIALIZATIONS_OF_MEMBER_FUNCTIONS
+#undef LLU_ARGUMENT_DEFINE_SPECIALIZATIONS_OF_MEMBER_FUNCTIONS
 
 }	 // namespace LLU
 

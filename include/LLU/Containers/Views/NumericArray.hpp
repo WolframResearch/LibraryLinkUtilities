@@ -21,9 +21,9 @@ namespace LLU {
 	public:
 		NumericArrayView() = default;
 
-		/* implicit */ NumericArrayView(const GenericNumericArray& gNA) : na{gNA.getContainer()} {}
+		NumericArrayView(const GenericNumericArray& gNA) : na {gNA.getContainer()} {}	 // NOLINT: implicit conversion is useful and harmless
 
-		/* implicit */ NumericArrayView(MNumericArray mna) : na{mna} {}
+		NumericArrayView(MNumericArray mna) : na {mna} {}	 // NOLINT:
 
 		/// @copydoc NumericArrayInterface::getRank()
 		mint getRank() const override {
@@ -59,19 +59,19 @@ namespace LLU {
 	public:
 		NumericArrayTypedView() = default;
 
-		/* implicit */ NumericArrayTypedView(const GenericNumericArray& gNA) : NumericArrayView(gNA) {
+		NumericArrayTypedView(const GenericNumericArray& gNA) : NumericArrayView(gNA) {	   // NOLINT: implicit conversion is useful and harmless
 			if (NumericArrayType<T> != type()) {
 				ErrorManager::throwException(ErrorName::NumericArrayTypeError);
 			}
 		}
 
-		/* implicit */ NumericArrayTypedView(NumericArrayView nav) : NumericArrayView(std::move(nav)) {
+		NumericArrayTypedView(NumericArrayView nav) : NumericArrayView(std::move(nav)) {	// NOLINT
 			if (NumericArrayType<T> != type()) {
 				ErrorManager::throwException(ErrorName::NumericArrayTypeError);
 			}
 		}
 
-		/* implicit */ NumericArrayTypedView(MNumericArray mna) : NumericArrayView(mna) {
+		NumericArrayTypedView(MNumericArray mna) : NumericArrayView(mna) {	  // NOLINT
 			if (NumericArrayType<T> != type()) {
 				ErrorManager::throwException(ErrorName::NumericArrayTypeError);
 			}
@@ -112,6 +112,6 @@ namespace LLU {
 	auto asTypedNumericArray(MNumericArray na, F&& callable) {
 		return asTypedNumericArray(NumericArrayView {na}, std::forward<F>(callable));
 	}
-}
+}  // namespace LLU
 
 #endif	  // LLU_CONTAINERS_VIEWS_NUMERICARRAY_HPP

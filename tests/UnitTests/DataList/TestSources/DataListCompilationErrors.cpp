@@ -5,9 +5,9 @@
  * @brief	Source code for DataList unit tests containing functions that should fail at compile stage.
  */
 
-#include "LLU/LLU.h"
-#include "LLU/LibraryLinkFunctionMacro.h"
-#include "LLU/MArgument.h"
+#include <LLU/LLU.h>
+#include <LLU/LibraryLinkFunctionMacro.h>
+#include <LLU/MArgument.h>
 
 LLU_LIBRARY_FUNCTION(WrongNodeType) {
 	auto dsIn = mngr.getDataList<LLU::GenericTensor>(0);
@@ -31,11 +31,11 @@ LLU_LIBRARY_FUNCTION(AddMTensorByType) {
 	auto dsIn = mngr.getGenericDataList(0);
 	dsIn.push_back(LLU::Tensor<mint> {2, 3, 4, 5, 6});	   // OK
 
-	auto rawMTensor = LLU::Tensor<mint> {2, 3, 4, 5, 6}.abandonContainer();
+	auto* rawMTensor = LLU::Tensor<mint> {2, 3, 4, 5, 6}.abandonContainer();
 	dsIn.push_back<LLU::MArgumentType::Tensor>(rawMTensor);  // OK
 	dsIn.push_back(rawMTensor);  // static assert failure
 
-	auto rawMNumericArray = LLU::NumericArray<mint> {2, 3, 4, 5, 6}.abandonContainer();
+	auto* rawMNumericArray = LLU::NumericArray<mint> {2, 3, 4, 5, 6}.abandonContainer();
 	dsIn.push_back(rawMNumericArray);  // static assert failure
 	mngr.set(dsIn);
 }

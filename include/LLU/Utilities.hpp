@@ -110,7 +110,7 @@ namespace LLU {
 	 * @tparam 	Ts - variadic template parameter, any number of arbitrary types
 	 */
 	template<typename... Ts>
-	void Unused([[maybe_unused]] Ts&&... args) {}
+	void Unused(Ts&&... /* args */) {}
 
 	/**
 	 * @brief	Get a type that inherits from false_type and ignores the template parameter completely
