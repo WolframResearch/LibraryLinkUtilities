@@ -31,22 +31,22 @@ EndRequirement[];
 	TestID -> "NumericArrayTestSuite-20190910-N9N5N6"
 ]*)
 
-Test[
+ConditionalTest[ExactTest,
 	emptyVector[]
 	,
-	If[$VersionNumber == 12.0, {}, $Failed]
+	{$VersionNumber == 12.0, {}, {}}
 	,
-	If[$VersionNumber == 12.0, {}, {Message[LibraryFunction::nanull, NumericArray]}]
+	{$VersionNumber > 12.0, $Failed, Message[LibraryFunction::nanull, NumericArray]}
 	,
 	TestID -> "NumericArrayTestSuite-20190910-L4P0L7"
 ];
 
-Test[
+ConditionalTest[ExactTest,
 	Dimensions @ emptyMatrix[]
 	,
-	If[$VersionNumber == 12.0, {3, 5, 0}, Dimensions @ $Failed]
+	{$VersionNumber == 12.0, {3, 5, 0}, {}}
 	,
-	If[$VersionNumber == 12.0, {}, {Message[LibraryFunction::nanull, NumericArray]}]
+	{$VersionNumber > 12.0, Dimensions @ $Failed, Message[LibraryFunction::nanull, NumericArray]}
 	,
 	TestID -> "NumericArrayTestSuite-20190910-C1R3B0"
 ];
@@ -64,19 +64,32 @@ Test[
 	TestID -> "NumericArrayTestSuite-20190910-S4B6X0"
 ];
 
-TestMatch[
+ConditionalTest[TestMatch,
 	Normal @* testDimensions /@ {{0}, {3}, {3, 0}, {3, 2}, {3, 2, 0}, {3, 2, 4}}
 	,
 	{
-		$Failed | {},
-		{0., 0., 0.},
-		$Failed |  {{}, {}, {}},
-		{{0., 0.}, {0., 0.}, {0., 0.}},
-		$Failed |  {{{}, {}}, {{}, {}}, {{}, {}}},
-		{{{0., 0., 0., 0.}, {0., 0., 0., 0.}}, {{0., 0., 0., 0.}, {0., 0., 0., 0.}}, {{0., 0., 0., 0.}, {0., 0., 0., 0.}}}
+		$VersionNumber == 12.0, {
+			{},
+			{0., 0., 0.},
+			{{}, {}, {}},
+			{{0., 0.}, {0., 0.}, {0., 0.}},
+			{{{}, {}}, {{}, {}}, {{}, {}}},
+			{{{0., 0., 0., 0.}, {0., 0., 0., 0.}}, {{0., 0., 0., 0.}, {0., 0., 0., 0.}}, {{0., 0., 0., 0.}, {0., 0., 0., 0.}}}
+		},
+		{}
 	}
 	,
-	{Message[LibraryFunction::nanull, NumericArray]...}
+	{
+		$VersionNumber > 12.0, {
+			$Failed,
+			{0., 0., 0.},
+			$Failed,
+			{{0., 0.}, {0., 0.}, {0., 0.}},
+			$Failed,
+			{{{0., 0., 0., 0.}, {0., 0., 0., 0.}}, {{0., 0., 0., 0.}, {0., 0., 0., 0.}}, {{0., 0., 0., 0.}, {0., 0., 0., 0.}}}
+		},
+		{Message[LibraryFunction::nanull, NumericArray]..}
+	}
 	,
 	TestID -> "NumericArrayTestSuite-20190910-N6W9L8"
 ];

@@ -18,6 +18,9 @@ TestExecute[
 		"TensorTest",
 		options (* defined in TestConfig.wl *)
 	];
+
+	Get[FileNameJoin[{$LLUSharedDir, "LibraryLinkUtilities.wl"}]];
+	`LLU`InitializePacletLibrary[lib];
 ];
 
 

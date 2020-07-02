@@ -409,17 +409,13 @@ Test[
 	TestID -> "DataListTestSuite-20180910-Q5U3A6"
 ];
 
-TestMatch[
+ConditionalTest[TestMatch,
 	IntsToNumericArray[Developer`DataStore[]]
 	,
-	$Failed | {}
-	(* eventually, the expected value should be {}, but for now empty NumericArrays are not supported in LibraryLink *)
+	{$VersionNumber == 12.0, {}, {}}
 	,
-	If[$VersionNumber == 12.0,
-		{}
-		,
-		{Message[LibraryFunction::nanull, NumericArray]}
-	]
+	(* eventually, the expected value should be {}, but for now empty NumericArrays are not supported in LibraryLink *)
+	{$VersionNumber > 12.0, $Failed, {Message[LibraryFunction::nanull, NumericArray]}}
 	,
 	TestID -> "DataListTestSuite-20180910-J1W7Z6"
 ];
