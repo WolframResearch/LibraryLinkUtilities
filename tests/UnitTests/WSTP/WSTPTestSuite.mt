@@ -435,7 +435,7 @@ Test[
 	`LLU`WSTPFunctionSet[GetSet, "GetSet"];
 	GetSet[{"lorem", "ipsum", "dolor", "sit", "amet"}, "StringJoin"]
 	,
-	StringJoin @ AlphabeticSort[{"lorem", "ipsum", "dolor", "sit", "amet"}]
+	StringJoin @ Sort[{"lorem", "ipsum", "dolor", "sit", "amet"}]
 	,
 	TestID -> "WSTPTestSuite-20171214-F6N1C7"
 ]
@@ -443,7 +443,7 @@ Test[
 Test[
 	GetSet[{"lorem", "ipsum", "dolor", "sit", "amet"}]
 	,
-	AlphabeticSort[{"lorem", "ipsum", "dolor", "sit", "amet"}]
+	Sort[{"lorem", "ipsum", "dolor", "sit", "amet"}]
 	,
 	TestID -> "WSTPTestSuite-20171227-V7Z8S6"
 ]
