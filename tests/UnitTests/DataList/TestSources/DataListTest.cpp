@@ -11,11 +11,11 @@
 
 #include "wstp.h"
 
-#include "LLU/Containers/Iterators/DataList.hpp"
-#include "LLU/LLU.h"
-#include "LLU/LibraryLinkFunctionMacro.h"
-#include "LLU/Utilities.hpp"
-#include "LLU/WSTP/WSStream.hpp"
+#include <LLU/Containers/Iterators/DataList.hpp>
+#include <LLU/LLU.h>
+#include <LLU/LibraryLinkFunctionMacro.h>
+#include <LLU/Utilities.hpp>
+#include <LLU/WSTP/WSStream.hpp>
 
 namespace WS = LLU::WS;
 namespace LLErrorCode = LLU::ErrorCode;
@@ -30,9 +30,6 @@ EXTERN_C DLLEXPORT int WolframLibrary_initialize(WolframLibraryData libData) {
 	LLU::LibraryData::setLibraryData(libData);
 	return LLErrorCode::NoError;
 }
-
-/* Uninitialize Library */
-EXTERN_C DLLEXPORT void WolframLibrary_uninitialize(WolframLibraryData) {}
 
 /* Returns an input or a copy of an input */
 LLU_LIBRARY_FUNCTION(PassDataStore) {
@@ -125,7 +122,7 @@ LIBRARY_LINK_FUNCTION(ReverseListOfStringsLibraryLink) {
 		if (Argc != 1) {
 			throw std::runtime_error("Invalid number of args");
 		}
-		DataStore ds_in = MArgument_getDataStore(Args[0]);
+		DataStore ds_in = MArgument_getDataStore(Args[0]); // NOLINT: deliberate C-style
 		if (ds_in == nullptr) {
 			throw std::runtime_error("Invalid input DataStore");
 		}
@@ -151,9 +148,9 @@ LIBRARY_LINK_FUNCTION(ReverseListOfStringsLibraryLink) {
 			dsn = libData->ioLibraryFunctions->DataStoreNode_getNextNode(dsn);
 			std::string_view s {MArgument_getUTF8String(data)};
 			std::string outStr(s.rbegin(), s.rend());	 // create reversed copy
-			libData->ioLibraryFunctions->DataStore_addString(ds_out, const_cast<char*>(outStr.c_str()));
+			libData->ioLibraryFunctions->DataStore_addString(ds_out, outStr.data());
 		}
-		MArgument_setDataStore(Res, ds_out);
+		MArgument_setDataStore(Res, ds_out); // NOLINT: deliberate C-style
 	} catch (const LLU::LibraryLinkError& e) {
 		errCode = e.which();
 		if (ds_out) {
@@ -423,6 +420,7 @@ LLU_LIBRARY_FUNCTION(PullAndPush2) {
 	auto t = (node++)->as<LLU::GenericTensor>();
 	auto *rawT = toPrimitiveType<MArgumentType::Tensor>(t);
 	dsOut.push_back(t.clone());
+	// NOLINTNEXTLINE: deliberate example of a shady code
 	dsOut.push_back("Tensor", rawT); // rawT is a pointer type, it gets converted to bool and send as Boolean node
 
 	// get and push SparseArray
@@ -433,12 +431,14 @@ LLU_LIBRARY_FUNCTION(PullAndPush2) {
 	auto na = (node++)->as<LLU::GenericNumericArray>();
 	auto *rawNA = toPrimitiveType<MArgumentType::NumericArray>(na);
 	dsOut.push_back(na.clone());
+	// NOLINTNEXTLINE: deliberate example of a shady code - surprising implicit pointer -> bool conversion
 	dsOut.push_back("NumericArray", rawNA);
 
 	// get and push Image
 	auto im = (node++)->as<LLU::GenericImage>();
 	auto *rawIm = toPrimitiveType<MArgumentType::Image>(im);
 	dsOut.push_back(im.clone());
+	// NOLINTNEXTLINE: deliberate example of a shady code - surprising implicit pointer -> bool conversion
 	dsOut.push_back("Image", rawIm);
 
 	// get and push String
@@ -451,6 +451,7 @@ LLU_LIBRARY_FUNCTION(PullAndPush2) {
 	auto ds = (node++)->as<LLU::GenericDataList>();
 	auto *rawDS = toPrimitiveType<MArgumentType::DataStore>(ds);
 	dsOut.push_back(ds.clone());
+	// NOLINTNEXTLINE: deliberate example of a shady code - surprising implicit pointer -> bool conversion
 	dsOut.push_back("DataList", rawDS);
 
 	mngr.set(dsOut);

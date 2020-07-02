@@ -5,15 +5,14 @@
 
 #include <numeric>
 
-#include "LLU/LLU.h"
-#include "LLU/LibraryLinkFunctionMacro.h"
+#include <LLU/Containers/Tensor.h>
 #include <LLU/Containers/Views/Tensor.hpp>
+#include <LLU/LibraryLinkFunctionMacro.h>
+#include <LLU/MArgumentManager.h>
 
-using namespace LLU;
+using LLU::Tensor;
 
-EXTERN_C DLLEXPORT int CreateMatrix(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument Res) {
-	MArgumentManager mngr(libData, Argc, Args, Res);
-
+LLU_LIBRARY_FUNCTION(CreateMatrix) {
 	auto rows = mngr.getInteger<mint>(0);
 	auto cols = mngr.getInteger<mint>(1);
 
@@ -25,221 +24,161 @@ EXTERN_C DLLEXPORT int CreateMatrix(WolframLibraryData libData, mint Argc, MArgu
 	}
 
 	mngr.setTensor(out);
-	return ErrorCode::NoError;
 }
 
-EXTERN_C DLLEXPORT int CreateEmptyVector(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument Res) {
-	MArgumentManager mngr(libData, Argc, Args, Res);
-
+LLU_LIBRARY_FUNCTION(CreateEmptyVector) {
 	Tensor<mint> out(0, {0});
-
 	mngr.setTensor(out);
-	return ErrorCode::NoError;
 }
 
-EXTERN_C DLLEXPORT int CreateEmptyMatrix(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument Res) {
-	MArgumentManager mngr(libData, Argc, Args, Res);
-
+LLU_LIBRARY_FUNCTION(CreateEmptyMatrix) {
 	Tensor<mint> out(0, {3, 5, 0});
-
 	mngr.setTensor(out);
-	return ErrorCode::NoError;
 }
 
 // clone Tensor
-LIBRARY_LINK_FUNCTION(CloneTensor) {
-	auto err = ErrorCode::NoError;
-	try {
-		MArgumentManager mngr(libData, Argc, Args, Res);
-		mngr.operateOnTensor(0, [&mngr](auto&& t1) {
-			using T = typename std::decay_t<decltype(t1)>::value_type;
-			Tensor<T> t2 {t1.clone()};
-			Tensor<T> t3;
-			t3 = t2.clone();
-			mngr.setTensor(t3);
-		});
-	} catch (const LibraryLinkError& e) {
-		err = e.which();
-	} catch (...) {
-		err = ErrorCode::FunctionError;
-	}
-	return err;
+LLU_LIBRARY_FUNCTION(CloneTensor) {
+	mngr.operateOnTensor(0, [&mngr](auto&& t1) {
+		using T = typename std::decay_t<decltype(t1)>::value_type;
+		Tensor<T> t2 {t1.clone()};
+		Tensor<T> t3;
+		t3 = t2.clone();
+		mngr.setTensor(t3);
+	});
 }
 
-LIBRARY_LINK_FUNCTION(TestDimensions) {
-	auto err = ErrorCode::NoError;
-	try {
-		MArgumentManager mngr(libData, Argc, Args, Res);
-		auto dims = mngr.getTensor<mint, Passing::Manual>(0);
-		Tensor<double> na(0.0, MArrayDimensions {dims.begin(), dims.end()});
-		mngr.setTensor(na);
-	} catch (const LibraryLinkError& e) {
-		err = e.which();
-	}
-	return err;
+LLU_LIBRARY_FUNCTION(TestDimensions) {
+	auto dims = mngr.getTensor<mint, LLU::Passing::Manual>(0);
+	Tensor<double> na(0.0, LLU::MArrayDimensions {dims.begin(), dims.end()});
+	mngr.setTensor(na);
 }
 
-LIBRARY_LINK_FUNCTION(TestDimensions2) {
-	auto err = ErrorCode::NoError;
-	try {
-		MArgumentManager mngr(libData, Argc, Args, Res);
-		DataList<GenericTensor> naList;
+LLU_LIBRARY_FUNCTION(TestDimensions2) {
+	LLU::DataList<LLU::GenericTensor> naList;
 
-		std::vector<std::vector<mint>> dimsList {{0}, {3}, {3, 0}, {3, 2}, {3, 2, 0}, {3, 2, 4}};
+	std::vector<std::vector<mint>> dimsList {{0}, {3}, {3, 0}, {3, 2}, {3, 2, 0}, {3, 2, 4}};
 
-		for (auto& dims : dimsList) {
-			Tensor<double> na(0.0, dims);
-			naList.push_back(std::move(na));
-		}
-
-		mngr.setDataList(naList);
-	} catch (const LibraryLinkError& e) {
-		err = e.which();
+	for (auto& dims : dimsList) {
+		Tensor<double> na(0.0, LLU::MArrayDimensions {dims});
+		naList.push_back(std::move(na));
 	}
-	return err;
+
+	mngr.setDataList(naList);
 }
 
-LIBRARY_LINK_FUNCTION(EchoTensor) {
-	auto err = ErrorCode::NoError;
-	try {
-		MArgumentManager mngr(libData, Argc, Args, Res);
-		mngr.operateOnTensor(0, [&mngr](auto t1) {
-			using T = typename std::decay_t<decltype(t1)>::value_type;
-			auto t2 {std::move(t1)};	// test move constructor
-			Tensor<T> t3;
-			t3 = std::move(t2);	   // test move assignment
-			mngr.setTensor(t3);
-		});
-	} catch (const LibraryLinkError& e) {
-		err = e.which();
-	}
-	return err;
+LLU_LIBRARY_FUNCTION(EchoTensor) {
+	mngr.operateOnTensor(0, [&mngr](auto t1) {
+		using T = typename std::decay_t<decltype(t1)>::value_type;
+		auto t2 {std::move(t1)};	// test move constructor
+		Tensor<T> t3;
+		t3 = std::move(t2);	   // test move assignment
+		mngr.setTensor(t3);
+	});
 }
 
 LIBRARY_LINK_FUNCTION(EchoFirst) {
-	MArgumentManager mngr(libData, Argc, Args, Res);
+	LLU::MArgumentManager mngr(libData, Argc, Args, Res);
 
 	auto t = mngr.getTensor<mint>(0);
 	mngr.setInteger(t.front());
 
-	return ErrorCode::NoError;
+	return LLU::ErrorCode::NoError;
 }
 
 LIBRARY_LINK_FUNCTION(EchoLast) {
-	MArgumentManager mngr(libData, Argc, Args, Res);
+	LLU::MArgumentManager mngr(libData, Argc, Args, Res);
 
 	auto t = mngr.getTensor<mint>(0);
 	mngr.setInteger(t.back());
 
-	return ErrorCode::NoError;
+	return LLU::ErrorCode::NoError;
 }
 
-LIBRARY_LINK_FUNCTION(EchoElement) {
-	auto err = ErrorCode::NoError;
-	try {
-		MArgumentManager mngr(Argc, Args, Res);
-		auto na = mngr.getNumericArray<std::int64_t>(0);
-		auto coords = mngr.getTensor<mint>(1);
-		std::vector<mint> coordsVec(coords.begin(), coords.end());
-		mngr.setInteger(na.at(coordsVec));
-	} catch (const LibraryLinkError& e) {
-		err = e.which();
-	} catch (...) {
-		err = ErrorCode::FunctionError;
-	}
-	return err;
+LLU_LIBRARY_FUNCTION(EchoElement) {
+	auto na = mngr.getNumericArray<std::int64_t>(0);
+	auto coords = mngr.getTensor<mint>(1);
+	std::vector<mint> coordsVec(coords.begin(), coords.end());
+	mngr.setInteger(na.at(coordsVec));
 }
 
-EXTERN_C DLLEXPORT int IntegerMatrixTranspose(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument Res) {
-	auto err = ErrorCode::NoError;
-	try {
-		MArgumentManager mngr(libData, Argc, Args, Res);
+LLU_LIBRARY_FUNCTION(IntegerMatrixTranspose) {
+	auto t = mngr.getTensor<mint>(0);
+	Tensor<mint> out(0, {t.dimension(1), t.dimension(0)});
 
-		auto t = mngr.getTensor<mint>(0);
-		Tensor<mint> out(0, {t.dimension(1), t.dimension(0)});
-
-		/* Set the elements of the output matrix */
-		for (mint row = 0; row < out.dimension(0); row++) {
-			for (mint col = 0; col < out.dimension(1); col++) {
-				out[{row, col}] = t[{col, row}];
-			}
+	/* Set the elements of the output matrix */
+	for (mint row = 0; row < out.dimension(0); row++) {
+		for (mint col = 0; col < out.dimension(1); col++) {
+			out[{row, col}] = t[{col, row}];
 		}
-		mngr.setTensor(out);
-	} catch (LibraryLinkError& e) {
-		err = e.which();
-	} catch (std::exception&) {
-		err = ErrorCode::FunctionError;
 	}
-	return err;
+	mngr.setTensor(out);
 }
 
-EXTERN_C DLLEXPORT int MeanValue(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument Res) {
-	MArgumentManager mngr(libData, Argc, Args, Res);
-
+LLU_LIBRARY_FUNCTION(MeanValue) {
 	auto t = mngr.getTensor<double>(0);
 
 	auto total = std::accumulate(t.begin(), t.end(), 0.0);
 
 	auto result = total / t.size();
 	mngr.setReal(result);
-	return ErrorCode::NoError;
 }
 
 LIBRARY_LINK_FUNCTION(FromVector) {
-	MArgumentManager mngr(libData, Argc, Args, Res);
+	LLU::MArgumentManager mngr(libData, Argc, Args, Res);
 
 	std::vector<mint> v {3, 5, 7, 9};
 	Tensor<mint> t {std::begin(v), std::end(v), {2, 2}};
 	mngr.set(t);
 
-	return ErrorCode::NoError;
+	return LLU::ErrorCode::NoError;
 }
 
 LIBRARY_LINK_FUNCTION(FlattenThroughVector) {
-	MArgumentManager mngr(libData, Argc, Args, Res);
+	LLU::MArgumentManager mngr(libData, Argc, Args, Res);
 	auto t = mngr.getTensor<mint>(0);
 	auto v = t.asVector();
 
 	Tensor<mint> t2 {v};
 	mngr.set(t2);
 
-	return ErrorCode::NoError;
+	return LLU::ErrorCode::NoError;
 }
 
 LIBRARY_LINK_FUNCTION(CopyThroughNumericArray) {
-	MArgumentManager mngr(libData, Argc, Args, Res);
+	LLU::MArgumentManager mngr(libData, Argc, Args, Res);
 	auto t = mngr.getTensor<mint>(0);
-	NumericArray<mint> na {std::begin(t), std::end(t), t.dimensions()};
+	LLU::NumericArray<mint> na {std::begin(t), std::end(t), t.dimensions()};
 
 	Tensor<mint> t2 {na, na.dimensions()};
 	mngr.set(t2);
 
-	return ErrorCode::NoError;
+	return LLU::ErrorCode::NoError;
 }
 
-auto getLargest(const std::vector<TensorView>& tens) {
+auto getLargest(const std::vector<LLU::TensorView>& tens) {
 	return std::max_element(std::cbegin(tens), std::cend(tens),
-							[](const TensorView& ten1, const TensorView& ten2) { return ten1.getFlattenedLength() < ten2.getFlattenedLength(); });
+							[](const LLU::TensorView& ten1, const LLU::TensorView& ten2) { return ten1.getFlattenedLength() < ten2.getFlattenedLength(); });
 }
 
 LLU_LIBRARY_FUNCTION(GetLargest) {
 	auto tenAuto = mngr.getTensor<mint>(0);
 	auto tenConstant = mngr.getGenericTensor<LLU::Passing::Constant>(1);
 	auto tenManual = mngr.getTensor<double, LLU::Passing::Manual>(2);
-	std::vector<TensorView> tens {TensorView {tenAuto}, TensorView {tenConstant}, TensorView {tenManual}};
+	std::vector<LLU::TensorView> tens {tenAuto, tenConstant, tenManual};
 	auto largest = getLargest(tens);
 	mngr.set(static_cast<mint>(std::distance(std::cbegin(tens), largest)));
 
 	// perform some random assignments and copies to see if they compile
 	std::swap(tens[0], tens[1]);
-	TensorView iv = std::move(tens[2]);
+	LLU::TensorView iv = std::move(tens[2]);
 	tens[2] = iv;
 }
 
 // The following will crash, even though the same test for Image and NumericArray returns consistent results
 LLU_LIBRARY_FUNCTION(EmptyView) {
-	TensorView v;
-	LLU::Tensor<mint> t {v.getRank(), v.getFlattenedLength(), reinterpret_cast<mint>(v.rawData()), static_cast<mint>(v.type())};
+	LLU::TensorView v;
+	// NOLINTNEXTLINE
+	Tensor<mint> t {v.getRank(), v.getFlattenedLength(), reinterpret_cast<mint>(v.rawData()), static_cast<mint>(v.type())};
 	mngr.set(t);
 }
 

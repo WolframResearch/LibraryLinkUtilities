@@ -166,15 +166,15 @@ namespace LLU {
 
 	template<typename T>
 	NumericArray<T>::NumericArray(T init, MArrayDimensions dims)
-		: TypedNumericArray<T>(std::move(dims)), GenericBase(NumericArrayType<T>, this->rank(), this->dims.data()) {
+		: TypedNumericArray<T>(std::move(dims)), GenericBase(NumericArrayType<T>, this->rank(), this->dimensions().data()) {
 		std::fill(this->begin(), this->end(), init);
 	}
 
 	template<typename T>
 	template<class InputIt, typename>
 	NumericArray<T>::NumericArray(InputIt first, InputIt last, MArrayDimensions dims)
-		: TypedNumericArray<T>(std::move(dims)), GenericBase(NumericArrayType<T>, this->rank(), this->dims.data()) {
-		if (std::distance(first, last) != this->dims.flatCount()) {
+		: TypedNumericArray<T>(std::move(dims)), GenericBase(NumericArrayType<T>, this->rank(), this->dimensions().data()) {
+		if (std::distance(first, last) != this->getFlattenedLength()) {
 			ErrorManager::throwException(ErrorName::NumericArrayNewError, "Length of data range does not match specified dimensions");
 		}
 		std::copy(first, last, this->begin());

@@ -27,13 +27,13 @@ namespace LLU {
 		 * Create a ImageView from a GenericImage
 		 * @param gIm - a GenericImage
 		 */
-		/* implicit */ ImageView(const GenericImage& gIm) : m {gIm.getContainer()} {}
+		ImageView(const GenericImage& gIm) : m {gIm.getContainer()} {}	  // NOLINT: implicit conversion to a view is useful and harmless
 
 		/**
 		 * Create a ImageView from a raw MImage
 		 * @param mi - a raw MImage
 		 */
-		/* implicit */ ImageView(MImage mi) : m {mi} {}
+		ImageView(MImage mi) : m {mi} {}	// NOLINT
 
 		/// @copydoc ImageInterface::colorspace()
 		colorspace_t colorspace() const override {
@@ -62,12 +62,12 @@ namespace LLU {
 
 		/// @copydoc ImageInterface::alphaChannelQ()
 		bool alphaChannelQ() const override {
-			return LibraryData::ImageAPI()->MImage_alphaChannelQ(m);
+			return LibraryData::ImageAPI()->MImage_alphaChannelQ(m) == True;
 		}
 
 		/// @copydoc ImageInterface::interleavedQ()
 		bool interleavedQ() const override {
-			return LibraryData::ImageAPI()->MImage_interleavedQ(m);
+			return LibraryData::ImageAPI()->MImage_interleavedQ(m) == True;
 		}
 
 		/// @copydoc ImageInterface::is3D()
@@ -109,7 +109,7 @@ namespace LLU {
 		 * @param gIm - a GenericImage
 		 * @throws ErrorName::ImageTypeError - if the actual datatype of \p gIm is not T
 		 */
-		/* implicit */ ImageTypedView(const GenericImage& gIm) : ImageView(gIm) {
+		ImageTypedView(const GenericImage& gIm) : ImageView(gIm) {	  // NOLINT: implicit conversion to a view is useful and harmless
 			if (ImageType<T> != type()) {
 				ErrorManager::throwException(ErrorName::ImageTypeError);
 			}
@@ -120,7 +120,7 @@ namespace LLU {
 		 * @param iv - a ImageView
 		 * @throws ErrorName::ImageTypeError - if the actual datatype of \p iv is not T
 		 */
-		/* implicit */ ImageTypedView(ImageView iv) : ImageView(std::move(iv)) {
+		ImageTypedView(ImageView iv) : ImageView(std::move(iv)) {	 // NOLINT
 			if (ImageType<T> != type()) {
 				ErrorManager::throwException(ErrorName::ImageTypeError);
 			}
@@ -131,7 +131,7 @@ namespace LLU {
 		 * @param mi - a raw MImage
 		 * @throws ErrorName::ImageTypeError - if the actual datatype of \p mi is not T
 		 */
-		/* implicit */ ImageTypedView(MImage mi) : ImageView(mi) {
+		ImageTypedView(MImage mi) : ImageView(mi) {	   // NOLINT
 			if (ImageType<T> != type()) {
 				ErrorManager::throwException(ErrorName::ImageTypeError);
 			}
@@ -174,6 +174,6 @@ namespace LLU {
 		return asTypedImage(ImageView {img}, std::forward<F>(callable));
 	}
 	/// @endcond
-}
+}  // namespace LLU
 
 #endif	  // LLU_CONTAINERS_VIEWS_IMAGE_HPP

@@ -727,12 +727,12 @@ namespace LLU {
 		template<typename T>
 		struct CustomMArgumentTypeDetector {
 			template<typename U>
-			static std::true_type isSpecialized(typename CustomType<U>::CorrespondingTypes* /*dummy*/) { return {}; }
+			static std::true_type isSpecialized(typename CustomType<U>::CorrespondingTypes* /*unused*/) { return {}; }
 
 			template<typename>
-			static std::false_type isSpecialized(...) { return {}; } // NOLINT(cert-dcl50-cpp)
+			static std::false_type isSpecialized(...) { return {}; } // NOLINT(cert-dcl50-cpp): this is a common idiom
 
-			static constexpr bool value = decltype(isSpecialized<T>(nullptr))::value;
+			static constexpr bool value = decltype(isSpecialized<T>(nullptr))::value; // NOLINT(cppcoreguidelines-pro-type-vararg): this is a common idiom
 		};
 
 		template<typename T>
@@ -834,53 +834,52 @@ namespace LLU {
 		return static_cast<T>(MArgument_getInteger(getArgs(index)));
 	}
 
-
-#define MARGUMENTMANAGER_GENERATE_GET_SPECIALIZATION(type, getFunction) \
+#define LLU_MARGUMENTMANAGER_GENERATE_GET_SPECIALIZATION(type, getFunction) \
 	template<>                                                          \
 	inline type MArgumentManager::get<type>(size_type index) const {    \
 		return getFunction(index);                                      \
 	}
 
-	MARGUMENTMANAGER_GENERATE_GET_SPECIALIZATION(bool, getBoolean)
-	MARGUMENTMANAGER_GENERATE_GET_SPECIALIZATION(double, getReal)
-	MARGUMENTMANAGER_GENERATE_GET_SPECIALIZATION(std::string, getString)
-	MARGUMENTMANAGER_GENERATE_GET_SPECIALIZATION(const char*, getCString)
-	MARGUMENTMANAGER_GENERATE_GET_SPECIALIZATION(std::complex<double>, getComplex)
+	LLU_MARGUMENTMANAGER_GENERATE_GET_SPECIALIZATION(bool, getBoolean)
+	LLU_MARGUMENTMANAGER_GENERATE_GET_SPECIALIZATION(double, getReal)
+	LLU_MARGUMENTMANAGER_GENERATE_GET_SPECIALIZATION(std::string, getString)
+	LLU_MARGUMENTMANAGER_GENERATE_GET_SPECIALIZATION(const char*, getCString)
+	LLU_MARGUMENTMANAGER_GENERATE_GET_SPECIALIZATION(std::complex<double>, getComplex)
 
-#undef MARGUMENTMANAGER_GENERATE_GET_SPECIALIZATION
+#undef LLU_MARGUMENTMANAGER_GENERATE_GET_SPECIALIZATION
 
-#define MARGUMENTMANAGER_GENERATE_GET_SPECIALIZATION_FOR_CONTAINER(Container) \
-	template<typename T>                                                                \
-	struct MArgumentManager::Getter<Container<T>> {                                                  \
-		static Container<T> get(const MArgumentManager& mngr, size_type index) {                     \
-			return mngr.get##Container<T, Passing::Automatic>(index);                                \
-		}                                                                                            \
-	};                                                                                               \
-	template<typename T, Passing Mode>                                                  \
-	struct MArgumentManager::Getter<MArgumentManager::Managed<Container<T>, Mode>> {                 \
-		static Container<T> get(const MArgumentManager& mngr, size_type index) {                     \
-			return mngr.get##Container<T, Mode>(index);                                              \
-		}                                                                                            \
-	};                                                                                               \
-	template<>                                                                                       \
-	struct MArgumentManager::Getter<Generic##Container> {                                            \
-		static Generic##Container get(const MArgumentManager& mngr, size_type index) {               \
-			return mngr.getGeneric##Container<Passing::Automatic>(index);                            \
-		}                                                                                            \
-	};                                                                                               \
-	template<Passing Mode>                                                                           \
-	struct MArgumentManager::Getter<MArgumentManager::Managed<Generic##Container, Mode>> {           \
-		static Generic##Container get(const MArgumentManager& mngr, size_type index) {               \
-			return mngr.getGeneric##Container<Mode>(index);                                          \
-		}                                                                                            \
+#define LLU_MARGUMENTMANAGER_GENERATE_GET_SPECIALIZATION_FOR_CONTAINER(Container)                                             \
+	template<typename T> /* NOLINTNEXTLINE(bugprone-macro-parentheses): false positive here and below */                      \
+	struct MArgumentManager::Getter<Container<T>> {                                                                           \
+		static Container<T> get(const MArgumentManager& mngr, size_type index) { /* NOLINT(bugprone-macro-parentheses) */     \
+			return mngr.get##Container<T, Passing::Automatic>(index);                                                         \
+		}                                                                                                                     \
+	};                                                                                                                        \
+	template<typename T, Passing Mode>                                                                                        \
+	struct MArgumentManager::Getter<MArgumentManager::Managed<Container<T>, Mode>> { /* NOLINT(bugprone-macro-parentheses) */ \
+		static Container<T> get(const MArgumentManager& mngr, size_type index) {	 /* NOLINT(bugprone-macro-parentheses) */ \
+			return mngr.get##Container<T, Mode>(index);                                                                       \
+		}                                                                                                                     \
+	};                                                                                                                        \
+	template<>                                                                                                                \
+	struct MArgumentManager::Getter<Generic##Container> {                                                                     \
+		static Generic##Container get(const MArgumentManager& mngr, size_type index) {                                        \
+			return mngr.getGeneric##Container<Passing::Automatic>(index);                                                     \
+		}                                                                                                                     \
+	};                                                                                                                        \
+	template<Passing Mode>                                                                                                    \
+	struct MArgumentManager::Getter<MArgumentManager::Managed<Generic##Container, Mode>> {                                    \
+		static Generic##Container get(const MArgumentManager& mngr, size_type index) {                                        \
+			return mngr.getGeneric##Container<Mode>(index);                                                                   \
+		}                                                                                                                     \
 	};
 
-	MARGUMENTMANAGER_GENERATE_GET_SPECIALIZATION_FOR_CONTAINER(NumericArray)
-	MARGUMENTMANAGER_GENERATE_GET_SPECIALIZATION_FOR_CONTAINER(Tensor)
-	MARGUMENTMANAGER_GENERATE_GET_SPECIALIZATION_FOR_CONTAINER(Image)
-	MARGUMENTMANAGER_GENERATE_GET_SPECIALIZATION_FOR_CONTAINER(DataList)
+	LLU_MARGUMENTMANAGER_GENERATE_GET_SPECIALIZATION_FOR_CONTAINER(NumericArray)
+	LLU_MARGUMENTMANAGER_GENERATE_GET_SPECIALIZATION_FOR_CONTAINER(Tensor)
+	LLU_MARGUMENTMANAGER_GENERATE_GET_SPECIALIZATION_FOR_CONTAINER(Image)
+	LLU_MARGUMENTMANAGER_GENERATE_GET_SPECIALIZATION_FOR_CONTAINER(DataList)
 
-#undef MARGUMENTMANAGER_GENERATE_GET_SPECIALIZATION_FOR_CONTAINER
+#undef LLU_MARGUMENTMANAGER_GENERATE_GET_SPECIALIZATION_FOR_CONTAINER
 
 	template<typename T>
 	bool MArgumentManager::setMintAndCheck(T result) noexcept {

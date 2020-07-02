@@ -26,13 +26,13 @@ namespace LLU {
 		 * Create a NumericArrayView from a GenericNumericArray
 		 * @param gNA - a GenericNumericArray
 		 */
-		/* implicit */ NumericArrayView(const GenericNumericArray& gNA) : na{gNA.getContainer()} {}
+		NumericArrayView(const GenericNumericArray& gNA) : na {gNA.getContainer()} {}	 // NOLINT: implicit conversion is useful and harmless
 
 		/**
 		 * Create a NumericArrayView from a raw MNumericArray
 		 * @param mna - a raw MNumericArray
 		 */
-		/* implicit */ NumericArrayView(MNumericArray mna) : na{mna} {}
+		NumericArrayView(MNumericArray mna) : na {mna} {}	 // NOLINT:
 
 		/// @copydoc NumericArrayInterface::getRank()
 		mint getRank() const override {
@@ -79,7 +79,7 @@ namespace LLU {
 		 * @param gNA - a GenericNumericArray
 		 * @throws ErrorName::NumericArrayTypeError - if the actual datatype of \p gNA is not T
 		 */
-		/* implicit */ NumericArrayTypedView(const GenericNumericArray& gNA) : NumericArrayView(gNA) {
+		NumericArrayTypedView(const GenericNumericArray& gNA) : NumericArrayView(gNA) {	   // NOLINT: implicit conversion is useful and harmless
 			if (NumericArrayType<T> != type()) {
 				ErrorManager::throwException(ErrorName::NumericArrayTypeError);
 			}
@@ -90,7 +90,7 @@ namespace LLU {
 		 * @param nav - a NumericArrayView
 		 * @throws ErrorName::NumericArrayTypeError - if the actual datatype of \p nav is not T
 		 */
-		/* implicit */ NumericArrayTypedView(NumericArrayView nav) : NumericArrayView(std::move(nav)) {
+		NumericArrayTypedView(NumericArrayView nav) : NumericArrayView(std::move(nav)) {	// NOLINT
 			if (NumericArrayType<T> != type()) {
 				ErrorManager::throwException(ErrorName::NumericArrayTypeError);
 			}
@@ -101,7 +101,7 @@ namespace LLU {
 		 * @param mna - a raw MNumericArray
 		 * @throws ErrorName::NumericArrayTypeError - if the actual datatype of \p mna is not T
 		 */
-		/* implicit */ NumericArrayTypedView(MNumericArray mna) : NumericArrayView(mna) {
+		NumericArrayTypedView(MNumericArray mna) : NumericArrayView(mna) {	  // NOLINT
 			if (NumericArrayType<T> != type()) {
 				ErrorManager::throwException(ErrorName::NumericArrayTypeError);
 			}
@@ -153,6 +153,6 @@ namespace LLU {
 		return asTypedNumericArray(NumericArrayView {na}, std::forward<F>(callable));
 	}
 	/// @endcond
-}
+}  // namespace LLU
 
 #endif	  // LLU_CONTAINERS_VIEWS_NUMERICARRAY_HPP

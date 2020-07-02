@@ -533,25 +533,25 @@ Test[
 VerificationTest[
 	getSlowdown[x_] := ToString[N[(x/timeDataStore - 1) * 100]] <> "% slower than DataStore.";
 	SeedRandom[0];
-	los = RandomWord["CommonWords", 900000];
+	los = RandomWord["CommonWords", 300000];
 	ds = Developer`DataStore @@ los;
 
-	{timeDataStore, r2} = RepeatedTiming[ReverseListOfStringsLibraryLink[ds], 3];
+	{timeDataStore, r2} = RepeatedTiming[ReverseListOfStringsLibraryLink[ds]];
 	Print["Reverse strings - DataStore: " <> ToString[timeDataStore] <> "s."];
 
-	{timeGeneric, r3} = RepeatedTiming[ReverseListOfStringsGeneric[ds], 3];
+	{timeGeneric, r3} = RepeatedTiming[ReverseListOfStringsGeneric[ds]];
 	Print["Reverse strings - GenericDataList: " <> ToString[timeGeneric] <> "s. " <> getSlowdown[timeGeneric]];
 
-	{timeGenericOut, r5} = RepeatedTiming[ReverseListOfStringsGenericOut[ds], 3];
+	{timeGenericOut, r5} = RepeatedTiming[ReverseListOfStringsGenericOut[ds]];
 	Print["Reverse strings - [In]DataList/[Out]GenericDataList: " <> ToString[timeGenericOut] <> "s. " <> getSlowdown[timeGenericOut]];
 
-	{timeGenericIn, r4} = RepeatedTiming[ReverseListOfStringsGenericIn[ds], 3];
+	{timeGenericIn, r4} = RepeatedTiming[ReverseListOfStringsGenericIn[ds]];
 	Print["Reverse strings - [In]GenericDataList/[Out]DataList: " <> ToString[timeGenericIn] <> "s. " <> getSlowdown[timeGenericIn]];
 
-	{timeDataList, r6} = RepeatedTiming[ReverseListOfStrings[ds], 3];
+	{timeDataList, r6} = RepeatedTiming[ReverseListOfStrings[ds]];
 	Print["Reverse strings - DataList: " <> ToString[timeDataList] <> "s. " <> getSlowdown[timeDataList]];
 
-	{timeWSTP, r1} = RepeatedTiming[ReverseListOfStringsWSTP[los], 3];
+	{timeWSTP, r1} = RepeatedTiming[ReverseListOfStringsWSTP[los]];
 	Print["Reverse strings - WSTP: " <> ToString[timeWSTP] <> "s. " <> getSlowdown[timeWSTP]];
 
 	r1 == List @@ r2 == List @@ r3 == List @@ r4 == List @@ r5 == List @@ r6

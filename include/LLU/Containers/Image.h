@@ -247,7 +247,7 @@ namespace LLU {
 	MArrayDimensions Image<T>::dimensionsFromGenericImage(const GenericBase& im) {
 		std::vector<mint> dims;
 		if (!im.getContainer()) {
-			return dims;
+			return MArrayDimensions {dims};
 		}
 		mint depth = im.getRank() + (im.channels() == 1 ? 0 : 1);
 		if (im.is3D()) {

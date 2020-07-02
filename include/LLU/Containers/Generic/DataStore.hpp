@@ -90,6 +90,7 @@ namespace LLU {
 		}
 
 		/// Proxy iterator past the last element of the DataStore
+		// NOLINTNEXTLINE(readability-convert-member-functions-to-static): although in theory end() could be static, it would be uncommon and confusing
 		iterator end() const {
 			return iterator {nullptr};
 		}

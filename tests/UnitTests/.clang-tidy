@@ -1,4 +1,5 @@
 ---
+# Same checks as in the root directory with a few more inspections disabled for the specific needs of unit tests
 Checks: >
   -*,
   bugprone-*,
@@ -8,8 +9,10 @@ Checks: >
   -cert-oop11-cpp,
   cppcoreguidelines-*,
   -cppcoreguidelines-avoid-c-arrays,
+  -cppcoreguidelines-avoid-magic-numbers,
   -cppcoreguidelines-non-private-member-variables-in-classes,
   -cppcoreguidelines-owning-memory,
+  -cppcoreguidelines-pro-bounds-constant-array-index,
   google-*,
   -google-readability-braces-around-statements,
   -google-runtime-references,
@@ -33,13 +36,10 @@ Checks: >
   -readability-magic-numbers,
   -readability-redundant-access-specifiers
 WarningsAsErrors: false
-HeaderFilterRegex: ''
 AnalyzeTemporaryDtors: false
-FormatStyle:     file
-User:            rafal
 CheckOptions:
-  - key:             cppcoreguidelines-macro-usage.AllowedRegexp
-    value:           '^DEBUG_*|^LLU_*|^WS_*|LIBRARY_(.*)_FUNCTION|^DEFINE_MANAGED_STORE_AND_SPECIALIZATION'
+  - key:             cppcoreguidelines-macro-usage.CheckCapsOnly
+    value:           '1'
   - key:             misc-non-private-member-variables-in-classes.IgnoreClassesWithAllMemberVariablesBeingPublic
     value:           '1'
   - key:             cppcoreguidelines-special-member-functions.AllowSoleDefaultDtor

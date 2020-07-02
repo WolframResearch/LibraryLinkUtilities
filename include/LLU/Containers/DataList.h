@@ -51,7 +51,7 @@ namespace LLU {
 		using value_type = T;
 
 	public:
-		using GenericDataList::GenericDataList;
+		using GenericDataList::GenericDataList; // NOLINT(modernize-use-equals-default): false positive
 
 		/**
 		 * @brief	Create DataList wrapping around an existing GenericDataList

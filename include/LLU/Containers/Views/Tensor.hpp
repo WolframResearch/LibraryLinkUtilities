@@ -26,13 +26,13 @@ namespace LLU {
 		 * Create a NumericArrayView from a GenericNumericArray
 		 * @param gTen - a GenericNumericArray
 		 */
-		/* implicit */ TensorView(const GenericTensor& gTen) : t {gTen.getContainer()} {}
+		TensorView(const GenericTensor& gTen) : t {gTen.getContainer()} {}	  // NOLINT: implicit conversion to a view is useful and harmless
 
 		/**
 		 * Create a NumericArrayView from a raw MNumericArray
 		 * @param mt - a raw MNumericArray
 		 */
-		/* implicit */ TensorView(MTensor mt) : t {mt} {}
+		TensorView(MTensor mt) : t {mt} {}	  // NOLINT
 
 		/// @copydoc TensorInterface::getRank()
 		mint getRank() const override {
@@ -60,7 +60,7 @@ namespace LLU {
 				case MType_Integer: return LibraryData::API()->MTensor_getIntegerData(t);
 				case MType_Real: return LibraryData::API()->MTensor_getRealData(t);
 				case MType_Complex: return LibraryData::API()->MTensor_getComplexData(t);
-				default: ErrorManager::throwException(ErrorName::TensorTypeError);
+				default: return nullptr;
 			}
 		}
 
@@ -78,7 +78,7 @@ namespace LLU {
 		 * @param gTen - a GenericTensor
 		 * @throws ErrorName::TensorTypeError - if the actual datatype of \p gTen is not T
 		 */
-		/* implicit */ TensorTypedView(const GenericTensor& gTen) : TensorView(gTen) {
+		TensorTypedView(const GenericTensor& gTen) : TensorView(gTen) {	   // NOLINT: implicit conversion to a view is useful and harmless
 			if (TensorType<T> != type()) {
 				ErrorManager::throwException(ErrorName::TensorTypeError);
 			}
@@ -89,7 +89,7 @@ namespace LLU {
 		 * @param tv - a TensorView
 		 * @throws ErrorName::TensorTypeError - if the actual datatype of \p tv is not T
 		 */
-		/* implicit */ TensorTypedView(TensorView tv) : TensorView(std::move(tv)) {
+		TensorTypedView(TensorView tv) : TensorView(std::move(tv)) {	// NOLINT
 			if (TensorType<T> != type()) {
 				ErrorManager::throwException(ErrorName::TensorTypeError);
 			}
@@ -100,7 +100,7 @@ namespace LLU {
 		 * @param mt - a raw MTensor
 		 * @throws ErrorName::TensorTypeError - if the actual datatype of \p mt is not T
 		 */
-		/* implicit */ TensorTypedView(MTensor mt) : TensorView(mt) {
+		TensorTypedView(MTensor mt) : TensorView(mt) {	  // NOLINT
 			if (TensorType<T> != type()) {
 				ErrorManager::throwException(ErrorName::TensorTypeError);
 			}
@@ -141,6 +141,6 @@ namespace LLU {
 		return asTypedTensor(TensorView {t}, std::forward<F>(callable));
 	}
 	/// @endcond
-}
+}  // namespace LLU
 
 #endif	  // LLU_CONTAINERS_VIEWS_TENSOR_HPP

@@ -90,21 +90,21 @@ namespace LLU {
 		 *	@brief Get iterator after the end of underlying data
 		 **/
 		iterator end() noexcept {
-			return getData() + getSize();
+			return std::next(begin(), getSize());
 		}
 
 		/**
 		 *	@brief Get constant iterator after the end of underlying data
 		 **/
 		const_iterator end() const noexcept {
-			return getData() + getSize();
+			return std::next(begin(), getSize());
 		}
 
 		/**
 		 *	@brief Get constant iterator after the end of underlying data
 		 **/
 		const_iterator cend() const noexcept {
-			return getData() + getSize();
+			return std::next(cbegin(), getSize());
 		}
 
 		/**

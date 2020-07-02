@@ -3,7 +3,7 @@
  * @brief
  */
 
-#include "LLU/MArgumentManager.h"
+#include <LLU/MArgumentManager.h>
 
 EXTERN_C DLLEXPORT int ComplexAdd(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument Res) {
 	LLU::MArgumentManager mngr(libData, Argc, Args, Res);

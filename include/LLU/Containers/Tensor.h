@@ -155,14 +155,14 @@ namespace LLU {
 
 	template<typename T>
 	Tensor<T>::Tensor(T init, MArrayDimensions dims)
-		: TypedTensor<T>(std::move(dims)), GenericBase(TensorType<T>, this->rank(), this->dims.data()) {
+		: TypedTensor<T>(std::move(dims)), GenericBase(TensorType<T>, this->rank(), this->dimensions().data()) {
 		std::fill(this->begin(), this->end(), init);
 	}
 
 	template<typename T>
 	template<class InputIt, typename>
 	Tensor<T>::Tensor(InputIt first, InputIt last, MArrayDimensions dims)
-		: TypedTensor<T>(std::move(dims)), GenericBase(TensorType<T>, this->rank(), this->dims.data()) {
+		: TypedTensor<T>(std::move(dims)), GenericBase(TensorType<T>, this->rank(), this->dimensions().data()) {
 		if (std::distance(first, last) != this->getFlattenedLength()) {
 			ErrorManager::throwException(ErrorName::TensorNewError, "Length of data range does not match specified dimensions");
 		}
