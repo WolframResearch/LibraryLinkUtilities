@@ -54,7 +54,6 @@ Paclets that use LLU
 If you look for examples of LLU usage and whatever is in this documentation was not enough you can take a look at paclets that already use LLU.
 The list below may not be complete.
 
-- `PacletTemplate <https://stash.wolfram.com/projects/IMEX/repos/paclettemplate>`_ - this is a model paclet for Import/Export developers
 - `GIFTools <https://stash.wolfram.com/projects/IMEX/repos/giftools>`_
 - `SVTools <https://stash.wolfram.com/projects/IMEX/repos/svtools>`_
 - `XLTools <https://stash.wolfram.com/projects/IMEX/repos/xltools>`_

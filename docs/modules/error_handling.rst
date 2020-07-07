@@ -47,6 +47,7 @@ First, you **must** register all your exceptions inside ``WolframLibrary_initial
 
    EXTERN_C DLLEXPORT int WolframLibrary_initialize(WolframLibraryData libData) {
        try {
+           LibraryData::setLibraryData(libData);
            ErrorManager::registerPacletErrors({
                {"NoSourceError", "Requested data source does not exist."},
                {"EmptySourceError", "Requested data source has `1` elements, but required at least `2`."}
@@ -102,7 +103,15 @@ Usually, you catch only in the interface functions (the ones with ``EXTERN_C DLL
    }
 
 The Wolfram Language part of the error-handling functionality of LLU is responsible for converting error codes returned by library functions
-into nice and informative :wl:`Failure` objects.
+into nice and informative :wl:`Failure` objects. Whether those objects will be returned or thrown on the WL side is determined by the ``"Throws"`` option
+specified when loading a library function with LLU:
+
+.. code-block:: mma
+
+   LLU`InitializePacletLibrary["/path/to/my/library"]
+
+   LLU`PacletFunctionSet[]
+
 
 .. rubric:: Footnotes
 .. [#] One more possible signature is ``int f(WolframLibraryData, WSLINK)``. For such functions error handling is done in the same way.

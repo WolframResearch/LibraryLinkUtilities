@@ -5,10 +5,10 @@ WSTP support
 LibraryLink allows a LinkObject to be passed as an argument which may then exchange data between your library and the Kernel using
 Wolfram Symbolic Transfer Protocol (**WSTP**, also known as **MathLink**).
 The original WSTP API is in old C style with error codes, macros, manual memory management, etc.
-LLU provides a wrapper for the LinkObject called `WSStream`.
+LLU provides a wrapper for the LinkObject called ``WSStream``.
 
-`WSStream` is actually a class template parameterized by the default encoding to be used for strings, but for the sake of clarity,
-the template parameter is skipped in the remainder of this text.
+``WSStream`` is actually a class template in the namespace ``LLU`` parameterized by the default encodings to be used for strings, but for the sake of clarity,
+both the template parameters and the namespace are skipped in the remainder of this text.
 
 
 Main features
@@ -26,8 +26,8 @@ Error checking
 Each call to WSTP API has its return status checked. An exception is thrown on failures which carries some debug info to help locate the problem.
 Sample debug info looks like this::
 
-	Error code reported by MathLink: 48
-	"Unable to convert from given character encoding to MathLink encoding"
+	Error code reported by WSTP: 48
+	"Unable to convert from given character encoding to WSTP encoding"
 	Additional debug info: WSPutUTF8String
 
 
@@ -47,7 +47,7 @@ Some sophisticated types can be sent to Mathematica directly via an WSStream cla
 
 
 Just write `ms << myNestedMap` and a nested Association will be returned. It works in the other direction too.
-Obviously, for the above to work, key and value type in the map must be supported by WSTP.
+Obviously, for the above to work, the key and value types in the map must be supported by WSTP.
 
 If you have any particular type that you think should be directly supported by WSStream, please let me know.
 

@@ -1,3 +1,5 @@
+.. include:: ../globals.rst
+
 ==============================================
 How to use
 ==============================================
@@ -30,7 +32,7 @@ Optionally, for running unit tests, **wolframscript** must be available on the s
 
 You can clone LLU from GitHub:
 
-ssh://git@stash.wolfram.com:7999/imex/librarylinkutilities.git **TODO: replace with GitHub clone link**
+**TODO: here goes the GitHub clone link**
 
 Alternatively, a zip package can be downloaded from GitHub containing a snapshot from any branch.
 
@@ -50,7 +52,7 @@ Below is a quick overview of CMake variables which you can use to customize buil
 
       cmake -DMathematica_INSTALL_DIR=/home/jerome/Mathematica/12.1 ..
 
-3. Use WSTP and WolframLibrary from arbitrary locations
+3. Use WSTP and WolframLibrary from arbitrary locations (rare case)
 
    If WSTP and WolframLibrary are not located in a Mathematica installation, two paths must be passed to CMake:
 
@@ -61,7 +63,7 @@ Below is a quick overview of CMake variables which you can use to customize buil
 
 Other useful cmake variables used by LLU include:
 
- - ``BUILD_SHARED_LIBS`` - Whether to build LLU as shared library. A static library is created by default.
+ - ``BUILD_SHARED_LIBS`` - Whether to build LLU as shared library. A static library is created by default and it is the recommended choice.
  - ``CMAKE_BUILD_TYPE`` - Choose the type of build. This should match the type of build of your project.
  - ``CMAKE_INSTALL_PREFIX`` - Where to install LLU. The default location is the :file:`install/` directory in the source tree.
  - ``CMAKE_VERBOSE_MAKEFILE`` - Useful for debugging.
@@ -107,8 +109,11 @@ generator used):
 
 will show the whole output produced by ctest and wolframscript. There is still room for improvement in this area and suggestions are welcome.
 
-4. Link from your project
+4. Add to your project
 =========================================
+
+CMake configuration
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 LLU defines CMake export target and hides the build details. Dependencies, compiler flags, include paths, etc do not need to be set.
 After LLU is installed, in your project's CMakeLists.txt call:
@@ -132,6 +137,44 @@ The last step is to copy the file with Wolfram Language code to use the top-leve
    install(FILES "${LLU_ROOT}/share/LibraryLinkUtilities.wl"
      DESTINATION "${PACLET_NAME}/LibraryResources"
    )
+
+Code changes
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+LLU, being a wrapper over LibraryLink, lives at the edge of two worlds: the C++ domain and the Wolfram Language. Both parts of LLU need to be initialized.
+On the C++ side the initialization looks like this:
+
+.. code-block:: cpp
+
+	#include <LLU/LLU.h>
+
+	EXTERN_C DLLEXPORT int WolframLibrary_initialize(WolframLibraryData libData) {
+	       LibraryData::setLibraryData(libData);
+	}
+
+``WolframLibrary_initialize`` will be automatically called when you load your LibraryLink paclet into the Wolfram Language, for instance with ``Needs["MyPaclet`"]``.
+:cpp:func:`setLibraryData<LibraryData::setLibraryData>` is called to initialize the globally accessible instance of ``WolframLibraryData``, that LLU uses, with
+the instance that was passed to the initialization function. Later on, you can call ``LibraryData::API()`` to access this instance from anywhere in the code.
+See the documentation of :cpp:class:`LLU::LibraryData` for details.
+
+Initialization of the WL part is equally simple - imagine that we have paclet called *MyPaclet* and its shared library is named :file:`MyPacletLib.so` (the extension
+is platform-dependent):
+
+.. code-block:: mma
+
+   Get["/path/to/LibraryLinkUtilities.wl"];
+
+   `LLU`InitializePacletLibrary["MyPacletLib"];
+
+:file:`LibraryLinkUtilities.wl` is part of LLU sources and it should be copied to every paclet that uses LLU. As soon as you call :wlref:`Get` on it, it will inject
+LLU symbols to the current context, which should typically be ``MyPaclet`Private``.
+
+```LLU`InitializePacletLibrary`` takes the path to the paclet library (or just the name, if the library can be located with :wlref:`FindLibrary`) and loads it
+into the WolframKernel process. It also loads WSTP library (if not already loaded) and initializes internal structures. LLU will store the path to the paclet
+library ("MyPacletLib" in the example above) so that later when you load library functions you do not need to pass the library path every time.
+
+Another task commonly done right after initializing LLU is error registering. See the :doc:`../modules/error_handling` chapter for detailed description
+of this process.
 
 5. Example - demo project
 =========================================
