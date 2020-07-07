@@ -46,7 +46,7 @@ ConditionalTest[ExactTest,
 	,
 	{$VersionNumber == 12.0, {3, 5, 0}, {}}
 	,
-	{$VersionNumber > 12.0, Dimensions @ $Failed, Message[LibraryFunction::nanull, NumericArray]}
+	{$VersionNumber > 12.0, {}, Message[LibraryFunction::nanull, NumericArray]}
 	,
 	TestID -> "NumericArrayTestSuite-20190910-C1R3B0"
 ];
