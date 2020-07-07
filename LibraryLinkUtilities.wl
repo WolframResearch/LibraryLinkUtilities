@@ -917,9 +917,9 @@ MArgumentTransform[Managed[expectedHead_]] := Replace[{
 Constructor;
 
 NewManagedExpression[exprHead_][args___] :=
-	Block[{res},
+	Block[{res, constructor = Constructor[exprHead]},
 		res = CreateManagedLibraryExpression[SymbolName[exprHead], exprHead];
-		Constructor[exprHead][ManagedLibraryExpressionID[res], args];
+		constructor[ManagedLibraryExpressionID[res], args];
 		res
 	];
 
