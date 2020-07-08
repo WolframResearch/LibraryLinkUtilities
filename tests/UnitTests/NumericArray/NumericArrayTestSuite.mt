@@ -1,7 +1,7 @@
 (* Wolfram Language Test file *)
 TestRequirement[$VersionNumber >= 12.0]
 CatchAll @ TestExecute[
-	currentDirectory = DirectoryName[$CurrentFile];
+	currentDirectory = DirectoryName[$TestFileName];
 	Get[FileNameJoin[{ParentDirectory[currentDirectory], "TestConfig.wl"}]];
 	sourceDirectory = FileNameJoin[{currentDirectory, "TestSources"}];
 	Get[FileNameJoin[{sourceDirectory, "NumericArrayOperations.wl"}]];
