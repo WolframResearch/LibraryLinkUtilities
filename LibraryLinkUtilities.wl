@@ -413,7 +413,7 @@ SafeLibraryFunctionLoad[libName_?StringQ, fname_?StringQ, fParams_, retType_, op
 		]
 	];
 
-Options[PacletFunctionLoad] = SortBy[Key] @ Join[
+Options[PacletFunctionLoad] = SortBy[ToString] @ Join[
 	Options[SafeLibraryFunctionLoad],
 	{
 		"ProgressMonitor" -> None,
