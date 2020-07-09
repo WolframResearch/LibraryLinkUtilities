@@ -15,6 +15,10 @@
 	font-size: 120%;
 }
 
+.rst-content .highlight > pre {
+	line-height: 1.5;
+}
+
 /* Work around WL code parser bug in Sphinx, which marks valid code as erroneous */
 .highlight .err {
 	color: inherit;
