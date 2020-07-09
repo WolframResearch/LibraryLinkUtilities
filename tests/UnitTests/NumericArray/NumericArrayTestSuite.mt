@@ -1,11 +1,10 @@
 (* Wolfram Language Test file *)
 TestRequirement[$VersionNumber >= 12.0]
 CatchAll @ TestExecute[
-	currentDirectory = DirectoryName[$CurrentFile];
+	currentDirectory = DirectoryName[$TestFileName];
 	Get[FileNameJoin[{ParentDirectory[currentDirectory], "TestConfig.wl"}]];
 	sourceDirectory = FileNameJoin[{currentDirectory, "TestSources"}];
 	Get[FileNameJoin[{sourceDirectory, "NumericArrayOperations.wl"}]];
-
 	na = NumericArray[{1, 2, 3, 4}];
 	
 	Off[General::stop];
@@ -13,6 +12,7 @@ CatchAll @ TestExecute[
 
 (****************************NumericArray Operations****************************************)
 
+TestRequirement[$VersionNumber > 12.0];
 Test[
 	echoNumericArrays[na, na, na]
 	,
@@ -20,6 +20,7 @@ Test[
 	,
 	TestID -> "NumericArrayTestSuite-20190910-D6E1E5"
 ]
+EndRequirement[];
 
 (*Test[
 	num = NumericArray[N @ Range[0, 47] / 47, "Real64"];
@@ -30,22 +31,22 @@ Test[
 	TestID -> "NumericArrayTestSuite-20190910-N9N5N6"
 ]*)
 
-Test[
+ConditionalTest[ExactTest,
 	emptyVector[]
 	,
-	$Failed
+	{$VersionNumber == 12.0, {}, {}}
 	,
-	Message[LibraryFunction::nanull, NumericArray]
+	{$VersionNumber > 12.0, $Failed, Message[LibraryFunction::nanull, NumericArray]}
 	,
 	TestID -> "NumericArrayTestSuite-20190910-L4P0L7"
 ];
 
-Test[
+ConditionalTest[ExactTest,
 	Dimensions @ emptyMatrix[]
 	,
-	Dimensions @ $Failed
+	{$VersionNumber == 12.0, {3, 5, 0}, {}}
 	,
-	Message[LibraryFunction::nanull, NumericArray]
+	{$VersionNumber > 12.0, {}, Message[LibraryFunction::nanull, NumericArray]}
 	,
 	TestID -> "NumericArrayTestSuite-20190910-C1R3B0"
 ];
@@ -63,19 +64,32 @@ Test[
 	TestID -> "NumericArrayTestSuite-20190910-S4B6X0"
 ];
 
-Test[
+ConditionalTest[TestMatch,
 	Normal @* testDimensions /@ {{0}, {3}, {3, 0}, {3, 2}, {3, 2, 0}, {3, 2, 4}}
 	,
 	{
-		$Failed,
-		{0., 0., 0.},
-		$Failed,
-		{{0., 0.}, {0., 0.}, {0., 0.}},
-		$Failed,
-		{{{0., 0., 0., 0.}, {0., 0., 0., 0.}}, {{0., 0., 0., 0.}, {0., 0., 0., 0.}}, {{0., 0., 0., 0.}, {0., 0., 0., 0.}}}
+		$VersionNumber == 12.0, {
+			{},
+			{0., 0., 0.},
+			{{}, {}, {}},
+			{{0., 0.}, {0., 0.}, {0., 0.}},
+			{{{}, {}}, {{}, {}}, {{}, {}}},
+			{{{0., 0., 0., 0.}, {0., 0., 0., 0.}}, {{0., 0., 0., 0.}, {0., 0., 0., 0.}}, {{0., 0., 0., 0.}, {0., 0., 0., 0.}}}
+		},
+		{}
 	}
 	,
-	{Message[LibraryFunction::nanull, NumericArray]..}
+	{
+		$VersionNumber > 12.0, {
+			$Failed,
+			{0., 0., 0.},
+			$Failed,
+			{{0., 0.}, {0., 0.}, {0., 0.}},
+			$Failed,
+			{{{0., 0., 0., 0.}, {0., 0., 0., 0.}}, {{0., 0., 0., 0.}, {0., 0., 0., 0.}}, {{0., 0., 0., 0.}, {0., 0., 0., 0.}}}
+		},
+		{Message[LibraryFunction::nanull, NumericArray]..}
+	}
 	,
 	TestID -> "NumericArrayTestSuite-20190910-N6W9L8"
 ];

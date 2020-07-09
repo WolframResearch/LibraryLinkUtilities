@@ -9,13 +9,6 @@
 
 #include <memory>
 
-/* If wstp.h has already been included we just include WolframLibrary.h because there will be no conflict. */
-#ifdef _WSTP_H
-
-#include "WolframLibrary.h"
-
-#else
-
 /* If wstp.h has not been included before WolframLibrary.h, we need to detect if we are dealing with WL 12.0- or 12.1+.
  * To achieve this we include a small header file dllexport.h which defines DLLIMPORT macro only since 12.1. */
 
@@ -29,11 +22,17 @@
 
 #include "wstp.h"
 
-#endif	/* DLLIMPORT */
+#define MLINK WSLINK
+#define MLENV WSENV
 
 #include "WolframLibrary.h"
 
-#endif	/* _WSTP_H */
+#else // 12.1+
+
+#include "WolframLibrary.h"
+
+#endif	/* DLLIMPORT */
+
 
 #include "WolframIOLibraryFunctions.h"
 #include "WolframImageLibrary.h"

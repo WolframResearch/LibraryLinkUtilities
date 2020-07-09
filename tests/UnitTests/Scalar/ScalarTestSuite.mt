@@ -7,7 +7,7 @@ TestRequirement[$VersionNumber >= 12.0];
 (***************************************************************************************************************************************)
 TestExecute[
 	Needs["CCompilerDriver`"];
-	currentDirectory = DirectoryName[$CurrentFile];
+	currentDirectory = DirectoryName[$TestFileName];
 
 	(* Get configuration (path to LLU sources, compilation options, etc.) *)
 	Get[FileNameJoin[{ParentDirectory[currentDirectory], "TestConfig.wl"}]];

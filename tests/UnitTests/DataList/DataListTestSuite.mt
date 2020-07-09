@@ -7,7 +7,7 @@ TestRequirement[$VersionNumber >= 12.0]
 (***************************************************************************************************************************************)
 TestExecute[
 	Needs["CCompilerDriver`"];
-	currentDirectory = DirectoryName[$CurrentFile];
+	currentDirectory = DirectoryName[$TestFileName];
 
 	(* Get configuration (path to LLU sources, compilation options, etc.) *)
 	Get[FileNameJoin[{ParentDirectory[currentDirectory], "TestConfig.wl"}]];
@@ -409,13 +409,13 @@ Test[
 	TestID -> "DataListTestSuite-20180910-Q5U3A6"
 ];
 
-Test[
+ConditionalTest[TestMatch,
 	IntsToNumericArray[Developer`DataStore[]]
 	,
-	$Failed
-	(* eventually, the expected value should be {}, but for now empty NumericArrays are not supported in LibraryLink *)
+	{$VersionNumber == 12.0, {}, {}}
 	,
-	Message[LibraryFunction::nanull, NumericArray]
+	(* eventually, the expected value should be {}, but for now empty NumericArrays are not supported in LibraryLink *)
+	{$VersionNumber > 12.0, $Failed, {Message[LibraryFunction::nanull, NumericArray]}}
 	,
 	TestID -> "DataListTestSuite-20180910-J1W7Z6"
 ];
@@ -453,9 +453,14 @@ Test[
 	TestID -> "DataListTestSuite-20200401-L5V4B8"
 ];
 
+TestExecute[
+	oldDS1 = ds1;
+];
+
+TestRequirement[$VersionNumber > 12.0];
+
 Test[
 	`LLU`PacletFunctionSet[PullAndPush, {"DataStore"}, "DataStore"];
-	oldDS1 = ds1;
 	PullAndPush[ds1]
 	,
 	Developer`DataStore[
@@ -487,6 +492,8 @@ Test[
 	,
 	TestID -> "DataListTestSuite-20180904-J9J5U5"
 ];
+
+EndRequirement[];
 
 Test[
 	`LLU`PacletFunctionSet[PullAndPush2, {"DataStore"}, "DataStore"];

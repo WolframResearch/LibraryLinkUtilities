@@ -365,7 +365,8 @@ ArgumentParser[specialArgs_?AssociationQ] := Sequence @@ MapIndexed[MArgumentTra
 
 SafeLibraryLoad[lib_] :=
 	Quiet @ Check[
-		LibraryLoad[lib]
+		LibraryLoad[lib];
+		lib
 		,
 		ThrowPacletFailure[
 			"LibraryLoadFailure",
@@ -412,8 +413,7 @@ SafeLibraryFunctionLoad[libName_?StringQ, fname_?StringQ, fParams_, retType_, op
 		]
 	];
 
-Options[PacletFunctionLoad] = System`Private`SortOptions @
-Join[
+Options[PacletFunctionLoad] = SortBy[ToString] @ Join[
 	Options[SafeLibraryFunctionLoad],
 	{
 		"ProgressMonitor" -> None,
