@@ -152,5 +152,5 @@ API Reference
 
 .. doxygenfunction:: LLU::manageInstanceCallback
 
-.. doxygenstruct:: LLU::ManagedExpressionStore
+.. doxygenclass:: LLU::ManagedExpressionStore
    :members:
