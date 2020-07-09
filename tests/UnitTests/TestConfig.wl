@@ -1,5 +1,5 @@
 (* Project base directory *)
-$baseDir = FileNameDrop[$CurrentFile, -3];
+$baseDir = FileNameDrop[$TestFileName, -3];
 
 $installDir = FileNameJoin[{$baseDir, "install"}];
 

@@ -98,7 +98,17 @@ function(create_zip_target PACLET_NAME)
 			)
 endfunction()
 
-
+# Create a target that produces a proper .paclet file for the project. It takes a paclet layout, packs it into a .paclet file, optionally verifies
+# contents, installs to the user paclet directory and run tests. A sample call may look like this:
+#
+#   add_paclet_target(paclet        # target name, can be anything [required]
+#       NAME Demo                   # paclet name [required]
+#       VERIFY                      # verify contents of the .paclet file [optional]
+#       INSTALL                     # install to the user paclet directory [optional]
+#       TEST_FILE Tests/test.wl     # run tests if the paclet has any [optional]
+#   )
+#
+# For this function to work, install target must be built beforehand and wolframscript from Mathematica v12.1 or later must be available.
 function(add_paclet_target TARGET_NAME)
 	set(OPTIONS VERIFY INSTALL)
 	set(ONE_VALUE_ARGS NAME TEST_FILE)
@@ -106,9 +116,10 @@ function(add_paclet_target TARGET_NAME)
 	cmake_parse_arguments(MAKE_PACLET "${OPTIONS}" "${ONE_VALUE_ARGS}" "${MULTI_VALUE_ARGS}" ${ARGN})
 	required_arg(MAKE_PACLET_NAME "Paclet name must be provided.")
 
-	find_package(Mathematica 12.0 QUIET COMPONENTS wolframscript)
-	if (NOT Mathematica_wolframscript_EXE)
-		message(WARNING "Could not find wolframscript. \"paclet\" target will not be created.")
+	unset(Mathematica_FOUND)
+	find_package(Mathematica 12.1 QUIET COMPONENTS wolframscript)
+	if (NOT Mathematica_FOUND OR NOT Mathematica_wolframscript_EXE)
+		message(WARNING "Could not find wolframscript 12.1 or higher. \"paclet\" target will not be created.")
 		return()
 	endif()
 
@@ -139,7 +150,7 @@ function(add_paclet_target TARGET_NAME)
 				Exit[1]
 				,
 				Print["Paclet successfully created:"];
-				Print @ Column[("\t" <> First[#] -> Last[#]) & /@ (DeleteMissing @PacletObject[paclet][All])]
+				Print @ Column[("\t" <> First[#] -> Last[#]) & /@ (DeleteMissing @ PacletObject[paclet][All])]
 			];
 			If["${MAKE_PACLET_VERIFY}" === "TRUE",
 				If[Not @ PacletManager`VerifyPaclet[paclet],

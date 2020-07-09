@@ -7,7 +7,7 @@ TestRequirement[$VersionNumber > 10.3]
 (***************************************************************************************************************************************)
 TestExecute[
 	Needs["CCompilerDriver`"];
-	currentDirectory = DirectoryName[$CurrentFile];
+	currentDirectory = DirectoryName[$TestFileName];
 
 	(* Get configuration (path to LLU sources, compilation options, etc.) *)
 	Get[FileNameJoin[{ParentDirectory[currentDirectory], "TestConfig.wl"}]];
@@ -435,7 +435,7 @@ Test[
 	`LLU`WSTPFunctionSet[GetSet, "GetSet"];
 	GetSet[{"lorem", "ipsum", "dolor", "sit", "amet"}, "StringJoin"]
 	,
-	StringJoin @ AlphabeticSort[{"lorem", "ipsum", "dolor", "sit", "amet"}]
+	StringJoin @ Sort[{"lorem", "ipsum", "dolor", "sit", "amet"}]
 	,
 	TestID -> "WSTPTestSuite-20171214-F6N1C7"
 ]
@@ -443,7 +443,7 @@ Test[
 Test[
 	GetSet[{"lorem", "ipsum", "dolor", "sit", "amet"}]
 	,
-	AlphabeticSort[{"lorem", "ipsum", "dolor", "sit", "amet"}]
+	Sort[{"lorem", "ipsum", "dolor", "sit", "amet"}]
 	,
 	TestID -> "WSTPTestSuite-20171227-V7Z8S6"
 ]
