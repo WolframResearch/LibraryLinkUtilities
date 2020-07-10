@@ -55,7 +55,7 @@ initialized with all arguments to the library function:
 
 Such function, when compiled into a shared library, say :file:`myLib.so`, could be loaded into WolframLanguage and used like this:
 
-.. code-block:: mma
+.. code-block:: wolfram-language
 
    AddInts = LibraryFunctionLoad["myLib.so", "AddTwoIntegers", {Integer, Integer}, Integer];
 
@@ -110,7 +110,7 @@ probably decide to factor this extra code to helper functions.
 
 You could then use your library in Wolfram Language as follows:
 
-.. code-block:: mma
+.. code-block:: wolfram-language
    :force:
 
    (* Load raw library function that operates on basic LibraryLink types *)
@@ -147,7 +147,7 @@ The implementation of ``ConvertMoney`` in C++ would go along the lines:
 
 This is a fine code and if you are satisfied with it, you can stop reading here. However, it is possible with LLU to implement the same functionality like this:
 
-.. code-block:: mma
+.. code-block:: wolfram-language
    :force:
 
    (* Load "ConvertMoney" function from "myLib.so" and assign it to ConvertMoney symbol *)
@@ -178,7 +178,7 @@ with technicalities.
 To achieve this, you need to teach LLU to understand your types. Here is how you register ``"Money"`` as a library function argument type, the values of which
 are of the form ``Quantity[_Real, _String]``:
 
-.. code-block:: mma
+.. code-block:: wolfram-language
    :force:
 
    `LLU`MArgumentType["Money", {Real, String}, (Sequence[QuantityMagnitude[#], QuantityUnit[#]]) &];
@@ -232,7 +232,7 @@ LLU how to work in the other direction, i.e. how to return ``Money`` objects via
 You can read more about :cpp:class:`DataList <template\<typename T> LLU::DataList>` in the section
 about :doc:`containers`. The last step is to tell LLU how to turn incoming DataStores into Quantities in library functions that declare "Money" as return type:
 
-.. code-block:: mma
+.. code-block:: wolfram-language
    :force:
 
    `LLU`MResultType["Money", "DataStore", (Quantity @@ #)&];

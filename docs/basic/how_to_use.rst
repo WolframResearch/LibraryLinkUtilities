@@ -138,7 +138,7 @@ The last step is to copy the file with Wolfram Language code to use the top-leve
      DESTINATION "${PACLET_NAME}/LibraryResources"
    )
 
-Code changes
+Initialization
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 LLU, being a wrapper over LibraryLink, lives at the edge of two worlds: the C++ domain and the Wolfram Language. Both parts of LLU need to be initialized.
@@ -160,7 +160,7 @@ See the documentation of :cpp:class:`LLU::LibraryData` for details.
 Initialization of the WL part is equally simple - imagine that we have paclet called *MyPaclet* and its shared library is named :file:`MyPacletLib.so` (the extension
 is platform-dependent):
 
-.. code-block:: mma
+.. code-block:: wolfram-language
 
    Get["/path/to/LibraryLinkUtilities.wl"];
 

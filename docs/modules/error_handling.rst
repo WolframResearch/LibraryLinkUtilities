@@ -110,7 +110,7 @@ The Wolfram Language part of the error-handling functionality of LLU is responsi
 into nice and informative :wlref:`Failure` objects. Whether these objects will be *returned* or *thrown* on the WL side is determined by the ``"Throws"`` option
 specified when loading a library function with LLU:
 
-.. code-block:: mma
+.. code-block:: wolfram-language
 
    (* This must go first, see the "How to use" -> "Add to your project" section *)
    `LLU`InitializePacletLibrary["/path/to/my/library"];
@@ -130,7 +130,7 @@ be *thrown*, whereas ``$MyNonThrowingFunction`` will *return* the Failure.
 Apart from the C++ code, paclets often have nontrivial amount of Wolfram Language code where errors might also occur. In order to achieve uniform
 error reporting across C++ and WL, one needs to register errors specific to the WL layer of the paclet:
 
-.. code-block:: mma
+.. code-block:: wolfram-language
 
    LLU`RegisterPacletErrors[<|
       "InvalidInput" -> "Data provided to the function was invalid.",
@@ -143,7 +143,7 @@ error reporting across C++ and WL, one needs to register errors specific to the 
 
 Such registered errors can later be issued from the Wolfram Language part of the project like this:
 
-.. code-block:: mma
+.. code-block:: wl
 
    status = DoSomething[input];
    If[Not @ StatusOK[status],
@@ -152,7 +152,7 @@ Such registered errors can later be issued from the Wolfram Language part of the
 
 This code will throw a ``Failure`` expression of the following form:
 
-.. code-block:: mma
+.. code-block:: wolfram-language
    :caption: Sample Failure thrown from paclet code
    :name: sample-failure
 
@@ -172,20 +172,20 @@ In other words, the *tag* can be any function of the Failure object and develope
 
 By default, ``$ExceptionTagFunction`` is a constant function that returns ``$ExceptionTagString`` which is initially set to "LLUExceptionTag":
 
-.. code-block:: mma
+.. code-block:: wolfram-language
 
    $ExceptionTagString = "LLUExceptionTag";
    $ExceptionTagFunction := $ExceptionTagString&;
 
 In case you want Failures from your paclet to be thrown with a predefined String tag, say, "MyPacletError", it is enough to write
 
-.. code-block:: mma
+.. code-block:: wolfram-language
 
    `LLU`$ExceptionTagString = "MyPacletError";
 
 If you want to the tag to be different for different kinds of Failures, you may want to do something like this:
 
-.. code-block:: mma
+.. code-block:: wolfram-language
 
    `LLU`$ExceptionTagFunction = ("MyPaclet_" <> First[#])&;
 

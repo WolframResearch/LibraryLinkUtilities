@@ -126,7 +126,7 @@ for example let's define a wrapper over `A::getMyNumber()`:
 
 In the Wolfram Language, wrappers over member functions can be conveniently loaded:
 
-.. code-block:: mma
+.. code-block:: wolfram-language
    :dedent: 1
 
 	LLU`LoadMemberFunction[A][
@@ -139,7 +139,7 @@ In the Wolfram Language, wrappers over member functions can be conveniently load
 
 The only thing left now is to create an MLE instance and call the member function on it:
 
-.. code-block:: mma
+.. code-block:: wolfram-language
 
    myA = LLU`NewManagedExpression[A][17];
 

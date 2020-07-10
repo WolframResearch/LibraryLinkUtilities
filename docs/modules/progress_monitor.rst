@@ -88,7 +88,7 @@ Consider a simple function that just sleeps in a loop moving the progress bar in
 
 For progress reporting to work on the Wolfram Language side as expected, the library function must be loaded with extra option "ProgressMonitor", like this:
 
-.. code-block:: mma
+.. code-block:: wolfram-language
 
    UniformProgress = SafeLibraryFunction["UniformProgress", {Real}, Integer, "ProgressMonitor" -> MyPaclet`PM`UniformProgress];
 
@@ -98,7 +98,7 @@ to be the same as the function name.
 
 Now, run your library function with simple progress bar:
 
-.. code-block:: mma
+.. code-block:: wolfram-language
 
    Monitor[
       UniformProgress[5],
