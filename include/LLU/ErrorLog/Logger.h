@@ -16,19 +16,29 @@
 
 // Configuration macros to set desired level of logging at build time:
 
-/// Define LLU_LOG_DEBUG to enable all log levels
+/**
+ * @def LLU_LOG_DEBUG
+ * Define LLU_LOG_DEBUG to enable all log levels
+ */
 #ifdef LLU_LOG_DEBUG
 #define LLU_LOG_LEVEL_DEBUG
 #define LLU_LOG_WARNING
+#define LLU_LOG_DEBUG // workaround for a Doxygen bug
 #endif
 
-/// Define LLU_LOG_WARNING to enable warning and error logs. Debug logs will be ignored.
+/**
+ * @def LLU_LOG_WARNING
+ * Define LLU_LOG_WARNING to enable warning and error logs. Debug logs will be ignored.
+ */
 #ifdef LLU_LOG_WARNING
 #define LLU_LOG_LEVEL_WARNING
 #define LLU_LOG_ERROR
 #endif
 
-/// Define LLU_LOG_ERROR to enable only error logs. Debug and warning logs will be ignored.
+/**
+ * @def LLU_LOG_ERROR
+ * Define LLU_LOG_ERROR to enable only error logs. Debug and warning logs will be ignored.
+ */
 #ifdef LLU_LOG_ERROR
 #define LLU_LOG_LEVEL_ERROR
 #endif
@@ -36,35 +46,38 @@
 // Convenience macros to use in the code:
 
 #ifdef LLU_LOG_LEVEL_DEBUG
-#define LLU_DEBUG(...) LLU::Logger::log<LLU::Logger::Level::Debug>(__LINE__, __FILE__, __func__, __VA_ARGS__)
-#else
 /**
- * Log message as debug information, the log will consist of the line number, file name, function name and user-provided args.
+ * Log a message (arbitrary sequence of arguments that can be passed via WSTP) as debug information, the log will consist of the line number, file name,
+ * function name and user-provided args.
  * Formatting can be customized on the Wolfram Language side.
  * @note This macro is only active with LLU_LOG_DEBUG compilation flag.
  */
+#define LLU_DEBUG(...) LLU::Logger::log<LLU::Logger::Level::Debug>(__LINE__, __FILE__, __func__, __VA_ARGS__)
+#else
 #define LLU_DEBUG(...) ((void)0)
 #endif
 
 #ifdef LLU_LOG_LEVEL_WARNING
-#define LLU_WARNING(...) LLU::Logger::log<LLU::Logger::Level::Warning>(__LINE__, __FILE__, __func__, __VA_ARGS__)
-#else
 /**
- * Log message as warning, the log will consist of the line number, file name, function name and user-provided args.
+ * Log a message (arbitrary sequence of arguments that can be passed via WSTP) as warning, the log will consist of the line number, file name,
+ * function name and user-provided args.
  * Formatting can be customized on the Wolfram Language side.
  * @note This macro is only active with LLU_LOG_DEBUG or LLU_LOG_WARNING compilation flag.
  */
+#define LLU_WARNING(...) LLU::Logger::log<LLU::Logger::Level::Warning>(__LINE__, __FILE__, __func__, __VA_ARGS__)
+#else
 #define LLU_WARNING(...) ((void)0)
 #endif
 
 #ifdef LLU_LOG_LEVEL_ERROR
-#define LLU_ERROR(...) LLU::Logger::log<LLU::Logger::Level::Error>(__LINE__, __FILE__, __func__, __VA_ARGS__)
-#else
 /**
- * Log message as error, the log will consist of the line number, file name, function name and user-provided args.
+ * Log a message (arbitrary sequence of arguments that can be passed via WSTP) as error, the log will consist of the line number, file name,
+ * function name and user-provided args.
  * Formatting can be customized on the Wolfram Language side.
  * @note This macro is only active with LLU_LOG_DEBUG, LLU_LOG_WARNING or LLU_LOG_ERROR compilation flag.
  */
+#define LLU_ERROR(...) LLU::Logger::log<LLU::Logger::Level::Error>(__LINE__, __FILE__, __func__, __VA_ARGS__)
+#else
 #define LLU_ERROR(...) ((void)0)
 #endif
 

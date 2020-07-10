@@ -19,8 +19,8 @@
    modules/error_handling
    modules/wstp
    modules/managed_expressions
+   modules/logger
    modules/progress_monitor
-   modules/miscellaneous
 
 .. toctree::
    :hidden:
