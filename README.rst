@@ -12,7 +12,7 @@ to C/C++ libraries. LLU started as an internal Wolfram project which can now be 
 
 The official documentation including use instructions can be found here:
 
-http://algorithms.wolfram.com:8080/documentation/LLU **TODO: replace with GitHub Pages link**
+**TODO: Provide the link to the release documentation (likely on Github Pages)**
 
 This documentation is split into modules. Each describes a core part of LLU providing general overview, examples and detailed description of related C++ entities.
 
@@ -24,7 +24,7 @@ Motivation
 ------------------------------
 
 :term:`LibraryLink` is a great tool for connecting Wolfram Language to external C/C++ libraries and is already widely used by Wolfram Research and
-Wolfram Language developers for developing paclets.
+Wolfram Language developers for developing :term:`paclet`\ s.
 :term:`LibraryLink Utilities` makes it even easier to use LibraryLink by providing the following features:
 
 * automatic resource management
@@ -195,27 +195,38 @@ Glossary
 
 .. glossary::
 
-	LibraryLink
-		Wolfram Language framework
+   LibraryLink
+      Wolfram Language framework
 
-	LibraryLink Utilities
-	LLU
-		wrapper over :term:`LibraryLink`
+   LibraryLink Utilities
+   LLU
+      wrapper over :term:`LibraryLink`
 
-	library function
-		a C/C++ function with special signature
+   library function
+      a C/C++ function with special signature
 
-		.. code-block:: cpp
+      .. code-block:: cpp
 
-		   int f (WolframLibraryData libData, mint Argc, MArgument* Args, MArgument Res);
+         int f (WolframLibraryData libData, mint Argc, MArgument* Args, MArgument Res);
 
-		or
+      or
 
-		.. code-block:: cpp
+      .. code-block:: cpp
 
-		   int f (WolframLibraryData libData, WSLINK mlp);
+         int f (WolframLibraryData libData, WSLINK mlp);
 
-		Such functions can later be loaded into Wolfram Language using :wl:`LibraryFunctionLoad`.
+      Such functions can later be loaded into Wolfram Language using :wlref:`LibraryFunctionLoad`.
+
+   paclet
+      A Wolfram Language code equipped with the PacletInfo.wl file. See the
+      `excellent tutorial <https://www.wolframcloud.com/obj/tgayley/Published/PacletDevelopment.nb>`_ on paclet development.
+
+   LibraryLink paclet
+      A :term:`paclet` that has some of its functionality implemented in C or C++ using LibraryLink. Such paclets usually also have a layer of Wolfram Language
+      code responsible at least for loading functions from the shared C/C++ library.
+
+   LLU paclet
+      A :term:`LibraryLink paclet` that additionally uses LibraryLink Utilities
 
 Contributors
 ==================
