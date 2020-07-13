@@ -132,7 +132,7 @@ error reporting across C++ and WL, one needs to register errors specific to the 
 
 .. code-block:: wolfram-language
 
-   LLU`RegisterPacletErrors[<|
+   `LLU`RegisterPacletErrors[<|
       "InvalidInput" -> "Data provided to the function was invalid.",
       "UnexpectedError" -> "Unexpected error occurred with error code: `errCode`."
    |>];
@@ -143,7 +143,7 @@ error reporting across C++ and WL, one needs to register errors specific to the 
 
 Such registered errors can later be issued from the Wolfram Language part of the project like this:
 
-.. code-block:: wl
+.. code-block:: wolfram-language
 
    status = DoSomething[input];
    If[Not @ StatusOK[status],

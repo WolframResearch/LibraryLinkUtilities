@@ -47,7 +47,8 @@ Some sophisticated types can be sent to Mathematica directly via an WSStream cla
 
 
 Just write `ms << myNestedMap` and a nested Association will be returned. It works in the other direction too.
-Obviously, for the above to work, the key and value types in the map must be supported by WSTP.
+Obviously, for the above to work, the key and value types in the map must be supported by WSStream (i.e. there must exist an overload of
+``WSStream::operator<<`` that takes an argument of given type).
 
 If you have any particular type that you think should be directly supported by WSStream, please let me know.
 
