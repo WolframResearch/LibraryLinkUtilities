@@ -1,10 +1,8 @@
+.. include:: ../globals.rst
+
 ===========================================
 Progress monitor
 ===========================================
-
-.. role:: wl(code)
-   :language: mma
-   :class: highlight
 
 When a library function is executed from the Wolfram Language session, the Kernel will wait until the function returns. There is usually no real-time feedback about
 function progress. :term:`LibraryLink` offers the `AbortQ <https://reference.wolfram.com/language/LibraryLink/ref/callback/AbortQ.html>`_ function which allows
