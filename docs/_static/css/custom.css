@@ -19,6 +19,10 @@
 	line-height: 1.5;
 }
 
+.dropdown-icon {
+	float: right;
+}
+
 /* Work around WL code parser bug in Sphinx, which marks valid code as erroneous */
 .highlight .err {
 	color: inherit;
