@@ -14,7 +14,7 @@
    :hidden:
    :caption: Modules
 
-   modules/function_arguments
+   modules/functions
    modules/containers
    modules/error_handling
    modules/wstp

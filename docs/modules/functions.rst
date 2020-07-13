@@ -1,13 +1,34 @@
+.. include:: ../globals.rst
+
 ===========================================
-Function arguments
+Library functions
 ===========================================
 
-Passing data between Wolfram Language and external C/C++ libraries is a core feature of LibraryLink. This is far from a straightforward task, because in
+By *library function* (also *LibraryLink function*) we understand a C++ function with one of the following signatures
+
+.. code-block:: cpp
+
+  EXTERN_C DLLEXPORT int f (WolframLibraryData libData, mint Argc, MArgument* Args, MArgument Res);
+
+or
+
+.. code-block:: cpp
+
+  EXTERN_C DLLEXPORT int f (WolframLibraryData libData, WSLINK wslp);
+
+Such functions are building blocks of every LibraryLink paclet. They are usually called directly from the Wolfram Language after being loaded from the dynamic
+library first. It is common for paclets to also define functions entirely in the Wolfram Language or provide thin Wolfram Language wrappers around loaded
+library functions for instance in order to validate input data and then pass it down to the C++ code.
+
+Function arguments
+======================
+
+Passing data between Wolfram Language and external C or C++ libraries is a core feature of LibraryLink. This is far from a straightforward task, because in
 Wolfram Language everything is an expression and variable's type can change at run time, whereas C and C++ variables are statically typed. Apart from that,
 every C/C++ library may define custom data types it uses.
 
-LibraryLink does the heavy lifting by providing translation between popular Wolfram Language expression types and corresponding C types. For instance, when you pass
-a ``String`` expression to the library function, you will receive a null-terminated ``char*`` in the C code, or passing a ``NumericArray`` will yield
+LibraryLink does the heavy lifting by providing translation between popular Wolfram Language expression types and corresponding C types. For instance, when you
+pass a ``String`` expression to the library function, you will receive a null-terminated ``char*`` in the C code, or passing a ``NumericArray`` will yield
 an object of type ``MNumericArray``.
 
 In practice, what you will receive in a library function as input arguments from Wolfram Language is an array of ``MArgument``, which is a union type::
@@ -28,15 +49,15 @@ In practice, what you will receive in a library function as input arguments from
 Similarly, there is one ``MArgument`` to store the result of your library function that you want to return to the Wolfram Language. You must also remember that
 some types of arguments need special treatment, for example you must call ``UTF8String_disown`` on string arguments to avoid memory leaks.
 
-Developers who are no familiar with this part of LibraryLink are encouraged to consult the `official guide <https://reference.wolfram.com/language/LibraryLink/tutorial/LibraryStructure.html#606935091>`_
-before reading on.
+Developers who are no familiar with this part of LibraryLink are encouraged to consult the
+`official guide <https://reference.wolfram.com/language/LibraryLink/tutorial/LibraryStructure.html#606935091>`_ before reading on.
 
-LLU hides all those implementation details in the :cpp:class:`MArgumentManager<LLU::MArgumentManager>` class. You still need to know what the actual
+:term:`LLU` hides all those implementation details in the :cpp:class:`MArgumentManager<LLU::MArgumentManager>` class. You still need to know what the actual
 argument types are but you can now extract arguments using member functions like :cpp:func:`getInteger<LLU::MArgumentManager::getInteger>`,
 :cpp:func:`getString<LLU::MArgumentManager::getString>` etc. and set the resulting value with :cpp:func:`set<LLU::MArgumentManager::set>` without
 worrying about memory management.
 
-Examples
+Example
 ================
 
 Write a library function that adds two integers. First thing you need to do is to create an instance of :cpp:class:`MArgumentManager<LLU::MArgumentManager>`
@@ -62,28 +83,135 @@ Such function, when compiled into a shared library, say :file:`myLib.so`, could 
    AddInts[17, 25]
    (* = 42 *)
 
+Loading library functions
+=============================
+
+In the example above we saw how library functions can be loaded from shared objects via :wlref:`LibraryFunctionLoad`:
+
+.. code-block:: wolfram-language
+
+   FunctionNameInWL = LibraryFunctionLoad["path/to/sharedLibrary.so", "FunctionNameInCppCode", {ArgumentType1, ArgumentType2, ...}, ResultType];
+
+The syntax is described in details in
+`LibraryLink » Functions, Arguments, and Results <https://reference.wolfram.com/language/LibraryLink/tutorial/LibraryStructure.html#606935091>`_.
+
+In case of WSTP library functions, the call gets simplified to:
+
+.. code-block:: wolfram-language
+
+   FunctionNameInWL = LibraryFunctionLoad["path/to/sharedLibrary.so", "FunctionNameInCppCode", LinkObject, LinkObject];
+
+It is common but not in any way required to have ``FunctionNameInWL`` be equal to ``FunctionNameInCppCode`` with a ``$`` prepended.
+
+LLU expands the library loading mechanism in LibraryLink by providing convenient wrappers with extra options:
+
+:wldef:`SafeLibraryLoad[lib_]`
+	Quietly attempts to load the dynamic library ``lib``, and throws if it cannot be loaded.
+
+:wldef:`PacletFunctionSet[resultSymbol_, lib_, f_, fParams_, fResultType_, opts___]`
+	Attempts to load an exported function ``f`` from a dynamic library ``lib`` and assign the result to ``resultSymbol``.
+	By default, the dynamic library name is taken from the library given to ``InitializePacletLibrary`` (*Paclet Library*).
+	A caveat is that if *Paclet Library* has been lazily initialized and ``PacletFunctionSet`` is called with a path to it, then
+	auto-loading of *Paclet Library* will not be triggered.
+	By default, the name of the library function is assumed to be the same as the symbol name (sans any leading or trailing $'s).
+
+	Arguments:
+		- ``resultSymbol`` - a WL symbol to represent the loaded function
+		- ``lib`` - name of the dynamic library *[optional]*
+		- ``f`` - name of the function to load from the dynamic library *[optional]*
+		- ``fParams`` - parameter types of the library function to be loaded
+		- ``fResultType`` - result type
+
+:wldef:`LazyPacletFunctionSet[resultSymbol_, lib_, f_, fParams_, fResultType_, opts___]`
+	Lazy version of ``PacletFunctionSet`` which loads the function upon the first evaluation of ``resultSymbol``.";
+
+:wldef:`WSTPFunctionSet[resultSymbol_, lib_, f_, opts___]`
+	A convenient wrapper around ``PacletFunctionSet`` for easier loading of WSTP functions. Argument and result type are fixed as ``LinkObject``.
+
+:wldef:`LazyWSTPFunctionSet[resultSymbol_, lib_, f_, opts___]`
+	Lazy version of ``WSTPFunctionSet`` which loads the function upon the first evaluation of ``resultSymbol``.";
+
+:wldef:`MemberFunctionSet[exprHead_][memberSymbol_?Developer\`SymbolQ, lib_, f_, fParams_, retType_, opts___]`
+	Loads a library function into ``memberSymbol`` that can be invoked on instances of ``exprHead`` like so: :wl:`instance @ memberSymbol[...]`";
+
+:wldef:`LazyMemberFunctionSet[exprHead_][memberSymbol_?Developer\`SymbolQ, lib_, f_, fParams_, retType_, opts___]`
+	Lazy version of ``MemberFunctionSet`` which loads the function upon the first evaluation of ``memberSymbol``.";
+
+:wldef:`WSTPMemberFunctionSet[exprHead_][memberSymbol_, lib_, f_, opts___]`
+	A convenient wrapper around ``MemberFunctionSet`` for easier loading of WSTP member functions.";
+
+:wldef:`LazyWSTPMemberFunctionSet[exprHead_][memberSymbol_, lib_, f_, opts___]`
+	Lazy version of ``WSTPMemberFunctionSet`` which loads the function upon the first evaluation of ``memberSymbol``.";
+
+There is also one lower level function which does not take a symbol as first argument but instead returns the loaded library function as the result
+
+:wldef:`PacletFunctionLoad[lib_, f_, fParams_, retType_, opts___]`
+	Attempts to load an exported function ``f`` from a dynamic library ``lib`` and return it. Unlike ``PacletFunctionSet``, there is no mechanism
+	by which to avoid eager loading of the default paclet library (i.e. there is no *LazyPacletFunctionLoad*). If ``lib`` is omitted, the dynamic library name
+	is taken from the library given to ``InitializePacletLibrary``.
+
+Supported options for all of the above functions include:
+
+.. option:: "Optional" -> True | False
+
+   Whether the library function is optional in the library, i.e. loading may fail quietly.  Defaults to **False**.
+
+.. option:: "ProgressMonitor" -> None | _Symbol
+
+   Provide a symbol which will store the current progress of library function. See :doc:`progress_monitor` for details. Defaults to **None**.
+
+.. option:: "Throws" -> True | False
+
+   Whether the library function should throw Failure expressions on error or return them as the result. Defaults to **True** (so Failures will be thrown).
+
 
 Reducing boilerplate code
 =============================
-As you may know, a *LibraryLink function* is a function with one of the two supported signatures:
+
+The set of utility functions described in the previous section allows you to reduce the amount of code you need to write in order to load functions from
+your paclet's dynamic library to the Wolfram Language. Similarly, LLU provides a number of macros that eliminate the need to repeat the full signature
+for every library function.
+
+After you include `<LLU/LibraryLinkFunctionMacro.h>` instead of writing:
 
 .. code-block:: cpp
 
-  int f (WolframLibraryData libData, mint Argc, MArgument* Args, MArgument Res);
+	EXTERN_C DLLEXPORT int name (WolframLibraryData libData, mint Argc, MArgument* Args, MArgument Res);
 
-or
-
-.. code-block:: cpp
-
-  int f (WolframLibraryData libData, WSLINK wslp);
-
-In `<LLU/LibraryLinkFunctionMacro.h>`:
+you can type
 
 .. doxygendefine:: LIBRARY_LINK_FUNCTION
 
+And similarly instead of
+
+.. code-block:: cpp
+
+  EXTERN_C DLLEXPORT int name (WolframLibraryData libData, WSLINK wslp);
+
+you can use
+
 .. doxygendefine:: LIBRARY_WSTP_FUNCTION
 
-Finally, there is also
+Finally, if you use exception-based error handling you will often end up writing code like this:
+
+.. code-block:: cpp
+   :linenos:
+   :emphasize-lines: 5
+
+   EXTERN_C DLLEXPORT int name(WolframLibraryData libData, mint Argc, MArgument *Args, MArgument Res) {
+       auto err = ErrorCode::NoError;
+       try {
+           LLU::MArgumentManager mngr {libData, Argc, Args, Res};
+           // body of a function that effectively takes mngr as the single parameter
+       } catch (const LibraryLinkError& e) {
+           err = e.which();
+       } catch (...) {
+           err = ErrorCode::FunctionError;
+       }
+       return err;
+   }
+
+Fortunately, there is a macro that allows you to focus only on the highlighted part:
 
 .. doxygendefine:: LLU_LIBRARY_FUNCTION
 
