@@ -128,6 +128,734 @@ TestMatch[
 (*********************************************************** C++ code failures **************************************************************)
 
 TestMatch[
+	ClearAll[$ReadData];
+	`LLU`PacletFunctionSet[$ReadData, {String}, "Void"];
+	Catch[
+		{$ReadData["test.txt"], "NoCatch"}
+		,
+		"LLUExceptionTag"
+	]
+	,
+	Failure["DataFileError", ___]
+	,
+	TestID -> "ErrorReportingTestSuite-20200713-125282"
+];
+
+TestMatch[
+	ClearAll[$ReadData];
+	`LLU`PacletFunctionSet[$ReadData, "ReadData", {String}, "Void"];
+	Catch[
+		{$ReadData["test.txt"], "NoCatch"}
+		,
+		"LLUExceptionTag"
+	]
+	,
+	Failure["DataFileError", ___]
+	,
+	TestID -> "ErrorReportingTestSuite-20200713-6F42A8"
+];
+
+TestMatch[
+	ClearAll[$ReadData];
+	`LLU`PacletFunctionSet[$ReadData, lib, "ReadData", {String}, "Void"];
+	Catch[
+		{$ReadData["test.txt"], "NoCatch"}
+		,
+		"LLUExceptionTag"
+	]
+	,
+	Failure["DataFileError", ___]
+	,
+	TestID -> "ErrorReportingTestSuite-20200713-6F4461"
+];
+
+TestMatch[
+	ClearAll[$ReadData];
+	`LLU`PacletFunctionSet[$ReadData, {String}, "Void", "Throws" -> False];
+	Catch[
+		{$ReadData["test.txt"], "NoCatch"}
+		,
+		"LLUExceptionTag"
+	]
+	,
+	{Failure["DataFileError", ___], "NoCatch"}
+	,
+	TestID -> "ErrorReportingTestSuite-20200713-B663B5"
+];
+
+TestMatch[
+	ClearAll[$ReadData];
+	`LLU`PacletFunctionSet[$ReadData, "ReadData", {String}, "Void", "Throws" -> False];
+	Catch[
+		{$ReadData["test.txt"], "NoCatch"}
+		,
+		"LLUExceptionTag"
+	]
+	,
+	{Failure["DataFileError", ___], "NoCatch"}
+	,
+	TestID -> "ErrorReportingTestSuite-20200713-F84E10"
+];
+
+TestMatch[
+	ClearAll[$ReadData];
+	`LLU`PacletFunctionSet[$ReadData, lib, "ReadData", {String}, "Void", "Throws" -> False];
+	Catch[
+		{$ReadData["test.txt"], "NoCatch"}
+		,
+		"LLUExceptionTag"
+	]
+	,
+	{Failure["DataFileError", ___], "NoCatch"}
+	,
+	TestID -> "ErrorReportingTestSuite-20200713-4E8804"
+];
+
+TestMatch[
+	ClearAll[$testFunctionWSTP];
+	`LLU`WSTPFunctionSet[$testFunctionWSTP];
+	Catch[
+		{$testFunctionWSTP[], "NoCatch"}
+		,
+		"LLUExceptionTag"
+	]
+	,
+	Failure["SimpleError", ___]
+	,
+	TestID -> "ErrorReportingTestSuite-20200713-D70EA4"
+];
+
+TestMatch[
+	ClearAll[$testFunctionWSTP];
+	`LLU`WSTPFunctionSet[$testFunctionWSTP, "testFunctionWSTP"];
+	Catch[
+		{$testFunctionWSTP[], "NoCatch"}
+		,
+		"LLUExceptionTag"
+	]
+	,
+	Failure["SimpleError", ___]
+	,
+	TestID -> "ErrorReportingTestSuite-20200713-AFC0F3"
+];
+
+TestMatch[
+	ClearAll[$testFunctionWSTP];
+	`LLU`WSTPFunctionSet[$testFunctionWSTP, lib, "testFunctionWSTP"];
+	Catch[
+		{$testFunctionWSTP[], "NoCatch"}
+		,
+		"LLUExceptionTag"
+	]
+	,
+	Failure["SimpleError", ___]
+	,
+	TestID -> "ErrorReportingTestSuite-20200713-6FD0F0"
+];
+
+TestMatch[
+	ClearAll[$testFunctionWSTP];
+	`LLU`WSTPFunctionSet[$testFunctionWSTP, "Throws" -> False];
+	Catch[
+		{$testFunctionWSTP[], "NoCatch"}
+		,
+		"LLUExceptionTag"
+	]
+	,
+	{Failure["SimpleError", ___], "NoCatch"}
+	,
+	TestID -> "ErrorReportingTestSuite-20200713-F156F5"
+];
+
+TestMatch[
+	ClearAll[$testFunctionWSTP];
+	`LLU`WSTPFunctionSet[$testFunctionWSTP, "testFunctionWSTP", "Throws" -> False];
+	Catch[
+		{$testFunctionWSTP[], "NoCatch"}
+		,
+		"LLUExceptionTag"
+	]
+	,
+	{Failure["SimpleError", ___], "NoCatch"}
+	,
+	TestID -> "ErrorReportingTestSuite-20200713-7162C9"
+];
+
+TestMatch[
+	ClearAll[$testFunctionWSTP];
+	`LLU`WSTPFunctionSet[$testFunctionWSTP, lib, "testFunctionWSTP", "Throws" -> False];
+	Catch[
+		{$testFunctionWSTP[], "NoCatch"}
+		,
+		"LLUExceptionTag"
+	]
+	,
+	{Failure["SimpleError", ___], "NoCatch"}
+	,
+	TestID -> "ErrorReportingTestSuite-20200713-A24463"
+];
+
+TestMatch[
+	ClearAll[$ReadData];
+	`LLU`LazyPacletFunctionSet[$ReadData, {String}, "Void"];
+
+	Flatten @ {FreeQ[OwnValues@fxn, _LibraryFunction], 
+		Catch[
+			{$ReadData["test.txt"], "NoCatch"}
+			,
+			"LLUExceptionTag"
+		]
+	}
+	,
+	{True, Failure["DataFileError", ___]}
+	,
+	TestID -> "ErrorReportingTestSuite-20200713-7C1AD4"
+];
+
+TestMatch[
+	ClearAll[$ReadData];
+	`LLU`LazyPacletFunctionSet[$ReadData, "ReadData", {String}, "Void"];
+	Flatten @ {FreeQ[OwnValues@fxn, _LibraryFunction], 
+		Catch[
+			{$ReadData["test.txt"], "NoCatch"}
+			,
+			"LLUExceptionTag"
+		]
+	}
+	,
+	{True, Failure["DataFileError", ___]}
+	,
+	TestID -> "ErrorReportingTestSuite-20200713-5E02EC"
+];
+
+TestMatch[
+	ClearAll[$ReadData];
+	`LLU`LazyPacletFunctionSet[$ReadData, lib, "ReadData", {String}, "Void"];
+	Flatten @ {FreeQ[OwnValues@fxn, _LibraryFunction], 
+		Catch[
+			{$ReadData["test.txt"], "NoCatch"}
+			,
+			"LLUExceptionTag"
+		]
+	}
+	,
+	{True, Failure["DataFileError", ___]}
+	,
+	TestID -> "ErrorReportingTestSuite-20200713-016035"
+];
+
+TestMatch[
+	ClearAll[$ReadData];
+	`LLU`LazyPacletFunctionSet[$ReadData, {String}, "Void", "Throws" -> False];
+	Flatten @ {FreeQ[OwnValues@fxn, _LibraryFunction], 
+		Catch[
+			{$ReadData["test.txt"], "NoCatch"}
+			,
+			"LLUExceptionTag"
+		]
+	}
+	,
+	{True, Failure["DataFileError", ___], "NoCatch"}
+	,
+	TestID -> "ErrorReportingTestSuite-20200713-AFF54B"
+];
+
+TestMatch[
+	ClearAll[$ReadData];
+	`LLU`LazyPacletFunctionSet[$ReadData, "ReadData", {String}, "Void", "Throws" -> False];
+	Flatten @ {FreeQ[OwnValues@fxn, _LibraryFunction], 
+		Catch[
+			{$ReadData["test.txt"], "NoCatch"}
+			,
+			"LLUExceptionTag"
+		]
+	}
+	,
+	{True, Failure["DataFileError", ___], "NoCatch"}
+	,
+	TestID -> "ErrorReportingTestSuite-20200713-9D4498"
+];
+
+TestMatch[
+	ClearAll[$ReadData];
+	`LLU`LazyPacletFunctionSet[$ReadData, lib, "ReadData", {String}, "Void", "Throws" -> False];
+	Flatten @ {FreeQ[OwnValues@fxn, _LibraryFunction], 
+		Catch[
+			{$ReadData["test.txt"], "NoCatch"}
+			,
+			"LLUExceptionTag"
+		]
+	}
+	,
+	{True, Failure["DataFileError", ___], "NoCatch"}
+	,
+	TestID -> "ErrorReportingTestSuite-20200713-6C8AE9"
+];
+
+TestMatch[
+	ClearAll[$testFunctionWSTP];
+	`LLU`LazyWSTPFunctionSet[$testFunctionWSTP];
+	Flatten @ {FreeQ[OwnValues@fxn, _LibraryFunction], 
+		Catch[
+			{$testFunctionWSTP[], "NoCatch"}
+			,
+			"LLUExceptionTag"
+		]
+	}
+	,
+	{True, Failure["SimpleError", ___]}
+	,
+	TestID -> "ErrorReportingTestSuite-20200713-A0E9A0"
+];
+
+TestMatch[
+	ClearAll[$testFunctionWSTP];
+	`LLU`LazyWSTPFunctionSet[$testFunctionWSTP, "testFunctionWSTP"];
+	Flatten @ {FreeQ[OwnValues@fxn, _LibraryFunction], 
+		Catch[
+			{$testFunctionWSTP[], "NoCatch"}
+			,
+			"LLUExceptionTag"
+		]
+	}
+	,
+	{True, Failure["SimpleError", ___]}
+	,
+	TestID -> "ErrorReportingTestSuite-20200713-189E64"
+];
+
+TestMatch[
+	ClearAll[$testFunctionWSTP];
+	`LLU`LazyWSTPFunctionSet[$testFunctionWSTP, lib, "testFunctionWSTP"];
+	Flatten @ {FreeQ[OwnValues@fxn, _LibraryFunction], 
+		Catch[
+			{$testFunctionWSTP[], "NoCatch"}
+			,
+			"LLUExceptionTag"
+		]
+	}
+	,
+	{True, Failure["SimpleError", ___]}
+	,
+	TestID -> "ErrorReportingTestSuite-20200713-283EE8"
+];
+
+TestMatch[
+	ClearAll[$testFunctionWSTP];
+	`LLU`LazyWSTPFunctionSet[$testFunctionWSTP, "Throws" -> False];
+	Flatten @ {FreeQ[OwnValues@fxn, _LibraryFunction], 
+		Catch[
+			{$testFunctionWSTP[], "NoCatch"}
+			,
+			"LLUExceptionTag"
+		]
+	}
+	,
+	{True, Failure["SimpleError", ___], "NoCatch"}
+	,
+	TestID -> "ErrorReportingTestSuite-20200713-D31B04"
+];
+
+TestMatch[
+	ClearAll[$testFunctionWSTP];
+	`LLU`LazyWSTPFunctionSet[$testFunctionWSTP, "testFunctionWSTP", "Throws" -> False];
+	Flatten @ {FreeQ[OwnValues@fxn, _LibraryFunction], 
+		Catch[
+			{$testFunctionWSTP[], "NoCatch"}
+			,
+			"LLUExceptionTag"
+		]
+	}
+	,
+	{True, Failure["SimpleError", ___], "NoCatch"}
+	,
+	TestID -> "ErrorReportingTestSuite-20200713-58379C"
+];
+
+TestMatch[
+	ClearAll[$testFunctionWSTP];
+	`LLU`LazyWSTPFunctionSet[$testFunctionWSTP, lib, "testFunctionWSTP", "Throws" -> False];
+	Flatten @ {FreeQ[OwnValues@fxn, _LibraryFunction], 
+		Catch[
+			{$testFunctionWSTP[], "NoCatch"}
+			,
+			"LLUExceptionTag"
+		]
+	}
+	,
+	{True, Failure["SimpleError", ___], "NoCatch"}
+	,
+	TestID -> "ErrorReportingTestSuite-20200713-DE4796"
+];
+
+TestExecute[
+	ClearAll[MyExpression];
+	`LLU`Constructor[MyExpression] = `LLU`MemberFunctionSet[OpenManagedMyExpression, {`LLU`Managed[MyExpression]}, "Void"];
+	myExpr = `LLU`NewManagedExpression[MyExpression][];
+];
+
+TestMatch[
+	ClearAll[$GetMLEError];
+	`LLU`MemberFunctionSet[MyExpression][$GetMLEError, {}, "Void"];
+	Catch[
+		{myExpr @ $GetMLEError[], "NoCatch"}
+		,
+		"LLUExceptionTag"
+	]
+	,
+	Failure["SimpleError", ___]
+	,
+	TestID -> "ErrorReportingTestSuite-20200713-6B4657"
+];
+
+TestMatch[
+	ClearAll[$GetMLEError];
+	`LLU`MemberFunctionSet[MyExpression][$GetMLEError, "GetMLEError", {}, "Void"];
+	Catch[
+		{myExpr @ $GetMLEError[], "NoCatch"}
+		,
+		"LLUExceptionTag"
+	]
+	,
+	Failure["SimpleError", ___]
+	,
+	TestID -> "ErrorReportingTestSuite-20200713-B378C7"
+];
+
+TestMatch[
+	ClearAll[$GetMLEError];
+	`LLU`MemberFunctionSet[MyExpression][$GetMLEError, lib, "GetMLEError", {}, "Void"];
+	Catch[
+		{myExpr @ $GetMLEError[], "NoCatch"}
+		,
+		"LLUExceptionTag"
+	]
+	,
+	Failure["SimpleError", ___]
+	,
+	TestID -> "ErrorReportingTestSuite-20200713-4DE4ED"
+];
+
+TestMatch[
+	ClearAll[$GetMLEError];
+	`LLU`MemberFunctionSet[MyExpression][$GetMLEError, {}, "Void", "Throws" -> False];
+	Catch[
+		{myExpr @ $GetMLEError[], "NoCatch"}
+		,
+		"LLUExceptionTag"
+	]
+	,
+	{Failure["SimpleError", ___], "NoCatch"}
+	,
+	TestID -> "ErrorReportingTestSuite-20200713-BECA91"
+];
+
+TestMatch[
+	ClearAll[$GetMLEError];
+	`LLU`MemberFunctionSet[MyExpression][$GetMLEError, "GetMLEError", {}, "Void", "Throws" -> False];
+	Catch[
+		{myExpr @ $GetMLEError[], "NoCatch"}
+		,
+		"LLUExceptionTag"
+	]
+	,
+	{Failure["SimpleError", ___], "NoCatch"}
+	,
+	TestID -> "ErrorReportingTestSuite-20200713-9D730A"
+];
+
+TestMatch[
+	ClearAll[$GetMLEError];
+	`LLU`MemberFunctionSet[MyExpression][$GetMLEError, lib, "GetMLEError", {}, "Void", "Throws" -> False];
+	Catch[
+		{myExpr @ $GetMLEError[], "NoCatch"}
+		,
+		"LLUExceptionTag"
+	]
+	,
+	{Failure["SimpleError", ___], "NoCatch"}
+	,
+	TestID -> "ErrorReportingTestSuite-20200713-90377C"
+];
+
+TestMatch[
+	ClearAll[$GetMLEErrorWSTP];
+	`LLU`WSTPMemberFunctionSet[MyExpression][$GetMLEErrorWSTP];
+	Catch[
+		{myExpr @ $GetMLEErrorWSTP[], "NoCatch"}
+		,
+		"LLUExceptionTag"
+	]
+	,
+	Failure["SimpleError", ___]
+	,
+	TestID -> "ErrorReportingTestSuite-20200713-0D6812"
+];
+
+TestMatch[
+	ClearAll[$GetMLEErrorWSTP];
+	`LLU`WSTPMemberFunctionSet[MyExpression][$GetMLEErrorWSTP, "GetMLEErrorWSTP"];
+	Catch[
+		{myExpr @ $GetMLEErrorWSTP[], "NoCatch"}
+		,
+		"LLUExceptionTag"
+	]
+	,
+	Failure["SimpleError", ___]
+	,
+	TestID -> "ErrorReportingTestSuite-20200713-50F2C4"
+];
+
+TestMatch[
+	ClearAll[$GetMLEErrorWSTP];
+	`LLU`WSTPMemberFunctionSet[MyExpression][$GetMLEErrorWSTP, lib, "GetMLEErrorWSTP"];
+	Catch[
+		{myExpr @ $GetMLEErrorWSTP[], "NoCatch"}
+		,
+		"LLUExceptionTag"
+	]
+	,
+	Failure["SimpleError", ___]
+	,
+	TestID -> "ErrorReportingTestSuite-20200713-02630F"
+];
+
+TestMatch[
+	ClearAll[$GetMLEErrorWSTP];
+	`LLU`WSTPMemberFunctionSet[MyExpression][$GetMLEErrorWSTP, "Throws" -> False];
+	Catch[
+		{myExpr @ $GetMLEErrorWSTP[], "NoCatch"}
+		,
+		"LLUExceptionTag"
+	]
+	,
+	{Failure["SimpleError", ___], "NoCatch"}
+	,
+	TestID -> "ErrorReportingTestSuite-20200713-26CCC9"
+];
+
+TestMatch[
+	ClearAll[$GetMLEErrorWSTP];
+	`LLU`WSTPMemberFunctionSet[MyExpression][$GetMLEErrorWSTP, "GetMLEErrorWSTP", "Throws" -> False];
+	Catch[
+		{myExpr @ $GetMLEErrorWSTP[], "NoCatch"}
+		,
+		"LLUExceptionTag"
+	]
+	,
+	{Failure["SimpleError", ___], "NoCatch"}
+	,
+	TestID -> "ErrorReportingTestSuite-20200713-4A76E1"
+];
+
+TestMatch[
+	ClearAll[$GetMLEErrorWSTP];
+	`LLU`WSTPMemberFunctionSet[MyExpression][$GetMLEErrorWSTP, lib, "GetMLEErrorWSTP", "Throws" -> False];
+	Catch[
+		{myExpr @ $GetMLEErrorWSTP[], "NoCatch"}
+		,
+		"LLUExceptionTag"
+	]
+	,
+	{Failure["SimpleError", ___], "NoCatch"}
+	,
+	TestID -> "ErrorReportingTestSuite-20200713-056AC9"
+];
+
+TestMatch[
+	ClearAll[$GetMLEError];
+	`LLU`LazyMemberFunctionSet[MyExpression][$GetMLEError, "GetMLEError", {}, "Void"];
+	Flatten @ {FreeQ[OwnValues@fxn, _LibraryFunction], 
+		Catch[
+			{myExpr @ $GetMLEError[], "NoCatch"}
+			,
+			"LLUExceptionTag"
+		]
+	}
+	,
+	{True, Failure["SimpleError", ___]}
+	,
+	TestID -> "ErrorReportingTestSuite-20200713-12A4F6"
+];
+
+TestMatch[
+	ClearAll[$GetMLEError];
+	`LLU`LazyMemberFunctionSet[MyExpression][$GetMLEError, "GetMLEError", {}, "Void"];
+	Flatten @ {FreeQ[OwnValues@fxn, _LibraryFunction], 
+		Catch[
+			{myExpr @ $GetMLEError[], "NoCatch"}
+			,
+			"LLUExceptionTag"
+		]
+	}
+	,
+	{True, Failure["SimpleError", ___]}
+	,
+	TestID -> "ErrorReportingTestSuite-20200713-EAE3F7"
+];
+
+TestMatch[
+	ClearAll[$GetMLEError];
+	`LLU`LazyMemberFunctionSet[MyExpression][$GetMLEError, lib, "GetMLEError", {}, "Void"];
+	Flatten @ {FreeQ[OwnValues@fxn, _LibraryFunction], 
+		Catch[
+			{myExpr @ $GetMLEError[], "NoCatch"}
+			,
+			"LLUExceptionTag"
+		]
+	}
+	,
+	{True, Failure["SimpleError", ___]}
+	,
+	TestID -> "ErrorReportingTestSuite-20200713-751A06"
+];
+
+TestMatch[
+	ClearAll[$GetMLEError];
+	`LLU`LazyMemberFunctionSet[MyExpression][$GetMLEError, {}, "Void", "Throws" -> False];
+	Flatten @ {FreeQ[OwnValues@fxn, _LibraryFunction], 
+		Catch[
+			{myExpr @ $GetMLEError[], "NoCatch"}
+			,
+			"LLUExceptionTag"
+		]
+	}
+	,
+	{True, Failure["SimpleError", ___], "NoCatch"}
+	,
+	TestID -> "ErrorReportingTestSuite-20200713-47DDCC"
+];
+
+TestMatch[
+	ClearAll[$GetMLEError];
+	`LLU`LazyMemberFunctionSet[MyExpression][$GetMLEError, "GetMLEError", {}, "Void", "Throws" -> False];
+	Flatten @ {FreeQ[OwnValues@fxn, _LibraryFunction], 
+		Catch[
+			{myExpr @ $GetMLEError[], "NoCatch"}
+			,
+			"LLUExceptionTag"
+		]
+	}
+	,
+	{True, Failure["SimpleError", ___], "NoCatch"}
+	,
+	TestID -> "ErrorReportingTestSuite-20200713-E0AAF5"
+];
+
+TestMatch[
+	ClearAll[$GetMLEError];
+	`LLU`LazyMemberFunctionSet[MyExpression][$GetMLEError, lib, "GetMLEError", {}, "Void", "Throws" -> False];
+	Flatten @ {FreeQ[OwnValues@fxn, _LibraryFunction], 
+		Catch[
+			{myExpr @ $GetMLEError[], "NoCatch"}
+			,
+			"LLUExceptionTag"
+		]
+	}
+	,
+	{True, Failure["SimpleError", ___], "NoCatch"}
+	,
+	TestID -> "ErrorReportingTestSuite-20200713-9709E0"
+];
+
+TestMatch[
+	ClearAll[$GetMLEErrorWSTP];
+	`LLU`LazyWSTPMemberFunctionSet[MyExpression][$GetMLEErrorWSTP];
+	Flatten @ {FreeQ[OwnValues@fxn, _LibraryFunction], 
+		Catch[
+			{myExpr @ $GetMLEErrorWSTP[], "NoCatch"}
+			,
+			"LLUExceptionTag"
+		]
+	}
+	,
+	{True, Failure["SimpleError", ___]}
+	,
+	TestID -> "ErrorReportingTestSuite-20200713-774159"
+];
+
+TestMatch[
+	ClearAll[$GetMLEErrorWSTP];
+	`LLU`LazyWSTPMemberFunctionSet[MyExpression][$GetMLEErrorWSTP, "GetMLEErrorWSTP"];
+	Flatten @ {FreeQ[OwnValues@fxn, _LibraryFunction], 
+		Catch[
+			{myExpr @ $GetMLEErrorWSTP[], "NoCatch"}
+			,
+			"LLUExceptionTag"
+		]
+	}
+	,
+	{True, Failure["SimpleError", ___]}
+	,
+	TestID -> "ErrorReportingTestSuite-20200713-6174BE"
+];
+
+TestMatch[
+	ClearAll[$GetMLEErrorWSTP];
+	`LLU`LazyWSTPMemberFunctionSet[MyExpression][$GetMLEErrorWSTP, lib, "GetMLEErrorWSTP"];
+	Flatten @ {FreeQ[OwnValues@fxn, _LibraryFunction], 
+		Catch[
+			{myExpr @ $GetMLEErrorWSTP[], "NoCatch"}
+			,
+			"LLUExceptionTag"
+		]
+	}
+	,
+	{True, Failure["SimpleError", ___]}
+	,
+	TestID -> "ErrorReportingTestSuite-20200713-7A511A"
+];
+
+TestMatch[
+	ClearAll[$GetMLEErrorWSTP];
+	`LLU`LazyWSTPMemberFunctionSet[MyExpression][$GetMLEErrorWSTP, "Throws" -> False];
+	Flatten @ {FreeQ[OwnValues@fxn, _LibraryFunction], 
+		Catch[
+			{myExpr @ $GetMLEErrorWSTP[], "NoCatch"}
+			,
+			"LLUExceptionTag"
+		]
+	}
+	,
+	{True, Failure["SimpleError", ___], "NoCatch"}
+	,
+	TestID -> "ErrorReportingTestSuite-20200713-311D22"
+];
+
+TestMatch[
+	ClearAll[$GetMLEErrorWSTP];
+	`LLU`LazyWSTPMemberFunctionSet[MyExpression][$GetMLEErrorWSTP, "GetMLEErrorWSTP", "Throws" -> False];
+	Flatten @ {FreeQ[OwnValues@fxn, _LibraryFunction], 
+		Catch[
+			{myExpr @ $GetMLEErrorWSTP[], "NoCatch"}
+			,
+			"LLUExceptionTag"
+		]
+	}
+	,
+	{True, Failure["SimpleError", ___], "NoCatch"}
+	,
+	TestID -> "ErrorReportingTestSuite-20200713-572E96"
+];
+
+TestMatch[
+	ClearAll[$GetMLEErrorWSTP];
+	`LLU`LazyWSTPMemberFunctionSet[MyExpression][$GetMLEErrorWSTP, lib, "GetMLEErrorWSTP", "Throws" -> False];
+	Flatten @ {FreeQ[OwnValues@fxn, _LibraryFunction], 
+		Catch[
+			{myExpr @ $GetMLEErrorWSTP[], "NoCatch"}
+			,
+			"LLUExceptionTag"
+		]
+	}
+	,
+	{True, Failure["SimpleError", ___], "NoCatch"}
+	,
+	TestID -> "ErrorReportingTestSuite-20200713-E3946E"
+];
+
+TestMatch[
+	ClearAll[ReadData];
 	ReadData = `LLU`PacletFunctionLoad["ReadData", {String}, "Void", "Throws" -> False];
 	ReadData["test.txt"]
 	,

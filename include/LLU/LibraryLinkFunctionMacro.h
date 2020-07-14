@@ -37,4 +37,19 @@
 	}                                                                   \
 	void impl_##name(LLU::MArgumentManager& mngr)
 
+#define LLU_WSTP_FUNCTION(name)                                \
+	void impl_##name(WSLINK&); /* forward declaration */       \
+	LIBRARY_WSTP_FUNCTION(name) {                              \
+		auto err = LLU::ErrorCode::NoError;                    \
+		try {                                                  \
+			impl_##name(mlp);                                  \
+		} catch (const LLU::LibraryLinkError& e) {             \
+			err = e.which();                                   \
+		} catch (...) {                                        \
+			err = LLU::ErrorCode::FunctionError;               \
+		}                                                      \
+		return err;                                            \
+	}                                                          \
+	void impl_##name(WSLINK& wsl)
+	
 #endif // LLU_LIBRARYLINKFUNCTIONMACRO_H

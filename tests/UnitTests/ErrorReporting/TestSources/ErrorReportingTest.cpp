@@ -12,19 +12,50 @@
 
 #include <LLU/LLU.h>
 #include <LLU/LibraryLinkFunctionMacro.h>
+#include <LLU/WSTP/WSStream.hpp>
+
+namespace WS = LLU::WS;
+using LLU::WSStream;
+using WSTPStream = WSStream<WS::Encoding::UTF8>;
 
 using LLU::ErrorManager;
 using LLU::LibraryLinkError;
 namespace LLErrorCode = LLU::ErrorCode;
 
+/**
+ * Sample class to be "managed" by WL.
+ * The only requirement is for the class to have a public constructor.
+ */
+class MyExpression {
+public:
+	MyExpression(mint myID) : id {myID} {
+	}
+
+	MyExpression(const MyExpression&) = delete;
+	MyExpression& operator=(const MyExpression&) = delete;
+	MyExpression(MyExpression&&) = default;
+	MyExpression& operator=(MyExpression&&) = default;
+
+private:
+	mint id;
+};
+
+DEFINE_MANAGED_STORE_AND_SPECIALIZATION(MyExpression)
+
 EXTERN_C DLLEXPORT int WolframLibrary_initialize(WolframLibraryData libData) {
 	LLU::LibraryData::setLibraryData(libData);
+	MyExpressionStore.registerType("MyExpression");
 	ErrorManager::registerPacletErrors({{"DataFileError", "Data in file `fname` in line `lineNumber` is invalid because `reason`."},
 										{"RepeatedTemplateError", "Cannot accept `x` nor `y` because `x` is unacceptable. So are `y` and `z`."},
 										{"NumberedSlotsError", "First slot is `1` and second is `2`."},
 										{"RepeatedNumberTemplateError", "Cannot accept `` nor `` because `1` is unacceptable. So are `2` and ``."},
-										{"MixedSlotsError", "This message `` mixes `2` different `kinds` of `` slots."}});
+										{"MixedSlotsError", "This message `` mixes `2` different `kinds` of `` slots."},
+										{"SimpleError", "This message has 0 slots."}});
 	return 0;
+}
+
+EXTERN_C DLLEXPORT void WolframLibrary_uninitialize(WolframLibraryData libData) {
+	MyExpressionStore.unregisterType(libData);
 }
 
 EXTERN_C DLLEXPORT int ReadData(WolframLibraryData /*unused*/, mint Argc, MArgument* Args, MArgument Res) {
@@ -219,4 +250,22 @@ EXTERN_C DLLEXPORT int EmptyLibDataException(WolframLibraryData /*unused*/, mint
 		err = e.which();
 	}
 	return err;
+}
+
+LLU_WSTP_FUNCTION(testFunctionWSTP) {
+	ErrorManager::throwException("SimpleError");
+}
+
+LLU_LIBRARY_FUNCTION(OpenManagedMyExpression) {
+	auto id = mngr.getInteger<mint>(0);
+	MyExpressionStore.createInstance(id, id);
+}
+
+LLU_LIBRARY_FUNCTION(GetMLEError) {
+	// const MyExpression& myExpr = mngr.getManagedExpression(0, MyExpressionStore);
+	ErrorManager::throwException("SimpleError");
+}
+
+LLU_WSTP_FUNCTION(GetMLEErrorWSTP) {
+	ErrorManager::throwException("SimpleError");
 }

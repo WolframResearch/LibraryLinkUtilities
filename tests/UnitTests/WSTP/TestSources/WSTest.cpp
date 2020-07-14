@@ -25,21 +25,6 @@ namespace WS = LLU::WS;
 using LLU::WSStream;
 using WSTPStream = WSStream<WS::Encoding::UTF8>;
 
-#define LLU_WSTP_FUNCTION(name)                                \
-	void impl_##name(WSLINK&); /* forward declaration */       \
-	LIBRARY_WSTP_FUNCTION(name) {                              \
-		auto err = LLU::ErrorCode::NoError;                    \
-		try {                                                  \
-			impl_##name(mlp);                                  \
-		} catch (const LLU::LibraryLinkError& e) {             \
-			err = e.which();                                   \
-		} catch (...) {                                        \
-			err = LLU::ErrorCode::FunctionError;               \
-		}                                                      \
-		return err;                                            \
-	}                                                          \
-	void impl_##name(WSLINK& wsl)
-
 template<typename T>
 void readAndWriteScalar(WSTPStream& m) {
 	T x;
