@@ -196,14 +196,14 @@ Glossary
 .. glossary::
 
    LibraryLink
-      Wolfram Language framework
+      A Wolfram Language framework.
 
    LibraryLink Utilities
    LLU
-      wrapper over :term:`LibraryLink`
+      A set of modern C++ wrappers over different parts of :term:`LibraryLink`.
 
    library function
-      a C/C++ function with special signature
+      A C/C++ function with special signature
 
       .. code-block:: cpp
 
@@ -218,15 +218,16 @@ Glossary
       Such functions can later be loaded into Wolfram Language using :wlref:`LibraryFunctionLoad`.
 
    paclet
-      A Wolfram Language code equipped with the PacletInfo.wl file. See the
-      `excellent tutorial <https://www.wolframcloud.com/obj/tgayley/Published/PacletDevelopment.nb>`_ on paclet development.
+      A unit of Wolfram Language functionality implemented in one or more files which can be auto-discovered, installed, loaded, etc. and must be accompanied
+      by a **PacletInfo.wl** file.
+      See the `excellent tutorial <https://www.wolframcloud.com/obj/tgayley/Published/PacletDevelopment.nb>`_ on paclet development.
 
    LibraryLink paclet
-      A :term:`paclet` that has some of its functionality implemented in C or C++ using LibraryLink. Such paclets usually also have a layer of Wolfram Language
+      A :term:`paclet` that has some of its functionality implemented in C or C++ using LibraryLink. Such paclets usually have a layer of Wolfram Language
       code responsible at least for loading functions from the shared C/C++ library.
 
    LLU paclet
-      A :term:`LibraryLink paclet` that additionally uses LibraryLink Utilities
+      A :term:`LibraryLink paclet` that additionally uses LibraryLink Utilities.
 
 Contributors
 ==================
