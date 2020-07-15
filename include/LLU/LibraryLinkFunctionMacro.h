@@ -19,7 +19,7 @@
 
 #define LIBRARY_WSTP_FUNCTION(name)                     \
 	EXTERN_C DLLEXPORT int name(WolframLibraryData, WSLINK); \
-	int name([[maybe_unused]] WolframLibraryData libData, WSLINK mlp)
+	int name([[maybe_unused]] WolframLibraryData libData, WSLINK wsl)
 
 #define LLU_LIBRARY_FUNCTION(name)                                      \
 	void impl_##name(LLU::MArgumentManager&); /* forward declaration */ \
@@ -42,7 +42,7 @@
 	LIBRARY_WSTP_FUNCTION(name) {                              \
 		auto err = LLU::ErrorCode::NoError;                    \
 		try {                                                  \
-			impl_##name(mlp);                                  \
+			impl_##name(wsl);                                  \
 		} catch (const LLU::LibraryLinkError& e) {             \
 			err = e.which();                                   \
 		} catch (...) {                                        \
