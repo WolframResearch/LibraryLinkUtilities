@@ -262,7 +262,6 @@ LLU_LIBRARY_FUNCTION(OpenManagedMyExpression) {
 }
 
 LLU_LIBRARY_FUNCTION(GetMLEError) {
-	// const MyExpression& myExpr = mngr.getManagedExpression(0, MyExpressionStore);
 	ErrorManager::throwException("SimpleError");
 }
 
