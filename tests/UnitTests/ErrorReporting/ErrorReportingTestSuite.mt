@@ -128,7 +128,6 @@ TestMatch[
 (*********************************************************** C++ code failures **************************************************************)
 
 TestMatch[
-	ClearAll[$ReadData];
 	`LLU`PacletFunctionSet[$ReadData, {String}, "Void"];
 	Catch[
 		{$ReadData["test.txt"], "NoCatch"}
@@ -142,7 +141,6 @@ TestMatch[
 ];
 
 TestMatch[
-	ClearAll[$ReadData];
 	`LLU`PacletFunctionSet[$ReadData, "ReadData", {String}, "Void"];
 	Catch[
 		{$ReadData["test.txt"], "NoCatch"}
@@ -156,7 +154,6 @@ TestMatch[
 ];
 
 TestMatch[
-	ClearAll[$ReadData];
 	`LLU`PacletFunctionSet[$ReadData, lib, "ReadData", {String}, "Void"];
 	Catch[
 		{$ReadData["test.txt"], "NoCatch"}
@@ -170,7 +167,6 @@ TestMatch[
 ];
 
 TestMatch[
-	ClearAll[$ReadData];
 	`LLU`PacletFunctionSet[$ReadData, {String}, "Void", "Throws" -> False];
 	Catch[
 		{$ReadData["test.txt"], "NoCatch"}
@@ -184,7 +180,6 @@ TestMatch[
 ];
 
 TestMatch[
-	ClearAll[$ReadData];
 	`LLU`PacletFunctionSet[$ReadData, "ReadData", {String}, "Void", "Throws" -> False];
 	Catch[
 		{$ReadData["test.txt"], "NoCatch"}
@@ -198,7 +193,6 @@ TestMatch[
 ];
 
 TestMatch[
-	ClearAll[$ReadData];
 	`LLU`PacletFunctionSet[$ReadData, lib, "ReadData", {String}, "Void", "Throws" -> False];
 	Catch[
 		{$ReadData["test.txt"], "NoCatch"}
@@ -212,7 +206,6 @@ TestMatch[
 ];
 
 TestMatch[
-	ClearAll[$testFunctionWSTP];
 	`LLU`WSTPFunctionSet[$testFunctionWSTP];
 	Catch[
 		{$testFunctionWSTP[], "NoCatch"}
@@ -226,7 +219,6 @@ TestMatch[
 ];
 
 TestMatch[
-	ClearAll[$testFunctionWSTP];
 	`LLU`WSTPFunctionSet[$testFunctionWSTP, "testFunctionWSTP"];
 	Catch[
 		{$testFunctionWSTP[], "NoCatch"}
@@ -240,7 +232,6 @@ TestMatch[
 ];
 
 TestMatch[
-	ClearAll[$testFunctionWSTP];
 	`LLU`WSTPFunctionSet[$testFunctionWSTP, lib, "testFunctionWSTP"];
 	Catch[
 		{$testFunctionWSTP[], "NoCatch"}
@@ -254,7 +245,6 @@ TestMatch[
 ];
 
 TestMatch[
-	ClearAll[$testFunctionWSTP];
 	`LLU`WSTPFunctionSet[$testFunctionWSTP, "Throws" -> False];
 	Catch[
 		{$testFunctionWSTP[], "NoCatch"}
@@ -268,7 +258,6 @@ TestMatch[
 ];
 
 TestMatch[
-	ClearAll[$testFunctionWSTP];
 	`LLU`WSTPFunctionSet[$testFunctionWSTP, "testFunctionWSTP", "Throws" -> False];
 	Catch[
 		{$testFunctionWSTP[], "NoCatch"}
@@ -282,7 +271,6 @@ TestMatch[
 ];
 
 TestMatch[
-	ClearAll[$testFunctionWSTP];
 	`LLU`WSTPFunctionSet[$testFunctionWSTP, lib, "testFunctionWSTP", "Throws" -> False];
 	Catch[
 		{$testFunctionWSTP[], "NoCatch"}
@@ -296,7 +284,6 @@ TestMatch[
 ];
 
 TestMatch[
-	ClearAll[$ReadData];
 	`LLU`LazyPacletFunctionSet[$ReadData, {String}, "Void"];
 	Flatten @ {FreeQ[OwnValues @ $ReadData, _LibraryFunction], 
 		Catch[
@@ -312,7 +299,6 @@ TestMatch[
 ];
 
 TestMatch[
-	ClearAll[$ReadData];
 	`LLU`LazyPacletFunctionSet[$ReadData, "ReadData", {String}, "Void"];
 	Flatten @ {FreeQ[OwnValues @ $ReadData, _LibraryFunction], 
 		Catch[
@@ -328,7 +314,6 @@ TestMatch[
 ];
 
 TestMatch[
-	ClearAll[$ReadData];
 	`LLU`LazyPacletFunctionSet[$ReadData, lib, "ReadData", {String}, "Void"];
 	Flatten @ {FreeQ[OwnValues @ $ReadData, _LibraryFunction], 
 		Catch[
@@ -344,7 +329,6 @@ TestMatch[
 ];
 
 TestMatch[
-	ClearAll[$ReadData];
 	`LLU`LazyPacletFunctionSet[$ReadData, {String}, "Void", "Throws" -> False];
 	Flatten @ {FreeQ[OwnValues @ $ReadData, _LibraryFunction], 
 		Catch[
@@ -360,7 +344,6 @@ TestMatch[
 ];
 
 TestMatch[
-	ClearAll[$ReadData];
 	`LLU`LazyPacletFunctionSet[$ReadData, "ReadData", {String}, "Void", "Throws" -> False];
 	Flatten @ {FreeQ[OwnValues @ $ReadData, _LibraryFunction], 
 		Catch[
@@ -376,7 +359,6 @@ TestMatch[
 ];
 
 TestMatch[
-	ClearAll[$ReadData];
 	`LLU`LazyPacletFunctionSet[$ReadData, lib, "ReadData", {String}, "Void", "Throws" -> False];
 	Flatten @ {FreeQ[OwnValues @ $ReadData, _LibraryFunction], 
 		Catch[
@@ -392,7 +374,6 @@ TestMatch[
 ];
 
 TestMatch[
-	ClearAll[$testFunctionWSTP];
 	`LLU`LazyWSTPFunctionSet[$testFunctionWSTP];
 	OwnValues @ $testFunctionWSTP;
 	Catch[
@@ -407,7 +388,6 @@ TestMatch[
 ];
 
 TestMatch[
-	ClearAll[$testFunctionWSTP];
 	`LLU`LazyWSTPFunctionSet[$testFunctionWSTP, "testFunctionWSTP"];
 	Catch[
 		{$testFunctionWSTP[], "NoCatch"}
@@ -421,7 +401,6 @@ TestMatch[
 ];
 
 TestMatch[
-	ClearAll[$testFunctionWSTP];
 	`LLU`LazyWSTPFunctionSet[$testFunctionWSTP, lib, "testFunctionWSTP"];
 	Catch[
 		{$testFunctionWSTP[], "NoCatch"}
@@ -435,7 +414,6 @@ TestMatch[
 ];
 
 TestMatch[
-	ClearAll[$testFunctionWSTP];
 	`LLU`LazyWSTPFunctionSet[$testFunctionWSTP, "Throws" -> False];
 	Catch[
 		{$testFunctionWSTP[], "NoCatch"}
@@ -449,7 +427,6 @@ TestMatch[
 ];
 
 TestMatch[
-	ClearAll[$testFunctionWSTP];
 	`LLU`LazyWSTPFunctionSet[$testFunctionWSTP, "testFunctionWSTP", "Throws" -> False];
 	Catch[
 		{$testFunctionWSTP[], "NoCatch"}
@@ -463,7 +440,6 @@ TestMatch[
 ];
 
 TestMatch[
-	ClearAll[$testFunctionWSTP];
 	`LLU`LazyWSTPFunctionSet[$testFunctionWSTP, lib, "testFunctionWSTP", "Throws" -> False];
 	Catch[
 		{$testFunctionWSTP[], "NoCatch"}
@@ -477,13 +453,11 @@ TestMatch[
 ];
 
 TestExecute[
-	ClearAll[MyExpression];
 	`LLU`Constructor[MyExpression] = `LLU`MemberFunctionSet[OpenManagedMyExpression, {`LLU`Managed[MyExpression]}, "Void"];
 	myExpr = `LLU`NewManagedExpression[MyExpression][];
 ];
 
 TestMatch[
-	ClearAll[$GetMLEError];
 	`LLU`MemberFunctionSet[MyExpression][$GetMLEError, {}, "Void"];
 	Catch[
 		{myExpr @ $GetMLEError[], "NoCatch"}
@@ -497,7 +471,6 @@ TestMatch[
 ];
 
 TestMatch[
-	ClearAll[$GetMLEError];
 	`LLU`MemberFunctionSet[MyExpression][$GetMLEError, "GetMLEError", {}, "Void"];
 	Catch[
 		{myExpr @ $GetMLEError[], "NoCatch"}
@@ -511,7 +484,6 @@ TestMatch[
 ];
 
 TestMatch[
-	ClearAll[$GetMLEError];
 	`LLU`MemberFunctionSet[MyExpression][$GetMLEError, lib, "GetMLEError", {}, "Void"];
 	Catch[
 		{myExpr @ $GetMLEError[], "NoCatch"}
@@ -525,7 +497,6 @@ TestMatch[
 ];
 
 TestMatch[
-	ClearAll[$GetMLEError];
 	`LLU`MemberFunctionSet[MyExpression][$GetMLEError, {}, "Void", "Throws" -> False];
 	Catch[
 		{myExpr @ $GetMLEError[], "NoCatch"}
@@ -539,7 +510,6 @@ TestMatch[
 ];
 
 TestMatch[
-	ClearAll[$GetMLEError];
 	`LLU`MemberFunctionSet[MyExpression][$GetMLEError, "GetMLEError", {}, "Void", "Throws" -> False];
 	Catch[
 		{myExpr @ $GetMLEError[], "NoCatch"}
@@ -553,7 +523,6 @@ TestMatch[
 ];
 
 TestMatch[
-	ClearAll[$GetMLEError];
 	`LLU`MemberFunctionSet[MyExpression][$GetMLEError, lib, "GetMLEError", {}, "Void", "Throws" -> False];
 	Catch[
 		{myExpr @ $GetMLEError[], "NoCatch"}
@@ -567,7 +536,6 @@ TestMatch[
 ];
 
 TestMatch[
-	ClearAll[$GetMLEErrorWSTP];
 	`LLU`WSTPMemberFunctionSet[MyExpression][$GetMLEErrorWSTP];
 	Catch[
 		{myExpr @ $GetMLEErrorWSTP[], "NoCatch"}
@@ -581,7 +549,6 @@ TestMatch[
 ];
 
 TestMatch[
-	ClearAll[$GetMLEErrorWSTP];
 	`LLU`WSTPMemberFunctionSet[MyExpression][$GetMLEErrorWSTP, "GetMLEErrorWSTP"];
 	Catch[
 		{myExpr @ $GetMLEErrorWSTP[], "NoCatch"}
@@ -595,7 +562,6 @@ TestMatch[
 ];
 
 TestMatch[
-	ClearAll[$GetMLEErrorWSTP];
 	`LLU`WSTPMemberFunctionSet[MyExpression][$GetMLEErrorWSTP, lib, "GetMLEErrorWSTP"];
 	Catch[
 		{myExpr @ $GetMLEErrorWSTP[], "NoCatch"}
@@ -609,7 +575,6 @@ TestMatch[
 ];
 
 TestMatch[
-	ClearAll[$GetMLEErrorWSTP];
 	`LLU`WSTPMemberFunctionSet[MyExpression][$GetMLEErrorWSTP, "Throws" -> False];
 	Catch[
 		{myExpr @ $GetMLEErrorWSTP[], "NoCatch"}
@@ -623,7 +588,6 @@ TestMatch[
 ];
 
 TestMatch[
-	ClearAll[$GetMLEErrorWSTP];
 	`LLU`WSTPMemberFunctionSet[MyExpression][$GetMLEErrorWSTP, "GetMLEErrorWSTP", "Throws" -> False];
 	Catch[
 		{myExpr @ $GetMLEErrorWSTP[], "NoCatch"}
@@ -637,7 +601,6 @@ TestMatch[
 ];
 
 TestMatch[
-	ClearAll[$GetMLEErrorWSTP];
 	`LLU`WSTPMemberFunctionSet[MyExpression][$GetMLEErrorWSTP, lib, "GetMLEErrorWSTP", "Throws" -> False];
 	Catch[
 		{myExpr @ $GetMLEErrorWSTP[], "NoCatch"}
@@ -651,7 +614,6 @@ TestMatch[
 ];
 
 TestMatch[
-	ClearAll[$GetMLEError];
 	`LLU`LazyMemberFunctionSet[MyExpression][$GetMLEError, "GetMLEError", {}, "Void"];
 	Catch[
 		{myExpr @ $GetMLEError[], "NoCatch"}
@@ -665,7 +627,6 @@ TestMatch[
 ];
 
 TestMatch[
-	ClearAll[$GetMLEError];
 	`LLU`LazyMemberFunctionSet[MyExpression][$GetMLEError, "GetMLEError", {}, "Void"];
 		Catch[
 			{myExpr @ $GetMLEError[], "NoCatch"}
@@ -679,7 +640,6 @@ TestMatch[
 ];
 
 TestMatch[
-	ClearAll[$GetMLEError];
 	`LLU`LazyMemberFunctionSet[MyExpression][$GetMLEError, lib, "GetMLEError", {}, "Void"];
 		Catch[
 			{myExpr @ $GetMLEError[], "NoCatch"}
@@ -693,7 +653,6 @@ TestMatch[
 ];
 
 TestMatch[
-	ClearAll[$GetMLEError];
 	`LLU`LazyMemberFunctionSet[MyExpression][$GetMLEError, {}, "Void", "Throws" -> False];
 		Catch[
 			{myExpr @ $GetMLEError[], "NoCatch"}
@@ -707,7 +666,6 @@ TestMatch[
 ];
 
 TestMatch[
-	ClearAll[$GetMLEError];
 	`LLU`LazyMemberFunctionSet[MyExpression][$GetMLEError, "GetMLEError", {}, "Void", "Throws" -> False];
 		Catch[
 			{myExpr @ $GetMLEError[], "NoCatch"}
@@ -721,7 +679,6 @@ TestMatch[
 ];
 
 TestMatch[
-	ClearAll[$GetMLEError];
 	`LLU`LazyMemberFunctionSet[MyExpression][$GetMLEError, lib, "GetMLEError", {}, "Void", "Throws" -> False];
 		Catch[
 			{myExpr @ $GetMLEError[], "NoCatch"}
@@ -735,7 +692,6 @@ TestMatch[
 ];
 
 TestMatch[
-	ClearAll[$GetMLEErrorWSTP];
 	`LLU`LazyWSTPMemberFunctionSet[MyExpression][$GetMLEErrorWSTP];
 		Catch[
 			{myExpr @ $GetMLEErrorWSTP[], "NoCatch"}
@@ -749,7 +705,6 @@ TestMatch[
 ];
 
 TestMatch[
-	ClearAll[$GetMLEErrorWSTP];
 	`LLU`LazyWSTPMemberFunctionSet[MyExpression][$GetMLEErrorWSTP, "GetMLEErrorWSTP"];
 		Catch[
 			{myExpr @ $GetMLEErrorWSTP[], "NoCatch"}
@@ -763,7 +718,6 @@ TestMatch[
 ];
 
 TestMatch[
-	ClearAll[$GetMLEErrorWSTP];
 	`LLU`LazyWSTPMemberFunctionSet[MyExpression][$GetMLEErrorWSTP, lib, "GetMLEErrorWSTP"];
 		Catch[
 			{myExpr @ $GetMLEErrorWSTP[], "NoCatch"}
@@ -777,7 +731,6 @@ TestMatch[
 ];
 
 TestMatch[
-	ClearAll[$GetMLEErrorWSTP];
 	`LLU`LazyWSTPMemberFunctionSet[MyExpression][$GetMLEErrorWSTP, "Throws" -> False];
 		Catch[
 			{myExpr @ $GetMLEErrorWSTP[], "NoCatch"}
@@ -791,7 +744,6 @@ TestMatch[
 ];
 
 TestMatch[
-	ClearAll[$GetMLEErrorWSTP];
 	`LLU`LazyWSTPMemberFunctionSet[MyExpression][$GetMLEErrorWSTP, "GetMLEErrorWSTP", "Throws" -> False];
 		Catch[
 			{myExpr @ $GetMLEErrorWSTP[], "NoCatch"}
@@ -805,7 +757,6 @@ TestMatch[
 ];
 
 TestMatch[
-	ClearAll[$GetMLEErrorWSTP];
 	`LLU`LazyWSTPMemberFunctionSet[MyExpression][$GetMLEErrorWSTP, lib, "GetMLEErrorWSTP", "Throws" -> False];
 		Catch[
 			{myExpr @ $GetMLEErrorWSTP[], "NoCatch"}
@@ -819,7 +770,6 @@ TestMatch[
 ];
 
 TestMatch[
-	ClearAll[ReadData];
 	ReadData = `LLU`PacletFunctionLoad["ReadData", {String}, "Void", "Throws" -> False];
 	ReadData["test.txt"]
 	,
