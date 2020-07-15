@@ -1,14 +1,14 @@
 (* Project base directory *)
 $baseDir = FileNameDrop[$TestFileName, -3];
 
-$installDir = FileNameJoin[{$baseDir, "install"}];
+$installDir = If[StringQ[$LLUInstallDir], $LLUInstallDir, FileNameJoin[{$baseDir, "install"}]];
 
-(* Path to directory containing include folder fFilerom LibraryLinkUtilities installation *)
+(* Path to directory containing include folder from LibraryLinkUtilities installation *)
 $LLUIncDir = FileNameJoin[{$installDir, "include"}];
 
 $lib = FileNames[RegularExpression[".*LLU\\.(a|lib|" <> System`Dump`LibraryExtension[] <> ")"], $installDir, 2];
 If[Length[$lib] =!= 1,
-	Throw["Could not find LLU library."];
+	Throw["Could not find LLU library.", "LLUTestConfig"];
 ];
 
 (* Path to LibraryLinkUtilities static lib *)

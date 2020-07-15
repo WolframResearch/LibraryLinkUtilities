@@ -42,7 +42,12 @@ if(Mathematica_wolframscript_EXE)
 		set(MODULE_CODE
 			[===[
 				Needs["MUnit`"];
-				report = TestReport["${UnitTest}TestSuite.mt", MemoryConstraint -> Quantity[500, "MB"], TimeConstraint -> 30];
+				$LLUInstallDir = "${CMAKE_INSTALL_PREFIX}";
+				report = Catch[
+					TestReport["${UnitTest}TestSuite.mt", MemoryConstraint -> Quantity[500, "MB"], TimeConstraint -> 30],
+					_String,
+					Function[{value, tag}, Print["ERROR: " <> value]; Exit[1]]
+				];
 				report = report /. resObj_TestResultObject :> RuleCondition[TextString[resObj[{
 					"TestID",
 					"ExpectedOutput",
