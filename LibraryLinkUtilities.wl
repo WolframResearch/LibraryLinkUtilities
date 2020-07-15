@@ -465,7 +465,7 @@ iLoadLibraryFunction[symbol_, loading_, loader_, libraryName_, args___, opts : O
 	Module[{loadingOpts, assignmentHead},
 
 		(* For member function loading, get Options[MemberFunctionSet] *)
-		loadingOpts = FilterRules[{opts}, Options[If[Head @ loader === MemberFunctionLoad, MemberFunctionSet, loader]]];
+		loadingOpts = FilterRules[{opts}, Options[Replace[loader, _MemberFunctionLoad -> MemberFunctionSet]]];
 
 		assignmentHead = If[lazyLoadingQ[loading], LazyLoad, Set];
 		clearLHS[symbol];
