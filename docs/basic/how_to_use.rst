@@ -10,7 +10,7 @@ We do not provide prebuilt binaries for any platform.
 0. Prerequisites
 ==============================================
 
-Since the source code uses C++17 features, you have to make sure your compiler supports C++17. This roughly means:
+Since the source code uses C++17 features, you have to make sure your compiler supports C++17. For the three most popular compilers this roughly means:
 
  * **Visual Studio** >= 15.7
  * **gcc** >= 7.0
@@ -46,7 +46,7 @@ Below is a quick overview of CMake variables which you can use to customize buil
 
    If you have Mathematica **12.0** or later installed in a default location or on the system PATH, the build configuration step should succeed out of the box
    without setting any variables.
-   Otherwise, set ``Mathematica_INSTALL_DIR`` to an absolute path to Mathematica installation directory:
+   Otherwise, set ``Mathematica_INSTALL_DIR`` to an absolute path to Mathematica installation directory, for instance
 
    .. code-block:: console
 
@@ -108,6 +108,9 @@ generator used):
 	make TestWithOutputOnFailure
 
 will show the whole output produced by ctest and wolframscript. There is still room for improvement in this area and suggestions are welcome.
+
+.. warning::
+	Tests will only work after the LLU library has been installed.
 
 4. Add to your project
 =========================================
@@ -180,14 +183,42 @@ of this process.
 =========================================
 
 All of the above can be seen in action in the demo project that is shipped with LLU in the :file:`tests/Demo` directory. The Demo project is a complete
-Wolfram Language paclet (to learn more about WL paclets and their development see `this guide <https://www.wolframcloud.com/obj/tgayley/Published/PacletDevelopment.nb>`_)
-and it can be built and used as follows:
+Wolfram Language :term:`paclet` and it can be built and used as follows:
 
-1. Install LLU as described above. Let's say you chose /my/workspace/LLU as the install directory.
+1. Install LLU as described above. Let's say you chose :file:`/my/workspace/LLU` as the install directory.
 2. Navigate to :file:`tests/Demo` in the LLU source directory.
 3. Run the following commands (or equivalent for your system):
 
 .. code-block:: console
 
-	cmake -B build
+	cmake -DLLU_ROOT=/my/workspace/LLU -DMathematica_ROOT=/path/to/Mathematica/ -B build
 	cd build/
+	cmake --build . --target install
+
+This will put a complete paclet directory structure under :file:`tests/Demo/build/Demo`. You can copy this directory into :file:`SystemFiles/Links` subdirectory
+of Mathematica installation and then load the paclet by calling ``Needs["Demo`"]`` in a notebook.
+
+Optionally, you can build another target called *paclet*"
+
+.. code-block:: console
+
+	cmake --build . --target paclet
+
+When built, *paclet* target will take the directory structure created by the *install* target and turn it into a proper **.paclet** file.
+It can optionally validate paclet contents, run a test file or install paclet to a directory where Mathematica can automatically find it.
+Investigate the :file:`tests/Demo/CMakeLists.txt` file for details on how to create and use this target.
+
+Finally, after building the *paclet* target or manually copying the Demo paclet into :file:`SystemFiles/Links`, you should be able to run the following code
+in a notebook:
+
+.. code-block:: wolfram-language
+
+	In[1]:= Needs["Demo`"]
+
+	In[2]:= Demo`CaesarCipherEncode["HelloWorld", 5]
+
+	Out[2]= "Mjqqtbtwqi"
+
+	In[3]:= Demo`CaesarCipherDecode[%, 5]
+
+	Out[3]= "HelloWorld"
