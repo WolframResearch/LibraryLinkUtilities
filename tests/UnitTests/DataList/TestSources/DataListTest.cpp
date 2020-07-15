@@ -169,7 +169,7 @@ LIBRARY_LINK_FUNCTION(ReverseListOfStringsLibraryLink) {
 LIBRARY_WSTP_FUNCTION(ReverseListOfStringsWSTP) {
 	auto err = LLErrorCode::NoError;
 	try {
-		WSStream<WS::Encoding::UTF8> ml {mlp, 1};
+		WSStream<WS::Encoding::UTF8> ml {wsl, 1};
 		std::vector<std::string> listOfStrings;
 		ml >> listOfStrings;
 
