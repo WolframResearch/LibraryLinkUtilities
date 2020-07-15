@@ -82,9 +82,6 @@ PacletFunctionLoad::usage = "PacletFunctionLoad[fname_?StringQ, fParams_, retTyp
 	a library name can be specified as the first argument. Unlike PacletFunctionSet, there is no mechanism
 	by which to avoid eager loading of the default paclet library.";
 
-SafeLibraryFunctionLoad::usage = "SafeLibraryFunctionLoad[libName_, fname_?StringQ, fParams_, retType_, opts___]
-	Quietly tries to load a function fname from the dynamic library libName, and Throws if the loading does not succeed.";
-
 (* ---------------- Managed Library Expressions ---------------------------- *)
 
 Constructor::usage = "Constructor[exprHead_] shall evaluate to a function that takes an instanceID (Integer) and an arbitrary number of additional arguments.
@@ -378,6 +375,10 @@ Options[SafeLibraryFunctionLoad] = {
 	"Optional" -> False
 };
 
+(* 
+ *	SafeLibraryFunctionLoad[libName_, fname_?StringQ, fParams_, retType_, opts___]
+ *	Quietly tries to load a function fname from the dynamic library libName, and Throws if the loading does not succeed.
+ *)
 SafeLibraryFunctionLoad[fname_?StringQ, fParams_, retType : Except[_?OptionQ], opts : OptionsPattern[SafeLibraryFunctionLoad]] :=
 	SafeLibraryFunctionLoad[$PacletLibrary, fname, fParams, retType, opts];
 
