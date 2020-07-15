@@ -12,11 +12,6 @@
 
 #include <LLU/LLU.h>
 #include <LLU/LibraryLinkFunctionMacro.h>
-#include <LLU/WSTP/WSStream.hpp>
-
-namespace WS = LLU::WS;
-using LLU::WSStream;
-using WSTPStream = WSStream<WS::Encoding::UTF8>;
 
 using LLU::ErrorManager;
 using LLU::LibraryLinkError;
