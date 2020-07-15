@@ -67,9 +67,9 @@ WSTPFunctionSet::usage = "WSTPFunctionSet[resultSymbol_, opts : OptionsPattern[P
 LazyWSTPFunctionSet::usage = "LazyWSTPFunctionSet[resultSymbol_, opts : OptionsPattern[PacletFunctionSet]]
 	Lazy version of WSTPFunctionSet which loads the function upon the first evaluation of resultSymbol.";
 
-MemberFunctionSet::usage = "MemberFunctionSet[exprHead_][memberSymbol_?Developer`SymbolQ, fParams_, retType : Except[_?OptionQ], opts : OptionsPattern[PacletFunctionSet]]
+MemberFunctionSet::usage = "MemberFunctionSet[exprHead_][memberSymbol_?Developer`SymbolQ, fParams_, retType_, opts : OptionsPattern[PacletFunctionSet]]
 	Loads a library function into memberSymbol that can be invoked on instances of exprHead like so: instance @ memberSymbol[...]";
-LazyMemberFunctionSet::usage = "LazyMemberFunctionSet[exprHead_][memberSymbol_?Developer`SymbolQ, fParams_, retType : Except[_?OptionQ], opts : OptionsPattern[PacletFunctionSet]]
+LazyMemberFunctionSet::usage = "LazyMemberFunctionSet[exprHead_][memberSymbol_?Developer`SymbolQ, fParams_, retType_, opts : OptionsPattern[PacletFunctionSet]]
 	Lazy version of MemberFunctionSet which loads the function upon the first evaluation of memberSymbol.";
 
 WSTPMemberFunctionSet::usage = "WSTPMemberFunctionSet[exprHead_][memberSymbol_, opts : OptionsPattern[PacletFunctionSet]]
@@ -77,12 +77,12 @@ WSTPMemberFunctionSet::usage = "WSTPMemberFunctionSet[exprHead_][memberSymbol_, 
 LazyWSTPMemberFunctionSet::usage = "LazyWSTPMemberFunctionSet[exprHead_][memberSymbol_, opts : OptionsPattern[PacletFunctionSet]]
 	Lazy version of WSTPMemberFunctionSet which loads the function upon the first evaluation of memberSymbol.";
 
-PacletFunctionLoad::usage = "PacletFunctionLoad[fname_?StringQ, fParams_, retType : Except[_?OptionQ], opts___]
+PacletFunctionLoad::usage = "PacletFunctionLoad[fname_?StringQ, fParams_, retType_, opts___]
 	By default, the dynamic library name is taken from the library given to InitializePacletLibrary. Alternatively,
 	a library name can be specified as the first argument. Unlike PacletFunctionSet, there is no mechanism
 	by which to avoid eager loading of the default paclet library.";
 
-SafeLibraryFunctionLoad::usage = "SafeLibraryFunctionLoad[libName_, fname_?StringQ, fParams_, retType : Except[_?OptionQ], opts___]
+SafeLibraryFunctionLoad::usage = "SafeLibraryFunctionLoad[libName_, fname_?StringQ, fParams_, retType_, opts___]
 	Quietly tries to load a function fname from the dynamic library libName, and Throws if the loading does not succeed.";
 
 (* ---------------- Managed Library Expressions ---------------------------- *)
