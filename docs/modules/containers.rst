@@ -148,7 +148,7 @@ These are datatype-unaware wrappers that offer automatic memory management and b
 They do not provide direct access to the underlying data except via a :cpp:expr:`void*` (or via a generic node type :cpp:any:`LLU::NodeType::Any` in case of a
 GenericDataList).
 
-.. note::
+.. tip::
 
    All generic and strongly-typed wrappers are movable but non-copyable, instead they provide a :cpp:expr:`clone()` method for performing deep copies.
    This is in accordance with rule `C.67 <http://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#c67-a-polymorphic-class-should-suppress-copying>`_
@@ -355,6 +355,29 @@ This is naturally only a toy example, Wolfram Language has a built-in function f
 :cpp:class:`LLU::NumericArray\<T> <template\<typename T> LLU::NumericArray>`
 -------------------------------------------------------------------------------
 
+Here is an example of the NumericArray class in action:
+
+.. code-block:: cpp
+   :linenos:
+
+   /* Take a NumericArray of type "Integer32" and make a copy with reversed order of elements */
+   LIBRARY_LINK_FUNCTION(ReverseNumericArray) {
+      LLU::MArgumentManager mngr {libData, Argc, Args, Res};
+      auto inputNA = mngr.getNumericArray<std::int32_t, LLU::Passing::Constant>(0);
+      LLU::NumericArray<std::int32_t> outNA { std::crbegin(inputNA), std::crend(inputNA), inputNA.dimensions() };
+      mngr.set(outNA);
+   }
+
+On the Wolfram Language side, we can load and use this function as follows:
+
+.. code-block:: wolfram-language
+
+   `LLU`PacletFunctionSet[ReverseNumericArray, "ReverseNumericArray", {{NumericArray, "Constant"}}, NumericArray];
+
+   ReverseNumericArray[NumericArray[{{2, 3, 4}, {5, 6, 7}}, "Integer32"]]
+
+   (* Out[] = NumericArray[{{7, 6, 5}, {4, 3, 2}}, "Integer32"] *)
+
 .. doxygenclass:: LLU::NumericArray
    :members:
 
@@ -362,6 +385,41 @@ This is naturally only a toy example, Wolfram Language has a built-in function f
 
 :cpp:class:`LLU::Tensor\<T> <template\<typename T> LLU::Tensor>`
 -------------------------------------------------------------------------------
+
+In the same way as MTensor is closely related to MNumericArray, :cpp:expr:`LLU::Tensor` has almost exactly the same interface as :cpp:expr:`LLU::NumericArray`.
+Tensor supports only 3 types of data, meaning that :cpp:class:`template\<typename T> LLU::Tensor` class template can be instantiated with only 3 types ``T``:
+
+  - ``mint``
+  - ``double``
+  - ``std::complex<double>``
+
+
+Here is an example of the Tensor class in action:
+
+.. code-block:: cpp
+   :linenos:
+
+   /* Take a Tensor of real numbers and return the mean value */
+   LIBRARY_LINK_FUNCTION(GetMeanValue) {
+      LLU::MArgumentManager mngr {libData, Argc, Args, Res};
+
+      auto t = mngr.getTensor<double>(0);
+
+      auto total = std::accumulate(t.begin(), t.end(), 0.0);
+
+      auto result = total / t.size();
+      mngr.set(result);
+   }
+
+On the Wolfram Language side, we can load and use this function as follows:
+
+.. code-block:: wolfram-language
+
+   `LLU`PacletFunctionSet[MeanValue, "MeanValue", {{Real, _}}, Real];
+
+   MeanValue[N @ {{Pi, Pi, Pi}, {E, E, E}}]
+
+   (* Out[] = 2.9299372 *)
 
 .. doxygenclass:: LLU::Tensor
    :members:
