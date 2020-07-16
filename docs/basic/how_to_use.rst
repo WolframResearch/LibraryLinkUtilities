@@ -211,7 +211,7 @@ Investigate the :file:`tests/Demo/CMakeLists.txt` file for details on how to cre
 Finally, after building the *paclet* target or manually copying the Demo paclet into :file:`SystemFiles/Links`, you should be able to run the following code
 in a notebook:
 
-.. code-block:: wolfram-language
+.. code-block:: none
 
 	In[1]:= Needs["Demo`"]
 
