@@ -7,7 +7,6 @@
    Intro <self>
    basic/how_to_use
    API reference (Doxygen ↪) <http://algorithms.wolfram.com:8080/documentation/LLU-doxygen/index.html>
-..   basic/unit_tests_and_demo
 ..   basic/faq
 
 .. toctree::
@@ -24,20 +23,10 @@
 
 .. toctree::
    :hidden:
-   :caption: Internal Notes
+   :caption: Other Notes
 
-   internal/paclet_use
-   internal/cmake_utilities
+   other/paclet_use
+   other/cmake_utilities
 
 
 .. include:: ../README.rst
-
-
-..
-	Maybe useful:
-	Indices and tables
-	==================
-
-	* :ref:`genindex`
-	* :ref:`modindex`
-	* :ref:`search`

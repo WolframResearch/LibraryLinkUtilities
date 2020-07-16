@@ -179,6 +179,8 @@ library ("MyPacletLib" in the example above) so that later when you load library
 Another task commonly done right after initializing LLU is error registering. See the :doc:`../modules/error_handling` chapter for detailed description
 of this process.
 
+.. _demo-project:
+
 5. Example - demo project
 =========================================
 
