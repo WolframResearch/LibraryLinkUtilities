@@ -20,7 +20,7 @@ associates managed C++ objects with IDs assigned to them by Wolfram Language.
 Register a class as Managed Expression
 =========================================
 
-Imagine you have a class `A` whose objects you want to manage from Wolfram Language. The class needs to be defined:
+Imagine you have a class `A` whose objects you want to manage from Wolfram Language:
 
 .. code-block:: cpp
 
@@ -46,7 +46,17 @@ that just needs to be done):
 
 .. doxygenfunction:: LLU::manageInstanceCallback
 
-The last step is to actually register and unregister your type when library gets loaded or unloaded, respectively.
+Alternatively, you can use a macro:
+
+.. doxygendefine:: DEFINE_MANAGED_STORE_AND_SPECIALIZATION
+
+but it has some limitations:
+
+1. must be invoked from the global namespace
+2. definition of ``ClassName`` must be visible at the point of invocation
+3. ``ClassName`` must be an unqualified name (which combined with 1. means that ``ClassName`` must be a class defined in the global namespace)
+
+Lastly, you need to register and unregister your type when library gets loaded or unloaded, respectively.
 
 .. code-block:: cpp
    :linenos:
@@ -61,18 +71,9 @@ The last step is to actually register and unregister your type when library gets
       AStore.unregisterType(libData);
    }
 
-The good news is that you can omit the middle step thanks to a special macro:
-
-.. code-block:: cpp
-
-   DEFINE_MANAGED_STORE_AND_SPECIALIZATION(A)
-
-This will define the Store variable and the template specialization for you but you still need to register your class in
-`WolframLibrary_initialize` and unregister in `WolframLibrary_uninitialize`. The macro must be called in a scope where structure `A` is defined.
-
 One of the biggest limitations of MLEs in LibraryLink is that you cannot pass arguments for construction of managed expressions.
 This is addressed in LLU by letting the developer define a library function that LLU will call from Wolfram Language
-when new instance of a managed expression is created. In other words, define a wrapper for constructor of your class.
+when a new instance of a managed expression is created. In other words, define a wrapper for constructor of your class.
 Typically, it will look like this:
 
 .. code-block:: cpp
@@ -114,9 +115,15 @@ for example let's define a wrapper library function over ``A::getMyNumber()``:
    LIBRARY_LINK_FUNCTION(GetMyNumber) {
       auto err = LLU::ErrorCode::NoError;
       try {
+         // create an instance of MArgumentManger for this function
          LLU::MArgumentManager mngr {Argc, Args, Res};
+
+         // get a reference to the Managed Expression of type A, on which this function was called in the Wolfram Language
          const A& myA = mngr.getManagedExpression(0, AStore);
+
+         // set the value of myA.getMyNumber() as the result of this library function
          mngr.set(myA.getMyNumber());
+
       } catch (const LLU::LibraryLinkError &e) {
          err = e.which();
       }

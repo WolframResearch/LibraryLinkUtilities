@@ -4,7 +4,7 @@
 Progress monitor
 ===========================================
 
-When a :term:`library function` is executed in the Wolfram Language session, the Kernel will wait until the function returns. There is usually no real-time
+When a :term:`library function` is executed in a Wolfram Language session, the Kernel will wait until the function returns. There is usually no real-time
 feedback about function progress. :term:`LibraryLink` offers the `AbortQ <https://reference.wolfram.com/language/LibraryLink/ref/callback/AbortQ.html>`_
 function which allows developers to correctly handle cases when the user aborts a library function execution. The drawback is that it is entirely up to library
 developers to use ``AbortQ`` manually. The library must still return even when ``AbortQ`` returns ``true``, so there is still no guarantee that the execution
@@ -20,7 +20,7 @@ Whereas it could look like this:
 .. image:: ../_static/img/LibFunWithProg.gif
    :alt: Using abortable library function with simple progress bar.
 
-:term:`LLU` provides a class :cpp:class:`LLU::ProgressMonitor` which uses a 1-element shared tensor to report progress to Wolfram Language during a
+:term:`LLU` provides a class :cpp:class:`LLU::ProgressMonitor` which uses a 1-element shared tensor to report progress to Wolfram Language during
 library function execution. The value in the tensor is a real number between 0.0 and 1.0 which indicates current progress of the function. It can be
 increased/decreased by a given step (using convenient increment/decrement operators) or set to arbitrary value.
 (Yes, decreasing progress may be useful sometimes too.)
@@ -90,8 +90,8 @@ For progress reporting to work on the Wolfram Language side as expected, the lib
    `LLU`PacletFunctionSet`[UniformProgress, "UniformProgress", {Real}, Integer, "ProgressMonitor" -> MyPaclet`PM`UniformProgress];
 
 By default, :wl:`"ProgressMonitor" -> None` is used.
-It's good to make sure the name for the monitoring symbol will be unique. One suggestion is to use ``PacletName`PM`` as the context, and the name of the symbol
-to be the same as the function name.
+It's a good idea to make sure the name for the monitoring symbol will be unique. One suggestion is to use ``PacletName`PM`` as the context, and the name of the
+symbol to be the same as the function name.
 
 Now, run your library function with simple progress bar:
 
