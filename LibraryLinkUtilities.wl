@@ -533,22 +533,6 @@ WSTPFunctionSet[symbol_, funcNameInLib_?StringQ, opts : OptionsPattern[]] :=
 WSTPFunctionSet[symbol_, opts : OptionsPattern[]] :=
 	WSTPFunctionSet[symbol, guessFunctionNameFromSymbol[symbol], opts];
 
-SetAttributes[declareLazyVersion, HoldAll];
-declareLazyVersion[f_?Developer`SymbolQ] :=
-	With[{lazyf = Symbol["Lazy" <> SymbolName[f]]},
-		Block[{rules},
-			rules = {f -> lazyf, "EagerLoading" -> "LazyLoading"};
-			Attributes[lazyf] = Attributes[f];
-			Options[lazyf] = Options[f];
-			DownValues[lazyf] = DownValues[f] /. rules;
-			SubValues[lazyf] = SubValues[f] /. rules;
-		];
-	];
-
-declareLazyVersion[PacletFunctionSet];
-declareLazyVersion[WSTPFunctionSet];
-
-
 (* ::SubSection:: *)
 (* Lazy loading library functions *)
 (* ------------------------------------------------------------------------- *)
@@ -961,8 +945,40 @@ WSTPMemberFunctionSet[exprHead_][memberSymbol_, fname_?StringQ, opts : OptionsPa
 WSTPMemberFunctionSet[exprHead_][memberSymbol_, opts : OptionsPattern[]] :=
 	MemberFunctionSet[exprHead][memberSymbol, guessFunctionNameFromSymbol[memberSymbol], LinkObject, LinkObject, opts];
 
-declareLazyVersion[MemberFunctionSet];
-declareLazyVersion[WSTPMemberFunctionSet];
+(* list of all functions with lazy versions *)
+$LazyFunctions =
+{
+	PacletFunctionSet,
+	WSTPFunctionSet,
+	MemberFunctionSet,
+	WSTPMemberFunctionSet
+};
+
+SetAttributes[lazySymbol, HoldAll];
+lazySymbol[f_?Developer`SymbolQ] := Symbol["Lazy" <> SymbolName[f]];
+
+$LazyFunctionRules =
+	Append[
+		Map[
+			Function[f, f -> lazySymbol[f], HoldAll],
+			$LazyFunctions
+		],
+		"EagerLoading" -> "LazyLoading"
+	];
+
+SetAttributes[declareLazyVersion, HoldAll];
+declareLazyVersion[f_?Developer`SymbolQ] :=
+	With[{lazyf = lazySymbol[f]},
+		Attributes[lazyf] = Attributes[f];
+		Options[lazyf] = Options[f];
+		DownValues[lazyf] = DownValues[f] /. $LazyFunctionRules;
+		SubValues[lazyf] = SubValues[f] /. $LazyFunctionRules;
+	];
+
+Map[
+	Function[f, declareLazyVersion[f], HoldAll],
+	$LazyFunctions
+];
 
 End[]; (* `Private` *)
 
