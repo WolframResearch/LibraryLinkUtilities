@@ -23,13 +23,8 @@ namespace LLErrorCode = LLU::ErrorCode;
  */
 class MyExpression {
 public:
-	MyExpression(mint myID) : id {myID} {
+	explicit MyExpression(mint myID) : id {myID} {
 	}
-
-	MyExpression(const MyExpression&) = delete;
-	MyExpression& operator=(const MyExpression&) = delete;
-	MyExpression(MyExpression&&) = default;
-	MyExpression& operator=(MyExpression&&) = default;
 
 private:
 	mint id;
@@ -248,7 +243,8 @@ EXTERN_C DLLEXPORT int EmptyLibDataException(WolframLibraryData /*unused*/, mint
 }
 
 LLU_WSTP_FUNCTION(testFunctionWSTP) {
-	ErrorManager::throwException("SimpleError");
+	LLU::Unused(wsl);
+	LLU::ErrorManager::throwException("SimpleError");
 }
 
 LLU_LIBRARY_FUNCTION(OpenManagedMyExpression) {
@@ -257,9 +253,11 @@ LLU_LIBRARY_FUNCTION(OpenManagedMyExpression) {
 }
 
 LLU_LIBRARY_FUNCTION(GetMLEError) {
-	ErrorManager::throwException("SimpleError");
+	LLU::Unused(mngr);
+	LLU::ErrorManager::throwException("SimpleError");
 }
 
 LLU_WSTP_FUNCTION(GetMLEErrorWSTP) {
-	ErrorManager::throwException("SimpleError");
+	LLU::Unused(wsl);
+	LLU::ErrorManager::throwException("SimpleError");
 }
