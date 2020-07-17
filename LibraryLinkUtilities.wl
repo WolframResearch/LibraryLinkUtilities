@@ -236,10 +236,6 @@ Clear @ $PacletLibrary;
 
 SetPacletLibrary[lib_?StringQ] := $PacletLibrary = lib;
 
-lazyLoadingQ["LazyLoading"] := True;
-lazyLoadingQ[_] := False;
-GetPacletLibrary[loading_] := If[lazyLoadingQ[loading], None, $PacletLibrary];
-
 (* Count how many failures was produced by the paclet during current Kernel session *)
 $ErrorCount = 0;
 
@@ -462,13 +458,12 @@ MemberFunctionLoad[exprHead_][fname_String, fParams_, retType : Except[_?OptionQ
 	MemberFunctionLoad[exprHead][$PacletLibrary, fname, fParams, retType, opts];
 
 Attributes[iLoadLibraryFunction] = {HoldFirst};
-iLoadLibraryFunction[symbol_, loading_, loader_, libraryName_, args___, opts : OptionsPattern[]] :=
-	Module[{loadingOpts, assignmentHead},
+iLoadLibraryFunction[symbol_, assignmentHead_, loader_, libraryName_, args___, opts : OptionsPattern[]] :=
+	Module[{loadingOpts},
 
 		(* For member function loading, get Options[MemberFunctionSet] *)
 		loadingOpts = FilterRules[{opts}, Options[Replace[loader, _MemberFunctionLoad -> MemberFunctionSet]]];
 
-		assignmentHead = If[lazyLoadingQ[loading], LazyLoad, Set];
 		clearLHS[symbol];
 		assignmentHead[
 			symbol,
@@ -511,27 +506,45 @@ clearLHS[symbol_] :=
  * All options for PacletFunctionLoad and SafeLibraryFunctionLoad are accepted.
  *)
 Options[PacletFunctionSet] = Options[PacletFunctionLoad];
+Options[LazyPacletFunctionSet] = Options[PacletFunctionSet];
 
 Attributes[PacletFunctionSet] = {HoldFirst};
+Attributes[LazyPacletFunctionSet] = Attributes[PacletFunctionSet];
 PacletFunctionSet[symbol_, libraryName_, funcNameInLib_?StringQ, paramTypes_, retType : Except[_?OptionQ], opts : OptionsPattern[]] :=
-	iLoadLibraryFunction[symbol, "EagerLoading", PacletFunctionLoad, libraryName, funcNameInLib, paramTypes, retType, opts];
+	iLoadLibraryFunction[symbol, Set, PacletFunctionLoad, libraryName, funcNameInLib, paramTypes, retType, opts];
+LazyPacletFunctionSet[symbol_, libraryName_, funcNameInLib_?StringQ, paramTypes_, retType : Except[_?OptionQ], opts : OptionsPattern[]] :=
+	iLoadLibraryFunction[symbol, LazyLoad, PacletFunctionLoad, libraryName, funcNameInLib, paramTypes, retType, opts];
 
 PacletFunctionSet[symbol_, funcNameInLib_?StringQ, paramTypes_, retType : Except[_?OptionQ], opts : OptionsPattern[]] :=
-	PacletFunctionSet[symbol, GetPacletLibrary["EagerLoading"], funcNameInLib, paramTypes, retType, opts];
+	PacletFunctionSet[symbol, $PacletLibrary, funcNameInLib, paramTypes, retType, opts];
+LazyPacletFunctionSet[symbol_, funcNameInLib_?StringQ, paramTypes_, retType : Except[_?OptionQ], opts : OptionsPattern[]] :=
+	LazyPacletFunctionSet[symbol, None, funcNameInLib, paramTypes, retType, opts];
 
 PacletFunctionSet[symbol_, paramTypes_, retType : Except[_?OptionQ], opts : OptionsPattern[]] :=
 	PacletFunctionSet[symbol, guessFunctionNameFromSymbol[symbol], paramTypes, retType, opts];
+LazyPacletFunctionSet[symbol_, paramTypes_, retType : Except[_?OptionQ], opts : OptionsPattern[]] :=
+	LazyPacletFunctionSet[symbol, guessFunctionNameFromSymbol[symbol], paramTypes, retType, opts];
 
 Options[WSTPFunctionSet] = Options[PacletFunctionSet];
+Options[LazyWSTPFunctionSet] = Options[WSTPFunctionSet];
 
 (* WSTPFunctionSet[resultSymbol_, lib_, f_, opts___] - convenient wrapper around PacletFunctionSet for easier loading of WSTP functions. *)
 Attributes[WSTPFunctionSet] = {HoldFirst};
+Attributes[LazyWSTPFunctionSet] = Attributes[WSTPFunctionSet];
 WSTPFunctionSet[symbol_, libraryName_, funcNameInLib_?StringQ, opts : OptionsPattern[]] :=
 	PacletFunctionSet[symbol, libraryName, funcNameInLib, LinkObject, LinkObject, opts];
+LazyWSTPFunctionSet[symbol_, libraryName_, funcNameInLib_?StringQ, opts : OptionsPattern[]] :=
+	LazyPacletFunctionSet[symbol, libraryName, funcNameInLib, LinkObject, LinkObject, opts];
+
 WSTPFunctionSet[symbol_, funcNameInLib_?StringQ, opts : OptionsPattern[]] :=
-	WSTPFunctionSet[symbol, GetPacletLibrary["EagerLoading"], funcNameInLib, opts];
+	WSTPFunctionSet[symbol, $PacletLibrary, funcNameInLib, opts];
+LazyWSTPFunctionSet[symbol_, funcNameInLib_?StringQ, opts : OptionsPattern[]] :=
+	LazyWSTPFunctionSet[symbol, None, funcNameInLib, opts];
+
 WSTPFunctionSet[symbol_, opts : OptionsPattern[]] :=
 	WSTPFunctionSet[symbol, guessFunctionNameFromSymbol[symbol], opts];
+LazyWSTPFunctionSet[symbol_, opts : OptionsPattern[]] :=
+	LazyWSTPFunctionSet[symbol, guessFunctionNameFromSymbol[symbol], opts];
 
 (* ::SubSection:: *)
 (* Lazy loading library functions *)
@@ -923,62 +936,50 @@ SetAttributes[ClassMember, HoldAll];
 ClassMember[className_, f_] := Symbol @ ClassMemberName[className, f];
 
 Options[MemberFunctionSet] = Options[PacletFunctionSet];
+Options[LazyMemberFunctionSet] = Options[MemberFunctionSet];
 
 MemberFunctionSet[exprHead_][memberSymbol_?Developer`SymbolQ, libraryName_, fname_, fParams_, retType : Except[_?OptionQ], opts : OptionsPattern[]] := (
 	If[Not @ Developer`SymbolQ @ ClassMember[exprHead, memberSymbol],
 		Clear @ Evaluate @ ClassMemberName[exprHead, memberSymbol];
 	];
 	exprHead /: exprHead[id_][memberSymbol[args___]] := ClassMember[exprHead, memberSymbol][exprHead[id], args];
-	iLoadLibraryFunction[Evaluate @ ClassMember[exprHead, memberSymbol], "EagerLoading", MemberFunctionLoad[exprHead], libraryName, fname, fParams, retType, opts];
+	iLoadLibraryFunction[Evaluate @ ClassMember[exprHead, memberSymbol], Set, MemberFunctionLoad[exprHead], libraryName, fname, fParams, retType, opts];
 );
+LazyMemberFunctionSet[exprHead_][memberSymbol_?Developer`SymbolQ, libraryName_, fname_, fParams_, retType : Except[_?OptionQ], opts : OptionsPattern[]] := (
+	If[Not @ Developer`SymbolQ @ ClassMember[exprHead, memberSymbol],
+		Clear @ Evaluate @ ClassMemberName[exprHead, memberSymbol];
+	];
+	exprHead /: exprHead[id_][memberSymbol[args___]] := ClassMember[exprHead, memberSymbol][exprHead[id], args];
+	iLoadLibraryFunction[Evaluate @ ClassMember[exprHead, memberSymbol], LazyLoad, MemberFunctionLoad[exprHead], libraryName, fname, fParams, retType, opts];
+);
+
 MemberFunctionSet[exprHead_][memberSymbol_, fname_, fParams_, retType : Except[_?OptionQ], opts : OptionsPattern[]] :=
-	MemberFunctionSet[exprHead][memberSymbol, GetPacletLibrary["EagerLoading"], fname, fParams, retType, opts];
+	MemberFunctionSet[exprHead][memberSymbol, $PacletLibrary, fname, fParams, retType, opts];
+LazyMemberFunctionSet[exprHead_][memberSymbol_, fname_, fParams_, retType : Except[_?OptionQ], opts : OptionsPattern[]] :=
+	LazyMemberFunctionSet[exprHead][memberSymbol, None, fname, fParams, retType, opts];
+
 MemberFunctionSet[exprHead_][memberSymbol_, fParams_, retType : Except[_?OptionQ], opts : OptionsPattern[]] :=
 	MemberFunctionSet[exprHead][memberSymbol, guessFunctionNameFromSymbol[memberSymbol], fParams, retType, opts];
+LazyMemberFunctionSet[exprHead_][memberSymbol_, fParams_, retType : Except[_?OptionQ], opts : OptionsPattern[]] :=
+	LazyMemberFunctionSet[exprHead][memberSymbol, guessFunctionNameFromSymbol[memberSymbol], fParams, retType, opts];
 
 Options[WSTPMemberFunctionSet] = Options[MemberFunctionSet];
+Options[LazyWSTPMemberFunctionSet] = Options[WSTPMemberFunctionSet];
 
 WSTPMemberFunctionSet[exprHead_][memberSymbol_, libraryName_, fname_?StringQ, opts : OptionsPattern[]] :=
 	MemberFunctionSet[exprHead][memberSymbol, libraryName, fname, LinkObject, LinkObject, opts];
+LazyWSTPMemberFunctionSet[exprHead_][memberSymbol_, libraryName_, fname_?StringQ, opts : OptionsPattern[]] :=
+	LazyMemberFunctionSet[exprHead][memberSymbol, libraryName, fname, LinkObject, LinkObject, opts];
+
 WSTPMemberFunctionSet[exprHead_][memberSymbol_, fname_?StringQ, opts : OptionsPattern[]] :=
-	MemberFunctionSet[exprHead][memberSymbol, GetPacletLibrary["EagerLoading"], fname, LinkObject, LinkObject, opts];
+	MemberFunctionSet[exprHead][memberSymbol, $PacletLibrary, fname, LinkObject, LinkObject, opts];
+LazyWSTPMemberFunctionSet[exprHead_][memberSymbol_, fname_?StringQ, opts : OptionsPattern[]] :=
+	LazyMemberFunctionSet[exprHead][memberSymbol, None, fname, LinkObject, LinkObject, opts];
+
 WSTPMemberFunctionSet[exprHead_][memberSymbol_, opts : OptionsPattern[]] :=
 	MemberFunctionSet[exprHead][memberSymbol, guessFunctionNameFromSymbol[memberSymbol], LinkObject, LinkObject, opts];
-
-(* list of all functions with lazy versions *)
-$LazyFunctions =
-{
-	PacletFunctionSet,
-	WSTPFunctionSet,
-	MemberFunctionSet,
-	WSTPMemberFunctionSet
-};
-
-SetAttributes[lazySymbol, HoldAll];
-lazySymbol[f_?Developer`SymbolQ] := Symbol["Lazy" <> SymbolName[f]];
-
-$LazyFunctionRules =
-	Append[
-		Map[
-			Function[f, f -> lazySymbol[f], HoldAll],
-			$LazyFunctions
-		],
-		"EagerLoading" -> "LazyLoading"
-	];
-
-SetAttributes[declareLazyVersion, HoldAll];
-declareLazyVersion[f_?Developer`SymbolQ] :=
-	With[{lazyf = lazySymbol[f]},
-		Attributes[lazyf] = Attributes[f];
-		Options[lazyf] = Options[f];
-		DownValues[lazyf] = DownValues[f] /. $LazyFunctionRules;
-		SubValues[lazyf] = SubValues[f] /. $LazyFunctionRules;
-	];
-
-Map[
-	Function[f, declareLazyVersion[f], HoldAll],
-	$LazyFunctions
-];
+LazyWSTPMemberFunctionSet[exprHead_][memberSymbol_, opts : OptionsPattern[]] :=
+	LazyMemberFunctionSet[exprHead][memberSymbol, guessFunctionNameFromSymbol[memberSymbol], LinkObject, LinkObject, opts];
 
 End[]; (* `Private` *)
 
