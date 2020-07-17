@@ -80,7 +80,7 @@ Here are some examples:
 
 More examples can be found in unit tests.
 
-RawContainers
+Raw Containers
 ============================
 
 These are just raw LibraryLink containers.
@@ -163,7 +163,6 @@ GenericDataList is a light-weight wrapper over :ref:`datastore-label`. It offers
 :cpp:func:`push_back <LLU::MContainer\< MArgumentType::DataStore >::push_back>` method for appending new nodes. You can also get the length of the list.
 
 
-
 Here is an example of GenericDataList in action:
 
 .. code-block:: cpp
@@ -191,6 +190,7 @@ Here is an example of GenericDataList in action:
 
       // set the GenericDataList as the result of the library function
       mngr.set(dsOut);
+      return LLU::ErrorCode::NoError;
    }
 
 Technically, GenericDataList is an alias:
@@ -215,6 +215,7 @@ Here is an example of GenericImage in action:
       LLU::MArgumentManager mngr {libData, Argc, Args, Res};
       const auto image = mngr.getGenericImage<LLU::Passing::Constant>(0);
       mngr.setInteger(image.columns());
+      return LLU::ErrorCode::NoError;
    }
 
 .. doxygentypedef:: LLU::GenericImage
@@ -240,6 +241,7 @@ Here is an example of GenericNumericArray in action:
       // The list of dimensions of the NumericArray will never be empty because scalar NumericArrays are forbidden
       auto maxDim = *std::max_element(numericArray.getDimensions(), std::next(numericArray.getDimensions(), numericArray.getRank()));
       mngr.setInteger(maxDim);
+      return LLU::ErrorCode::NoError;
    }
 
 .. doxygentypedef:: LLU::GenericNumericArray
@@ -270,8 +272,44 @@ All typed wrappers are movable but non-copyable, instead they provide a :cpp:exp
 
 .. _datalist-label:
 
-:cpp:class:`LLU::DataList\<T> <template\<MArgumentType T> LLU::DataList>`
+:cpp:class:`LLU::DataList\<T> <template\<typename T> LLU::DataList>`
 -------------------------------------------------------------------------------
+
+DataList is a strongly-typed wrapper derived from GenericDataList in which all nodes must be of the same type, known at compile time. Template parameter ``T``
+denotes the value type of nodes. Supported node value types are shown below with corresponding types of raw DataStore nodes and with underlying C++ types:
+
++-------------------------+--------------------------+------------------------+
+| Node Type Name          | Underlying Type          | Raw DataStoreNode Type |
++=========================+==========================+========================+
+| NodeType::Boolean       | bool                     | mbool                  |
++-------------------------+--------------------------+------------------------+
+| NodeType::Integer       | mint                     | mint                   |
++-------------------------+--------------------------+------------------------+
+| NodeType::Real          | double                   | mreal                  |
++-------------------------+--------------------------+------------------------+
+| NodeType::Complex       | std::complex<double>     | mcomplex               |
++-------------------------+--------------------------+------------------------+
+| NodeType::Tensor        | LLU::GenericTensor       | MTensor                |
++-------------------------+--------------------------+------------------------+
+| NodeType::SparseArray   | MSparseArray             | MSparseArray           |
++-------------------------+--------------------------+------------------------+
+| NodeType::NumericArray  | LLU::GenericNumericArray | MNumericArray          |
++-------------------------+--------------------------+------------------------+
+| NodeType::Image         | LLU::Image               | MImage                 |
++-------------------------+--------------------------+------------------------+
+| NodeType::UTF8String    | std::string_view         | char*                  |
++-------------------------+--------------------------+------------------------+
+| NodeType::DataStore     | LLU::GenericDataList     | DataStore              |
++-------------------------+--------------------------+------------------------+
+
+``LLU::NodeType`` is a namespace alias for ``LLU::Argument::Typed`` defined as follows:
+
+.. doxygennamespace:: LLU::Argument::Typed
+
+Notice that :cpp:expr:`LLU::NodeType::Any` (or equivalently :cpp:expr:`LLU::Argument::Typed::Any`) is a special type which is a union of all other types
+from its namespace. In a way it corresponds to :cpp:expr:`MArgument` type in LibraryLink. A DataList with node type :cpp:expr:`LLU::NodeType::Any` can store
+nodes of any types so it is quite similar to :cpp:expr:`LLU::GenericDataList` but it has the interface of DataList, meaning that it offers more advanced
+iterators and more constructors.
 
 Here is an example of DataList class in action:
 
@@ -297,6 +335,7 @@ Here is an example of DataList class in action:
       dsOut.push_back("Values", std::move(values));
 
       mngr.set(dsOut);
+      return LLU::ErrorCode::NoError;
    }
 
 On the Wolfram Language side, we can load and use this function as follows:
@@ -317,6 +356,22 @@ On the Wolfram Language side, we can load and use this function as follows:
 :cpp:class:`LLU::Image\<T> <template\<typename T> LLU::Image>`
 -------------------------------------------------------------------------------
 
+The table below shows the correspondence between Image data types in LLU, plain LibraryLink and in the Wolfram Language:
+
++-----------------+--------------------+-----------------------+
+| LLU (C++) type  | LibraryLink type   | Wolfram Language type |
++=================+====================+=======================+
+| std::int8_t     | MImage_Type_Bit    | "Bit"                 |
++-----------------+--------------------+-----------------------+
+| std::uint8_t    | MImage_Type_Bit8   | "Byte"                |
++-----------------+--------------------+-----------------------+
+| std::int16_t    | MImage_Type_Bit16  | "Bit16"               |
++-----------------+--------------------+-----------------------+
+| float           | MImage_Type_Real32 | "Real32"              |
++-----------------+--------------------+-----------------------+
+| double          | MImage_Type_Real   | "Real64"              |
++-----------------+--------------------+-----------------------+
+
 Here is an example of the Image class in action:
 
 .. code-block:: cpp
@@ -333,6 +388,7 @@ Here is an example of the Image class in action:
       std::transform(std::cbegin(in), std::cend(in), std::begin(outImage), [](T inElem) { return negator - inElem; });
 
       mngr.setImage(outImage);
+      return LLU::ErrorCode::NoError;
    }
 
 On the Wolfram Language side, we can load and use this function as follows:
@@ -355,6 +411,38 @@ This is naturally only a toy example, Wolfram Language has a built-in function f
 :cpp:class:`LLU::NumericArray\<T> <template\<typename T> LLU::NumericArray>`
 -------------------------------------------------------------------------------
 
+NumericArray<T> is an extension of GenericNumericArray which is aware that it holds data of type T and therefore can provide an API
+to iterate over the data and modify it.
+The table below shows the correspondence between NumericArray C++ types and Wolfram Language types:
+
++------------------------+-----------------------+
+| C++ type               | Wolfram Language type |
++========================+=======================+
+| std::int8_t            | "Integer8"            |
++------------------------+-----------------------+
+| std::uint8_t           | "UnsignedInteger8"    |
++------------------------+-----------------------+
+| std::int16_t           | "Integer16"           |
++------------------------+-----------------------+
+| std::uint16_t          | "UnsignedInteger16"   |
++------------------------+-----------------------+
+| std::int32_t           | "Integer32"           |
++------------------------+-----------------------+
+| std::uint32_t          | "UnsignedInteger32"   |
++------------------------+-----------------------+
+| std::int64_t           | "Integer64"           |
++------------------------+-----------------------+
+| std::uint64_t          | "UnsignedInteger64"   |
++------------------------+-----------------------+
+| float                  | "Real32"              |
++------------------------+-----------------------+
+| double                 | "Real64"              |
++------------------------+-----------------------+
+| std::complex<float>    | "ComplexReal32"       |
++------------------------+-----------------------+
+| std::complex<double>   | "ComplexReal64"       |
++------------------------+-----------------------+
+
 Here is an example of the NumericArray class in action:
 
 .. code-block:: cpp
@@ -366,6 +454,7 @@ Here is an example of the NumericArray class in action:
       auto inputNA = mngr.getNumericArray<std::int32_t, LLU::Passing::Constant>(0);
       LLU::NumericArray<std::int32_t> outNA { std::crbegin(inputNA), std::crend(inputNA), inputNA.dimensions() };
       mngr.set(outNA);
+      return LLU::ErrorCode::NoError;
    }
 
 On the Wolfram Language side, we can load and use this function as follows:
@@ -409,6 +498,7 @@ Here is an example of the Tensor class in action:
 
       auto result = total / t.size();
       mngr.set(result);
+      return LLU::ErrorCode::NoError;
    }
 
 On the Wolfram Language side, we can load and use this function as follows:
@@ -428,4 +518,23 @@ On the Wolfram Language side, we can load and use this function as follows:
 Iterators
 ========================
 
+All container classes in LLU are equipped with iterators. For Image, Tensor and NumericArray we get random-access iterators similar to those of, for instance,
+:cpp:expr:`std::vector`, because these containers also allocate space for their data as a contiguous piece of memory. Reverse and constant iterators are
+available as well.
+
+.. warning::
+   Bear in mind that iterators for Image, Tensor and NumericArray are not aware of the container dimensions in a sense that the iteration happens in the order
+   how data is laid out in memory. For 2D arrays this is often row-major order but it gets more complicated for multidimensional arrays and for Images.
+
+DataStore wrappers have different iterators, because DataStore has a list-like structure with nodes of type :cpp:expr:`DataStoreNode`. The default iterator
+over GenericDataList, the one you obtain with :cpp:func:`begin <LLU::MContainer\< MArgumentType::DataStore >::begin>` and
+:cpp:func:`end <LLU::MContainer\< MArgumentType::DataStore >::end>`, is a proxy iterator of type :cpp:class:`DataStoreIterator`.
+
+.. doxygenclass:: LLU::DataStoreIterator
+   :members:
+
+The object obtained by dereferencing a :cpp:class:`DataStoreIterator` is of type :cpp:class:`GenericDataNode`.
+
+.. doxygenstruct:: LLU::GenericDataNode
+   :members:
 
