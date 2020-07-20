@@ -31,7 +31,7 @@
  */
 #define LIBRARY_WSTP_FUNCTION(name)                          \
 	EXTERN_C DLLEXPORT int name(WolframLibraryData, WSLINK); \
-	int name([[maybe_unused]] WolframLibraryData libData, WSLINK mlp)
+	int name([[maybe_unused]] WolframLibraryData libData, WSLINK wsl)
 
 /**
  * @brief   This macro provides all the boilerplate code needed for a typical exception-safe LibraryLink function.
@@ -57,4 +57,19 @@
 	}                                                                   \
 	void impl_##name(LLU::MArgumentManager& mngr)
 
+#define LLU_WSTP_FUNCTION(name)                                \
+	void impl_##name(WSLINK&); /* forward declaration */       \
+	LIBRARY_WSTP_FUNCTION(name) {                              \
+		auto err = LLU::ErrorCode::NoError;                    \
+		try {                                                  \
+			impl_##name(wsl);                                  \
+		} catch (const LLU::LibraryLinkError& e) {             \
+			err = e.which();                                   \
+		} catch (...) {                                        \
+			err = LLU::ErrorCode::FunctionError;               \
+		}                                                      \
+		return err;                                            \
+	}                                                          \
+	void impl_##name(WSLINK& wsl)
+	
 #endif // LLU_LIBRARYLINKFUNCTIONMACRO_H

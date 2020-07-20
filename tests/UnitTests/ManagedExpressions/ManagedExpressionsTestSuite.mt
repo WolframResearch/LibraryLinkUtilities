@@ -60,7 +60,7 @@ TestExecute[
 	globalExpr = `LLU`NewManagedExpression[MyExpression]["I will live through all tests"];
 
 	(* In some rare cases you may want LLU to issue single-argument Throws. It can be achieved by modifying $ExceptionTagFunction as follows: *)
-	`LLU`$ExceptionTagFunction = Nothing&;
+	`LLU`$ExceptionTagFunction = Nothing;
 ];
 
 Test[

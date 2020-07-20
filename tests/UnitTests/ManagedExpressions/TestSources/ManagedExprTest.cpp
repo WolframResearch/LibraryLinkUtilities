@@ -170,7 +170,7 @@ LIBRARY_WSTP_FUNCTION(SwapText) {
 	namespace WS = LLU::WS;
 	auto err = LLU::ErrorCode::NoError;
 	try {
-		LLU::WSStream<WS::Encoding::UTF8> ws(mlp, 2);
+		LLU::WSStream<WS::Encoding::UTF8> ws(wsl, 2);
 		std::shared_ptr<MyExpression> firstExpr;
 		ws >> firstExpr;
 		auto& secondExpr = getFromWSTP(ws);
@@ -188,7 +188,7 @@ LIBRARY_WSTP_FUNCTION(SetTextWS) {
 	namespace WS = LLU::WS;
 	auto err = LLU::ErrorCode::NoError;
 	try {
-		LLU::WSStream<WS::Encoding::UTF8> ws(mlp, 2);
+		LLU::WSStream<WS::Encoding::UTF8> ws(wsl, 2);
 		auto& myExpr = getFromWSTP(ws);
 		std::string newText;
 		ws >> newText;

@@ -19,7 +19,7 @@ namespace WS = LLU::WS;
 LIBRARY_WSTP_FUNCTION(Wrong) {
 	auto err = LLU::ErrorCode::NoError;
 	try {
-		WSStream<WS::Encoding::UCS2, WS::Encoding::UTF16> ml(mlp, "List", 0);
+		WSStream<WS::Encoding::UCS2, WS::Encoding::UTF16> ml(wsl, "List", 0);
 
 		ml << "Hello";	  // ERROR (static_assert): "Character type does not match the encoding in WS::String<E>::put"
 
@@ -37,9 +37,9 @@ LIBRARY_WSTP_FUNCTION(Wrong) {
 
 		ml << i;	// ERROR (static_assert): "Calling operator<< with unsupported type."
 
-		i = WS::GetScalar<unsigned int>::get(mlp);	  // ERROR (static_assert): Trying to use WS::GetScalar<T> for unsupported type T
+		i = WS::GetScalar<unsigned int>::get(wsl);	  // ERROR (static_assert): Trying to use WS::GetScalar<T> for unsupported type T
 
-		WS::PutScalar<unsigned int>::put(mlp, i);	 // ERROR (static_assert): Trying to use WS::PutScalar<T> for unsupported type T
+		WS::PutScalar<unsigned int>::put(wsl, i);	 // ERROR (static_assert): Trying to use WS::PutScalar<T> for unsupported type T
 
 		ml << static_cast<wsint64>(i);	  // This should be fine
 

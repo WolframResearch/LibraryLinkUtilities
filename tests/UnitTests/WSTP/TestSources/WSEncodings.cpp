@@ -29,7 +29,7 @@ void forAllEncodingsDo(Args&&... params) {
 LIBRARY_WSTP_FUNCTION(NestedPutAs) {
 	auto err = ErrorCode::NoError;
 	try {
-		LLU::WSStream<Encoding::Byte, Encoding::UTF32> ml(mlp, 1);
+		LLU::WSStream<Encoding::Byte, Encoding::UTF32> ml(wsl, 1);
 
 		std::string s;
 		ml >> LLU::WS::getAs<Encoding::UTF8>(s);
@@ -63,8 +63,8 @@ struct StringToCharCodes {
 LIBRARY_WSTP_FUNCTION(CharacterCodes) {
 	auto err = ErrorCode::NoError;
 	try {
-		LLU::WSStream<Encoding::Byte> ml(mlp, 1);
-		auto* mark = WSCreateMark(mlp);
+		LLU::WSStream<Encoding::Byte> ml(wsl, 1);
+		auto* mark = WSCreateMark(wsl);
 		ml << LLU::WS::Association(6);	 // there are 6 encodings available
 		forAllEncodingsDo<StringToCharCodes>(ml, mark);
 
@@ -90,8 +90,8 @@ struct EncodingRoundtrip {
 LIBRARY_WSTP_FUNCTION(AllEncodingsRoundtrip) {
 	auto err = ErrorCode::NoError;
 	try {
-		LLU::WSStream<Encoding::Byte> ml(mlp, 1);
-		auto* mark = WSCreateMark(mlp);
+		LLU::WSStream<Encoding::Byte> ml(wsl, 1);
+		auto* mark = WSCreateMark(wsl);
 		ml << LLU::WS::Association(6);	 // there are 6 encodings available
 		forAllEncodingsDo<EncodingRoundtrip>(ml, mark);
 	} catch (LLU::LibraryLinkError& e) {
