@@ -205,6 +205,10 @@ Technically, GenericDataList is an alias:
 :cpp:type:`LLU::GenericImage`
 ------------------------------------
 
+GenericImage is a light-weight wrapper over :ref:`mimage-label`. It offers the same API as LibraryLink has for MImage, except for access to the image data,
+because GenericImage is not aware of the image data type. Typically on would use GenericImage to take an Image of unknown type from LibraryLink, investigate
+image properties and data type and then upgrade the GenericImage to the strongly-typed one in order to perform operations on the image data.
+
 Here is an example of GenericImage in action:
 
 .. code-block:: cpp
@@ -218,6 +222,7 @@ Here is an example of GenericImage in action:
       return LLU::ErrorCode::NoError;
    }
 
+
 .. doxygentypedef:: LLU::GenericImage
 
 .. doxygenclass:: LLU::MContainer< MArgumentType::Image >
@@ -227,6 +232,11 @@ Here is an example of GenericImage in action:
 
 :cpp:type:`LLU::GenericNumericArray`
 ------------------------------------
+
+GenericNumericArray is a light-weight wrapper over :ref:`mnumericarray-label`. It offers the same API as LibraryLink has for MNumericArray, except for access
+to the underlying array data, because GenericNumericArray is not aware of the array data type. Typically on would use GenericNumericArray to take a NumericArray
+of unknown type from LibraryLink, investigate its properties and data type and then upgrade the GenericNumericArray to the strongly-typed one in order to
+perform operations on the underlying data.
 
 Here is an example of GenericNumericArray in action:
 
@@ -254,10 +264,10 @@ Here is an example of GenericNumericArray in action:
 :cpp:type:`LLU::GenericTensor`
 ------------------------------------
 
-Here is an example of GenericTensor in action:
-
-.. code-block:: cpp
-   :linenos:
+GenericTensor is a light-weight wrapper over :ref:`mtensor-label`. It offers the same API as LibraryLink has for MTensor, except for access
+to the underlying array data, because GenericTensor is not aware of the array data type. Typically on would use GenericTensor to take a Tensor
+of unknown type from LibraryLink, investigate its properties and data type and then upgrade the GenericTensor to the strongly-typed one in order to
+perform operations on the underlying data.
 
 .. doxygentypedef:: LLU::GenericTensor
 
@@ -356,6 +366,7 @@ On the Wolfram Language side, we can load and use this function as follows:
 :cpp:class:`LLU::Image\<T> <template\<typename T> LLU::Image>`
 -------------------------------------------------------------------------------
 
+Image is a strongly-typed wrapper derived from GenericImage, where the underlying data type is known at compile time and encoded in the template parameter.
 The table below shows the correspondence between Image data types in LLU, plain LibraryLink and in the Wolfram Language:
 
 +-----------------+--------------------+-----------------------+
@@ -402,6 +413,36 @@ On the Wolfram Language side, we can load and use this function as follows:
    (* Out[] = [--Image--] *)
 
 This is naturally only a toy example, Wolfram Language has a built-in function for negating images: :wlref:`ImageNegate`.
+
+In the example above we simply assumed that the Image we use will be of type "Byte", so we could simply write :cpp:expr:`LLU::Image<uint8_t>` in the C++ code.
+In the next example let's consider a function that takes two images from LibraryLink of arbitrary types and converts the second one to the data type of the
+first one. In this case we cannot simply read arguments from MArgumentManager because we don't know what template arguments should be passed to LLU::Image.
+Instead, we call a function :cpp:func:`LLU::MArgumentManager::operateOnImage` which lets us evaluate a function template on an input image without knowing its data type.
+
+.. code-block:: cpp
+   :linenos:
+
+   LIBRARY_LINK_FUNCTION(UnifyImageTypes) {
+      LLU::MArgumentManager mngr {libData, Argc, Args, Res};
+
+      // Take an image passed to the library function as the first argument, deduce its data type, create a corresponding LLU::Image wrapper and evaluate
+      // given generic lambda function on this image
+      mngr.operateOnImage(0, [&mngr](auto&& firstImage) {
+
+         // T is the data type of the first image
+         using T = typename std::remove_reference_t<decltype(firstImage)>::value_type;
+
+         // Similarly, read the second image and create a properly typed LLU::Image wrapper
+         mngr.operateOnImage(1, [&mngr](auto&& secondImage) {
+
+            // Convert the second image to the data type of the first one and return as the library function result
+            LLU::Image<T> out {secondImage.template convert<T>()};
+            mngr.setImage(out);
+         });
+      });
+      return LLU::ErrorCode::NoError;
+   }
+
 
 .. doxygenclass:: LLU::Image
    :members:
@@ -526,9 +567,10 @@ available as well.
    Bear in mind that iterators for Image, Tensor and NumericArray are not aware of the container dimensions in a sense that the iteration happens in the order
    how data is laid out in memory. For 2D arrays this is often row-major order but it gets more complicated for multidimensional arrays and for Images.
 
-DataStore wrappers have different iterators, because DataStore has a list-like structure with nodes of type :cpp:expr:`DataStoreNode`. The default iterator
-over GenericDataList, the one you obtain with :cpp:func:`begin <LLU::MContainer\< MArgumentType::DataStore >::begin>` and
-:cpp:func:`end <LLU::MContainer\< MArgumentType::DataStore >::end>`, is a proxy iterator of type :cpp:class:`DataStoreIterator`.
+DataStore wrappers have different iterators, because DataStore has a list-like structure with nodes of type :cpp:expr:`DataStoreNode`. The list is
+unidirectional, so reverse iterator is not available. The default iterator over GenericDataList, the one you obtain with
+:cpp:func:`begin <LLU::MContainer\< MArgumentType::DataStore >::begin>` and :cpp:func:`end <LLU::MContainer\< MArgumentType::DataStore >::end>`, is a proxy
+iterator of type :cpp:class:`DataStoreIterator`.
 
 .. doxygenclass:: LLU::DataStoreIterator
    :members:
@@ -538,3 +580,55 @@ The object obtained by dereferencing a :cpp:class:`DataStoreIterator` is of type
 .. doxygenstruct:: LLU::GenericDataNode
    :members:
 
+:cpp:class:`LLU::DataList\<T> <template\<typename T> LLU::DataList>` offers more types of iterators but again all of them are proxy iterators.
+The default one is :cpp:class:`NodeIterator<T>`
+
+.. doxygenstruct:: LLU::NodeIterator
+   :members:
+
+The object obtained by dereferencing a :cpp:class:`NodeIterator<T>` is of type :cpp:class:`DataNode<T>`.
+
+.. doxygenclass:: LLU::DataNode
+   :members:
+
+Every data node has a name (possibly empty) and a value. Sometimes you might be interested only in node values or only in names and DataList provides
+specialized iterators for this. You may obtain them with :cpp:func:`valueBegin() <LLU::DataList::valueBegin>` and
+:cpp:func:`nameBegin() <LLU::DataList::nameBegin>`, respectively.
+
+To get those specialized iterators in a range-based for loop, where you cannot directly choose which variant of :cpp:expr:`begin()` method to use, you can
+utilize one of the *iterator adaptors* that LLU defines. For instance,
+
+.. code-block:: cpp
+   :emphasize-lines: 6, 12
+
+   // Get a DataList of complex numbers as argument to the library function
+   auto dataList = manager.getDataList<LLU::NodeType::Complex>(0);
+
+   // Create a new DataList to store node names of the original DataList as node values in the new list
+   DataList<LLU::NodeType::UTF8String> keys;
+   for (auto name : LLU::NameAdaptor {dataList}) {
+      keys.push_back(name);
+   }
+
+   // Create a new DataList to store node values of the original DataList, without node names
+   DataList<LLU::NodeType::Complex> values;
+   for (auto value : LLU::ValueAdaptor {dataList}) {
+      values.push_back(value);
+   }
+
+It is possible to write the same code using the default iterator (:cpp:class:`NodeIterator<T>`) and structured bindings:
+
+.. code-block:: cpp
+   :emphasize-lines: 8
+
+   // Get a DataList of complex numbers as argument to the library function
+   auto dataList = manager.getDataList<LLU::NodeType::Complex>(0);
+
+   DataList<LLU::NodeType::UTF8String> keys;
+   DataList<LLU::NodeType::Complex> values;
+
+   // Iterator over the dataList once accessing both node name and value
+   for (auto [name, value] : dataList) {
+      keys.push_back(name);
+      values.push_back(value);
+   }

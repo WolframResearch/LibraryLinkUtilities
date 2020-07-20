@@ -15,6 +15,11 @@
 	font-size: 120%;
 }
 
+.rst-content .cpp.struct > dt {
+	width: 100%;
+	font-size: 120%;
+}
+
 .rst-content .highlight > pre {
 	line-height: 1.5;
 }
