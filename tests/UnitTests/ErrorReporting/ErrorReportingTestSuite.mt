@@ -488,13 +488,13 @@ TestMatch[
 ];
 
 TestExecute[
-	`LLU`Constructor[MyExpression] = `LLU`MemberFunctionSet[OpenManagedMyExpression, {`LLU`Managed[MyExpression]}, "Void"];
-	myExpr = `LLU`NewManagedExpression[MyExpression][];
+	`LLU`Constructor[MyTestExpression] = `LLU`MemberFunctionSet[OpenManagedMyTestExpression, {`LLU`Managed[MyTestExpression]}, "Void"];
+	myExpr = `LLU`NewManagedExpression[MyTestExpression][];
 ];
 
 TestMatch[
-	`LLU`MemberFunctionSet[MyExpression][$GetMLEError, {}, "Void"];
-	Flatten @ {FreeQ[OwnValues @ MyExpression`$GetMLEError, _LibraryFunction],
+	`LLU`MemberFunctionSet[MyTestExpression][$GetMLEError, {}, "Void"];
+	Flatten @ {FreeQ[OwnValues @ MyTestExpression`$GetMLEError, _LibraryFunction],
 		Catch[
 			{myExpr @ $GetMLEError[], "NoCatch"}
 			,
@@ -508,8 +508,8 @@ TestMatch[
 ];
 
 TestMatch[
-	`LLU`MemberFunctionSet[MyExpression][$GetMLEError, "GetMLEError", {}, "Void"];
-	Flatten @ {FreeQ[OwnValues @ MyExpression`$GetMLEError, _LibraryFunction],
+	`LLU`MemberFunctionSet[MyTestExpression][$GetMLEError, "GetMLEError", {}, "Void"];
+	Flatten @ {FreeQ[OwnValues @ MyTestExpression`$GetMLEError, _LibraryFunction],
 		Catch[
 			{myExpr @ $GetMLEError[], "NoCatch"}
 			,
@@ -523,8 +523,8 @@ TestMatch[
 ];
 
 TestMatch[
-	`LLU`MemberFunctionSet[MyExpression][$GetMLEError, lib, "GetMLEError", {}, "Void"];
-	Flatten @ {FreeQ[OwnValues @ MyExpression`$GetMLEError, _LibraryFunction],
+	`LLU`MemberFunctionSet[MyTestExpression][$GetMLEError, lib, "GetMLEError", {}, "Void"];
+	Flatten @ {FreeQ[OwnValues @ MyTestExpression`$GetMLEError, _LibraryFunction],
 		Catch[
 			{myExpr @ $GetMLEError[], "NoCatch"}
 			,
@@ -538,8 +538,8 @@ TestMatch[
 ];
 
 TestMatch[
-	`LLU`MemberFunctionSet[MyExpression][$GetMLEError, {}, "Void", "Throws" -> False];
-	Flatten @ {FreeQ[OwnValues @ MyExpression`$GetMLEError, _LibraryFunction],
+	`LLU`MemberFunctionSet[MyTestExpression][$GetMLEError, {}, "Void", "Throws" -> False];
+	Flatten @ {FreeQ[OwnValues @ MyTestExpression`$GetMLEError, _LibraryFunction],
 		Catch[
 			{myExpr @ $GetMLEError[], "NoCatch"}
 			,
@@ -553,8 +553,8 @@ TestMatch[
 ];
 
 TestMatch[
-	`LLU`MemberFunctionSet[MyExpression][$GetMLEError, "GetMLEError", {}, "Void", "Throws" -> False];
-	Flatten @ {FreeQ[OwnValues @ MyExpression`$GetMLEError, _LibraryFunction],
+	`LLU`MemberFunctionSet[MyTestExpression][$GetMLEError, "GetMLEError", {}, "Void", "Throws" -> False];
+	Flatten @ {FreeQ[OwnValues @ MyTestExpression`$GetMLEError, _LibraryFunction],
 		Catch[
 			{myExpr @ $GetMLEError[], "NoCatch"}
 			,
@@ -568,8 +568,8 @@ TestMatch[
 ];
 
 TestMatch[
-	`LLU`MemberFunctionSet[MyExpression][$GetMLEError, lib, "GetMLEError", {}, "Void", "Throws" -> False];
-	Flatten @ {FreeQ[OwnValues @ MyExpression`$GetMLEError, _LibraryFunction],
+	`LLU`MemberFunctionSet[MyTestExpression][$GetMLEError, lib, "GetMLEError", {}, "Void", "Throws" -> False];
+	Flatten @ {FreeQ[OwnValues @ MyTestExpression`$GetMLEError, _LibraryFunction],
 		Catch[
 			{myExpr @ $GetMLEError[], "NoCatch"}
 			,
@@ -583,8 +583,8 @@ TestMatch[
 ];
 
 TestMatch[
-	`LLU`WSTPMemberFunctionSet[MyExpression][$GetMLEErrorWSTP];
-	Flatten @ {FreeQ[OwnValues @ MyExpression`$GetMLEErrorWSTP, _LibraryFunction],
+	`LLU`WSTPMemberFunctionSet[MyTestExpression][$GetMLEErrorWSTP];
+	Flatten @ {FreeQ[OwnValues @ MyTestExpression`$GetMLEErrorWSTP, _LibraryFunction],
 		Catch[
 			{myExpr @ $GetMLEErrorWSTP[], "NoCatch"}
 			,
@@ -598,8 +598,8 @@ TestMatch[
 ];
 
 TestMatch[
-	`LLU`WSTPMemberFunctionSet[MyExpression][$GetMLEErrorWSTP, "GetMLEErrorWSTP"];
-	Flatten @ {FreeQ[OwnValues @ MyExpression`$GetMLEErrorWSTP, _LibraryFunction],
+	`LLU`WSTPMemberFunctionSet[MyTestExpression][$GetMLEErrorWSTP, "GetMLEErrorWSTP"];
+	Flatten @ {FreeQ[OwnValues @ MyTestExpression`$GetMLEErrorWSTP, _LibraryFunction],
 		Catch[
 			{myExpr @ $GetMLEErrorWSTP[], "NoCatch"}
 			,
@@ -613,8 +613,8 @@ TestMatch[
 ];
 
 TestMatch[
-	`LLU`WSTPMemberFunctionSet[MyExpression][$GetMLEErrorWSTP, lib, "GetMLEErrorWSTP"];
-	Flatten @ {FreeQ[OwnValues @ MyExpression`$GetMLEErrorWSTP, _LibraryFunction],
+	`LLU`WSTPMemberFunctionSet[MyTestExpression][$GetMLEErrorWSTP, lib, "GetMLEErrorWSTP"];
+	Flatten @ {FreeQ[OwnValues @ MyTestExpression`$GetMLEErrorWSTP, _LibraryFunction],
 		Catch[
 			{myExpr @ $GetMLEErrorWSTP[], "NoCatch"}
 			,
@@ -628,8 +628,8 @@ TestMatch[
 ];
 
 TestMatch[
-	`LLU`WSTPMemberFunctionSet[MyExpression][$GetMLEErrorWSTP, "Throws" -> False];
-	Flatten @ {FreeQ[OwnValues @ MyExpression`$GetMLEErrorWSTP, _LibraryFunction],
+	`LLU`WSTPMemberFunctionSet[MyTestExpression][$GetMLEErrorWSTP, "Throws" -> False];
+	Flatten @ {FreeQ[OwnValues @ MyTestExpression`$GetMLEErrorWSTP, _LibraryFunction],
 		Catch[
 			{myExpr @ $GetMLEErrorWSTP[], "NoCatch"}
 			,
@@ -643,8 +643,8 @@ TestMatch[
 ];
 
 TestMatch[
-	`LLU`WSTPMemberFunctionSet[MyExpression][$GetMLEErrorWSTP, "GetMLEErrorWSTP", "Throws" -> False];
-	Flatten @ {FreeQ[OwnValues @ MyExpression`$GetMLEErrorWSTP, _LibraryFunction],
+	`LLU`WSTPMemberFunctionSet[MyTestExpression][$GetMLEErrorWSTP, "GetMLEErrorWSTP", "Throws" -> False];
+	Flatten @ {FreeQ[OwnValues @ MyTestExpression`$GetMLEErrorWSTP, _LibraryFunction],
 		Catch[
 			{myExpr @ $GetMLEErrorWSTP[], "NoCatch"}
 			,
@@ -658,8 +658,8 @@ TestMatch[
 ];
 
 TestMatch[
-	`LLU`WSTPMemberFunctionSet[MyExpression][$GetMLEErrorWSTP, lib, "GetMLEErrorWSTP", "Throws" -> False];
-	Flatten @ {FreeQ[OwnValues @ MyExpression`$GetMLEErrorWSTP, _LibraryFunction],
+	`LLU`WSTPMemberFunctionSet[MyTestExpression][$GetMLEErrorWSTP, lib, "GetMLEErrorWSTP", "Throws" -> False];
+	Flatten @ {FreeQ[OwnValues @ MyTestExpression`$GetMLEErrorWSTP, _LibraryFunction],
 		Catch[
 			{myExpr @ $GetMLEErrorWSTP[], "NoCatch"}
 			,
@@ -673,8 +673,8 @@ TestMatch[
 ];
 
 TestMatch[
-	`LLU`LazyMemberFunctionSet[MyExpression][$GetMLEError, {}, "Void"];
-	Flatten @ {FreeQ[OwnValues @ MyExpression`$GetMLEError, _LibraryFunction],
+	`LLU`LazyMemberFunctionSet[MyTestExpression][$GetMLEError, {}, "Void"];
+	Flatten @ {FreeQ[OwnValues @ MyTestExpression`$GetMLEError, _LibraryFunction],
 		Catch[
 			{myExpr @ $GetMLEError[], "NoCatch"}
 			,
@@ -688,8 +688,8 @@ TestMatch[
 ];
 
 TestMatch[
-	`LLU`LazyMemberFunctionSet[MyExpression][$GetMLEError, "GetMLEError", {}, "Void"];
-	Flatten @ {FreeQ[OwnValues @ MyExpression`$GetMLEError, _LibraryFunction],
+	`LLU`LazyMemberFunctionSet[MyTestExpression][$GetMLEError, "GetMLEError", {}, "Void"];
+	Flatten @ {FreeQ[OwnValues @ MyTestExpression`$GetMLEError, _LibraryFunction],
 		Catch[
 			{myExpr @ $GetMLEError[], "NoCatch"}
 			,
@@ -703,8 +703,8 @@ TestMatch[
 ];
 
 TestMatch[
-	`LLU`LazyMemberFunctionSet[MyExpression][$GetMLEError, lib, "GetMLEError", {}, "Void"];
-	Flatten @ {FreeQ[OwnValues @ MyExpression`$GetMLEError, _LibraryFunction],
+	`LLU`LazyMemberFunctionSet[MyTestExpression][$GetMLEError, lib, "GetMLEError", {}, "Void"];
+	Flatten @ {FreeQ[OwnValues @ MyTestExpression`$GetMLEError, _LibraryFunction],
 		Catch[
 			{myExpr @ $GetMLEError[], "NoCatch"}
 			,
@@ -718,8 +718,8 @@ TestMatch[
 ];
 
 TestMatch[
-	`LLU`LazyMemberFunctionSet[MyExpression][$GetMLEError, {}, "Void", "Throws" -> False];
-	Flatten @ {FreeQ[OwnValues @ MyExpression`$GetMLEError, _LibraryFunction],
+	`LLU`LazyMemberFunctionSet[MyTestExpression][$GetMLEError, {}, "Void", "Throws" -> False];
+	Flatten @ {FreeQ[OwnValues @ MyTestExpression`$GetMLEError, _LibraryFunction],
 		Catch[
 			{myExpr @ $GetMLEError[], "NoCatch"}
 			,
@@ -733,8 +733,8 @@ TestMatch[
 ];
 
 TestMatch[
-	`LLU`LazyMemberFunctionSet[MyExpression][$GetMLEError, "GetMLEError", {}, "Void", "Throws" -> False];
-	Flatten @ {FreeQ[OwnValues @ MyExpression`$GetMLEError, _LibraryFunction],
+	`LLU`LazyMemberFunctionSet[MyTestExpression][$GetMLEError, "GetMLEError", {}, "Void", "Throws" -> False];
+	Flatten @ {FreeQ[OwnValues @ MyTestExpression`$GetMLEError, _LibraryFunction],
 		Catch[
 			{myExpr @ $GetMLEError[], "NoCatch"}
 			,
@@ -748,8 +748,8 @@ TestMatch[
 ];
 
 TestMatch[
-	`LLU`LazyMemberFunctionSet[MyExpression][$GetMLEError, lib, "GetMLEError", {}, "Void", "Throws" -> False];
-	Flatten @ {FreeQ[OwnValues @ MyExpression`$GetMLEError, _LibraryFunction],
+	`LLU`LazyMemberFunctionSet[MyTestExpression][$GetMLEError, lib, "GetMLEError", {}, "Void", "Throws" -> False];
+	Flatten @ {FreeQ[OwnValues @ MyTestExpression`$GetMLEError, _LibraryFunction],
 		Catch[
 			{myExpr @ $GetMLEError[], "NoCatch"}
 			,
@@ -763,8 +763,8 @@ TestMatch[
 ];
 
 TestMatch[
-	`LLU`LazyWSTPMemberFunctionSet[MyExpression][$GetMLEErrorWSTP];
-	Flatten @ {FreeQ[OwnValues @ MyExpression`$GetMLEErrorWSTP, _LibraryFunction],
+	`LLU`LazyWSTPMemberFunctionSet[MyTestExpression][$GetMLEErrorWSTP];
+	Flatten @ {FreeQ[OwnValues @ MyTestExpression`$GetMLEErrorWSTP, _LibraryFunction],
 		Catch[
 			{myExpr @ $GetMLEErrorWSTP[], "NoCatch"}
 			,
@@ -778,8 +778,8 @@ TestMatch[
 ];
 
 TestMatch[
-	`LLU`LazyWSTPMemberFunctionSet[MyExpression][$GetMLEErrorWSTP, "GetMLEErrorWSTP"];
-	Flatten @ {FreeQ[OwnValues @ MyExpression`$GetMLEErrorWSTP, _LibraryFunction],
+	`LLU`LazyWSTPMemberFunctionSet[MyTestExpression][$GetMLEErrorWSTP, "GetMLEErrorWSTP"];
+	Flatten @ {FreeQ[OwnValues @ MyTestExpression`$GetMLEErrorWSTP, _LibraryFunction],
 		Catch[
 			{myExpr @ $GetMLEErrorWSTP[], "NoCatch"}
 			,
@@ -793,8 +793,8 @@ TestMatch[
 ];
 
 TestMatch[
-	`LLU`LazyWSTPMemberFunctionSet[MyExpression][$GetMLEErrorWSTP, lib, "GetMLEErrorWSTP"];
-	Flatten @ {FreeQ[OwnValues @ MyExpression`$GetMLEErrorWSTP, _LibraryFunction],
+	`LLU`LazyWSTPMemberFunctionSet[MyTestExpression][$GetMLEErrorWSTP, lib, "GetMLEErrorWSTP"];
+	Flatten @ {FreeQ[OwnValues @ MyTestExpression`$GetMLEErrorWSTP, _LibraryFunction],
 		Catch[
 			{myExpr @ $GetMLEErrorWSTP[], "NoCatch"}
 			,
@@ -808,8 +808,8 @@ TestMatch[
 ];
 
 TestMatch[
-	`LLU`LazyWSTPMemberFunctionSet[MyExpression][$GetMLEErrorWSTP, "Throws" -> False];
-	Flatten @ {FreeQ[OwnValues @ MyExpression`$GetMLEErrorWSTP, _LibraryFunction],
+	`LLU`LazyWSTPMemberFunctionSet[MyTestExpression][$GetMLEErrorWSTP, "Throws" -> False];
+	Flatten @ {FreeQ[OwnValues @ MyTestExpression`$GetMLEErrorWSTP, _LibraryFunction],
 		Catch[
 			{myExpr @ $GetMLEErrorWSTP[], "NoCatch"}
 			,
@@ -823,8 +823,8 @@ TestMatch[
 ];
 
 TestMatch[
-	`LLU`LazyWSTPMemberFunctionSet[MyExpression][$GetMLEErrorWSTP, "GetMLEErrorWSTP", "Throws" -> False];
-	Flatten @ {FreeQ[OwnValues @ MyExpression`$GetMLEErrorWSTP, _LibraryFunction],
+	`LLU`LazyWSTPMemberFunctionSet[MyTestExpression][$GetMLEErrorWSTP, "GetMLEErrorWSTP", "Throws" -> False];
+	Flatten @ {FreeQ[OwnValues @ MyTestExpression`$GetMLEErrorWSTP, _LibraryFunction],
 		Catch[
 			{myExpr @ $GetMLEErrorWSTP[], "NoCatch"}
 			,
@@ -838,8 +838,8 @@ TestMatch[
 ];
 
 TestMatch[
-	`LLU`LazyWSTPMemberFunctionSet[MyExpression][$GetMLEErrorWSTP, lib, "GetMLEErrorWSTP", "Throws" -> False];
-	Flatten @ {FreeQ[OwnValues @ MyExpression`$GetMLEErrorWSTP, _LibraryFunction],
+	`LLU`LazyWSTPMemberFunctionSet[MyTestExpression][$GetMLEErrorWSTP, lib, "GetMLEErrorWSTP", "Throws" -> False];
+	Flatten @ {FreeQ[OwnValues @ MyTestExpression`$GetMLEErrorWSTP, _LibraryFunction],
 		Catch[
 			{myExpr @ $GetMLEErrorWSTP[], "NoCatch"}
 			,
