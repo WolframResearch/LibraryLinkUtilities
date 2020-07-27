@@ -30,7 +30,6 @@ namespace LLU {
 	 * MContainerBase stores the raw LibraryLink container and defines a common interface for all generic containers.
 	 *
 	 * @tparam Type - container type
-	 * @tparam PassingMode - passing mode (Automatic, Manual, etc.)
 	 */
 	template<MArgumentType Type>
 	class MContainerBase {
