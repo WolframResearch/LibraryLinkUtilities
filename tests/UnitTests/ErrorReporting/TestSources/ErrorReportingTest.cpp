@@ -21,20 +21,13 @@ namespace LLErrorCode = LLU::ErrorCode;
  * Sample class to be "managed" by WL.
  * The only requirement is for the class to have a public constructor.
  */
-class MyExpression {
-public:
-	explicit MyExpression(mint myID) : id {myID} {
-	}
+class MyTestExpression {};
 
-private:
-	mint id;
-};
-
-DEFINE_MANAGED_STORE_AND_SPECIALIZATION(MyExpression)
+DEFINE_MANAGED_STORE_AND_SPECIALIZATION(MyTestExpression)
 
 EXTERN_C DLLEXPORT int WolframLibrary_initialize(WolframLibraryData libData) {
 	LLU::LibraryData::setLibraryData(libData);
-	MyExpressionStore.registerType("MyExpression");
+	MyTestExpressionStore.registerType("MyTestExpression");
 	ErrorManager::registerPacletErrors({{"DataFileError", "Data in file `fname` in line `lineNumber` is invalid because `reason`."},
 										{"RepeatedTemplateError", "Cannot accept `x` nor `y` because `x` is unacceptable. So are `y` and `z`."},
 										{"NumberedSlotsError", "First slot is `1` and second is `2`."},
@@ -45,7 +38,7 @@ EXTERN_C DLLEXPORT int WolframLibrary_initialize(WolframLibraryData libData) {
 }
 
 EXTERN_C DLLEXPORT void WolframLibrary_uninitialize(WolframLibraryData libData) {
-	MyExpressionStore.unregisterType(libData);
+	MyTestExpressionStore.unregisterType(libData);
 }
 
 EXTERN_C DLLEXPORT int ReadData(WolframLibraryData /*unused*/, mint Argc, MArgument* Args, MArgument Res) {
@@ -247,9 +240,9 @@ LLU_WSTP_FUNCTION(testFunctionWSTP) {
 	LLU::ErrorManager::throwException("SimpleError");
 }
 
-LLU_LIBRARY_FUNCTION(OpenManagedMyExpression) {
+LLU_LIBRARY_FUNCTION(OpenManagedMyTestExpression) {
 	auto id = mngr.getInteger<mint>(0);
-	MyExpressionStore.createInstance(id, id);
+	MyTestExpressionStore.createInstance(id);
 }
 
 LLU_LIBRARY_FUNCTION(GetMLEError) {
