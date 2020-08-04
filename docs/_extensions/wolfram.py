@@ -11,5 +11,5 @@ def setup(app):
 
 def make_ref_link(name, rawtext, text, lineno, inliner, options={}, content=[]):
 	url = 'https://reference.wolfram.com/language/ref/%s' % text
-	node = nodes.reference(rawtext, text + ' (\U0001F43A)', refuri=url, **options)
+	node = nodes.reference(rawtext, text, refuri=url, **options)
 	return [node], []
