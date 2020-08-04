@@ -49,7 +49,7 @@ In practice, what you will receive in a library function as input arguments from
 Similarly, there is one ``MArgument`` to store the result of your library function that you want to return to the Wolfram Language. You must also remember that
 some types of arguments need special treatment, for example you must call ``UTF8String_disown`` on string arguments to avoid memory leaks.
 
-Developers who are no familiar with this part of LibraryLink are encouraged to consult the
+Developers who are not familiar with this part of LibraryLink are encouraged to consult the
 `official guide <https://reference.wolfram.com/language/LibraryLink/tutorial/LibraryStructure.html#606935091>`_ before reading on.
 
 :term:`LLU` hides all those implementation details in the :cpp:class:`MArgumentManager<LLU::MArgumentManager>` class. You still need to know what the actual

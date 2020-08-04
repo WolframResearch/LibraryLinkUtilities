@@ -52,7 +52,7 @@ Below is a quick overview of CMake variables which you can use to customize buil
 
       cmake -DMathematica_INSTALL_DIR=/home/jerome/Mathematica/12.1 ..
 
-3. Use WSTP and WolframLibrary from arbitrary locations (rare case)
+2. Use WSTP and WolframLibrary from arbitrary locations (rare case)
 
    If WSTP and WolframLibrary are not located in a Mathematica installation, two paths must be passed to CMake:
 
