@@ -40,7 +40,16 @@ Alternatively, a zip package can be downloaded from GitHub containing a snapshot
 =========================================
 
 LLU depends on WSTP and WolframLibrary so both must be installed on your system.
-Below is a quick overview of CMake variables which you can use to customize build process. Let's consider a number of possible scenarios:
+Below is a quick overview of CMake variables which you can use to customize build process. All commands below are to be evaluated from a build directory
+created inside the root folder of your local clone of Library Link Utilities. You can achieve this setup with:
+
+.. code-block:: console
+
+   cd <root directory of LLU>
+   mkdir build/
+   cd build
+
+Let's consider a number of possible scenarios:
 
 1. Use WSTP and WolframLibrary from a standard Mathematica installation:
 
@@ -71,7 +80,22 @@ Other useful cmake variables used by LLU include:
 3. Build, Install and Test
 =========================================
 
-After successful configuration you are just one :code:`make && make install` away from the end.
+After successful configuration the library must be built and installed. In order to perform this step, evaluate the following command inside the build
+directory:
+
+   .. code-block:: console
+
+      cmake --build . --target install
+
+Alternatively, you may use commands specific to the
+`generator <https://cmake.org/cmake/help/v3.14/manual/cmake-generators.7.html>`_ used. For example, with "Unix Makefiles" generator, to build and install the
+library evaluate the following command
+
+   .. code-block:: console
+
+      make && make install
+
+If you are not sure where the library got installed, inspect the CMake output from the install step or check the value of ``CMAKE_INSTALL_PREFIX`` variable.
 
 When you have the library installed you may want to run unit tests to confirm that everything went well. Currently there are 14 test modules defined:
 
@@ -97,8 +121,9 @@ a :program:`ctest` command or by running the ``test`` CMake target. It is possib
 
 	ctest -R WSTP
 
-``test`` target actually calls :code:`wolframscript` under the hood, so it must be installed in your system. This also means that the ``test`` target will not show
-individual test failures.
+The ``test`` target actually calls :code:`wolframscript` under the hood, so it must be installed in your system.
+If you specify the value for ``Mathematica_INSTALL_DIR`` in step 2.1, CMake will look for :code:`wolframscript` in that installation of Mathematica,
+otherwise it will check the system PATH. Because of how CMake defines the ``test`` target, it will not show individual test failures, only the summary.
 
 To improve unit test feedback, another CMake target called :code:`TestWithOutputOnFailure` is defined. Running this target (the exact command depends on the
 generator used):
@@ -152,7 +177,7 @@ On the C++ side the initialization looks like this:
 	#include <LLU/LLU.h>
 
 	EXTERN_C DLLEXPORT int WolframLibrary_initialize(WolframLibraryData libData) {
-	       LibraryData::setLibraryData(libData);
+	       LLU::LibraryData::setLibraryData(libData);
 	}
 
 ``WolframLibrary_initialize`` will be automatically called when you load your LibraryLink paclet into the Wolfram Language, for instance with ``Needs["MyPaclet`"]``.
@@ -160,8 +185,7 @@ On the C++ side the initialization looks like this:
 the instance that was passed to the initialization function. Later on, you can call ``LibraryData::API()`` to access this instance from anywhere in the code.
 See the documentation of :cpp:class:`LLU::LibraryData` for details.
 
-Initialization of the WL part is equally simple - imagine that we have paclet called *MyPaclet* and its shared library is named :file:`MyPacletLib.so` (the extension
-is platform-dependent):
+Initialization of the WL part is equally simple - imagine that we have paclet called *MyPaclet* and its shared library is named :file:`MyPacletLib`:
 
 .. code-block:: wolfram-language
 
@@ -170,7 +194,7 @@ is platform-dependent):
    `LLU`InitializePacletLibrary["MyPacletLib"];
 
 :file:`LibraryLinkUtilities.wl` is part of LLU sources and it should be copied to every paclet that uses LLU. As soon as you call :wlref:`Get` on it, it will inject
-LLU symbols to the current context, which should typically be ``MyPaclet`Private``.
+LLU symbols to the current context, which should typically be ``MyPaclet`Private` ``.
 
 ```LLU`InitializePacletLibrary`` takes the path to the paclet library (or just the name, if the library can be located with :wlref:`FindLibrary`) and loads it
 into the WolframKernel process. It also loads WSTP library (if not already loaded) and initializes internal structures. LLU will store the path to the paclet
@@ -206,7 +230,7 @@ Optionally, you can build another target called *paclet*"
 
 	cmake --build . --target paclet
 
-When built, *paclet* target will take the directory structure created by the *install* target and turn it into a proper **.paclet** file.
+When built, the *paclet* target will take the directory structure created by the *install* target and turn it into a proper **.paclet** file.
 It can optionally validate paclet contents, run a test file or install paclet to a directory where Mathematica can automatically find it.
 Investigate the :file:`tests/Demo/CMakeLists.txt` file for details on how to create and use this target.
 
