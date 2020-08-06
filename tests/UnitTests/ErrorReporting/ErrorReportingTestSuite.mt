@@ -189,20 +189,14 @@ TestExecute[
 	On[LibraryFunction::libload]
 ];
 
-TestMatch[
+VerificationTest[
 	Catch[
 		f1 = `LLU`Private`SafeLibraryFunctionLoad["demo", "demo_I_I", {Integer}, Integer];
 		f2 = `LLU`Private`SafeLibraryFunctionLoad["demo", "demo_I_I", {Real}, Integer]
 		,
 		_
-	]
-	,
-	Failure["FunctionLoadFailure", <|
-		"MessageTemplate" -> "Failed to load the function `FunctionName` from `LibraryName`. Details: `Details`.",
-		"MessageParameters" -> <|"FunctionName" -> "NoSuchFunction", "LibraryName" -> "demo", "Details" -> _?StringQ|>,
-		"ErrorCode" -> n_?TopLevelErrorCodeQ,
-		"Parameters" -> {}
-	|>]
+	];
+	MatchQ[f1, _LibraryFunction] && MatchQ[f2, _LibraryFunction]
 	,
 	TestID->"ErrorReportingTestSuite-20200806-P9M9F4"
 ];
