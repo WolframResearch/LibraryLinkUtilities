@@ -101,7 +101,11 @@ In case of WSTP library functions, the call gets simplified to:
 
    FunctionNameInWL = LibraryFunctionLoad["path/to/sharedLibrary.so", "FunctionNameInCppCode", LinkObject, LinkObject];
 
-It is common but not in any way required to have ``FunctionNameInWL`` be equal to ``FunctionNameInCppCode`` with a ``$`` prepended.
+It is common but not in any way required to have ``FunctionNameInWL`` be equal to ``FunctionNameInCppCode`` with a ``$`` prepended, e.g.
+
+.. code-block:: wolfram-language
+
+   $FunctionName = LibraryFunctionLoad["path/to/sharedLibrary.so", "FunctionName", LinkObject, LinkObject]
 
 LLU expands the library loading mechanism in LibraryLink by providing convenient wrappers with extra options:
 

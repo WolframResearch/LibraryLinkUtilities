@@ -78,7 +78,7 @@ Here are some examples:
     auto newImage = image.clone();    // the newImage has the same contents as image but it is not shared, it is owned by LLU
 
 
-More examples can be found in unit tests.
+More examples can be found in the unit tests.
 
 Raw Containers
 ============================
@@ -90,11 +90,11 @@ These are just raw LibraryLink containers.
 DataStore
 ----------------------------
 
-``DataStore`` is C structure (technically, a pointer to structure) defined in the WolframLibrary. It is a unidirectional linked list of non-mutable nodes.
+``DataStore`` is C structure (technically, a pointer to structure) defined in the WolframLibrary. It is a unidirectional linked list of immutable nodes.
 Each node consists of a *name* (``char*``) and *value* (``MArgument``). DataStore itself is a member of the MArgument union, which means that DataStores
 can be nested. DataStores can be passed to and from library functions. Existing nodes cannot be removed but adding new nodes is supported.
 
-The complete DataStore API can be found in :file:`SystemFiles/IncludeFiles/C/WolframIOLibraryFunctions.h` inside Mathematica installation (12.0+).
+The complete DataStore API can be found inside Mathematica (12.0+) installations at  :file:`SystemFiles/IncludeFiles/C/WolframIOLibraryFunctions.h`.
 
 On the Wolfram Language side a ``DataStore`` is represented as an expression with head ``Developer`DataStore`` that takes a list of expressions, where each
 expressions is either:
@@ -206,7 +206,7 @@ Technically, GenericDataList is an alias:
 ------------------------------------
 
 GenericImage is a light-weight wrapper over :ref:`mimage-label`. It offers the same API as LibraryLink has for MImage, except for access to the image data,
-because GenericImage is not aware of the image data type. Typically on would use GenericImage to take an Image of unknown type from LibraryLink, investigate
+because GenericImage is not aware of the image data type. Typically one would use GenericImage to take an Image of unknown type from LibraryLink, investigate
 image properties and data type and then upgrade the GenericImage to the strongly-typed one in order to perform operations on the image data.
 
 Here is an example of GenericImage in action:
@@ -264,9 +264,9 @@ Here is an example of GenericNumericArray in action:
 :cpp:type:`LLU::GenericTensor`
 ------------------------------------
 
-GenericTensor is a light-weight wrapper over :ref:`mtensor-label`. It offers the same API as LibraryLink has for MTensor, except for access
-to the underlying array data, because GenericTensor is not aware of the array data type. Typically on would use GenericTensor to take a Tensor
-of unknown type from LibraryLink, investigate its properties and data type and then upgrade the GenericTensor to the strongly-typed one in order to
+GenericTensor is a light-weight wrapper over :ref:`mtensor-label`. It offers the same API that LibraryLink has for MTensor, except for access
+to the underlying array data because GenericTensor is not aware of the array data type. Typically on would use GenericTensor to take a Tensor
+of an unknown type from LibraryLink, investigate its properties and data type, then upgrade the GenericTensor to the strongly-typed one in order to
 perform operations on the underlying data.
 
 .. doxygentypedef:: LLU::GenericTensor
@@ -277,7 +277,7 @@ perform operations on the underlying data.
 Typed Wrappers
 ============================
 
-Full-fledged wrappers with automatic memory management (see section below), type-safe data access, iterators, etc.
+Typed wrappers are full-fledged wrappers with automatic memory management (see section below), type-safe data access, iterators, etc.
 All typed wrappers are movable but non-copyable, instead they provide a :cpp:expr:`clone()` method for performing deep copies.
 
 .. _datalist-label:
@@ -285,8 +285,8 @@ All typed wrappers are movable but non-copyable, instead they provide a :cpp:exp
 :cpp:class:`LLU::DataList\<T> <template\<typename T> LLU::DataList>`
 -------------------------------------------------------------------------------
 
-DataList is a strongly-typed wrapper derived from GenericDataList in which all nodes must be of the same type, known at compile time. Template parameter ``T``
-denotes the value type of nodes. Supported node value types are shown below with corresponding types of raw DataStore nodes and with underlying C++ types:
+DataList is a strongly-typed wrapper derived from GenericDataList in which all nodes must be of the same type and be known at compile time. Template parameter
+``T`` denotes the value type of nodes. Supported node value types are shown below with corresponding types of raw DataStore nodes and with underlying C++ types:
 
 +-------------------------+--------------------------+------------------------+
 | Node Type Name          | Underlying Type          | Raw DataStoreNode Type |
@@ -312,7 +312,7 @@ denotes the value type of nodes. Supported node value types are shown below with
 | NodeType::DataStore     | LLU::GenericDataList     | DataStore              |
 +-------------------------+--------------------------+------------------------+
 
-``LLU::NodeType`` is a namespace alias for ``LLU::Argument::Typed`` defined as follows:
+``LLU::NodeType`` is a namespace alias for ``LLU::Argument::Typed`` which is defined as follows:
 
 .. doxygennamespace:: LLU::Argument::Typed
 
@@ -321,7 +321,7 @@ from its namespace. In a way it corresponds to :cpp:expr:`MArgument` type in Lib
 nodes of any types so it is quite similar to :cpp:expr:`LLU::GenericDataList` but it has the interface of DataList, meaning that it offers more advanced
 iterators and more constructors.
 
-Here is an example of DataList class in action:
+Here is an example of the DataList class in action:
 
 .. code-block:: cpp
    :linenos:
@@ -412,7 +412,7 @@ On the Wolfram Language side, we can load and use this function as follows:
 
    (* Out[] = [--Image--] *)
 
-This is naturally only a toy example, Wolfram Language has a built-in function for negating images: :wlref:`ImageNegate`.
+This is only an example, Wolfram Language already has a built-in function for negating images: :wlref:`ImageNegate`.
 
 In the example above we simply assumed that the Image we use will be of type "Byte", so we could simply write :cpp:expr:`LLU::Image<uint8_t>` in the C++ code.
 In the next example let's consider a function that takes two images from LibraryLink of arbitrary types and converts the second one to the data type of the
@@ -568,7 +568,7 @@ available as well.
    how data is laid out in memory. For 2D arrays this is often row-major order but it gets more complicated for multidimensional arrays and for Images.
 
 DataStore wrappers have different iterators, because DataStore has a list-like structure with nodes of type :cpp:expr:`DataStoreNode`. The list is
-unidirectional, so reverse iterator is not available. The default iterator over GenericDataList, the one you obtain with
+unidirectional, so reverse iterator is not available. The default iterator over GenericDataList, obtained with
 :cpp:func:`begin <LLU::MContainer\< MArgumentType::DataStore >::begin>` and :cpp:func:`end <LLU::MContainer\< MArgumentType::DataStore >::end>`, is a proxy
 iterator of type :cpp:class:`DataStoreIterator`.
 
@@ -591,7 +591,7 @@ The object obtained by dereferencing a :cpp:class:`NodeIterator<T>` is of type :
 .. doxygenclass:: LLU::DataNode
    :members:
 
-Every data node has a name (possibly empty) and a value. Sometimes you might be interested only in node values or only in names and DataList provides
+Every data node has a (possibly empty) name and a value. Sometimes you might only be interested in node values, or only in names; DataList provides
 specialized iterators for this. You may obtain them with :cpp:func:`valueBegin() <LLU::DataList::valueBegin>` and
 :cpp:func:`nameBegin() <LLU::DataList::nameBegin>`, respectively.
 
