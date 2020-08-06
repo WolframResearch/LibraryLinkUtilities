@@ -125,6 +125,88 @@ TestMatch[
 	TestID -> "ErrorReportingTestSuite-20190320-Z5Q7P0"
 ];
 
+TestMatch[
+	Catch[`LLU`SafeLibraryLoad["NoSuchLibrary"], _]
+	,
+	Failure["LibraryLoadFailure", <|
+		"MessageTemplate" -> "Failed to load library `LibraryName`. Details: `Details`.",
+		"MessageParameters" -> <|"LibraryName" -> "NoSuchLibrary", "Details" -> "None"|>,
+		"ErrorCode" -> n_?TopLevelErrorCodeQ,
+		"Parameters" -> {}
+	|>]
+	,
+	TestID->"ErrorReportingTestSuite-20200806-B1S9L6"
+];
+
+
+TestMatch[
+	Off[LibraryFunction::notfound];
+	Catch[`LLU`SafeLibraryLoad["NoSuchLibrary"], _]
+	,
+	Failure["LibraryLoadFailure", <|
+		"MessageTemplate" -> "Failed to load library `LibraryName`. Details: `Details`.",
+		"MessageParameters" -> <|"LibraryName" -> "NoSuchLibrary", "Details" -> "None"|>,
+		"ErrorCode" -> n_?TopLevelErrorCodeQ,
+		"Parameters" -> {}
+	|>]
+	,
+	TestID->"ErrorReportingTestSuite-20200806-P5A5X1"
+];
+
+TestExecute[
+	On[LibraryFunction::notfound]
+];
+
+TestMatch[
+	Catch[`LLU`Private`SafeLibraryFunctionLoad["demo", "NoSuchFunction", {}, "Void"], _]
+	,
+	Failure["FunctionLoadFailure", <|
+		"MessageTemplate" -> "Failed to load the function `FunctionName` from `LibraryName`. Details: `Details`.",
+		"MessageParameters" -> <|"FunctionName" -> "NoSuchFunction", "LibraryName" -> "demo", "Details" -> _?StringQ|>,
+		"ErrorCode" -> n_?TopLevelErrorCodeQ,
+		"Parameters" -> {}
+	|>]
+	,
+	TestID->"ErrorReportingTestSuite-20200806-Z5P4V4"
+];
+
+
+TestMatch[
+	Off[LibraryFunction::libload];
+	Catch[`LLU`Private`SafeLibraryFunctionLoad["demo", "NoSuchFunction", {}, "Void"], _]
+	,
+	Failure["FunctionLoadFailure", <|
+		"MessageTemplate" -> "Failed to load the function `FunctionName` from `LibraryName`. Details: `Details`.",
+		"MessageParameters" -> <|"FunctionName" -> "NoSuchFunction", "LibraryName" -> "demo", "Details" -> _?StringQ|>,
+		"ErrorCode" -> n_?TopLevelErrorCodeQ,
+		"Parameters" -> {}
+	|>]
+	,
+	TestID->"ErrorReportingTestSuite-20200806-T4V9V1"
+];
+
+TestExecute[
+	On[LibraryFunction::libload]
+];
+
+TestMatch[
+	Catch[
+		f1 = `LLU`Private`SafeLibraryFunctionLoad["demo", "demo_I_I", {Integer}, Integer];
+		f2 = `LLU`Private`SafeLibraryFunctionLoad["demo", "demo_I_I", {Real}, Integer]
+		,
+		_
+	]
+	,
+	Failure["FunctionLoadFailure", <|
+		"MessageTemplate" -> "Failed to load the function `FunctionName` from `LibraryName`. Details: `Details`.",
+		"MessageParameters" -> <|"FunctionName" -> "NoSuchFunction", "LibraryName" -> "demo", "Details" -> _?StringQ|>,
+		"ErrorCode" -> n_?TopLevelErrorCodeQ,
+		"Parameters" -> {}
+	|>]
+	,
+	TestID->"ErrorReportingTestSuite-20200806-P9M9F4"
+];
+
 (*********************************************************** C++ code failures **************************************************************)
 
 TestMatch[
@@ -962,7 +1044,7 @@ TestMatch[
 		"Parameters" -> {}
 	|>]
 	,
-	TestID -> "ErrorReportingTestSuite-20190320-R9L9R5"
+	TestID -> "ErrorReportingTestSuite-20200806-E5S2B6"
 ];
 
 TestExecute[
@@ -1089,7 +1171,7 @@ Test[
 
 TestExecute[
 	`LLU`$ExceptionTagFunction = First;
-]
+];
 
 TestMatch[
 	ReadDataDelayedParametersTransfer = `LLU`PacletFunctionLoad["ReadDataDelayedParametersTransfer", {String}, "Void"];
@@ -1121,7 +1203,7 @@ TestMatch[
 
 TestExecute[
 	`LLU`$ExceptionTagFunction := `LLU`$ExceptionTagString&;
-]
+];
 
 (*********************************************************** Logging tests **************************************************************)
 TestExecute[
@@ -1393,7 +1475,14 @@ TestMatch[
 			|>
 		],
 		{
-			{"Error", _Integer, loggerTestPath, "LogDemo", "Caught LLU exception ", "MArgumentIndexError", ": ", "Index 4294967295 out-of-bound when accessing LibraryLink argument"}
+			{
+				"Error",
+				_Integer,
+				loggerTestPath,
+				"LogDemo",
+				"Caught LLU exception ",
+				"MArgumentIndexError", ": ", "Index 4294967295 out-of-bound when accessing LibraryLink argument"
+			}
 		}
 	}
 	,
