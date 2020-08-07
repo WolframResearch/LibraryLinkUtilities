@@ -25,7 +25,7 @@ To be able to use the logging facility from LLU, first:
 
    #include <LLU/ErrorLog/Logger.h>
 
-and then simply use one of the 3 predefined macros (yes, we don't like macros either, but here they do the job):
+and then simply use one of the 3 predefined macros:
 
 .. doxygendefine:: LLU_DEBUG
 
@@ -75,7 +75,7 @@ Compile with ``-DLLU_LOG_DEBUG``, load in the notebook and try:
 .. image:: ../_static/img/Logger1.png
    :alt: Basic example of LLU Logger output in a notebook.
 
-Want something more discrete? That's quite easy:
+If you prefer something less verbose, try overriding the ```LLU`Logger`FormattedLog``` symbol:
 
 .. image:: ../_static/img/Logger2.png
    :alt: More concise LLU Logger output in a notebook.

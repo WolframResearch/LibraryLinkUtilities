@@ -50,10 +50,10 @@ Alternatively, you can use a macro:
 
 .. doxygendefine:: DEFINE_MANAGED_STORE_AND_SPECIALIZATION
 
-but it has some limitations:
+but the macro has some limitations:
 
-1. must be invoked from the global namespace
-2. definition of ``ClassName`` must be visible at the point of invocation
+1. it must be invoked from the global namespace
+2. the definition of ``ClassName`` must be visible at the point of invocation
 3. ``ClassName`` must be an unqualified name (which combined with 1. means that ``ClassName`` must be a class defined in the global namespace)
 
 Lastly, you need to register and unregister your type when library gets loaded or unloaded, respectively.
@@ -71,8 +71,8 @@ Lastly, you need to register and unregister your type when library gets loaded o
       AStore.unregisterType(libData);
    }
 
-One of the biggest limitations of MLEs in LibraryLink is that you cannot pass arguments for construction of managed expressions.
-This is addressed in LLU by letting the developer define a library function that LLU will call from Wolfram Language
+With MLEs in LibraryLink it is not possible to pass arguments for construction of managed expressions.
+LLU extends the MLE implementation by letting the developer define a library function that LLU will call from Wolfram Language
 when a new instance of a managed expression is created. In other words, define a wrapper for constructor of your class.
 Typically, it will look like this:
 

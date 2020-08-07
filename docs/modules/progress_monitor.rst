@@ -15,17 +15,11 @@ In practice, using time-consuming, non-abortable library functions often looks l
 .. image:: ../_static/img/LibFunNoProg.gif
    :alt: Using non-abortable library function without progress monitor.
 
-Whereas it could look like this:
-
-.. image:: ../_static/img/LibFunWithProg.gif
-   :alt: Using abortable library function with simple progress bar.
-
 :term:`LLU` provides a class :cpp:class:`LLU::ProgressMonitor` which uses a 1-element shared tensor to report progress to Wolfram Language during
 library function execution. The value in the tensor is a real number between 0.0 and 1.0 which indicates current progress of the function. It can be
 increased/decreased by a given step (using convenient increment/decrement operators) or set to arbitrary value.
 (Yes, decreasing progress may be useful sometimes too.)
-Progress value can be read in the Kernel and displayed in the Front End for example as a progress bar. See the example below for more
-details.
+Progress value can be read in the Kernel and displayed in the Front End for example as a progress bar.
 
 As with many LLU features, the ``ProgressMonitor`` implementation consists of two parts: one in the library and one in Wolfram Language code. The goal is
 to have decent functionality with minimal effort on the programmer's side.
@@ -46,6 +40,11 @@ you have to pass an option :wl:`"ProgressMonitor" -> x`, where ``x`` is a Symbol
 
 Every time your library function reports progress, the new progress value will be assigned to ``x``. If and how the progress is visualized
 in the notebook is completely up to the developer. Using a :wl:`ProgressIndicator` or :wl:`ComputeWithProgress` from :wl:`GeneralUtilities` is recommended.
+
+The final effect may look like this (the second function call is aborted with a keyboard shortcut (by default :kbd:`Alt+.` on Linux)):
+
+.. image:: ../_static/img/LibFunWithProg.gif
+   :alt: Using abortable library function with simple progress bar.
 
 Example
 =========================
