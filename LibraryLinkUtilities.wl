@@ -357,14 +357,14 @@ ArgumentParser[specialArgs_?AssociationQ] := Sequence @@ MapIndexed[MArgumentTra
 (* ------------------------------------------------------------------------- *)
 
 SafeLibraryLoad[lib_] :=
-	Quiet @ Check[
-		LibraryLoad[lib];
-		lib
-		,
-		ThrowPacletFailure[
-			"LibraryLoadFailure",
-			"MessageParameters" -> <|"LibraryName" -> lib, "Details" -> ToString @ LibraryLink`$LibraryError|>
+	Quiet[
+		If[FailureQ @ LibraryLoad[lib],
+			ThrowPacletFailure[
+				"LibraryLoadFailure",
+				"MessageParameters" -> <|"LibraryName" -> lib, "Details" -> ToString @ LibraryLink`$LibraryError|>
+			];
 		];
+		lib
 	];
 
 Options[SafeLibraryFunctionLoad] = {
@@ -379,7 +379,7 @@ SafeLibraryFunctionLoad[fname_?StringQ, fParams_, retType : Except[_?OptionQ], o
 	SafeLibraryFunctionLoad[$PacletLibrary, fname, fParams, retType, opts];
 
 SafeLibraryFunctionLoad[libName_?StringQ, fname_?StringQ, fParams_, retType : Except[_?OptionQ], opts : OptionsPattern[SafeLibraryFunctionLoad]] :=
-	Quiet @ Check[
+	Quiet[
 		(* There are 2 categories of function arguments:
 		 * - regular - supported by LibraryLink (String, Integer, NumericArray, etc.)
 		 * - special - extensions added by LLU or paclet developers that need extra parsing before they can be passed to LibraryLink,
@@ -394,19 +394,20 @@ SafeLibraryFunctionLoad[libName_?StringQ, fname_?StringQ, fParams_, retType : Ex
 				,
 				LibraryFunctionLoad[libName, fname, fParams, actualRetType]
 			];
+			If[FailureQ[libFunction],
+				If[TrueQ @ OptionValue["Optional"],
+					Missing["NotInLibrary"]
+					,
+					ThrowPacletFailure[
+						"FunctionLoadFailure",
+						"MessageParameters" -> <|"FunctionName" -> fname, "LibraryName" -> libName, "Details" -> ToString @ LibraryLink`$LibraryError|>]
+				]
+			];
 			If[specialRetQ,
 				MResultTransform[retType] @* libFunction
 				,
 				libFunction
 			]
-		]
-		,
-		If[TrueQ @ OptionValue["Optional"],
-			Missing["NotInLibrary"]
-			,
-			ThrowPacletFailure[
-				"FunctionLoadFailure",
-				"MessageParameters" -> <|"FunctionName" -> fname, "LibraryName" -> libName, "Details" -> ToString @ LibraryLink`$LibraryError|>]
 		]
 	];
 
