@@ -39,7 +39,7 @@ Alternatively, a zip package can be downloaded from GitHub containing a snapshot
 2. Configure
 =========================================
 
-LLU depends on WSTP and WolframLibrary so both must be installed on your system.
+LLU depends on `WSTP <https://reference.wolfram.com/language/tutorial/HowWSTPIsUsed.html>`_ and WolframLibrary so both must be installed on your system.
 Below is a quick overview of CMake variables which you can use to customize build process. All commands below are to be evaluated from a build directory
 created inside the root folder of your local clone of Library Link Utilities. You can achieve this setup with:
 
@@ -194,7 +194,7 @@ Initialization of the WL part is equally simple - imagine that we have paclet ca
    `LLU`InitializePacletLibrary["MyPacletLib"];
 
 :file:`LibraryLinkUtilities.wl` is part of LLU sources and it should be copied to every paclet that uses LLU. As soon as you call :wlref:`Get` on it, it will inject
-LLU symbols to the current context, which should typically be ``MyPaclet`Private` ``.
+LLU symbols to the current context, which should typically be ``MyPaclet`Private```.
 
 ```LLU`InitializePacletLibrary`` takes the path to the paclet library (or just the name, if the library can be located with :wlref:`FindLibrary`) and loads it
 into the WolframKernel process. It also loads WSTP library (if not already loaded) and initializes internal structures. LLU will store the path to the paclet
