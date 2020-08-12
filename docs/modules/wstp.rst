@@ -39,7 +39,7 @@ WSRelease* no longer needs to be called on the data received from WSTP. The LLU 
 Automated handling of common data types
 --------------------------------------------------
 
-Some sophisticated types can be sent to Mathematica directly via an WSStream class. For example nested maps:
+Some sophisticated types can be sent to Mathematica directly via a WSStream class. For example nested maps:
 
 .. code-block:: cpp
 

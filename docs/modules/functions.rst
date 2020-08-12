@@ -23,7 +23,7 @@ library functions for instance in order to validate input data and then pass it 
 Function arguments
 ======================
 
-Passing data between Wolfram Language and external C or C++ libraries is a core feature of LibraryLink. This is far from a straightforward task, because in
+Passing data between Wolfram Language and external C or C++ libraries is a core feature of LibraryLink. This is far from a straightforward task, because in the
 Wolfram Language everything is an expression and variable's type can change at run time, whereas C and C++ variables are statically typed. Apart from that,
 every C/C++ library may define custom data types it uses.
 
@@ -31,7 +31,7 @@ LibraryLink does the heavy lifting by providing translation between popular Wolf
 pass a ``String`` expression to the library function, you will receive a null-terminated ``char*`` in the C code, or passing a ``NumericArray`` will yield
 an object of type ``MNumericArray``.
 
-In practice, what you will receive in a library function as input arguments from Wolfram Language is an array of ``MArgument``, which is a union type::
+In practice, what you will receive in a library function as input arguments from the Wolfram Language is an array of ``MArgument``, which is a union type::
 
 	typedef union {
 		mbool *boolean;
@@ -127,25 +127,25 @@ LLU expands the library loading mechanism in LibraryLink by providing convenient
 		- ``fResultType`` - result type
 
 :wldef:`LazyPacletFunctionSet[resultSymbol_, lib_, f_, fParams_, fResultType_, opts___]`
-	Lazy version of ``PacletFunctionSet`` which loads the function upon the first evaluation of ``resultSymbol``.";
+	Lazy version of ``PacletFunctionSet`` which loads the function upon the first evaluation of ``resultSymbol``.
 
 :wldef:`WSTPFunctionSet[resultSymbol_, lib_, f_, opts___]`
 	A convenient wrapper around ``PacletFunctionSet`` for easier loading of WSTP functions. Argument and result type are fixed as ``LinkObject``.
 
 :wldef:`LazyWSTPFunctionSet[resultSymbol_, lib_, f_, opts___]`
-	Lazy version of ``WSTPFunctionSet`` which loads the function upon the first evaluation of ``resultSymbol``.";
+	Lazy version of ``WSTPFunctionSet`` which loads the function upon the first evaluation of ``resultSymbol``.
 
 :wldef:`MemberFunctionSet[exprHead_][memberSymbol_?Developer\`SymbolQ, lib_, f_, fParams_, retType_, opts___]`
-	Loads a library function into ``memberSymbol`` that can be invoked on instances of ``exprHead`` like so: :wl:`instance @ memberSymbol[...]`";
+	Loads a library function into ``memberSymbol`` that can be invoked on instances of ``exprHead`` like so: :wl:`instance @ memberSymbol[...]`
 
 :wldef:`LazyMemberFunctionSet[exprHead_][memberSymbol_?Developer\`SymbolQ, lib_, f_, fParams_, retType_, opts___]`
-	Lazy version of ``MemberFunctionSet`` which loads the function upon the first evaluation of ``memberSymbol``.";
+	Lazy version of ``MemberFunctionSet`` which loads the function upon the first evaluation of ``memberSymbol``.
 
 :wldef:`WSTPMemberFunctionSet[exprHead_][memberSymbol_, lib_, f_, opts___]`
-	A convenient wrapper around ``MemberFunctionSet`` for easier loading of WSTP member functions.";
+	A convenient wrapper around ``MemberFunctionSet`` for easier loading of WSTP member functions.
 
 :wldef:`LazyWSTPMemberFunctionSet[exprHead_][memberSymbol_, lib_, f_, opts___]`
-	Lazy version of ``WSTPMemberFunctionSet`` which loads the function upon the first evaluation of ``memberSymbol``.";
+	Lazy version of ``WSTPMemberFunctionSet`` which loads the function upon the first evaluation of ``memberSymbol``.
 
 There is also one lower level function which does not take a symbol as first argument but instead returns the loaded library function as the result
 
@@ -224,7 +224,7 @@ User-defined types
 =====================
 
 LibraryLink supports a number of types as function arguments and for the majority of use cases the built-in types are enough. However, imagine you are writing
-a library that operates on financial data and it processes amounts of money. For example, in Wolfram Language you work with expressions like
+a library that operates on financial data and it processes amounts of money. For example, in the Wolfram Language you work with expressions like
 ``Quantity[20.3, "USD"]`` and in C++ you have a corresponding structure:
 
 .. code-block:: cpp

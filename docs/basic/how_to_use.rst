@@ -30,7 +30,7 @@ Optionally, for running unit tests, **wolframscript** must be available on the s
 1. Get source code
 =========================================
 
-You can clone LLU from GitHub:
+You can clone LLU from here:
 
 **TODO: here goes the GitHub clone link**
 
@@ -158,7 +158,7 @@ and later
 
    target_link_libraries(MyTarget PRIVATE LLU::LLU)
 
-The last step is to copy the file with Wolfram Language code to use the top-level features of LLU, for example:
+The last step is to copy the file with the Wolfram Language code to use the top-level features of LLU, for example:
 
 .. code-block:: cmake
 
@@ -224,7 +224,7 @@ Wolfram Language :term:`paclet` and it can be built and used as follows:
 This will put a complete paclet directory structure under :file:`tests/Demo/build/Demo`. You can copy this directory into :file:`SystemFiles/Links` subdirectory
 of Mathematica installation and then load the paclet by calling ``Needs["Demo`"]`` in a notebook.
 
-Optionally, you can build another target called *paclet*"
+Optionally, you can build another target called *paclet*
 
 .. code-block:: console
 

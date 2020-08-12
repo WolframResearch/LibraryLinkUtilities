@@ -7,7 +7,7 @@ that will be automatically deleted when they are no longer referenced in the Wol
 be found in the official LibraryLink `documentation <https://reference.wolfram.com/language/LibraryLink/tutorial/InteractionWithWolframLanguage.html#353220453>`_.
 
 This allows for an object-oriented programming paradigm and it is the recommended way of referencing
-C++ objects from Wolfram Language. The two most notable alternatives are:
+C++ objects from the Wolfram Language. The two most notable alternatives are:
 
 * recreating C++ objects every time a library function is called
 
@@ -15,12 +15,12 @@ C++ objects from Wolfram Language. The two most notable alternatives are:
 
 LLU uses methods similar to the second alternative to facilitate using MLEs and decrease the amount of boilerplate
 code needed from developers. Namely, for each class that you register to be used as MLE, LLU will maintain a map, which
-associates managed C++ objects with IDs assigned to them by Wolfram Language.
+associates managed C++ objects with IDs assigned to them by the Wolfram Language.
 
 Register a class as Managed Expression
 =========================================
 
-Imagine you have a class `A` whose objects you want to manage from Wolfram Language:
+Imagine you have a class `A` whose objects you want to manage from the Wolfram Language:
 
 .. code-block:: cpp
 
@@ -63,7 +63,7 @@ Lastly, you need to register and unregister your type when library gets loaded o
 
    EXTERN_C DLLEXPORT int WolframLibrary_initialize(WolframLibraryData libData) {
       LLU::LibraryData::setLibraryData(libData);
-      AStore.registerType("A");   // the string you pass is the name of a symbol that will be used in Wolfram Language for managing
+      AStore.registerType("A");   // the string you pass is the name of a symbol that will be used in the Wolfram Language for managing
       return 0;                   // objects of your class, it is a good convention to just use the class name
    }
 
@@ -72,7 +72,7 @@ Lastly, you need to register and unregister your type when library gets loaded o
    }
 
 With MLEs in LibraryLink it is not possible to pass arguments for construction of managed expressions.
-LLU extends the MLE implementation by letting the developer define a library function that LLU will call from Wolfram Language
+LLU extends the MLE implementation by letting the developer define a library function that LLU will call from the Wolfram Language
 when a new instance of a managed expression is created. In other words, define a wrapper for constructor of your class.
 Typically, it will look like this:
 
