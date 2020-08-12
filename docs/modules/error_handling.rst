@@ -36,8 +36,6 @@ return value of ``f`` (of type ``int``) was equal to ``LIBRARY_NO_ERROR`` (with 
    ``LIBRARY_FUNCTION_ERROR`` one can use :cpp:any:`ErrorCode::FunctionError`.
 
 
-That means, that the **only information** about an error which occurred in the library that makes it to the Wolfram Language code is a **single integer**.
-
 In C++, exceptions are often the preferred way of error handling, so LLU offers a special class of exceptions that can be easily translated to error codes,
 returned to LibraryLink and then translated to descriptive :wlref:`Failure` objects in the Wolfram Language.
 

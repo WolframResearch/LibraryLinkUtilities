@@ -75,7 +75,7 @@ Compile with ``-DLLU_LOG_DEBUG``, load in the notebook and try:
 .. image:: ../_static/img/Logger1.png
    :alt: Basic example of LLU Logger output in a notebook.
 
-If you prefer something less verbose, try overriding the ```LLU`Logger`FormattedLog``` symbol:
+A less verbose option is overriding the ```LLU`Logger`FormattedLog``` symbol:
 
 .. image:: ../_static/img/Logger2.png
    :alt: More concise LLU Logger output in a notebook.
