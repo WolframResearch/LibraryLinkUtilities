@@ -22,9 +22,9 @@ Plus:
  * **Mathematica** >= 12.0, or more specifically
 
    - **WSTP** interface version 4 or later
-   - **WolframLibrary** >= 5
+   - **Wolfram Library** >= 5
 
-WSTP library and WolframLibrary header files can be found in any Mathematica installation.
+WSTP library and Wolfram Library header files can be found in any Mathematica installation.
 Optionally, for running unit tests, **wolframscript** must be available on the system.
 
 1. Get source code
@@ -39,7 +39,7 @@ Alternatively, a zip package can be downloaded from GitHub containing a snapshot
 2. Configure
 =========================================
 
-LLU depends on `WSTP <https://reference.wolfram.com/language/tutorial/HowWSTPIsUsed.html>`_ and WolframLibrary so both must be installed on your system.
+LLU depends on `WSTP <https://reference.wolfram.com/language/tutorial/HowWSTPIsUsed.html>`_ and Wolfram Library so both must be installed on your system.
 Below is a quick overview of CMake variables which you can use to customize build process. All commands below are to be evaluated from a build directory
 created inside the root folder of your local clone of LibraryLink Utilities. You can achieve this setup with:
 
@@ -51,7 +51,7 @@ created inside the root folder of your local clone of LibraryLink Utilities. You
 
 Let's consider a number of possible scenarios:
 
-1. Use WSTP and WolframLibrary from a standard Mathematica installation:
+1. Use WSTP and Wolfram Library from a standard Mathematica installation:
 
    If you have Mathematica **12.0** or later installed in a default location or on the system PATH, the build configuration step should succeed out of the box
    without setting any variables.
@@ -65,9 +65,9 @@ Let's consider a number of possible scenarios:
 
       If you are not sure where Mathematica is installed on your system, check the value of :wlref:`$InstallationDirectory` symbol.
 
-2. Use WSTP and WolframLibrary from arbitrary locations (rare case)
+2. Use WSTP and Wolfram Library from arbitrary locations (rare case)
 
-   If WSTP and WolframLibrary are not located in a Mathematica installation, two paths must be passed to CMake:
+   If WSTP and Wolfram Library are not located in a Mathematica installation, two paths must be passed to CMake:
 
    .. code-block:: console
 
