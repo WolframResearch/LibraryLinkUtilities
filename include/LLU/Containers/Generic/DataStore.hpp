@@ -29,7 +29,10 @@ namespace LLU {
 		using EnableIfUnambiguousWrapperType = std::enable_if_t<!Argument::PrimitiveQ<Argument::WrapperType<T>>, int>;
 
 	public:
+		/// GenericDataList iterator is DataStoreIterator
 		using iterator = DataStoreIterator;
+
+		/// Const iterator over GenericDataList is the same as regular iterator - DataStoreIterator, because it is a proxy iterator
 		using const_iterator = iterator;
 
 		/// Inherit constructors from MContainerBase
@@ -192,7 +195,10 @@ namespace LLU {
 			return 0;
 		}
 
-		/// @copydoc   MContainerBase::pass(MArgument&)
+		/**
+		 * @brief   Pass the internal container as result of a LibraryLink function.
+		 * @param   res - MArgument which will hold the internal container of this MContainer
+		 */
 		void passImpl(MArgument& res) const noexcept override {
 			//NOLINTNEXTLINE(cppcoreguidelines-pro-type-cstyle-cast): c-style cast used in a macro in WolframIOLibraryFunctions.h
 			MArgument_setDataStore(res, this->getContainer());

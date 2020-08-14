@@ -37,15 +37,20 @@ namespace LLU::WS {
 	template<Encoding E>
 	struct ReleaseString;
 
+	/// StringData with Encoding \p E is a unique_ptr to an array of E-encoded characters
+	/// It allows you to take ownership of raw string data from WSTP without making extra copies.
 	template<Encoding E>
 	using StringData = std::unique_ptr<const CharType<E>[], ReleaseString<E>>;
 
+	/// GetStringFuncT is a type of WSTP function that reads string from a link, e.g. WSGetByteString
 	template<typename T>
 	using GetStringFuncT = std::function<int(WSLINK, const T**, int*, int*)>;
 
+	/// PutStringFuncT is a type of WSTP function that sends string data to a link, e.g. WSPutByteString
 	template<typename T>
 	using PutStringFuncT = std::function<int(WSLINK, const T*, int)>;
 
+	/// ReleaseStringFuncT is a type of WSTP function to release string data allocated by WSTP, e.g. WSReleaseByteString
 	template<typename T>
 	using ReleaseStringFuncT = std::function<void(WSLINK, const T*, int)>;
 
@@ -66,14 +71,14 @@ namespace LLU::WS {
 			static_assert(CharacterTypesCompatible<E, T>, "Character type does not match the encoding in WS::String<E>::put");
 			// NOLINTNEXTLINE(cppcoreguidelines-pro-type-reinterpret-cast): sorry :(
 			auto* expectedStr = reinterpret_cast<const CharT*>(string);
-			checkError(m, Put(m, expectedStr, len), ErrorName::WSPutStringError, PutFName);
+			Detail::checkError(m, Put(m, expectedStr, len), ErrorName::WSPutStringError, PutFName);
 		}
 
 		static StringData<E> get(WSLINK m) {
 			const CharT* rawResult {};
 			int bytes {};
 			int characters {};
-			checkError(m, Get(m, &rawResult, &bytes, &characters), ErrorName::WSGetStringError, GetFName);
+			Detail::checkError(m, Get(m, &rawResult, &bytes, &characters), ErrorName::WSGetStringError, GetFName);
 			return {rawResult, ReleaseString<E> {m, bytes, characters}};
 		}
 
@@ -143,6 +148,7 @@ namespace LLU::WS {
 		int chars = 0;
 	};
 
+/// @cond
 #ifndef _WIN32
 
 /// Macro for declaring specializations of static members for WS::String<Encoding::E>
@@ -260,7 +266,7 @@ namespace LLU::WS {
 	const std::string String<Encoding::UTF32>::PutFName = "WSPutUTF32String";
 
 #endif
-
+/// @endcond
 } /* namespace LLU::WS */
 
 #endif /* LLU_WSTP_STRINGS_H_ */

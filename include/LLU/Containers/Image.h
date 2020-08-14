@@ -81,7 +81,8 @@ namespace LLU {
 
 	private:
 		/**
-		 * @copydoc MArray<T>::getData()
+		 * @brief   Get a raw pointer to underlying data
+		 * @return  raw pointer to values of type \p T - channel values of the Image
 		 * @see     <http://reference.wolfram.com/language/LibraryLink/ref/callback/MImage_getRawData.html>
 		 */
 		T* getData() const noexcept override {

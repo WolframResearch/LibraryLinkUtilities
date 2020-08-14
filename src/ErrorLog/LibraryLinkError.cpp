@@ -105,6 +105,10 @@ namespace LLU {
 		return ErrorCode::NoError;
 	}
 
+	/**
+	 * LibraryLink function that LLU will call to set the context for the symbol, to which exception details are assigned.
+	 * This symbol is usually in the paclet's Private` context and it cannot be hardcoded in LLU.
+	 */
 	LIBRARY_LINK_FUNCTION(setExceptionDetailsContext) {
 		auto err = ErrorCode::NoError;
 		try {

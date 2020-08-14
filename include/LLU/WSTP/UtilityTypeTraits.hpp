@@ -37,6 +37,7 @@ namespace LLU::WS {
 	inline constexpr bool supportedInWSArithmeticQ<double> = true;
 	/// @endcond
 
+	/// Convenient alias for supportedInWSArithmeticQ<T> that strips T from cv-qualifiers and reference.
 	template<typename T>
 	inline constexpr bool ScalarSupportedTypeQ = supportedInWSArithmeticQ<remove_cv_ref<T>>;
 
@@ -58,6 +59,7 @@ namespace LLU::WS {
 	inline constexpr bool supportedInWSStringQ<unsigned int> = true;
 	/// @endcond
 
+	/// Convenient alias for supportedInWSStringQ<T> that strips T from cv-qualifiers and reference.
 	template<typename T>
 	inline constexpr bool StringTypeQ = supportedInWSStringQ<remove_cv_ref<T>>;
 

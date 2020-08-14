@@ -22,12 +22,12 @@ namespace LLU::WS {
 		using Func = std::function<int(WSLINK, const T*, const int*, const char**, int)>;
 
 		static void put(WSLINK m, const T* array, const int* dims, const char** heads, int len) {
-			checkError(m, ArrayF(m, array, dims, heads, len), ErrorName::WSPutArrayError, ArrayFName);
+			Detail::checkError(m, ArrayF(m, array, dims, heads, len), ErrorName::WSPutArrayError, ArrayFName);
 		}
 
 		static void put(WSLINK m, const T* array, const int* dims, char** heads, int len) {
 			// NOLINTNEXTLINE(cppcoreguidelines-pro-type-const-cast): ArrayF treats heads as read-only, so this cast is safe
-			checkError(m, ArrayF(m, array, dims, const_cast<const char**>(heads), len), ErrorName::WSPutArrayError, ArrayFName);
+			Detail::checkError(m, ArrayF(m, array, dims, const_cast<const char**>(heads), len), ErrorName::WSPutArrayError, ArrayFName);
 		}
 
 	private:
@@ -40,7 +40,7 @@ namespace LLU::WS {
 		using Func = std::function<int(WSLINK, const T*, int)>;
 
 		static void put(WSLINK m, const T* list, int len) {
-			checkError(m, ListF(m, list, len), ErrorName::WSPutListError, ListFName);
+			Detail::checkError(m, ListF(m, list, len), ErrorName::WSPutListError, ListFName);
 		}
 
 	private:
@@ -53,7 +53,7 @@ namespace LLU::WS {
 		using Func = std::function<int(WSLINK, T)>;
 
 		static void put(WSLINK m, T scalar) {
-			checkError(m, ScalarF(m, scalar), ErrorName::WSPutScalarError, ScalarFName);
+			Detail::checkError(m, ScalarF(m, scalar), ErrorName::WSPutScalarError, ScalarFName);
 		}
 
 	private:
@@ -79,6 +79,7 @@ namespace LLU::WS {
 		return 0;
 	};
 
+/// @cond
 #ifndef _WIN32
 
 #define WS_PUT_DECLARE_SPECIALIZATIONS_OF_STATIC_MEMBERS(T) \
@@ -273,6 +274,8 @@ namespace LLU::WS {
 	const std::string PutScalar<double>::ScalarFName = "WSPutReal64";
 
 #endif
+/// @endcond
+
 } /* namespace LLU::WS */
 
 #endif /* LLU_WSTP_PUT_H_ */

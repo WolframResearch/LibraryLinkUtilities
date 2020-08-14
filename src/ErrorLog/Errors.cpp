@@ -6,9 +6,11 @@
 
 #include "LLU/ErrorLog/Errors.h"
 
+/// Helper macro for defining new errors so that for each error we have a std::string variable equal to the error name.
 #define LLU_DEFINE_ERROR_NAME(errorIdentifier) const std::string errorIdentifier = #errorIdentifier
 
 namespace LLU::ErrorName {
+	/// @cond
 	LLU_DEFINE_ERROR_NAME(VersionError);
 	LLU_DEFINE_ERROR_NAME(FunctionError);
 	LLU_DEFINE_ERROR_NAME(MemoryError);
@@ -92,4 +94,5 @@ namespace LLU::ErrorName {
 	LLU_DEFINE_ERROR_NAME(PathNotValidated);
 	LLU_DEFINE_ERROR_NAME(InvalidOpenMode);
 	LLU_DEFINE_ERROR_NAME(OpenFileFailed);
+	/// @endcond
 }	 // namespace LLU::ErrorName

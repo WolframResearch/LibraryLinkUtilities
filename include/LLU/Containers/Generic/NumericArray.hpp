@@ -86,22 +86,20 @@ namespace LLU {
 	private:
 
 		/**
-		 *   @copydoc   Make a deep copy of the raw container
-		 *   @see 		<http://reference.wolfram.com/language/LibraryLink/ref/callback/MNumericArray_clone.html>
+		 *   @brief Make a deep copy of the raw container
+		 *   @see   <http://reference.wolfram.com/language/LibraryLink/ref/callback/MNumericArray_clone.html>
 		 **/
 		Container cloneImpl() const override;
 
 		/**
-		 * @copydoc MContainerBase::shareCount()
+		 * @copydoc MContainer<MArgumentType::Image>::shareCount()
 		 * @see 	<http://reference.wolfram.com/language/LibraryLink/ref/callback/MNumericArray_shareCount.html>
 		 */
 		mint shareCountImpl() const noexcept override {
 			return LibraryData::NumericArrayAPI()->MNumericArray_shareCount(this->getContainer());
 		}
 
-		/**
-		 *   @copydoc   MContainerBase::pass
-		 **/
+		///@copydoc   MContainer<MArgumentType::DataStore>::pass
 		void passImpl(MArgument& res) const noexcept override {
 			MArgument_setMNumericArray(res, this->getContainer());
 		}

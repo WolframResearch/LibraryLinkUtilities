@@ -32,6 +32,7 @@ namespace LLU {
 	private:
 		/**
 		 *   @brief Return raw pointer to underlying data
+		 *   @return  raw pointer to values of type \p T - contents of the NumericArray
 		 **/
 		T* getData() const noexcept override {
 			return static_cast<T*>(LibraryData::NumericArrayAPI()->MNumericArray_getData(this->getInternal()));
@@ -116,7 +117,7 @@ namespace LLU {
 		 *   @param[in] owner - who manages the memory the raw MNumericArray
 		 *   @throws    ErrorName::NumericArrayTypeError - if the NumericArray template type \b T does not match the actual data type of the MNumericArray
 		 **/
-		NumericArray(MNumericArray na, Ownership mode);
+		NumericArray(MNumericArray na, Ownership owner);
 
 		/**
 		 *   @brief     Create new NumericArray from a GenericNumericArray
@@ -187,7 +188,7 @@ namespace LLU {
 	}
 
 	template<typename T>
-	NumericArray<T>::NumericArray(MNumericArray na, Ownership mode) : NumericArray(GenericBase {na, mode}) {}
+	NumericArray<T>::NumericArray(MNumericArray na, Ownership owner) : NumericArray(GenericBase {na, owner}) {}
 
 	template<typename T>
 	NumericArray<T>::NumericArray(const GenericNumericArray& other, NA::ConversionMethod method, double param)

@@ -148,14 +148,14 @@ namespace LLU {
 		Container cloneImpl() const override;
 
 		/**
-		 * @copydoc MContainerBase::shareCount()
+		 * @brief Return share count of internal container, if present and 0 otherwise
 		 * @see 	<http://reference.wolfram.com/language/LibraryLink/ref/callback/MImage_shareCount.html>
 		 */
 		mint shareCountImpl() const noexcept override {
 			return LibraryData::ImageAPI()->MImage_shareCount(this->getContainer());
 		}
 
-		/// @copydoc   MContainerBase::pass(MArgument&)
+		/// @copydoc   MContainer<MArgumentType::DataStore>::pass
 		void passImpl(MArgument& res) const noexcept override {
 			MArgument_setMImage(res, this->getContainer());
 		}

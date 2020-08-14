@@ -29,6 +29,7 @@ namespace LLU {
 	 **/
 	class ErrorManager {
 	public:
+		/// A type representing registered error in the form of 2 strings: short error name and longer error description
 		using ErrorStringData = std::pair<std::string, std::string>;
 
 	public:

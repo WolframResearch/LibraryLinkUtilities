@@ -8,7 +8,7 @@
 
 #include <mutex>
 
-namespace LLU {
+namespace LLU::Async {
 
 	/**
 	 * @brief Wrapper class around a queue, that provides the interface for work stealing.
@@ -24,15 +24,30 @@ namespace LLU {
 		mutable std::mutex theMutex;
 
 	public:
+		/**
+		 * Push new element to the beginning of the queue
+		 * @param data - new element
+		 */
 		void push(DataType data) {
 			std::lock_guard<std::mutex> lock(theMutex);
 			theQueue.push_front(std::move(data));
 		}
-		bool empty() const {
+
+		/**
+		 * Check if the queue is empty
+		 * @return true iff the queue is empty
+		 */
+		[[nodiscard]] bool empty() const {
 			std::lock_guard<std::mutex> lock(theMutex);
 			return theQueue.empty();
 		}
-		bool tryPop(DataType& res) {
+
+		/**
+		 * Try to pop a task from the beginning of the queue in a non-blocking way
+		 * @param[out] res - reference to which the new task should be assigned
+		 * @return  true iff the queue was not empty and a task was popped
+		 */
+		[[nodiscard]] bool tryPop(DataType& res) {
 			std::lock_guard<std::mutex> lock(theMutex);
 			if (theQueue.empty()) {
 				return false;
@@ -41,7 +56,13 @@ namespace LLU {
 			theQueue.pop_front();
 			return true;
 		}
-		bool trySteal(DataType& res) {
+
+		/**
+		 * Try to pop a task from the end of the queue (this is what we call "stealing") in a non-blocking way
+		 * @param[out] res - reference to which the new task should be assigned
+		 * @return  true iff the queue was not empty and a task was popped
+		 */
+		[[nodiscard]] bool trySteal(DataType& res) {
 			std::lock_guard<std::mutex> lock(theMutex);
 			if (theQueue.empty()) {
 				return false;
@@ -51,6 +72,6 @@ namespace LLU {
 			return true;
 		}
 	};
-} // namespace LLU
+} // namespace LLU::Async
 
 #endif	  // LLU_ASYNC_WORKSTEALINGQUEUE_H

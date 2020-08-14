@@ -1,6 +1,7 @@
 /**
+ * @file
  * @author	Rafal Chojna <rafalc@wolfram.com>
- * @brief   Definition and implementation of ImageView and TypedImageView.
+ * @brief   Definition and implementation of ImageView and ImageTypedView.
  */
 #ifndef LLU_CONTAINERS_VIEWS_IMAGE_HPP
 #define LLU_CONTAINERS_VIEWS_IMAGE_HPP
@@ -22,8 +23,16 @@ namespace LLU {
 	public:
 		ImageView() = default;
 
+		/**
+		 * Create a ImageView from a GenericImage
+		 * @param gIm - a GenericImage
+		 */
 		ImageView(const GenericImage& gIm) : m {gIm.getContainer()} {}	  // NOLINT: implicit conversion to a view is useful and harmless
 
+		/**
+		 * Create a ImageView from a raw MImage
+		 * @param mi - a raw MImage
+		 */
 		ImageView(MImage mi) : m {mi} {}	// NOLINT
 
 		/// @copydoc ImageInterface::colorspace()
@@ -95,19 +104,33 @@ namespace LLU {
 	public:
 		ImageTypedView() = default;
 
-		template<class Passing>
+		/**
+		 * Create a ImageTypedView from a GenericImage.
+		 * @param gIm - a GenericImage
+		 * @throws ErrorName::ImageTypeError - if the actual datatype of \p gIm is not T
+		 */
 		ImageTypedView(const GenericImage& gIm) : ImageView(gIm) {	  // NOLINT: implicit conversion to a view is useful and harmless
 			if (ImageType<T> != type()) {
 				ErrorManager::throwException(ErrorName::ImageTypeError);
 			}
 		}
 
+		/**
+		 * Create a ImageTypedView from a ImageView.
+		 * @param iv - a ImageView
+		 * @throws ErrorName::ImageTypeError - if the actual datatype of \p iv is not T
+		 */
 		ImageTypedView(ImageView iv) : ImageView(std::move(iv)) {	 // NOLINT
 			if (ImageType<T> != type()) {
 				ErrorManager::throwException(ErrorName::ImageTypeError);
 			}
 		}
 
+		/**
+		 * Create a ImageTypedView from a raw MImage.
+		 * @param mi - a raw MImage
+		 * @throws ErrorName::ImageTypeError - if the actual datatype of \p mi is not T
+		 */
 		ImageTypedView(MImage mi) : ImageView(mi) {	   // NOLINT
 			if (ImageType<T> != type()) {
 				ErrorManager::throwException(ErrorName::ImageTypeError);
@@ -124,6 +147,14 @@ namespace LLU {
 		}
 	};
 
+	/**
+	 * Take a Image-like object \p img and a function \p callable and call the function with a ImageTypedView created from \p img
+	 * @tparam  ImageT - a Image-like type (GenericImage, ImageView or MNumericAray)
+	 * @tparam  F - any callable object
+	 * @param   img - Image-like object on which an operation will be performed
+	 * @param   callable - a callable object that can be called with a ImageTypedView of any type
+	 * @return  result of calling \p callable on a ImageTypedView over \p img
+	 */
 	template<typename ImageT, typename F>
 	auto asTypedImage(ImageT&& img, F&& callable) {
 		switch (img.type()) {
@@ -136,10 +167,13 @@ namespace LLU {
 		}
 	}
 
+	/// @cond
+	// Specialization of asTypedImage for MImage
 	template<typename F>
 	auto asTypedImage(MImage img, F&& callable) {
 		return asTypedImage(ImageView {img}, std::forward<F>(callable));
 	}
+	/// @endcond
 }  // namespace LLU
 
 #endif	  // LLU_CONTAINERS_VIEWS_IMAGE_HPP

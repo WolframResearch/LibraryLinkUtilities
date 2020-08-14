@@ -7,10 +7,6 @@
 CMakeSettings.json
 .idea/
 
-# Documentation intermediate files
-docs/xml
-docs/LibraryLinkUtilities
-
 # Other
 Debug/
 lib/

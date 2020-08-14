@@ -73,20 +73,20 @@ namespace LLU {
 	private:
 
 		/**
-		 * @copydoc MContainerBase::shareCount()
+		 * @copydoc MContainer<MArgumentType::Image>::shareCount()
 		 * @see 	<http://reference.wolfram.com/language/LibraryLink/ref/callback/MTensor_shareCount.html>
 		 */
 		mint shareCountImpl() const noexcept override {
 			return LibraryData::API()->MTensor_shareCount(this->getContainer());
 		}
 
-		/// @copydoc   MContainerBase::pass(MArgument&)
+		/// @copydoc   MContainer<MArgumentType::DataStore>::pass
 		void passImpl(MArgument& res) const noexcept override {
 			MArgument_setMTensor(res, this->getContainer());
 		}
 
 		/**
-		 *   @copydoc   Make a deep copy of the raw container
+		 *   @brief   Make a deep copy of the raw container
 		 *   @see 		<http://reference.wolfram.com/language/LibraryLink/ref/callback/MTensor_clone.html>
 		 **/
 		Container cloneImpl() const override;

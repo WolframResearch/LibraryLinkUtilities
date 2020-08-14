@@ -71,6 +71,7 @@ namespace LLU {
 	template<typename Container>
 	struct has_size<Container, std::void_t<decltype(std::declval<Container>().size())>> : std::true_type {};
 
+	/// A type trait to check whether type \p Container has a member function \c size()
 	template<typename Container>
 	inline constexpr bool has_size_v = has_size<Container>::value;
 
@@ -81,6 +82,7 @@ namespace LLU {
 	struct is_iterable<Container, std::void_t<decltype(*std::begin(std::declval<Container>())), decltype(std::end(std::declval<Container>()))>>
 		: std::true_type {};
 
+	/// A type trait to check whether type \p Container is a class type with a member type alias \c value_type equal to T and with begin() and end() methods.
 	template<typename Container, typename T>
 	inline constexpr bool is_iterable_container_with_matching_type_v =
 		std::conjunction<std::is_class<Container>, has_value_type<Container>, is_iterable<Container>, has_matching_type<Container, T>>::value;
@@ -213,6 +215,11 @@ namespace LLU {
 			ClipScale = MNumericArray_Convert_Clip_Scale,
 		};
 
+		/**
+		 * Get name of the given MNumericArray type, e.g. MNumericArray_Type_Bit16 has name "UnsignedInteger16"
+		 * @param t - an MNumericArray type
+		 * @return a name (as used when creating NumericArrays in WL) of the specified MNumericArray type
+		 */
 		inline std::string typeToString(numericarray_data_t t) {
 			switch (t) {
 				case MNumericArray_Type_Undef: return "Undefined";

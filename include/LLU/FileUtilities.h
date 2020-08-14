@@ -21,14 +21,14 @@ namespace LLU {
 	/**
 	 * Create a unique owning pointer of a FILE.
 	 * @param   f - a stream pointer obtained from fopen
-	 * @return  a smart pointer owning f that will call fclose on f in destructor
-	 * @warning if f is not a result of fopen, the behavior is undefined
+	 * @return  a smart pointer owning \p f that will call \c fclose on \p f in destructor
+	 * @warning if \p f is not a result of \c fopen, the behavior is undefined
 	 */
 	FilePtr claimFile(std::FILE* f);
 
 	/**
-	 * Call a function called "validatePath" from a globally accessible WolframLibraryData. This function is not documented so what it does remains a mystery.
-	 * @param fileName - file whose path is to be "validated", whatever that means
+	 * Check if the file \p fileName under open mode \p mode is accessible in the current sandbox setting
+	 * @param fileName - file whose path is to be validated
 	 * @param mode - file open mode
 	 */
 	void validatePath(const std::string& fileName, std::ios::openmode mode);
@@ -126,7 +126,6 @@ namespace LLU {
 	}
 
 	/**
-	 * @struct
 	 * @brief   Base class for shared access policies on Windows.
 	 * @details Library users are encouraged to provide their own derived classes if needed.
 	 * Implemented also on Mac and Linux to have uniform interface but does not make much sense on those platforms.
@@ -142,7 +141,6 @@ namespace LLU {
 	};
 
 	/**
-	 * @struct
 	 * @brief   Default policy for Import/Export paclets - always allow reading, deny writing when we write.
 	 * @note    This policy allows for reading from the file when other applications are writing to it which may have unexpected consequences.
 	 */
@@ -151,7 +149,7 @@ namespace LLU {
 	};
 
 	/**
-	 * Open given file with specified mode (read, write, append, etc.).
+	 * Open given file with specified mode (read, write, append, etc.).
 	 * Checks with WolframLibraryData if the path is "valid" (we don't know what that really means).
 	 * Converts file name to UTF-16 wide string on Windows. Uses open modes from std::ios.
 	 * @param   fileName - path to the input file
@@ -163,7 +161,7 @@ namespace LLU {
 	FilePtr openFile(const std::string& fileName, std::ios::openmode mode, const SharePolicy& shp = AlwaysReadExclusiveWrite {});
 
 	/**
-	 * Open a file stream with specified mode (read, write, append, etc.).
+	 * Open a file stream with specified mode (read, write, append, etc.).
 	 * Checks with WolframLibraryData if the path is "valid" (we don't know what that really means).
 	 * Converts file name to UTF-16 wide string on Windows.
 	 * @param   fileName - path to the input file

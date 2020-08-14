@@ -20,6 +20,7 @@ namespace LLU {
 	 **/
 	class ProgressMonitor {
 	public:
+		/// A type to represent a buffer shared between LLU and the Kernel which is used to report progress
 		using SharedTensor = Tensor<double>;
 
 		/**
@@ -29,16 +30,14 @@ namespace LLU {
 		 */
 		explicit ProgressMonitor(SharedTensor sharedIndicator, double step = defaultStep);
 
-		/**
-		 * @brief Copy-constructor is disabled because ProgressMonitor shares a Tensor with WL Kernel.
-		 */
+		/// Copy-constructor is disabled because ProgressMonitor shares a Tensor with WL Kernel.
 		ProgressMonitor(const ProgressMonitor&) = delete;
+		/// Copy-assignment is disabled because ProgressMonitor shares a Tensor with WL Kernel.
 		ProgressMonitor& operator=(const ProgressMonitor&) = delete;
 
-		/**
-		 * @brief Default move-constructor.
-		 */
+		/// Default move-constructor.
 		ProgressMonitor(ProgressMonitor&&) = default;
+		/// Default move-assignment operator.
 		ProgressMonitor& operator=(ProgressMonitor&&) = default;
 
 		/**

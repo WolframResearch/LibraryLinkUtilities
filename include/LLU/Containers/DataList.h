@@ -26,19 +26,28 @@ namespace LLU {
 	namespace NodeType = Argument::Typed;
 
 	/**
-	 * @class	DataList
-	 * @brief 	Top-level wrapper over LibraryLink's DataStore.
-	 * @detail  Designed to be strongly typed i.e. to wrap only homogeneous DataStores but by passing NodeType::Any as template parameter it will
+	 * @class   DataList
+	 * @brief   Top-level wrapper over LibraryLink's DataStore.
+	 * @details Designed to be strongly typed i.e. to wrap only homogeneous DataStores but by passing NodeType::Any as template parameter it will
 	 *          work with arbitrary DataStores.
-	 * @tparam 	T - type of data stored in each node, see the \c NodeType namespace for possible node types
+	 * @tparam  T - type of data stored in each node, see the \c NodeType namespace for possible node types
 	 */
 	template<typename T>
 	class DataList : public MContainer<MArgumentType::DataStore> {
 	public:
+		/// Default DataList iterator is NodeIterator<T>
 		using iterator = NodeIterator<T>;
+
+		/// All DataList iterators are proxy iterators so in a way they are all const, therefore \c const_iterator is the same as \c iterator
 		using const_iterator = iterator;
+
+		/// To iterate over node values use a proxy iterator NodeValueIterator<T>
 		using value_iterator = NodeValueIterator<T>;
+
+		/// To iterate over node names use a proxy iterator NodeNameIterator
 		using name_iterator = NodeNameIterator;
+
+		/// Value of a node is of type T
 		using value_type = T;
 
 	public:
@@ -53,14 +62,14 @@ namespace LLU {
 		/**
 		 * @brief	Create DataList from list of values. Keys will be set to empty strings.
 		 * @param 	initList - list of values to put in the DataList
-		 * @notice  This constructor can only be used if value_type is copyable.
+		 * @note    This constructor can only be used if value_type is copyable.
 		 */
 		DataList(std::initializer_list<value_type> initList);
 
 		/**
 		 * @brief	Create DataList from list of keys and corresponding values.
 		 * @param 	initList - list of pairs key - value to put in the DataList
-		 * @notice  This constructor can only be used if value_type is copyable.
+		 * @note    This constructor can only be used if value_type is copyable.
 		 */
 		DataList(std::initializer_list<std::pair<std::string, value_type>> initList);
 
@@ -237,24 +246,30 @@ namespace LLU {
 	}  // namespace Detail
 
 	/**
-	 * @struct
 	 * @brief   Iterator adaptor for DataList that makes begin() and end() return proxy iterators for node values.
 	 *          Mostly useful in range-based for loops.
 	 * @tparam  T - a DataList node value type
 	 */
 	template<typename T>
 	struct ValueAdaptor : Detail::IteratorAdaptor<T, NodeValueIterator<T>> {
+		/**
+		 * Create ValueAdaptor to an existing DataList
+		 * @param d - DataList with nodes of type \p T
+		 */
 		explicit ValueAdaptor(DataList<T>& d) : Detail::IteratorAdaptor<T, NodeValueIterator<T>> {d} {};
 	};
 
 	/**
-	 * @struct
 	 * @brief   Iterator adaptor for DataList that makes begin() and end() return proxy iterators for node names.
 	 *          Mostly useful in range-based for loops.
 	 * @tparam  T - a DataList node value type
 	 */
 	template<typename T>
 	struct NameAdaptor : Detail::IteratorAdaptor<T, NodeNameIterator> {
+		/**
+		 * Create NameAdaptor to an existing DataList
+		 * @param d - DataList with nodes of type \p T
+		 */
 		explicit NameAdaptor(DataList<T>& d) : Detail::IteratorAdaptor<T, NodeNameIterator> {d} {};
 	};
 

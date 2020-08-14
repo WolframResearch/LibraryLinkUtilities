@@ -6,37 +6,27 @@
 
    Intro <self>
    basic/how_to_use
-..   basic/unit_tests_and_demo
+   API reference (Doxygen ↪) <http://algorithms.wolfram.com:8080/documentation/LLU-doxygen/index.html>
 ..   basic/faq
 
 .. toctree::
    :hidden:
    :caption: Modules
 
-   modules/function_arguments
+   modules/functions
    modules/containers
    modules/error_handling
    modules/wstp
    modules/managed_expressions
+   modules/logger
    modules/progress_monitor
-   modules/miscellaneous
 
 .. toctree::
    :hidden:
-   :caption: Internal Notes
+   :caption: Other Notes
 
-   internal/paclet_use
-   internal/cmake_utilities
+   other/paclet_use
+   other/cmake_utilities
 
 
 .. include:: ../README.rst
-
-
-..
-	Maybe useful:
-	Indices and tables
-	==================
-
-	* :ref:`genindex`
-	* :ref:`modindex`
-	* :ref:`search`

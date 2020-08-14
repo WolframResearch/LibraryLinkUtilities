@@ -536,10 +536,12 @@ namespace LLU {
 		bool currentExprDropped = false;
 	};
 
+/// @cond
+
 	template<WS::Encoding EIn, WS::Encoding EOut>
 	WSStream<EIn, EOut>::WSStream(WSLINK mlp) : m(mlp), loopbackStack(std::deque<LoopbackData> {{"", mlp}}) {
 		if (!mlp) {
-			WS::throwLLUException(ErrorName::WSNullWSLinkError);
+			WS::Detail::throwLLUException(ErrorName::WSNullWSLinkError);
 		}
 	}
 
@@ -566,7 +568,7 @@ namespace LLU {
 
 	template<WS::Encoding EIn, WS::Encoding EOut>
 	void WSStream<EIn, EOut>::check(int statusOk, const std::string& errorName, const std::string& debugInfo) {
-		WS::checkError(m, statusOk, errorName, debugInfo);
+		WS::Detail::checkError(m, statusOk, errorName, debugInfo);
 	}
 
 	template<WS::Encoding EIn, WS::Encoding EOut>
@@ -580,14 +582,14 @@ namespace LLU {
 	void WSStream<EIn, EOut>::testHead(const std::string& head, int argc) {
 		int argcount = testHead(head);
 		if (argc != argcount) {
-			WS::throwLLUException(ErrorName::WSTestHeadError, "Expected " + std::to_string(argc) + " arguments but got " + std::to_string(argcount));
+			WS::Detail::throwLLUException(ErrorName::WSTestHeadError, "Expected " + std::to_string(argc) + " arguments but got " + std::to_string(argcount));
 		}
 	}
 
 	template<WS::Encoding EIn, WS::Encoding EOut>
 	void WSStream<EIn, EOut>::refreshCurrentWSLINK() {
 		if (loopbackStack.empty()) {
-			WS::throwLLUException(ErrorName::WSLoopbackStackSizeError, "Stack is empty in refreshCurrentWSLINK()");
+			WS::Detail::throwLLUException(ErrorName::WSLoopbackStackSizeError, "Stack is empty in refreshCurrentWSLINK()");
 		}
 		m = std::get<WSLINK>(loopbackStack.top());
 	}
@@ -634,7 +636,7 @@ namespace LLU {
 		currentExprDropped = false;
 
 		// create a new LoopbackLink for the expression
-		auto* loopback = WS::getNewLoopback(m);
+		auto* loopback = WS::Detail::getNewLoopback(m);
 
 		// store expression head together with the link on the stack
 		loopbackStack.emplace(expr.getHead(), loopback);
@@ -649,7 +651,7 @@ namespace LLU {
 	auto WSStream<EIn, EOut>::operator<<(const WS::DropExpr& /*tag*/) -> WSStream& {
 		// check if the stack has reasonable size
 		if (loopbackStack.size() < 2) {
-			WS::throwLLUException(ErrorName::WSLoopbackStackSizeError,
+			WS::Detail::throwLLUException(ErrorName::WSLoopbackStackSizeError,
 								  "Trying to Drop expression with loopback stack size " + std::to_string(loopbackStack.size()));
 		}
 		// we are dropping the expression so just close the link and hope that WSTP will do the cleanup
@@ -674,7 +676,7 @@ namespace LLU {
 
 		// check if the stack has reasonable size
 		if (loopbackStack.size() < 2) {
-			WS::throwLLUException(ErrorName::WSLoopbackStackSizeError,
+			WS::Detail::throwLLUException(ErrorName::WSLoopbackStackSizeError,
 								  "Trying to End expression with loopback stack size " + std::to_string(loopbackStack.size()));
 		}
 
@@ -687,7 +689,7 @@ namespace LLU {
 
 		// now count the expressions accumulated in the loopback link and send them to the parent link after the head
 		auto& exprArgs = std::get<WSLINK>(currentPartialExpr);
-		auto argCnt = WS::countExpressionsInLoopbackLink(exprArgs);
+		auto argCnt = WS::Detail::countExpressionsInLoopbackLink(exprArgs);
 		*this << WS::Function(std::get<std::string>(currentPartialExpr), argCnt);
 		check(WSTransferToEndOfLoopbackLink(m, exprArgs), ErrorName::WSTransferToLoopbackError,
 			  "Could not transfer " + std::to_string(argCnt) + " expressions from Loopback Link");
@@ -871,7 +873,7 @@ namespace LLU {
 		} else if (boolean.getHead() == "False") {
 			b = false;
 		} else {
-			WS::throwLLUException(ErrorName::WSWrongSymbolForBool, R"(Expected "True" or "False", got )" + boolean.getHead());
+			WS::Detail::throwLLUException(ErrorName::WSWrongSymbolForBool, R"(Expected "True" or "False", got )" + boolean.getHead());
 		}
 		return *this;
 	}
@@ -967,6 +969,7 @@ namespace LLU {
 		}
 		return *this;
 	}
+/// @endcond
 
 } /* namespace LLU */
 

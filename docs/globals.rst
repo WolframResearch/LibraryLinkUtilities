@@ -5,8 +5,11 @@
 .. highlight:: cpp
 
 .. role:: wl(code)
-   :language: mma
+   :language: wolfram-language
    :class: highlight
+
+.. role:: wldef
+   :class: wl-symbol
 
 .. role:: raw-html(raw)
    :format: html

@@ -12,7 +12,10 @@ if(APPLE AND NOT DEFINED ENV{MACOSX_DEPLOYMENT_TARGET})
 	set(CMAKE_OSX_DEPLOYMENT_TARGET "10.12" CACHE STRING "Minimum OS X deployment version")
 endif()
 
-project(LLU VERSION 2.2.0 LANGUAGES CXX)
+project(LLU
+	VERSION 3.0.0
+	DESCRIPTION "Modern C++ wrapper over LibraryLink and WSTP"
+	LANGUAGES CXX)
 
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 
@@ -198,10 +201,13 @@ if(NOT TARGET LLU)
 			"${CMAKE_COMMAND}" -E env CTEST_OUTPUT_ON_FAILURE=1 ${CMAKE_CTEST_COMMAND} -C ${CMAKE_BUILD_TYPE}
 	)
 
-	##############################################
-	## Create target for Sphinx documentation build
+	################################################################
+	## Create target for Sphinx documentation build if requested
 
-	add_subdirectory("docs")
+	option(BUILD_DOCS "Create target for generating LLU documentation." OFF)
+	if (BUILD_DOCS)
+		add_subdirectory("docs")
+	endif()
 
 endif() #end IF NOT TARGET LLU
 

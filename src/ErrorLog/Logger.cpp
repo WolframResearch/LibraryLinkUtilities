@@ -21,6 +21,10 @@ namespace LLU {
 		}
 	}
 
+	/**
+	 * LibraryLink function that LLU will call to set the context for the symbol, to which log details are assigned.
+	 * This symbol is usually in the paclet's Private` context and it cannot be hardcoded in LLU.
+	 */
 	LIBRARY_LINK_FUNCTION(setLoggerContext) {
 		auto err = ErrorCode::NoError;
 		try {

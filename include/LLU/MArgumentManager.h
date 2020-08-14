@@ -50,6 +50,7 @@ namespace LLU {
 	 **/
 	class MArgumentManager {
 	public:
+		/// Size type for indexing the list of arguments that MArgumentManager manages.
 		using size_type = std::size_t;
 
 	public:
@@ -284,6 +285,7 @@ namespace LLU {
 		};
 
 	public:
+		/// RequestedType<T> is usually just T and is used as return type of MArgumentManager::get(size_type)
 		template<typename T>
 		using RequestedType = typename RequestedTypeImpl<T>::type;
 
@@ -670,6 +672,13 @@ namespace LLU {
 		 */
 		template<typename T>
 		struct Getter {
+			/**
+			 * A function that tells LLU how to interpret an object of a user-defined type as an argument of a library function
+			 * This function is used internally by MArgumentManager::get.
+			 * @param mngr - an instance of MArgumentManager
+			 * @param firstIndex - index of the first library function parameter to be used
+			 * @return an object of type \p T constructed from library function arguments stored in \p mngr
+			 */
 			static T get(const MArgumentManager& mngr, size_type firstIndex) {
 				if constexpr (isCustomMArgumentType<T>) {
 					return DefaultCustomGetter<T, typename CustomType<T>::CorrespondingTypes>::get(mngr, firstIndex);
@@ -686,6 +695,8 @@ namespace LLU {
 		 */
 		template<typename T>
 		struct Setter {
+			/// A function that tells LLU how to send an object of a user-defined type as a result of a library function
+			/// This function is used internally by MArgumentManager::set.
 			static void set(MArgumentManager& /*mngr*/, const T& /*value*/) {
 				static_assert(dependent_false_v<T>, "Unrecognized MArgument type passed as template parameter to MArgumentManager::set.");
 			}
@@ -817,6 +828,7 @@ namespace LLU {
 		mutable std::vector<LLStringPtr> stringArgs;
 	};
 
+/// @cond
 	template<typename T>
 	T MArgumentManager::getInteger(size_type index) const {
 		return static_cast<T>(MArgument_getInteger(getArgs(index)));
@@ -1056,7 +1068,7 @@ namespace LLU {
 		auto baseClassPtr = store.getInstancePointer(exprID);
 		return std::dynamic_pointer_cast<DynamicType>(baseClassPtr);
 	}
-
+/// @endcond
 } /* namespace LLU */
 
 #endif // LLU_MARGUMENTMANAGER_H
