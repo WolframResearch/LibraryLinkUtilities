@@ -61,6 +61,10 @@ Let's consider a number of possible scenarios:
 
       cmake -DMathematica_INSTALL_DIR=/home/jerome/Mathematica/12.1 ..
 
+   .. tip::
+
+      If you are not sure where Mathematica is installed on your system, check the value of :wlref:`$InstallationDirectory` symbol.
+
 2. Use WSTP and WolframLibrary from arbitrary locations (rare case)
 
    If WSTP and WolframLibrary are not located in a Mathematica installation, two paths must be passed to CMake:
