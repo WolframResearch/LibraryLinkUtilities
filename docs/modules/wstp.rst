@@ -4,7 +4,7 @@ WSTP support
 
 LibraryLink allows a LinkObject to be passed as an argument which may then exchange data between your library and the Kernel using
 Wolfram Symbolic Transfer Protocol (**WSTP**, also known as **MathLink**).
-The original WSTP API is in old C style with error codes, macros, manual memory management, etc.
+The original WSTP is a C style API with error codes, macros, manual memory management, etc.
 LLU provides a wrapper for the LinkObject called ``WSStream``.
 
 ``WSStream`` is actually a class template in the namespace ``LLU`` parameterized by the default encodings to be used for strings, but for the sake of clarity,
@@ -17,7 +17,7 @@ Main features
 Convenient syntax
 -----------------------
 
-In LLU WSTP is interpreted as an i/o stream, so operators << and >> are utilized to make the syntax cleaner and more concise.
+In LLU WSTP is interpreted as an I/O stream, so operators << and >> are utilized to make the syntax cleaner and more concise.
 This frees developers from the responsibility to choose the proper WSTP API function for the data they intend to read or write.
 
 Error checking
@@ -49,8 +49,6 @@ Some sophisticated types can be sent to Mathematica directly via a WSStream clas
 Just write `ms << myNestedMap` and a nested Association will be returned. It works in the other direction too.
 Obviously, for the above to work, the key and value types in the map must be supported by WSStream (i.e. there must exist an overload of
 ``WSStream::operator<<`` that takes an argument of given type).
-
-If you have any particular type that you think should be directly supported by WSStream, please let me know.
 
 User-defined classes
 ----------------------------------------

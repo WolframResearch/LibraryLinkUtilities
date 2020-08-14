@@ -78,7 +78,7 @@ Such function, when compiled into a shared library, say :file:`myLib.so`, could 
 
 .. code-block:: wolfram-language
 
-   AddInts = LibraryFunctionLoad["myLib.so", "AddTwoIntegers", {Integer, Integer}, Integer];
+   AddInts = LibraryFunctionLoad["myLib", "AddTwoIntegers", {Integer, Integer}, Integer];
 
    AddInts[17, 25]
    (* = 42 *)
@@ -90,7 +90,7 @@ In the example above we saw how library functions can be loaded from shared obje
 
 .. code-block:: wolfram-language
 
-   FunctionNameInWL = LibraryFunctionLoad["path/to/sharedLibrary.so", "FunctionNameInCppCode", {ArgumentType1, ArgumentType2, ...}, ResultType];
+   FunctionNameInWL = LibraryFunctionLoad["path/to/sharedLibrary", "FunctionNameInCppCode", {ArgumentType1, ArgumentType2, ...}, ResultType];
 
 The syntax is described in details in
 `LibraryLink » Functions, Arguments, and Results <https://reference.wolfram.com/language/LibraryLink/tutorial/LibraryStructure.html#606935091>`_.
@@ -99,13 +99,13 @@ In case of WSTP library functions, the call gets simplified to:
 
 .. code-block:: wolfram-language
 
-   FunctionNameInWL = LibraryFunctionLoad["path/to/sharedLibrary.so", "FunctionNameInCppCode", LinkObject, LinkObject];
+   FunctionNameInWL = LibraryFunctionLoad["path/to/sharedLibrary", "FunctionNameInCppCode", LinkObject, LinkObject];
 
 It is common but not in any way required to have ``FunctionNameInWL`` be equal to ``FunctionNameInCppCode`` with a ``$`` prepended, e.g.
 
 .. code-block:: wolfram-language
 
-   $FunctionName = LibraryFunctionLoad["path/to/sharedLibrary.so", "FunctionName", LinkObject, LinkObject]
+   $FunctionName = LibraryFunctionLoad["path/to/sharedLibrary", "FunctionName", LinkObject, LinkObject]
 
 LLU expands the library loading mechanism in LibraryLink by providing convenient wrappers with extra options:
 

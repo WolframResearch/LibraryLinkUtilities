@@ -38,9 +38,10 @@ When passing a container from Wolfram Language to a C++ library, one of 4 passin
 * Manual
 * Shared
 
-With the exception of DataStore, which cannot be Shared.
+With the exception of DataStore, which cannot be Constant or Shared.
 
-All of the above is described in the `LibraryLink documentation <https://reference.wolfram.com/language/LibraryLink/tutorial/InteractionWithWolframLanguage.html#97446640>`_.
+More about memory management can be found in the
+`LibraryLink documentation <https://reference.wolfram.com/language/LibraryLink/tutorial/InteractionWithWolframLanguage.html#97446640>`_.
 
 In plain LibraryLink, the choice you make is reflected only in the Wolfram Language code where :wlref:`LibraryFunctionLoad` specifies
 the list of parameters for the library function. There is no way to query the WolframLibraryData or MArgument about
@@ -91,7 +92,7 @@ DataStore
 ----------------------------
 
 ``DataStore`` is C structure (technically, a pointer to structure) defined in the WolframLibrary. It is a unidirectional linked list of immutable nodes.
-Each node consists of a *name* (``char*``) and *value* (``MArgument``). DataStore itself is a member of the MArgument union, which means that DataStores
+Each node consists of a *name* (``char*``) and *value* (``MArgument``). DataStore itself can be stored in the MArgument union, which means that DataStores
 can be nested. DataStores can be passed to and from library functions. Existing nodes cannot be removed but adding new nodes is supported.
 
 The complete DataStore API can be found inside Mathematica (12.0+) installations at  :file:`SystemFiles/IncludeFiles/C/WolframIOLibraryFunctions.h`.
@@ -144,7 +145,7 @@ Documented in `LibraryLink » MSparseArray <https://reference.wolfram.com/langua
 Generic Wrappers
 ======================================
 
-These are datatype-unaware wrappers that offer automatic memory management and basic interface like access to metadata (dimensions, rank, etc).
+These are datatype-unaware wrappers that offer automatic memory management and basic interface-like access to metadata (dimensions, rank, etc).
 They do not provide direct access to the underlying data except via a :cpp:expr:`void*` (or via a generic node type :cpp:any:`LLU::NodeType::Any` in case of a
 GenericDataList).
 
@@ -305,7 +306,7 @@ DataList is a strongly-typed wrapper derived from GenericDataList in which all n
 +-------------------------+--------------------------+------------------------+
 | NodeType::NumericArray  | LLU::GenericNumericArray | MNumericArray          |
 +-------------------------+--------------------------+------------------------+
-| NodeType::Image         | LLU::Image               | MImage                 |
+| NodeType::Image         | LLU::GenericImage        | MImage                 |
 +-------------------------+--------------------------+------------------------+
 | NodeType::UTF8String    | std::string_view         | char*                  |
 +-------------------------+--------------------------+------------------------+
@@ -564,8 +565,9 @@ All container classes in LLU are equipped with iterators. For Image, Tensor and 
 available as well.
 
 .. warning::
-   Bear in mind that iterators for Image, Tensor and NumericArray are not aware of the container dimensions in a sense that the iteration happens in the order
-   how data is laid out in memory. For 2D arrays this is often row-major order but it gets more complicated for multidimensional arrays and for Images.
+   Bear in mind that iterators for Image, Tensor and NumericArray are not aware of the container dimensions in the sense that the iteration happens in the
+   order in which data is laid out in memory. For 2D arrays this is often row-major order but it gets more complicated for multidimensional arrays
+   and for Images.
 
 DataStore wrappers have different iterators, because DataStore has a list-like structure with nodes of type :cpp:expr:`DataStoreNode`. The list is
 unidirectional, so reverse iterator is not available. The default iterator over GenericDataList, obtained with
@@ -627,7 +629,7 @@ It is possible to write the same code using the default iterator (:cpp:class:`No
    DataList<LLU::NodeType::UTF8String> keys;
    DataList<LLU::NodeType::Complex> values;
 
-   // Iterator over the dataList once accessing both node name and value
+   // Iterate over the dataList once, accessing both node name and value
    for (auto [name, value] : dataList) {
       keys.push_back(name);
       values.push_back(value);

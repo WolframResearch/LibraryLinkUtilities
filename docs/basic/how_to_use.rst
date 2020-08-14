@@ -41,7 +41,7 @@ Alternatively, a zip package can be downloaded from GitHub containing a snapshot
 
 LLU depends on `WSTP <https://reference.wolfram.com/language/tutorial/HowWSTPIsUsed.html>`_ and WolframLibrary so both must be installed on your system.
 Below is a quick overview of CMake variables which you can use to customize build process. All commands below are to be evaluated from a build directory
-created inside the root folder of your local clone of Library Link Utilities. You can achieve this setup with:
+created inside the root folder of your local clone of LibraryLink Utilities. You can achieve this setup with:
 
 .. code-block:: console
 

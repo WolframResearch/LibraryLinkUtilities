@@ -25,7 +25,7 @@ namespace LLU {
 
 		/**
 		 * Get GenericDataNode wrapper over the next node
-		 * @return next node wrapped in GeneridDataNode
+		 * @return next node wrapped in GenericDataNode
 		 */
 		GenericDataNode next() const noexcept;
 
@@ -47,7 +47,7 @@ namespace LLU {
 		 */
 		[[nodiscard]] Argument::TypedArgument value() const;
 
-		// defined in Containers/GenericDataStore.hpp because the definition of GenericDataList must be available
+		// defined in Containers/Generic/DataStore.hpp because the definition of GenericDataList must be available
 		/**
 		 * Get node value if it is of type T, otherwise throw an exception.
 		 * @tparam T - any type from LLU::NodeType namespace
@@ -82,7 +82,7 @@ namespace LLU {
 		/// DataStoreIterator is a proxy iterator and so the reference type is the same as value_type
 		using reference = value_type;
 
-		/// As all proxy iterators, DataStoreIterator is only and input iterator
+		/// As with all proxy iterators, DataStoreIterator is only an input iterator
 		using iterator_category = std::input_iterator_tag;
 
 		/// DataStoreIterator is a proxy iterator and so the pointer type is the same as value_type

@@ -1,7 +1,7 @@
 /**
  * @file
  * @author	Rafal Chojna <rafalc@wolfram.com>
- * @brief   Definition and implementation of NumericArrayView and TypedNumericArrayView.
+ * @brief   Definition and implementation of NumericArrayView and NumericArrayTypedView.
  */
 #ifndef LLU_CONTAINERS_VIEWS_NUMERICARRAY_HPP
 #define LLU_CONTAINERS_VIEWS_NUMERICARRAY_HPP
