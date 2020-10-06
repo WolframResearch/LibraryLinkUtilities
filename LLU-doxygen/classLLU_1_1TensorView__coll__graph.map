@@ -1,4 +1,0 @@
-<map id="LLU::TensorView" name="LLU::TensorView">
-<area shape="rect" id="node1" title="Simple, light&#45;weight, non&#45;owning wrappper over MTensor." alt="" coords="17,80,139,107"/>
-<area shape="rect" id="node2" href="$structLLU_1_1TensorInterface.html" title="Abstract class that defines a basic set of operations on a tensor." alt="" coords="5,5,151,32"/>
-</map>

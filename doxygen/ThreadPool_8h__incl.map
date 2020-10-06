@@ -1,0 +1,16 @@
+<map id="ThreadPool.h" name="ThreadPool.h">
+<area shape="rect" id="node1" title="Definitions of two thread pool classes: basic with a single queue for all threads and more advanced o..." alt="" coords="353,5,452,32"/>
+<area shape="rect" id="node2" title=" " alt="" coords="5,80,67,107"/>
+<area shape="rect" id="node3" title=" " alt="" coords="91,80,149,107"/>
+<area shape="rect" id="node4" title=" " alt="" coords="147,155,226,181"/>
+<area shape="rect" id="node5" title=" " alt="" coords="250,155,305,181"/>
+<area shape="rect" id="node6" title=" " alt="" coords="329,155,388,181"/>
+<area shape="rect" id="node7" title=" " alt="" coords="953,80,1036,107"/>
+<area shape="rect" id="node8" title=" " alt="" coords="412,155,471,181"/>
+<area shape="rect" id="node9" href="$Queue_8h.html" title="Definition and implementation of a thread&#45;safe queue, taken from A. Williams &quot;C++ Concurrency in Acti..." alt="" coords="547,80,687,107"/>
+<area shape="rect" id="node13" href="$Async_2Utilities_8h.html" title="Set of small utility classes and functions used in the Async part of LLU." alt="" coords="275,80,421,107"/>
+<area shape="rect" id="node14" href="$WorkStealingQueue_8h.html" title="Definition and implementation of a thread&#45;safe queue, taken from A. Williams &quot;C++ Concurrency in Acti..." alt="" coords="711,80,929,107"/>
+<area shape="rect" id="node10" title=" " alt="" coords="589,155,715,181"/>
+<area shape="rect" id="node11" title=" " alt="" coords="495,155,564,181"/>
+<area shape="rect" id="node12" title=" " alt="" coords="765,155,824,181"/>
+</map>

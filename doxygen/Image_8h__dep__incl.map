@@ -1,0 +1,9 @@
+<map id="Image.h" name="Image.h">
+<area shape="rect" id="node1" title="Templated C++ wrapper for MImage." alt="" coords="121,5,190,32"/>
+<area shape="rect" id="node2" href="$LLU_8h.html" title="Header file which includes all major parts of LLU." alt="" coords="5,155,63,181"/>
+<area shape="rect" id="node3" href="$MArgumentManager_8h.html" title="Definition of MArgumentManager class." alt="" coords="81,80,230,107"/>
+<area shape="rect" id="node7" href="$Image_8cpp.html" title="Template specializations of Image::type attribute for all data types that we want to support." alt="" coords="254,80,337,107"/>
+<area shape="rect" id="node4" href="$LibraryLinkError_8cpp.html" title="Contains definitions of ErrorManager members and implementation of interface function sendRegisteredE..." alt="" coords="87,155,224,181"/>
+<area shape="rect" id="node5" href="$Logger_8cpp.html" title="Implementation of functions defined in Logger.h." alt="" coords="249,155,334,181"/>
+<area shape="rect" id="node6" href="$MArgumentManager_8cpp.html" title="Definitions of non&#45;template member functions and static data members from MArgumentManager class." alt="" coords="358,155,521,181"/>
+</map>
