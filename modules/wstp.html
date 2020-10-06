@@ -1,0 +1,1329 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>WSTP support &mdash; LibraryLink Utilities 3.0.0 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/favicon-32.png"/>
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+  
+
+  
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="LibraryLink Utilities 3.0.0 documentation" href="../index.html"/>
+        <link rel="next" title="Managed expressions" href="managed_expressions.html"/>
+        <link rel="prev" title="Error handling" href="error_handling.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> LibraryLink Utilities
+          
+
+          
+            
+            <img src="../_static/LLULogo.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                3.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <p class="caption"><span class="caption-text">Basic Info</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Intro</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basic/how_to_use.html">How to use</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://actual-doxygen-docs-link-goes.here">API reference (Doxygen ↪)</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Modules</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="functions.html">Library functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="containers.html">Containers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="error_handling.html">Error handling</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">WSTP support</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#main-features">Main features</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#convenient-syntax">Convenient syntax</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#error-checking">Error checking</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#memory-cleanup">Memory cleanup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#automated-handling-of-common-data-types">Automated handling of common data types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#user-defined-classes">User-defined classes</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#example">Example</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#expressions-of-unknown-length">Expressions of unknown length</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#api-reference">API reference</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="managed_expressions.html">Managed expressions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="logger.html">Logging and debug printing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="progress_monitor.html">Progress monitor</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Other Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../other/paclet_use.html">Use in paclets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../other/cmake_utilities.html">CMake utility functions</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">LibraryLink Utilities</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>WSTP support</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="wstp-support">
+<h1>WSTP support<a class="headerlink" href="#wstp-support" title="Permalink to this headline"> 🔗</a></h1>
+<p>LibraryLink allows a LinkObject to be passed as an argument which may then exchange data between your library and the Kernel using
+Wolfram Symbolic Transfer Protocol (<strong>WSTP</strong>, also known as <strong>MathLink</strong>).
+The original WSTP is a C style API with error codes, macros, manual memory management, etc.
+LLU provides a wrapper for the LinkObject called <code class="docutils literal notranslate"><span class="pre">WSStream</span></code>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">WSStream</span></code> is actually a class template in the namespace <code class="docutils literal notranslate"><span class="pre">LLU</span></code> parameterized by the default encodings to be used for strings, but for the sake of clarity,
+both the template parameters and the namespace are skipped in the remainder of this text.</p>
+<div class="section" id="main-features">
+<h2>Main features<a class="headerlink" href="#main-features" title="Permalink to this headline"> 🔗</a></h2>
+<div class="section" id="convenient-syntax">
+<h3>Convenient syntax<a class="headerlink" href="#convenient-syntax" title="Permalink to this headline"> 🔗</a></h3>
+<p>In LLU WSTP is interpreted as an I/O stream, so operators &lt;&lt; and &gt;&gt; are utilized to make the syntax cleaner and more concise.
+This frees developers from the responsibility to choose the proper WSTP API function for the data they intend to read or write.</p>
+</div>
+<div class="section" id="error-checking">
+<h3>Error checking<a class="headerlink" href="#error-checking" title="Permalink to this headline"> 🔗</a></h3>
+<p>Each call to WSTP API has its return status checked. An exception is thrown on failures which carries some debug info to help locate the problem.
+Sample debug info looks like this:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">Error</span> <span class="n">code</span> <span class="n">reported</span> <span class="n">by</span> <span class="nl">WSTP</span><span class="p">:</span> <span class="mi">48</span>
+<span class="s">&quot;Unable to convert from given character encoding to WSTP encoding&quot;</span>
+<span class="n">Additional</span> <span class="n">debug</span> <span class="nl">info</span><span class="p">:</span> <span class="n">WSPutUTF8String</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="memory-cleanup">
+<h3>Memory cleanup<a class="headerlink" href="#memory-cleanup" title="Permalink to this headline"> 🔗</a></h3>
+<p>WSRelease* no longer needs to be called on the data received from WSTP. The LLU framework does it for you.</p>
+</div>
+<div class="section" id="automated-handling-of-common-data-types">
+<h3>Automated handling of common data types<a class="headerlink" href="#automated-handling-of-common-data-types" title="Permalink to this headline"> 🔗</a></h3>
+<p>Some sophisticated types can be sent to Wolfram Language directly via a WSStream class. For example nested maps:</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">std</span><span class="o">::</span><span class="n">map</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">map</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;&gt;&gt;</span> <span class="n">myNestedMap</span>
+</pre></div>
+</div>
+<p>Just write <cite>ms &lt;&lt; myNestedMap</cite> and a nested Association will be returned. It works in the other direction too.
+Obviously, for the above to work, the key and value types in the map must be supported by WSStream (i.e. there must exist an overload of
+<code class="docutils literal notranslate"><span class="pre">WSStream::operator&lt;&lt;</span></code> that takes an argument of given type).</p>
+</div>
+<div class="section" id="user-defined-classes">
+<h3>User-defined classes<a class="headerlink" href="#user-defined-classes" title="Permalink to this headline"> 🔗</a></h3>
+<p>Suppose you have a structure</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span> <span class="n">Color</span> <span class="p">{</span>
+    <span class="kt">double</span> <span class="n">red</span><span class="p">;</span>
+    <span class="kt">double</span> <span class="n">green</span><span class="p">;</span>
+    <span class="kt">double</span> <span class="n">blue</span><span class="p">;</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<p>It is enough to overload <cite>operator&lt;&lt;</cite> like this:</p>
+<div class="highlight-cpp notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3</pre></div></td><td class="code"><div class="highlight"><pre><span></span>    <span class="n">WSStream</span><span class="o">&amp;</span> <span class="k">operator</span><span class="o">&lt;&lt;</span><span class="p">(</span><span class="n">WSStream</span><span class="o">&amp;</span> <span class="n">ms</span><span class="p">,</span> <span class="k">const</span> <span class="n">Color</span><span class="o">&amp;</span> <span class="n">c</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="n">ms</span> <span class="o">&lt;&lt;</span> <span class="n">WS</span><span class="o">::</span><span class="n">Function</span><span class="p">(</span><span class="s">&quot;RGBColor&quot;</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="n">c</span><span class="p">.</span><span class="n">red</span> <span class="o">&lt;&lt;</span> <span class="n">c</span><span class="p">.</span><span class="n">green</span> <span class="o">&lt;&lt;</span> <span class="n">c</span><span class="p">.</span><span class="n">blue</span><span class="p">;</span>
+    <span class="p">}</span>
+</pre></div>
+</td></tr></table></div>
+<p>Objects of class <cite>Color</cite> can now be sent directly via WSStream.</p>
+</div>
+</div>
+<div class="section" id="example">
+<h2>Example<a class="headerlink" href="#example" title="Permalink to this headline"> 🔗</a></h2>
+<p>Let’s compare the same piece of code written in plain LibraryLink with one written with LLU and WSStream. Here is the plain LibraryLink code:</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span>    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">WSNewPacket</span><span class="p">(</span><span class="n">mlp</span><span class="p">))</span> <span class="p">{</span>
+        <span class="n">wsErr</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+        <span class="k">goto</span> <span class="n">cleanup</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">WSPutFunction</span><span class="p">(</span><span class="n">mlp</span><span class="p">,</span> <span class="s">&quot;List&quot;</span><span class="p">,</span> <span class="n">nframes</span><span class="p">))</span> <span class="p">{</span>
+        <span class="n">wsErr</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+        <span class="k">goto</span> <span class="n">cleanup</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">for</span> <span class="p">(</span><span class="k">auto</span><span class="o">&amp;</span> <span class="nl">f</span> <span class="p">:</span> <span class="n">extractedFrames</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">WSPutFunction</span><span class="p">(</span><span class="n">mlp</span><span class="p">,</span> <span class="s">&quot;List&quot;</span><span class="p">,</span> <span class="mi">7</span><span class="p">))</span> <span class="p">{</span>
+            <span class="n">wsErr</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+            <span class="k">goto</span> <span class="n">cleanup</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">WSPutFunction</span><span class="p">(</span><span class="n">mlp</span><span class="p">,</span> <span class="s">&quot;Rule&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span> <span class="p">{</span>
+            <span class="n">wsErr</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+            <span class="k">goto</span> <span class="n">cleanup</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">WSPutString</span><span class="p">(</span><span class="n">mlp</span><span class="p">,</span> <span class="s">&quot;ImageSize&quot;</span><span class="p">))</span> <span class="p">{</span>
+            <span class="n">wsErr</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+            <span class="k">goto</span> <span class="n">cleanup</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">WSPutFunction</span><span class="p">(</span><span class="n">mlp</span><span class="p">,</span> <span class="s">&quot;List&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span> <span class="p">{</span>
+            <span class="n">wsErr</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+            <span class="k">goto</span> <span class="n">cleanup</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">WSPutInteger64</span><span class="p">(</span><span class="n">mlp</span><span class="p">,</span> <span class="n">f</span><span class="o">-&gt;</span><span class="n">width</span><span class="p">))</span> <span class="p">{</span>
+            <span class="n">wsErr</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+            <span class="k">goto</span> <span class="n">cleanup</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">WSPutInteger64</span><span class="p">(</span><span class="n">mlp</span><span class="p">,</span> <span class="n">f</span><span class="o">-&gt;</span><span class="n">height</span><span class="p">))</span> <span class="p">{</span>
+            <span class="n">wsErr</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+            <span class="k">goto</span> <span class="n">cleanup</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="c1">// ...</span>
+        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">WSPutFunction</span><span class="p">(</span><span class="n">mlp</span><span class="p">,</span> <span class="s">&quot;Rule&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span> <span class="p">{</span>
+            <span class="n">wsErr</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+            <span class="k">goto</span> <span class="n">cleanup</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">WSPutString</span><span class="p">(</span><span class="n">mlp</span><span class="p">,</span> <span class="s">&quot;ImageOffset&quot;</span><span class="p">))</span> <span class="p">{</span>
+            <span class="n">wsErr</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+            <span class="k">goto</span> <span class="n">cleanup</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">WSPutFunction</span><span class="p">(</span><span class="n">mlp</span><span class="p">,</span> <span class="s">&quot;List&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span> <span class="p">{</span>
+            <span class="n">wsErr</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+            <span class="k">goto</span> <span class="n">cleanup</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">WSPutInteger64</span><span class="p">(</span><span class="n">mlp</span><span class="p">,</span> <span class="n">f</span><span class="o">-&gt;</span><span class="n">left</span><span class="p">))</span> <span class="p">{</span>
+            <span class="n">wsErr</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+            <span class="k">goto</span> <span class="n">cleanup</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">WSPutInteger64</span><span class="p">(</span><span class="n">mlp</span><span class="p">,</span> <span class="n">f</span><span class="o">-&gt;</span><span class="n">top</span><span class="p">))</span> <span class="p">{</span>
+            <span class="n">wsErr</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+            <span class="k">goto</span> <span class="n">cleanup</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="c1">// ...</span>
+        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">WSPutFunction</span><span class="p">(</span><span class="n">mlp</span><span class="p">,</span> <span class="s">&quot;Rule&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span> <span class="p">{</span>
+            <span class="n">wsErr</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+            <span class="k">goto</span> <span class="n">cleanup</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">WSPutString</span><span class="p">(</span><span class="n">mlp</span><span class="p">,</span> <span class="s">&quot;UserInputFlag&quot;</span><span class="p">))</span> <span class="p">{</span>
+            <span class="n">wsErr</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+            <span class="k">goto</span> <span class="n">cleanup</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">WSPutSymbol</span><span class="p">(</span><span class="n">mlp</span><span class="p">,</span> <span class="n">f</span><span class="o">-&gt;</span><span class="n">userInputFlag</span> <span class="o">==</span> <span class="nb">true</span> <span class="o">?</span> <span class="s">&quot;True&quot;</span> <span class="o">:</span> <span class="s">&quot;False&quot;</span><span class="p">))</span> <span class="p">{</span>
+            <span class="n">wsErr</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+            <span class="k">goto</span> <span class="n">cleanup</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">WSEndPacket</span><span class="p">(</span><span class="n">mlp</span><span class="p">))</span> <span class="p">{</span>
+            <span class="cm">/* unable to send the end-of-packet sequence to mlp */</span>
+    <span class="p">}</span>
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">WSFlush</span><span class="p">(</span><span class="n">mlp</span><span class="p">)){</span>
+            <span class="cm">/* unable to flush any buffered output data in mlp */</span>
+    <span class="p">}</span>
+</pre></div>
+</div>
+<p>and now the same code using WSStream:</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span>    <span class="n">WSStream</span> <span class="nf">ms</span><span class="p">(</span><span class="n">mlp</span><span class="p">);</span>
+
+    <span class="n">ms</span> <span class="o">&lt;&lt;</span> <span class="n">WS</span><span class="o">::</span><span class="n">NewPacket</span><span class="p">;</span>
+    <span class="n">ms</span> <span class="o">&lt;&lt;</span> <span class="n">WS</span><span class="o">::</span><span class="n">List</span><span class="p">(</span><span class="n">nframes</span><span class="p">);</span>
+
+    <span class="k">for</span> <span class="p">(</span><span class="k">auto</span><span class="o">&amp;</span> <span class="nl">f</span> <span class="p">:</span> <span class="n">extractedFrames</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">ms</span> <span class="o">&lt;&lt;</span> <span class="n">WS</span><span class="o">::</span><span class="n">List</span><span class="p">(</span><span class="mi">7</span><span class="p">)</span>
+            <span class="o">&lt;&lt;</span> <span class="n">WS</span><span class="o">::</span><span class="n">Rule</span>
+                <span class="o">&lt;&lt;</span> <span class="s">&quot;ImageSize&quot;</span>
+                <span class="o">&lt;&lt;</span> <span class="n">WS</span><span class="o">::</span><span class="n">List</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="n">f</span><span class="o">-&gt;</span><span class="n">width</span> <span class="o">&lt;&lt;</span> <span class="n">f</span><span class="o">-&gt;</span><span class="n">height</span>
+            <span class="c1">// ...</span>
+            <span class="o">&lt;&lt;</span> <span class="n">WS</span><span class="o">::</span><span class="n">Rule</span>
+                <span class="o">&lt;&lt;</span> <span class="s">&quot;ImageOffset&quot;</span>
+                <span class="o">&lt;&lt;</span> <span class="n">WS</span><span class="o">::</span><span class="n">List</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="n">f</span><span class="o">-&gt;</span><span class="n">left</span> <span class="o">&lt;&lt;</span> <span class="n">f</span><span class="o">-&gt;</span><span class="n">top</span>
+            <span class="c1">// ...</span>
+            <span class="o">&lt;&lt;</span> <span class="n">WS</span><span class="o">::</span><span class="n">Rule</span>
+                <span class="o">&lt;&lt;</span> <span class="s">&quot;UserInputFlag&quot;</span>
+                <span class="o">&lt;&lt;</span> <span class="n">f</span><span class="o">-&gt;</span><span class="n">userInputFlag</span>
+    <span class="p">}</span>
+
+    <span class="n">ms</span> <span class="o">&lt;&lt;</span> <span class="n">WS</span><span class="o">::</span><span class="n">EndPacket</span> <span class="o">&lt;&lt;</span> <span class="n">WS</span><span class="o">::</span><span class="n">Flush</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="section" id="expressions-of-unknown-length">
+<h3>Expressions of unknown length<a class="headerlink" href="#expressions-of-unknown-length" title="Permalink to this headline"> 🔗</a></h3>
+<p>Whenever you send an expression via WSTP you have to first specify the head and the number of arguments. This is not very flexible
+for example when an unknown number of contents are being read from a file.</p>
+<p>As a workaround, one can create a temporary loopback link, accumulate all the arguments there (without the head),
+count the arguments, and then send everything to the “main” link as usual.</p>
+<p>The same strategy has been incorporated into WSStream so that developers do not have to implement it. Now you can send a <cite>List</cite> like this:</p>
+<div class="highlight-cpp notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7</pre></div></td><td class="code"><div class="highlight"><pre><span></span>    <span class="n">WSStream</span> <span class="nf">ms</span><span class="p">(</span><span class="n">mlp</span><span class="p">);</span>
+
+    <span class="n">ms</span> <span class="o">&lt;&lt;</span> <span class="n">WS</span><span class="o">::</span><span class="n">BeginExpr</span><span class="p">(</span><span class="s">&quot;List&quot;</span><span class="p">);</span>
+    <span class="k">while</span> <span class="p">(</span><span class="n">dataFromFile</span> <span class="o">!=</span> <span class="n">EOF</span><span class="p">)</span> <span class="p">{</span>
+            <span class="c1">// process data from file and send to WSStream</span>
+    <span class="p">}</span>
+    <span class="n">ms</span> <span class="o">&lt;&lt;</span> <span class="n">WS</span><span class="o">::</span><span class="n">EndExpr</span><span class="p">();</span>
+</pre></div>
+</td></tr></table></div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This feature should only be used if necessary since it requires a temporary link and makes extra copies
+of data. Simple benchmarks showed a ~2x slowdown compared to the usual <cite>WSPutFunction</cite>.</p>
+</div>
+</div>
+</div>
+<div class="section" id="api-reference">
+<h2>API reference<a class="headerlink" href="#api-reference" title="Permalink to this headline"> 🔗</a></h2>
+<dl class="cpp class">
+<dt id="_CPPv4N3LLU8WSStreamE">
+<span id="_CPPv3N3LLU8WSStreamE"></span><span id="_CPPv2N3LLU8WSStreamE"></span><span id="LLU::WSStream"></span><span class="target" id="classLLU_1_1WSStream"></span><em class="property">class </em><code class="sig-prename descclassname">LLU<code class="sig-prename descclassname">::</code></code><code class="sig-name descname">WSStream</code><a class="headerlink" href="#_CPPv4N3LLU8WSStreamE" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Wrapper class over WSTP with a stream-like interface. </p>
+<p><a class="reference internal" href="#classLLU_1_1WSStream"><span class="std std-ref">WSStream</span></a> resides in LLU namespace, whereas other WSTP-related classes can be found in LLU::WS namespace.</p>
+<p><dl class="simple">
+<dt><strong>Template Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">EncodingIn</span></code>: - default encoding to use when reading strings from WSTP </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">EncodingOut</span></code>: - default encoding to use when writing strings to WSTP </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Types</p>
+<dl class="cpp type">
+<dt id="_CPPv4N3LLU8WSStream11StreamTokenE">
+<span id="_CPPv3N3LLU8WSStream11StreamTokenE"></span><span id="_CPPv2N3LLU8WSStream11StreamTokenE"></span><span class="target" id="classLLU_1_1WSStream_1abb8692c5e01fa013d46d0ca9443ec1d8"></span><em class="property">using </em><code class="sig-name descname">StreamToken</code> = <a class="reference internal" href="#_CPPv4N3LLU8WSStreamE" title="LLU::WSStream">WSStream</a> &amp;(*)<span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4N3LLU8WSStreamE" title="LLU::WSStream">WSStream</a>&amp;<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3LLU8WSStream11StreamTokenE" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Type of elements that can be sent via WSTP with no arguments, for example WS::Flush. </p>
+</dd></dl>
+
+<dl class="cpp type">
+<dt id="_CPPv4N3LLU8WSStream16BidirStreamTokenE">
+<span id="_CPPv3N3LLU8WSStream16BidirStreamTokenE"></span><span id="_CPPv2N3LLU8WSStream16BidirStreamTokenE"></span><span class="target" id="classLLU_1_1WSStream_1a8e14f1d8a1f9cb24752b494f1bc62748"></span><em class="property">using </em><code class="sig-name descname">BidirStreamToken</code> = <a class="reference internal" href="#_CPPv4N3LLU8WSStreamE" title="LLU::WSStream">WSStream</a> &amp;(*)<span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4N3LLU8WSStreamE" title="LLU::WSStream">WSStream</a>&amp;, WS::Direction<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3LLU8WSStream16BidirStreamTokenE" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Type of elements that can be either sent or received via WSTP with no arguments, for example WS::Rule. </p>
+</dd></dl>
+
+<dl class="cpp type">
+<dt id="_CPPv4N3LLU8WSStream12LoopbackDataE">
+<span id="_CPPv3N3LLU8WSStream12LoopbackDataE"></span><span id="_CPPv2N3LLU8WSStream12LoopbackDataE"></span><span class="target" id="classLLU_1_1WSStream_1ac4975740056ad3692b0020ec7a339bb1"></span><em class="property">using </em><code class="sig-name descname">LoopbackData</code> = std::pair&lt;std::string, WSLINK&gt;<a class="headerlink" href="#_CPPv4N3LLU8WSStream12LoopbackDataE" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Type of data stored on the stack to facilitate sending expressions of a priori unknown length. </p>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Functions</p>
+<dl class="cpp function">
+<dt id="_CPPv4N3LLU8WSStream8WSStreamE6WSLINK">
+<span id="_CPPv3N3LLU8WSStream8WSStreamE6WSLINK"></span><span id="_CPPv2N3LLU8WSStream8WSStreamE6WSLINK"></span><span id="LLU::WSStream::WSStream__WSLINK"></span><span class="target" id="classLLU_1_1WSStream_1a8de77629ddc5b076aa95b7ceba2014ca"></span><code class="sig-name descname">WSStream</code><span class="sig-paren">(</span>WSLINK <em>mlp</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3LLU8WSStream8WSStreamE6WSLINK" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Constructs new <a class="reference internal" href="#classLLU_1_1WSStream"><span class="std std-ref">WSStream</span></a>. </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">mlp</span></code>: - low-level object of type WSLINK received from LibraryLink </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4N3LLU8WSStream8WSStreamE6WSLINKi">
+<span id="_CPPv3N3LLU8WSStream8WSStreamE6WSLINKi"></span><span id="_CPPv2N3LLU8WSStream8WSStreamE6WSLINKi"></span><span id="LLU::WSStream::WSStream__WSLINK.i"></span><span class="target" id="classLLU_1_1WSStream_1aeea9643f9ea497120a2dad0188430617"></span><code class="sig-name descname">WSStream</code><span class="sig-paren">(</span>WSLINK <em>mlp</em>, int <em>argc</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3LLU8WSStream8WSStreamE6WSLINKi" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Constructs new <a class="reference internal" href="#classLLU_1_1WSStream"><span class="std std-ref">WSStream</span></a> and checks whether there is a list of <code class="docutils literal notranslate"><span class="pre">argc</span></code> arguments on the LinkObject waiting to be read. </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">mlp</span></code>: - low-level object of type WSLINK received from LibraryLink </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">argc</span></code>: - expected number of arguments </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4N3LLU8WSStream8WSStreamE6WSLINKRKNSt6stringEi">
+<span id="_CPPv3N3LLU8WSStream8WSStreamE6WSLINKRKNSt6stringEi"></span><span id="_CPPv2N3LLU8WSStream8WSStreamE6WSLINKRKNSt6stringEi"></span><span id="LLU::WSStream::WSStream__WSLINK.ssCR.i"></span><span class="target" id="classLLU_1_1WSStream_1ad164ee578223bf4fa4383a6b88305d50"></span><code class="sig-name descname">WSStream</code><span class="sig-paren">(</span>WSLINK <em>mlp</em>, <em class="property">const</em> std::string &amp;<em>head</em>, int <em>argc</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3LLU8WSStream8WSStreamE6WSLINKRKNSt6stringEi" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Constructs new <a class="reference internal" href="#classLLU_1_1WSStream"><span class="std std-ref">WSStream</span></a> and checks whether there is a function with head <code class="docutils literal notranslate"><span class="pre">head</span></code> and <code class="docutils literal notranslate"><span class="pre">argc</span></code> arguments on the LinkObject waiting to be read. </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">mlp</span></code>: - low-level object of type WSLINK received from LibraryLink\ </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">head</span></code>: - expected head of expression on the Link </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">argc</span></code>: - expected number of arguments </p></li>
+</ul>
+</dd>
+<dt><strong>Exceptions</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">see</span></code>: WSStream::testHead(const std::string&amp;, int);</p></li>
+</ul>
+</dd>
+<dt><strong>Note</strong></dt><dd><p>arguments passed to the library function will almost always be wrapped in a List, so if not sure pass “List” as <code class="docutils literal notranslate"><span class="pre">head</span></code> </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4N3LLU8WSStreamD0Ev">
+<span id="_CPPv3N3LLU8WSStreamD0Ev"></span><span id="_CPPv2N3LLU8WSStreamD0Ev"></span><span id="LLU::WSStream::~WSStream"></span><span class="target" id="classLLU_1_1WSStream_1a70a1c960df724dfef2b8f54e4bf58312"></span><code class="sig-name descname">~WSStream</code><span class="sig-paren">(</span><span class="sig-paren">)</span> = default<a class="headerlink" href="#_CPPv4N3LLU8WSStreamD0Ev" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Default destructor. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4N3LLU8WSStream3getEv">
+<span id="_CPPv3N3LLU8WSStream3getEv"></span><span id="_CPPv2N3LLU8WSStream3getEv"></span><span id="LLU::WSStream::get"></span><span class="target" id="classLLU_1_1WSStream_1a958a3266f53b795ea10fdac2439397d1"></span>WSLINK &amp;<code class="sig-name descname">get</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">noexcept</em><a class="headerlink" href="#_CPPv4N3LLU8WSStream3getEv" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Returns a reference to underlying low-level WSTP handle. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4I00EN3LLU8WSStream9sendRangeEv8Iterator8Iterator">
+<span id="_CPPv3I00EN3LLU8WSStream9sendRangeE8Iterator8Iterator"></span><span id="_CPPv2I00EN3LLU8WSStream9sendRangeE8Iterator8Iterator"></span>template&lt;typename <code class="sig-name descname">Iterator</code>, typename = enable_if_input_iterator&lt;<a class="reference internal" href="#_CPPv4I00EN3LLU8WSStream9sendRangeEv8Iterator8Iterator" title="LLU::WSStream::sendRange::Iterator">Iterator</a>&gt;&gt;<br /><span class="target" id="classLLU_1_1WSStream_1a86009dbb9489fd45ca3aa7b8ed6867f1"></span>void <code class="sig-name descname">sendRange</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4I00EN3LLU8WSStream9sendRangeEv8Iterator8Iterator" title="LLU::WSStream::sendRange::Iterator">Iterator</a> <em>begin</em>, <a class="reference internal" href="#_CPPv4I00EN3LLU8WSStream9sendRangeEv8Iterator8Iterator" title="LLU::WSStream::sendRange::Iterator">Iterator</a> <em>end</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I00EN3LLU8WSStream9sendRangeEv8Iterator8Iterator" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Sends any range as List. </p>
+<p><dl class="simple">
+<dt><strong>Template Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">InputIterator</span></code>: - type that is an iterator </p></li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">begin</span></code>: - iterator to the first element of the range </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">end</span></code>: - iterator past the last element of the range </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4I00EN3LLU8WSStream9sendRangeEv8Iterator8IteratorRKNSt6stringE">
+<span id="_CPPv3I00EN3LLU8WSStream9sendRangeE8Iterator8IteratorRKNSt6stringE"></span><span id="_CPPv2I00EN3LLU8WSStream9sendRangeE8Iterator8IteratorRKNSt6stringE"></span>template&lt;typename <code class="sig-name descname">Iterator</code>, typename = enable_if_input_iterator&lt;<a class="reference internal" href="#_CPPv4I00EN3LLU8WSStream9sendRangeEv8Iterator8IteratorRKNSt6stringE" title="LLU::WSStream::sendRange::Iterator">Iterator</a>&gt;&gt;<br /><span class="target" id="classLLU_1_1WSStream_1a763541486260884aad5bcfb2a299ce0f"></span>void <code class="sig-name descname">sendRange</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4I00EN3LLU8WSStream9sendRangeEv8Iterator8IteratorRKNSt6stringE" title="LLU::WSStream::sendRange::Iterator">Iterator</a> <em>begin</em>, <a class="reference internal" href="#_CPPv4I00EN3LLU8WSStream9sendRangeEv8Iterator8IteratorRKNSt6stringE" title="LLU::WSStream::sendRange::Iterator">Iterator</a> <em>end</em>, <em class="property">const</em> std::string &amp;<em>head</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I00EN3LLU8WSStream9sendRangeEv8Iterator8IteratorRKNSt6stringE" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Sends a range of elements as top-level expression with arbitrary head. </p>
+<p><dl class="simple">
+<dt><strong>Template Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">InputIterator</span></code>: - type that is an iterator </p></li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">begin</span></code>: - iterator to the first element of the range </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">end</span></code>: - iterator past the last element of the range </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">head</span></code>: - head of the top-level expression </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4N3LLU8WSStreamlsE11StreamToken">
+<span id="_CPPv3N3LLU8WSStreamlsE11StreamToken"></span><span id="_CPPv2N3LLU8WSStreamlsE11StreamToken"></span><span id="LLU::WSStream::lshift-operator__StreamToken"></span><span class="target" id="classLLU_1_1WSStream_1a27b004b17245659768b6567c5168718a"></span><a class="reference internal" href="#_CPPv4N3LLU8WSStreamE" title="LLU::WSStream">WSStream</a> &amp;<code class="sig-name descname">operator&lt;&lt;</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4N3LLU8WSStream11StreamTokenE" title="LLU::WSStream::StreamToken">StreamToken</a> <em>f</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3LLU8WSStreamlsE11StreamToken" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Sends a stream token via WSTP. </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">f</span></code>: - a stream token, i.e. an element that can be sent via WSTP with no arguments, for example WS::Flush </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4N3LLU8WSStreamlsE16BidirStreamToken">
+<span id="_CPPv3N3LLU8WSStreamlsE16BidirStreamToken"></span><span id="_CPPv2N3LLU8WSStreamlsE16BidirStreamToken"></span><span id="LLU::WSStream::lshift-operator__BidirStreamToken"></span><span class="target" id="classLLU_1_1WSStream_1af6265200a5674872693519cf715e84d0"></span><a class="reference internal" href="#_CPPv4N3LLU8WSStreamE" title="LLU::WSStream">WSStream</a> &amp;<code class="sig-name descname">operator&lt;&lt;</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4N3LLU8WSStream16BidirStreamTokenE" title="LLU::WSStream::BidirStreamToken">BidirStreamToken</a> <em>f</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3LLU8WSStreamlsE16BidirStreamToken" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Sends a bidirectional stream token via WSTP. </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">f</span></code>: - an element that can be either sent or received via WSTP with no arguments, for example WS::Rule </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4N3LLU8WSStreamlsERKN2WS6SymbolE">
+<span id="_CPPv3N3LLU8WSStreamlsERKN2WS6SymbolE"></span><span id="_CPPv2N3LLU8WSStreamlsERKN2WS6SymbolE"></span><span id="LLU::WSStream::lshift-operator__WS::SymbolCR"></span><span class="target" id="classLLU_1_1WSStream_1a9a941c7cbb46287cfc4db4feeba0fd6a"></span><a class="reference internal" href="#_CPPv4N3LLU8WSStreamE" title="LLU::WSStream">WSStream</a> &amp;<code class="sig-name descname">operator&lt;&lt;</code><span class="sig-paren">(</span><em class="property">const</em> WS::Symbol &amp;<em>s</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3LLU8WSStreamlsERKN2WS6SymbolE" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Sends a top-level symbol via WSTP. </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">s</span></code>: - a symbol </p></li>
+</ul>
+</dd>
+<dt><strong>Exceptions</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">ErrorName::WSPutSymbolError</span></code>: </p></li>
+</ul>
+</dd>
+<dt><strong>See</strong></dt><dd><p>WS::Symbol </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4N3LLU8WSStreamlsERKN2WS8FunctionE">
+<span id="_CPPv3N3LLU8WSStreamlsERKN2WS8FunctionE"></span><span id="_CPPv2N3LLU8WSStreamlsERKN2WS8FunctionE"></span><span id="LLU::WSStream::lshift-operator__WS::FunctionCR"></span><span class="target" id="classLLU_1_1WSStream_1ab26fd162901f54811768e02ad63e9b7e"></span><a class="reference internal" href="#_CPPv4N3LLU8WSStreamE" title="LLU::WSStream">WSStream</a> &amp;<code class="sig-name descname">operator&lt;&lt;</code><span class="sig-paren">(</span><em class="property">const</em> WS::Function &amp;<em>f</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3LLU8WSStreamlsERKN2WS8FunctionE" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Sends a top-level function via WSTP, function arguments should be sent immediately after. </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">f</span></code>: - a function </p></li>
+</ul>
+</dd>
+<dt><strong>Exceptions</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">ErrorName::WSPutFunctionError</span></code>: </p></li>
+</ul>
+</dd>
+<dt><strong>See</strong></dt><dd><p>WS::Function </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4N3LLU8WSStreamlsERKN2WS7MissingE">
+<span id="_CPPv3N3LLU8WSStreamlsERKN2WS7MissingE"></span><span id="_CPPv2N3LLU8WSStreamlsERKN2WS7MissingE"></span><span id="LLU::WSStream::lshift-operator__WS::MissingCR"></span><span class="target" id="classLLU_1_1WSStream_1abce8836073b9f7d527ae9ab1c0f77799"></span><a class="reference internal" href="#_CPPv4N3LLU8WSStreamE" title="LLU::WSStream">WSStream</a> &amp;<code class="sig-name descname">operator&lt;&lt;</code><span class="sig-paren">(</span><em class="property">const</em> WS::Missing &amp;<em>f</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3LLU8WSStreamlsERKN2WS7MissingE" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Sends a top-level expression of the form Missing[“reason”]. </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">f</span></code>: - WS::Missing object with a reason </p></li>
+</ul>
+</dd>
+<dt><strong>Exceptions</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">ErrorName::WSPutFunctionError</span></code>: </p></li>
+</ul>
+</dd>
+<dt><strong>See</strong></dt><dd><p>WS::Missing </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4N3LLU8WSStreamlsERKN2WS9BeginExprE">
+<span id="_CPPv3N3LLU8WSStreamlsERKN2WS9BeginExprE"></span><span id="_CPPv2N3LLU8WSStreamlsERKN2WS9BeginExprE"></span><span id="LLU::WSStream::lshift-operator__WS::BeginExprCR"></span><span class="target" id="classLLU_1_1WSStream_1a3c4213e70d0f3181542c94b0d5918609"></span><a class="reference internal" href="#_CPPv4N3LLU8WSStreamE" title="LLU::WSStream">WSStream</a> &amp;<code class="sig-name descname">operator&lt;&lt;</code><span class="sig-paren">(</span><em class="property">const</em> WS::BeginExpr &amp;<em>expr</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3LLU8WSStreamlsERKN2WS9BeginExprE" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Starts sending a new expression where the number of arguments is not known a priori. </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">expr</span></code>: - object of class BeginExpr that stores expression head as string </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4N3LLU8WSStreamlsERKN2WS8DropExprE">
+<span id="_CPPv3N3LLU8WSStreamlsERKN2WS8DropExprE"></span><span id="_CPPv2N3LLU8WSStreamlsERKN2WS8DropExprE"></span><span id="LLU::WSStream::lshift-operator__WS::DropExprCR"></span><span class="target" id="classLLU_1_1WSStream_1aecbef59b42797985b4eb500340be86b1"></span><a class="reference internal" href="#_CPPv4N3LLU8WSStreamE" title="LLU::WSStream">WSStream</a> &amp;<code class="sig-name descname">operator&lt;&lt;</code><span class="sig-paren">(</span><em class="property">const</em> WS::DropExpr &amp;<em>expr</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3LLU8WSStreamlsERKN2WS8DropExprE" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Drops current expression that was initiated with BeginExpr. </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">expr</span></code>: - object of class DropExpr </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4N3LLU8WSStreamlsERKN2WS7EndExprE">
+<span id="_CPPv3N3LLU8WSStreamlsERKN2WS7EndExprE"></span><span id="_CPPv2N3LLU8WSStreamlsERKN2WS7EndExprE"></span><span id="LLU::WSStream::lshift-operator__WS::EndExprCR"></span><span class="target" id="classLLU_1_1WSStream_1a692afa41df117c9be560c5ec735cbfb1"></span><a class="reference internal" href="#_CPPv4N3LLU8WSStreamE" title="LLU::WSStream">WSStream</a> &amp;<code class="sig-name descname">operator&lt;&lt;</code><span class="sig-paren">(</span><em class="property">const</em> WS::EndExpr &amp;<em>expr</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3LLU8WSStreamlsERKN2WS7EndExprE" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Ends current expression that was initiated with BeginExpr, prepends the head from BeginExpr and sends everything to the “parent” link. </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">expr</span></code>: - object of class EndExpr </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4N3LLU8WSStreamlsEb">
+<span id="_CPPv3N3LLU8WSStreamlsEb"></span><span id="_CPPv2N3LLU8WSStreamlsEb"></span><span id="LLU::WSStream::lshift-operator__b"></span><span class="target" id="classLLU_1_1WSStream_1a19f0e48124a546abe083dda9118b1e81"></span><a class="reference internal" href="#_CPPv4N3LLU8WSStreamE" title="LLU::WSStream">WSStream</a> &amp;<code class="sig-name descname">operator&lt;&lt;</code><span class="sig-paren">(</span>bool <em>b</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3LLU8WSStreamlsEb" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Sends a boolean value via WSTP, it is translated to True or False in Mathematica. </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">b</span></code>: - a boolean value</p></li>
+</ul>
+</dd>
+<dt><strong>Exceptions</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">ErrorName::WSPutSymbolError</span></code>: </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4N3LLU8WSStreamlsE4mint">
+<span id="_CPPv3N3LLU8WSStreamlsE4mint"></span><span id="_CPPv2N3LLU8WSStreamlsE4mint"></span><span id="LLU::WSStream::lshift-operator__mint"></span><span class="target" id="classLLU_1_1WSStream_1a2ebea4bc431ecd97e82ca99d50cf99e8"></span><a class="reference internal" href="#_CPPv4N3LLU8WSStreamE" title="LLU::WSStream">WSStream</a> &amp;<code class="sig-name descname">operator&lt;&lt;</code><span class="sig-paren">(</span>mint <em>i</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3LLU8WSStreamlsE4mint" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Sends a mint value. </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">i</span></code>: - a mint value</p></li>
+</ul>
+</dd>
+<dt><strong>Exceptions</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">ErrorName::WSPutScalarError</span></code>: </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4I0EN3LLU8WSStreamlsER8WSStreamRKN2WS9ArrayDataI1TEE">
+<span id="_CPPv3I0EN3LLU8WSStreamlsERKN2WS9ArrayDataI1TEE"></span><span id="_CPPv2I0EN3LLU8WSStreamlsERKN2WS9ArrayDataI1TEE"></span>template&lt;typename <code class="sig-name descname">T</code>&gt;<br /><span class="target" id="classLLU_1_1WSStream_1af2042cafa8ddade2fd114e11135573aa"></span><a class="reference internal" href="#_CPPv4N3LLU8WSStreamE" title="LLU::WSStream">WSStream</a> &amp;<code class="sig-name descname">operator&lt;&lt;</code><span class="sig-paren">(</span><em class="property">const</em> WS::ArrayData&lt;<a class="reference internal" href="#_CPPv4I0EN3LLU8WSStreamlsER8WSStreamRKN2WS9ArrayDataI1TEE" title="LLU::WSStream::operator&lt;&lt;::T">T</a>&gt; &amp;<em>a</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0EN3LLU8WSStreamlsER8WSStreamRKN2WS9ArrayDataI1TEE" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Sends a WSTP array. </p>
+<p><dl class="simple">
+<dt><strong>Template Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">T</span></code>: - array element type </p></li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">a</span></code>: - ArrayData to be sent </p></li>
+</ul>
+</dd>
+<dt><strong>Exceptions</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">ErrorName::WSPutArrayError</span></code>: </p></li>
+</ul>
+</dd>
+<dt><strong>See</strong></dt><dd><p>WS::ArrayData&lt;T&gt; </p>
+</dd>
+<dt><strong>See</strong></dt><dd><p><a class="reference external" href="http://reference.wolfram.com/language/guide/WSTPCFunctionsForExchangingMultidimensionalArrays.html">http://reference.wolfram.com/language/guide/WSTPCFunctionsForExchangingMultidimensionalArrays.html</a> </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4I0EN3LLU8WSStreamlsER8WSStreamRKN2WS8ListDataI1TEE">
+<span id="_CPPv3I0EN3LLU8WSStreamlsERKN2WS8ListDataI1TEE"></span><span id="_CPPv2I0EN3LLU8WSStreamlsERKN2WS8ListDataI1TEE"></span>template&lt;typename <code class="sig-name descname">T</code>&gt;<br /><span class="target" id="classLLU_1_1WSStream_1a2bd3863fd05f9efdaaf7b6ccaf1b2576"></span><a class="reference internal" href="#_CPPv4N3LLU8WSStreamE" title="LLU::WSStream">WSStream</a> &amp;<code class="sig-name descname">operator&lt;&lt;</code><span class="sig-paren">(</span><em class="property">const</em> WS::ListData&lt;<a class="reference internal" href="#_CPPv4I0EN3LLU8WSStreamlsER8WSStreamRKN2WS8ListDataI1TEE" title="LLU::WSStream::operator&lt;&lt;::T">T</a>&gt; &amp;<em>l</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0EN3LLU8WSStreamlsER8WSStreamRKN2WS8ListDataI1TEE" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Sends a WSTP list. </p>
+<p><dl class="simple">
+<dt><strong>Template Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">T</span></code>: - list element type </p></li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">l</span></code>: - ListData to be sent </p></li>
+</ul>
+</dd>
+<dt><strong>Exceptions</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">ErrorName::WSPutListError</span></code>: </p></li>
+</ul>
+</dd>
+<dt><strong>See</strong></dt><dd><p>WS::ListData&lt;T&gt; </p>
+</dd>
+<dt><strong>See</strong></dt><dd><p><a class="reference external" href="http://reference.wolfram.com/language/guide/WSTPCFunctionsForExchangingLists.html">http://reference.wolfram.com/language/guide/WSTPCFunctionsForExchangingLists.html</a> </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4I00EN3LLU8WSStreamlsER8WSStreamRKNSt10unique_ptrI1T1DEE">
+<span id="_CPPv3I00EN3LLU8WSStreamlsERKNSt10unique_ptrI1T1DEE"></span><span id="_CPPv2I00EN3LLU8WSStreamlsERKNSt10unique_ptrI1T1DEE"></span>template&lt;typename <code class="sig-name descname">T</code>, typename <code class="sig-name descname">D</code>&gt;<br /><span class="target" id="classLLU_1_1WSStream_1ad73129e376ff1dfbcd858ca176748a1c"></span><a class="reference internal" href="#_CPPv4N3LLU8WSStreamE" title="LLU::WSStream">WSStream</a> &amp;<code class="sig-name descname">operator&lt;&lt;</code><span class="sig-paren">(</span><em class="property">const</em> std::unique_ptr&lt;<a class="reference internal" href="#_CPPv4I00EN3LLU8WSStreamlsER8WSStreamRKNSt10unique_ptrI1T1DEE" title="LLU::WSStream::operator&lt;&lt;::T">T</a>, <a class="reference internal" href="#_CPPv4I00EN3LLU8WSStreamlsER8WSStreamRKNSt10unique_ptrI1T1DEE" title="LLU::WSStream::operator&lt;&lt;::D">D</a>&gt; &amp;<em>p</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I00EN3LLU8WSStreamlsER8WSStreamRKNSt10unique_ptrI1T1DEE" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Sends an object owned by unique pointer. </p>
+<p><dl class="simple">
+<dt><strong>Template Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">T</span></code>: - list element type </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">D</span></code>: - destructor type, not really relevant </p></li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">p</span></code>: - pointer to the object to be sent </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4I0EN3LLU8WSStreamlsER8WSStreamRKNSt6vectorI1TEE">
+<span id="_CPPv3I0EN3LLU8WSStreamlsERKNSt6vectorI1TEE"></span><span id="_CPPv2I0EN3LLU8WSStreamlsERKNSt6vectorI1TEE"></span>template&lt;typename <code class="sig-name descname">T</code>&gt;<br /><span class="target" id="classLLU_1_1WSStream_1a0affe147eb06bb42bfb9275d68e873d1"></span><a class="reference internal" href="#_CPPv4N3LLU8WSStreamE" title="LLU::WSStream">WSStream</a> &amp;<code class="sig-name descname">operator&lt;&lt;</code><span class="sig-paren">(</span><em class="property">const</em> std::vector&lt;<a class="reference internal" href="#_CPPv4I0EN3LLU8WSStreamlsER8WSStreamRKNSt6vectorI1TEE" title="LLU::WSStream::operator&lt;&lt;::T">T</a>&gt; &amp;<em>l</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0EN3LLU8WSStreamlsER8WSStreamRKNSt6vectorI1TEE" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Sends a std::vector via WSTP, it is interpreted as a List in Mathematica. </p>
+<p><dl class="simple">
+<dt><strong>Template Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">T</span></code>: - vector element type (types supported in WSPut*List will be handled more efficiently) </p></li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">l</span></code>: - std::vector to be sent</p></li>
+</ul>
+</dd>
+<dt><strong>Exceptions</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">ErrorName::WSPutListError</span></code>: </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4I_N2WS8EncodingEEN3LLU8WSStreamlsER8WSStreamRKN2WS10StringDataI1EEE">
+<span id="_CPPv3I_N2WS8EncodingEEN3LLU8WSStreamlsERKN2WS10StringDataI1EEE"></span><span id="_CPPv2I_N2WS8EncodingEEN3LLU8WSStreamlsERKN2WS10StringDataI1EEE"></span>template&lt;WS::Encoding <code class="sig-name descname">E</code>&gt;<br /><span class="target" id="classLLU_1_1WSStream_1ad74ac59eb4bae44684cb64846d8e12e0"></span><a class="reference internal" href="#_CPPv4N3LLU8WSStreamE" title="LLU::WSStream">WSStream</a> &amp;<code class="sig-name descname">operator&lt;&lt;</code><span class="sig-paren">(</span><em class="property">const</em> WS::StringData&lt;<a class="reference internal" href="#_CPPv4I_N2WS8EncodingEEN3LLU8WSStreamlsER8WSStreamRKN2WS10StringDataI1EEE" title="LLU::WSStream::operator&lt;&lt;::E">E</a>&gt; &amp;<em>s</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I_N2WS8EncodingEEN3LLU8WSStreamlsER8WSStreamRKN2WS10StringDataI1EEE" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Sends a WSTP string. </p>
+<p><dl class="simple">
+<dt><strong>Template Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">E</span></code>: - encoding of the string (it determines which function from WSPut*String family to use) </p></li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">s</span></code>: - WS::StringData to be sent </p></li>
+</ul>
+</dd>
+<dt><strong>Exceptions</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">ErrorName::WSPutStringError</span></code>: </p></li>
+</ul>
+</dd>
+<dt><strong>See</strong></dt><dd><p>WS::StringData&lt;E&gt; </p>
+</dd>
+<dt><strong>See</strong></dt><dd><p><a class="reference external" href="http://reference.wolfram.com/language/guide/WSTPCFunctionsForExchangingStrings.html">http://reference.wolfram.com/language/guide/WSTPCFunctionsForExchangingStrings.html</a> </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4I_N2WS8EncodingE0EN3LLU8WSStreamlsER8WSStreamRKN2WS5PutAsI1E1TEE">
+<span id="_CPPv3I_N2WS8EncodingE0EN3LLU8WSStreamlsERKN2WS5PutAsI1E1TEE"></span><span id="_CPPv2I_N2WS8EncodingE0EN3LLU8WSStreamlsERKN2WS5PutAsI1E1TEE"></span>template&lt;WS::Encoding <code class="sig-name descname">E</code>, typename <code class="sig-name descname">T</code>&gt;<br /><span class="target" id="classLLU_1_1WSStream_1ada512bcfe3a880da897ce8e27c9b3c45"></span><a class="reference internal" href="#_CPPv4N3LLU8WSStreamE" title="LLU::WSStream">WSStream</a> &amp;<code class="sig-name descname">operator&lt;&lt;</code><span class="sig-paren">(</span><em class="property">const</em> WS::PutAs&lt;<a class="reference internal" href="#_CPPv4I_N2WS8EncodingE0EN3LLU8WSStreamlsER8WSStreamRKN2WS5PutAsI1E1TEE" title="LLU::WSStream::operator&lt;&lt;::E">E</a>, <a class="reference internal" href="#_CPPv4I_N2WS8EncodingE0EN3LLU8WSStreamlsER8WSStreamRKN2WS5PutAsI1E1TEE" title="LLU::WSStream::operator&lt;&lt;::T">T</a>&gt; &amp;<em>wrp</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I_N2WS8EncodingE0EN3LLU8WSStreamlsER8WSStreamRKN2WS5PutAsI1E1TEE" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Sends all strings within a given object using specified character encoding. </p>
+<p>Normally, when you send a string <a class="reference internal" href="#classLLU_1_1WSStream"><span class="std std-ref">WSStream</span></a> chooses the appropriate WSTP function based on the EncodingOut template parameter. Sometimes you may want to locally override the output encoding and you can do this by wrapping the object with WS::PutAs&lt;desired encoding, wrapped type&gt; (you can use WS::putAs function to construct WS::PutAs object without having to explicitly specify the second template parameter).</p>
+<p><div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span> <span class="n">WSStream</span><span class="o">&lt;</span><span class="n">WS</span><span class="o">::</span><span class="n">Encoding</span><span class="o">::</span><span class="n">UTF8</span><span class="o">&gt;</span> <span class="n">mls</span> <span class="p">{</span> <span class="n">mlink</span> <span class="p">};</span>         <span class="c1">// By default use UTF8</span>
+<span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span> <span class="n">vecOfExpr</span> <span class="o">=</span> <span class="p">....;</span>       <span class="c1">// This is a vector of serialized Mathematica expressions,</span>
+<span class="n">ml</span> <span class="o">&lt;&lt;</span> <span class="n">WS</span><span class="o">::</span><span class="n">putAs</span><span class="o">&lt;</span><span class="n">WS</span><span class="o">::</span><span class="n">Encoding</span><span class="o">::</span><span class="n">Native</span><span class="o">&gt;</span><span class="p">(</span><span class="n">vecOfExpr</span><span class="p">);</span>    <span class="c1">// it should be sent with Native encoding</span>
+</pre></div>
+</div>
+</p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">wrp</span></code>: - object to be sent </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4I0EN3LLU8WSStreamlsER8WSStreamRKNSt12basic_stringI1TEE">
+<span id="_CPPv3I0EN3LLU8WSStreamlsERKNSt12basic_stringI1TEE"></span><span id="_CPPv2I0EN3LLU8WSStreamlsERKNSt12basic_stringI1TEE"></span>template&lt;typename <code class="sig-name descname">T</code>&gt;<br /><span class="target" id="classLLU_1_1WSStream_1a2ad680a81d44124d919b839500233130"></span><a class="reference internal" href="#_CPPv4N3LLU8WSStreamE" title="LLU::WSStream">WSStream</a> &amp;<code class="sig-name descname">operator&lt;&lt;</code><span class="sig-paren">(</span><em class="property">const</em> std::basic_string&lt;<a class="reference internal" href="#_CPPv4I0EN3LLU8WSStreamlsER8WSStreamRKNSt12basic_stringI1TEE" title="LLU::WSStream::operator&lt;&lt;::T">T</a>&gt; &amp;<em>s</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0EN3LLU8WSStreamlsER8WSStreamRKNSt12basic_stringI1TEE" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Sends std::basic_string. </p>
+<p><dl class="simple">
+<dt><strong>Template Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">T</span></code>: - string character type supported in any of WSPut*String </p></li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">s</span></code>: - std::basic_string&lt;T&gt; to be sent</p></li>
+</ul>
+</dd>
+<dt><strong>Exceptions</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">ErrorName::WSPutStringError</span></code>: </p></li>
+</ul>
+</dd>
+<dt><strong>See</strong></dt><dd><p><a class="reference external" href="http://reference.wolfram.com/language/guide/WSTPCFunctionsForExchangingStrings.html">http://reference.wolfram.com/language/guide/WSTPCFunctionsForExchangingStrings.html</a> </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4I0_NSt6size_tE0EN3LLU8WSStreamlsER8WSStreamRA1N_K1T">
+<span id="_CPPv3I0_NSt6size_tE0EN3LLU8WSStreamlsERA1N_K1T"></span><span id="_CPPv2I0_NSt6size_tE0EN3LLU8WSStreamlsERAN_K1T"></span>template&lt;typename <code class="sig-name descname">T</code>, std::size_t <code class="sig-name descname">N</code>, typename = std::enable_if_t&lt;WS::StringTypeQ&lt;<a class="reference internal" href="#_CPPv4I0_NSt6size_tE0EN3LLU8WSStreamlsER8WSStreamRA1N_K1T" title="LLU::WSStream::operator&lt;&lt;::T">T</a>&gt;&gt;&gt;<br /><span class="target" id="classLLU_1_1WSStream_1a06a4cc1667e0cbe49fa29dfc09b84982"></span><a class="reference internal" href="#_CPPv4N3LLU8WSStreamE" title="LLU::WSStream">WSStream</a> &amp;<code class="sig-name descname">operator&lt;&lt;</code><span class="sig-paren">(</span><em class="property">const</em> <a class="reference internal" href="#_CPPv4I0_NSt6size_tE0EN3LLU8WSStreamlsER8WSStreamRA1N_K1T" title="LLU::WSStream::operator&lt;&lt;::T">T</a> (&amp;<em>s</em>)[N]<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0_NSt6size_tE0EN3LLU8WSStreamlsER8WSStreamRA1N_K1T" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Sends a character array (or a string literal) </p>
+<p><dl class="simple">
+<dt><strong>Template Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">T</span></code>: - character type supported in any of WSPut*String </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">N</span></code>: - length of character array </p></li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">s</span></code>: - character array to be sent as String</p></li>
+</ul>
+</dd>
+<dt><strong>Exceptions</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">ErrorName::WSPutStringError</span></code>: </p></li>
+</ul>
+</dd>
+<dt><strong>See</strong></dt><dd><p><a class="reference external" href="http://reference.wolfram.com/language/guide/WSTPCFunctionsForExchangingStrings.html">http://reference.wolfram.com/language/guide/WSTPCFunctionsForExchangingStrings.html</a> </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4N3LLU8WSStreamlsEPKc">
+<span id="_CPPv3N3LLU8WSStreamlsEPKc"></span><span id="_CPPv2N3LLU8WSStreamlsEPKc"></span><span id="LLU::WSStream::lshift-operator__cCP"></span><span class="target" id="classLLU_1_1WSStream_1a6cb09306df7469d44b498f097f8ee1a1"></span><a class="reference internal" href="#_CPPv4N3LLU8WSStreamE" title="LLU::WSStream">WSStream</a> &amp;<code class="sig-name descname">operator&lt;&lt;</code><span class="sig-paren">(</span><em class="property">const</em> char *<em>s</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3LLU8WSStreamlsEPKc" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Sends a C-string. </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">s</span></code>: - C-string to be sent</p></li>
+</ul>
+</dd>
+<dt><strong>Exceptions</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">ErrorName::WSPutStringError</span></code>: </p></li>
+</ul>
+</dd>
+<dt><strong>See</strong></dt><dd><p><a class="reference external" href="http://reference.wolfram.com/language/guide/WSTPCFunctionsForExchangingStrings.html">http://reference.wolfram.com/language/guide/WSTPCFunctionsForExchangingStrings.html</a> </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4I00EN3LLU8WSStreamlsER8WSStreamRKNSt3mapI1K1VEE">
+<span id="_CPPv3I00EN3LLU8WSStreamlsERKNSt3mapI1K1VEE"></span><span id="_CPPv2I00EN3LLU8WSStreamlsERKNSt3mapI1K1VEE"></span>template&lt;typename <code class="sig-name descname">K</code>, typename <code class="sig-name descname">V</code>&gt;<br /><span class="target" id="classLLU_1_1WSStream_1aebb8d1d4a924d4ed7cd1accc85df0bba"></span><a class="reference internal" href="#_CPPv4N3LLU8WSStreamE" title="LLU::WSStream">WSStream</a> &amp;<code class="sig-name descname">operator&lt;&lt;</code><span class="sig-paren">(</span><em class="property">const</em> std::map&lt;<a class="reference internal" href="#_CPPv4I00EN3LLU8WSStreamlsER8WSStreamRKNSt3mapI1K1VEE" title="LLU::WSStream::operator&lt;&lt;::K">K</a>, <a class="reference internal" href="#_CPPv4I00EN3LLU8WSStreamlsER8WSStreamRKNSt3mapI1K1VEE" title="LLU::WSStream::operator&lt;&lt;::V">V</a>&gt; &amp;<em>map</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I00EN3LLU8WSStreamlsER8WSStreamRKNSt3mapI1K1VEE" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Sends a std::map via WSTP, it is translated to an Association in Mathematica. </p>
+<p><dl class="simple">
+<dt><strong>Template Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">K</span></code>: - map key type, must be supported in <a class="reference internal" href="#classLLU_1_1WSStream"><span class="std std-ref">WSStream</span></a> </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">V</span></code>: - map value type, must be supported in <a class="reference internal" href="#classLLU_1_1WSStream"><span class="std std-ref">WSStream</span></a> </p></li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">map</span></code>: - map to be sent as Association</p></li>
+</ul>
+</dd>
+<dt><strong>Exceptions</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">ErrorName::WSPutFunctionError</span></code>: plus whatever can be thrown sending keys and values </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4I00EN3LLU8WSStreamlsER8WSStream1T">
+<span id="_CPPv3I00EN3LLU8WSStreamlsE1T"></span><span id="_CPPv2I00EN3LLU8WSStreamlsE1T"></span>template&lt;typename <code class="sig-name descname">T</code>, typename = std::enable_if_t&lt;std::is_arithmetic_v&lt;<a class="reference internal" href="#_CPPv4I00EN3LLU8WSStreamlsER8WSStream1T" title="LLU::WSStream::operator&lt;&lt;::T">T</a>&gt;&gt;&gt;<br /><span class="target" id="classLLU_1_1WSStream_1a99caa0dcb70ecb5cc47c021a46b933ec"></span><a class="reference internal" href="#_CPPv4N3LLU8WSStreamE" title="LLU::WSStream">WSStream</a> &amp;<code class="sig-name descname">operator&lt;&lt;</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4I00EN3LLU8WSStreamlsER8WSStream1T" title="LLU::WSStream::operator&lt;&lt;::T">T</a> <em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I00EN3LLU8WSStreamlsER8WSStream1T" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Sends a scalar value (int, float, double, etc) if it is supported by WSTP If you need to send value of type not supported by WSTP (like unsigned int) you must either explicitly cast or provide your own overload. </p>
+<p><dl class="simple">
+<dt><strong>Template Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">T</span></code>: - scalar type </p></li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">value</span></code>: - numeric value to be sent</p></li>
+</ul>
+</dd>
+<dt><strong>Exceptions</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">ErrorName::WSPutScalarError</span></code>: </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4I00EN3LLU8WSStreamlsER8WSStreamRK9Container">
+<span id="_CPPv3I00EN3LLU8WSStreamlsERK9Container"></span><span id="_CPPv2I00EN3LLU8WSStreamlsERK9Container"></span>template&lt;typename <code class="sig-name descname">Container</code>, typename = std::void_t&lt;decltype(std::declval&lt;<a class="reference internal" href="#_CPPv4I00EN3LLU8WSStreamlsER8WSStreamRK9Container" title="LLU::WSStream::operator&lt;&lt;::Container">Container</a>&gt;().begin(), std::declval&lt;<a class="reference internal" href="#_CPPv4I00EN3LLU8WSStreamlsER8WSStreamRK9Container" title="LLU::WSStream::operator&lt;&lt;::Container">Container</a>&gt;().end(), std::declval&lt;<a class="reference internal" href="#_CPPv4I00EN3LLU8WSStreamlsER8WSStreamRK9Container" title="LLU::WSStream::operator&lt;&lt;::Container">Container</a>&gt;().size())&gt;&gt;<br /><span class="target" id="classLLU_1_1WSStream_1a59d71e8dfa8012a684de20faf0cadcc4"></span><a class="reference internal" href="#_CPPv4N3LLU8WSStreamE" title="LLU::WSStream">WSStream</a> &amp;<code class="sig-name descname">operator&lt;&lt;</code><span class="sig-paren">(</span><em class="property">const</em> <a class="reference internal" href="#_CPPv4I00EN3LLU8WSStreamlsER8WSStreamRK9Container" title="LLU::WSStream::operator&lt;&lt;::Container">Container</a> &amp;<em>c</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I00EN3LLU8WSStreamlsER8WSStreamRK9Container" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Sends any container (a class with begin(), end() and size()) as List. </p>
+<p><dl class="simple">
+<dt><strong>Template Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Container</span></code>: - type that is a collection of some elements </p></li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">c</span></code>: - container to be sent</p></li>
+</ul>
+</dd>
+<dt><strong>Exceptions</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">ErrorName::WSPutContainerError</span></code>: </p></li>
+</ul>
+</dd>
+<dt><strong>Note</strong></dt><dd><p>Size() is not technically necessary, but needed for performance reason. Most STL containers have size() anyway. </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4N3LLU8WSStreamrsE16BidirStreamToken">
+<span id="_CPPv3N3LLU8WSStreamrsE16BidirStreamToken"></span><span id="_CPPv2N3LLU8WSStreamrsE16BidirStreamToken"></span><span id="LLU::WSStream::rshift-operator__BidirStreamToken"></span><span class="target" id="classLLU_1_1WSStream_1a9adec5560c0a79d7e07e4b4dea2c1981"></span><a class="reference internal" href="#_CPPv4N3LLU8WSStreamE" title="LLU::WSStream">WSStream</a> &amp;<code class="sig-name descname">operator&gt;&gt;</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4N3LLU8WSStream16BidirStreamTokenE" title="LLU::WSStream::BidirStreamToken">BidirStreamToken</a> <em>f</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3LLU8WSStreamrsE16BidirStreamToken" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Receives a bidirectional stream token via WSTP. </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">f</span></code>: - an element that can be either sent or received via WSTP with no arguments, for example WS::Rule </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4N3LLU8WSStreamrsERKN2WS6SymbolE">
+<span id="_CPPv3N3LLU8WSStreamrsERKN2WS6SymbolE"></span><span id="_CPPv2N3LLU8WSStreamrsERKN2WS6SymbolE"></span><span id="LLU::WSStream::rshift-operator__WS::SymbolCR"></span><span class="target" id="classLLU_1_1WSStream_1af3b909c7906c8682a57f2e54d81148aa"></span><a class="reference internal" href="#_CPPv4N3LLU8WSStreamE" title="LLU::WSStream">WSStream</a> &amp;<code class="sig-name descname">operator&gt;&gt;</code><span class="sig-paren">(</span><em class="property">const</em> WS::Symbol &amp;<em>s</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3LLU8WSStreamrsERKN2WS6SymbolE" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Receives a symbol from WSTP. </p>
+<p>Parameter <code class="docutils literal notranslate"><span class="pre">s</span></code> must have head specified and it has to match the head that was read from WSTP</p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">s</span></code>: - a symbol </p></li>
+</ul>
+</dd>
+<dt><strong>Exceptions</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">ErrorName::WSGetSymbolError</span><span class="pre">ErrorName::WSTestHeadError</span></code>: </p></li>
+</ul>
+</dd>
+<dt><strong>See</strong></dt><dd><p>WS::Symbol </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4N3LLU8WSStreamrsERN2WS6SymbolE">
+<span id="_CPPv3N3LLU8WSStreamrsERN2WS6SymbolE"></span><span id="_CPPv2N3LLU8WSStreamrsERN2WS6SymbolE"></span><span id="LLU::WSStream::rshift-operator__WS::SymbolR"></span><span class="target" id="classLLU_1_1WSStream_1a8f6ac3bf690e8fb7bf251f4de71bf4d3"></span><a class="reference internal" href="#_CPPv4N3LLU8WSStreamE" title="LLU::WSStream">WSStream</a> &amp;<code class="sig-name descname">operator&gt;&gt;</code><span class="sig-paren">(</span>WS::Symbol &amp;<em>s</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3LLU8WSStreamrsERN2WS6SymbolE" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Receives a symbol from WSTP. </p>
+<p>If the parameter <code class="docutils literal notranslate"><span class="pre">s</span></code> has head specified, then it has to match the head that was read from WSTP, otherwise the head read from WSTP will be assigned to s</p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[inout]</span> <span class="pre">s</span></code>: - a symbol </p></li>
+</ul>
+</dd>
+<dt><strong>Exceptions</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">ErrorName::WSGetSymbolError</span><span class="pre">ErrorName::WSTestHeadError</span></code>: </p></li>
+</ul>
+</dd>
+<dt><strong>See</strong></dt><dd><p>WS::Symbol </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4N3LLU8WSStreamrsERKN2WS8FunctionE">
+<span id="_CPPv3N3LLU8WSStreamrsERKN2WS8FunctionE"></span><span id="_CPPv2N3LLU8WSStreamrsERKN2WS8FunctionE"></span><span id="LLU::WSStream::rshift-operator__WS::FunctionCR"></span><span class="target" id="classLLU_1_1WSStream_1a42da746b9b40dca601bbd239a9cc97d5"></span><a class="reference internal" href="#_CPPv4N3LLU8WSStreamE" title="LLU::WSStream">WSStream</a> &amp;<code class="sig-name descname">operator&gt;&gt;</code><span class="sig-paren">(</span><em class="property">const</em> WS::Function &amp;<em>f</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3LLU8WSStreamrsERKN2WS8FunctionE" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Receives a function from WSTP. </p>
+<p>Parameter <code class="docutils literal notranslate"><span class="pre">f</span></code> must have head and argument count specified and they need to match the head and argument count that was read from WSTP</p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">f</span></code>: - a function with head and argument count specified </p></li>
+</ul>
+</dd>
+<dt><strong>Exceptions</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">ErrorName::WSGetFunctionError</span><span class="pre">ErrorName::WSTestHeadError</span></code>: </p></li>
+</ul>
+</dd>
+<dt><strong>See</strong></dt><dd><p>WS::Function </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4N3LLU8WSStreamrsERN2WS8FunctionE">
+<span id="_CPPv3N3LLU8WSStreamrsERN2WS8FunctionE"></span><span id="_CPPv2N3LLU8WSStreamrsERN2WS8FunctionE"></span><span id="LLU::WSStream::rshift-operator__WS::FunctionR"></span><span class="target" id="classLLU_1_1WSStream_1aa1ce71ec1fa75d0cd1bba16410f1f320"></span><a class="reference internal" href="#_CPPv4N3LLU8WSStreamE" title="LLU::WSStream">WSStream</a> &amp;<code class="sig-name descname">operator&gt;&gt;</code><span class="sig-paren">(</span>WS::Function &amp;<em>f</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3LLU8WSStreamrsERN2WS8FunctionE" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Receives a function from WSTP. </p>
+<p>If the parameter <code class="docutils literal notranslate"><span class="pre">f</span></code> has head or argument count set, than it has to match the head or argument count that was read from WSTP</p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[inout]</span> <span class="pre">f</span></code>: - a function which may have head or argument count specified </p></li>
+</ul>
+</dd>
+<dt><strong>Exceptions</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">ErrorName::WSGetFunctionError</span><span class="pre">ErrorName::WSTestHeadError</span></code>: </p></li>
+</ul>
+</dd>
+<dt><strong>See</strong></dt><dd><p>WS::Function </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4N3LLU8WSStreamrsERb">
+<span id="_CPPv3N3LLU8WSStreamrsERb"></span><span id="_CPPv2N3LLU8WSStreamrsERb"></span><span id="LLU::WSStream::rshift-operator__bR"></span><span class="target" id="classLLU_1_1WSStream_1ad150839d575f6b33ace69a73a5c491e6"></span><a class="reference internal" href="#_CPPv4N3LLU8WSStreamE" title="LLU::WSStream">WSStream</a> &amp;<code class="sig-name descname">operator&gt;&gt;</code><span class="sig-paren">(</span>bool &amp;<em>b</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3LLU8WSStreamrsERb" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Receives a True or False symbol from Mathematica and converts it to bool. </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[out]</span> <span class="pre">b</span></code>: - argument to which the boolean received from WSTP will be assigned</p></li>
+</ul>
+</dd>
+<dt><strong>Exceptions</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">ErrorName::WSGetSymbolError</span><span class="pre">ErrorName::WSWrongSymbolForBool</span></code>: </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4N3LLU8WSStreamrsER4mint">
+<span id="_CPPv3N3LLU8WSStreamrsER4mint"></span><span id="_CPPv2N3LLU8WSStreamrsER4mint"></span><span id="LLU::WSStream::rshift-operator__mintR"></span><span class="target" id="classLLU_1_1WSStream_1a4a4308dee4e6736360390549e792d8b3"></span><a class="reference internal" href="#_CPPv4N3LLU8WSStreamE" title="LLU::WSStream">WSStream</a> &amp;<code class="sig-name descname">operator&gt;&gt;</code><span class="sig-paren">(</span>mint &amp;<em>i</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3LLU8WSStreamrsER4mint" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Receives a mint value. </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">i</span></code>: - argument to which a mint value will be assigned</p></li>
+</ul>
+</dd>
+<dt><strong>Note</strong></dt><dd><p>It actually reads an wsint64 and casts to mint, as mint is not natively supported by WSTP. </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4I0EN3LLU8WSStreamrsER8WSStreamRN2WS9ArrayDataI1TEE">
+<span id="_CPPv3I0EN3LLU8WSStreamrsERN2WS9ArrayDataI1TEE"></span><span id="_CPPv2I0EN3LLU8WSStreamrsERN2WS9ArrayDataI1TEE"></span>template&lt;typename <code class="sig-name descname">T</code>&gt;<br /><span class="target" id="classLLU_1_1WSStream_1a4af74d75125fd01c71594542c9aef215"></span><a class="reference internal" href="#_CPPv4N3LLU8WSStreamE" title="LLU::WSStream">WSStream</a> &amp;<code class="sig-name descname">operator&gt;&gt;</code><span class="sig-paren">(</span>WS::ArrayData&lt;<a class="reference internal" href="#_CPPv4I0EN3LLU8WSStreamrsER8WSStreamRN2WS9ArrayDataI1TEE" title="LLU::WSStream::operator&gt;&gt;::T">T</a>&gt; &amp;<em>a</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0EN3LLU8WSStreamrsER8WSStreamRN2WS9ArrayDataI1TEE" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Receives a WSTP array. </p>
+<p><dl class="simple">
+<dt><strong>Template Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">T</span></code>: - array element type </p></li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[out]</span> <span class="pre">a</span></code>: - argument to which the WS::ArrayData received from WSTP will be assigned </p></li>
+</ul>
+</dd>
+<dt><strong>Exceptions</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">ErrorName::WSGetArrayError</span></code>: </p></li>
+</ul>
+</dd>
+<dt><strong>See</strong></dt><dd><p>WS::ArrayData&lt;T&gt; </p>
+</dd>
+<dt><strong>See</strong></dt><dd><p><a class="reference external" href="http://reference.wolfram.com/language/guide/WSTPCFunctionsForExchangingMultidimensionalArrays.html">http://reference.wolfram.com/language/guide/WSTPCFunctionsForExchangingMultidimensionalArrays.html</a> </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4I0EN3LLU8WSStreamrsER8WSStreamRN2WS8ListDataI1TEE">
+<span id="_CPPv3I0EN3LLU8WSStreamrsERN2WS8ListDataI1TEE"></span><span id="_CPPv2I0EN3LLU8WSStreamrsERN2WS8ListDataI1TEE"></span>template&lt;typename <code class="sig-name descname">T</code>&gt;<br /><span class="target" id="classLLU_1_1WSStream_1a6638891930d12bdf102d8eeb7bd86151"></span><a class="reference internal" href="#_CPPv4N3LLU8WSStreamE" title="LLU::WSStream">WSStream</a> &amp;<code class="sig-name descname">operator&gt;&gt;</code><span class="sig-paren">(</span>WS::ListData&lt;<a class="reference internal" href="#_CPPv4I0EN3LLU8WSStreamrsER8WSStreamRN2WS8ListDataI1TEE" title="LLU::WSStream::operator&gt;&gt;::T">T</a>&gt; &amp;<em>l</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0EN3LLU8WSStreamrsER8WSStreamRN2WS8ListDataI1TEE" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Receives a WSTP list. </p>
+<p><dl class="simple">
+<dt><strong>Template Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">T</span></code>: - list element type </p></li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[out]</span> <span class="pre">l</span></code>: - argument to which the WS::ListData received from WSTP will be assigned </p></li>
+</ul>
+</dd>
+<dt><strong>Exceptions</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">ErrorName::WSGetListError</span></code>: </p></li>
+</ul>
+</dd>
+<dt><strong>See</strong></dt><dd><p>WS::ListData&lt;T&gt; </p>
+</dd>
+<dt><strong>See</strong></dt><dd><p><a class="reference external" href="http://reference.wolfram.com/language/guide/WSTPCFunctionsForExchangingLists.html">http://reference.wolfram.com/language/guide/WSTPCFunctionsForExchangingLists.html</a> </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4I0EN3LLU8WSStreamrsER8WSStreamRNSt6vectorI1TEE">
+<span id="_CPPv3I0EN3LLU8WSStreamrsERNSt6vectorI1TEE"></span><span id="_CPPv2I0EN3LLU8WSStreamrsERNSt6vectorI1TEE"></span>template&lt;typename <code class="sig-name descname">T</code>&gt;<br /><span class="target" id="classLLU_1_1WSStream_1aac4e75c86dfa347b76d9bc2e20a113e1"></span><a class="reference internal" href="#_CPPv4N3LLU8WSStreamE" title="LLU::WSStream">WSStream</a> &amp;<code class="sig-name descname">operator&gt;&gt;</code><span class="sig-paren">(</span>std::vector&lt;<a class="reference internal" href="#_CPPv4I0EN3LLU8WSStreamrsER8WSStreamRNSt6vectorI1TEE" title="LLU::WSStream::operator&gt;&gt;::T">T</a>&gt; &amp;<em>l</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0EN3LLU8WSStreamrsER8WSStreamRNSt6vectorI1TEE" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Receives a List from WSTP and assigns it to std::vector. </p>
+<p><dl class="simple">
+<dt><strong>Template Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">T</span></code>: - vector element type (types supported in WSGet*List will be handled more efficiently) </p></li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[out]</span> <span class="pre">l</span></code>: - argument to which the List received from WSTP will be assigned</p></li>
+</ul>
+</dd>
+<dt><strong>Exceptions</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">ErrorName::WSGetListError</span></code>: </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4I_N2WS8EncodingEEN3LLU8WSStreamrsER8WSStreamRN2WS10StringDataI1EEE">
+<span id="_CPPv3I_N2WS8EncodingEEN3LLU8WSStreamrsERN2WS10StringDataI1EEE"></span><span id="_CPPv2I_N2WS8EncodingEEN3LLU8WSStreamrsERN2WS10StringDataI1EEE"></span>template&lt;WS::Encoding <code class="sig-name descname">E</code> = EncodingIn&gt;<br /><span class="target" id="classLLU_1_1WSStream_1afd31a92208ad8d85a2524dce08da179b"></span><a class="reference internal" href="#_CPPv4N3LLU8WSStreamE" title="LLU::WSStream">WSStream</a> &amp;<code class="sig-name descname">operator&gt;&gt;</code><span class="sig-paren">(</span>WS::StringData&lt;<a class="reference internal" href="#_CPPv4I_N2WS8EncodingEEN3LLU8WSStreamrsER8WSStreamRN2WS10StringDataI1EEE" title="LLU::WSStream::operator&gt;&gt;::E">E</a>&gt; &amp;<em>s</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I_N2WS8EncodingEEN3LLU8WSStreamrsER8WSStreamRN2WS10StringDataI1EEE" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Receives a WSTP string. </p>
+<p><dl class="simple">
+<dt><strong>Template Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">T</span></code>: - string character type </p></li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[out]</span> <span class="pre">s</span></code>: - argument to which the WS::StringData received from WSTP will be assigned </p></li>
+</ul>
+</dd>
+<dt><strong>Exceptions</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">ErrorName::WSGetStringError</span></code>: </p></li>
+</ul>
+</dd>
+<dt><strong>See</strong></dt><dd><p>WS::StringData&lt;T&gt; </p>
+</dd>
+<dt><strong>See</strong></dt><dd><p><a class="reference external" href="http://reference.wolfram.com/language/guide/WSTPCFunctionsForExchangingStrings.html">http://reference.wolfram.com/language/guide/WSTPCFunctionsForExchangingStrings.html</a> </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4I0EN3LLU8WSStreamrsER8WSStreamRNSt12basic_stringI1TEE">
+<span id="_CPPv3I0EN3LLU8WSStreamrsERNSt12basic_stringI1TEE"></span><span id="_CPPv2I0EN3LLU8WSStreamrsERNSt12basic_stringI1TEE"></span>template&lt;typename <code class="sig-name descname">T</code>&gt;<br /><span class="target" id="classLLU_1_1WSStream_1a0b6e347874af81847fd5fa6108318f29"></span><a class="reference internal" href="#_CPPv4N3LLU8WSStreamE" title="LLU::WSStream">WSStream</a> &amp;<code class="sig-name descname">operator&gt;&gt;</code><span class="sig-paren">(</span>std::basic_string&lt;<a class="reference internal" href="#_CPPv4I0EN3LLU8WSStreamrsER8WSStreamRNSt12basic_stringI1TEE" title="LLU::WSStream::operator&gt;&gt;::T">T</a>&gt; &amp;<em>s</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0EN3LLU8WSStreamrsER8WSStreamRNSt12basic_stringI1TEE" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Receives std::basic_string. </p>
+<p><dl class="simple">
+<dt><strong>Template Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">T</span></code>: - string character type supported in any of WSGet*String </p></li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[out]</span> <span class="pre">s</span></code>: - argument to which the std::basic_string&lt;T&gt; received from WSTP will be assigned</p></li>
+</ul>
+</dd>
+<dt><strong>Exceptions</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">ErrorName::WSGetStringError</span></code>: </p></li>
+</ul>
+</dd>
+<dt><strong>See</strong></dt><dd><p><a class="reference external" href="http://reference.wolfram.com/language/guide/WSTPCFunctionsForExchangingStrings.html">http://reference.wolfram.com/language/guide/WSTPCFunctionsForExchangingStrings.html</a> </p>
+</dd>
+<dt><strong>Note</strong></dt><dd><p>std::string is just std::basic_string&lt;char&gt; </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4I_N2WS8EncodingE0EN3LLU8WSStreamrsER8WSStreamN2WS5GetAsI1E1TEE">
+<span id="_CPPv3I_N2WS8EncodingE0EN3LLU8WSStreamrsEN2WS5GetAsI1E1TEE"></span><span id="_CPPv2I_N2WS8EncodingE0EN3LLU8WSStreamrsEN2WS5GetAsI1E1TEE"></span>template&lt;WS::Encoding <code class="sig-name descname">E</code>, typename <code class="sig-name descname">T</code>&gt;<br /><span class="target" id="classLLU_1_1WSStream_1a0449036af71e4ecfdd35c8369328ce51"></span><a class="reference internal" href="#_CPPv4N3LLU8WSStreamE" title="LLU::WSStream">WSStream</a> &amp;<code class="sig-name descname">operator&gt;&gt;</code><span class="sig-paren">(</span>WS::GetAs&lt;<a class="reference internal" href="#_CPPv4I_N2WS8EncodingE0EN3LLU8WSStreamrsER8WSStreamN2WS5GetAsI1E1TEE" title="LLU::WSStream::operator&gt;&gt;::E">E</a>, <a class="reference internal" href="#_CPPv4I_N2WS8EncodingE0EN3LLU8WSStreamrsER8WSStreamN2WS5GetAsI1E1TEE" title="LLU::WSStream::operator&gt;&gt;::T">T</a>&gt; <em>wrp</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I_N2WS8EncodingE0EN3LLU8WSStreamrsER8WSStreamN2WS5GetAsI1E1TEE" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Receives a value of type T. </p>
+<p><dl class="simple">
+<dt><strong>Template Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">E</span></code>: - encoding to be used when reading value from WSTP </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">T</span></code>: - value type </p></li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">wrp</span></code>: - reference to object of type T wrapped in WS::GetAs structure</p></li>
+</ul>
+</dd>
+<dt><strong>Note</strong></dt><dd><p>There is a utility function WS::getAs for easier creation of WS::GetAs objects </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4I00EN3LLU8WSStreamrsER8WSStreamRNSt3mapI1K1VEE">
+<span id="_CPPv3I00EN3LLU8WSStreamrsERNSt3mapI1K1VEE"></span><span id="_CPPv2I00EN3LLU8WSStreamrsERNSt3mapI1K1VEE"></span>template&lt;typename <code class="sig-name descname">K</code>, typename <code class="sig-name descname">V</code>&gt;<br /><span class="target" id="classLLU_1_1WSStream_1ad9e4681bd4268bf4c771de7850028c48"></span><a class="reference internal" href="#_CPPv4N3LLU8WSStreamE" title="LLU::WSStream">WSStream</a> &amp;<code class="sig-name descname">operator&gt;&gt;</code><span class="sig-paren">(</span>std::map&lt;<a class="reference internal" href="#_CPPv4I00EN3LLU8WSStreamrsER8WSStreamRNSt3mapI1K1VEE" title="LLU::WSStream::operator&gt;&gt;::K">K</a>, <a class="reference internal" href="#_CPPv4I00EN3LLU8WSStreamrsER8WSStreamRNSt3mapI1K1VEE" title="LLU::WSStream::operator&gt;&gt;::V">V</a>&gt; &amp;<em>map</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I00EN3LLU8WSStreamrsER8WSStreamRNSt3mapI1K1VEE" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Receives a std::map via WSTP. </p>
+<p><dl class="simple">
+<dt><strong>Template Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">K</span></code>: - map key type, must be supported in <a class="reference internal" href="#classLLU_1_1WSStream"><span class="std std-ref">WSStream</span></a> </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">V</span></code>: - map value type, must be supported in <a class="reference internal" href="#classLLU_1_1WSStream"><span class="std std-ref">WSStream</span></a> </p></li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[out]</span> <span class="pre">map</span></code>: - argument to which the std::map received from WSTP will be assigned</p></li>
+</ul>
+</dd>
+<dt><strong>Exceptions</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">ErrorName::WSGetFunctionError</span></code>: plus whatever can be thrown receiving keys and values</p></li>
+</ul>
+</dd>
+<dt><strong>Note</strong></dt><dd><p>The top-level Association must have all values of the same type because this is how std::map works </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4I00EN3LLU8WSStreamrsER8WSStreamR1T">
+<span id="_CPPv3I00EN3LLU8WSStreamrsER1T"></span><span id="_CPPv2I00EN3LLU8WSStreamrsER1T"></span>template&lt;typename <code class="sig-name descname">T</code>, typename = std::enable_if_t&lt;std::is_arithmetic_v&lt;<a class="reference internal" href="#_CPPv4I00EN3LLU8WSStreamrsER8WSStreamR1T" title="LLU::WSStream::operator&gt;&gt;::T">T</a>&gt;&gt;&gt;<br /><span class="target" id="classLLU_1_1WSStream_1a71354eded178eb3056a12d06e88200c7"></span><a class="reference internal" href="#_CPPv4N3LLU8WSStreamE" title="LLU::WSStream">WSStream</a> &amp;<code class="sig-name descname">operator&gt;&gt;</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4I00EN3LLU8WSStreamrsER8WSStreamR1T" title="LLU::WSStream::operator&gt;&gt;::T">T</a> &amp;<em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I00EN3LLU8WSStreamrsER8WSStreamR1T" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Receives a scalar value (int, float, double, etc) if it is supported by WSTP If you need to receive value of type not supported by WSTP (like unsigned int) you must either explicitly cast or provide your own overload. </p>
+<p><dl class="simple">
+<dt><strong>Template Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">T</span></code>: - scalar type </p></li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[out]</span> <span class="pre">value</span></code>: - argument to which the value received from WSTP will be assigned</p></li>
+</ul>
+</dd>
+<dt><strong>Exceptions</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">ErrorName::WSGetScalarError</span></code>: </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="managed_expressions.html" class="btn btn-neutral float-right" title="Managed expressions" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="error_handling.html" class="btn btn-neutral" title="Error handling" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright Wolfram Research.
+      Last updated on Oct 06, 2020.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> and ❤️  using a custom <a href="https://github.com/LinxiFan/Sphinx-theme">theme</a> based on <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'3.0.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="../_static/language_data.js"></script>
+      <script type="text/javascript" src="../_static/js/custom.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

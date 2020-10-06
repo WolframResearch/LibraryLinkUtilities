@@ -1,0 +1,851 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Error handling &mdash; LibraryLink Utilities 3.0.0 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/favicon-32.png"/>
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+  
+
+  
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="LibraryLink Utilities 3.0.0 documentation" href="../index.html"/>
+        <link rel="next" title="WSTP support" href="wstp.html"/>
+        <link rel="prev" title="Containers" href="containers.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> LibraryLink Utilities
+          
+
+          
+            
+            <img src="../_static/LLULogo.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                3.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <p class="caption"><span class="caption-text">Basic Info</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Intro</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basic/how_to_use.html">How to use</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://actual-doxygen-docs-link-goes.here">API reference (Doxygen ↪)</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Modules</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="functions.html">Library functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="containers.html">Containers</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Error handling</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#on-the-c-side">On the C++ side</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#on-the-wolfram-language-side">On the Wolfram Language side</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#api-reference">API reference</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="wstp.html">WSTP support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="managed_expressions.html">Managed expressions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="logger.html">Logging and debug printing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="progress_monitor.html">Progress monitor</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Other Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../other/paclet_use.html">Use in paclets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../other/cmake_utilities.html">CMake utility functions</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">LibraryLink Utilities</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>Error handling</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="error-handling">
+<h1>Error handling<a class="headerlink" href="#error-handling" title="Permalink to this headline"> 🔗</a></h1>
+<div class="section" id="on-the-c-side">
+<h2>On the C++ side<a class="headerlink" href="#on-the-c-side" title="Permalink to this headline"> 🔗</a></h2>
+<p>Every LibraryLink function in C or C++ code has a fixed signature <a class="footnote-reference brackets" href="#id2" id="id1">1</a></p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">int</span> <span class="nf">f</span> <span class="p">(</span><span class="n">WolframLibraryData</span> <span class="n">libData</span><span class="p">,</span> <span class="n">mint</span> <span class="n">Argc</span><span class="p">,</span> <span class="n">MArgument</span><span class="o">*</span> <span class="n">Args</span><span class="p">,</span> <span class="n">MArgument</span> <span class="n">Res</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>The actual result of computations should be returned via the “out-parameter” <code class="docutils literal notranslate"><span class="pre">Res</span></code>. The value of <code class="docutils literal notranslate"><span class="pre">Res</span></code> is only considered in the Wolfram Language code if the actual
+return value of <code class="docutils literal notranslate"><span class="pre">f</span></code> (of type <code class="docutils literal notranslate"><span class="pre">int</span></code>) was equal to <code class="docutils literal notranslate"><span class="pre">LIBRARY_NO_ERROR</span></code> (with LLU use <code class="docutils literal notranslate"><span class="pre">ErrorCode::NoError</span></code>, see note below).</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>LibraryLink uses 8 predefined error codes</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">enum</span> <span class="p">{</span>
+    <span class="n">LIBRARY_NO_ERROR</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="n">LIBRARY_TYPE_ERROR</span><span class="p">,</span>
+    <span class="n">LIBRARY_RANK_ERROR</span><span class="p">,</span>
+    <span class="n">LIBRARY_DIMENSION_ERROR</span><span class="p">,</span>
+    <span class="n">LIBRARY_NUMERICAL_ERROR</span><span class="p">,</span>
+    <span class="n">LIBRARY_MEMORY_ERROR</span><span class="p">,</span>
+    <span class="n">LIBRARY_FUNCTION_ERROR</span><span class="p">,</span>
+    <span class="n">LIBRARY_VERSION_ERROR</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<p>LLU redefines those values as constexpr integers in a dedicated namespace <a class="reference internal" href="#_CPPv4N3LLU9ErrorCodeE" title="LLU::ErrorCode"><code class="xref cpp cpp-any docutils literal notranslate"><span class="pre">LLU::ErrorCode</span></code></a>, so for example instead of
+<code class="docutils literal notranslate"><span class="pre">LIBRARY_FUNCTION_ERROR</span></code> one can use <code class="xref cpp cpp-any docutils literal notranslate"><span class="pre">ErrorCode::FunctionError</span></code>.</p>
+</div>
+<p>In C++, exceptions are often the preferred way of error handling, so LLU offers a special class of exceptions that can be easily translated to error codes,
+returned to LibraryLink and then translated to descriptive <a class="reference external" href="https://reference.wolfram.com/language/ref/Failure">Failure</a> objects in the Wolfram Language.</p>
+<p>Such exceptions are identified in the C++ code by name - a short string. For example, imagine you have a function that reads data from a source.
+If the source does not exist or is empty, you want to throw exceptions, let’s call them “NoSourceError” and “EmptySourceError”, respectively.
+First, you <strong>must</strong> register all your exceptions inside <code class="docutils literal notranslate"><span class="pre">WolframLibrary_initialize</span></code> function:</p>
+<div class="highlight-cpp notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">EXTERN_C</span> <span class="n">DLLEXPORT</span> <span class="kt">int</span> <span class="nf">WolframLibrary_initialize</span><span class="p">(</span><span class="n">WolframLibraryData</span> <span class="n">libData</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">try</span> <span class="p">{</span>
+        <span class="n">LibraryData</span><span class="o">::</span><span class="n">setLibraryData</span><span class="p">(</span><span class="n">libData</span><span class="p">);</span>
+        <span class="n">ErrorManager</span><span class="o">::</span><span class="n">registerPacletErrors</span><span class="p">({</span>
+            <span class="p">{</span><span class="s">&quot;NoSourceError&quot;</span><span class="p">,</span> <span class="s">&quot;Requested data source does not exist.&quot;</span><span class="p">},</span>
+            <span class="p">{</span><span class="s">&quot;EmptySourceError&quot;</span><span class="p">,</span> <span class="s">&quot;Requested data source has `1` elements, but required at least `2`.&quot;</span><span class="p">}</span>
+        <span class="p">});</span>
+    <span class="p">}</span> <span class="k">catch</span><span class="p">(...)</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="n">LLErrorCode</span><span class="o">::</span><span class="n">FunctionError</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="n">LLErrorCode</span><span class="o">::</span><span class="n">NoError</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table></div>
+<p>In the code above, the second element of each pair is a textual description of the error which will be visible in the <a class="reference external" href="https://reference.wolfram.com/language/ref/Failure">Failure</a> object.
+This text may contain “slots” denoted as `1`, `2`, etc. that work like <a class="reference external" href="https://reference.wolfram.com/language/ref/TemplateSlot">TemplateSlot</a> in the Wolfram Language.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Notice that there is no way to assign specific error codes to your custom exceptions, this is handled internally by LLU.</p>
+</div>
+<p>Now, throw exceptions from a function that reads data:</p>
+<div class="highlight-cpp notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kt">void</span> <span class="nf">readData</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">DataSource</span><span class="o">&gt;</span> <span class="n">source</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">source</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">ErrorManager</span><span class="o">::</span><span class="n">throwException</span><span class="p">(</span><span class="s">&quot;NoSourceError&quot;</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">source</span><span class="o">-&gt;</span><span class="n">elemCount</span><span class="p">()</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">ErrorManager</span><span class="o">::</span><span class="n">throwException</span><span class="p">(</span><span class="s">&quot;EmptySourceError&quot;</span><span class="p">,</span> <span class="n">source</span><span class="o">-&gt;</span><span class="n">elemCount</span><span class="p">(),</span> <span class="mi">3</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="c1">//...</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table></div>
+<p>Each call to <a class="reference internal" href="#_CPPv4IDpEN3LLU12ErrorManager14throwExceptionEvRKNSt6stringEDpRR1T" title="LLU::ErrorManager::throwException"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">ErrorManager::throwException</span></code></a> causes an exception of class <a class="reference internal" href="#_CPPv4N3LLU16LibraryLinkErrorE" title="LLU::LibraryLinkError"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">LibraryLinkError</span></code></a>
+with predefined name and error code to be thrown.
+All parameters of <a class="reference internal" href="#_CPPv4IDpEN3LLU12ErrorManager14throwExceptionEvRKNSt6stringEDpRR1T" title="LLU::ErrorManager::throwException"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">throwException</span></code></a> after the first one are used to populate consecutive template slots in the error message.
+The only thing left to do now is to catch the exception.
+Usually, you catch only in the interface functions (the ones with <code class="docutils literal notranslate"><span class="pre">EXTERN_C</span> <span class="pre">DLLEXPORT</span></code>), extract the error code from exception and return it:</p>
+<div class="highlight-cpp notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">EXTERN_C</span> <span class="n">DLLEXPORT</span> <span class="kt">int</span> <span class="nf">MyFunction</span><span class="p">(</span><span class="n">WolframLibraryData</span> <span class="n">libData</span><span class="p">,</span> <span class="n">mint</span> <span class="n">Argc</span><span class="p">,</span> <span class="n">MArgument</span> <span class="o">*</span><span class="n">Args</span><span class="p">,</span> <span class="n">MArgument</span> <span class="n">Res</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">auto</span> <span class="n">err</span> <span class="o">=</span> <span class="n">ErrorCode</span><span class="o">::</span><span class="n">NoError</span><span class="p">;</span>    <span class="c1">// no error initially</span>
+    <span class="k">try</span> <span class="p">{</span>
+        <span class="c1">//...</span>
+    <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="k">const</span> <span class="n">LibraryLinkError</span><span class="o">&amp;</span> <span class="n">e</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">err</span> <span class="o">=</span> <span class="n">e</span><span class="p">.</span><span class="n">which</span><span class="p">();</span>    <span class="c1">// extract error code from LibraryLinkError</span>
+    <span class="p">}</span> <span class="k">catch</span> <span class="p">(...)</span> <span class="p">{</span>
+        <span class="n">err</span> <span class="o">=</span> <span class="n">ErrorCode</span><span class="o">::</span><span class="n">FunctionError</span><span class="p">;</span>   <span class="c1">// to be safe, handle non-LLU exceptions as well and return generic error code</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="n">err</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+<div class="section" id="on-the-wolfram-language-side">
+<h2>On the Wolfram Language side<a class="headerlink" href="#on-the-wolfram-language-side" title="Permalink to this headline"> 🔗</a></h2>
+<p>The Wolfram Language part of the error-handling functionality of LLU is responsible for converting error codes returned by library functions
+into nice and informative <a class="reference external" href="https://reference.wolfram.com/language/ref/Failure">Failure</a> objects. Whether these objects will be <em>returned</em> or <em>thrown</em> on the WL side is determined by the <code class="docutils literal notranslate"><span class="pre">&quot;Throws&quot;</span></code> option
+specified when loading a library function with LLU:</p>
+<div class="highlight-wolfram-language notranslate"><div class="highlight"><pre><span></span><span class="c">(* This must go first, see the &quot;How to use&quot; -&gt; &quot;Add to your project&quot; section *)</span><span class="w"></span>
+<span class="nv">`LLU`InitializePacletLibrary</span><span class="p">[</span><span class="s">&quot;/path/to/my/library&quot;</span><span class="p">]</span><span class="o">;</span><span class="w"></span>
+
+<span class="nv">`LLU`PacletFunctionSet</span><span class="p">[</span><span class="nv">$MyThrowingFunction</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;FunctionNameInCppCode&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="nb">Integer</span><span class="p">,</span><span class="w"> </span><span class="nb">String</span><span class="p">},</span><span class="w"> </span><span class="nb">Integer</span><span class="p">]</span><span class="w"> </span><span class="c">(* by default, &quot;Throws&quot; -&gt; True *)</span><span class="w"></span>
+
+<span class="nv">`LLU`PacletFunctionSet</span><span class="p">[</span><span class="nv">$MyNonThrowingFunction</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;OtherFunctionNameInCppCode&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="s">&quot;DataStore&quot;</span><span class="p">},</span><span class="w"> </span><span class="s">&quot;DataStore&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Throws&quot;</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="nb">False</span><span class="p">]</span><span class="w"></span>
+</pre></div>
+</div>
+<p>This code will first load the paclet’s dynamic library located under <code class="file docutils literal notranslate"><span class="pre">/path/to/my/library</span></code> and then it will load exported functions in the library named
+<code class="docutils literal notranslate"><span class="pre">FunctionNameInCppCode</span></code> and <code class="docutils literal notranslate"><span class="pre">OtherFunctionNameInCppCode</span></code> into <a class="reference external" href="https://reference.wolfram.com/language/ref/LibraryFunction">LibraryFunction</a> expressions and assign them to symbols <code class="docutils literal notranslate"><span class="pre">$MyThrowingFunction</span></code> and
+<code class="docutils literal notranslate"><span class="pre">$MyNonThrowingFunction</span></code>, respectively.</p>
+<p>If any call to <code class="docutils literal notranslate"><span class="pre">$MyThrowingFunction</span></code> fails (returns an error code different than <a class="reference internal" href="#_CPPv4N3LLU9ErrorCode7NoErrorE" title="LLU::ErrorCode::NoError"><code class="xref cpp cpp-any docutils literal notranslate"><span class="pre">LLU::ErrorCode::NoError</span></code></a>) a corresponding Failure expression will
+be <em>thrown</em>, whereas <code class="docutils literal notranslate"><span class="pre">$MyNonThrowingFunction</span></code> will <em>return</em> the Failure.</p>
+<p>Apart from the C++ code, paclets often have nontrivial amount of Wolfram Language code where errors might also occur. In order to achieve uniform
+error reporting across C++ and WL, one needs to register errors specific to the WL layer of the paclet:</p>
+<div class="highlight-wolfram-language notranslate"><div class="highlight"><pre><span></span><span class="nv">`LLU`RegisterPacletErrors</span><span class="p">[&lt;|</span><span class="w"></span>
+<span class="w">   </span><span class="s">&quot;InvalidInput&quot;</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="s">&quot;Data provided to the function was invalid.&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="s">&quot;UnexpectedError&quot;</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="s">&quot;Unexpected error occurred with error code: `errCode`.&quot;</span><span class="w"></span>
+<span class="p">|&gt;]</span><span class="o">;</span><span class="w"></span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">RegisterPacletErrors</span></code> takes an <a class="reference external" href="https://reference.wolfram.com/language/ref/Association">Association</a> of user-defined errors of the form</p>
+<blockquote>
+<div><p>error_name -&gt; error_message</p>
+</div></blockquote>
+<p>Such registered errors can later be issued from the Wolfram Language part of the project like this:</p>
+<div class="highlight-wolfram-language notranslate"><div class="highlight"><pre><span></span><span class="nv">status</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">DoSomething</span><span class="p">[</span><span class="nv">input</span><span class="p">]</span><span class="o">;</span><span class="w"></span>
+<span class="nb">If</span><span class="p">[</span><span class="nb">Not</span><span class="w"> </span><span class="o">@</span><span class="w"> </span><span class="nv">StatusOK</span><span class="p">[</span><span class="nv">status</span><span class="p">],</span><span class="w"></span>
+<span class="w">   </span><span class="nv">`LLU`ThrowPacletFailure</span><span class="p">[</span><span class="s">&quot;UnexpectedError&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;MessageParameters&quot;</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">&lt;|</span><span class="s">&quot;errCode&quot;</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="nv">status</span><span class="p">|&gt;]</span><span class="w"></span>
+<span class="p">]</span><span class="w"></span>
+</pre></div>
+</div>
+<p>This code will throw a <code class="docutils literal notranslate"><span class="pre">Failure</span></code> expression of the following form:</p>
+<div class="literal-block-wrapper docutils container" id="sample-failure">
+<div class="code-block-caption"><span class="caption-text">Sample Failure thrown from paclet code</span><a class="headerlink" href="#sample-failure" title="Permalink to this code"> 🔗</a></div>
+<div class="highlight-wolfram-language notranslate"><div class="highlight"><pre><span></span><span class="nb">Failure</span><span class="p">[</span><span class="s">&quot;UnexpectedError&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">&lt;|</span><span class="w"></span>
+<span class="w">   </span><span class="s">&quot;MessageTemplate&quot;</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="s">&quot;The error `errCode` has not been registered.&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="s">&quot;MessageParameters&quot;</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">&lt;|</span><span class="s">&quot;errCode&quot;</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="nv">status</span><span class="p">|&gt;,</span><span class="w"></span>
+<span class="w">   </span><span class="s">&quot;ErrorCode&quot;</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="m">23</span><span class="p">,</span><span class="w">   </span><span class="c">(* assigned internally by LLU, might be different *)</span><span class="w"></span>
+<span class="w">   </span><span class="s">&quot;Parameters&quot;</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"></span>
+<span class="p">|&gt;]</span><span class="w"></span>
+</pre></div>
+</div>
+</div>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>It is important to remember that all Failures thrown by <code class="docutils literal notranslate"><span class="pre">`LLU`ThrowPacletFailure</span></code> have a <em>tag</em> (second argument to <a class="reference external" href="https://reference.wolfram.com/language/ref/Throw">Throw</a>),
+so when writing code that is supposed to catch exceptions issued by LLU one must always use 2- or 3-argument version of <a class="reference external" href="https://reference.wolfram.com/language/ref/Catch">Catch</a>.</p>
+</div>
+<p>The exact value of the <em>tag</em> used by LLU is <code class="docutils literal notranslate"><span class="pre">`LLU`$ExceptionTagFunction[f]</span></code>, where <code class="docutils literal notranslate"><span class="pre">f</span></code> is the <a class="reference external" href="https://reference.wolfram.com/language/ref/Failure">Failure</a> object to be thrown.
+In other words, the <em>tag</em> can be any function of the Failure object and developers are encouraged to customize this behavior.</p>
+<p>By default, <code class="docutils literal notranslate"><span class="pre">$ExceptionTagFunction</span></code> is a constant function that returns <code class="docutils literal notranslate"><span class="pre">$ExceptionTagString</span></code> which is initially set to “LLUExceptionTag”:</p>
+<div class="highlight-wolfram-language notranslate"><div class="highlight"><pre><span></span><span class="nv">$ExceptionTagString</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;LLUExceptionTag&quot;</span><span class="o">;</span><span class="w"></span>
+<span class="nv">$ExceptionTagFunction</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nv">$ExceptionTagString</span><span class="o">&amp;;</span><span class="w"></span>
+</pre></div>
+</div>
+<p>In case you want Failures from your paclet to be thrown with a predefined String tag, say, “MyPacletError”, it is enough to write</p>
+<div class="highlight-wolfram-language notranslate"><div class="highlight"><pre><span></span><span class="nv">`LLU`$ExceptionTagString</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;MyPacletError&quot;</span><span class="o">;</span><span class="w"></span>
+</pre></div>
+</div>
+<p>If you want to the tag to be different for different kinds of Failures, you may want to do something like this:</p>
+<div class="highlight-wolfram-language notranslate"><div class="highlight"><pre><span></span><span class="nv">`LLU`$ExceptionTagFunction</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="s">&quot;MyPaclet_&quot;</span><span class="w"> </span><span class="o">&lt;&gt;</span><span class="w"> </span><span class="nb">First</span><span class="p">[</span><span class="nf">#</span><span class="p">])</span><span class="o">&amp;;</span><span class="w"></span>
+</pre></div>
+</div>
+<p>This will effectively prefix Failure’s tag with “MyPaclet_”, so for instance for the Failure from listing <a class="reference internal" href="#sample-failure"><span class="std std-ref">Sample Failure thrown from paclet code</span></a> the tag will be
+“MyPaclet_UnexpectedError”.</p>
+<p>There exists an alternative to <code class="docutils literal notranslate"><span class="pre">`LLU`ThrowPacletFailure</span></code> called <code class="docutils literal notranslate"><span class="pre">LLU`CreatePacletFailure</span></code> which returns the Failure expression as the result instead of
+throwing it.</p>
+</div>
+<div class="section" id="api-reference">
+<h2>API reference<a class="headerlink" href="#api-reference" title="Permalink to this headline"> 🔗</a></h2>
+<dl class="cpp type">
+<dt id="_CPPv4N3LLU9ErrorCodeE">
+<span id="_CPPv3N3LLU9ErrorCodeE"></span><span id="_CPPv2N3LLU9ErrorCodeE"></span><span id="LLU::ErrorCode"></span><span class="target" id="namespaceLLU_1_1ErrorCode"></span><em class="property">namespace </em><code class="sig-prename descclassname">LLU<code class="sig-prename descclassname">::</code></code><code class="sig-name descname">ErrorCode</code><a class="headerlink" href="#_CPPv4N3LLU9ErrorCodeE" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Error codes predefined in Library Link. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Variables</p>
+<dl class="cpp var">
+<dt id="_CPPv4N3LLU9ErrorCode12VersionErrorE">
+<span id="_CPPv3N3LLU9ErrorCode12VersionErrorE"></span><span id="_CPPv2N3LLU9ErrorCode12VersionErrorE"></span><span id="LLU::ErrorCode::VersionError__i"></span><span class="target" id="namespaceLLU_1_1ErrorCode_1a9de8f776a4cca85d2c0b3664a61460cb"></span><em class="property">constexpr</em> int <code class="sig-name descname">VersionError</code> = 7<a class="headerlink" href="#_CPPv4N3LLU9ErrorCode12VersionErrorE" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>same as LIBRARY_VERSION_ERROR </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt id="_CPPv4N3LLU9ErrorCode13FunctionErrorE">
+<span id="_CPPv3N3LLU9ErrorCode13FunctionErrorE"></span><span id="_CPPv2N3LLU9ErrorCode13FunctionErrorE"></span><span id="LLU::ErrorCode::FunctionError__i"></span><span class="target" id="namespaceLLU_1_1ErrorCode_1aa609eeb931e207796ba774fc7bd50b8f"></span><em class="property">constexpr</em> int <code class="sig-name descname">FunctionError</code> = 6<a class="headerlink" href="#_CPPv4N3LLU9ErrorCode13FunctionErrorE" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>same as LIBRARY_FUNCTION_ERROR </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt id="_CPPv4N3LLU9ErrorCode11MemoryErrorE">
+<span id="_CPPv3N3LLU9ErrorCode11MemoryErrorE"></span><span id="_CPPv2N3LLU9ErrorCode11MemoryErrorE"></span><span id="LLU::ErrorCode::MemoryError__i"></span><span class="target" id="namespaceLLU_1_1ErrorCode_1a54c249abcb600d7430af7de14273a567"></span><em class="property">constexpr</em> int <code class="sig-name descname">MemoryError</code> = 5<a class="headerlink" href="#_CPPv4N3LLU9ErrorCode11MemoryErrorE" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>same as LIBRARY_MEMORY_ERROR </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt id="_CPPv4N3LLU9ErrorCode14NumericalErrorE">
+<span id="_CPPv3N3LLU9ErrorCode14NumericalErrorE"></span><span id="_CPPv2N3LLU9ErrorCode14NumericalErrorE"></span><span id="LLU::ErrorCode::NumericalError__i"></span><span class="target" id="namespaceLLU_1_1ErrorCode_1a086dd6451b6eb901a34f4a3b2154bd24"></span><em class="property">constexpr</em> int <code class="sig-name descname">NumericalError</code> = 4<a class="headerlink" href="#_CPPv4N3LLU9ErrorCode14NumericalErrorE" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>same as LIBRARY_NUMERICAL_ERROR </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt id="_CPPv4N3LLU9ErrorCode15DimensionsErrorE">
+<span id="_CPPv3N3LLU9ErrorCode15DimensionsErrorE"></span><span id="_CPPv2N3LLU9ErrorCode15DimensionsErrorE"></span><span id="LLU::ErrorCode::DimensionsError__i"></span><span class="target" id="namespaceLLU_1_1ErrorCode_1a7b4f59fdd8a853bc2269ff62ba1b15fc"></span><em class="property">constexpr</em> int <code class="sig-name descname">DimensionsError</code> = 3<a class="headerlink" href="#_CPPv4N3LLU9ErrorCode15DimensionsErrorE" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>same as LIBRARY_DIMENSIONS_ERROR </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt id="_CPPv4N3LLU9ErrorCode9RankErrorE">
+<span id="_CPPv3N3LLU9ErrorCode9RankErrorE"></span><span id="_CPPv2N3LLU9ErrorCode9RankErrorE"></span><span id="LLU::ErrorCode::RankError__i"></span><span class="target" id="namespaceLLU_1_1ErrorCode_1a6d44a48f8a7d84c8727af05b72d382ba"></span><em class="property">constexpr</em> int <code class="sig-name descname">RankError</code> = 2<a class="headerlink" href="#_CPPv4N3LLU9ErrorCode9RankErrorE" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>same as LIBRARY_RANK_ERROR </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt id="_CPPv4N3LLU9ErrorCode9TypeErrorE">
+<span id="_CPPv3N3LLU9ErrorCode9TypeErrorE"></span><span id="_CPPv2N3LLU9ErrorCode9TypeErrorE"></span><span id="LLU::ErrorCode::TypeError__i"></span><span class="target" id="namespaceLLU_1_1ErrorCode_1ac36814535d3c8a81b190757fc4b9f43f"></span><em class="property">constexpr</em> int <code class="sig-name descname">TypeError</code> = 1<a class="headerlink" href="#_CPPv4N3LLU9ErrorCode9TypeErrorE" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>same as LIBRARY_TYPE_ERROR </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt id="_CPPv4N3LLU9ErrorCode7NoErrorE">
+<span id="_CPPv3N3LLU9ErrorCode7NoErrorE"></span><span id="_CPPv2N3LLU9ErrorCode7NoErrorE"></span><span id="LLU::ErrorCode::NoError__i"></span><span class="target" id="namespaceLLU_1_1ErrorCode_1af99b54bbdcd8044fc71f1abf32f042e2"></span><em class="property">constexpr</em> int <code class="sig-name descname">NoError</code> = 0<a class="headerlink" href="#_CPPv4N3LLU9ErrorCode7NoErrorE" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>same as LIBRARY_NO_ERROR </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="cpp class">
+<dt id="_CPPv4N3LLU16LibraryLinkErrorE">
+<span id="_CPPv3N3LLU16LibraryLinkErrorE"></span><span id="_CPPv2N3LLU16LibraryLinkErrorE"></span><span id="LLU::LibraryLinkError"></span><span class="target" id="classLLU_1_1LibraryLinkError"></span><em class="property">class </em><code class="sig-prename descclassname">LLU<code class="sig-prename descclassname">::</code></code><code class="sig-name descname">LibraryLinkError</code> : <em class="property">public</em> runtime_error<a class="headerlink" href="#_CPPv4N3LLU16LibraryLinkErrorE" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Class representing an exception in paclet code. </p>
+<p>All exceptions that are thrown from paclet code should be of this class. To prevent users from overriding predefined LLU exceptions the constructor of <a class="reference internal" href="#classLLU_1_1LibraryLinkError"><span class="std std-ref">LibraryLinkError</span></a> class is private. Developers should use <a class="reference internal" href="#classLLU_1_1ErrorManager_1addc65020e68159f0114dba9058e461fc"><span class="std std-ref">ErrorManager::throwException</span></a> method to throw exceptions. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Types</p>
+<dl class="cpp type">
+<dt id="_CPPv4N3LLU16LibraryLinkError6IdTypeE">
+<span id="_CPPv3N3LLU16LibraryLinkError6IdTypeE"></span><span id="_CPPv2N3LLU16LibraryLinkError6IdTypeE"></span><span class="target" id="classLLU_1_1LibraryLinkError_1a3e2658b6426aa67f6476e3aa5974ddff"></span><em class="property">using </em><code class="sig-name descname">IdType</code> = int<a class="headerlink" href="#_CPPv4N3LLU16LibraryLinkError6IdTypeE" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>A type that holds error id numbers. </p>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Functions</p>
+<dl class="cpp function">
+<dt id="_CPPv4N3LLU16LibraryLinkError16LibraryLinkErrorERK16LibraryLinkError">
+<span id="_CPPv3N3LLU16LibraryLinkError16LibraryLinkErrorERK16LibraryLinkError"></span><span id="_CPPv2N3LLU16LibraryLinkError16LibraryLinkErrorERK16LibraryLinkError"></span><span id="LLU::LibraryLinkError::LibraryLinkError__LibraryLinkErrorCR"></span><span class="target" id="classLLU_1_1LibraryLinkError_1aea826d1fb509d891c212568bfccdd081"></span><code class="sig-name descname">LibraryLinkError</code><span class="sig-paren">(</span><em class="property">const</em> <a class="reference internal" href="#_CPPv4N3LLU16LibraryLinkError16LibraryLinkErrorERK16LibraryLinkError" title="LLU::LibraryLinkError::LibraryLinkError">LibraryLinkError</a> &amp;<em>e</em><span class="sig-paren">)</span> <em class="property">noexcept</em><a class="headerlink" href="#_CPPv4N3LLU16LibraryLinkError16LibraryLinkErrorERK16LibraryLinkError" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Copy-constructor. If there are any messages parameters on the WSLINK, a deep copy is performed. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4N3LLU16LibraryLinkErroraSERK16LibraryLinkError">
+<span id="_CPPv3N3LLU16LibraryLinkErroraSERK16LibraryLinkError"></span><span id="_CPPv2N3LLU16LibraryLinkErroraSERK16LibraryLinkError"></span><span id="LLU::LibraryLinkError::assign-operator__LibraryLinkErrorCR"></span><span class="target" id="classLLU_1_1LibraryLinkError_1af8eee5a5e7842a2ac33dd6287d2e852d"></span><a class="reference internal" href="#_CPPv4N3LLU16LibraryLinkErrorE" title="LLU::LibraryLinkError">LibraryLinkError</a> &amp;<code class="sig-name descname">operator=</code><span class="sig-paren">(</span><em class="property">const</em> <a class="reference internal" href="#_CPPv4N3LLU16LibraryLinkErrorE" title="LLU::LibraryLinkError">LibraryLinkError</a> &amp;<em>e</em><span class="sig-paren">)</span> <em class="property">noexcept</em><a class="headerlink" href="#_CPPv4N3LLU16LibraryLinkErroraSERK16LibraryLinkError" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Copy-assignment operator. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4N3LLU16LibraryLinkError16LibraryLinkErrorERR16LibraryLinkError">
+<span id="_CPPv3N3LLU16LibraryLinkError16LibraryLinkErrorERR16LibraryLinkError"></span><span id="_CPPv2N3LLU16LibraryLinkError16LibraryLinkErrorERR16LibraryLinkError"></span><span id="LLU::LibraryLinkError::LibraryLinkError__LibraryLinkErrorRR"></span><span class="target" id="classLLU_1_1LibraryLinkError_1aaa3d947059f22d6c3fc873ea3cce0f77"></span><code class="sig-name descname">LibraryLinkError</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4N3LLU16LibraryLinkError16LibraryLinkErrorERR16LibraryLinkError" title="LLU::LibraryLinkError::LibraryLinkError">LibraryLinkError</a> &amp;&amp;<em>e</em><span class="sig-paren">)</span> <em class="property">noexcept</em><a class="headerlink" href="#_CPPv4N3LLU16LibraryLinkError16LibraryLinkErrorERR16LibraryLinkError" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Move-constructor. Steals messagesParams from <code class="docutils literal notranslate"><span class="pre">e</span></code>. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4N3LLU16LibraryLinkErroraSERR16LibraryLinkError">
+<span id="_CPPv3N3LLU16LibraryLinkErroraSERR16LibraryLinkError"></span><span id="_CPPv2N3LLU16LibraryLinkErroraSERR16LibraryLinkError"></span><span id="LLU::LibraryLinkError::assign-operator__LibraryLinkErrorRR"></span><span class="target" id="classLLU_1_1LibraryLinkError_1a3d8c6f43cb1230b92796e6ab94629e5f"></span><a class="reference internal" href="#_CPPv4N3LLU16LibraryLinkErrorE" title="LLU::LibraryLinkError">LibraryLinkError</a> &amp;<code class="sig-name descname">operator=</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4N3LLU16LibraryLinkErrorE" title="LLU::LibraryLinkError">LibraryLinkError</a> &amp;&amp;<em>e</em><span class="sig-paren">)</span> <em class="property">noexcept</em><a class="headerlink" href="#_CPPv4N3LLU16LibraryLinkErroraSERR16LibraryLinkError" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Move-assignment operator. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4N3LLU16LibraryLinkErrorD0Ev">
+<span id="_CPPv3N3LLU16LibraryLinkErrorD0Ev"></span><span id="_CPPv2N3LLU16LibraryLinkErrorD0Ev"></span><span id="LLU::LibraryLinkError::~LibraryLinkError"></span><span class="target" id="classLLU_1_1LibraryLinkError_1ae89105f0823f0d715e7cf70a9911b62b"></span><code class="sig-name descname">~LibraryLinkError</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">override</em><a class="headerlink" href="#_CPPv4N3LLU16LibraryLinkErrorD0Ev" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>The destructor closes the link that was used to send message parameters, if any. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4N3LLU16LibraryLinkError12setDebugInfoERKNSt6stringE">
+<span id="_CPPv3N3LLU16LibraryLinkError12setDebugInfoERKNSt6stringE"></span><span id="_CPPv2N3LLU16LibraryLinkError12setDebugInfoERKNSt6stringE"></span><span id="LLU::LibraryLinkError::setDebugInfo__ssCR"></span><span class="target" id="classLLU_1_1LibraryLinkError_1a1102a5a36b77daa80773643e17b3086b"></span>void <code class="sig-name descname">setDebugInfo</code><span class="sig-paren">(</span><em class="property">const</em> std::string &amp;<em>dbg</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3LLU16LibraryLinkError12setDebugInfoERKNSt6stringE" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Set debug info. </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">dbg</span></code>: - additional information helpful in debugging </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4NK3LLU16LibraryLinkError2idEv">
+<span id="_CPPv3NK3LLU16LibraryLinkError2idEv"></span><span id="_CPPv2NK3LLU16LibraryLinkError2idEv"></span><span id="LLU::LibraryLinkError::idC"></span><span class="target" id="classLLU_1_1LibraryLinkError_1a332f1be3922740c5e5d96a05fa403da9"></span><a class="reference internal" href="#_CPPv4N3LLU16LibraryLinkError6IdTypeE" title="LLU::LibraryLinkError::IdType">IdType</a> <code class="sig-name descname">id</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em> <em class="property">noexcept</em><a class="headerlink" href="#_CPPv4NK3LLU16LibraryLinkError2idEv" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Get the value of error code. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4NK3LLU16LibraryLinkError5whichEv">
+<span id="_CPPv3NK3LLU16LibraryLinkError5whichEv"></span><span id="_CPPv2NK3LLU16LibraryLinkError5whichEv"></span><span id="LLU::LibraryLinkError::whichC"></span><span class="target" id="classLLU_1_1LibraryLinkError_1a2c324d8b04f62b4b1f2a7dc3cf8cac32"></span><a class="reference internal" href="#_CPPv4N3LLU16LibraryLinkError6IdTypeE" title="LLU::LibraryLinkError::IdType">IdType</a> <code class="sig-name descname">which</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em> <em class="property">noexcept</em><a class="headerlink" href="#_CPPv4NK3LLU16LibraryLinkError5whichEv" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Alias for <a class="reference internal" href="#classLLU_1_1LibraryLinkError_1a332f1be3922740c5e5d96a05fa403da9"><span class="std std-ref">id()</span></a> to preserve backwards compatibility. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4NK3LLU16LibraryLinkError4nameEv">
+<span id="_CPPv3NK3LLU16LibraryLinkError4nameEv"></span><span id="_CPPv2NK3LLU16LibraryLinkError4nameEv"></span><span id="LLU::LibraryLinkError::nameC"></span><span class="target" id="classLLU_1_1LibraryLinkError_1a7c230ebb18982b44493f63e9c8e70538"></span>std::string <code class="sig-name descname">name</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em> <em class="property">noexcept</em><a class="headerlink" href="#_CPPv4NK3LLU16LibraryLinkError4nameEv" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Get the value of error code. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4NK3LLU16LibraryLinkError7messageEv">
+<span id="_CPPv3NK3LLU16LibraryLinkError7messageEv"></span><span id="_CPPv2NK3LLU16LibraryLinkError7messageEv"></span><span id="LLU::LibraryLinkError::messageC"></span><span class="target" id="classLLU_1_1LibraryLinkError_1a62fd380323f302bdd53afbd56bf961e9"></span>std::string <code class="sig-name descname">message</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em> <em class="property">noexcept</em><a class="headerlink" href="#_CPPv4NK3LLU16LibraryLinkError7messageEv" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Get the value of error code. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4NK3LLU16LibraryLinkError5debugEv">
+<span id="_CPPv3NK3LLU16LibraryLinkError5debugEv"></span><span id="_CPPv2NK3LLU16LibraryLinkError5debugEv"></span><span id="LLU::LibraryLinkError::debugC"></span><span class="target" id="classLLU_1_1LibraryLinkError_1ad17580919515dfabd2dc2112b0afcc13"></span>std::string <code class="sig-name descname">debug</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em> <em class="property">noexcept</em><a class="headerlink" href="#_CPPv4NK3LLU16LibraryLinkError5debugEv" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Get debug info. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4IDpEN3LLU16LibraryLinkError20setMessageParametersEv18WolframLibraryDataDpRR1T">
+<span id="_CPPv3IDpEN3LLU16LibraryLinkError20setMessageParametersE18WolframLibraryDataDpRR1T"></span><span id="_CPPv2IDpEN3LLU16LibraryLinkError20setMessageParametersE18WolframLibraryDataDpRR1T"></span>template&lt;typename ...<code class="sig-name descname">T</code>&gt;<br /><span class="target" id="classLLU_1_1LibraryLinkError_1ac1cc68b21ba7eedce18dddd20cf60400"></span>void <code class="sig-name descname">setMessageParameters</code><span class="sig-paren">(</span>WolframLibraryData <em>libData</em>, <a class="reference internal" href="#_CPPv4IDpEN3LLU16LibraryLinkError20setMessageParametersEv18WolframLibraryDataDpRR1T" title="LLU::LibraryLinkError::setMessageParameters::T">T</a>&amp;&amp;... <em>params</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4IDpEN3LLU16LibraryLinkError20setMessageParametersEv18WolframLibraryDataDpRR1T" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Store arbitrary number of message parameters in a List expression on a loopback link. </p>
+<p>They will travel with the exception until <code class="docutils literal notranslate"><span class="pre">sendParameters</span></code> is called on the exception. <dl class="simple">
+<dt><strong>Template Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">T</span></code>: - any type(s) that <a class="reference internal" href="wstp.html#classLLU_1_1WSStream"><span class="std std-ref">WSStream</span></a> supports </p></li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">libData</span></code>: - WolframLibraryData, if nullptr, the parameters will not be send </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">params</span></code>: - any number of message parameters </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4NK3LLU16LibraryLinkError14sendParametersE18WolframLibraryDataRKNSt6stringE">
+<span id="_CPPv3NK3LLU16LibraryLinkError14sendParametersE18WolframLibraryDataRKNSt6stringE"></span><span id="_CPPv2NK3LLU16LibraryLinkError14sendParametersE18WolframLibraryDataRKNSt6stringE"></span><span id="LLU::LibraryLinkError::sendParameters__WolframLibraryData.ssCRC"></span><span class="target" id="classLLU_1_1LibraryLinkError_1a4fb391503222ec99629b6059b138b1fa"></span><a class="reference internal" href="#_CPPv4N3LLU16LibraryLinkError6IdTypeE" title="LLU::LibraryLinkError::IdType">IdType</a> <code class="sig-name descname">sendParameters</code><span class="sig-paren">(</span>WolframLibraryData <em>libData</em>, <em class="property">const</em> std::string &amp;<em>WLSymbol</em> = <a class="reference internal" href="#_CPPv4N3LLU16LibraryLinkError25getExceptionDetailsSymbolEv" title="LLU::LibraryLinkError::getExceptionDetailsSymbol">getExceptionDetailsSymbol</a>()<span class="sig-paren">)</span> <em class="property">const</em> <em class="property">noexcept</em><a class="headerlink" href="#_CPPv4NK3LLU16LibraryLinkError14sendParametersE18WolframLibraryDataRKNSt6stringE" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Send parameters stored in the loopback link to top-level. </p>
+<p>They will be assigned as a List to symbol passed in <code class="docutils literal notranslate"><span class="pre">WLSymbol</span></code> parameter. <dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">libData</span></code>: - WolframLibraryData, if nullptr, the parameters will not be send </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">WLSymbol</span></code>: - symbol to assign parameters to in top-level </p></li>
+</ul>
+</dd>
+<dt><strong>Return</strong></dt><dd><p>LLErrorCode because this function is noexcept </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Static Functions</p>
+<dl class="cpp function">
+<dt id="_CPPv4N3LLU16LibraryLinkError25getExceptionDetailsSymbolEv">
+<span id="_CPPv3N3LLU16LibraryLinkError25getExceptionDetailsSymbolEv"></span><span id="_CPPv2N3LLU16LibraryLinkError25getExceptionDetailsSymbolEv"></span><span id="LLU::LibraryLinkError::getExceptionDetailsSymbol"></span><span class="target" id="classLLU_1_1LibraryLinkError_1a8e49c0bccfe0d0df182737c4222ac1aa"></span>std::string <code class="sig-name descname">getExceptionDetailsSymbol</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3LLU16LibraryLinkError25getExceptionDetailsSymbolEv" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Get symbol that will hold details of last thrown exception. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>a WL symbol </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4N3LLU16LibraryLinkError32setExceptionDetailsSymbolContextENSt6stringE">
+<span id="_CPPv3N3LLU16LibraryLinkError32setExceptionDetailsSymbolContextENSt6stringE"></span><span id="_CPPv2N3LLU16LibraryLinkError32setExceptionDetailsSymbolContextENSt6stringE"></span><span id="LLU::LibraryLinkError::setExceptionDetailsSymbolContext__ss"></span><span class="target" id="classLLU_1_1LibraryLinkError_1af26e779386bc2d6384793842e37f8732"></span>void <code class="sig-name descname">setExceptionDetailsSymbolContext</code><span class="sig-paren">(</span>std::string <em>newContext</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3LLU16LibraryLinkError32setExceptionDetailsSymbolContextENSt6stringE" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Set custom context for the Wolfram Language symbol that will hold the details of last thrown exception. </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">newContext</span></code>: - any valid WL context, it <strong>must</strong> end with a backtick (`) </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4N3LLU16LibraryLinkError32getExceptionDetailsSymbolContextEv">
+<span id="_CPPv3N3LLU16LibraryLinkError32getExceptionDetailsSymbolContextEv"></span><span id="_CPPv2N3LLU16LibraryLinkError32getExceptionDetailsSymbolContextEv"></span><span id="LLU::LibraryLinkError::getExceptionDetailsSymbolContext"></span><span class="target" id="classLLU_1_1LibraryLinkError_1aef21c135612da7f436c7f111a7a40076"></span><em class="property">const</em> std::string &amp;<code class="sig-name descname">getExceptionDetailsSymbolContext</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3LLU16LibraryLinkError32getExceptionDetailsSymbolContextEv" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Get current context of the symbol that will hold the details of last thrown exception. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>a WL context </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="cpp class">
+<dt id="_CPPv4N3LLU12ErrorManagerE">
+<span id="_CPPv3N3LLU12ErrorManagerE"></span><span id="_CPPv2N3LLU12ErrorManagerE"></span><span id="LLU::ErrorManager"></span><span class="target" id="classLLU_1_1ErrorManager"></span><em class="property">class </em><code class="sig-prename descclassname">LLU<code class="sig-prename descclassname">::</code></code><code class="sig-name descname">ErrorManager</code><a class="headerlink" href="#_CPPv4N3LLU12ErrorManagerE" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>“Static” class responsible for error registration and throwing </p>
+<p><a class="reference internal" href="#classLLU_1_1ErrorManager"><span class="std std-ref">ErrorManager</span></a> holds a map with all errors that may be thrown from paclet code. These are: LLU errors, framework errors (e.g. MDevices) and paclet-specific errors which should be registered (for example in WolframLibrary_initialize) using registerPacletErrors function. Developers must never throw LibraryLinkErrors directly, instead they should use one of <a class="reference internal" href="#classLLU_1_1ErrorManager_1addc65020e68159f0114dba9058e461fc"><span class="std std-ref">ErrorManager::throwException</span></a> overloads. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Types</p>
+<dl class="cpp type">
+<dt id="_CPPv4N3LLU12ErrorManager15ErrorStringDataE">
+<span id="_CPPv3N3LLU12ErrorManager15ErrorStringDataE"></span><span id="_CPPv2N3LLU12ErrorManager15ErrorStringDataE"></span><span class="target" id="classLLU_1_1ErrorManager_1a5d4e152748f00fee78c3f92d92459a8d"></span><em class="property">using </em><code class="sig-name descname">ErrorStringData</code> = std::pair&lt;std::string, std::string&gt;<a class="headerlink" href="#_CPPv4N3LLU12ErrorManager15ErrorStringDataE" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>A type representing registered error in the form of 2 strings: short error name and longer error description. </p>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Functions</p>
+<dl class="cpp function">
+<dt id="_CPPv4N3LLU12ErrorManager12ErrorManagerEv">
+<span id="_CPPv3N3LLU12ErrorManager12ErrorManagerEv"></span><span id="_CPPv2N3LLU12ErrorManager12ErrorManagerEv"></span><span id="LLU::ErrorManager::ErrorManager"></span><span class="target" id="classLLU_1_1ErrorManager_1ab07d0cb953b892b86803443666850c47"></span><code class="sig-name descname">ErrorManager</code><span class="sig-paren">(</span><span class="sig-paren">)</span> = delete<a class="headerlink" href="#_CPPv4N3LLU12ErrorManager12ErrorManagerEv" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Default constructor is deleted since <a class="reference internal" href="#classLLU_1_1ErrorManager"><span class="std std-ref">ErrorManager</span></a> is supposed to be completely static. </p>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Static Functions</p>
+<dl class="cpp function">
+<dt id="_CPPv4N3LLU12ErrorManager20registerPacletErrorsERKNSt6vectorI15ErrorStringDataEE">
+<span id="_CPPv3N3LLU12ErrorManager20registerPacletErrorsERKNSt6vectorI15ErrorStringDataEE"></span><span id="_CPPv2N3LLU12ErrorManager20registerPacletErrorsERKNSt6vectorI15ErrorStringDataEE"></span><span id="LLU::ErrorManager::registerPacletErrors__std::vector:ErrorStringData:CR"></span><span class="target" id="classLLU_1_1ErrorManager_1ab7ead8e629238e0b566519cde91bedb6"></span>void <code class="sig-name descname">registerPacletErrors</code><span class="sig-paren">(</span><em class="property">const</em> std::vector&lt;<a class="reference internal" href="#_CPPv4N3LLU12ErrorManager15ErrorStringDataE" title="LLU::ErrorManager::ErrorStringData">ErrorStringData</a>&gt; &amp;<em>errors</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3LLU12ErrorManager20registerPacletErrorsERKNSt6vectorI15ErrorStringDataEE" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Function used to register paclet-specific errors. </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">errors</span></code>: - a list of pairs: {“ErrorName”, “Short string with error description”} </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4IDpEN3LLU12ErrorManager14throwExceptionEvRKNSt6stringEDpRR1T">
+<span id="_CPPv3IDpEN3LLU12ErrorManager14throwExceptionERKNSt6stringEDpRR1T"></span><span id="_CPPv2IDpEN3LLU12ErrorManager14throwExceptionERKNSt6stringEDpRR1T"></span>template&lt;typename ...<code class="sig-name descname">T</code>&gt;<br /><span class="target" id="classLLU_1_1ErrorManager_1addc65020e68159f0114dba9058e461fc"></span>void <code class="sig-name descname">throwException</code><span class="sig-paren">(</span><em class="property">const</em> std::string &amp;<em>errorName</em>, <a class="reference internal" href="#_CPPv4IDpEN3LLU12ErrorManager14throwExceptionEvRKNSt6stringEDpRR1T" title="LLU::ErrorManager::throwException::T">T</a>&amp;&amp;... <em>args</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4IDpEN3LLU12ErrorManager14throwExceptionEvRKNSt6stringEDpRR1T" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Throw exception with given name. </p>
+<p>Optionally, pass arbitrary details of the exception occurrence and they will be stored on a loopback link in the exception object. Those details may later be sent via WSTP to top-level and assigned as a List to to the symbol specified in ErrorManager::exceptionDetailsSymbol. To trigger exception details transfer one should call <a class="reference internal" href="#classLLU_1_1LibraryLinkError_1a4fb391503222ec99629b6059b138b1fa"><span class="std std-ref">LibraryLinkError::sendParameters</span></a> on the exception object. However, if ErrorManager::sendParametersImmediately is set to true, this call will be done automatically in throwException. <dl class="simple">
+<dt><strong>Template Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">T</span></code>: - type template parameter pack </p></li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">errorName</span></code>: - name of error to be thrown, must be registered beforehand </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">args</span></code>: - any number of arguments that will replace TemplateSlots (`<code class="docutils literal notranslate"><span class="pre">,</span></code>1<code class="docutils literal notranslate"><span class="pre">,</span></code>xx`, etd) in the message text in top-level </p></li>
+</ul>
+</dd>
+<dt><strong>Note</strong></dt><dd><p>This function requires a copy of WolframLibraryData to be saved in WolframLibrary_initialize via LibraryData::setLibraryData or MArgumentManager::setLibraryData. </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4IDpEN3LLU12ErrorManager14throwExceptionEv18WolframLibraryDataRKNSt6stringEDpRR1T">
+<span id="_CPPv3IDpEN3LLU12ErrorManager14throwExceptionE18WolframLibraryDataRKNSt6stringEDpRR1T"></span><span id="_CPPv2IDpEN3LLU12ErrorManager14throwExceptionE18WolframLibraryDataRKNSt6stringEDpRR1T"></span>template&lt;typename ...<code class="sig-name descname">T</code>&gt;<br /><span class="target" id="classLLU_1_1ErrorManager_1accbbbb43fe1a9378b68a971a429a0816"></span>void <code class="sig-name descname">throwException</code><span class="sig-paren">(</span>WolframLibraryData <em>libData</em>, <em class="property">const</em> std::string &amp;<em>errorName</em>, <a class="reference internal" href="#_CPPv4IDpEN3LLU12ErrorManager14throwExceptionEv18WolframLibraryDataRKNSt6stringEDpRR1T" title="LLU::ErrorManager::throwException::T">T</a>&amp;&amp;... <em>args</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4IDpEN3LLU12ErrorManager14throwExceptionEv18WolframLibraryDataRKNSt6stringEDpRR1T" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Throw exception with given name. </p>
+<p>Optionally, pass arbitrary details of the exception occurrence and they will be stored on a loopback link in the exception object. Those details may later be sent via WSTP to top-level and assigned as a List to to the symbol specified in ErrorManager::exceptionDetailsSymbol. To trigger exception details transfer one should call <a class="reference internal" href="#classLLU_1_1LibraryLinkError_1a4fb391503222ec99629b6059b138b1fa"><span class="std std-ref">LibraryLinkError::sendParameters</span></a> on the exception object. However, if ErrorManager::sendParametersImmediately is set to true, this call will be done automatically in throwException. <dl class="simple">
+<dt><strong>Template Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">T</span></code>: - type template parameter pack </p></li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">libData</span></code>: - a copy of WolframLibraryData which should be used to extract the WSLINK for WSTP connection </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">errorName</span></code>: - name of error to be thrown, must be registered beforehand </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">args</span></code>: - any number of arguments that will replace TemplateSlots (`<code class="docutils literal notranslate"><span class="pre">,</span></code>1<code class="docutils literal notranslate"><span class="pre">,</span></code>xx`, etd) in the message text in top-level </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4I0DpEN3LLU12ErrorManager20throwCustomExceptionEvRKNSt6stringEDpRR4Args">
+<span id="_CPPv3I0DpEN3LLU12ErrorManager20throwCustomExceptionERKNSt6stringEDpRR4Args"></span><span id="_CPPv2I0DpEN3LLU12ErrorManager20throwCustomExceptionERKNSt6stringEDpRR4Args"></span>template&lt;class <code class="sig-name descname">Error</code>, typename ...<code class="sig-name descname">Args</code>&gt;<br /><span class="target" id="classLLU_1_1ErrorManager_1a5a4950f2ab187ebbef3f807ab784f594"></span>void <code class="sig-name descname">throwCustomException</code><span class="sig-paren">(</span><em class="property">const</em> std::string &amp;<em>errorName</em>, <a class="reference internal" href="#_CPPv4I0DpEN3LLU12ErrorManager20throwCustomExceptionEvRKNSt6stringEDpRR4Args" title="LLU::ErrorManager::throwCustomException::Args">Args</a>&amp;&amp;... <em>args</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0DpEN3LLU12ErrorManager20throwCustomExceptionEvRKNSt6stringEDpRR4Args" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Throw exception of given class that carries the error with given name. </p>
+<p>This is useful if you want to throw custom exception classes from your paclet and still see the nice Failure objects in top-level.</p>
+<p><dl class="simple">
+<dt><strong>Template Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Error</span></code>: - custom exception class it must define a constructor that takes a <a class="reference internal" href="#classLLU_1_1LibraryLinkError"><span class="std std-ref">LibraryLinkError</span></a> as first parameter but it doesn’t have to derive from <a class="reference internal" href="#classLLU_1_1LibraryLinkError"><span class="std std-ref">LibraryLinkError</span></a> </p></li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">errorName</span></code>: - name of error to be thrown </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">args</span></code>: - additional arguments that will be perfectly forwarded to the constructor of Error class </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4IDpEN3LLU12ErrorManager27throwExceptionWithDebugInfoEvRKNSt6stringERKNSt6stringEDpRR1T">
+<span id="_CPPv3IDpEN3LLU12ErrorManager27throwExceptionWithDebugInfoERKNSt6stringERKNSt6stringEDpRR1T"></span><span id="_CPPv2IDpEN3LLU12ErrorManager27throwExceptionWithDebugInfoERKNSt6stringERKNSt6stringEDpRR1T"></span>template&lt;typename ...<code class="sig-name descname">T</code>&gt;<br /><span class="target" id="classLLU_1_1ErrorManager_1af7f8ceaa432c2521f75f1a0550d4968c"></span>void <code class="sig-name descname">throwExceptionWithDebugInfo</code><span class="sig-paren">(</span><em class="property">const</em> std::string &amp;<em>errorName</em>, <em class="property">const</em> std::string &amp;<em>debugInfo</em>, <a class="reference internal" href="#_CPPv4IDpEN3LLU12ErrorManager27throwExceptionWithDebugInfoEvRKNSt6stringERKNSt6stringEDpRR1T" title="LLU::ErrorManager::throwExceptionWithDebugInfo::T">T</a>&amp;&amp;... <em>args</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4IDpEN3LLU12ErrorManager27throwExceptionWithDebugInfoEvRKNSt6stringERKNSt6stringEDpRR1T" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Throw exception with given name and additional information that might be helpful in debugging. </p>
+<p>Optionally, pass arbitrary details of the exception occurrence and they will be stored on a loopback link in the exception object. Those details may later be sent via WSTP to top-level and assigned as a List to to the symbol specified in ErrorManager::exceptionDetailsSymbol. To trigger exception details transfer one should call <a class="reference internal" href="#classLLU_1_1LibraryLinkError_1a4fb391503222ec99629b6059b138b1fa"><span class="std std-ref">LibraryLinkError::sendParameters</span></a> on the exception object. However, if ErrorManager::sendParametersImmediately is set to true, this call will be done automatically in throwException. The debugInfo is a string stored inside the <a class="reference internal" href="#classLLU_1_1LibraryLinkError"><span class="std std-ref">LibraryLinkError</span></a> object. It is never transferred to top-level but might be for example logged to a file in a “catch” block in C++ code. <dl class="simple">
+<dt><strong>Template Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">T</span></code>: - type template parameter pack </p></li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">errorName</span></code>: - name of error to be thrown, must be registered beforehand </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">debugInfo</span></code>: - additional message with debug info, this message will not be passed to top-level Failure object </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">args</span></code>: - any number of arguments that will replace TemplateSlots (`<code class="docutils literal notranslate"><span class="pre">,</span></code>1<code class="docutils literal notranslate"><span class="pre">,</span></code>xx`, etd) in the message text in top-level </p></li>
+</ul>
+</dd>
+<dt><strong>Note</strong></dt><dd><p>This function requires a copy of WolframLibraryData to be saved in WolframLibrary_initialize via LibraryData::setLibraryData or MArgumentManager::setLibraryData. </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4IDpEN3LLU12ErrorManager27throwExceptionWithDebugInfoEv18WolframLibraryDataRKNSt6stringERKNSt6stringEDpRR1T">
+<span id="_CPPv3IDpEN3LLU12ErrorManager27throwExceptionWithDebugInfoE18WolframLibraryDataRKNSt6stringERKNSt6stringEDpRR1T"></span><span id="_CPPv2IDpEN3LLU12ErrorManager27throwExceptionWithDebugInfoE18WolframLibraryDataRKNSt6stringERKNSt6stringEDpRR1T"></span>template&lt;typename ...<code class="sig-name descname">T</code>&gt;<br /><span class="target" id="classLLU_1_1ErrorManager_1a292b2667f9049a20290545e6ccc4bcc4"></span>void <code class="sig-name descname">throwExceptionWithDebugInfo</code><span class="sig-paren">(</span>WolframLibraryData <em>libData</em>, <em class="property">const</em> std::string &amp;<em>errorName</em>, <em class="property">const</em> std::string &amp;<em>debugInfo</em>, <a class="reference internal" href="#_CPPv4IDpEN3LLU12ErrorManager27throwExceptionWithDebugInfoEv18WolframLibraryDataRKNSt6stringERKNSt6stringEDpRR1T" title="LLU::ErrorManager::throwExceptionWithDebugInfo::T">T</a>&amp;&amp;... <em>args</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4IDpEN3LLU12ErrorManager27throwExceptionWithDebugInfoEv18WolframLibraryDataRKNSt6stringERKNSt6stringEDpRR1T" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Throw exception with given name and additional information that might be helpful in debugging. </p>
+<p>Optionally, pass arbitrary details of the exception occurrence and they will be stored on a loopback link in the exception object. Those details may later be sent via WSTP to top-level and assigned as a List to to the symbol specified in ErrorManager::exceptionDetailsSymbol. To trigger exception details transfer one should call <a class="reference internal" href="#classLLU_1_1LibraryLinkError_1a4fb391503222ec99629b6059b138b1fa"><span class="std std-ref">LibraryLinkError::sendParameters</span></a> on the exception object. However, if ErrorManager::sendParametersImmediately is set to true, this call will be done automatically in throwException. The debugInfo is a string stored inside the <a class="reference internal" href="#classLLU_1_1LibraryLinkError"><span class="std std-ref">LibraryLinkError</span></a> object. It is never transferred to top-level but might be for example logged to a file in a “catch” block in C++ code. <dl class="simple">
+<dt><strong>Template Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">T</span></code>: - type template parameter pack </p></li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">libData</span></code>: - a copy of WolframLibraryData which should be used to extract the WSLINK for WSTP connection </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">errorName</span></code>: - name of error to be thrown, must be registered beforehand </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">debugInfo</span></code>: - additional message with debug info, this message will not be passed to top-level Failure object </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">args</span></code>: - any number of arguments that will replace TemplateSlots (`<code class="docutils literal notranslate"><span class="pre">,</span></code>1<code class="docutils literal notranslate"><span class="pre">,</span></code>xx`, etd) in the message text in top-level </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4N3LLU12ErrorManager28setSendParametersImmediatelyEb">
+<span id="_CPPv3N3LLU12ErrorManager28setSendParametersImmediatelyEb"></span><span id="_CPPv2N3LLU12ErrorManager28setSendParametersImmediatelyEb"></span><span id="LLU::ErrorManager::setSendParametersImmediately__b"></span><span class="target" id="classLLU_1_1ErrorManager_1a88d26dc9275333555644a23909089eca"></span>void <code class="sig-name descname">setSendParametersImmediately</code><span class="sig-paren">(</span>bool <em>newValue</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3LLU12ErrorManager28setSendParametersImmediatelyEb" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Sets new value for the sendParametersImmediately flag. </p>
+<p>Pass false to make sure that exception do not send their parameters to top-level when they are thrown. This is essential in multithreaded applications since the WL symbol that parameters are assigned to may be treated as a global shared resource. It is recommended to use this method in WolframLibrary_initialize. <dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">newValue</span></code>: - new value for the sendParametersImmediately flag </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4N3LLU12ErrorManager28getSendParametersImmediatelyEv">
+<span id="_CPPv3N3LLU12ErrorManager28getSendParametersImmediatelyEv"></span><span id="_CPPv2N3LLU12ErrorManager28getSendParametersImmediatelyEv"></span><span id="LLU::ErrorManager::getSendParametersImmediately"></span><span class="target" id="classLLU_1_1ErrorManager_1a81cfb9d20917b2257b2bc6ae82537795"></span>bool <code class="sig-name descname">getSendParametersImmediately</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3LLU12ErrorManager28getSendParametersImmediatelyEv" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Get the current value of sendParametersImmediately flag. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>current value of sendParametersImmediately flag. </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4N3LLU12ErrorManager27sendRegisteredErrorsViaWSTPE6WSLINK">
+<span id="_CPPv3N3LLU12ErrorManager27sendRegisteredErrorsViaWSTPE6WSLINK"></span><span id="_CPPv2N3LLU12ErrorManager27sendRegisteredErrorsViaWSTPE6WSLINK"></span><span id="LLU::ErrorManager::sendRegisteredErrorsViaWSTP__WSLINK"></span><span class="target" id="classLLU_1_1ErrorManager_1a7ec3ca9bef1f664e9532aba6b1e76b6a"></span>void <code class="sig-name descname">sendRegisteredErrorsViaWSTP</code><span class="sig-paren">(</span>WSLINK <em>mlp</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3LLU12ErrorManager27sendRegisteredErrorsViaWSTPE6WSLINK" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Function used to send all registered errors to top-level Mathematica code. </p>
+<p>Sending registered errors allows for nice and meaningful Failure objects to be generated when paclet function fails in top level, instead of usual LibraryFunctionError expressions. <dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">mlp</span></code>: - active WSTP connection </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+<p class="rubric">Footnotes</p>
+<dl class="footnote brackets">
+<dt class="label" id="id2"><span class="brackets"><a class="fn-backref" href="#id1">1</a></span></dt>
+<dd><p>One more possible signature is <code class="docutils literal notranslate"><span class="pre">int</span> <span class="pre">f(WolframLibraryData,</span> <span class="pre">WSLINK)</span></code>. For such functions error handling is done in the same way.</p>
+</dd>
+</dl>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="wstp.html" class="btn btn-neutral float-right" title="WSTP support" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="containers.html" class="btn btn-neutral" title="Containers" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright Wolfram Research.
+      Last updated on Oct 06, 2020.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> and ❤️  using a custom <a href="https://github.com/LinxiFan/Sphinx-theme">theme</a> based on <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'3.0.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="../_static/language_data.js"></script>
+      <script type="text/javascript" src="../_static/js/custom.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

@@ -1,0 +1,308 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Use in paclets &mdash; LibraryLink Utilities 3.0.0 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/favicon-32.png"/>
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+  
+
+  
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="LibraryLink Utilities 3.0.0 documentation" href="../index.html"/>
+        <link rel="next" title="CMake utility functions" href="cmake_utilities.html"/>
+        <link rel="prev" title="Progress monitor" href="../modules/progress_monitor.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> LibraryLink Utilities
+          
+
+          
+            
+            <img src="../_static/LLULogo.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                3.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <p class="caption"><span class="caption-text">Basic Info</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Intro</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basic/how_to_use.html">How to use</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://actual-doxygen-docs-link-goes.here">API reference (Doxygen ↪)</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Modules</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../modules/functions.html">Library functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/containers.html">Containers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/error_handling.html">Error handling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/wstp.html">WSTP support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/managed_expressions.html">Managed expressions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/logger.html">Logging and debug printing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/progress_monitor.html">Progress monitor</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Other Notes</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Use in paclets</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#submodule">Submodule</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#paclets-that-use-llu">Paclets that use LLU</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="cmake_utilities.html">CMake utility functions</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">LibraryLink Utilities</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>Use in paclets</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="use-in-paclets">
+<h1>Use in paclets<a class="headerlink" href="#use-in-paclets" title="Permalink to this headline"> 🔗</a></h1>
+<div class="section" id="submodule">
+<h2>Submodule<a class="headerlink" href="#submodule" title="Permalink to this headline"> 🔗</a></h2>
+<p>In <a class="reference internal" href="../basic/how_to_use.html"><span class="doc">How to use</span></a> you can learn how to build and install <a class="reference internal" href="../index.html#term-LLU"><span class="xref std std-term">LLU</span></a> on your system and then use it as a dependent library for your Wolfram Language
+paclets. There exists an alternative approach which is often quite convenient if you plan to work on multiple paclets that may use different versions of LLU.
+This approach is to include LLU in a project as a git submodule. Submodules are simply git repos inside other repos but working with them may sometimes be
+tricky. See this excellent <a class="reference external" href="https://git-scm.com/book/en/v2/Git-Tools-Submodules">tutorial on submodules</a>.</p>
+<p>For SourceTree users there is also a helpful <a class="reference external" href="https://blog.sourcetreeapp.com/2012/02/01/using-submodules-and-subrepositories/">blog post</a>.</p>
+<p>In most cases you will access LibraryLink Utilities in “read-only” manner, i.e. you will just update the submodule to make sure you use the most recent version.</p>
+<p>Here is a list of commands that might be useful to developers who want to use LLU as a submodule. For the sake of example, assume that we have a sample paclet
+with a directory <code class="file docutils literal notranslate"><span class="pre">CPPSource/</span></code> containing all the C++ source code and that we want to place the submodule in this directory.
+It is easy to modify these commands so that they work for other locations too.</p>
+<ul>
+<li><p>Adding LibraryLink Utilities to your paclet</p>
+<blockquote>
+<div><div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">git submodule add **TODO: Insert LLU clone link** CPPSource/LibraryLinkUtilities</span>
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p>Cloning a project that already uses LibraryLink Utilities</p>
+<blockquote>
+<div><div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">git clone --recursive &lt;paclet&#39;s git clone link&gt;</span>
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p>Updating LibraryLink Utilities in your project</p>
+<blockquote>
+<div><div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">git submodule update --remote CPPSource/LibraryLinkUtilities/</span>
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+</ul>
+<p>Submodules work in a “detached head” state which means they stick to a chosen commit, so even if there are backwards incompatible changes merged to LLU master
+your project will not be affected unless you manually update the submodule.</p>
+<p>With LLU attached to your project in a submodule you always have the sources so you only need to follow steps 2 - 4 described
+<a class="reference internal" href="../basic/how_to_use.html"><span class="doc">in the official build instructions</span></a>.</p>
+</div>
+<div class="section" id="paclets-that-use-llu">
+<h2>Paclets that use LLU<a class="headerlink" href="#paclets-that-use-llu" title="Permalink to this headline"> 🔗</a></h2>
+<p>If you look for examples of LLU usage and whatever is in this documentation and in the Demo project was not enough, you can take a look at paclets built into
+the Wolfram Language that use LLU. You will not be able to see the C++ source code or the CMake build script but you can still investigate the paclet structure
+and the Wolfram Language code. Paclets can be found in the <code class="file docutils literal notranslate"><span class="pre">SystemFiles/Links</span></code> subdirectory of your installation.</p>
+<p>The list below may not be complete.</p>
+<ul class="simple">
+<li><p>ArchiveTools</p></li>
+<li><p>DICOMTools</p></li>
+<li><p>FFmpegTools</p></li>
+<li><p>SVTools</p></li>
+</ul>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="cmake_utilities.html" class="btn btn-neutral float-right" title="CMake utility functions" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../modules/progress_monitor.html" class="btn btn-neutral" title="Progress monitor" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright Wolfram Research.
+      Last updated on Oct 06, 2020.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> and ❤️  using a custom <a href="https://github.com/LinxiFan/Sphinx-theme">theme</a> based on <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'3.0.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="../_static/language_data.js"></script>
+      <script type="text/javascript" src="../_static/js/custom.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

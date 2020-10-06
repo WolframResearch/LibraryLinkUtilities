@@ -1,0 +1,561 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>LibraryLink Utilities &mdash; LibraryLink Utilities 3.0.0 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="_static/favicon-32.png"/>
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
+  
+
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="LibraryLink Utilities 3.0.0 documentation" href="#"/>
+        <link rel="next" title="How to use" href="basic/how_to_use.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="#" class="icon icon-home"> LibraryLink Utilities
+          
+
+          
+            
+            <img src="_static/LLULogo.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                3.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <p class="caption"><span class="caption-text">Basic Info</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Intro</a></li>
+<li class="toctree-l1"><a class="reference internal" href="basic/how_to_use.html">How to use</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://actual-doxygen-docs-link-goes.here">API reference (Doxygen ↪)</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Modules</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="modules/functions.html">Library functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules/containers.html">Containers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules/error_handling.html">Error handling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules/wstp.html">WSTP support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules/managed_expressions.html">Managed expressions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules/logger.html">Logging and debug printing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules/progress_monitor.html">Progress monitor</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Other Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="other/paclet_use.html">Use in paclets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="other/cmake_utilities.html">CMake utility functions</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">LibraryLink Utilities</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="#">Docs</a> &raquo;</li>
+        
+      <li>LibraryLink Utilities</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="toctree-wrapper compound">
+</div>
+<div class="toctree-wrapper compound">
+</div>
+<div class="toctree-wrapper compound">
+</div>
+<div class="section" id="librarylink-utilities">
+<h1>LibraryLink Utilities<a class="headerlink" href="#librarylink-utilities" title="Permalink to this headline"> 🔗</a></h1>
+<a class="reference external image-reference" href="https://actual-github-link-goes.here"><img alt="LLU logo" class="with-shadow float-left" src="_images/LLULogo.png" style="width: 128.0px; height: 133.5px;" /></a>
+<p><em class="dfn">LibraryLink Utilities</em> (abbr. LLU) is an open-source library consisting of modern C++ wrappers over most parts of <a class="reference internal" href="#term-LibraryLink"><span class="xref std std-term">LibraryLink</span></a> -
+the Wolfram Language framework for connecting to C and C++ libraries.
+The official documentation including use instructions can be found here:</p>
+<p><strong>TODO: Provide the link to the released documentation on Github Pages</strong></p>
+<p>This documentation is split into modules. Each describes a core part of LLU providing general overview, examples and detailed description of related C++ entities.</p>
+<p>Please use GitHub to report bugs, make suggestions and request features.</p>
+<div class="clear-both section" id="motivation">
+<h2>Motivation<a class="headerlink" href="#motivation" title="Permalink to this headline"> 🔗</a></h2>
+<p><a class="reference internal" href="#term-LibraryLink"><span class="xref std std-term">LibraryLink</span></a> is a great tool for connecting Wolfram Language to external C/C++ libraries and is widely used by Wolfram Research and
+Wolfram Language developers for developing <a class="reference internal" href="#term-paclet"><span class="xref std std-term">paclet</span></a>s.
+<a class="reference internal" href="#term-LibraryLink-Utilities"><span class="xref std std-term">LibraryLink Utilities</span></a> makes it even easier to use LibraryLink by providing features such as:</p>
+<ul class="simple">
+<li><p>automatic resource management</p></li>
+<li><p>exception handling</p></li>
+<li><p>container iterators</p></li>
+<li><p>class-like interface for data structures, for example <code class="docutils literal notranslate"><span class="pre">rank()</span></code> as member function of <code class="docutils literal notranslate"><span class="pre">Tensor</span></code> class instead of separate function <code class="docutils literal notranslate"><span class="pre">mint</span> <span class="pre">MTensor_getRank(MTensor)</span></code></p></li>
+<li><p>type safety</p></li>
+<li><p>lazy loading of library functions</p></li>
+<li><p>progress monitoring of library functions</p></li>
+<li><p>standardized approach to exchange custom data types between C++ and WL code</p></li>
+</ul>
+</div>
+<div class="section" id="example">
+<h2>Example<a class="headerlink" href="#example" title="Permalink to this headline"> 🔗</a></h2>
+<p>Let’s demonstrate some advantages of <abbr title="LibraryLink Utilities">LLU</abbr> by comparing the same function written with and without
+<abbr title="LibraryLink Utilities">LLU</abbr>.
+Below we will implement a simple function <code class="docutils literal notranslate"><span class="pre">repeatCharacters</span></code> that takes a string <code class="docutils literal notranslate"><span class="pre">s</span></code> and a tensor <code class="docutils literal notranslate"><span class="pre">t</span></code> and returns a new string <code class="docutils literal notranslate"><span class="pre">s2</span></code> that consists of each
+character <code class="docutils literal notranslate"><span class="pre">s[i]</span></code> from original string but repeated <code class="docutils literal notranslate"><span class="pre">t[i]</span></code> times. So, for example</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">repeatCharacters</span><span class="p">(</span><span class="s">&quot;abc&quot;</span><span class="p">,</span> <span class="p">{</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">})</span>
+</pre></div>
+</div>
+<p>gives</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="s">&quot;aaabbc&quot;</span>
+</pre></div>
+</div>
+<p>This is the C - style implementation:</p>
+<div class="highlight-c notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">// global variable which is the buffer for strings returned to LibraryLink</span>
+<span class="kt">char</span><span class="o">*</span> <span class="n">outString</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+
+<span class="n">EXTERN_C</span> <span class="n">DLLEXPORT</span> <span class="kt">int</span> <span class="nf">repeatCharacters</span><span class="p">(</span><span class="n">WolframLibraryData</span> <span class="n">libData</span><span class="p">,</span> <span class="n">mint</span> <span class="n">Argc</span><span class="p">,</span> <span class="n">MArgument</span> <span class="o">*</span><span class="n">Args</span><span class="p">,</span> <span class="n">MArgument</span> <span class="n">Res</span><span class="p">)</span> <span class="p">{</span>
+   <span class="kt">char</span><span class="o">*</span> <span class="n">string</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+   <span class="n">MNumericArray</span> <span class="n">counts</span><span class="p">;</span>
+   <span class="kt">uint8_t</span><span class="o">*</span> <span class="n">countsData</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+   <span class="kt">size_t</span> <span class="n">outStringIndex</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+   <span class="kt">size_t</span> <span class="n">len</span><span class="p">,</span> <span class="n">j</span><span class="p">;</span>
+   <span class="n">mint</span> <span class="n">sum</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+   <span class="n">mint</span> <span class="n">c</span><span class="p">;</span>
+
+   <span class="n">string</span> <span class="o">=</span> <span class="n">MArgument_getUTF8String</span><span class="p">(</span><span class="n">Args</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
+   <span class="n">counts</span> <span class="o">=</span> <span class="n">MArgument_getMNumericArray</span><span class="p">(</span><span class="n">Args</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>
+
+   <span class="c1">// check NumericArray type</span>
+   <span class="k">if</span> <span class="p">(</span><span class="n">libData</span><span class="o">-&gt;</span><span class="n">numericarrayLibraryFunctions</span><span class="o">-&gt;</span><span class="n">MNumericArray_getType</span><span class="p">(</span><span class="n">counts</span><span class="p">)</span> <span class="o">!=</span> <span class="n">MNumericArray_Type_UBit8</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">libData</span><span class="o">-&gt;</span><span class="n">UTF8String_disown</span><span class="p">(</span><span class="n">string</span><span class="p">);</span>
+      <span class="k">return</span> <span class="n">LIBRARY_TYPE_ERROR</span><span class="p">;</span>
+   <span class="p">}</span>
+
+   <span class="c1">// check NumericArray rank</span>
+   <span class="k">if</span> <span class="p">(</span><span class="n">libData</span><span class="o">-&gt;</span><span class="n">numericarrayLibraryFunctions</span><span class="o">-&gt;</span><span class="n">MNumericArray_getRank</span><span class="p">(</span><span class="n">counts</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">libData</span><span class="o">-&gt;</span><span class="n">UTF8String_disown</span><span class="p">(</span><span class="n">string</span><span class="p">);</span>
+      <span class="k">return</span> <span class="n">LIBRARY_RANK_ERROR</span><span class="p">;</span>
+   <span class="p">}</span>
+
+   <span class="c1">// check if NumericArray length is equal to input string length</span>
+   <span class="n">len</span> <span class="o">=</span> <span class="n">strlen</span><span class="p">(</span><span class="n">string</span><span class="p">);</span>
+   <span class="k">if</span> <span class="p">(</span><span class="n">libData</span><span class="o">-&gt;</span><span class="n">numericarrayLibraryFunctions</span><span class="o">-&gt;</span><span class="n">MNumericArray_getFlattenedLength</span><span class="p">(</span><span class="n">counts</span><span class="p">)</span> <span class="o">!=</span> <span class="n">len</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">libData</span><span class="o">-&gt;</span><span class="n">UTF8String_disown</span><span class="p">(</span><span class="n">string</span><span class="p">);</span>
+      <span class="k">return</span> <span class="n">LIBRARY_DIMENSION_ERROR</span><span class="p">;</span>
+   <span class="p">}</span>
+
+   <span class="c1">// before we allocate memory for the output string, we have to sum all NumericArray elements</span>
+   <span class="c1">// to see how many bytes are needed</span>
+   <span class="n">countsData</span> <span class="o">=</span> <span class="p">(</span><span class="kt">uint8_t</span><span class="o">*</span><span class="p">)</span> <span class="n">libData</span><span class="o">-&gt;</span><span class="n">numericarrayLibraryFunctions</span><span class="o">-&gt;</span><span class="n">MNumericArray_getData</span><span class="p">(</span><span class="n">counts</span><span class="p">);</span>
+   <span class="k">for</span> <span class="p">(</span><span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">len</span><span class="p">;</span> <span class="n">j</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">sum</span> <span class="o">+=</span> <span class="n">countsData</span><span class="p">[</span><span class="n">j</span><span class="p">];</span>
+   <span class="p">}</span>
+
+   <span class="c1">// free memory owned by global buffer, if any (for example from the previous call to this function)</span>
+   <span class="n">free</span><span class="p">(</span><span class="n">outString</span><span class="p">);</span>
+   <span class="n">outString</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+
+   <span class="c1">// allocate memory for output string, outString has to be a global variable,</span>
+   <span class="c1">// because it will be returned to LibraryLink</span>
+   <span class="n">outString</span> <span class="o">=</span> <span class="p">(</span><span class="kt">char</span><span class="o">*</span><span class="p">)</span> <span class="n">malloc</span><span class="p">(</span><span class="n">sum</span> <span class="o">+</span> <span class="mi">1</span><span class="p">);</span>
+   <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">outString</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">libData</span><span class="o">-&gt;</span><span class="n">UTF8String_disown</span><span class="p">(</span><span class="n">string</span><span class="p">);</span>
+      <span class="k">return</span> <span class="n">LIBRARY_FUNCTION_ERROR</span><span class="p">;</span>
+   <span class="p">}</span>
+
+   <span class="c1">// populate output string</span>
+   <span class="k">for</span> <span class="p">(</span><span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">len</span><span class="p">;</span> <span class="n">j</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">for</span> <span class="p">(</span><span class="n">c</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">c</span> <span class="o">&lt;</span> <span class="n">countsData</span><span class="p">[</span><span class="n">j</span><span class="p">];</span> <span class="n">c</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+         <span class="n">outString</span><span class="p">[</span><span class="n">outStringIndex</span><span class="o">++</span><span class="p">]</span> <span class="o">=</span> <span class="n">string</span><span class="p">[</span><span class="n">j</span><span class="p">];</span>
+      <span class="p">}</span>
+   <span class="p">}</span>
+
+   <span class="c1">// add null terminator</span>
+   <span class="n">outString</span><span class="p">[</span><span class="n">sum</span><span class="p">]</span> <span class="o">=</span> <span class="sc">&#39;\0&#39;</span><span class="p">;</span>
+
+   <span class="c1">// clean up and set result</span>
+   <span class="n">libData</span><span class="o">-&gt;</span><span class="n">UTF8String_disown</span><span class="p">(</span><span class="n">string</span><span class="p">);</span>
+   <span class="n">MArgument_setUTF8String</span><span class="p">(</span><span class="n">Res</span><span class="p">,</span> <span class="n">outString</span><span class="p">);</span>
+
+   <span class="k">return</span> <span class="n">LIBRARY_NO_ERROR</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table></div>
+<p>and this is the corresponding C++ version written with LibraryLink Utilities:</p>
+<div class="highlight-cpp notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">EXTERN_C</span> <span class="n">DLLEXPORT</span> <span class="kt">int</span> <span class="nf">repeatCharactersLLU</span><span class="p">(</span><span class="n">WolframLibraryData</span> <span class="n">libData</span><span class="p">,</span> <span class="n">mint</span> <span class="n">Argc</span><span class="p">,</span> <span class="n">MArgument</span> <span class="o">*</span><span class="n">Args</span><span class="p">,</span> <span class="n">MArgument</span> <span class="n">Res</span><span class="p">)</span> <span class="p">{</span>
+   <span class="k">auto</span> <span class="n">err</span> <span class="o">=</span> <span class="n">LLU</span><span class="o">::</span><span class="n">ErrorCode</span><span class="o">::</span><span class="n">NoError</span><span class="p">;</span>
+   <span class="k">try</span> <span class="p">{</span>
+      <span class="c1">// Create manager object</span>
+      <span class="n">LLU</span><span class="o">::</span><span class="n">MArgumentManager</span> <span class="n">mngr</span> <span class="p">{</span><span class="n">libData</span><span class="p">,</span> <span class="n">Argc</span><span class="p">,</span> <span class="n">Args</span><span class="p">,</span> <span class="n">Res</span><span class="p">};</span>
+
+      <span class="c1">// Read string and NumericArray arguments</span>
+      <span class="k">auto</span> <span class="n">string</span> <span class="o">=</span> <span class="n">mngr</span><span class="p">.</span><span class="n">getString</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+      <span class="k">auto</span> <span class="n">counts</span> <span class="o">=</span> <span class="n">mngr</span><span class="p">.</span><span class="n">getNumericArray</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="kt">uint8_t</span><span class="o">&gt;</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+
+      <span class="c1">// check NumericArray rank</span>
+      <span class="k">if</span> <span class="p">(</span><span class="n">counts</span><span class="p">.</span><span class="n">rank</span><span class="p">()</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+         <span class="n">LLU</span><span class="o">::</span><span class="n">ErrorManager</span><span class="o">::</span><span class="n">throwException</span><span class="p">(</span><span class="n">LLU</span><span class="o">::</span><span class="n">ErrorName</span><span class="o">::</span><span class="n">RankError</span><span class="p">);</span>
+      <span class="p">}</span>
+
+      <span class="c1">// check if NumericArray length is equal to input string length</span>
+      <span class="k">if</span> <span class="p">(</span><span class="n">counts</span><span class="p">.</span><span class="n">size</span><span class="p">()</span> <span class="o">!=</span> <span class="n">string</span><span class="p">.</span><span class="n">size</span><span class="p">())</span> <span class="p">{</span>
+         <span class="n">LLU</span><span class="o">::</span><span class="n">ErrorManager</span><span class="o">::</span><span class="n">throwException</span><span class="p">(</span><span class="n">LLU</span><span class="o">::</span><span class="n">ErrorName</span><span class="o">::</span><span class="n">DimensionsError</span><span class="p">);</span>
+      <span class="p">}</span>
+
+      <span class="c1">// before we allocate memory for the output string, we have to sum all NumericArray elements</span>
+      <span class="c1">// to see how many bytes are needed</span>
+      <span class="k">auto</span> <span class="n">sum</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">accumulate</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">cbegin</span><span class="p">(</span><span class="n">counts</span><span class="p">),</span> <span class="n">std</span><span class="o">::</span><span class="n">cend</span><span class="p">(</span><span class="n">counts</span><span class="p">),</span> <span class="k">static_cast</span><span class="o">&lt;</span><span class="kt">size_t</span><span class="o">&gt;</span><span class="p">(</span><span class="mi">0</span><span class="p">));</span>
+
+      <span class="c1">// allocate memory for the output string</span>
+      <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">outString</span><span class="p">;</span>
+      <span class="n">outString</span><span class="p">.</span><span class="n">reserve</span><span class="p">(</span><span class="n">sum</span><span class="p">);</span>
+
+      <span class="c1">// populate the output string</span>
+      <span class="k">for</span> <span class="p">(</span><span class="n">mint</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">counts</span><span class="p">.</span><span class="n">size</span><span class="p">();</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+         <span class="n">outString</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="p">(</span><span class="n">counts</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">string</span><span class="p">[</span><span class="n">i</span><span class="p">]));</span>
+      <span class="p">}</span>
+
+      <span class="c1">// clean up and set the result</span>
+      <span class="n">mngr</span><span class="p">.</span><span class="n">set</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">outString</span><span class="p">));</span>
+   <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="k">const</span> <span class="n">LLU</span><span class="o">::</span><span class="n">LibraryLinkError</span><span class="o">&amp;</span> <span class="n">e</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">err</span> <span class="o">=</span> <span class="n">e</span><span class="p">.</span><span class="n">which</span><span class="p">();</span>
+   <span class="p">}</span>
+   <span class="k">return</span> <span class="n">err</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+<div class="section" id="limitations-with-respect-to-librarylink">
+<h2>Limitations with respect to LibraryLink<a class="headerlink" href="#limitations-with-respect-to-librarylink" title="Permalink to this headline"> 🔗</a></h2>
+<p>There are a few LibraryLink features currently not covered by LLU, most notably:</p>
+<ul class="simple">
+<li><p>Sparse Arrays</p></li>
+<li><p>Tensor subsetting: <code class="code docutils literal notranslate"><span class="pre">MTensor_getTensor</span></code></p></li>
+<li><p>Callbacks</p></li>
+<li><p>Wolfram IO Library (asynchronous tasks)</p></li>
+</ul>
+</div>
+</div>
+<div class="section" id="glossary">
+<h1>Glossary<a class="headerlink" href="#glossary" title="Permalink to this headline"> 🔗</a></h1>
+<dl class="glossary">
+<dt id="term-LibraryLink">LibraryLink</dt><dd><p>The framework to connect external code to the Wolfram Language. See <a class="reference external" href="https://reference.wolfram.com/language/guide/LibraryLink.html">https://reference.wolfram.com/language/guide/LibraryLink.html</a></p>
+</dd>
+<dt id="term-LibraryLink-Utilities">LibraryLink Utilities</dt><dt id="term-LLU">LLU</dt><dd><p>A set of modern C++ wrappers over different parts of <a class="reference internal" href="#term-LibraryLink"><span class="xref std std-term">LibraryLink</span></a>.</p>
+</dd>
+<dt id="term-library-function">library function</dt><dd><p>A C/C++ function with special signature</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">int</span> <span class="nf">f</span> <span class="p">(</span><span class="n">WolframLibraryData</span> <span class="n">libData</span><span class="p">,</span> <span class="n">mint</span> <span class="n">Argc</span><span class="p">,</span> <span class="n">MArgument</span><span class="o">*</span> <span class="n">Args</span><span class="p">,</span> <span class="n">MArgument</span> <span class="n">Res</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>or</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">int</span> <span class="nf">f</span> <span class="p">(</span><span class="n">WolframLibraryData</span> <span class="n">libData</span><span class="p">,</span> <span class="n">WSLINK</span> <span class="n">mlp</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>Such functions can later be loaded into the Wolfram Language using <a class="reference external" href="https://reference.wolfram.com/language/ref/LibraryFunctionLoad">LibraryFunctionLoad</a>.</p>
+</dd>
+<dt id="term-paclet">paclet</dt><dd><p>A unit of the Wolfram Language functionality implemented in one or more files which can be auto-discovered, installed, loaded, etc. and must be
+accompanied by a <strong>PacletInfo.wl</strong> file.
+See the <a class="reference external" href="https://reference.wolfram.com/language/guide/Paclets.html">official guide</a> and even more in-depth
+<a class="reference external" href="https://www.wolframcloud.com/obj/tgayley/Published/PacletDevelopment.nb">tutorial</a> on paclet development.</p>
+</dd>
+<dt id="term-LibraryLink-paclet">LibraryLink paclet</dt><dd><p>A <a class="reference internal" href="#term-paclet"><span class="xref std std-term">paclet</span></a> that has some of its functionality implemented in C or C++ using LibraryLink. Such paclets usually have a layer of the Wolfram Language
+code responsible at least for loading functions from the shared C/C++ library.</p>
+</dd>
+<dt id="term-LLU-paclet">LLU paclet</dt><dd><p>A <a class="reference internal" href="#term-LibraryLink-paclet"><span class="xref std std-term">LibraryLink paclet</span></a> that additionally uses LibraryLink Utilities.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="contributors">
+<h1>Contributors<a class="headerlink" href="#contributors" title="Permalink to this headline"> 🔗</a></h1>
+<ul class="simple">
+<li><p>Rafał Chojna (rafalc) - main developer</p></li>
+<li><p>Sean Cheren  (scheren) - top-level code for error handling, CMake improvements</p></li>
+<li><p>Rebecca Frederick (rebeccaf) - CMake improvements</p></li>
+</ul>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="basic/how_to_use.html" class="btn btn-neutral float-right" title="How to use" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright Wolfram Research.
+      Last updated on Oct 06, 2020.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> and ❤️  using a custom <a href="https://github.com/LinxiFan/Sphinx-theme">theme</a> based on <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'3.0.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="_static/language_data.js"></script>
+      <script type="text/javascript" src="_static/js/custom.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

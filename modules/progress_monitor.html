@@ -1,0 +1,543 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Progress monitor &mdash; LibraryLink Utilities 3.0.0 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/favicon-32.png"/>
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+  
+
+  
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="LibraryLink Utilities 3.0.0 documentation" href="../index.html"/>
+        <link rel="next" title="Use in paclets" href="../other/paclet_use.html"/>
+        <link rel="prev" title="Logging and debug printing" href="logger.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> LibraryLink Utilities
+          
+
+          
+            
+            <img src="../_static/LLULogo.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                3.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <p class="caption"><span class="caption-text">Basic Info</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Intro</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basic/how_to_use.html">How to use</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://actual-doxygen-docs-link-goes.here">API reference (Doxygen ↪)</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Modules</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="functions.html">Library functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="containers.html">Containers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="error_handling.html">Error handling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="wstp.html">WSTP support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="managed_expressions.html">Managed expressions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="logger.html">Logging and debug printing</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Progress monitor</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#example">Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#api-reference">API reference</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Other Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../other/paclet_use.html">Use in paclets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../other/cmake_utilities.html">CMake utility functions</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">LibraryLink Utilities</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>Progress monitor</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="progress-monitor">
+<h1>Progress monitor<a class="headerlink" href="#progress-monitor" title="Permalink to this headline"> 🔗</a></h1>
+<p>When a <a class="reference internal" href="../index.html#term-library-function"><span class="xref std std-term">library function</span></a> is executed in a Wolfram Language session, the Kernel will wait until the function returns. There is usually no real-time
+feedback about function progress. <a class="reference internal" href="../index.html#term-LibraryLink"><span class="xref std std-term">LibraryLink</span></a> offers the <a class="reference external" href="https://reference.wolfram.com/language/LibraryLink/ref/callback/AbortQ.html">AbortQ</a>
+function which allows developers to correctly handle cases when the user aborts a library function execution. The drawback is that it is entirely up to library
+developers to use <code class="docutils literal notranslate"><span class="pre">AbortQ</span></code> manually. The library must still return even when <code class="docutils literal notranslate"><span class="pre">AbortQ</span></code> returns <code class="docutils literal notranslate"><span class="pre">true</span></code>, so there is still no guarantee that the execution
+will end immediately upon an abort.</p>
+<p>In practice, using time-consuming, non-abortable library functions often looks like this:</p>
+<img alt="Using non-abortable library function without progress monitor." src="../_images/LibFunNoProg.gif" />
+<p><a class="reference internal" href="../index.html#term-LLU"><span class="xref std std-term">LLU</span></a> provides a class <a class="reference internal" href="#_CPPv4N3LLU15ProgressMonitorE" title="LLU::ProgressMonitor"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">LLU::ProgressMonitor</span></code></a> which uses a 1-element shared tensor to report progress to Wolfram Language during
+library function execution. The value in the tensor is a real number between 0.0 and 1.0 which indicates current progress of the function. It can be
+increased/decreased by a given step (using convenient increment/decrement operators) or set to arbitrary value.
+(Yes, decreasing progress may be useful sometimes too.)
+Progress value can be read in the Kernel and displayed in the Front End for example as a progress bar.</p>
+<p>As with many LLU features, the <code class="docutils literal notranslate"><span class="pre">ProgressMonitor</span></code> implementation consists of two parts: one in the library and one in Wolfram Language code. The goal is
+to have decent functionality with minimal effort on the programmer’s side.</p>
+<p>In C++, the only thing you have to do is to get an instance of ProgressMonitor from MArgumentManager.</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">auto</span> <span class="n">pm</span> <span class="o">=</span> <span class="n">mngr</span><span class="p">.</span><span class="n">getProgressMonitor</span><span class="p">();</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">ProgressMonitor</span></code> class also defines a method <a class="reference internal" href="#_CPPv4N3LLU15ProgressMonitor10checkAbortEv" title="LLU::ProgressMonitor::checkAbort"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">LLU::ProgressMonitor::checkAbort()</span></code></a> which checks if the user has requested to abort current computation
+and if so, throws an exception. It’s a static function, so even if you don’t own a <code class="docutils literal notranslate"><span class="pre">ProgressMonitor</span></code> instance, you can still check for aborts.
+Calling <code class="docutils literal notranslate"><span class="pre">checkAbort()</span></code> also has a significant side-effect: it gives some CPU time to the Kernel in the middle of library function evaluation
+and this may be helpful in updating the <code class="docutils literal notranslate"><span class="pre">Dynamic</span></code> which moves the progress bar in Front End.</p>
+<p>The Wolfram Language implementation is minimal and basic. When you load an LLU function which uses <code class="docutils literal notranslate"><span class="pre">ProgressMonitor</span></code> with <code class="docutils literal notranslate"><span class="pre">PacletFunctionSet</span></code> or similar,
+you have to pass an option <code class="code highlight wolfram-language docutils literal notranslate"><span class="literal string"><span class="pre">“ProgressMonitor”</span></span><span class="whitespace"> </span><span class="operator"><span class="pre">-&gt;</span></span><span class="whitespace"> </span><span class="name variable"><span class="pre">x</span></span></code>, where <code class="docutils literal notranslate"><span class="pre">x</span></code> is a Symbol.</p>
+<p>Every time your library function reports progress, the new progress value will be assigned to <code class="docutils literal notranslate"><span class="pre">x</span></code>. If and how the progress is visualized
+in the notebook is completely up to the developer. Using a <code class="code highlight wolfram-language docutils literal notranslate"><span class="name builtin"><span class="pre">ProgressIndicator</span></span></code> or <code class="code highlight wolfram-language docutils literal notranslate"><span class="name variable"><span class="pre">ComputeWithProgress</span></span></code> from <code class="code highlight wolfram-language docutils literal notranslate"><span class="name variable"><span class="pre">GeneralUtilities</span></span></code> is recommended.</p>
+<p>The final effect may look like this (the second function call is aborted with a keyboard shortcut (by default <kbd class="kbd docutils literal notranslate"><kbd class="kbd docutils literal notranslate">Alt</kbd>+<kbd class="kbd docutils literal notranslate">.</kbd></kbd> on Linux)):</p>
+<img alt="Using abortable library function with simple progress bar." src="../_images/LibFunWithProg.gif" />
+<div class="section" id="example">
+<h2>Example<a class="headerlink" href="#example" title="Permalink to this headline"> 🔗</a></h2>
+<p>Consider a simple function that just sleeps in a loop moving the progress bar in a steady pace. This function takes two arguments:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p>(Real) Total time (in seconds) for the function to complete</p></li>
+<li><p>(ProgressMonitor) Shared instance of an MTensor automatically wrapped in ProgressMonitor by MArgumentManager</p></li>
+</ol>
+</div></blockquote>
+<div class="highlight-cpp notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">EXTERN_C</span> <span class="n">DLLEXPORT</span> <span class="kt">int</span> <span class="nf">UniformProgress</span><span class="p">(</span><span class="n">WolframLibraryData</span> <span class="n">libData</span><span class="p">,</span> <span class="n">mint</span> <span class="n">Argc</span><span class="p">,</span> <span class="n">MArgument</span> <span class="o">*</span><span class="n">Args</span><span class="p">,</span> <span class="n">MArgument</span> <span class="n">Res</span><span class="p">)</span> <span class="p">{</span>
+
+   <span class="c1">// Create MArgumentManager to manage all the input and output arguments for the library function</span>
+   <span class="n">LLU</span><span class="o">::</span><span class="n">MArgumentManager</span> <span class="n">mngr</span><span class="p">(</span><span class="n">libData</span><span class="p">,</span> <span class="n">Argc</span><span class="p">,</span> <span class="n">Args</span><span class="p">,</span> <span class="n">Res</span><span class="p">);</span>
+
+   <span class="c1">// Get first argument which determines how many seconds should this function take to evaluate</span>
+   <span class="k">auto</span> <span class="n">totalTime</span> <span class="o">=</span> <span class="n">mngr</span><span class="p">.</span><span class="n">getReal</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+
+   <span class="c1">// Calculate number of steps for the progress bar, we want 10 steps per second</span>
+   <span class="k">auto</span> <span class="n">numOfSteps</span> <span class="o">=</span> <span class="k">static_cast</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">ceil</span><span class="p">(</span><span class="n">totalTime</span> <span class="o">*</span> <span class="mi">10</span><span class="p">));</span>
+
+   <span class="c1">// Get ProgressMonitor instance, initialize with the number of seconds per step</span>
+   <span class="k">auto</span> <span class="n">pm</span> <span class="o">=</span> <span class="n">mngr</span><span class="p">.</span><span class="n">getProgressMonitor</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">/</span> <span class="n">numOfSteps</span><span class="p">);</span>
+
+   <span class="c1">// Sleep in a loop, increase progress in each iteration. Increasing progress also automatically checks for Abort.</span>
+   <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">numOfSteps</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">std</span><span class="o">::</span><span class="n">this_thread</span><span class="o">::</span><span class="n">sleep_for</span><span class="p">(</span><span class="mi">100</span><span class="n">ms</span><span class="p">);</span>
+      <span class="o">++</span><span class="n">pm</span><span class="p">;</span>
+   <span class="p">}</span>
+
+   <span class="c1">// Set function result and return</span>
+   <span class="n">mngr</span><span class="p">.</span><span class="n">setInteger</span><span class="p">(</span><span class="mi">42</span><span class="p">);</span>
+   <span class="k">return</span> <span class="n">LLU</span><span class="o">::</span><span class="n">ErrorCode</span><span class="o">::</span><span class="n">NoError</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table></div>
+<p>For progress reporting to work on the Wolfram Language side as expected, the library function must be loaded with extra option “ProgressMonitor”, like this:</p>
+<div class="highlight-wolfram-language notranslate"><div class="highlight"><pre><span></span><span class="nv">`LLU`PacletFunctionSet`</span><span class="p">[</span><span class="nv">UniformProgress</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;UniformProgress&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="nb">Real</span><span class="p">},</span><span class="w"> </span><span class="nb">Integer</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;ProgressMonitor&quot;</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="nv">MyPaclet`PM`UniformProgress</span><span class="p">]</span><span class="o">;</span><span class="w"></span>
+</pre></div>
+</div>
+<p>By default, <code class="code highlight wolfram-language docutils literal notranslate"><span class="literal string"><span class="pre">“ProgressMonitor”</span></span><span class="whitespace"> </span><span class="operator"><span class="pre">-&gt;</span></span><span class="whitespace"> </span><span class="name builtin"><span class="pre">None</span></span></code> is used.
+It’s a good idea to make sure the name for the monitoring symbol will be unique. One suggestion is to use <code class="docutils literal notranslate"><span class="pre">PacletName`PM</span></code> as the context, and the name of the
+symbol to be the same as the function name.</p>
+<p>Now, run your library function with simple progress bar:</p>
+<div class="highlight-wolfram-language notranslate"><div class="highlight"><pre><span></span><span class="nb">Monitor</span><span class="p">[</span><span class="w"></span>
+<span class="w">   </span><span class="nv">UniformProgress</span><span class="p">[</span><span class="m">5</span><span class="p">],</span><span class="w"></span>
+<span class="w">   </span><span class="nb">ProgressIndicator</span><span class="p">[</span><span class="nb">Dynamic</span><span class="w"> </span><span class="o">@</span><span class="w"> </span><span class="nb">First</span><span class="w"> </span><span class="o">@</span><span class="w"> </span><span class="nb">Refresh</span><span class="p">[</span><span class="nv">MyPaclet`PM`UniformProgress</span><span class="p">,</span><span class="w"> </span><span class="nb">UpdateInterval</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="m">0.2</span><span class="p">]]</span><span class="w"></span>
+<span class="p">]</span><span class="w"></span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="api-reference">
+<h2>API reference<a class="headerlink" href="#api-reference" title="Permalink to this headline"> 🔗</a></h2>
+<dl class="cpp class">
+<dt id="_CPPv4N3LLU15ProgressMonitorE">
+<span id="_CPPv3N3LLU15ProgressMonitorE"></span><span id="_CPPv2N3LLU15ProgressMonitorE"></span><span id="LLU::ProgressMonitor"></span><span class="target" id="classLLU_1_1ProgressMonitor"></span><em class="property">class </em><code class="sig-prename descclassname">LLU<code class="sig-prename descclassname">::</code></code><code class="sig-name descname">ProgressMonitor</code><a class="headerlink" href="#_CPPv4N3LLU15ProgressMonitorE" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Stores and updates current progress of computation in a location shared between the library and WL Kernel. </p>
+<p><a class="reference internal" href="#classLLU_1_1ProgressMonitor"><span class="std std-ref">ProgressMonitor</span></a> receives an instance of a shared <a class="reference internal" href="containers.html#classLLU_1_1Tensor"><span class="std std-ref">Tensor&lt;double&gt;</span></a> in constructor and becomes the (shared) owner. Progress is a single number of type <code class="docutils literal notranslate"><span class="pre">double</span></code> between 0. and 1. This class offers an interface for modifying the progress value (increase/decrease by a given step or set to an arbitrary value) and one static function for checking if a user requested to abort the computation in WL Kernel. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Types</p>
+<dl class="cpp type">
+<dt id="_CPPv4N3LLU15ProgressMonitor12SharedTensorE">
+<span id="_CPPv3N3LLU15ProgressMonitor12SharedTensorE"></span><span id="_CPPv2N3LLU15ProgressMonitor12SharedTensorE"></span><span class="target" id="classLLU_1_1ProgressMonitor_1ae432a10a65df73d0a0f366ffed90a7f4"></span><em class="property">using </em><code class="sig-name descname">SharedTensor</code> = <a class="reference internal" href="containers.html#_CPPv4I0EN3LLU6TensorE" title="LLU::Tensor">Tensor</a>&lt;double&gt;<a class="headerlink" href="#_CPPv4N3LLU15ProgressMonitor12SharedTensorE" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>A type to represent a buffer shared between LLU and the Kernel which is used to report progress. </p>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Functions</p>
+<dl class="cpp function">
+<dt id="_CPPv4N3LLU15ProgressMonitor15ProgressMonitorE12SharedTensord">
+<span id="_CPPv3N3LLU15ProgressMonitor15ProgressMonitorE12SharedTensord"></span><span id="_CPPv2N3LLU15ProgressMonitor15ProgressMonitorE12SharedTensord"></span><span id="LLU::ProgressMonitor::ProgressMonitor__SharedTensor.double"></span><span class="target" id="classLLU_1_1ProgressMonitor_1a8a26b46e9c205ec63c1984f0394a4843"></span><code class="sig-name descname">ProgressMonitor</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4N3LLU15ProgressMonitor12SharedTensorE" title="LLU::ProgressMonitor::SharedTensor">SharedTensor</a> <em>sharedIndicator</em>, double <em>step</em> = defaultStep<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3LLU15ProgressMonitor15ProgressMonitorE12SharedTensord" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Construct a new <a class="reference internal" href="#classLLU_1_1ProgressMonitor"><span class="std std-ref">ProgressMonitor</span></a>. </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">sharedIndicator</span></code>: - shared <a class="reference internal" href="containers.html#classLLU_1_1Tensor"><span class="std std-ref">Tensor</span></a> of type <code class="docutils literal notranslate"><span class="pre">double</span></code>. If tensor length is smaller than 1, the behavior is undefined. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">step</span></code>: - by how much to modify the progress value in operator++ and operator– </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4N3LLU15ProgressMonitor15ProgressMonitorERK15ProgressMonitor">
+<span id="_CPPv3N3LLU15ProgressMonitor15ProgressMonitorERK15ProgressMonitor"></span><span id="_CPPv2N3LLU15ProgressMonitor15ProgressMonitorERK15ProgressMonitor"></span><span id="LLU::ProgressMonitor::ProgressMonitor__ProgressMonitorCR"></span><span class="target" id="classLLU_1_1ProgressMonitor_1a2c93fdf4ade6078c0ab8967b5b309120"></span><code class="sig-name descname">ProgressMonitor</code><span class="sig-paren">(</span><em class="property">const</em> <a class="reference internal" href="#_CPPv4N3LLU15ProgressMonitor15ProgressMonitorERK15ProgressMonitor" title="LLU::ProgressMonitor::ProgressMonitor">ProgressMonitor</a>&amp;<span class="sig-paren">)</span> = delete<a class="headerlink" href="#_CPPv4N3LLU15ProgressMonitor15ProgressMonitorERK15ProgressMonitor" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Copy-constructor is disabled because <a class="reference internal" href="#classLLU_1_1ProgressMonitor"><span class="std std-ref">ProgressMonitor</span></a> shares a <a class="reference internal" href="containers.html#classLLU_1_1Tensor"><span class="std std-ref">Tensor</span></a> with WL Kernel. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4N3LLU15ProgressMonitoraSERK15ProgressMonitor">
+<span id="_CPPv3N3LLU15ProgressMonitoraSERK15ProgressMonitor"></span><span id="_CPPv2N3LLU15ProgressMonitoraSERK15ProgressMonitor"></span><span id="LLU::ProgressMonitor::assign-operator__ProgressMonitorCR"></span><span class="target" id="classLLU_1_1ProgressMonitor_1ac6fee5ad6e4f0d7c5198b6390e4b0aa8"></span><a class="reference internal" href="#_CPPv4N3LLU15ProgressMonitorE" title="LLU::ProgressMonitor">ProgressMonitor</a> &amp;<code class="sig-name descname">operator=</code><span class="sig-paren">(</span><em class="property">const</em> <a class="reference internal" href="#_CPPv4N3LLU15ProgressMonitorE" title="LLU::ProgressMonitor">ProgressMonitor</a>&amp;<span class="sig-paren">)</span> = delete<a class="headerlink" href="#_CPPv4N3LLU15ProgressMonitoraSERK15ProgressMonitor" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Copy-assignment is disabled because <a class="reference internal" href="#classLLU_1_1ProgressMonitor"><span class="std std-ref">ProgressMonitor</span></a> shares a <a class="reference internal" href="containers.html#classLLU_1_1Tensor"><span class="std std-ref">Tensor</span></a> with WL Kernel. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4N3LLU15ProgressMonitor15ProgressMonitorERR15ProgressMonitor">
+<span id="_CPPv3N3LLU15ProgressMonitor15ProgressMonitorERR15ProgressMonitor"></span><span id="_CPPv2N3LLU15ProgressMonitor15ProgressMonitorERR15ProgressMonitor"></span><span id="LLU::ProgressMonitor::ProgressMonitor__ProgressMonitorRR"></span><span class="target" id="classLLU_1_1ProgressMonitor_1a8724b99be298782c4ecb23ad3a29281c"></span><code class="sig-name descname">ProgressMonitor</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4N3LLU15ProgressMonitor15ProgressMonitorERR15ProgressMonitor" title="LLU::ProgressMonitor::ProgressMonitor">ProgressMonitor</a>&amp;&amp;<span class="sig-paren">)</span> = default<a class="headerlink" href="#_CPPv4N3LLU15ProgressMonitor15ProgressMonitorERR15ProgressMonitor" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Default move-constructor. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4N3LLU15ProgressMonitoraSERR15ProgressMonitor">
+<span id="_CPPv3N3LLU15ProgressMonitoraSERR15ProgressMonitor"></span><span id="_CPPv2N3LLU15ProgressMonitoraSERR15ProgressMonitor"></span><span id="LLU::ProgressMonitor::assign-operator__ProgressMonitorRR"></span><span class="target" id="classLLU_1_1ProgressMonitor_1a27ea10ee4277d97ea2abe7ad2bc657f4"></span><a class="reference internal" href="#_CPPv4N3LLU15ProgressMonitorE" title="LLU::ProgressMonitor">ProgressMonitor</a> &amp;<code class="sig-name descname">operator=</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4N3LLU15ProgressMonitorE" title="LLU::ProgressMonitor">ProgressMonitor</a>&amp;&amp;<span class="sig-paren">)</span> = default<a class="headerlink" href="#_CPPv4N3LLU15ProgressMonitoraSERR15ProgressMonitor" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Default move-assignment operator. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4N3LLU15ProgressMonitorD0Ev">
+<span id="_CPPv3N3LLU15ProgressMonitorD0Ev"></span><span id="_CPPv2N3LLU15ProgressMonitorD0Ev"></span><span id="LLU::ProgressMonitor::~ProgressMonitor"></span><span class="target" id="classLLU_1_1ProgressMonitor_1aa8eaf028fd04af970fe0f3c207fc17d2"></span><code class="sig-name descname">~ProgressMonitor</code><span class="sig-paren">(</span><span class="sig-paren">)</span> = default<a class="headerlink" href="#_CPPv4N3LLU15ProgressMonitorD0Ev" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Default destructor. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4NK3LLU15ProgressMonitor3getEv">
+<span id="_CPPv3NK3LLU15ProgressMonitor3getEv"></span><span id="_CPPv2NK3LLU15ProgressMonitor3getEv"></span><span id="LLU::ProgressMonitor::getC"></span><span class="target" id="classLLU_1_1ProgressMonitor_1a77ea427d6501cb784e87cf699137ea30"></span>double <code class="sig-name descname">get</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK3LLU15ProgressMonitor3getEv" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Get current value of the progress. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>current value of the progress (a <code class="docutils literal notranslate"><span class="pre">double</span></code> between 0. and 1.) </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4N3LLU15ProgressMonitor3setEd">
+<span id="_CPPv3N3LLU15ProgressMonitor3setEd"></span><span id="_CPPv2N3LLU15ProgressMonitor3setEd"></span><span id="LLU::ProgressMonitor::set__double"></span><span class="target" id="classLLU_1_1ProgressMonitor_1a9a80f12f6152ceeceb058f1bd945e3ef"></span>void <code class="sig-name descname">set</code><span class="sig-paren">(</span>double <em>progressValue</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3LLU15ProgressMonitor3setEd" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Set current progress value. </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">progressValue</span></code>: - current progress (a <code class="docutils literal notranslate"><span class="pre">double</span></code> between 0. and 1.) </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4NK3LLU15ProgressMonitor7getStepEv">
+<span id="_CPPv3NK3LLU15ProgressMonitor7getStepEv"></span><span id="_CPPv2NK3LLU15ProgressMonitor7getStepEv"></span><span id="LLU::ProgressMonitor::getStepC"></span><span class="target" id="classLLU_1_1ProgressMonitor_1a7700faea1c536d9f47b5e81c1a8c388c"></span>double <code class="sig-name descname">getStep</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK3LLU15ProgressMonitor7getStepEv" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Get current step value. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>current step value </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4N3LLU15ProgressMonitor7setStepEd">
+<span id="_CPPv3N3LLU15ProgressMonitor7setStepEd"></span><span id="_CPPv2N3LLU15ProgressMonitor7setStepEd"></span><span id="LLU::ProgressMonitor::setStep__double"></span><span class="target" id="classLLU_1_1ProgressMonitor_1ad8b3c08ecec5cbe160bf9f21b20a0117"></span>void <code class="sig-name descname">setStep</code><span class="sig-paren">(</span>double <em>stepValue</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3LLU15ProgressMonitor7setStepEd" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Change step value to a given number. </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">stepValue</span></code>: - any real number between 0. and 1. </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4N3LLU15ProgressMonitorppEv">
+<span id="_CPPv3N3LLU15ProgressMonitorppEv"></span><span id="_CPPv2N3LLU15ProgressMonitorppEv"></span><span id="LLU::ProgressMonitor::inc-operator"></span><span class="target" id="classLLU_1_1ProgressMonitor_1a8a217afc6e45b85ec52c7a5384d43576"></span><a class="reference internal" href="#_CPPv4N3LLU15ProgressMonitorE" title="LLU::ProgressMonitor">ProgressMonitor</a> &amp;<code class="sig-name descname">operator++</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3LLU15ProgressMonitorppEv" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Increment current progress value by <code class="docutils literal notranslate"><span class="pre">step</span></code>. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>self </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4N3LLU15ProgressMonitorpLEd">
+<span id="_CPPv3N3LLU15ProgressMonitorpLEd"></span><span id="_CPPv2N3LLU15ProgressMonitorpLEd"></span><span id="LLU::ProgressMonitor::add-assign-operator__double"></span><span class="target" id="classLLU_1_1ProgressMonitor_1aec6afdd77831ff90822a85e5c2081c37"></span><a class="reference internal" href="#_CPPv4N3LLU15ProgressMonitorE" title="LLU::ProgressMonitor">ProgressMonitor</a> &amp;<code class="sig-name descname">operator+=</code><span class="sig-paren">(</span>double <em>progress</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3LLU15ProgressMonitorpLEd" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Increment current progress value by a given number. </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">progress</span></code>: - a real number between 0. and (1 - <a class="reference internal" href="#classLLU_1_1ProgressMonitor_1a77ea427d6501cb784e87cf699137ea30"><span class="std std-ref">get()</span></a>). No validation is done. </p></li>
+</ul>
+</dd>
+<dt><strong>Return</strong></dt><dd><p>self </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4N3LLU15ProgressMonitormmEv">
+<span id="_CPPv3N3LLU15ProgressMonitormmEv"></span><span id="_CPPv2N3LLU15ProgressMonitormmEv"></span><span id="LLU::ProgressMonitor::dec-operator"></span><span class="target" id="classLLU_1_1ProgressMonitor_1a342fef6feecdcdd150318d89d29968cd"></span><a class="reference internal" href="#_CPPv4N3LLU15ProgressMonitorE" title="LLU::ProgressMonitor">ProgressMonitor</a> &amp;<code class="sig-name descname">operator--</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3LLU15ProgressMonitormmEv" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Decrement current progress value by <code class="docutils literal notranslate"><span class="pre">step</span></code>. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>self </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4N3LLU15ProgressMonitormIEd">
+<span id="_CPPv3N3LLU15ProgressMonitormIEd"></span><span id="_CPPv2N3LLU15ProgressMonitormIEd"></span><span id="LLU::ProgressMonitor::sub-assign-operator__double"></span><span class="target" id="classLLU_1_1ProgressMonitor_1a70e56516d80ff41851036d0fa5dfa990"></span><a class="reference internal" href="#_CPPv4N3LLU15ProgressMonitorE" title="LLU::ProgressMonitor">ProgressMonitor</a> &amp;<code class="sig-name descname">operator-=</code><span class="sig-paren">(</span>double <em>progress</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3LLU15ProgressMonitormIEd" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Decrement current progress value by a given number. </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">progress</span></code>: - a real number between 0. and <a class="reference internal" href="#classLLU_1_1ProgressMonitor_1a77ea427d6501cb784e87cf699137ea30"><span class="std std-ref">get()</span></a>. No validation is done. </p></li>
+</ul>
+</dd>
+<dt><strong>Return</strong></dt><dd><p>self </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Static Functions</p>
+<dl class="cpp function">
+<dt id="_CPPv4N3LLU15ProgressMonitor10checkAbortEv">
+<span id="_CPPv3N3LLU15ProgressMonitor10checkAbortEv"></span><span id="_CPPv2N3LLU15ProgressMonitor10checkAbortEv"></span><span id="LLU::ProgressMonitor::checkAbort"></span><span class="target" id="classLLU_1_1ProgressMonitor_1af9afd86fa611124d072f73f67ac4fcf7"></span>void <code class="sig-name descname">checkAbort</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3LLU15ProgressMonitor10checkAbortEv" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Check whether user requested to abort the computation in WL Kernel. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4N3LLU15ProgressMonitor14getDefaultStepEv">
+<span id="_CPPv3N3LLU15ProgressMonitor14getDefaultStepEv"></span><span id="_CPPv2N3LLU15ProgressMonitor14getDefaultStepEv"></span><span id="LLU::ProgressMonitor::getDefaultStepCE"></span><span class="target" id="classLLU_1_1ProgressMonitor_1ade51268e3fb9ec8f83ce4847ff4e13a8"></span><em class="property">constexpr</em> double <code class="sig-name descname">getDefaultStep</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">noexcept</em><a class="headerlink" href="#_CPPv4N3LLU15ProgressMonitor14getDefaultStepEv" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Return default step for the <a class="reference internal" href="#classLLU_1_1ProgressMonitor"><span class="std std-ref">ProgressMonitor</span></a>. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>default step value (0.1) </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../other/paclet_use.html" class="btn btn-neutral float-right" title="Use in paclets" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="logger.html" class="btn btn-neutral" title="Logging and debug printing" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright Wolfram Research.
+      Last updated on Oct 06, 2020.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> and ❤️  using a custom <a href="https://github.com/LinxiFan/Sphinx-theme">theme</a> based on <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'3.0.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="../_static/language_data.js"></script>
+      <script type="text/javascript" src="../_static/js/custom.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

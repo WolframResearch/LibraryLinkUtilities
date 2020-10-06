@@ -1,0 +1,494 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>How to use &mdash; LibraryLink Utilities 3.0.0 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/favicon-32.png"/>
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+  
+
+  
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="LibraryLink Utilities 3.0.0 documentation" href="../index.html"/>
+        <link rel="next" title="Library functions" href="../modules/functions.html"/>
+        <link rel="prev" title="LibraryLink Utilities" href="../index.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> LibraryLink Utilities
+          
+
+          
+            
+            <img src="../_static/LLULogo.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                3.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <p class="caption"><span class="caption-text">Basic Info</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Intro</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">How to use</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#prerequisites">0. Prerequisites</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#get-source-code">1. Get source code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#configure">2. Configure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#build-install-and-test">3. Build, Install and Test</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#add-to-your-project">4. Add to your project</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#cmake-configuration">CMake configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#initialization">Initialization</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#example-demo-project">5. Example - demo project</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference external" href="https://actual-doxygen-docs-link-goes.here">API reference (Doxygen ↪)</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Modules</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../modules/functions.html">Library functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/containers.html">Containers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/error_handling.html">Error handling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/wstp.html">WSTP support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/managed_expressions.html">Managed expressions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/logger.html">Logging and debug printing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/progress_monitor.html">Progress monitor</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Other Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../other/paclet_use.html">Use in paclets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../other/cmake_utilities.html">CMake utility functions</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">LibraryLink Utilities</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>How to use</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="how-to-use">
+<h1>How to use<a class="headerlink" href="#how-to-use" title="Permalink to this headline"> 🔗</a></h1>
+<p><abbr title="LibraryLink Utilities">LLU</abbr> is designed to be built from sources as a static library and included in other projects.
+We do not provide prebuilt binaries for any platform.</p>
+<div class="section" id="prerequisites">
+<h2>0. Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this headline"> 🔗</a></h2>
+<p>Since the source code uses C++17 features, you have to make sure your compiler supports C++17. For the three most popular compilers this roughly means:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>Visual Studio</strong> &gt;= 15.7</p></li>
+<li><p><strong>gcc</strong> &gt;= 7.5</p></li>
+<li><p><strong>clang</strong> &gt;= 5</p></li>
+</ul>
+</div></blockquote>
+<p>Plus:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>CMake</strong> &gt;= 3.14</p></li>
+<li><p><strong>Wolfram Language</strong> &gt;= 12.0 (products that implement the Wolfram Language include Wolfram Engine, Wolfram Desktop, and Mathematica), or more specifically</p>
+<ul>
+<li><p><strong>WSTP</strong> interface version 4 or later</p></li>
+<li><p><strong>Wolfram Library</strong> &gt;= 5</p></li>
+</ul>
+</li>
+</ul>
+</div></blockquote>
+<p>WSTP library and Wolfram Library header files can be found in any Wolfram Language installation.
+Optionally, for running unit tests, <strong>wolframscript</strong> must be available on the system.</p>
+</div>
+<div class="section" id="get-source-code">
+<h2>1. Get source code<a class="headerlink" href="#get-source-code" title="Permalink to this headline"> 🔗</a></h2>
+<p>You can clone LLU from here:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 23%" />
+<col style="width: 77%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><strong>[ssh]</strong></p></td>
+<td><p><code class="code docutils literal notranslate"><span class="pre">git&#64;github.com:WolframResearch/LibraryLinkUtilities.git</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><strong>[https]</strong></p></td>
+<td><p><code class="code docutils literal notranslate"><span class="pre">https://github.com/WolframResearch/LibraryLinkUtilities.git</span></code></p></td>
+</tr>
+</tbody>
+</table>
+<p>Alternatively, a zip package can be downloaded from GitHub containing a snapshot from any branch.</p>
+</div>
+<div class="section" id="configure">
+<h2>2. Configure<a class="headerlink" href="#configure" title="Permalink to this headline"> 🔗</a></h2>
+<p>LLU depends on <a class="reference external" href="https://reference.wolfram.com/language/tutorial/HowWSTPIsUsed.html">WSTP</a> and Wolfram Library so both must be installed on your system.
+Below is a quick overview of CMake variables which you can use to customize build process. All commands below are to be evaluated from a build directory
+created inside the root folder of your local clone of LibraryLink Utilities. You can achieve this setup with:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">cd &lt;root directory of LLU&gt;</span>
+<span class="go">mkdir build/</span>
+<span class="go">cd build</span>
+</pre></div>
+</div>
+<p>Let’s consider a number of possible scenarios:</p>
+<ol class="arabic">
+<li><p>Use WSTP and Wolfram Library from a standard Wolfram Language installation:</p>
+<p>If you have Wolfram Language <strong>12.0</strong> or later installed in a default location or on the system PATH, the build configuration step should succeed
+out of the box without setting any variables.
+Otherwise, set <code class="docutils literal notranslate"><span class="pre">WolframLanguage_INSTALL_DIR</span></code> to an absolute path to your Wolfram product installation directory, for instance</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">cmake -DWolframLanguage_INSTALL_DIR=/home/jerome/WolframDesktop/12.1 ..</span>
+</pre></div>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>If you are not sure where the Wolfram software is installed on your system, check the value of <a class="reference external" href="https://reference.wolfram.com/language/ref/$InstallationDirectory">$InstallationDirectory</a> symbol.</p>
+</div>
+</li>
+<li><p>Use WSTP and Wolfram Library from arbitrary locations (rare case)</p>
+<p>If WSTP and Wolfram Library are not located in a Wolfram Language installation, two paths must be passed to CMake:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">cmake -DWOLFRAM_LIBRARY_PATH=/path/to/WolframLibrary -DWOLFRAM_WSTP_PATH=/my/own/WSTP/installation ..</span>
+</pre></div>
+</div>
+</li>
+</ol>
+<p>Other useful cmake variables used by LLU include:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">BUILD_SHARED_LIBS</span></code> - Whether to build LLU as shared library. A static library is created by default and it is the recommended choice.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">CMAKE_BUILD_TYPE</span></code> - Choose the type of build. This should match the type of build of your project.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">CMAKE_INSTALL_PREFIX</span></code> - Where to install LLU. The default location is the <code class="file docutils literal notranslate"><span class="pre">install/</span></code> directory in the source tree.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">CMAKE_VERBOSE_MAKEFILE</span></code> - Useful for debugging.</p></li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="build-install-and-test">
+<h2>3. Build, Install and Test<a class="headerlink" href="#build-install-and-test" title="Permalink to this headline"> 🔗</a></h2>
+<p>After successful configuration the library must be built and installed. In order to perform this step, evaluate the following command inside the build
+directory:</p>
+<blockquote>
+<div><div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">cmake --build . --target install</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>Alternatively, you may use commands specific to the
+<a class="reference external" href="https://cmake.org/cmake/help/v3.14/manual/cmake-generators.7.html">generator</a> used. For example, with “Unix Makefiles” generator, to build and install the
+library evaluate the following command</p>
+<blockquote>
+<div><div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">make &amp;&amp; make install</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>If you are not sure where the library got installed, inspect the CMake output from the install step or check the value of <code class="docutils literal notranslate"><span class="pre">CMAKE_INSTALL_PREFIX</span></code> variable.</p>
+<p>When you have the library installed you may want to run unit tests to confirm that everything went well. Currently there are 14 test modules defined:</p>
+<ul class="simple">
+<li><p>Async</p></li>
+<li><p>DataList</p></li>
+<li><p>ErrorReporting</p></li>
+<li><p>GenericContainers</p></li>
+<li><p>Image</p></li>
+<li><p>ManagedExpressions</p></li>
+<li><p>MArgumentManager</p></li>
+<li><p>NumericArray</p></li>
+<li><p>ProgressMonitor</p></li>
+<li><p>Scalar</p></li>
+<li><p>String</p></li>
+<li><p>Tensor</p></li>
+<li><p>Utilities</p></li>
+<li><p>WSTP</p></li>
+</ul>
+<p>You can run all of them (except for ProgressMonitor tests which are contained in a notebook and excluded from batch testing) with
+a <strong class="program">ctest</strong> command or by running the <code class="docutils literal notranslate"><span class="pre">test</span></code> CMake target. It is possible to run a specific test module, for example</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">ctest -R WSTP</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">test</span></code> target actually calls <code class="code docutils literal notranslate"><span class="pre">wolframscript</span></code> under the hood, so it must be installed in your system.
+If you specify the value for <code class="docutils literal notranslate"><span class="pre">WolframLanguage_INSTALL_DIR</span></code> in step 2.1, CMake will look for <code class="code docutils literal notranslate"><span class="pre">wolframscript</span></code> in that installation of Wolfram software,
+otherwise it will check the system PATH. Because of how CMake defines the <code class="docutils literal notranslate"><span class="pre">test</span></code> target, it will not show individual test failures, only the summary.</p>
+<p>To improve unit test feedback, another CMake target called <code class="code docutils literal notranslate"><span class="pre">TestWithOutputOnFailure</span></code> is defined. Running this target (the exact command depends on the
+generator used):</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">make TestWithOutputOnFailure</span>
+</pre></div>
+</div>
+<p>will show the whole output produced by ctest and wolframscript. There is still room for improvement in this area and suggestions are welcome.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Tests will only work after the LLU library has been installed.</p>
+</div>
+</div>
+<div class="section" id="add-to-your-project">
+<h2>4. Add to your project<a class="headerlink" href="#add-to-your-project" title="Permalink to this headline"> 🔗</a></h2>
+<div class="section" id="cmake-configuration">
+<h3>CMake configuration<a class="headerlink" href="#cmake-configuration" title="Permalink to this headline"> 🔗</a></h3>
+<p>LLU defines CMake export target and hides the build details. Dependencies, compiler flags, include paths, etc do not need to be set.
+After LLU is installed, in your project’s CMakeLists.txt call:</p>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">set(</span><span class="no">LLU_ROOT</span><span class="w"> </span><span class="na">/path/to/LLU/installation/dir</span><span class="nf">)</span><span class="w"></span>
+
+<span class="nf">find_package(</span><span class="no">LLU</span><span class="w"> </span><span class="no">NO_MODULE</span><span class="w"> </span><span class="no">PATH_SUFFIXES</span><span class="w"> </span><span class="no">LLU</span><span class="nf">)</span><span class="w"></span>
+</pre></div>
+</div>
+<p>and later</p>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">target_link_libraries(</span><span class="nb">MyTarget</span><span class="w"> </span><span class="no">PRIVATE</span><span class="w"> </span><span class="no">LLU</span><span class="o">::</span><span class="no">LLU</span><span class="nf">)</span><span class="w"></span>
+</pre></div>
+</div>
+<p>The last step is to copy the file with the Wolfram Language code to use the top-level features of LLU, for example:</p>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">install(</span><span class="no">FILES</span><span class="w"> </span><span class="s">&quot;${LLU_ROOT}/share/LibraryLinkUtilities.wl&quot;</span><span class="w"></span>
+<span class="w">  </span><span class="no">DESTINATION</span><span class="w"> </span><span class="s">&quot;${PACLET_NAME}/LibraryResources&quot;</span><span class="w"></span>
+<span class="nf">)</span><span class="w"></span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="initialization">
+<h3>Initialization<a class="headerlink" href="#initialization" title="Permalink to this headline"> 🔗</a></h3>
+<p>LLU, being a wrapper over LibraryLink, lives at the edge of two worlds: the C++ domain and the Wolfram Language. Both parts of LLU need to be initialized.
+On the C++ side the initialization looks like this:</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;LLU/LLU.h&gt;</span><span class="cp"></span>
+
+<span class="n">EXTERN_C</span> <span class="n">DLLEXPORT</span> <span class="kt">int</span> <span class="nf">WolframLibrary_initialize</span><span class="p">(</span><span class="n">WolframLibraryData</span> <span class="n">libData</span><span class="p">)</span> <span class="p">{</span>
+       <span class="n">LLU</span><span class="o">::</span><span class="n">LibraryData</span><span class="o">::</span><span class="n">setLibraryData</span><span class="p">(</span><span class="n">libData</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">WolframLibrary_initialize</span></code> will be automatically called when you load your LibraryLink paclet into the Wolfram Language, for instance with <code class="docutils literal notranslate"><span class="pre">Needs[&quot;MyPaclet`&quot;]</span></code>.
+<code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">setLibraryData</span></code> is called to initialize the globally accessible instance of <code class="docutils literal notranslate"><span class="pre">WolframLibraryData</span></code>, that LLU uses, with
+the instance that was passed to the initialization function. Later on, you can call <code class="docutils literal notranslate"><span class="pre">LibraryData::API()</span></code> to access this instance from anywhere in the code.
+See the documentation of <code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">LLU::LibraryData</span></code> for details.</p>
+<p>Initialization of the WL part is equally simple - imagine that we have paclet called <em>MyPaclet</em> and its shared library is named <code class="file docutils literal notranslate"><span class="pre">MyPacletLib</span></code>:</p>
+<div class="highlight-wolfram-language notranslate"><div class="highlight"><pre><span></span><span class="nb">Get</span><span class="p">[</span><span class="s">&quot;/path/to/LibraryLinkUtilities.wl&quot;</span><span class="p">]</span><span class="o">;</span><span class="w"></span>
+
+<span class="nv">`LLU`InitializePacletLibrary</span><span class="p">[</span><span class="s">&quot;MyPacletLib&quot;</span><span class="p">]</span><span class="o">;</span><span class="w"></span>
+</pre></div>
+</div>
+<p><code class="file docutils literal notranslate"><span class="pre">LibraryLinkUtilities.wl</span></code> is part of LLU sources and it should be copied to every paclet that uses LLU. As soon as you call <a class="reference external" href="https://reference.wolfram.com/language/ref/Get">Get</a> on it, it will inject
+LLU symbols to the current context, which should typically be <code class="docutils literal notranslate"><span class="pre">MyPaclet`Private`</span></code>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">`LLU`InitializePacletLibrary</span></code> takes the path to the paclet library (or just the name, if the library can be located with <a class="reference external" href="https://reference.wolfram.com/language/ref/FindLibrary">FindLibrary</a>) and loads it
+into the WolframKernel process. It also loads WSTP library (if not already loaded) and initializes internal structures. LLU will store the path to the paclet
+library (“MyPacletLib” in the example above) so that later when you load library functions you do not need to pass the library path every time.</p>
+<p>Another task commonly done right after initializing LLU is error registering. See the <a class="reference internal" href="../modules/error_handling.html"><span class="doc">Error handling</span></a> chapter for detailed description
+of this process.</p>
+</div>
+</div>
+<div class="section" id="example-demo-project">
+<span id="demo-project"></span><h2>5. Example - demo project<a class="headerlink" href="#example-demo-project" title="Permalink to this headline"> 🔗</a></h2>
+<p>All of the above can be seen in action in the demo project that is shipped with LLU in the <code class="file docutils literal notranslate"><span class="pre">tests/Demo</span></code> directory. The Demo project is a complete
+Wolfram Language <a class="reference internal" href="../index.html#term-paclet"><span class="xref std std-term">paclet</span></a> and it can be built and used as follows:</p>
+<ol class="arabic simple">
+<li><p>Install LLU as described above. Let’s say you chose <code class="file docutils literal notranslate"><span class="pre">/my/workspace/LLU</span></code> as the install directory.</p></li>
+<li><p>Navigate to <code class="file docutils literal notranslate"><span class="pre">tests/Demo</span></code> in the LLU source directory.</p></li>
+<li><p>Run the following commands (or equivalent for your system):</p></li>
+</ol>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">cmake -DLLU_ROOT=/my/workspace/LLU -DWolframLanguage_ROOT=/path/to/WolframDesktop/ -B build</span>
+<span class="go">cd build/</span>
+<span class="go">cmake --build . --target install</span>
+</pre></div>
+</div>
+<p>This will put a complete paclet directory structure under <code class="file docutils literal notranslate"><span class="pre">tests/Demo/build/Demo</span></code>. You can copy this directory into <code class="file docutils literal notranslate"><span class="pre">SystemFiles/Links</span></code> subdirectory
+of your Wolfram product installation and then load the paclet by calling <code class="docutils literal notranslate"><span class="pre">Needs[&quot;Demo`&quot;]</span></code> in a notebook.</p>
+<p>Optionally, you can build another target called <em>paclet</em></p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">cmake --build . --target paclet</span>
+</pre></div>
+</div>
+<p>When built, the <em>paclet</em> target will take the directory structure created by the <em>install</em> target and turn it into a proper <strong>.paclet</strong> file.
+It can optionally validate paclet contents, run a test file or install paclet to a directory where the Wolfram Language can automatically find it.
+Investigate the <code class="file docutils literal notranslate"><span class="pre">tests/Demo/CMakeLists.txt</span></code> file for details on how to create and use this target.</p>
+<p>Finally, after building the <em>paclet</em> target or manually copying the Demo paclet into <code class="file docutils literal notranslate"><span class="pre">SystemFiles/Links</span></code>, you should be able to run the following code
+in a notebook:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>In[1]:= Needs[&quot;Demo`&quot;]
+
+In[2]:= Demo`CaesarCipherEncode[&quot;HelloWorld&quot;, 5]
+
+Out[2]= &quot;Mjqqtbtwqi&quot;
+
+In[3]:= Demo`CaesarCipherDecode[%, 5]
+
+Out[3]= &quot;HelloWorld&quot;
+</pre></div>
+</div>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../modules/functions.html" class="btn btn-neutral float-right" title="Library functions" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../index.html" class="btn btn-neutral" title="LibraryLink Utilities" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright Wolfram Research.
+      Last updated on Oct 06, 2020.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> and ❤️  using a custom <a href="https://github.com/LinxiFan/Sphinx-theme">theme</a> based on <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'3.0.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="../_static/language_data.js"></script>
+      <script type="text/javascript" src="../_static/js/custom.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

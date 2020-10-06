@@ -1,0 +1,695 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Managed expressions &mdash; LibraryLink Utilities 3.0.0 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/favicon-32.png"/>
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+  
+
+  
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="LibraryLink Utilities 3.0.0 documentation" href="../index.html"/>
+        <link rel="next" title="Logging and debug printing" href="logger.html"/>
+        <link rel="prev" title="WSTP support" href="wstp.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> LibraryLink Utilities
+          
+
+          
+            
+            <img src="../_static/LLULogo.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                3.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <p class="caption"><span class="caption-text">Basic Info</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Intro</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basic/how_to_use.html">How to use</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://actual-doxygen-docs-link-goes.here">API reference (Doxygen ↪)</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Modules</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="functions.html">Library functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="containers.html">Containers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="error_handling.html">Error handling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="wstp.html">WSTP support</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Managed expressions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#register-a-class-as-managed-expression">Register a class as Managed Expression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#using-managed-expressions">Using Managed Expressions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#api-reference">API Reference</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="logger.html">Logging and debug printing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="progress_monitor.html">Progress monitor</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Other Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../other/paclet_use.html">Use in paclets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../other/cmake_utilities.html">CMake utility functions</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">LibraryLink Utilities</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>Managed expressions</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="managed-expressions">
+<h1>Managed expressions<a class="headerlink" href="#managed-expressions" title="Permalink to this headline"> 🔗</a></h1>
+<p>One of the features offered by LibraryLink is Managed Library Expressions (MLEs). The idea is to create C/C++ objects
+that will be automatically deleted when they are no longer referenced in the Wolfram Language code. More information can
+be found in the official LibraryLink <a class="reference external" href="https://reference.wolfram.com/language/LibraryLink/tutorial/InteractionWithWolframLanguage.html#353220453">documentation</a>.</p>
+<p>This allows for an object-oriented programming paradigm and it is the recommended way of referencing
+C++ objects from the Wolfram Language. The two most notable alternatives are:</p>
+<ul class="simple">
+<li><p>recreating C++ objects every time a library function is called</p></li>
+<li><p>maintaining some sort of global cache with referenced objects, where each object is added on first use and manually deleted at some point.</p></li>
+</ul>
+<p>LLU uses methods similar to the second alternative to facilitate using MLEs and decrease the amount of boilerplate
+code needed from developers. Namely, for each class that you register to be used as MLE, LLU will maintain a map, which
+associates managed C++ objects with IDs assigned to them by the Wolfram Language.</p>
+<div class="section" id="register-a-class-as-managed-expression">
+<h2>Register a class as Managed Expression<a class="headerlink" href="#register-a-class-as-managed-expression" title="Permalink to this headline"> 🔗</a></h2>
+<p>Imagine you have a class <cite>A</cite> whose objects you want to manage from the Wolfram Language:</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span> <span class="n">A</span> <span class="p">{</span>
+   <span class="n">A</span><span class="p">(</span><span class="kt">int</span> <span class="n">n</span><span class="p">)</span> <span class="o">:</span> <span class="n">myNumber</span><span class="p">{</span><span class="n">n</span><span class="p">}</span> <span class="p">{}</span>
+   <span class="kt">int</span> <span class="n">getMyNumber</span><span class="p">()</span> <span class="k">const</span> <span class="p">{</span> <span class="k">return</span> <span class="n">myNumber</span><span class="p">;</span> <span class="p">}</span>
+<span class="k">private</span><span class="o">:</span>
+   <span class="kt">int</span> <span class="n">myNumber</span><span class="p">;</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<p>Then you must create the corresponding Store and specialize a callback function for LibraryLink (this is a technicality
+that just needs to be done):</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">LLU</span><span class="o">::</span><span class="n">ManagedExpressionStore</span><span class="o">&lt;</span><span class="n">ClassName</span><span class="o">&gt;</span> <span class="n">AStore</span><span class="p">;</span>  <span class="c1">//usually &lt;class name&gt;Store is a good name</span>
+
+<span class="c1">//specialize manageInstanceCallback, this should just call manageInstance function from your Store</span>
+<span class="k">template</span><span class="o">&lt;&gt;</span>
+<span class="kt">void</span> <span class="n">LLU</span><span class="o">::</span><span class="n">manageInstanceCallback</span><span class="o">&lt;</span><span class="n">A</span><span class="o">&gt;</span><span class="p">(</span><span class="n">WolframLibraryData</span><span class="p">,</span> <span class="n">mbool</span> <span class="n">mode</span><span class="p">,</span> <span class="n">mint</span> <span class="n">id</span><span class="p">)</span> <span class="p">{</span>
+   <span class="n">AStore</span><span class="p">.</span><span class="n">manageInstance</span><span class="p">(</span><span class="n">mode</span><span class="p">,</span> <span class="n">id</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="cpp function">
+<dt id="_CPPv4I0EN3LLU22manageInstanceCallbackEv18WolframLibraryData5mbool4mint">
+<span id="_CPPv3I0EN3LLU22manageInstanceCallbackE18WolframLibraryData5mbool4mint"></span><span id="_CPPv2I0EN3LLU22manageInstanceCallbackE18WolframLibraryData5mbool4mint"></span>template&lt;class <code class="sig-name descname">T</code>&gt;<br /><span class="target" id="namespaceLLU_1a2c7dd018149857ca8efb5cb6ce51ff12"></span>void <code class="sig-prename descclassname">LLU<code class="sig-prename descclassname">::</code></code><code class="sig-name descname">manageInstanceCallback</code><span class="sig-paren">(</span>WolframLibraryData, mbool, mint<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0EN3LLU22manageInstanceCallbackEv18WolframLibraryData5mbool4mint" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>A template for library callback used by LibraryLink to manage instances of ManagedLibraryExpressions. </p>
+<p>Specializations should typically just call manageInstance method from the <a class="reference internal" href="#classLLU_1_1ManagedExpressionStore"><span class="std std-ref">ManagedExpressionStore</span></a> corresponding to class T.</p>
+<p><dl class="simple">
+<dt><strong>Template Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">T</span></code>: - class to be managed </p></li>
+</ul>
+</dd>
+<dt><strong>Note</strong></dt><dd><p>This function must be explicitly specialized for any class that is supposed to be managed. Therefore instantiation of the general template will trigger compilation error. </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<p>Alternatively, you can use a macro:</p>
+<dl class="cpp macro">
+<dt id="c.DEFINE_MANAGED_STORE_AND_SPECIALIZATION">
+<span class="target" id="ManagedExpression_8hpp_1a18ab9b89e79987260ddadf05cb96c9bd"></span><code class="sig-name descname">DEFINE_MANAGED_STORE_AND_SPECIALIZATION</code><span class="sig-paren">(</span><em>ClassName</em><span class="sig-paren">)</span><a class="headerlink" href="#c.DEFINE_MANAGED_STORE_AND_SPECIALIZATION" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Use this macro to define an instance of ManagedExpressionStore corresponding to your class and a template specialization of manageInstanceCallback for the managed class. </p>
+</dd></dl>
+
+<p>but the macro has some limitations:</p>
+<ol class="arabic simple">
+<li><p>it must be invoked from the global namespace</p></li>
+<li><p>the definition of <code class="docutils literal notranslate"><span class="pre">ClassName</span></code> must be visible at the point of invocation</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ClassName</span></code> must be an unqualified name (which combined with 1. means that <code class="docutils literal notranslate"><span class="pre">ClassName</span></code> must be a class defined in the global namespace)</p></li>
+</ol>
+<p>Lastly, you need to register and unregister your type when library gets loaded or unloaded, respectively.</p>
+<div class="highlight-cpp notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">EXTERN_C</span> <span class="n">DLLEXPORT</span> <span class="kt">int</span> <span class="nf">WolframLibrary_initialize</span><span class="p">(</span><span class="n">WolframLibraryData</span> <span class="n">libData</span><span class="p">)</span> <span class="p">{</span>
+   <span class="n">LLU</span><span class="o">::</span><span class="n">LibraryData</span><span class="o">::</span><span class="n">setLibraryData</span><span class="p">(</span><span class="n">libData</span><span class="p">);</span>
+   <span class="n">AStore</span><span class="p">.</span><span class="n">registerType</span><span class="p">(</span><span class="s">&quot;A&quot;</span><span class="p">);</span>   <span class="c1">// the string you pass is the name of a symbol that will be used in the Wolfram Language for managing</span>
+   <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>                   <span class="c1">// objects of your class, it is a good convention to just use the class name</span>
+<span class="p">}</span>
+
+<span class="n">EXTERN_C</span> <span class="n">DLLEXPORT</span> <span class="kt">void</span> <span class="nf">WolframLibrary_uninitialize</span><span class="p">(</span><span class="n">WolframLibraryData</span> <span class="n">libData</span><span class="p">)</span> <span class="p">{</span>
+   <span class="n">AStore</span><span class="p">.</span><span class="n">unregisterType</span><span class="p">(</span><span class="n">libData</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table></div>
+<p>With MLEs in LibraryLink it is not possible to pass arguments for construction of managed expressions.
+LLU extends the MLE implementation by letting the developer define a library function that LLU will call from the Wolfram Language
+when a new instance of a managed expression is created. In other words, define a wrapper for constructor of your class.
+Typically, it will look like this:</p>
+<div class="highlight-cpp notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">EXTERN_C</span> <span class="n">DLLEXPORT</span> <span class="kt">int</span> <span class="nf">OpenManagedA</span><span class="p">(</span><span class="n">WolframLibraryData</span> <span class="n">libData</span><span class="p">,</span> <span class="n">mint</span> <span class="n">Argc</span><span class="p">,</span> <span class="n">MArgument</span> <span class="o">*</span><span class="n">Args</span><span class="p">,</span> <span class="n">MArgument</span> <span class="n">Res</span><span class="p">)</span> <span class="p">{</span>
+   <span class="k">auto</span> <span class="n">err</span> <span class="o">=</span> <span class="n">LLU</span><span class="o">::</span><span class="n">ErrorCode</span><span class="o">::</span><span class="n">NoError</span><span class="p">;</span>
+   <span class="k">try</span> <span class="p">{</span>
+      <span class="n">LLU</span><span class="o">::</span><span class="n">MArgumentManager</span> <span class="n">mngr</span><span class="p">(</span><span class="n">libData</span><span class="p">,</span> <span class="n">Argc</span><span class="p">,</span> <span class="n">Args</span><span class="p">,</span> <span class="n">Res</span><span class="p">);</span>
+      <span class="k">auto</span> <span class="n">id</span> <span class="o">=</span> <span class="n">mngr</span><span class="p">.</span><span class="n">getInteger</span><span class="o">&lt;</span><span class="n">mint</span><span class="o">&gt;</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span> <span class="c1">// id of the object to be created</span>
+      <span class="k">auto</span> <span class="n">arg1</span> <span class="o">=</span> <span class="n">mngr</span><span class="p">.</span><span class="n">getXXXX</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+      <span class="k">auto</span> <span class="n">arg2</span> <span class="o">=</span> <span class="n">mngr</span><span class="p">.</span><span class="n">getYYYY</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
+      <span class="p">...</span> <span class="c1">// read the rest of parameters for constructor of your managed class</span>
+      <span class="n">AStore</span><span class="p">.</span><span class="n">createInstance</span><span class="p">(</span><span class="n">id</span><span class="p">,</span> <span class="n">arg1</span><span class="p">,</span> <span class="n">arg2</span><span class="p">,</span> <span class="p">...);</span>
+   <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="k">const</span> <span class="n">LLU</span><span class="o">::</span><span class="n">LibraryLinkError</span><span class="o">&amp;</span> <span class="n">e</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">err</span> <span class="o">=</span> <span class="n">e</span><span class="p">.</span><span class="n">which</span><span class="p">();</span>
+   <span class="p">}</span>
+   <span class="k">return</span> <span class="n">err</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table></div>
+<p>It is simpler to register an MLE in the Wolfram Language. You only need to load your constructor wrapper:</p>
+<div class="highlight-wolfram-language notranslate"><div class="highlight"><pre><span></span><span class="nv">`LLU`Constructor</span><span class="p">[</span><span class="nv">A</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">`LLU`PacletFunctionLoad</span><span class="p">[</span><span class="s">&quot;OpenManagedA&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="nv">`LLU`Managed</span><span class="p">[</span><span class="nv">A</span><span class="p">],</span><span class="w"> </span><span class="nv">Arg1Type</span><span class="w"> </span><span class="c">(*, ...*)</span><span class="p">},</span><span class="w"> </span><span class="s">&quot;Void&quot;</span><span class="p">]</span><span class="o">;</span><span class="w"></span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="using-managed-expressions">
+<h2>Using Managed Expressions<a class="headerlink" href="#using-managed-expressions" title="Permalink to this headline"> 🔗</a></h2>
+<p>After the registration is done, using MLEs is very simple. In C++ code, MLEs can be treated as another MArgument type,
+for example let’s define a wrapper library function over <code class="docutils literal notranslate"><span class="pre">A::getMyNumber()</span></code>:</p>
+<div class="highlight-cpp notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">LIBRARY_LINK_FUNCTION</span><span class="p">(</span><span class="n">GetMyNumber</span><span class="p">)</span> <span class="p">{</span>
+   <span class="k">auto</span> <span class="n">err</span> <span class="o">=</span> <span class="n">LLU</span><span class="o">::</span><span class="n">ErrorCode</span><span class="o">::</span><span class="n">NoError</span><span class="p">;</span>
+   <span class="k">try</span> <span class="p">{</span>
+      <span class="c1">// create an instance of MArgumentManger for this function</span>
+      <span class="n">LLU</span><span class="o">::</span><span class="n">MArgumentManager</span> <span class="n">mngr</span> <span class="p">{</span><span class="n">Argc</span><span class="p">,</span> <span class="n">Args</span><span class="p">,</span> <span class="n">Res</span><span class="p">};</span>
+
+      <span class="c1">// get a reference to the Managed Expression of type A, on which this function was called in the Wolfram Language</span>
+      <span class="k">const</span> <span class="n">A</span><span class="o">&amp;</span> <span class="n">myA</span> <span class="o">=</span> <span class="n">mngr</span><span class="p">.</span><span class="n">getManagedExpression</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">AStore</span><span class="p">);</span>
+
+      <span class="c1">// set the value of myA.getMyNumber() as the result of this library function</span>
+      <span class="n">mngr</span><span class="p">.</span><span class="n">set</span><span class="p">(</span><span class="n">myA</span><span class="p">.</span><span class="n">getMyNumber</span><span class="p">());</span>
+
+   <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="k">const</span> <span class="n">LLU</span><span class="o">::</span><span class="n">LibraryLinkError</span> <span class="o">&amp;</span><span class="n">e</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">err</span> <span class="o">=</span> <span class="n">e</span><span class="p">.</span><span class="n">which</span><span class="p">();</span>
+   <span class="p">}</span>
+   <span class="k">return</span> <span class="n">err</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table></div>
+<p>In the Wolfram Language, wrappers over member functions can be conveniently loaded:</p>
+<div class="highlight-wolfram-language notranslate"><div class="highlight"><pre><span></span><span class="nv">`LLU`LoadMemberFunction</span><span class="p">[</span><span class="nv">A</span><span class="p">][</span><span class="w"></span>
+<span class="w">   </span><span class="nv">getMyNumber</span><span class="p">,</span><span class="w">      </span><span class="c">(* fresh symbol for the member function *)</span><span class="w"></span>
+<span class="w">   </span><span class="s">&quot;GetMyNumber&quot;</span><span class="p">,</span><span class="w">    </span><span class="c">(* function name in the library *)</span><span class="w"></span>
+<span class="w">   </span><span class="p">{},</span><span class="w">               </span><span class="c">(* argument list *)</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="nb">Integer</span><span class="w">           </span><span class="c">(* result type *)</span><span class="w"></span>
+<span class="p">]</span><span class="o">;</span><span class="w"></span>
+</pre></div>
+</div>
+<p>The only thing left now is to create an MLE instance and call the member function on it:</p>
+<div class="highlight-wolfram-language notranslate"><div class="highlight"><pre><span></span><span class="nv">myA</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">`LLU`NewManagedExpression</span><span class="p">[</span><span class="nv">A</span><span class="p">][</span><span class="m">17</span><span class="p">]</span><span class="o">;</span><span class="w"></span>
+
+<span class="nv">myA</span><span class="w"> </span><span class="o">@</span><span class="w"> </span><span class="nv">getMyNumber</span><span class="p">[]</span><span class="w"></span>
+<span class="c">(* = 17 *)</span><span class="w"></span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="api-reference">
+<h2>API Reference<a class="headerlink" href="#api-reference" title="Permalink to this headline"> 🔗</a></h2>
+<dl class="cpp class">
+<dt id="_CPPv4I0EN3LLU22ManagedExpressionStoreE">
+<span id="_CPPv3I0EN3LLU22ManagedExpressionStoreE"></span><span id="_CPPv2I0EN3LLU22ManagedExpressionStoreE"></span>template&lt;typename <code class="sig-name descname">T</code>&gt;<br /><span class="target" id="classLLU_1_1ManagedExpressionStore"></span><em class="property">class </em><code class="sig-prename descclassname">LLU<code class="sig-prename descclassname">::</code></code><code class="sig-name descname">ManagedExpressionStore</code><a class="headerlink" href="#_CPPv4I0EN3LLU22ManagedExpressionStoreE" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p><a class="reference internal" href="#classLLU_1_1ManagedExpressionStore"><span class="std std-ref">ManagedExpressionStore</span></a> will keep track of instances of managed class T and will provide safe access to them. </p>
+<p><dl class="simple">
+<dt><strong>Template Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">T</span></code>: - managed class </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Types</p>
+<dl class="cpp type">
+<dt id="_CPPv4N3LLU22ManagedExpressionStore8iteratorE">
+<span id="_CPPv3N3LLU22ManagedExpressionStore8iteratorE"></span><span id="_CPPv2N3LLU22ManagedExpressionStore8iteratorE"></span><span class="target" id="classLLU_1_1ManagedExpressionStore_1a9eb1965a9097182d7ddfae2071f14592"></span><em class="property">using </em><code class="sig-name descname">iterator</code> = <em class="property">typename</em> std::unordered_map&lt;mint, std::shared_ptr&lt;<a class="reference internal" href="#_CPPv4I0EN3LLU22ManagedExpressionStoreE" title="LLU::ManagedExpressionStore::T">T</a>&gt;&gt;::iterator<a class="headerlink" href="#_CPPv4N3LLU22ManagedExpressionStore8iteratorE" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Iterator over <a class="reference internal" href="#classLLU_1_1ManagedExpressionStore"><span class="std std-ref">ManagedExpressionStore</span></a> - it iterates over the underlying hash map. </p>
+</dd></dl>
+
+<dl class="cpp type">
+<dt id="_CPPv4N3LLU22ManagedExpressionStore14const_iteratorE">
+<span id="_CPPv3N3LLU22ManagedExpressionStore14const_iteratorE"></span><span id="_CPPv2N3LLU22ManagedExpressionStore14const_iteratorE"></span><span class="target" id="classLLU_1_1ManagedExpressionStore_1a06bd0d433ca0289e359ced4ce3c2b537"></span><em class="property">using </em><code class="sig-name descname">const_iterator</code> = <em class="property">typename</em> std::unordered_map&lt;mint, std::shared_ptr&lt;<a class="reference internal" href="#_CPPv4I0EN3LLU22ManagedExpressionStoreE" title="LLU::ManagedExpressionStore::T">T</a>&gt;&gt;::const_iterator<a class="headerlink" href="#_CPPv4N3LLU22ManagedExpressionStore14const_iteratorE" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Constant iterator over <a class="reference internal" href="#classLLU_1_1ManagedExpressionStore"><span class="std std-ref">ManagedExpressionStore</span></a> - it “const-iterates” over the underlying hash map. </p>
+</dd></dl>
+
+<dl class="cpp type">
+<dt id="_CPPv4N3LLU22ManagedExpressionStore9size_typeE">
+<span id="_CPPv3N3LLU22ManagedExpressionStore9size_typeE"></span><span id="_CPPv2N3LLU22ManagedExpressionStore9size_typeE"></span><span class="target" id="classLLU_1_1ManagedExpressionStore_1afbf11b66fa5eef3dd4c3532e33739968"></span><em class="property">using </em><code class="sig-name descname">size_type</code> = <em class="property">typename</em> std::unordered_map&lt;mint, std::shared_ptr&lt;<a class="reference internal" href="#_CPPv4I0EN3LLU22ManagedExpressionStoreE" title="LLU::ManagedExpressionStore::T">T</a>&gt;&gt;::size_type<a class="headerlink" href="#_CPPv4N3LLU22ManagedExpressionStore9size_typeE" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Size type of the Store is the same as size_type of the underlying hash map. </p>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Functions</p>
+<dl class="cpp function">
+<dt id="_CPPv4N3LLU22ManagedExpressionStore14manageInstanceE5mbool4mint">
+<span id="_CPPv3N3LLU22ManagedExpressionStore14manageInstanceE5mbool4mint"></span><span id="_CPPv2N3LLU22ManagedExpressionStore14manageInstanceE5mbool4mint"></span><span id="LLU::ManagedExpressionStore::manageInstance__mbool.mint"></span><span class="target" id="classLLU_1_1ManagedExpressionStore_1a74abd556fe8e5f8e1d0374e48372e0ab"></span>void <code class="sig-name descname">manageInstance</code><span class="sig-paren">(</span>mbool <em>mode</em>, mint <em>id</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3LLU22ManagedExpressionStore14manageInstanceE5mbool4mint" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Function that will actually be called by LibraryLink when an instance of Managed Expression is created or deleted. </p>
+<p>Notice that this function does not actually create a new object of class T. This is because there is no way to pass constructor arguments here.</p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">mode</span></code>: - are we deleting existing instance (True) or creating new one (False) </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">id</span></code>: - id of the instance of interest </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4I0DpEN3LLU22ManagedExpressionStore14createInstanceER1T4mintDpRR4Args">
+<span id="_CPPv3I0DpEN3LLU22ManagedExpressionStore14createInstanceE4mintDpRR4Args"></span><span id="_CPPv2I0DpEN3LLU22ManagedExpressionStore14createInstanceE4mintDpRR4Args"></span>template&lt;class <code class="sig-name descname">DynamicType</code> = <a class="reference internal" href="#_CPPv4I0EN3LLU22ManagedExpressionStoreE" title="LLU::ManagedExpressionStore::T">T</a>, typename ...<code class="sig-name descname">Args</code>&gt;<br /><span class="target" id="classLLU_1_1ManagedExpressionStore_1af32a91f3787b487702c860f58422a7bf"></span><a class="reference internal" href="#_CPPv4I0EN3LLU22ManagedExpressionStoreE" title="LLU::ManagedExpressionStore::T">T</a> &amp;<code class="sig-name descname">createInstance</code><span class="sig-paren">(</span>mint <em>id</em>, <a class="reference internal" href="#_CPPv4I0DpEN3LLU22ManagedExpressionStore14createInstanceER1T4mintDpRR4Args" title="LLU::ManagedExpressionStore::createInstance::Args">Args</a>&amp;&amp;... <em>args</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0DpEN3LLU22ManagedExpressionStore14createInstanceER1T4mintDpRR4Args" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Create new object of class T that will be managed from Wolfram Language and place it in the map of managed objects. </p>
+<p><dl class="simple">
+<dt><strong>Template Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">DynamicType</span></code>: - actual type of the constructed object, it allows Store to keep objects of subclasses of T </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Args</span></code>: - constructor arguments types </p></li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">id</span></code>: - id of the newly created managed object </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">args</span></code>: - constructor arguments </p></li>
+</ul>
+</dd>
+<dt><strong>Return</strong></dt><dd><p>reference to the newly created object </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4N3LLU22ManagedExpressionStore14createInstanceE4mintNSt10shared_ptrI1TEE">
+<span id="_CPPv3N3LLU22ManagedExpressionStore14createInstanceE4mintNSt10shared_ptrI1TEE"></span><span id="_CPPv2N3LLU22ManagedExpressionStore14createInstanceE4mintNSt10shared_ptrI1TEE"></span><span id="LLU::ManagedExpressionStore::createInstance__mint.std::shared_ptr:T:"></span><span class="target" id="classLLU_1_1ManagedExpressionStore_1a6b16d0e7813dc5a9e521b96b72d12977"></span><a class="reference internal" href="#_CPPv4I0EN3LLU22ManagedExpressionStoreE" title="LLU::ManagedExpressionStore::T">T</a> &amp;<code class="sig-name descname">createInstance</code><span class="sig-paren">(</span>mint <em>id</em>, std::shared_ptr&lt;<a class="reference internal" href="#_CPPv4I0EN3LLU22ManagedExpressionStoreE" title="LLU::ManagedExpressionStore::T">T</a>&gt; <em>ptr</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3LLU22ManagedExpressionStore14createInstanceE4mintNSt10shared_ptrI1TEE" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Create instance in the store from a pointer to the managed class object. </p>
+<p>This is useful when you have an existing object to be managed or when objects of class T cannot be constructed directly (e.g. because T is an abstract class). <dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">id</span></code>: - id of the newly created managed object </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ptr</span></code>: - pointer to an instance of T or a subclass </p></li>
+</ul>
+</dd>
+<dt><strong>Return</strong></dt><dd><p>reference to the object just added to the store </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4N3LLU22ManagedExpressionStore14createInstanceE4mintNSt10unique_ptrI1TEE">
+<span id="_CPPv3N3LLU22ManagedExpressionStore14createInstanceE4mintNSt10unique_ptrI1TEE"></span><span id="_CPPv2N3LLU22ManagedExpressionStore14createInstanceE4mintNSt10unique_ptrI1TEE"></span><span id="LLU::ManagedExpressionStore::createInstance__mint.std::unique_ptr:T:"></span><span class="target" id="classLLU_1_1ManagedExpressionStore_1a55c22a8898d9b9fd2c64a1ef6435769d"></span><a class="reference internal" href="#_CPPv4I0EN3LLU22ManagedExpressionStoreE" title="LLU::ManagedExpressionStore::T">T</a> &amp;<code class="sig-name descname">createInstance</code><span class="sig-paren">(</span>mint <em>id</em>, std::unique_ptr&lt;<a class="reference internal" href="#_CPPv4I0EN3LLU22ManagedExpressionStoreE" title="LLU::ManagedExpressionStore::T">T</a>&gt; <em>ptr</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3LLU22ManagedExpressionStore14createInstanceE4mintNSt10unique_ptrI1TEE" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Create instance in the store from a unique pointer to the managed class object. </p>
+<p>The store will claim shared ownership of the managed object. <dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">id</span></code>: - id of the newly created managed object </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ptr</span></code>: - pointer to an instance of T or a subclass </p></li>
+</ul>
+</dd>
+<dt><strong>Return</strong></dt><dd><p>reference to the object just added to the store </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4N3LLU22ManagedExpressionStore15releaseInstanceE4mint">
+<span id="_CPPv3N3LLU22ManagedExpressionStore15releaseInstanceE4mint"></span><span id="_CPPv2N3LLU22ManagedExpressionStore15releaseInstanceE4mint"></span><span id="LLU::ManagedExpressionStore::releaseInstance__mint"></span><span class="target" id="classLLU_1_1ManagedExpressionStore_1a7ad8b6dc2e550e8f2ef0401c0b666776"></span>int <code class="sig-name descname">releaseInstance</code><span class="sig-paren">(</span>mint <em>id</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3LLU22ManagedExpressionStore15releaseInstanceE4mint" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Release an instance managed by this Store. </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">id</span></code>: - id of the instance to be released </p></li>
+</ul>
+</dd>
+<dt><strong>Return</strong></dt><dd><p>0 if the id was correct and the operation succeeded, non-negative integer otherwise </p>
+</dd>
+<dt><strong>Note</strong></dt><dd><p>Normally, every instance in the Store has a corresponding WL expression and the instance is released as soon as the corresponding expression goes out of scope (its reference count hits 0). This function can be used to force immediate release of a managed instance. </p>
+</dd>
+<dt><strong>See</strong></dt><dd><p><a class="reference external" href="https://reference.wolfram.com/language/LibraryLink/ref/callback/releaseManagedLibraryExpression.html">https://reference.wolfram.com/language/LibraryLink/ref/callback/releaseManagedLibraryExpression.html</a> </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4NK3LLU22ManagedExpressionStore11hasInstanceE4mint">
+<span id="_CPPv3NK3LLU22ManagedExpressionStore11hasInstanceE4mint"></span><span id="_CPPv2NK3LLU22ManagedExpressionStore11hasInstanceE4mint"></span><span id="LLU::ManagedExpressionStore::hasInstance__mintC"></span><span class="target" id="classLLU_1_1ManagedExpressionStore_1a51fac40910b240ce468cf6a6cc5c061a"></span>bool <code class="sig-name descname">hasInstance</code><span class="sig-paren">(</span>mint <em>id</em><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK3LLU22ManagedExpressionStore11hasInstanceE4mint" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Check if instance with given <code class="docutils literal notranslate"><span class="pre">id</span></code> is present in the store. </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">id</span></code>: - id to be checked </p></li>
+</ul>
+</dd>
+<dt><strong>Return</strong></dt><dd><p>true iff the instance with given id is in the store </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4N3LLU22ManagedExpressionStore11getInstanceE4mint">
+<span id="_CPPv3N3LLU22ManagedExpressionStore11getInstanceE4mint"></span><span id="_CPPv2N3LLU22ManagedExpressionStore11getInstanceE4mint"></span><span id="LLU::ManagedExpressionStore::getInstance__mint"></span><span class="target" id="classLLU_1_1ManagedExpressionStore_1a9987fd5d6df77459d1f58982d8e14e75"></span><a class="reference internal" href="#_CPPv4I0EN3LLU22ManagedExpressionStoreE" title="LLU::ManagedExpressionStore::T">T</a> &amp;<code class="sig-name descname">getInstance</code><span class="sig-paren">(</span>mint <em>id</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3LLU22ManagedExpressionStore11getInstanceE4mint" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Get managed instance with given <code class="docutils literal notranslate"><span class="pre">id</span></code>. </p>
+<p>Throw if the <code class="docutils literal notranslate"><span class="pre">id</span></code> is invalid or if there is no corresponding instance. <dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">id</span></code>: - id of instance of interest </p></li>
+</ul>
+</dd>
+<dt><strong>Return</strong></dt><dd><p>reference to the managed object </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4N3LLU22ManagedExpressionStore18getInstancePointerE4mint">
+<span id="_CPPv3N3LLU22ManagedExpressionStore18getInstancePointerE4mint"></span><span id="_CPPv2N3LLU22ManagedExpressionStore18getInstancePointerE4mint"></span><span id="LLU::ManagedExpressionStore::getInstancePointer__mint"></span><span class="target" id="classLLU_1_1ManagedExpressionStore_1a9756fb6bb24e2c4d642e4f6680dfa9ac"></span>std::shared_ptr&lt;<a class="reference internal" href="#_CPPv4I0EN3LLU22ManagedExpressionStoreE" title="LLU::ManagedExpressionStore::T">T</a>&gt; <code class="sig-name descname">getInstancePointer</code><span class="sig-paren">(</span>mint <em>id</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3LLU22ManagedExpressionStore18getInstancePointerE4mint" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Get a shared pointer to a managed instance with given <code class="docutils literal notranslate"><span class="pre">id</span></code>. </p>
+<p>Throw if the <code class="docutils literal notranslate"><span class="pre">id</span></code> is invalid. <dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">id</span></code>: - id of instance of interest </p></li>
+</ul>
+</dd>
+<dt><strong>Return</strong></dt><dd><p>shared pointer to the managed object </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4NK3LLU22ManagedExpressionStore17getExpressionNameEv">
+<span id="_CPPv3NK3LLU22ManagedExpressionStore17getExpressionNameEv"></span><span id="_CPPv2NK3LLU22ManagedExpressionStore17getExpressionNameEv"></span><span id="LLU::ManagedExpressionStore::getExpressionNameC"></span><span class="target" id="classLLU_1_1ManagedExpressionStore_1a54a4931921e16d2af274ed942cf315de"></span><em class="property">const</em> std::string &amp;<code class="sig-name descname">getExpressionName</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em> <em class="property">noexcept</em><a class="headerlink" href="#_CPPv4NK3LLU22ManagedExpressionStore17getExpressionNameEv" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Get symbol name that is used in the WL to represent Managed Expressions stored in this Store. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>symbol name </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4NK3LLU22ManagedExpressionStore4sizeEv">
+<span id="_CPPv3NK3LLU22ManagedExpressionStore4sizeEv"></span><span id="_CPPv2NK3LLU22ManagedExpressionStore4sizeEv"></span><span id="LLU::ManagedExpressionStore::sizeC"></span><span class="target" id="classLLU_1_1ManagedExpressionStore_1a4ea3698e1f7792305ed08e9aea875139"></span><a class="reference internal" href="#_CPPv4N3LLU22ManagedExpressionStore9size_typeE" title="LLU::ManagedExpressionStore::size_type">size_type</a> <code class="sig-name descname">size</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em> <em class="property">noexcept</em><a class="headerlink" href="#_CPPv4NK3LLU22ManagedExpressionStore4sizeEv" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Get the number of currently managed expressions. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>size of the store </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4N3LLU22ManagedExpressionStore5beginEv">
+<span id="_CPPv3N3LLU22ManagedExpressionStore5beginEv"></span><span id="_CPPv2N3LLU22ManagedExpressionStore5beginEv"></span><span id="LLU::ManagedExpressionStore::begin"></span><span class="target" id="classLLU_1_1ManagedExpressionStore_1a847bf3b86c452de68b66f40750301749"></span><a class="reference internal" href="#_CPPv4N3LLU22ManagedExpressionStore8iteratorE" title="LLU::ManagedExpressionStore::iterator">iterator</a> <code class="sig-name descname">begin</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">noexcept</em><a class="headerlink" href="#_CPPv4N3LLU22ManagedExpressionStore5beginEv" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Get the iterator to the first element of the Store. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4NK3LLU22ManagedExpressionStore5beginEv">
+<span id="_CPPv3NK3LLU22ManagedExpressionStore5beginEv"></span><span id="_CPPv2NK3LLU22ManagedExpressionStore5beginEv"></span><span id="LLU::ManagedExpressionStore::beginC"></span><span class="target" id="classLLU_1_1ManagedExpressionStore_1af5863a2f59650609e0c34d06b8fbecd6"></span><a class="reference internal" href="#_CPPv4N3LLU22ManagedExpressionStore14const_iteratorE" title="LLU::ManagedExpressionStore::const_iterator">const_iterator</a> <code class="sig-name descname">begin</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em> <em class="property">noexcept</em><a class="headerlink" href="#_CPPv4NK3LLU22ManagedExpressionStore5beginEv" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Get the const iterator to the first element of the Store. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4NK3LLU22ManagedExpressionStore6cbeginEv">
+<span id="_CPPv3NK3LLU22ManagedExpressionStore6cbeginEv"></span><span id="_CPPv2NK3LLU22ManagedExpressionStore6cbeginEv"></span><span id="LLU::ManagedExpressionStore::cbeginC"></span><span class="target" id="classLLU_1_1ManagedExpressionStore_1a93089842cfe63962d69e723fb7513a7d"></span><a class="reference internal" href="#_CPPv4N3LLU22ManagedExpressionStore14const_iteratorE" title="LLU::ManagedExpressionStore::const_iterator">const_iterator</a> <code class="sig-name descname">cbegin</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em> <em class="property">noexcept</em><a class="headerlink" href="#_CPPv4NK3LLU22ManagedExpressionStore6cbeginEv" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Get the const iterator to the first element of the Store. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4N3LLU22ManagedExpressionStore3endEv">
+<span id="_CPPv3N3LLU22ManagedExpressionStore3endEv"></span><span id="_CPPv2N3LLU22ManagedExpressionStore3endEv"></span><span id="LLU::ManagedExpressionStore::end"></span><span class="target" id="classLLU_1_1ManagedExpressionStore_1a003b5df6e197ec0607f0a388fe8d5302"></span><a class="reference internal" href="#_CPPv4N3LLU22ManagedExpressionStore8iteratorE" title="LLU::ManagedExpressionStore::iterator">iterator</a> <code class="sig-name descname">end</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">noexcept</em><a class="headerlink" href="#_CPPv4N3LLU22ManagedExpressionStore3endEv" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Get the iterator past the last element of the Store. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4NK3LLU22ManagedExpressionStore3endEv">
+<span id="_CPPv3NK3LLU22ManagedExpressionStore3endEv"></span><span id="_CPPv2NK3LLU22ManagedExpressionStore3endEv"></span><span id="LLU::ManagedExpressionStore::endC"></span><span class="target" id="classLLU_1_1ManagedExpressionStore_1a79fff2ec5cc4b7cb0b044f9356c59eb6"></span><a class="reference internal" href="#_CPPv4N3LLU22ManagedExpressionStore14const_iteratorE" title="LLU::ManagedExpressionStore::const_iterator">const_iterator</a> <code class="sig-name descname">end</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em> <em class="property">noexcept</em><a class="headerlink" href="#_CPPv4NK3LLU22ManagedExpressionStore3endEv" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Get the const iterator past the last element of the Store. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4NK3LLU22ManagedExpressionStore4cendEv">
+<span id="_CPPv3NK3LLU22ManagedExpressionStore4cendEv"></span><span id="_CPPv2NK3LLU22ManagedExpressionStore4cendEv"></span><span id="LLU::ManagedExpressionStore::cendC"></span><span class="target" id="classLLU_1_1ManagedExpressionStore_1a7751ceb7c7c1ee572d53cc01baa53013"></span><a class="reference internal" href="#_CPPv4N3LLU22ManagedExpressionStore14const_iteratorE" title="LLU::ManagedExpressionStore::const_iterator">const_iterator</a> <code class="sig-name descname">cend</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em> <em class="property">noexcept</em><a class="headerlink" href="#_CPPv4NK3LLU22ManagedExpressionStore4cendEv" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Get the const iterator past the last element of the Store. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4N3LLU22ManagedExpressionStore12registerTypeENSt6stringE18WolframLibraryData">
+<span id="_CPPv3N3LLU22ManagedExpressionStore12registerTypeENSt6stringE18WolframLibraryData"></span><span id="_CPPv2N3LLU22ManagedExpressionStore12registerTypeENSt6stringE18WolframLibraryData"></span><span id="LLU::ManagedExpressionStore::registerType__ss.WolframLibraryData"></span><span class="target" id="classLLU_1_1ManagedExpressionStore_1ac29017342bdfdfc6ad0f13b6eefc9b76"></span>void <code class="sig-name descname">registerType</code><span class="sig-paren">(</span>std::string <em>name</em>, WolframLibraryData <em>libData</em> = LibraryData::API()<span class="sig-paren">)</span> <em class="property">noexcept</em><a class="headerlink" href="#_CPPv4N3LLU22ManagedExpressionStore12registerTypeENSt6stringE18WolframLibraryData" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Register class T as managed expression under given <code class="docutils literal notranslate"><span class="pre">name</span></code>. </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">name</span></code>: - name of the Wolfram Language symbol that will be used to manage class T </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">libData</span></code>: - optionally specify WolframLibraryData instance </p></li>
+</ul>
+</dd>
+<dt><strong>Note</strong></dt><dd><p>This function should typically be called in <code class="docutils literal notranslate"><span class="pre">WolframLibrary_initialize</span></code> </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4NK3LLU22ManagedExpressionStore14unregisterTypeE18WolframLibraryData">
+<span id="_CPPv3NK3LLU22ManagedExpressionStore14unregisterTypeE18WolframLibraryData"></span><span id="_CPPv2NK3LLU22ManagedExpressionStore14unregisterTypeE18WolframLibraryData"></span><span id="LLU::ManagedExpressionStore::unregisterType__WolframLibraryDataC"></span><span class="target" id="classLLU_1_1ManagedExpressionStore_1a9fb104b95c1ab60581af54b47e7440a2"></span>void <code class="sig-name descname">unregisterType</code><span class="sig-paren">(</span>WolframLibraryData <em>libData</em> = LibraryData::API()<span class="sig-paren">)</span> <em class="property">const</em> <em class="property">noexcept</em><a class="headerlink" href="#_CPPv4NK3LLU22ManagedExpressionStore14unregisterTypeE18WolframLibraryData" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Unregister class T as managed expression. </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">libData</span></code>: - optionally specify WolframLibraryData instance </p></li>
+</ul>
+</dd>
+<dt><strong>Note</strong></dt><dd><p>This function should typically be called in <code class="docutils literal notranslate"><span class="pre">WolframLibrary_uninitialize</span></code> </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="logger.html" class="btn btn-neutral float-right" title="Logging and debug printing" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="wstp.html" class="btn btn-neutral" title="WSTP support" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright Wolfram Research.
+      Last updated on Oct 06, 2020.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> and ❤️  using a custom <a href="https://github.com/LinxiFan/Sphinx-theme">theme</a> based on <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'3.0.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="../_static/language_data.js"></script>
+      <script type="text/javascript" src="../_static/js/custom.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

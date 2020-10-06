@@ -1,0 +1,387 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Logging and debug printing &mdash; LibraryLink Utilities 3.0.0 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/favicon-32.png"/>
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+  
+
+  
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="LibraryLink Utilities 3.0.0 documentation" href="../index.html"/>
+        <link rel="next" title="Progress monitor" href="progress_monitor.html"/>
+        <link rel="prev" title="Managed expressions" href="managed_expressions.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> LibraryLink Utilities
+          
+
+          
+            
+            <img src="../_static/LLULogo.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                3.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <p class="caption"><span class="caption-text">Basic Info</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Intro</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basic/how_to_use.html">How to use</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://actual-doxygen-docs-link-goes.here">API reference (Doxygen ↪)</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Modules</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="functions.html">Library functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="containers.html">Containers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="error_handling.html">Error handling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="wstp.html">WSTP support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="managed_expressions.html">Managed expressions</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Logging and debug printing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="progress_monitor.html">Progress monitor</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Other Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../other/paclet_use.html">Use in paclets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../other/cmake_utilities.html">CMake utility functions</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">LibraryLink Utilities</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>Logging and debug printing</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="logging-and-debug-printing">
+<h1>Logging and debug printing<a class="headerlink" href="#logging-and-debug-printing" title="Permalink to this headline"> 🔗</a></h1>
+<p>In the process of developing a C++ paclet it is often useful to print some information from the C++ code, either for debugging purpose or in the form of a log.
+The most common way of achieving this in C++ is simple printing to the console (e.g. with <code class="docutils literal notranslate"><span class="pre">std::cout</span></code> or <code class="docutils literal notranslate"><span class="pre">std::cerr</span></code>) but this approach has noticeable
+drawbacks:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>requires running Wolfram Language from the command line to be able to see printed messages from the paclet library (and even then may not work on Windows)</p></li>
+<li><p>print statements must be surrounded with <code class="docutils literal notranslate"><span class="pre">#ifdef</span></code>s, disabled in some other way, or simply removed from the codebase before making it production-ready</p></li>
+</ul>
+</div></blockquote>
+<p>One alternative is to log messages to a text file, but this approach has its own problems like choosing the right location for the file, taking care of closing
+the file, etc.</p>
+<p>LLU provides a logging and debug printing mechanism integrated with the Wolfram Language which:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>is cross platform</p></li>
+<li><p>has zero overhead when logging is disabled (so the print statements can stay in the code even in the Release mode)</p></li>
+<li><p>is flexible and easy to customize</p></li>
+</ul>
+</div></blockquote>
+<p>It is achieved by directing all the message data via WSTP to the Kernel and processing/formatting each message there according to the developer’s settings.
+To be able to use the logging facility from LLU, first:</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;LLU/ErrorLog/Logger.h&gt;</span><span class="cp"></span>
+</pre></div>
+</div>
+<p>and then simply use one of the 3 predefined macros:</p>
+<dl class="cpp macro">
+<dt id="c.LLU_DEBUG">
+<span class="target" id="Logger_8h_1ab4686575583c9da7cd2171bec000e660"></span><code class="sig-name descname">LLU_DEBUG</code><span class="sig-paren">(</span>...<span class="sig-paren">)</span><a class="headerlink" href="#c.LLU_DEBUG" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Log a message (arbitrary sequence of arguments that can be passed via WSTP) as debug information, the log will consist of the line number, file name, function name and user-provided args. </p>
+<p>Formatting can be customized on the Wolfram Language side. <dl class="simple">
+<dt><strong>Note</strong></dt><dd><p>This macro is only active with LLU_LOG_DEBUG compilation flag. </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp macro">
+<dt id="c.LLU_WARNING">
+<span class="target" id="Logger_8h_1ab1fbc88f7419349d6158225c13990918"></span><code class="sig-name descname">LLU_WARNING</code><span class="sig-paren">(</span>...<span class="sig-paren">)</span><a class="headerlink" href="#c.LLU_WARNING" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Log a message (arbitrary sequence of arguments that can be passed via WSTP) as warning, the log will consist of the line number, file name, function name and user-provided args. </p>
+<p>Formatting can be customized on the Wolfram Language side. <dl class="simple">
+<dt><strong>Note</strong></dt><dd><p>This macro is only active with LLU_LOG_DEBUG or LLU_LOG_WARNING compilation flag. </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp macro">
+<dt id="c.LLU_ERROR">
+<span class="target" id="Logger_8h_1ab3b39a867be14d1802f4ff438e3226b3"></span><code class="sig-name descname">LLU_ERROR</code><span class="sig-paren">(</span>...<span class="sig-paren">)</span><a class="headerlink" href="#c.LLU_ERROR" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Log a message (arbitrary sequence of arguments that can be passed via WSTP) as error, the log will consist of the line number, file name, function name and user-provided args. </p>
+<p>Formatting can be customized on the Wolfram Language side. <dl class="simple">
+<dt><strong>Note</strong></dt><dd><p>This macro is only active with LLU_LOG_DEBUG, LLU_LOG_WARNING or LLU_LOG_ERROR compilation flag. </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<p>Each macro takes an arbitrary number of parameters of any WSTP-supported types (see <a class="reference internal" href="wstp.html"><span class="doc">WSTP support</span></a> for details). Additionally, each log will be automatically
+equipped with file name, line number and function name, all related to the place were the log message was issued.</p>
+<p>By default the macros are disabled and the compiler will not generate any extra machine code (so the 0 overhead condition is fulfilled).
+To enable all macros compile your paclet with <code class="docutils literal notranslate"><span class="pre">-D&lt;log_level&gt;</span></code>, where <code class="docutils literal notranslate"><span class="pre">&lt;log_level&gt;</span></code> is one of the following:</p>
+<dl class="cpp macro">
+<dt id="c.LLU_LOG_DEBUG">
+<span class="target" id="Logger_8h_1a7353b5300e68f3c1e4e644ff3d367cf9"></span><code class="sig-name descname">LLU_LOG_DEBUG</code><a class="headerlink" href="#c.LLU_LOG_DEBUG" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Define LLU_LOG_DEBUG to enable all log levels </p>
+</dd></dl>
+
+<dl class="cpp macro">
+<dt id="c.LLU_LOG_WARNING">
+<span class="target" id="Logger_8h_1aa94810419bbcd46e21f9fde6ef642395"></span><code class="sig-name descname">LLU_LOG_WARNING</code><a class="headerlink" href="#c.LLU_LOG_WARNING" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Define LLU_LOG_WARNING to enable warning and error logs. Debug logs will be ignored. </p>
+</dd></dl>
+
+<dl class="cpp macro">
+<dt id="c.LLU_LOG_ERROR">
+<span class="target" id="Logger_8h_1a95ea1085c88b90ef80e8e004b1eb39da"></span><code class="sig-name descname">LLU_LOG_ERROR</code><a class="headerlink" href="#c.LLU_LOG_ERROR" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Define LLU_LOG_ERROR to enable only error logs. Debug and warning logs will be ignored. </p>
+</dd></dl>
+
+<p>For example, consider a simple library function that takes a number of integers and the first of them is the index of the argument that will be returned:</p>
+<div class="highlight-cpp notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18</pre></div></td><td class="code"><div class="highlight"><pre><span></span>     <span class="n">EXTERN_C</span> <span class="n">DLLEXPORT</span> <span class="kt">int</span> <span class="nf">LogDemo</span><span class="p">(</span><span class="n">WolframLibraryData</span> <span class="n">libData</span><span class="p">,</span> <span class="n">mint</span> <span class="n">argc</span><span class="p">,</span> <span class="n">MArgument</span><span class="o">*</span> <span class="n">args</span><span class="p">,</span> <span class="n">MArgument</span> <span class="n">res</span><span class="p">)</span> <span class="p">{</span>
+<span class="hll">             <span class="n">LLU_DEBUG</span><span class="p">(</span><span class="s">&quot;Library function entered with &quot;</span><span class="p">,</span> <span class="n">argc</span><span class="p">,</span> <span class="s">&quot; arguments.&quot;</span><span class="p">);</span>
+</span>             <span class="k">auto</span> <span class="n">err</span> <span class="o">=</span> <span class="n">LLErrorCode</span><span class="o">::</span><span class="n">NoError</span><span class="p">;</span>
+             <span class="k">try</span> <span class="p">{</span>
+                     <span class="n">MArgumentManager</span> <span class="n">mngr</span><span class="p">(</span><span class="n">libData</span><span class="p">,</span> <span class="n">argc</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">res</span><span class="p">);</span>
+                     <span class="k">auto</span> <span class="n">index</span> <span class="o">=</span> <span class="n">mngr</span><span class="p">.</span><span class="n">getInteger</span><span class="o">&lt;</span><span class="n">mint</span><span class="o">&gt;</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+                     <span class="k">if</span> <span class="p">(</span><span class="n">index</span> <span class="o">&gt;=</span> <span class="n">argc</span><span class="p">)</span> <span class="p">{</span>
+<span class="hll">                             <span class="n">LLU_WARNING</span><span class="p">(</span><span class="s">&quot;Index &quot;</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="s">&quot; is too big for the number of arguments: &quot;</span><span class="p">,</span> <span class="n">argc</span><span class="p">,</span> <span class="s">&quot;. Changing to &quot;</span><span class="p">,</span> <span class="n">argc</span> <span class="o">-</span> <span class="mi">1</span><span class="p">);</span>
+</span>                             <span class="n">index</span> <span class="o">=</span> <span class="n">argc</span> <span class="o">-</span> <span class="mi">1</span><span class="p">;</span>
+                     <span class="p">}</span>
+                     <span class="k">auto</span> <span class="n">value</span> <span class="o">=</span> <span class="n">mngr</span><span class="p">.</span><span class="n">getInteger</span><span class="o">&lt;</span><span class="n">mint</span><span class="o">&gt;</span><span class="p">(</span><span class="n">index</span><span class="p">);</span>
+                     <span class="n">mngr</span><span class="p">.</span><span class="n">setInteger</span><span class="p">(</span><span class="n">value</span><span class="p">);</span>
+             <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="k">const</span> <span class="n">LibraryLinkError</span><span class="o">&amp;</span> <span class="n">e</span><span class="p">)</span> <span class="p">{</span>
+<span class="hll">                     <span class="n">LLU_ERROR</span><span class="p">(</span><span class="s">&quot;Caught LLU exception &quot;</span><span class="p">,</span> <span class="n">e</span><span class="p">.</span><span class="n">what</span><span class="p">(),</span> <span class="s">&quot;: &quot;</span><span class="p">,</span> <span class="n">e</span><span class="p">.</span><span class="n">debug</span><span class="p">());</span>
+</span>                     <span class="n">err</span> <span class="o">=</span> <span class="n">e</span><span class="p">.</span><span class="n">which</span><span class="p">();</span>
+             <span class="p">}</span>
+             <span class="k">return</span> <span class="n">err</span><span class="p">;</span>
+     <span class="p">}</span>
+</pre></div>
+</td></tr></table></div>
+<p>Compile with <code class="docutils literal notranslate"><span class="pre">-DLLU_LOG_DEBUG</span></code>, load in the notebook and try:</p>
+<img alt="Basic example of LLU Logger output in a notebook." src="../_images/Logger1.png" />
+<p>A less verbose option is overriding the <code class="docutils literal notranslate"><span class="pre">`LLU`Logger`FormattedLog`</span></code> symbol:</p>
+<img alt="More concise LLU Logger output in a notebook." src="../_images/Logger2.png" />
+<p>Or drop formatting and accumulate logs as Strings in a List:</p>
+<img alt="Logging to a symbol." src="../_images/Logger3.png" />
+<p>Other features include:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Easy modification of log styling</p></li>
+<li><p>Formatting logs as <a class="reference external" href="https://reference.wolfram.com/language/ref/Association">Association</a> or <a class="reference external" href="https://reference.wolfram.com/language/ref/List">List</a></p></li>
+<li><p>Printing logs to Messages window</p></li>
+<li><p>Filtering messages by file name, function name, log severity</p></li>
+<li><p>Blocking all logs in top-level (so you don’t have to rebuild your paclet to temporarily disable logging,
+but the logs will still be sent via WSTP to top-level, only immediately discarded)</p></li>
+</ul>
+</div></blockquote>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="progress_monitor.html" class="btn btn-neutral float-right" title="Progress monitor" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="managed_expressions.html" class="btn btn-neutral" title="Managed expressions" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright Wolfram Research.
+      Last updated on Oct 06, 2020.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> and ❤️  using a custom <a href="https://github.com/LinxiFan/Sphinx-theme">theme</a> based on <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'3.0.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="../_static/language_data.js"></script>
+      <script type="text/javascript" src="../_static/js/custom.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
