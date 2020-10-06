@@ -36,10 +36,10 @@ set(CMAKE_VERBOSE_MAKEFILE OFF CACHE BOOL "Verbose")
 if(NOT TARGET LLU)
 
 	#=============================================
-	#===== Mathematica (WSTP/LibraryLink) ========
+	#==== WolframLanguage (WSTP/LibraryLink) =====
 	#=============================================
 
-	find_package(Mathematica 12.0 COMPONENTS WolframLibrary WSTP MODULE)
+	find_package(WolframLanguage 12.0 COMPONENTS WolframLibrary WSTP MODULE)
 
 	#=============================================
 	#=========== MAIN PACLET LIBRARY =============
@@ -176,7 +176,7 @@ if(NOT TARGET LLU)
 	#Install the config, configversion and custom find modules
 	install(DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/cmake/Wolfram DESTINATION ${INSTALL_CONFIGDIR})
 	install(FILES
-		${CMAKE_CURRENT_LIST_DIR}/cmake/FindMathematica.cmake
+		${CMAKE_CURRENT_LIST_DIR}/cmake/FindWolframLanguage.cmake
 		${CMAKE_CURRENT_LIST_DIR}/cmake/FindWolframLibrary.cmake
 		${CMAKE_CURRENT_LIST_DIR}/cmake/FindWSTP.cmake
 		${CMAKE_CURRENT_BINARY_DIR}/LLUConfig.cmake

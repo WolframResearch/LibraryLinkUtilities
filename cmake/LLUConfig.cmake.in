@@ -13,7 +13,7 @@ include(${LLU_CMAKE_DIR}/Wolfram/PacletUtilities.cmake)
 
 list(APPEND CMAKE_MODULE_PATH ${LLU_CMAKE_DIR})
 
-find_package(Mathematica 12.0 QUIET COMPONENTS WolframLibrary WSTP OPTIONAL_COMPONENTS wolframscript)
+find_package(WolframLanguage 12.0 QUIET COMPONENTS WolframLibrary WSTP OPTIONAL_COMPONENTS wolframscript)
 
 find_dependency(WolframLibrary 5)
 find_dependency(WSTP 4.25)

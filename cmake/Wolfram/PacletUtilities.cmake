@@ -75,15 +75,15 @@ function(install_paclet_files)
 	endif()
 endfunction()
 
-# Installs paclet into a Mathematica layout if requested.
+# Installs paclet into a Wolfram product layout if requested.
 macro(install_paclet_to_layout PACLET_NAME INSTALLQ)
 	if(${INSTALLQ})
-		if(EXISTS "${Mathematica_INSTALL_DIR}")
+		if(EXISTS "${WolframLanguage_INSTALL_DIR}")
 			install(DIRECTORY "${CMAKE_INSTALL_PREFIX}/${PACLET_NAME}"
-					DESTINATION "${Mathematica_INSTALL_DIR}/SystemFiles/Links"
+					DESTINATION "${WolframLanguage_INSTALL_DIR}/SystemFiles/Links"
 					)
 		else()
-			message(WARNING "Failed to install paclet to layout: \"${Mathematica_INSTALL_DIR}\" does not exist.")
+			message(WARNING "Failed to install paclet to layout: \"${WolframLanguage_INSTALL_DIR}\" does not exist.")
 		endif()
 	endif()
 endmacro()
@@ -108,7 +108,7 @@ endfunction()
 #       TEST_FILE Tests/test.wl     # run tests if the paclet has any [optional]
 #   )
 #
-# For this function to work, install target must be built beforehand and wolframscript from Mathematica v12.1 or later must be available.
+# For this function to work, install target must be built beforehand and wolframscript from WolframLanguage v12.1 or later must be available.
 function(add_paclet_target TARGET_NAME)
 	set(OPTIONS VERIFY INSTALL)
 	set(ONE_VALUE_ARGS NAME TEST_FILE)
@@ -116,9 +116,9 @@ function(add_paclet_target TARGET_NAME)
 	cmake_parse_arguments(MAKE_PACLET "${OPTIONS}" "${ONE_VALUE_ARGS}" "${MULTI_VALUE_ARGS}" ${ARGN})
 	required_arg(MAKE_PACLET_NAME "Paclet name must be provided.")
 
-	unset(Mathematica_FOUND)
-	find_package(Mathematica 12.1 QUIET COMPONENTS wolframscript)
-	if (NOT Mathematica_FOUND OR NOT Mathematica_wolframscript_EXE)
+	unset(WolframLanguage_FOUND)
+	find_package(WolframLanguage 12.1 QUIET COMPONENTS wolframscript)
+	if (NOT WolframLanguage_FOUND OR NOT WolframLanguage_wolframscript_EXE)
 		message(WARNING "Could not find wolframscript 12.1 or higher. \"paclet\" target will not be created.")
 		return()
 	endif()
@@ -182,7 +182,7 @@ function(add_paclet_target TARGET_NAME)
 	string(CONFIGURE "${WL_CODE}" WL_CODE)
 
 	add_custom_target(${TARGET_NAME}
-			COMMAND ${Mathematica_wolframscript_EXE} -code "${WL_CODE}"
+			COMMAND ${WolframLanguage_wolframscript_EXE} -code "${WL_CODE}"
 			WORKING_DIRECTORY ${CMAKE_INSTALL_PREFIX}
 			COMMENT "Creating .paclet file${VERIFICATION_MESSAGE}..."
 			VERBATIM

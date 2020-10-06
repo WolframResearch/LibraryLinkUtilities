@@ -216,7 +216,8 @@ Glossary
    paclet
       A unit of the Wolfram Language functionality implemented in one or more files which can be auto-discovered, installed, loaded, etc. and must be
       accompanied by a **PacletInfo.wl** file.
-      See the `excellent tutorial <https://www.wolframcloud.com/obj/tgayley/Published/PacletDevelopment.nb>`_ on paclet development.
+      See the `official guide <https://reference.wolfram.com/language/guide/Paclets.html>`_ and even more in-depth
+      `tutorial <https://www.wolframcloud.com/obj/tgayley/Published/PacletDevelopment.nb>`_ on paclet development.
 
    LibraryLink paclet
       A :term:`paclet` that has some of its functionality implemented in C or C++ using LibraryLink. Such paclets usually have a layer of the Wolfram Language

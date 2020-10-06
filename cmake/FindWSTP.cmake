@@ -14,7 +14,7 @@
 #     WSTP::WSTP
 #
 # You can specify custom location to search for WSTP either by specifying WOLFRAM_WSTP_PATH explicitly,
-# or if that variable is not set, by providing Mathematica_INSTALL_DIR variable with a path to Mathematica installation.
+# or if that variable is not set, by providing WolframLanguage_INSTALL_DIR variable with a path to a WolframLanguage installation.
 #
 # Author: Rafal Chojna - rafalc@wolfram.com
 
@@ -26,6 +26,10 @@ if(WOLFRAM_WSTP_PATH)
 	set(_WOLFSTP_LIBRARY_PATH "${WOLFRAM_WSTP_PATH}")
 else()
 	set(_WOLFSTP_LIBRARY_PATH "$ENV{WOLFRAM_WSTP_PATH}")
+endif()
+
+if(NOT _WOLFSTP_LIBRARY_PATH AND WolframLanguage_INSTALL_DIR)
+	set(_WOLFSTP_LIBRARY_PATH "${WolframLanguage_INSTALL_DIR}/SystemFiles/Links/WSTP/DeveloperKit/${_WOLFSTP_SYSTEMID}/CompilerAdditions")
 endif()
 
 if(NOT _WOLFSTP_LIBRARY_PATH AND Mathematica_INSTALL_DIR)

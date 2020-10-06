@@ -19,12 +19,12 @@ Since the source code uses C++17 features, you have to make sure your compiler s
 Plus:
 
  * **CMake** >= 3.14
- * **Mathematica** >= 12.0, or more specifically
+ * **Wolfram Desktop** >= 12.0 (Wolfram Engine and Wolfram Mathematica will also work), or more specifically
 
    - **WSTP** interface version 4 or later
    - **Wolfram Library** >= 5
 
-WSTP library and Wolfram Library header files can be found in any Mathematica installation.
+WSTP library and Wolfram Library header files can be found in any Wolfram Desktop installation.
 Optionally, for running unit tests, **wolframscript** must be available on the system.
 
 1. Get source code
@@ -32,7 +32,8 @@ Optionally, for running unit tests, **wolframscript** must be available on the s
 
 You can clone LLU from here:
 
-**TODO: here goes the GitHub clone link**
+- **[ssh]** git@github.com:WolframResearch/LibraryLinkUtilities.git
+- **[https]** https://github.com/WolframResearch/LibraryLinkUtilities.git
 
 Alternatively, a zip package can be downloaded from GitHub containing a snapshot from any branch.
 
@@ -51,23 +52,23 @@ created inside the root folder of your local clone of LibraryLink Utilities. You
 
 Let's consider a number of possible scenarios:
 
-1. Use WSTP and Wolfram Library from a standard Mathematica installation:
+1. Use WSTP and Wolfram Library from a standard Wolfram Desktop installation:
 
-   If you have Mathematica **12.0** or later installed in a default location or on the system PATH, the build configuration step should succeed out of the box
-   without setting any variables.
-   Otherwise, set ``Mathematica_INSTALL_DIR`` to an absolute path to Mathematica installation directory, for instance
+   If you have Wolfram Desktop **12.0** or later installed in a default location or on the system PATH, the build configuration step should succeed
+   out of the box without setting any variables.
+   Otherwise, set ``Wolfram_INSTALL_DIR`` to an absolute path to your Wolfram product installation directory, for instance
 
    .. code-block:: console
 
-      cmake -DMathematica_INSTALL_DIR=/home/jerome/Mathematica/12.1 ..
+      cmake -DWolfram_INSTALL_DIR=/home/jerome/WolframDesktop/12.1 ..
 
    .. tip::
 
-      If you are not sure where Mathematica is installed on your system, check the value of :wlref:`$InstallationDirectory` symbol.
+      If you are not sure where the Wolfram software is installed on your system, check the value of :wlref:`$InstallationDirectory` symbol.
 
 2. Use WSTP and Wolfram Library from arbitrary locations (rare case)
 
-   If WSTP and Wolfram Library are not located in a Mathematica installation, two paths must be passed to CMake:
+   If WSTP and Wolfram Library are not located in a Wolfram Desktop installation, two paths must be passed to CMake:
 
    .. code-block:: console
 
@@ -118,7 +119,7 @@ When you have the library installed you may want to run unit tests to confirm th
 - Utilities
 - WSTP
 
-You can run all of them (except for ProgressMonitor tests which are contained in a Mathematica notebook and excluded from batch testing) with
+You can run all of them (except for ProgressMonitor tests which are contained in a notebook and excluded from batch testing) with
 a :program:`ctest` command or by running the ``test`` CMake target. It is possible to run a specific test module, for example
 
 .. code-block:: console
@@ -126,7 +127,7 @@ a :program:`ctest` command or by running the ``test`` CMake target. It is possib
 	ctest -R WSTP
 
 The ``test`` target actually calls :code:`wolframscript` under the hood, so it must be installed in your system.
-If you specify the value for ``Mathematica_INSTALL_DIR`` in step 2.1, CMake will look for :code:`wolframscript` in that installation of Mathematica,
+If you specify the value for ``Wolfram_INSTALL_DIR`` in step 2.1, CMake will look for :code:`wolframscript` in that installation of Wolfram software,
 otherwise it will check the system PATH. Because of how CMake defines the ``test`` target, it will not show individual test failures, only the summary.
 
 To improve unit test feedback, another CMake target called :code:`TestWithOutputOnFailure` is defined. Running this target (the exact command depends on the
@@ -221,12 +222,12 @@ Wolfram Language :term:`paclet` and it can be built and used as follows:
 
 .. code-block:: console
 
-	cmake -DLLU_ROOT=/my/workspace/LLU -DMathematica_ROOT=/path/to/Mathematica/ -B build
+	cmake -DLLU_ROOT=/my/workspace/LLU -DMathematica_ROOT=/path/to/WolframDesktop/ -B build
 	cd build/
 	cmake --build . --target install
 
 This will put a complete paclet directory structure under :file:`tests/Demo/build/Demo`. You can copy this directory into :file:`SystemFiles/Links` subdirectory
-of Mathematica installation and then load the paclet by calling ``Needs["Demo`"]`` in a notebook.
+of your Wolfram product installation and then load the paclet by calling ``Needs["Demo`"]`` in a notebook.
 
 Optionally, you can build another target called *paclet*
 
@@ -235,7 +236,7 @@ Optionally, you can build another target called *paclet*
 	cmake --build . --target paclet
 
 When built, the *paclet* target will take the directory structure created by the *install* target and turn it into a proper **.paclet** file.
-It can optionally validate paclet contents, run a test file or install paclet to a directory where Mathematica can automatically find it.
+It can optionally validate paclet contents, run a test file or install paclet to a directory where the Wolfram Language can automatically find it.
 Investigate the :file:`tests/Demo/CMakeLists.txt` file for details on how to create and use this target.
 
 Finally, after building the *paclet* target or manually copying the Demo paclet into :file:`SystemFiles/Links`, you should be able to run the following code

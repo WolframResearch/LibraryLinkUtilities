@@ -34,9 +34,9 @@ set(TEST_MODULES
 	)
 
 
-find_package(Mathematica 12.0 COMPONENTS wolframscript)
-if(Mathematica_wolframscript_EXE)
-	message(STATUS "Unit tests will be run with: ${Mathematica_wolframscript_EXE}")
+find_package(WolframLanguage 12.0 COMPONENTS wolframscript)
+if(WolframLanguage_wolframscript_EXE)
+	message(STATUS "Unit tests will be run with: ${WolframLanguage_wolframscript_EXE}")
 
 	foreach(UnitTest ${TEST_MODULES})
 		set(MODULE_CODE
@@ -74,7 +74,7 @@ if(Mathematica_wolframscript_EXE)
 
 		add_test(NAME ${UnitTest}
 			WORKING_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}/${UnitTest}"
-			COMMAND ${Mathematica_wolframscript_EXE} -code "${MODULE_CODE}"
+			COMMAND ${WolframLanguage_wolframscript_EXE} -code "${MODULE_CODE}"
 			)
 	endforeach()
 

@@ -11,23 +11,28 @@
 
 include_guard()
 
-function(get_default_mathematica_dir MATHEMATICA_VERSION DEFAULT_MATHEMATICA_INSTALL_DIR)
+function(get_default_mathematica_dirs MATHEMATICA_VERSION DEFAULT_MATHEMATICA_INSTALL_DIRS)
 	set(_M_INSTALL_DIR NOTFOUND)
 	if(APPLE)
-		find_path(_M_INSTALL_DIR "Contents" PATHS
-				"/Applications/Mathematica ${MATHEMATICA_VERSION}.app"
-				"/Applications/Mathematica.app"
-				)
-		set(_M_INSTALL_DIR "${_M_INSTALL_DIR}/Contents")
+		set(_M_INSTALL_DIR
+			"/Applications/WolframDesktop ${MATHEMATICA_VERSION}.app"
+			"/Applications/WolframDesktop.app"
+			"/Applications/Mathematica ${MATHEMATICA_VERSION}.app"
+			"/Applications/Mathematica.app"
+			"/Applications/WolframEngine ${MATHEMATICA_VERSION}.app"
+			"/Applications/WolframEngine.app")
 	elseif(WIN32)
-		set(_M_INSTALL_DIR "C:/Program\ Files/Wolfram\ Research/Mathematica/${MATHEMATICA_VERSION}")
+		set(_M_INSTALL_DIR
+			"C:/Program\ Files/Wolfram\ Research/WolframDesktop/${MATHEMATICA_VERSION}"
+			"C:/Program\ Files/Wolfram\ Research/Mathematica/${MATHEMATICA_VERSION}"
+			"C:/Program\ Files/Wolfram\ Research/WolframEngine/${MATHEMATICA_VERSION}")
 	else()
-		set(_M_INSTALL_DIR "/usr/local/Wolfram/Mathematica/${MATHEMATICA_VERSION}")
+		set(_M_INSTALL_DIR
+			"/usr/local/Wolfram/WolframDesktop/${MATHEMATICA_VERSION}"
+			"/usr/local/Wolfram/Mathematica/${MATHEMATICA_VERSION}"
+			"/usr/local/Wolfram/WolframEngine/${MATHEMATICA_VERSION}")
 	endif()
-	if(NOT IS_DIRECTORY "${_M_INSTALL_DIR}" AND IS_DIRECTORY "$ENV{MATHEMATICA_HOME}")
-		set(_M_INSTALL_DIR "$ENV{MATHEMATICA_HOME}")
-	endif()
-	set(${DEFAULT_MATHEMATICA_INSTALL_DIR} "${_M_INSTALL_DIR}" PARENT_SCOPE)
+	set(${DEFAULT_MATHEMATICA_INSTALL_DIRS} "${_M_INSTALL_DIR}" PARENT_SCOPE)
 endfunction()
 
 function(detect_system_id DETECTED_SYSTEM_ID)
