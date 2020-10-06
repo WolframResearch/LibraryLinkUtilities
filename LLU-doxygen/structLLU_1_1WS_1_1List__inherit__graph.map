@@ -1,0 +1,5 @@
+<map id="LLU::WS::List" name="LLU::WS::List">
+<area shape="rect" id="node1" title="Special type of a Function which corresponds to the List expression when exchanged with the Kernel vi..." alt="" coords="20,155,125,181"/>
+<area shape="rect" id="node2" href="$structLLU_1_1WS_1_1Function.html" title="Structure representing any function in Wolfram Language, i.e. a head plus number of arguments." alt="" coords="5,80,140,107"/>
+<area shape="rect" id="node3" href="$structLLU_1_1WS_1_1Symbol.html" title="Structure representing any symbol in Wolfram Language." alt="" coords="9,5,137,32"/>
+</map>

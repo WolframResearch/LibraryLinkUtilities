@@ -1,0 +1,4 @@
+<map id="LLU::ImageView" name="LLU::ImageView">
+<area shape="rect" id="node1" title="Simple, light&#45;weight, non&#45;owning wrappper over MImage." alt="" coords="17,80,135,107"/>
+<area shape="rect" id="node2" href="$structLLU_1_1ImageInterface.html" title="Abstract class that defines a basic set of operations on an image." alt="" coords="5,5,147,32"/>
+</map>

@@ -1,0 +1,4 @@
+<map id="LLU::Async::Pausable" name="LLU::Async::Pausable">
+<area shape="rect" id="node1" title="Utility class for pausable task queues." alt="" coords="35,5,189,32"/>
+<area shape="rect" id="node2" href="$classLLU_1_1Async_1_1GenericThreadPool.html" title="Thread pool class with support of per&#45;thread queues and work stealing." alt="" coords="5,80,219,121"/>
+</map>

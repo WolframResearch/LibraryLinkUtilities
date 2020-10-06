@@ -1,0 +1,4 @@
+<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
+<area shape="rect" id="node1" href="$structLLU_1_1SharePolicy.html" title="Base class for shared access policies on Windows." alt="" coords="5,13,129,39"/>
+<area shape="rect" id="node2" href="$structLLU_1_1AlwaysReadExclusiveWrite.html" title="Default policy for Import/Export paclets &#45; always allow reading, deny writing when we write." alt="" coords="177,5,363,47"/>
+</map>

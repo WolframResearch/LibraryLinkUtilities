@@ -1,0 +1,11 @@
+<map id="Utilities.h" name="Utilities.h">
+<area shape="rect" id="node1" title="Header file with miscellaneous utilities used throughout the WSTP&#45;related part of LibraryLinkUtilitie..." alt="" coords="133,5,211,32"/>
+<area shape="rect" id="node2" title=" " alt="" coords="5,80,67,107"/>
+<area shape="rect" id="node3" title=" " alt="" coords="274,155,329,181"/>
+<area shape="rect" id="node4" title=" " alt="" coords="141,80,203,107"/>
+<area shape="rect" id="node5" href="$Errors_8h.html" title="Definitions of error names and error codes used across LLU." alt="" coords="227,80,376,107"/>
+<area shape="rect" id="node6" href="$EncodingTraits_8hpp.html" title="Defines possible encodings together with their properties and related types." alt="" coords="400,80,605,107"/>
+<area shape="rect" id="node7" title=" " alt="" coords="376,155,437,181"/>
+<area shape="rect" id="node8" title=" " alt="" coords="461,155,544,181"/>
+<area shape="rect" id="node9" title=" " alt="" coords="568,155,621,181"/>
+</map>

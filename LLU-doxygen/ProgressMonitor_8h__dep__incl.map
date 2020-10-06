@@ -1,0 +1,9 @@
+<map id="ProgressMonitor.h" name="ProgressMonitor.h">
+<area shape="rect" id="node1" title="Definition of ProgressMonitor class." alt="" coords="246,5,374,32"/>
+<area shape="rect" id="node2" href="$MArgumentManager_8h.html" title="Definition of MArgumentManager class." alt="" coords="149,80,300,107"/>
+<area shape="rect" id="node7" href="$ProgressMonitor_8cpp.html" title="Implementation file for ProgressMonitor class." alt="" coords="324,80,467,107"/>
+<area shape="rect" id="node3" href="$LLU_8h.html" title="Header file which includes all major parts of LLU." alt="" coords="5,155,63,181"/>
+<area shape="rect" id="node4" href="$LibraryLinkError_8cpp.html" title="Contains definitions of ErrorManager members and implementation of interface function sendRegisteredE..." alt="" coords="87,155,226,181"/>
+<area shape="rect" id="node5" href="$Logger_8cpp.html" title="Implementation of functions defined in Logger.h." alt="" coords="251,155,337,181"/>
+<area shape="rect" id="node6" href="$MArgumentManager_8cpp.html" title="Definitions of non&#45;template member functions and static data members from MArgumentManager class." alt="" coords="361,155,525,181"/>
+</map>

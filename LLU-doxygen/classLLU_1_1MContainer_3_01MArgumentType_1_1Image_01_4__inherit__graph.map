@@ -1,0 +1,6 @@
+<map id="LLU::MContainer&lt; MArgumentType::Image &gt;" name="LLU::MContainer&lt; MArgumentType::Image &gt;">
+<area shape="rect" id="node1" title="MContainer specialization for MImage." alt="" coords="69,95,269,136"/>
+<area shape="rect" id="node4" href="$classLLU_1_1Image.html" title="This is a class template, where template parameter T is the type of data elements...." alt="" coords="108,184,231,211"/>
+<area shape="rect" id="node2" href="$structLLU_1_1ImageInterface.html" title="Abstract class that defines a basic set of operations on an image." alt="" coords="5,13,147,39"/>
+<area shape="rect" id="node3" href="$classLLU_1_1MContainerBase.html" title=" " alt="" coords="171,5,357,47"/>
+</map>

@@ -1,0 +1,4 @@
+<map id="LLU::WS::Function" name="LLU::WS::Function">
+<area shape="rect" id="node1" title="Structure representing any function in Wolfram Language, i.e. a head plus number of arguments." alt="" coords="5,80,140,107"/>
+<area shape="rect" id="node2" href="$structLLU_1_1WS_1_1Symbol.html" title="Structure representing any symbol in Wolfram Language." alt="" coords="9,5,137,32"/>
+</map>
