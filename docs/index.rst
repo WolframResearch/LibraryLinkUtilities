@@ -6,7 +6,7 @@
 
    Intro <self>
    basic/how_to_use
-   API reference (Doxygen ↪) <https://actual-doxygen-docs-link-goes.here>
+   API reference (Doxygen ↪) <https://wolframresearch.github.io/LibraryLinkUtilities/doxygen/>
 ..   basic/faq
 
 .. toctree::
