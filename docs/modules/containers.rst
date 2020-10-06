@@ -95,7 +95,7 @@ DataStore
 Each node consists of a *name* (``char*``) and *value* (``MArgument``). DataStore itself can be stored in the MArgument union, which means that DataStores
 can be nested. DataStores can be passed to and from library functions. Existing nodes cannot be removed but adding new nodes is supported.
 
-The complete DataStore API can be found inside Mathematica (12.0+) installations at  :file:`SystemFiles/IncludeFiles/C/WolframIOLibraryFunctions.h`.
+The complete DataStore API can be found inside Wolfram Language (12.0+) installations at  :file:`SystemFiles/IncludeFiles/C/WolframIOLibraryFunctions.h`.
 
 On the Wolfram Language side a ``DataStore`` is represented as an expression with head ``Developer`DataStore`` that takes a list of expressions, where each
 expressions is either:

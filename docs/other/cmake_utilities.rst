@@ -18,7 +18,7 @@ When you install LLU, a :file:`cmake` directory is created in the installation d
            │   ├── Common.cmake
            │   ├── CVSUtilities.cmake
            │   └── PacletUtilities.cmake
-           ├── FindMathematica.cmake
+           ├── FindWolframLanguage.cmake
            ├── FindWolframLibrary.cmake
            ├── FindWSTP.cmake
            ├── LLUConfig.cmake
@@ -146,7 +146,7 @@ Paclet Utilities
 		*[optional]* location of the Wolfram Language source files in the paclet, by default it is assumed as ``${CMAKE_CURRENT_SOURCE_DIR}/PACLET_NAME``
 	:cmake:variable:`INSTALL_TO_LAYOUT`
 		*[optional]* a flag indicating whether the complete paclet layout (what the *install* target produces) should be also copied to the :file:`SystemFiles/Links`
-		directory of current Mathematica installation (the one used for paclet configuration)
+		directory of current Wolfram Language installation (the one used for paclet configuration)
 
 ----------------------------------------
 
@@ -167,7 +167,7 @@ Paclet Utilities
 	file, optionally verifies contents, installs to the user paclet directory and run tests.
 
 	.. warning::
-		For this function to work, *install* target must be built beforehand and wolframscript from Mathematica v12.1 or later must be available.
+		For this function to work, *install* target must be built beforehand and wolframscript from Wolfram Language v12.1 or later must be available.
 
 	**Arguments:**
 

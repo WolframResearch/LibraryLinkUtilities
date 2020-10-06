@@ -45,9 +45,9 @@ With LLU attached to your project in a submodule you always have the sources so 
 Paclets that use LLU
 ==========================================================
 
-If you look for examples of LLU usage and whatever is in this documentation and in the Demo project was not enough, you can take a look at paclets shipped with
-Mathematica that use LLU. You will not be able to see the C++ source code or the CMake build script but you can still investigate the paclet structure
-and the Wolfram Language code. Paclets can be found in the :file:`SystemFiles/Links` subdirectory of your Mathematica installation.
+If you look for examples of LLU usage and whatever is in this documentation and in the Demo project was not enough, you can take a look at paclets built into
+the Wolfram Language that use LLU. You will not be able to see the C++ source code or the CMake build script but you can still investigate the paclet structure
+and the Wolfram Language code. Paclets can be found in the :file:`SystemFiles/Links` subdirectory of your installation.
 
 The list below may not be complete.
 

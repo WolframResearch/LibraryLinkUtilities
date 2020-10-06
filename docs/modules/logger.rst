@@ -6,7 +6,7 @@ In the process of developing a C++ paclet it is often useful to print some infor
 The most common way of achieving this in C++ is simple printing to the console (e.g. with ``std::cout`` or ``std::cerr``) but this approach has noticeable
 drawbacks:
 
- - requires running Mathematica from the command line to be able to see printed messages from the paclet library (and even then may not work on Windows)
+ - requires running Wolfram Language from the command line to be able to see printed messages from the paclet library (and even then may not work on Windows)
  - print statements must be surrounded with ``#ifdef``\ s, disabled in some other way, or simply removed from the codebase before making it production-ready
 
 One alternative is to log messages to a text file, but this approach has its own problems like choosing the right location for the file, taking care of closing

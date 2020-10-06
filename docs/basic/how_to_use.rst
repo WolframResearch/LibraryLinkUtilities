@@ -13,18 +13,18 @@ We do not provide prebuilt binaries for any platform.
 Since the source code uses C++17 features, you have to make sure your compiler supports C++17. For the three most popular compilers this roughly means:
 
  * **Visual Studio** >= 15.7
- * **gcc** >= 7.0
+ * **gcc** >= 7.5
  * **clang** >= 5
 
 Plus:
 
  * **CMake** >= 3.14
- * **Wolfram Desktop** >= 12.0 (Wolfram Engine and Wolfram Mathematica will also work), or more specifically
+ * **Wolfram Language** >= 12.0 (products that implement the Wolfram Language include Wolfram Engine, Wolfram Desktop, and Mathematica), or more specifically
 
    - **WSTP** interface version 4 or later
    - **Wolfram Library** >= 5
 
-WSTP library and Wolfram Library header files can be found in any Wolfram Desktop installation.
+WSTP library and Wolfram Library header files can be found in any Wolfram Language installation.
 Optionally, for running unit tests, **wolframscript** must be available on the system.
 
 1. Get source code
@@ -54,15 +54,15 @@ created inside the root folder of your local clone of LibraryLink Utilities. You
 
 Let's consider a number of possible scenarios:
 
-1. Use WSTP and Wolfram Library from a standard Wolfram Desktop installation:
+1. Use WSTP and Wolfram Library from a standard Wolfram Language installation:
 
-   If you have Wolfram Desktop **12.0** or later installed in a default location or on the system PATH, the build configuration step should succeed
+   If you have Wolfram Language **12.0** or later installed in a default location or on the system PATH, the build configuration step should succeed
    out of the box without setting any variables.
-   Otherwise, set ``Wolfram_INSTALL_DIR`` to an absolute path to your Wolfram product installation directory, for instance
+   Otherwise, set ``WolframLanguage_INSTALL_DIR`` to an absolute path to your Wolfram product installation directory, for instance
 
    .. code-block:: console
 
-      cmake -DWolfram_INSTALL_DIR=/home/jerome/WolframDesktop/12.1 ..
+      cmake -DWolframLanguage_INSTALL_DIR=/home/jerome/WolframDesktop/12.1 ..
 
    .. tip::
 
@@ -70,7 +70,7 @@ Let's consider a number of possible scenarios:
 
 2. Use WSTP and Wolfram Library from arbitrary locations (rare case)
 
-   If WSTP and Wolfram Library are not located in a Wolfram Desktop installation, two paths must be passed to CMake:
+   If WSTP and Wolfram Library are not located in a Wolfram Language installation, two paths must be passed to CMake:
 
    .. code-block:: console
 
@@ -129,7 +129,7 @@ a :program:`ctest` command or by running the ``test`` CMake target. It is possib
 	ctest -R WSTP
 
 The ``test`` target actually calls :code:`wolframscript` under the hood, so it must be installed in your system.
-If you specify the value for ``Wolfram_INSTALL_DIR`` in step 2.1, CMake will look for :code:`wolframscript` in that installation of Wolfram software,
+If you specify the value for ``WolframLanguage_INSTALL_DIR`` in step 2.1, CMake will look for :code:`wolframscript` in that installation of Wolfram software,
 otherwise it will check the system PATH. Because of how CMake defines the ``test`` target, it will not show individual test failures, only the summary.
 
 To improve unit test feedback, another CMake target called :code:`TestWithOutputOnFailure` is defined. Running this target (the exact command depends on the
@@ -224,7 +224,7 @@ Wolfram Language :term:`paclet` and it can be built and used as follows:
 
 .. code-block:: console
 
-	cmake -DLLU_ROOT=/my/workspace/LLU -DMathematica_ROOT=/path/to/WolframDesktop/ -B build
+	cmake -DLLU_ROOT=/my/workspace/LLU -DWolframLanguage_ROOT=/path/to/WolframDesktop/ -B build
 	cd build/
 	cmake --build . --target install
 
