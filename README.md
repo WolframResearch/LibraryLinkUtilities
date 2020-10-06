@@ -7,7 +7,7 @@ LibraryLink Utilities
 the Wolfram Language framework for connecting to C and C++ libraries.
 The official documentation including use instructions can be found here:
 
-**TODO: Provide the link to the released documentation on Github Pages**
+https://wolframresearch.github.io/LibraryLinkUtilities/
 
 This documentation is split into modules. Each describes a core part of LLU providing general overview, examples and detailed description of related C++ entities.
 

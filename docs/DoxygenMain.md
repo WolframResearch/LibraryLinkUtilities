@@ -9,7 +9,7 @@ It is intended to serve both users and developers of LLU therefore internal func
 Doxygen documentation covers the entire API and is great when you know what to look for. Before you dive into detailed description of specific 
 functions and classes it is recommended to read the tutorial-like introduction to LLU, which can be found here:
 
-**TODO: Provide the link to the release documentation (likely on Github Pages)**
+https://wolframresearch.github.io/LibraryLinkUtilities/
 
 The linked document contains general overview, build instructions and different sections for each core part of LLU. 
 Every section provides examples and description of related C++ entities.
