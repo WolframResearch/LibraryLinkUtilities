@@ -32,8 +32,10 @@ Optionally, for running unit tests, **wolframscript** must be available on the s
 
 You can clone LLU from here:
 
-- **[ssh]** git@github.com:WolframResearch/LibraryLinkUtilities.git
-- **[https]** https://github.com/WolframResearch/LibraryLinkUtilities.git
+==================   ============
+**[ssh]**            `git@github.com:WolframResearch/LibraryLinkUtilities.git`
+**[https]**          `https://github.com/WolframResearch/LibraryLinkUtilities.git`
+==================   ============
 
 Alternatively, a zip package can be downloaded from GitHub containing a snapshot from any branch.
 
