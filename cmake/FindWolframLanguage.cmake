@@ -113,7 +113,7 @@ macro(find_wolfram_language_on_path)
 endmacro()
 
 function(find_wolfram_language_in_default_dir WolframLanguage_VERSION)
-	get_default_mathematica_dirs(${WolframLanguage_VERSION} _DEFAULT_DIRS)
+	get_default_wolfram_dirs(${WolframLanguage_VERSION} _DEFAULT_DIRS)
 	find_program(WolframLanguage_EXE
 		NAMES ${_MMA_FIND_NAMES}
 		HINTS ${_DEFAULT_DIRS}

@@ -11,28 +11,48 @@
 
 include_guard()
 
-function(get_default_mathematica_dirs MATHEMATICA_VERSION DEFAULT_MATHEMATICA_INSTALL_DIRS)
+function(get_default_mathematica_dir MATHEMATICA_VERSION DEFAULT_MATHEMATICA_INSTALL_DIR)
 	set(_M_INSTALL_DIR NOTFOUND)
 	if(APPLE)
-		set(_M_INSTALL_DIR
-			"/Applications/WolframDesktop ${MATHEMATICA_VERSION}.app"
-			"/Applications/WolframDesktop.app"
+		find_path(_M_INSTALL_DIR "Contents" PATHS
 			"/Applications/Mathematica ${MATHEMATICA_VERSION}.app"
 			"/Applications/Mathematica.app"
-			"/Applications/WolframEngine ${MATHEMATICA_VERSION}.app"
-			"/Applications/WolframEngine.app")
+			)
+		set(_M_INSTALL_DIR "${_M_INSTALL_DIR}/Contents")
 	elseif(WIN32)
-		set(_M_INSTALL_DIR
-			"C:/Program\ Files/Wolfram\ Research/WolframDesktop/${MATHEMATICA_VERSION}"
-			"C:/Program\ Files/Wolfram\ Research/Mathematica/${MATHEMATICA_VERSION}"
-			"C:/Program\ Files/Wolfram\ Research/WolframEngine/${MATHEMATICA_VERSION}")
+		set(_M_INSTALL_DIR "C:/Program\ Files/Wolfram\ Research/Mathematica/${MATHEMATICA_VERSION}")
 	else()
-		set(_M_INSTALL_DIR
-			"/usr/local/Wolfram/WolframDesktop/${MATHEMATICA_VERSION}"
-			"/usr/local/Wolfram/Mathematica/${MATHEMATICA_VERSION}"
-			"/usr/local/Wolfram/WolframEngine/${MATHEMATICA_VERSION}")
+		set(_M_INSTALL_DIR "/usr/local/Wolfram/Mathematica/${MATHEMATICA_VERSION}")
 	endif()
-	set(${DEFAULT_MATHEMATICA_INSTALL_DIRS} "${_M_INSTALL_DIR}" PARENT_SCOPE)
+	if(NOT IS_DIRECTORY "${_M_INSTALL_DIR}" AND IS_DIRECTORY "$ENV{MATHEMATICA_HOME}")
+		set(_M_INSTALL_DIR "$ENV{MATHEMATICA_HOME}")
+	endif()
+	set(${DEFAULT_MATHEMATICA_INSTALL_DIR} "${_M_INSTALL_DIR}" PARENT_SCOPE)
+endfunction()
+
+function(get_wolfram_product_default_dirs PRODUCT_NAME PRODUCT_VERSION DEFAULT_PRODUCT_INSTALL_DIR)
+	set(_DEFAULT_INSTALL_DIR NOTFOUND)
+	if(APPLE)
+		set(_DEFAULT_INSTALL_DIR
+			"/Applications/${PRODUCT_NAME} ${PRODUCT_VERSION}.app"
+			"/Applications/${PRODUCT_NAME}.app")
+	elseif(WIN32)
+		set(_DEFAULT_INSTALL_DIR "C:/Program\ Files/Wolfram\ Research/${PRODUCT_NAME}/${PRODUCT_VERSION}")
+	else()
+		set(_DEFAULT_INSTALL_DIR "/usr/local/Wolfram/${PRODUCT_NAME}/${PRODUCT_VERSION}")
+	endif()
+	set(${DEFAULT_PRODUCT_INSTALL_DIR} "${_DEFAULT_INSTALL_DIR}" PARENT_SCOPE)
+endfunction()
+
+function(get_default_wolfram_dirs WL_VERSION DEFAULT_INSTALL_DIRS)
+	get_wolfram_product_default_dirs(WolframDesktop ${WL_VERSION} _WD_INSTALL_DIRS)
+	get_wolfram_product_default_dirs(Mathematica ${WL_VERSION} _M_INSTALL_DIRS)
+	get_wolfram_product_default_dirs(WolframEngine ${WL_VERSION} _WE_INSTALL_DIRS)
+	set(${DEFAULT_INSTALL_DIRS}
+		"${_WD_INSTALL_DIRS}"
+		"${_M_INSTALL_DIRS}"
+		"${_WE_INSTALL_DIRS}"
+		PARENT_SCOPE)
 endfunction()
 
 function(detect_system_id DETECTED_SYSTEM_ID)
