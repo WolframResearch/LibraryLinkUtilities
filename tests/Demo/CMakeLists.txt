@@ -23,7 +23,7 @@ endif ()
 
 set(LLU_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/../../install" CACHE PATH "Location of LLU installation.")
 
-find_package(LLU 3.0.0 EXACT REQUIRED NO_MODULE PATH_SUFFIXES LLU)
+find_package(LLU 3.0.1 EXACT REQUIRED NO_MODULE PATH_SUFFIXES LLU)
 
 #=============================================
 #=========== MAIN PACLET LIBRARY =============
