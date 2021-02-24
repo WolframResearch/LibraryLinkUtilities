@@ -35,6 +35,8 @@ TestExecute[
 
 	CreateMatrix = LibraryFunctionLoad[lib, "CreateMatrix", {Integer, Integer}, {Integer, 2}];
 	EmptyVector = LibraryFunctionLoad[lib, "CreateEmptyVector", {}, {Integer, 1}];
+	(* Rank 0 tensor can only be returned with return type declared as {Integer, _}. If you try Integer or {Integer, 0} it will return garbage. *)
+	RankZero = LibraryFunctionLoad[lib, "CreateRankZero", {}, {Integer, _}];
 	EmptyMatrix = LibraryFunctionLoad[lib, "CreateEmptyMatrix", {}, {Integer, _}];
 	CloneTensor = LibraryFunctionLoad[lib, "CloneTensor", {{_, _, "Constant"}}, {_, _}];
 	TestDimensions = LibraryFunctionLoad[lib, "TestDimensions", {{Integer, 1, "Manual"}}, {Real, _}];
@@ -165,13 +167,37 @@ Test[
 ];
 
 Test[
+	RankZero[]
+	,
+	42
+	,
+	TestID -> "TensorTestSuite-20190726-M4C8B7"
+];
+
+Test[
 	TestDimensions[{}]
+	,
+	0.
+	,
+	TestID -> "TensorTestSuite-20190729-X1X5Q8"
+];
+
+Test[
+	TestDimensions[{0}]
+	,
+	{}
+	,
+	TestID -> "TensorTestSuite-20210222-C8G2A6"
+];
+
+Test[
+	TestDimensions[{0, 0}]
 	,
 	LibraryFunctionError["LIBRARY_DIMENSION_ERROR", 3]
 	,
 	LibraryFunction::dimerr
 	,
-	TestID -> "TensorTestSuite-20190729-X1X5Q8"
+	TestID -> "TensorTestSuite-20210222-L8F7O5"
 ];
 
 Test[

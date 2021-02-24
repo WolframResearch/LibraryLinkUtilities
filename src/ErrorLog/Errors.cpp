@@ -44,6 +44,18 @@ namespace LLU::ErrorName {
 	LLU_DEFINE_ERROR_NAME(TensorSizeError);
 	LLU_DEFINE_ERROR_NAME(TensorIndexError);
 
+	LLU_DEFINE_ERROR_NAME(SparseArrayCloneError);
+	LLU_DEFINE_ERROR_NAME(SparseArrayTypeError);
+	LLU_DEFINE_ERROR_NAME(SparseArrayFromPositionsError);
+	LLU_DEFINE_ERROR_NAME(SparseArrayFromTensorError);
+	LLU_DEFINE_ERROR_NAME(SparseArrayImplicitValueResetError);
+	LLU_DEFINE_ERROR_NAME(SparseArrayImplicitValueError);
+	LLU_DEFINE_ERROR_NAME(SparseArrayExplicitValuesError);
+	LLU_DEFINE_ERROR_NAME(SparseArrayRowPointersError);
+	LLU_DEFINE_ERROR_NAME(SparseArrayColumnIndicesError);
+	LLU_DEFINE_ERROR_NAME(SparseArrayExplicitPositionsError);
+	LLU_DEFINE_ERROR_NAME(SparseArrayToTensorError);
+	
 	LLU_DEFINE_ERROR_NAME(ImageNewError);
 	LLU_DEFINE_ERROR_NAME(ImageCloneError);
 	LLU_DEFINE_ERROR_NAME(ImageTypeError);

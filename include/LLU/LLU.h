@@ -13,6 +13,7 @@
 #include "LLU/Containers/DataList.h"
 #include "LLU/Containers/Image.h"
 #include "LLU/Containers/NumericArray.h"
+#include "LLU/Containers/SparseArray.h"
 #include "LLU/Containers/Tensor.h"
 #include "LLU/Containers/Views/Image.hpp"
 #include "LLU/Containers/Views/NumericArray.hpp"

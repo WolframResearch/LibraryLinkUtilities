@@ -659,8 +659,8 @@ using Complex = std::complex<double>;
 /// Tensor stands for a GenericTensor - type agnostic wrapper over MTensor
 using Tensor = MContainer<MArgumentType::Tensor>;
 
-/// SparseArray type corresponds to the "raw" MSparseArray as LLU does not have its own wrapper for this structure yet
-using SparseArray = MSparseArray;
+/// SparseArray stands for a GenericSparseArray - type agnostic wrapper over MSparseArray
+using SparseArray = MContainer<MArgumentType::SparseArray>;
 
 /// NumericArray stands for a GenericNumericArray - type agnostic wrapper over MNumericArray
 using NumericArray = MContainer<MArgumentType::NumericArray>;

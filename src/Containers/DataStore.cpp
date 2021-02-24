@@ -58,7 +58,7 @@ namespace LLU {
 				PrimitiveWrapper<MArgumentType::Tensor>::addDataStoreNode(getContainer(), name, std::get_if<GenericTensor>(&node)->abandonContainer());
 				break;
 			case MArgumentType::SparseArray:
-				PrimitiveWrapper<MArgumentType::SparseArray>::addDataStoreNode(getContainer(), name, *std::get_if<MSparseArray>(&node));
+				PrimitiveWrapper<MArgumentType::SparseArray>::addDataStoreNode(getContainer(), name, std::get_if<GenericSparseArray>(&node)->abandonContainer());
 				break;
 			case MArgumentType::NumericArray:
 				PrimitiveWrapper<MArgumentType::NumericArray>::addDataStoreNode(getContainer(), name,
@@ -95,7 +95,7 @@ namespace LLU {
 				PrimitiveWrapper<MArgumentType::Tensor>::addDataStoreNode(getContainer(), std::get_if<GenericTensor>(&node)->abandonContainer());
 				break;
 			case MArgumentType::SparseArray:
-				PrimitiveWrapper<MArgumentType::SparseArray>::addDataStoreNode(getContainer(), *std::get_if<MSparseArray>(&node));
+				PrimitiveWrapper<MArgumentType::SparseArray>::addDataStoreNode(getContainer(), std::get_if<GenericSparseArray>(&node)->abandonContainer());
 				break;
 			case MArgumentType::NumericArray:
 				PrimitiveWrapper<MArgumentType::NumericArray>::addDataStoreNode(getContainer(), std::get_if<GenericNumericArray>(&node)->abandonContainer());

@@ -469,7 +469,7 @@ Test[
 		real, "mreal" -> real, 
 		complex, complex, "complex" -> complex, "mcomplex" -> complex,
 		tensor, "Tensor" -> tensor,
-		sparse, "MSparseArray" -> sparse, 
+		sparse, "SparseArray" -> sparse,
 		numeric, "NumericArray" -> numeric,
 		image, "Image" -> image,
 		string, string, "String" -> string, "RawString" -> string,
@@ -501,7 +501,12 @@ Test[
 	,
 	Developer`DataStore[
 		bool, int, real, complex,
-		tensor, "Tensor" -> True, sparse, numeric, "NumericArray" -> True, image, "Image" -> True, string, "String" -> True, ds0, "DataList" -> True
+		tensor,
+		sparse,
+		numeric,
+		image,
+		string,
+		ds0
 	]
 	,
 	TestID -> "DataListTestSuite-20200505-L9U9K6"
@@ -561,7 +566,7 @@ VerificationTest[
 	{timeWSTP, r1} = RepeatedTiming[ReverseListOfStringsWSTP[los]];
 	Print["Reverse strings - WSTP: " <> ToString[timeWSTP] <> "s. " <> getSlowdown[timeWSTP]];
 
-	r1 == List @@ r2 == List @@ r3 == List @@ r4 == List @@ r5 == List @@ r6
+	r1 === List @@ r2 === List @@ r3 === List @@ r4 === List @@ r5 === List @@ r6
 	,
 	TestID -> "DataListTestSuite-20180906-W5N4V0"
 ];

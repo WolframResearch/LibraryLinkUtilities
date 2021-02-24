@@ -172,7 +172,6 @@ Limitations with respect to LibraryLink
 
 There are a few LibraryLink features currently not covered by LLU, most notably:
 
-- Sparse Arrays
 - Tensor subsetting: `MTensor_getTensor`
 - Callbacks
 - Wolfram IO Library (asynchronous tasks)

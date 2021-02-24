@@ -21,16 +21,17 @@ set(TEST_MODULES
 	"Async"
 	"DataList"
 	"ErrorReporting"
+	"GenericContainers"
 	"Image"
 	"ManagedExpressions"
 	"MArgumentManager"
-	"WSTP"
 	"NumericArray"
-	"GenericContainers"
 	"Scalar"
+	"SparseArray"
 	"String"
 	"Tensor"
 	"Utilities"
+	"WSTP"
 	)
 
 
@@ -46,7 +47,7 @@ if(WolframLanguage_wolframscript_EXE)
 				report = Catch[
 					TestReport["${UnitTest}TestSuite.mt", MemoryConstraint -> Quantity[500, "MB"], TimeConstraint -> 30],
 					_String,
-					Function[{value, tag}, Print["ERROR: " <> value]; Exit[1]]
+					Function[{value, tag}, Print["ERROR: " <> ToString[value]]; Exit[1]]
 				];
 				report = report /. resObj_TestResultObject :> RuleCondition[TextString[resObj[{
 					"TestID",

@@ -51,13 +51,13 @@ ConditionalTest[ExactTest,
 	TestID -> "NumericArrayTestSuite-20190910-C1R3B0"
 ];
 
-Test[
+TestMatch[
 	testDimensions[{}]
 	,
-	Failure["DimensionsError", <|
-		"MessageTemplate" -> "An error caused by inconsistent dimensions or by exceeding array bounds.",
+	Failure["NumericArrayNewError", <|
+		"MessageTemplate" -> "Failed to create a new NumericArray.",
 		"MessageParameters" -> <||>,
-		"ErrorCode" -> 3,
+		"ErrorCode" -> _?CppErrorCodeQ,
 		"Parameters" -> {}|>
 	]
 	,

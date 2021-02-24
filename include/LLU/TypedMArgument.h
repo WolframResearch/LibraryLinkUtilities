@@ -13,6 +13,7 @@
 
 #include "LLU/Containers/Generic/Image.hpp"
 #include "LLU/Containers/Generic/NumericArray.hpp"
+#include "LLU/Containers/Generic/SparseArray.hpp"
 #include "LLU/Containers/Generic/Tensor.hpp"
 #include "LLU/MArgument.h"
 #include "LLU/Utilities.hpp"
@@ -45,8 +46,8 @@ namespace LLU::Argument {
 		/// Tensor stands for a GenericTensor - type agnostic wrapper over MTensor
 		using Tensor = MContainer<MArgumentType::Tensor>;
 
-		/// SparseArray type corresponds to the "raw" MSparseArray as LLU does not have its own wrapper for this structure yet
-		using SparseArray = MSparseArray;
+		/// SparseArray stands for a GenericSparseArray - type agnostic wrapper over MSparseArray
+		using SparseArray =  MContainer<MArgumentType::SparseArray>;
 
 		/// NumericArray stands for a GenericNumericArray - type agnostic wrapper over MNumericArray
 		using NumericArray = MContainer<MArgumentType::NumericArray>;
@@ -121,7 +122,7 @@ namespace LLU::Argument {
 			return {value->ri[0], value->ri[1]};
 		} else if constexpr (T == MArgumentType::UTF8String) {
 			return {value};
-		} else if constexpr (ContainerTypeQ<T> && T != MArgumentType::SparseArray) {
+		} else if constexpr (ContainerTypeQ<T>) {
 			return {value, Ownership::LibraryLink};
 		} else {
 			return value;
@@ -141,7 +142,7 @@ namespace LLU::Argument {
 		} else if constexpr (T == MArgumentType::UTF8String) {
 			// NOLINTNEXTLINE(cppcoreguidelines-pro-type-const-cast): LibraryLink will not modify the string, so const_cast is safe here
 			return const_cast<char*>(value.data());
-		} else if constexpr (ContainerTypeQ<T> && T != MArgumentType::SparseArray) {
+		} else if constexpr (ContainerTypeQ<T>) {
 			return value.abandonContainer();
 		} else {
 			return value;

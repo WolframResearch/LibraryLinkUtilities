@@ -74,6 +74,9 @@ namespace LLU {
 		 *	@brief Get raw pointer to container dimensions
 		 **/
 		const mint* data() const noexcept {
+			if (dims.empty()) {
+				return nullptr;
+			}
 			return dims.data();
 		}
 
@@ -126,7 +129,7 @@ namespace LLU {
 
 	private:
 		/// Total number of elements in the container
-		mint flattenedLength = 0;
+		mint flattenedLength = 1;
 
 		/// Container dimensions
 		std::vector<mint> dims;
@@ -148,6 +151,8 @@ namespace LLU {
 
 		/// Calculate total array length based on current value of dims
 		[[nodiscard]] mint totalLengthFromDims() const noexcept;
+
+		static constexpr std::size_t MAX_DIM = static_cast<std::size_t>((std::numeric_limits<mint>::max)());
 	};
 
 	template<typename T, typename>
@@ -158,13 +163,14 @@ namespace LLU {
 
 	template<typename InputIter, typename>
 	MArrayDimensions::MArrayDimensions(InputIter dimsBegin, InputIter dimsEnd) {
-		mint depth = checkContainerSize(std::distance(dimsBegin, dimsEnd));
-		auto dimsOk = std::all_of(dimsBegin, dimsEnd - 1, [](auto d) { return (d > 0) && (d <= (std::numeric_limits<mint>::max)()); }) &&
-					  (dimsBegin[depth - 1] >= 0) && (dimsBegin[depth - 1] <= (std::numeric_limits<mint>::max)());
-		if (!dimsOk) {
-			ErrorManager::throwExceptionWithDebugInfo(ErrorName::DimensionsError, "Invalid input vector with array dimensions");
+		if (mint depth = checkContainerSize(std::distance(dimsBegin, dimsEnd)); depth >= 1) {
+			auto dimsOk = std::all_of(dimsBegin, dimsEnd - 1, [](auto d) { return (d > 0) && (static_cast<std::size_t>(d) <= MAX_DIM); }) &&
+			              (dimsBegin[depth - 1] >= 0) && (static_cast<std::size_t>(dimsBegin[depth - 1]) <= MAX_DIM);
+			if (!dimsOk) {
+				ErrorManager::throwExceptionWithDebugInfo(ErrorName::DimensionsError, "Invalid input vector with array dimensions");
+			}
+			dims.reserve(depth);
 		}
-		dims.reserve(depth);
 		std::copy(dimsBegin, dimsEnd, std::back_inserter(dims));
 		flattenedLength = totalLengthFromDims();
 		fillOffsets();
@@ -172,7 +178,7 @@ namespace LLU {
 
 	template<typename T>
 	mint MArrayDimensions::checkContainerSize(T s) const {
-		if (s <= 0 || static_cast<std::uint64_t>(s) > static_cast<std::uint64_t>((std::numeric_limits<mint>::max)())) {
+		if (s < 0 || static_cast<std::size_t>(s) > MAX_DIM) {
 			ErrorManager::throwException(ErrorName::DimensionsError);
 		}
 		return static_cast<mint>(s);

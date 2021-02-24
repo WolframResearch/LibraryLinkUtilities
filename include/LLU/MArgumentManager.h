@@ -21,6 +21,7 @@
 #include "LLU/Containers/DataList.h"
 #include "LLU/Containers/Image.h"
 #include "LLU/Containers/NumericArray.h"
+#include "LLU/Containers/SparseArray.h"
 #include "LLU/Containers/Tensor.h"
 #include "LLU/ErrorLog/ErrorManager.h"
 #include "LLU/LibraryData.h"
@@ -182,6 +183,34 @@ namespace LLU {
 		 *   @throws        ErrorName::MArgumentIndexError - if \c index is out-of-bounds
 		 **/
 		MTensor getMTensor(size_type index) const;
+
+		/**
+		 *   @brief         Get MArgument of type MSparseArray at position \p index and wrap it into SparseArray
+		 *   @tparam        T - type of data stored in SparseArray
+		 *   @param[in]     index - position of desired MArgument in \c Args
+		 *   @returns       SparseArray wrapper of MArgument at position \c index
+		 *   @throws        ErrorName::MArgumentIndexError - if \c index is out-of-bounds
+		 **/
+		template<typename T, Passing Mode = Passing::Automatic>
+		SparseArray<T> getSparseArray(size_type index) const;
+
+		/**
+		 *	@brief      Get MArgument of type MSparseArray at position \p index and wrap it into generic MContainer wrapper
+		 * 	@tparam     Mode - passing mode to be used
+		 * 	@param      index - position of desired MArgument in \c Args
+		 * 	@return     MContainer wrapper of MSparseArray with given passing mode
+		 */
+		template<Passing Mode = Passing::Automatic>
+		GenericSparseArray getGenericSparseArray(size_type index) const;
+
+		/**
+		 *   @brief         Get MArgument of type MSparseArray at position \c index
+		 *   @warning       Use of this function is discouraged. Use getSparseArray instead, if possible.
+		 *   @param[in]     index - position of desired MArgument in \c Args
+		 *   @returns       MArgument at position \c index interpreted as MSparseArray
+		 *   @throws        ErrorName::MArgumentIndexError - if \c index is out-of-bounds
+		 **/
+		MSparseArray getMSparseArray(size_type index) const;
 
 		/**
 		 *   @brief         Get MArgument of type MImage at position \p index and wrap it into Image object
@@ -431,10 +460,18 @@ namespace LLU {
 		void setDataStore(DataStore ds);
 
 		/**
+		 *   @brief         Set MSparseArray wrapped by \c sa as output MArgument
+		 *   @tparam        T - SparseArray data type
+		 *   @param[in]     sa - reference to SparseArray which should pass its internal MSparseArray to LibraryLink
+		 **/
+		template<typename T>
+		void setSparseArray(const SparseArray<T>& sa);
+		
+		/**
 		 *   @brief         Set MSparseArray as output MArgument
 		 *   @param[in]     sa - MSparseArray to be passed to LibraryLink
 		 **/
-		void setSparseArray(MSparseArray sa);
+		void setMSparseArray(MSparseArray sa);
 
 		/************************************ generic setters ************************************/
 
@@ -485,6 +522,20 @@ namespace LLU {
 		 */
 		void set(const GenericNumericArray& na) {
 			na.pass(res);
+		}
+
+		/// @copydoc setSparseArray
+		template<typename T>
+		void set(const SparseArray<T>& ten) {
+			setSparseArray(ten);
+		}
+
+		/**
+		 *  Set MSparseArray wrapped by \c t as output MArgument
+		 *  @param[in]  t - reference to generic SparseArray which should pass its internal MSparseArray to LibraryLink
+		 */
+		void set(const GenericSparseArray& t) {
+			t.pass(res);
 		}
 
 		/// @copydoc setTensor
@@ -878,6 +929,7 @@ namespace LLU {
 	LLU_MARGUMENTMANAGER_GENERATE_GET_SPECIALIZATION_FOR_CONTAINER(Tensor)
 	LLU_MARGUMENTMANAGER_GENERATE_GET_SPECIALIZATION_FOR_CONTAINER(Image)
 	LLU_MARGUMENTMANAGER_GENERATE_GET_SPECIALIZATION_FOR_CONTAINER(DataList)
+	LLU_MARGUMENTMANAGER_GENERATE_GET_SPECIALIZATION_FOR_CONTAINER(SparseArray)
 
 #undef LLU_MARGUMENTMANAGER_GENERATE_GET_SPECIALIZATION_FOR_CONTAINER
 
@@ -1051,6 +1103,21 @@ namespace LLU {
 	GenericDataList MArgumentManager::getGenericDataList(size_type index) const {
 		static_assert(Mode != Passing::Shared, "DataStore cannot be passed as \"Shared\".");
 		return {getDataStore(index), getOwner(Mode)};
+	}
+
+	template<typename T, Passing Mode>
+	SparseArray<T> MArgumentManager::getSparseArray(size_type index) const {
+		return SparseArray<T> { getGenericSparseArray<Mode>(index) };
+	}
+
+	template<typename T>
+	void MArgumentManager::setSparseArray(const SparseArray<T>& sa) {
+		sa.pass(res);
+	}
+	
+	template<Passing Mode>
+	GenericSparseArray MArgumentManager::getGenericSparseArray(size_type index) const {
+		return GenericSparseArray(getMSparseArray(index), getOwner(Mode));
 	}
 
 	template<class ManagedExpr, class DynamicType>

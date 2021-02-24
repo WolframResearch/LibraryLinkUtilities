@@ -25,7 +25,7 @@ namespace LLU::Argument {
 				return std::complex<double> {mc->ri[0], mc->ri[1]};
 			}
 			case MArgumentType::Tensor: return GenericTensor {MArgument_getMTensor(m), Ownership::LibraryLink};
-			case MArgumentType::SparseArray: return MArgument_getMSparseArray(m);
+			case MArgumentType::SparseArray: return GenericSparseArray {MArgument_getMSparseArray(m), Ownership::LibraryLink};
 			case MArgumentType::NumericArray: return GenericNumericArray {MArgument_getMNumericArray(m), Ownership::LibraryLink};
 			case MArgumentType::Image: return GenericImage {MArgument_getMImage(m), Ownership::LibraryLink};
 			case MArgumentType::UTF8String: return std::string_view {MArgument_getUTF8String(m)};
@@ -48,7 +48,7 @@ namespace LLU::Argument {
 				break;
 			}
 			case MArgumentType::Tensor: MArgument_setMTensor(res, std::get_if<GenericTensor>(&tma)->abandonContainer()); break;
-			case MArgumentType::SparseArray: MArgument_setMSparseArray(res, *std::get_if<MSparseArray>(&tma)); break;
+			case MArgumentType::SparseArray: MArgument_setMSparseArray(res, std::get_if<GenericSparseArray>(&tma)->abandonContainer()); break;
 			case MArgumentType::NumericArray: MArgument_setMNumericArray(res, std::get_if<GenericNumericArray>(&tma)->abandonContainer()); break;
 			case MArgumentType::Image: MArgument_setMImage(res, std::get_if<GenericImage>(&tma)->abandonContainer()); break;
 			// NOLINTNEXTLINE(cppcoreguidelines-pro-type-const-cast): LibraryLink will not modify the string, so const_cast is safe here

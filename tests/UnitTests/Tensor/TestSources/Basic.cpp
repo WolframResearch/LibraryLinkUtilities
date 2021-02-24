@@ -31,6 +31,11 @@ LLU_LIBRARY_FUNCTION(CreateEmptyVector) {
 	mngr.setTensor(out);
 }
 
+LLU_LIBRARY_FUNCTION(CreateRankZero) {
+	Tensor<mint> out(42, {});
+	mngr.setTensor(out);
+}
+
 LLU_LIBRARY_FUNCTION(CreateEmptyMatrix) {
 	Tensor<mint> out(0, {3, 5, 0});
 	mngr.setTensor(out);

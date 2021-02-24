@@ -53,6 +53,19 @@ namespace LLU {
 			{ErrorName::TensorSizeError, "An error was caused by an incorrect Tensor size."},
 			{ErrorName::TensorIndexError, "An error was caused by attempting to access a nonexistent Tensor element."},
 
+			// MSparseArray errors:
+			{ErrorName::SparseArrayCloneError, "Failed to clone MSparseArray."},
+			{ErrorName::SparseArrayTypeError, "An error was caused by an MSparseArray type mismatch."},
+			{ErrorName::SparseArrayFromPositionsError, "Failed to create MSparseArray from explicit positions."},
+			{ErrorName::SparseArrayFromTensorError, "Failed to create MSparseArray from MTensor."},
+			{ErrorName::SparseArrayImplicitValueResetError, "Failed to reset the implicit value of MSparseArray."},
+			{ErrorName::SparseArrayImplicitValueError, "Could not read implicit value from MSparseArray."},
+			{ErrorName::SparseArrayExplicitValuesError, "Could not read explicit values from MSparseArray."},
+			{ErrorName::SparseArrayRowPointersError, "Could not read row pointers from MSparseArray."},
+			{ErrorName::SparseArrayColumnIndicesError, "Could not read column indices from MSparseArray."},
+			{ErrorName::SparseArrayExplicitPositionsError, "Could not read explicit positions from MSparseArray."},
+			{ErrorName::SparseArrayToTensorError, "MSparseArray to MTensor conversion failed."},
+
 			// MImage errors:
 			{ErrorName::ImageNewError, "Failed to create a new MImage."},
 			{ErrorName::ImageCloneError, "Failed to clone MImage."},

@@ -346,9 +346,9 @@ LLU_LIBRARY_FUNCTION(PullAndPush) {
 	//dsOut.push_back<MArgumentType::Tensor>("MTensor", rawT); // this container has already been pushed to the dsOut one line above
 
 	// get and push SparseArray
-	auto& sa = *std::get_if<MSparseArray>(&values[5]);
-	dsOut.push_back(sa);
-	dsOut.push_back<MArgumentType::SparseArray>("MSparseArray", sa);
+	auto& sa = *std::get_if<LLU::GenericSparseArray>(&values[5]);
+	dsOut.push_back(sa.clone());
+	dsOut.push_back<MArgumentType::SparseArray>("SparseArray", std::move(sa));
 
 	// get and push NumericArray
 	auto& na = *std::get_if<LLU::GenericNumericArray>(&values[6]);
@@ -386,11 +386,6 @@ LLU_LIBRARY_FUNCTION(PullAndPush) {
 	mngr.set(dsOut);
 }
 
-template<typename T>
-T getValueAndAdvance(GenericDataList::iterator& node) {
-	return (*node++).as<T>();
-}
-
 LLU_LIBRARY_FUNCTION(PullAndPush2) {
 	using LLU::MArgumentType;
 	using LLU::Argument::toPrimitiveType;
@@ -418,41 +413,29 @@ LLU_LIBRARY_FUNCTION(PullAndPush2) {
 
 	// get and push Tensor
 	auto t = (node++)->as<LLU::GenericTensor>();
-	auto *rawT = toPrimitiveType<MArgumentType::Tensor>(t);
 	dsOut.push_back(t.clone());
-	// NOLINTNEXTLINE: deliberate example of a shady code
-	dsOut.push_back("Tensor", rawT); // rawT is a pointer type, it gets converted to bool and send as Boolean node
+	// auto *rawT = toPrimitiveType<MArgumentType::Tensor>(t);
+	// dsOut.push_back("Tensor", rawT); // rawT is a pointer type, it gets converted to bool and send as Boolean node!
 
 	// get and push SparseArray
-	auto *sa = (node++)->as<MSparseArray>();
-	dsOut.push_back(sa);
+	auto sa = (node++)->as<LLU::GenericSparseArray>();
+	dsOut.push_back(sa.clone());
 
 	// get and push NumericArray
 	auto na = (node++)->as<LLU::GenericNumericArray>();
-	auto *rawNA = toPrimitiveType<MArgumentType::NumericArray>(na);
 	dsOut.push_back(na.clone());
-	// NOLINTNEXTLINE: deliberate example of a shady code - surprising implicit pointer -> bool conversion
-	dsOut.push_back("NumericArray", rawNA);
 
 	// get and push Image
 	auto im = (node++)->as<LLU::GenericImage>();
-	auto *rawIm = toPrimitiveType<MArgumentType::Image>(im);
 	dsOut.push_back(im.clone());
-	// NOLINTNEXTLINE: deliberate example of a shady code - surprising implicit pointer -> bool conversion
-	dsOut.push_back("Image", rawIm);
 
 	// get and push String
 	auto str = (node++)->as<std::string_view>();
-	auto *rawStr = toPrimitiveType<MArgumentType::UTF8String>(str);
 	dsOut.push_back(str);
-	dsOut.push_back("String", rawStr);
 
 	// get and push DataStore
 	auto ds = (node++)->as<LLU::GenericDataList>();
-	auto *rawDS = toPrimitiveType<MArgumentType::DataStore>(ds);
 	dsOut.push_back(ds.clone());
-	// NOLINTNEXTLINE: deliberate example of a shady code - surprising implicit pointer -> bool conversion
-	dsOut.push_back("DataList", rawDS);
 
 	mngr.set(dsOut);
 }

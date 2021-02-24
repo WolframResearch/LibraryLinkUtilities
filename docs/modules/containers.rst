@@ -25,7 +25,7 @@ generic, datatype-agnostic wrappers and full-fledged wrappers templated with the
 +----------------------------------------------+----------------------------------------------+----------------------------------------+
 |    :ref:`DataStore <datastore-label>`        | :ref:`GenericDataList <genericdl-label>`     | :ref:`DataList\<T> <datalist-label>`   |
 +----------------------------------------------+----------------------------------------------+----------------------------------------+
-|    :ref:`MSparseArray <msparsearray-label>`  |                      ⊝                       |          ⊝                             |
+|    :ref:`MSparseArray <msparsearray-label>`  | :ref:`GenericSparseArray <genericsa-label>`  | :ref:`SparseArray\<T> <spararr-label>` |
 +----------------------------------------------+----------------------------------------------+----------------------------------------+
 
 Memory management
@@ -275,6 +275,23 @@ perform operations on the underlying data.
 .. doxygenclass:: LLU::MContainer< MArgumentType::Tensor >
    :members:
 
+
+.. _genericsa-label:
+
+:cpp:type:`LLU::GenericSparseArray`
+------------------------------------
+
+GenericSparseArray is a light-weight wrapper over :ref:`msparsearray-label`. It offers the same API that LibraryLink has for MSparseArray, except for access
+to the underlying array data because GenericSparseArray is not aware of the array data type. Typically one would use GenericSparseArray to take an MSparseArray
+of an unknown type from LibraryLink, investigate its properties and data type, then upgrade the GenericSparseArray to the strongly-typed one in order to
+perform operations on the underlying data.
+
+.. doxygentypedef:: LLU::GenericSparseArray
+
+.. doxygenclass:: LLU::MContainer< MArgumentType::SparseArray >
+   :members:
+
+
 Typed Wrappers
 ============================
 
@@ -302,7 +319,7 @@ DataList is a strongly-typed wrapper derived from GenericDataList in which all n
 +-------------------------+--------------------------+------------------------+
 | NodeType::Tensor        | LLU::GenericTensor       | MTensor                |
 +-------------------------+--------------------------+------------------------+
-| NodeType::SparseArray   | MSparseArray             | MSparseArray           |
+| NodeType::SparseArray   | LLU::GenericSparseArray  | MSparseArray           |
 +-------------------------+--------------------------+------------------------+
 | NodeType::NumericArray  | LLU::GenericNumericArray | MNumericArray          |
 +-------------------------+--------------------------+------------------------+
@@ -556,6 +573,68 @@ On the Wolfram Language side, we can load and use this function as follows:
 .. doxygenclass:: LLU::Tensor
    :members:
 
+
+.. _spararr-label:
+
+:cpp:class:`LLU::SparseArray\<T> <template\<typename T> LLU::SparseArray>`
+-------------------------------------------------------------------------------
+
+:cpp:expr:`LLU::SparseArray` is a wrapper over an MSparseArray which holds elements of type ``T``. MSparseArray supports only 3 types of data,
+meaning that :cpp:class:`template\<typename T> LLU::SparseArray` class template can be instantiated with only 3 types ``T``:
+
+  - ``mint``
+  - ``double``
+  - ``std::complex<double>``
+
+
+Here is an example of the SparseArray class in action:
+
+.. code-block:: cpp
+   :linenos:
+
+   template<typename T>
+   void sparseModifyValues(LLU::SparseArray<T>& sa, LLU::TensorTypedView<T> newValues) {
+
+      // extract a Tensor with explicit values of the SparseArray
+      // this does not make a copy of the values so modifying the Tensor will modify the values in the SparseArray
+      auto values = sa.explicitValues();
+      if (values.size() < newValues.size()) {
+        throw std::runtime_error {"Too many values provided."};
+      }
+
+      // copy new values in place of the old ones
+      std::copy(std::cbegin(newValues), std::cend(newValues), std::begin(values));
+
+      // Recompute explicit positions (necessary since one of the new values might be equal to the implicit value of the SparseArray)
+      sa.resparsify();
+   }
+
+   LLU_LIBRARY_FUNCTION(ModifyValues) {
+      auto sp = mngr.getGenericSparseArray<LLU::Passing::Shared>(0);
+      auto values = mngr.getGenericTensor<LLU::Passing::Constant>(1);
+
+      // Operate on the GenericSparseArray as if its type was known
+      LLU::asTypedSparseArray(sp, [&values](auto&& sparseArray) {
+         using T = typename std::remove_reference_t<decltype(sparseArray)>::value_type;
+         sparseModifyValues(sparseArray, LLU::TensorTypedView<T> {values});
+      });
+   }
+
+On the Wolfram Language side, we can load and use this function as follows:
+
+.. code-block:: wolfram-language
+
+   (* Our function takes a shared SparseArray to modify it in-place. The SparseArray can be of any type. *)
+   `LLU`PacletFunctionSet[$ModifyValues, {{LibraryDataType[SparseArray, _, _], "Shared"}, {_, _, "Constant"}}, "Void"];
+
+   sparse = SparseArray[{{3.5, 0., 0., 0.}, {.5, -7., 0., 0.}, {4., 0., 3., 0.}, {0., 0., 0., 1.}}];
+   $ModifyValues[sparse, {3.5, .5, -7.}];
+   Normal[sparse]
+
+   (* Out[] = {{3.5, 0., 0., 0.}, {.5, -7., 0., 0.}, {4., 0., 3., 0.}, {0., 0., 0., 1.}} *)
+
+.. doxygenclass:: LLU::SparseArray
+   :members:
 
 Iterators
 ========================

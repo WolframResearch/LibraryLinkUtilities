@@ -119,6 +119,10 @@ namespace LLU {
 		return MArgument_getDataStore(getArgs(index));
 	}
 
+	MSparseArray MArgumentManager::getMSparseArray(size_type index) const {
+		return MArgument_getMSparseArray(getArgs(index));
+	}
+
 	void MArgumentManager::setMNumericArray(MNumericArray na) {
 		MArgument_setMNumericArray(res, na);
 	}
@@ -136,7 +140,7 @@ namespace LLU {
 		MArgument_setDataStore(res, ds);
 	}
 
-	void MArgumentManager::setSparseArray(MSparseArray sa) {
+	void MArgumentManager::setMSparseArray(MSparseArray sa) {
 		MArgument_setMSparseArray(res, sa);
 	}
 

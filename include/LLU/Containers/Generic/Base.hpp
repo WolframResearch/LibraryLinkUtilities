@@ -74,8 +74,10 @@ namespace LLU {
 		 * @return reference to this object
 		 */
 		MContainerBase& operator=(MContainerBase&& mc) noexcept {
-			reset(mc.container, mc.owner);
-			mc.container = nullptr;
+			if (this != &mc) {
+				reset(mc.container, mc.owner);
+				mc.container = nullptr;
+			}
 			return *this;
 		}
 
@@ -198,17 +200,19 @@ namespace LLU {
 		 * @param   newOwnerMode - owner of the new container
 		 */
 		void reset(Container newCont, Ownership newOwnerMode = Ownership::Library) noexcept {
-			switch (owner) {
-				case Ownership::Shared:
-					disown();
-					break;
-				case Ownership::Library:
-					free();
-					break;
-				case Ownership::LibraryLink: break;
+			if (newCont != container) {
+				switch (owner) {
+					case Ownership::Shared:
+						disown();
+						break;
+					case Ownership::Library:
+						free();
+						break;
+					case Ownership::LibraryLink: break;
+				}
+				container = newCont;
 			}
 			owner = newOwnerMode;
-			container = newCont;
 		}
 
 	private:
@@ -231,7 +235,7 @@ namespace LLU {
 
 	/**
 	 * @class   MContainer
-	 * @brief   MContainer is an abstract class template for generic containers. Only specializations shall be used.
+	 * @brief   MContainer is an abstract class template for generic containers. Only specializations shall be used.
 	 * @tparam  Type - container type (see MArgumentType definition)
 	 */
 	template<MArgumentType Type, typename std::enable_if_t<Argument::ContainerTypeQ<Type>, int> = 0>

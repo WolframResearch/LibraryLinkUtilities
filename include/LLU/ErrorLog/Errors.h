@@ -71,6 +71,19 @@ namespace LLU {
 		extern const std::string TensorSizeError;	  ///< wrong assumption about Tensor size
 		extern const std::string TensorIndexError;	  ///< trying to access non-existing element
 
+		// SparseArray errors:
+		extern const std::string SparseArrayCloneError;					///< could not clone MSparseArray
+		extern const std::string SparseArrayTypeError;					///< SparseArray type mismatch
+		extern const std::string SparseArrayFromPositionsError;			///< could not create MSparseArray from explicit positions
+		extern const std::string SparseArrayFromTensorError;			///< could not create MSparseArray from MTensor
+		extern const std::string SparseArrayImplicitValueResetError;	///< could not reset the implicit value of MSparseArray
+		extern const std::string SparseArrayImplicitValueError;			///< could not read implicit value from MSparseArray
+		extern const std::string SparseArrayExplicitValuesError;		///< could not read explicit values from MSparseArray
+		extern const std::string SparseArrayRowPointersError;			///< could not read row pointers from MSparseArray
+		extern const std::string SparseArrayColumnIndicesError;			///< could not read column indices from MSparseArray
+		extern const std::string SparseArrayExplicitPositionsError;		///< could not read explicit positions from MSparseArray
+		extern const std::string SparseArrayToTensorError;				///< could not dump MSparseArray to MTensor
+
 		// MImage errors:
 		extern const std::string ImageNewError;		 ///< creating new MImage failed
 		extern const std::string ImageCloneError;	 ///< MImage cloning failed

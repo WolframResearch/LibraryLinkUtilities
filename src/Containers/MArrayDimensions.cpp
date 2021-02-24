@@ -16,7 +16,7 @@ namespace {
 	 *	@throws		ErrorName::DimensionsError - if \c v is too big
 	 **/
 	void checkInitializerListSize(std::initializer_list<mint> v) {
-		if (v.size() <= 0 || v.size() > static_cast<decltype(v)::size_type>((std::numeric_limits<mint>::max)())) {
+		if (v.size() > static_cast<decltype(v)::size_type>((std::numeric_limits<mint>::max)())) {
 			LLU::ErrorManager::throwException(LLU::ErrorName::DimensionsError);
 		}
 	}
@@ -29,8 +29,7 @@ namespace {
 
 namespace LLU {
 
-	MArrayDimensions::MArrayDimensions(std::initializer_list<mint> dimensions) {
-		dims = dimensions;
+	MArrayDimensions::MArrayDimensions(std::initializer_list<mint> dimensions) : dims {dimensions} {
 		checkInitializerListSize(dimensions);
 		flattenedLength = totalLengthFromDims();
 		fillOffsets();
