@@ -1,47 +1,48 @@
 <map id="TypedMArgument.h" name="TypedMArgument.h">
-<area shape="rect" id="node1" title=" " alt="" coords="403,5,538,32"/>
-<area shape="rect" id="node2" title=" " alt="" coords="42,721,113,748"/>
-<area shape="rect" id="node3" title=" " alt="" coords="219,87,307,114"/>
-<area shape="rect" id="node4" title=" " alt="" coords="665,721,727,748"/>
-<area shape="rect" id="node5" href="$Generic_2Image_8hpp.html" title="GenericImage definition and implementation." alt="" coords="1961,80,2124,121"/>
-<area shape="rect" id="node23" href="$Utilities_8hpp.html" title="Short but generally useful functions." alt="" coords="637,647,755,673"/>
-<area shape="rect" id="node42" href="$MArgument_8h.html" title="Template class and utilities to work with MArgument in type&#45;safe manner." alt="" coords="837,572,965,599"/>
-<area shape="rect" id="node44" href="$Generic_2NumericArray_8hpp.html" title="GenericNumericArray definition and implementation." alt="" coords="2148,80,2311,121"/>
-<area shape="rect" id="node45" href="$Generic_2Tensor_8hpp.html" title="GenericTensor definition and implementation." alt="" coords="1775,80,1937,121"/>
-<area shape="rect" id="node6" href="$Base_8hpp.html" title="Definitions of MContainerBase and MContainer class templates." alt="" coords="1961,169,2124,211"/>
-<area shape="rect" id="node43" href="$Interfaces_8h.html" title=" " alt="" coords="2341,259,2528,285"/>
-<area shape="rect" id="node7" title=" " alt="" coords="209,721,292,748"/>
-<area shape="rect" id="node8" href="$ErrorManager_8h.html" title="Definition of the ErrorManager class responsible for error registration and throwing." alt="" coords="1935,259,2126,285"/>
-<area shape="rect" id="node25" href="$LibraryData_8h.html" title=" " alt="" coords="2248,721,2376,748"/>
-<area shape="rect" id="node9" title=" " alt="" coords="2099,572,2173,599"/>
-<area shape="rect" id="node10" title=" " alt="" coords="1691,341,1789,367"/>
-<area shape="rect" id="node11" title=" " alt="" coords="1658,721,1713,748"/>
-<area shape="rect" id="node12" title=" " alt="" coords="1813,341,1923,367"/>
-<area shape="rect" id="node13" title=" " alt="" coords="553,721,607,748"/>
-<area shape="rect" id="node14" title=" " alt="" coords="635,497,693,524"/>
-<area shape="rect" id="node15" href="$LibraryLinkError_8h.html" title="Error class and error codes used by LibraryLink Utilities classes." alt="" coords="1947,333,2114,375"/>
-<area shape="rect" id="node16" title=" " alt="" coords="1150,423,1229,449"/>
-<area shape="rect" id="node17" href="$WSStream_8hpp.html" title="Header file for WSStream class." alt="" coords="1253,423,1435,449"/>
-<area shape="rect" id="node18" title=" " alt="" coords="994,497,1057,524"/>
-<area shape="rect" id="node19" title=" " alt="" coords="1081,497,1127,524"/>
-<area shape="rect" id="node20" title=" " alt="" coords="1151,497,1206,524"/>
-<area shape="rect" id="node21" title=" " alt="" coords="1315,796,1376,823"/>
-<area shape="rect" id="node22" href="$Errors_8h.html" title="Definitions of error names and error codes used across LLU." alt="" coords="1723,647,1872,673"/>
-<area shape="rect" id="node33" href="$Get_8h.html" title="Header file with classes related to reading data from WSTP." alt="" coords="1431,497,1556,524"/>
-<area shape="rect" id="node36" href="$WSTP_2Utilities_8h.html" title="Header file with miscellaneous utilities used throughout the WSTP&#45;related part of LibraryLinkUtilitie..." alt="" coords="1419,572,1567,599"/>
-<area shape="rect" id="node39" href="$Put_8h.html" title="Header file with classes related to sending data through WSTP." alt="" coords="1282,497,1406,524"/>
-<area shape="rect" id="node40" href="$Strings_8h.html" title="Definitions of multiple structures and type aliases related to string handling in WSTP." alt="" coords="1631,497,1777,524"/>
-<area shape="rect" id="node41" href="$UtilityTypeTraits_8hpp.html" title="Type traits used by WSStream to identify types supported by WSTP." alt="" coords="144,572,357,599"/>
-<area shape="rect" id="node24" title=" " alt="" coords="783,721,844,748"/>
-<area shape="rect" id="node26" title=" " alt="" coords="1875,796,1944,823"/>
-<area shape="rect" id="node27" title=" " alt="" coords="2769,796,2852,823"/>
-<area shape="rect" id="node28" title=" " alt="" coords="2877,796,2995,823"/>
-<area shape="rect" id="node29" title=" " alt="" coords="1969,796,2159,823"/>
-<area shape="rect" id="node30" title=" " alt="" coords="2184,796,2339,823"/>
-<area shape="rect" id="node31" title=" " alt="" coords="2363,796,2562,823"/>
-<area shape="rect" id="node32" title=" " alt="" coords="2586,796,2745,823"/>
-<area shape="rect" id="node34" title=" " alt="" coords="1331,647,1410,673"/>
-<area shape="rect" id="node35" href="$Release_8h.html" title="Header file with classes responsible for releasing memory allocated by WSTP when receiving data." alt="" coords="1091,572,1243,599"/>
-<area shape="rect" id="node37" title=" " alt="" coords="1485,647,1547,673"/>
-<area shape="rect" id="node38" href="$EncodingTraits_8hpp.html" title="Defines possible encodings together with their properties and related types." alt="" coords="949,647,1155,673"/>
+<area shape="rect" id="node1" title=" " alt="" coords="362,5,497,32"/>
+<area shape="rect" id="node2" title=" " alt="" coords="785,811,855,837"/>
+<area shape="rect" id="node3" title=" " alt="" coords="203,87,291,114"/>
+<area shape="rect" id="node4" title=" " alt="" coords="247,811,308,837"/>
+<area shape="rect" id="node5" href="$Generic_2Image_8hpp.html" title="GenericImage definition and implementation." alt="" coords="43,169,205,211"/>
+<area shape="rect" id="node23" href="$Utilities_8hpp.html" title="Short but generally useful functions." alt="" coords="869,736,987,763"/>
+<area shape="rect" id="node42" href="$MArgument_8h.html" title="Template class and utilities to work with MArgument in type&#45;safe manner." alt="" coords="416,661,544,688"/>
+<area shape="rect" id="node44" href="$Generic_2NumericArray_8hpp.html" title="GenericNumericArray definition and implementation." alt="" coords="229,169,392,211"/>
+<area shape="rect" id="node45" href="$SparseArray_8hpp.html" title="GenericSparseArray definition and implementation." alt="" coords="517,80,680,121"/>
+<area shape="rect" id="node46" href="$Generic_2Tensor_8hpp.html" title="GenericTensor definition and implementation." alt="" coords="467,169,629,211"/>
+<area shape="rect" id="node6" href="$Base_8hpp.html" title="Definitions of MContainerBase and MContainer class templates." alt="" coords="467,259,629,300"/>
+<area shape="rect" id="node43" href="$Interfaces_8h.html" title=" " alt="" coords="205,348,392,375"/>
+<area shape="rect" id="node7" title=" " alt="" coords="887,811,969,837"/>
+<area shape="rect" id="node8" href="$ErrorManager_8h.html" title="Definition of the ErrorManager class responsible for error registration and throwing." alt="" coords="1230,348,1421,375"/>
+<area shape="rect" id="node25" href="$LibraryData_8h.html" title=" " alt="" coords="619,811,747,837"/>
+<area shape="rect" id="node9" title=" " alt="" coords="2472,661,2547,688"/>
+<area shape="rect" id="node10" title=" " alt="" coords="1055,430,1153,457"/>
+<area shape="rect" id="node11" title=" " alt="" coords="2223,811,2278,837"/>
+<area shape="rect" id="node12" title=" " alt="" coords="1177,430,1287,457"/>
+<area shape="rect" id="node13" title=" " alt="" coords="1200,811,1253,837"/>
+<area shape="rect" id="node14" title=" " alt="" coords="2603,587,2661,613"/>
+<area shape="rect" id="node15" href="$LibraryLinkError_8h.html" title="Error class and error codes used by LibraryLink Utilities classes." alt="" coords="1603,423,1770,464"/>
+<area shape="rect" id="node16" title=" " alt="" coords="1570,512,1649,539"/>
+<area shape="rect" id="node17" href="$WSStream_8hpp.html" title="Header file for WSStream class." alt="" coords="1673,512,1855,539"/>
+<area shape="rect" id="node18" title=" " alt="" coords="1363,587,1426,613"/>
+<area shape="rect" id="node19" title=" " alt="" coords="1450,587,1497,613"/>
+<area shape="rect" id="node20" title=" " alt="" coords="1521,587,1575,613"/>
+<area shape="rect" id="node21" title=" " alt="" coords="1791,885,1852,912"/>
+<area shape="rect" id="node22" href="$Errors_8h.html" title="Definitions of error names and error codes used across LLU." alt="" coords="2288,736,2437,763"/>
+<area shape="rect" id="node33" href="$Get_8h.html" title="Header file with classes related to reading data from WSTP." alt="" coords="1701,587,1827,613"/>
+<area shape="rect" id="node36" href="$WSTP_2Utilities_8h.html" title="Header file with miscellaneous utilities used throughout the WSTP&#45;related part of LibraryLinkUtilitie..." alt="" coords="2046,661,2194,688"/>
+<area shape="rect" id="node39" href="$Put_8h.html" title="Header file with classes related to sending data through WSTP." alt="" coords="2073,587,2197,613"/>
+<area shape="rect" id="node40" href="$Strings_8h.html" title="Definitions of multiple structures and type aliases related to string handling in WSTP." alt="" coords="1851,587,1997,613"/>
+<area shape="rect" id="node41" href="$UtilityTypeTraits_8hpp.html" title="Type traits used by WSStream to identify types supported by WSTP." alt="" coords="1075,661,1288,688"/>
+<area shape="rect" id="node24" title=" " alt="" coords="1328,811,1389,837"/>
+<area shape="rect" id="node26" title=" " alt="" coords="1392,885,1461,912"/>
+<area shape="rect" id="node27" title=" " alt="" coords="579,885,661,912"/>
+<area shape="rect" id="node28" title=" " alt="" coords="686,885,805,912"/>
+<area shape="rect" id="node29" title=" " alt="" coords="829,885,1019,912"/>
+<area shape="rect" id="node30" title=" " alt="" coords="1044,885,1199,912"/>
+<area shape="rect" id="node31" title=" " alt="" coords="173,885,371,912"/>
+<area shape="rect" id="node32" title=" " alt="" coords="395,885,554,912"/>
+<area shape="rect" id="node34" title=" " alt="" coords="1566,736,1645,763"/>
+<area shape="rect" id="node35" href="$Release_8h.html" title="Header file with classes responsible for releasing memory allocated by WSTP when receiving data." alt="" coords="1464,661,1616,688"/>
+<area shape="rect" id="node37" title=" " alt="" coords="2152,736,2213,763"/>
+<area shape="rect" id="node38" href="$EncodingTraits_8hpp.html" title="Defines possible encodings together with their properties and related types." alt="" coords="1669,736,1875,763"/>
 </map>

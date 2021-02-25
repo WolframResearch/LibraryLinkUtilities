@@ -1,30 +1,33 @@
 <map id="Base.hpp" name="Base.hpp">
-<area shape="rect" id="node1" title="Definitions of MContainerBase and MContainer class templates." alt="" coords="523,5,600,32"/>
-<area shape="rect" id="node2" href="$Generic_2DataStore_8hpp.html" title="Definition and implementation of generic DataStore wrapper." alt="" coords="421,304,528,331"/>
-<area shape="rect" id="node13" href="$Generic_2Image_8hpp.html" title="GenericImage definition and implementation." alt="" coords="213,80,296,107"/>
-<area shape="rect" id="node19" href="$Generic_2NumericArray_8hpp.html" title="GenericNumericArray definition and implementation." alt="" coords="677,80,803,107"/>
-<area shape="rect" id="node23" href="$Generic_2Tensor_8hpp.html" title="GenericTensor definition and implementation." alt="" coords="997,80,1083,107"/>
-<area shape="rect" id="node3" href="$DataList_8h.html" title="Definition of templated DataStore wrapper called DataList." alt="" coords="575,528,657,555"/>
-<area shape="rect" id="node9" href="$DataNode_8hpp.html" title=" " alt="" coords="240,379,347,405"/>
-<area shape="rect" id="node11" href="$DataStore_8cpp.html" title=" " alt="" coords="472,379,579,405"/>
-<area shape="rect" id="node12" href="$TypedMArgument_8cpp.html" title=" " alt="" coords="653,379,803,405"/>
-<area shape="rect" id="node4" href="$LLU_8h.html" title="Header file which includes all major parts of LLU." alt="" coords="649,677,706,704"/>
-<area shape="rect" id="node5" href="$MArgumentManager_8h.html" title="Definition of MArgumentManager class." alt="" coords="836,603,985,629"/>
-<area shape="rect" id="node6" href="$LibraryLinkError_8cpp.html" title="Contains definitions of ErrorManager members and implementation of interface function sendRegisteredE..." alt="" coords="730,677,867,704"/>
-<area shape="rect" id="node7" href="$Logger_8cpp.html" title="Implementation of functions defined in Logger.h." alt="" coords="892,677,977,704"/>
-<area shape="rect" id="node8" href="$MArgumentManager_8cpp.html" title="Definitions of non&#45;template member functions and static data members from MArgumentManager class." alt="" coords="1001,677,1164,704"/>
-<area shape="rect" id="node10" href="$DataList_8hpp.html" title="Special iterators for DataLists. Iteration over keys, values, reversed iteration." alt="" coords="301,453,397,480"/>
-<area shape="rect" id="node14" href="$Image_8h.html" title="Templated C++ wrapper for MImage." alt="" coords="145,155,215,181"/>
-<area shape="rect" id="node15" href="$Image_8cpp.html" title="Template specializations of Image::type attribute for all data types that we want to support." alt="" coords="213,229,296,256"/>
-<area shape="rect" id="node16" href="$Views_2Image_8hpp.html" title="Definition and implementation of ImageView and ImageTypedView." alt="" coords="5,229,88,256"/>
-<area shape="rect" id="node17" href="$TypedMArgument_8h.html" title=" " alt="" coords="417,155,551,181"/>
-<area shape="rect" id="node18" href="$Iterators_2DataStore_8hpp.html" title=" " alt="" coords="421,229,528,256"/>
-<area shape="rect" id="node20" href="$NumericArray_8h.html" title="Templated C++ wrapper for MNumericArray." alt="" coords="742,528,853,555"/>
-<area shape="rect" id="node21" href="$Views_2NumericArray_8hpp.html" title="Definition and implementation of NumericArrayView and NumericArrayTypedView." alt="" coords="877,304,1003,331"/>
-<area shape="rect" id="node22" href="$NumericArray_8cpp.html" title="Definitions of MContainer&lt;MArgumentType::NumericArray&gt; (GenericNumericArray) methods." alt="" coords="627,155,752,181"/>
-<area shape="rect" id="node24" href="$Tensor_8h.html" title="Templated C++ wrapper for MTensor." alt="" coords="1153,453,1223,480"/>
-<area shape="rect" id="node28" href="$Views_2Tensor_8hpp.html" title="Definition and implementation of TensorView and TensorTypedView." alt="" coords="1077,155,1163,181"/>
-<area shape="rect" id="node25" href="$ProgressMonitor_8h.html" title="Definition of ProgressMonitor class." alt="" coords="1017,528,1143,555"/>
-<area shape="rect" id="node27" href="$Tensor_8cpp.html" title="Template specialization of certain methods from TypedTensor class for all underlying data types that ..." alt="" coords="1225,528,1311,555"/>
-<area shape="rect" id="node26" href="$ProgressMonitor_8cpp.html" title="Implementation file for ProgressMonitor class." alt="" coords="1009,603,1151,629"/>
+<area shape="rect" id="node1" title="Definitions of MContainerBase and MContainer class templates." alt="" coords="732,5,809,32"/>
+<area shape="rect" id="node2" href="$Generic_2DataStore_8hpp.html" title="Definition and implementation of generic DataStore wrapper." alt="" coords="773,379,880,405"/>
+<area shape="rect" id="node13" href="$Generic_2Image_8hpp.html" title="GenericImage definition and implementation." alt="" coords="279,155,361,181"/>
+<area shape="rect" id="node19" href="$Generic_2NumericArray_8hpp.html" title="GenericNumericArray definition and implementation." alt="" coords="529,155,655,181"/>
+<area shape="rect" id="node23" href="$SparseArray_8hpp.html" title="GenericSparseArray definition and implementation." alt="" coords="712,155,829,181"/>
+<area shape="rect" id="node26" href="$Generic_2Tensor_8hpp.html" title="GenericTensor definition and implementation." alt="" coords="965,80,1051,107"/>
+<area shape="rect" id="node3" href="$DataList_8h.html" title="Definition of templated DataStore wrapper called DataList." alt="" coords="660,603,743,629"/>
+<area shape="rect" id="node9" href="$DataNode_8hpp.html" title=" " alt="" coords="904,453,1011,480"/>
+<area shape="rect" id="node11" href="$DataStore_8cpp.html" title=" " alt="" coords="723,453,829,480"/>
+<area shape="rect" id="node12" href="$TypedMArgument_8cpp.html" title=" " alt="" coords="499,453,648,480"/>
+<area shape="rect" id="node4" href="$LLU_8h.html" title="Header file which includes all major parts of LLU." alt="" coords="433,752,490,779"/>
+<area shape="rect" id="node5" href="$MArgumentManager_8h.html" title="Definition of MArgumentManager class." alt="" coords="627,677,776,704"/>
+<area shape="rect" id="node6" href="$LibraryLinkError_8cpp.html" title="Contains definitions of ErrorManager members and implementation of interface function sendRegisteredE..." alt="" coords="811,752,949,779"/>
+<area shape="rect" id="node7" href="$Logger_8cpp.html" title="Implementation of functions defined in Logger.h." alt="" coords="515,752,600,779"/>
+<area shape="rect" id="node8" href="$MArgumentManager_8cpp.html" title="Definitions of non&#45;template member functions and static data members from MArgumentManager class." alt="" coords="624,752,787,779"/>
+<area shape="rect" id="node10" href="$DataList_8hpp.html" title="Special iterators for DataLists. Iteration over keys, values, reversed iteration." alt="" coords="909,528,1005,555"/>
+<area shape="rect" id="node14" href="$Image_8h.html" title="Templated C++ wrapper for MImage." alt="" coords="223,229,292,256"/>
+<area shape="rect" id="node15" href="$Image_8cpp.html" title="Template specializations of Image::type attribute for all data types that we want to support." alt="" coords="112,304,195,331"/>
+<area shape="rect" id="node16" href="$Views_2Image_8hpp.html" title="Definition and implementation of ImageView and ImageTypedView." alt="" coords="5,304,88,331"/>
+<area shape="rect" id="node17" href="$TypedMArgument_8h.html" title=" " alt="" coords="745,229,879,256"/>
+<area shape="rect" id="node18" href="$Iterators_2DataStore_8hpp.html" title=" " alt="" coords="773,304,880,331"/>
+<area shape="rect" id="node20" href="$NumericArray_8h.html" title="Templated C++ wrapper for MNumericArray." alt="" coords="406,603,517,629"/>
+<area shape="rect" id="node21" href="$Views_2NumericArray_8hpp.html" title="Definition and implementation of NumericArrayView and NumericArrayTypedView." alt="" coords="320,379,445,405"/>
+<area shape="rect" id="node22" href="$NumericArray_8cpp.html" title="Definitions of MContainer&lt;MArgumentType::NumericArray&gt; (GenericNumericArray) methods." alt="" coords="595,229,720,256"/>
+<area shape="rect" id="node24" href="$SparseArray_8h.html" title="Templated C++ wrapper for MSparseArray." alt="" coords="807,603,910,629"/>
+<area shape="rect" id="node25" href="$SparseArray_8cpp.html" title="Implementation of GenericSparseArray and SparseArray&lt;T&gt;" alt="" coords="800,677,917,704"/>
+<area shape="rect" id="node27" href="$Tensor_8h.html" title="Templated C++ wrapper for MTensor." alt="" coords="1114,528,1185,555"/>
+<area shape="rect" id="node31" href="$Views_2Tensor_8hpp.html" title="Definition and implementation of TensorView and TensorTypedView." alt="" coords="1187,155,1272,181"/>
+<area shape="rect" id="node28" href="$ProgressMonitor_8h.html" title="Definition of ProgressMonitor class." alt="" coords="1153,603,1279,629"/>
+<area shape="rect" id="node30" href="$Tensor_8cpp.html" title="Template specialization of certain methods from TypedTensor class for all underlying data types that ..." alt="" coords="992,603,1077,629"/>
+<area shape="rect" id="node29" href="$ProgressMonitor_8cpp.html" title="Implementation file for ProgressMonitor class." alt="" coords="1145,677,1287,704"/>
 </map>

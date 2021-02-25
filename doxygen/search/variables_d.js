@@ -1,8 +1,19 @@
 var searchData=
 [
-  ['scalarsupportedtypeq_999',['ScalarSupportedTypeQ',['../namespaceLLU_1_1WS.html#ab343aece81abeebdbb82531c7776b787',1,'LLU::WS']]],
-  ['stringtypeq_1000',['StringTypeQ',['../namespaceLLU_1_1WS.html#a81422146d37d3748eda376c0c8012661',1,'LLU::WS']]],
-  ['substitutecodeforbyteencoding_1001',['substituteCodeForByteEncoding',['../namespaceLLU_1_1WS_1_1EncodingConfig.html#adbe61509d4ca06e52bb2d0aff374898c',1,'LLU::WS::EncodingConfig']]],
-  ['supportedinwsarithmeticq_1002',['supportedInWSArithmeticQ',['../namespaceLLU_1_1WS.html#a9f26664567d9cf3f42ffc6fdd5b868c9',1,'LLU::WS']]],
-  ['supportedinwsstringq_1003',['supportedInWSStringQ',['../namespaceLLU_1_1WS.html#a4f75e82c4264cbd37a4b55e03bce0209',1,'LLU::WS']]]
+  ['scalarsupportedtypeq_1063',['ScalarSupportedTypeQ',['../namespaceLLU_1_1WS.html#ab343aece81abeebdbb82531c7776b787',1,'LLU::WS']]],
+  ['sparsearraycloneerror_1064',['SparseArrayCloneError',['../namespaceLLU_1_1ErrorName.html#af974d5ec4505b8c6a69c9a13d44ddcae',1,'LLU::ErrorName']]],
+  ['sparsearraycolumnindiceserror_1065',['SparseArrayColumnIndicesError',['../namespaceLLU_1_1ErrorName.html#a0cb1721865188f60d537a752c61936ad',1,'LLU::ErrorName']]],
+  ['sparsearrayexplicitpositionserror_1066',['SparseArrayExplicitPositionsError',['../namespaceLLU_1_1ErrorName.html#a967bf87e0bdced34dbe8b229a377c60f',1,'LLU::ErrorName']]],
+  ['sparsearrayexplicitvalueserror_1067',['SparseArrayExplicitValuesError',['../namespaceLLU_1_1ErrorName.html#a79ac80504151bc6385c8a31913a89c4f',1,'LLU::ErrorName']]],
+  ['sparsearrayfrompositionserror_1068',['SparseArrayFromPositionsError',['../namespaceLLU_1_1ErrorName.html#afdd0fc2f02971d9e04432a40408961a7',1,'LLU::ErrorName']]],
+  ['sparsearrayfromtensorerror_1069',['SparseArrayFromTensorError',['../namespaceLLU_1_1ErrorName.html#a6d1c21dfabcdd419e7f175ec19627714',1,'LLU::ErrorName']]],
+  ['sparsearrayimplicitvalueerror_1070',['SparseArrayImplicitValueError',['../namespaceLLU_1_1ErrorName.html#a0d3b2e49adaa2ee898d8ef5b51af0639',1,'LLU::ErrorName']]],
+  ['sparsearrayimplicitvaluereseterror_1071',['SparseArrayImplicitValueResetError',['../namespaceLLU_1_1ErrorName.html#ae4e1582e051f74a657284ff25e48c2bf',1,'LLU::ErrorName']]],
+  ['sparsearrayrowpointerserror_1072',['SparseArrayRowPointersError',['../namespaceLLU_1_1ErrorName.html#aca728838d48ed6d5d0482650a1172b47',1,'LLU::ErrorName']]],
+  ['sparsearraytotensorerror_1073',['SparseArrayToTensorError',['../namespaceLLU_1_1ErrorName.html#abcf013055cbd6ca2d38fd688a7599816',1,'LLU::ErrorName']]],
+  ['sparsearraytypeerror_1074',['SparseArrayTypeError',['../namespaceLLU_1_1ErrorName.html#a8c42ccdf86eeae79f5cb5ad940b6ca62',1,'LLU::ErrorName']]],
+  ['stringtypeq_1075',['StringTypeQ',['../namespaceLLU_1_1WS.html#a81422146d37d3748eda376c0c8012661',1,'LLU::WS']]],
+  ['substitutecodeforbyteencoding_1076',['substituteCodeForByteEncoding',['../namespaceLLU_1_1WS_1_1EncodingConfig.html#adbe61509d4ca06e52bb2d0aff374898c',1,'LLU::WS::EncodingConfig']]],
+  ['supportedinwsarithmeticq_1077',['supportedInWSArithmeticQ',['../namespaceLLU_1_1WS.html#a9f26664567d9cf3f42ffc6fdd5b868c9',1,'LLU::WS']]],
+  ['supportedinwsstringq_1078',['supportedInWSStringQ',['../namespaceLLU_1_1WS.html#a4f75e82c4264cbd37a4b55e03bce0209',1,'LLU::WS']]]
 ];

@@ -106,6 +106,7 @@ $(document).ready(function(){initNavTree('TypedMArgument_8h.html',''); initResiz
 <code>#include &lt;variant&gt;</code><br />
 <code>#include &quot;<a class="el" href="Generic_2Image_8hpp_source.html">LLU/Containers/Generic/Image.hpp</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Generic_2NumericArray_8hpp_source.html">LLU/Containers/Generic/NumericArray.hpp</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="SparseArray_8hpp_source.html">LLU/Containers/Generic/SparseArray.hpp</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Generic_2Tensor_8hpp_source.html">LLU/Containers/Generic/Tensor.hpp</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="MArgument_8h_source.html">LLU/MArgument.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Utilities_8hpp_source.html">LLU/Utilities.hpp</a>&quot;</code><br />
@@ -114,14 +115,16 @@ $(document).ready(function(){initNavTree('TypedMArgument_8h.html',''); initResiz
 <div id="dynsection-0-summary" class="dynsummary" style="display:block;">
 </div>
 <div id="dynsection-0-content" class="dyncontent" style="display:none;">
-<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="TypedMArgument_8h__incl.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="TypedMArgument_8h__incl.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
 </div>
 </div><div class="textblock"><div id="dynsection-1" onclick="return toggleVisibility(this)" class="dynheader closed" style="cursor:pointer;">
   <img id="dynsection-1-trigger" src="closed.png" alt="+"/> This graph shows which files directly or indirectly include this file:</div>
 <div id="dynsection-1-summary" class="dynsummary" style="display:block;">
 </div>
 <div id="dynsection-1-content" class="dyncontent" style="display:none;">
-<div class="center"><iframe scrolling="no" frameborder="0" src="TypedMArgument_8h__dep__incl.svg" width="667" height="560"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+<div class="center"><iframe scrolling="no" frameborder="0" src="TypedMArgument_8h__dep__incl.svg" width="667" height="560"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
 </div>
 </div>
 <p><a href="TypedMArgument_8h_source.html">Go to the source code of this file.</a></p>
@@ -155,9 +158,9 @@ Type aliases</h2></td></tr>
 <tr class="memitem:aeffa52a1d8a48020a7a01c5198a4be09"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceLLU_1_1Argument_1_1Typed.html#aeffa52a1d8a48020a7a01c5198a4be09">LLU::Argument::Typed::Tensor</a> = MContainer&lt; MArgumentType::Tensor &gt;</td></tr>
 <tr class="memdesc:aeffa52a1d8a48020a7a01c5198a4be09"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classLLU_1_1Tensor.html" title="This is a class template, where template parameter T is the type of data elements....">Tensor</a> stands for a GenericTensor - type agnostic wrapper over MTensor.  <a href="namespaceLLU_1_1Argument_1_1Typed.html#aeffa52a1d8a48020a7a01c5198a4be09">More...</a><br /></td></tr>
 <tr class="separator:aeffa52a1d8a48020a7a01c5198a4be09"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abcf2ce804d4cb651bd799d908e5cfeb6"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceLLU_1_1Argument_1_1Typed.html#abcf2ce804d4cb651bd799d908e5cfeb6">LLU::Argument::Typed::SparseArray</a> = MSparseArray</td></tr>
-<tr class="memdesc:abcf2ce804d4cb651bd799d908e5cfeb6"><td class="mdescLeft">&#160;</td><td class="mdescRight">SparseArray type corresponds to the "raw" MSparseArray as <a class="el" href="namespaceLLU.html" title="Main namespace of LibraryLink Utilities.">LLU</a> does not have its own wrapper for this structure yet.  <a href="namespaceLLU_1_1Argument_1_1Typed.html#abcf2ce804d4cb651bd799d908e5cfeb6">More...</a><br /></td></tr>
-<tr class="separator:abcf2ce804d4cb651bd799d908e5cfeb6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad486922a4bedb428470920418ab6ea62"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceLLU_1_1Argument_1_1Typed.html#ad486922a4bedb428470920418ab6ea62">LLU::Argument::Typed::SparseArray</a> = MContainer&lt; MArgumentType::SparseArray &gt;</td></tr>
+<tr class="memdesc:ad486922a4bedb428470920418ab6ea62"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classLLU_1_1SparseArray.html" title="Strongly typed wrapper for MSparseArray.">SparseArray</a> stands for a GenericSparseArray - type agnostic wrapper over MSparseArray.  <a href="namespaceLLU_1_1Argument_1_1Typed.html#ad486922a4bedb428470920418ab6ea62">More...</a><br /></td></tr>
+<tr class="separator:ad486922a4bedb428470920418ab6ea62"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a827f4e6be86ad6ca6f2a3247fde499f6"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceLLU_1_1Argument_1_1Typed.html#a827f4e6be86ad6ca6f2a3247fde499f6">LLU::Argument::Typed::NumericArray</a> = MContainer&lt; MArgumentType::NumericArray &gt;</td></tr>
 <tr class="memdesc:a827f4e6be86ad6ca6f2a3247fde499f6"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classLLU_1_1NumericArray.html" title="This is a class template, where template parameter T is the type of data elements....">NumericArray</a> stands for a GenericNumericArray - type agnostic wrapper over MNumericArray.  <a href="namespaceLLU_1_1Argument_1_1Typed.html#a827f4e6be86ad6ca6f2a3247fde499f6">More...</a><br /></td></tr>
 <tr class="separator:a827f4e6be86ad6ca6f2a3247fde499f6"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -215,7 +218,7 @@ Variables</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="dir_bc5807a946fff986543f686f28e6d10f.html">LLU</a></li><li class="navelem"><a class="el" href="TypedMArgument_8h.html">TypedMArgument.h</a></li>
-    <li class="footer">Generated on Tue Oct 20 2020 08:15:41 for LibraryLink Utilities by
+    <li class="footer">Generated on Wed Feb 24 2021 11:32:19 for LibraryLink Utilities by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.18 </li>
   </ul>

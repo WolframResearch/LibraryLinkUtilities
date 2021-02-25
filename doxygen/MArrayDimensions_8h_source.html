@@ -127,101 +127,107 @@ $(document).ready(function(){initNavTree('MArrayDimensions_8h_source.html',''); 
 <div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;        }</div>
 <div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160; </div>
 <div class="line"><a name="l00076"></a><span class="lineno"><a class="line" href="classLLU_1_1MArrayDimensions.html#a2c8ba7b9fda93fccdd2d053fcc133310">   76</a></span>&#160;        <span class="keyword">const</span> mint* <a class="code" href="classLLU_1_1MArrayDimensions.html#a2c8ba7b9fda93fccdd2d053fcc133310">data</a>() const noexcept {</div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;            <span class="keywordflow">return</span> dims.data();</div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;        }</div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160; </div>
-<div class="line"><a name="l00083"></a><span class="lineno"><a class="line" href="classLLU_1_1MArrayDimensions.html#acde8732e654021c7752fb1e458187622">   83</a></span>&#160;        <span class="keyword">const</span> std::vector&lt;mint&gt;&amp; <a class="code" href="classLLU_1_1MArrayDimensions.html#acde8732e654021c7752fb1e458187622">get</a>() const noexcept {</div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;            <span class="keywordflow">return</span> dims;</div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;        }</div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160; </div>
-<div class="line"><a name="l00092"></a><span class="lineno"><a class="line" href="classLLU_1_1MArrayDimensions.html#a41dd0fc1e8334e6760a45714974fc281">   92</a></span>&#160;        mint <a class="code" href="classLLU_1_1MArrayDimensions.html#a41dd0fc1e8334e6760a45714974fc281">get</a>(mint dim)<span class="keyword"> const </span>{</div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;            <span class="keywordflow">if</span> (dim &gt;= <a class="code" href="classLLU_1_1MArrayDimensions.html#af59646e9705460f08e3c6f376a452432">rank</a>() || dim &lt; 0) {</div>
-<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;                <a class="code" href="classLLU_1_1ErrorManager.html#addc65020e68159f0114dba9058e461fc">ErrorManager::throwException</a>(<a class="code" href="namespaceLLU_1_1ErrorName.html#ab065a9ca184cc8dcd1c4618897c443c6">ErrorName::MArrayDimensionIndexError</a>, dim);</div>
-<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;            }</div>
-<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;            <span class="keywordflow">return</span> dims[<span class="keyword">static_cast&lt;</span>decltype(dims)::size_type<span class="keyword">&gt;</span>(dim)];</div>
-<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;        }</div>
-<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160; </div>
-<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;        mint <a class="code" href="classLLU_1_1MArrayDimensions.html#af1a2bfa4c060b1bcf7826f14dc0e0a04">getIndex</a>(<span class="keyword">const</span> std::vector&lt;mint&gt;&amp; indices) <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160; </div>
-<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;        mint <a class="code" href="classLLU_1_1MArrayDimensions.html#a017d82dbf9351a425f5e02c150b517a6">getIndexChecked</a>(<span class="keyword">const</span> std::vector&lt;mint&gt;&amp; indices) <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160; </div>
-<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;        mint <a class="code" href="classLLU_1_1MArrayDimensions.html#a017d82dbf9351a425f5e02c150b517a6">getIndexChecked</a>(mint index) <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160; </div>
-<div class="line"><a name="l00123"></a><span class="lineno"><a class="line" href="classLLU_1_1MArrayDimensions.html#ad90e14f9078d197d973c48b9f0c324ce">  123</a></span>&#160;        mint <a class="code" href="classLLU_1_1MArrayDimensions.html#ad90e14f9078d197d973c48b9f0c324ce">flatCount</a>() const noexcept {</div>
-<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;            <span class="keywordflow">return</span> flattenedLength;</div>
-<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;        }</div>
-<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160; </div>
-<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;    <span class="keyword">private</span>:</div>
-<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;        mint flattenedLength = 0;</div>
-<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160; </div>
-<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;        std::vector&lt;mint&gt; dims;</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;            <span class="keywordflow">if</span> (dims.empty()) {</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;                <span class="keywordflow">return</span> <span class="keyword">nullptr</span>;</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;            }</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;            <span class="keywordflow">return</span> dims.data();</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;        }</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160; </div>
+<div class="line"><a name="l00086"></a><span class="lineno"><a class="line" href="classLLU_1_1MArrayDimensions.html#acde8732e654021c7752fb1e458187622">   86</a></span>&#160;        <span class="keyword">const</span> std::vector&lt;mint&gt;&amp; <a class="code" href="classLLU_1_1MArrayDimensions.html#acde8732e654021c7752fb1e458187622">get</a>() const noexcept {</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;            <span class="keywordflow">return</span> dims;</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;        }</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160; </div>
+<div class="line"><a name="l00095"></a><span class="lineno"><a class="line" href="classLLU_1_1MArrayDimensions.html#a41dd0fc1e8334e6760a45714974fc281">   95</a></span>&#160;        mint <a class="code" href="classLLU_1_1MArrayDimensions.html#a41dd0fc1e8334e6760a45714974fc281">get</a>(mint dim)<span class="keyword"> const </span>{</div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;            <span class="keywordflow">if</span> (dim &gt;= <a class="code" href="classLLU_1_1MArrayDimensions.html#af59646e9705460f08e3c6f376a452432">rank</a>() || dim &lt; 0) {</div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;                <a class="code" href="classLLU_1_1ErrorManager.html#addc65020e68159f0114dba9058e461fc">ErrorManager::throwException</a>(<a class="code" href="namespaceLLU_1_1ErrorName.html#ab065a9ca184cc8dcd1c4618897c443c6">ErrorName::MArrayDimensionIndexError</a>, dim);</div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;            }</div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;            <span class="keywordflow">return</span> dims[<span class="keyword">static_cast&lt;</span>decltype(dims)::size_type<span class="keyword">&gt;</span>(dim)];</div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;        }</div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160; </div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;        mint <a class="code" href="classLLU_1_1MArrayDimensions.html#af1a2bfa4c060b1bcf7826f14dc0e0a04">getIndex</a>(<span class="keyword">const</span> std::vector&lt;mint&gt;&amp; indices) <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160; </div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;        mint <a class="code" href="classLLU_1_1MArrayDimensions.html#a017d82dbf9351a425f5e02c150b517a6">getIndexChecked</a>(<span class="keyword">const</span> std::vector&lt;mint&gt;&amp; indices) <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160; </div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;        mint <a class="code" href="classLLU_1_1MArrayDimensions.html#a017d82dbf9351a425f5e02c150b517a6">getIndexChecked</a>(mint index) <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160; </div>
+<div class="line"><a name="l00126"></a><span class="lineno"><a class="line" href="classLLU_1_1MArrayDimensions.html#ad90e14f9078d197d973c48b9f0c324ce">  126</a></span>&#160;        mint <a class="code" href="classLLU_1_1MArrayDimensions.html#ad90e14f9078d197d973c48b9f0c324ce">flatCount</a>() const noexcept {</div>
+<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;            <span class="keywordflow">return</span> flattenedLength;</div>
+<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;        }</div>
+<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160; </div>
+<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;    <span class="keyword">private</span>:</div>
+<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;        mint flattenedLength = 1;</div>
 <div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160; </div>
-<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;        std::vector&lt;mint&gt; offsets;</div>
+<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;        std::vector&lt;mint&gt; dims;</div>
 <div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160; </div>
-<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;        <span class="keywordtype">void</span> fillOffsets();</div>
+<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;        std::vector&lt;mint&gt; offsets;</div>
 <div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160; </div>
-<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;    <span class="keyword">private</span>:</div>
-<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;        mint checkContainerSize(T s) <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160; </div>
-<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;        [[nodiscard]] mint totalLengthFromDims() const noexcept;</div>
-<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;    };</div>
-<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160; </div>
-<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;    template&lt;typename T, typename&gt;</div>
-<div class="line"><a name="l00154"></a><span class="lineno"><a class="line" href="classLLU_1_1MArrayDimensions.html#a3b2430bb2d2790986583894410d94d40">  154</a></span>&#160;    <a class="code" href="classLLU_1_1MArrayDimensions.html">MArrayDimensions</a>::<a class="code" href="classLLU_1_1MArrayDimensions.html">MArrayDimensions</a>(const T* dimensions, mint <a class="code" href="classLLU_1_1MArrayDimensions.html#af59646e9705460f08e3c6f376a452432">rank</a>) : <a class="code" href="classLLU_1_1MArrayDimensions.html">MArrayDimensions</a>(dimensions, std::next(dimensions, <a class="code" href="classLLU_1_1MArrayDimensions.html#af59646e9705460f08e3c6f376a452432">rank</a>)) {}</div>
-<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160; </div>
-<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T, <span class="keyword">typename</span>&gt;</div>
-<div class="line"><a name="l00157"></a><span class="lineno"><a class="line" href="classLLU_1_1MArrayDimensions.html#a39058ecf9e15dd01f3b12e0f4d285601">  157</a></span>&#160;    <a class="code" href="classLLU_1_1MArrayDimensions.html#ae110526a5685bad175cfdd285b04217e">MArrayDimensions::MArrayDimensions</a>(<span class="keyword">const</span> std::vector&lt;T&gt;&amp; dimensions) : <a class="code" href="classLLU_1_1MArrayDimensions.html">MArrayDimensions</a>(std::cbegin(dimensions), std::cend(dimensions)) {}</div>
-<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160; </div>
-<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> InputIter, <span class="keyword">typename</span>&gt;</div>
-<div class="line"><a name="l00160"></a><span class="lineno"><a class="line" href="classLLU_1_1MArrayDimensions.html#a0f2bba2b546065ecfa42de6e8e541e09">  160</a></span>&#160;    <a class="code" href="classLLU_1_1MArrayDimensions.html#ae110526a5685bad175cfdd285b04217e">MArrayDimensions::MArrayDimensions</a>(InputIter dimsBegin, InputIter dimsEnd) {</div>
-<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;        mint depth = checkContainerSize(std::distance(dimsBegin, dimsEnd));</div>
-<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;        <span class="keyword">auto</span> dimsOk = std::all_of(dimsBegin, dimsEnd - 1, [](<span class="keyword">auto</span> d) { <span class="keywordflow">return</span> (d &gt; 0) &amp;&amp; (d &lt;= (std::numeric_limits&lt;mint&gt;::max)()); }) &amp;&amp;</div>
-<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;                      (dimsBegin[depth - 1] &gt;= 0) &amp;&amp; (dimsBegin[depth - 1] &lt;= (std::numeric_limits&lt;mint&gt;::max)());</div>
-<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;        <span class="keywordflow">if</span> (!dimsOk) {</div>
-<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;            <a class="code" href="classLLU_1_1ErrorManager.html#af7f8ceaa432c2521f75f1a0550d4968c">ErrorManager::throwExceptionWithDebugInfo</a>(<a class="code" href="namespaceLLU_1_1ErrorName.html#a3e6566604f83d04481836a9431871e07">ErrorName::DimensionsError</a>, <span class="stringliteral">&quot;Invalid input vector with array dimensions&quot;</span>);</div>
-<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;        }</div>
-<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;        dims.reserve(depth);</div>
-<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;        std::copy(dimsBegin, dimsEnd, std::back_inserter(dims));</div>
-<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;        flattenedLength = totalLengthFromDims();</div>
-<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;        fillOffsets();</div>
-<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;    }</div>
-<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160; </div>
-<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;    mint MArrayDimensions::checkContainerSize(T s)<span class="keyword"> const </span>{</div>
-<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;        <span class="keywordflow">if</span> (s &lt;= 0 || <span class="keyword">static_cast&lt;</span>std::uint64_t<span class="keyword">&gt;</span>(s) &gt; <span class="keyword">static_cast&lt;</span>std::uint64_t<span class="keyword">&gt;</span>((std::numeric_limits&lt;mint&gt;::max)())) {</div>
-<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;            <a class="code" href="classLLU_1_1ErrorManager.html#addc65020e68159f0114dba9058e461fc">ErrorManager::throwException</a>(<a class="code" href="namespaceLLU_1_1ErrorName.html#a3e6566604f83d04481836a9431871e07">ErrorName::DimensionsError</a>);</div>
-<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;        }</div>
-<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">static_cast&lt;</span>mint<span class="keyword">&gt;</span>(s);</div>
-<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;    }</div>
-<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160; </div>
-<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;} <span class="comment">/* namespace LLU */</span></div>
-<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160; </div>
-<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* LLU_CONTAINERS_MARRAYDIMENSIONS_H_ */</span><span class="preprocessor"></span></div>
+<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;        <span class="keywordtype">void</span> fillOffsets();</div>
+<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160; </div>
+<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;    <span class="keyword">private</span>:</div>
+<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;        mint checkContainerSize(T s) <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160; </div>
+<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;        [[nodiscard]] mint totalLengthFromDims() const noexcept;</div>
+<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160; </div>
+<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;        static constexpr std::<span class="keywordtype">size_t</span> MAX_DIM = static_cast&lt;std::<span class="keywordtype">size_t</span>&gt;((std::numeric_limits&lt;mint&gt;::max)());</div>
+<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;    };</div>
+<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160; </div>
+<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;    template&lt;typename T, typename&gt;</div>
+<div class="line"><a name="l00159"></a><span class="lineno"><a class="line" href="classLLU_1_1MArrayDimensions.html#a3b2430bb2d2790986583894410d94d40">  159</a></span>&#160;    <a class="code" href="classLLU_1_1MArrayDimensions.html">MArrayDimensions</a>::<a class="code" href="classLLU_1_1MArrayDimensions.html">MArrayDimensions</a>(const T* dimensions, mint <a class="code" href="classLLU_1_1MArrayDimensions.html#af59646e9705460f08e3c6f376a452432">rank</a>) : <a class="code" href="classLLU_1_1MArrayDimensions.html">MArrayDimensions</a>(dimensions, std::next(dimensions, <a class="code" href="classLLU_1_1MArrayDimensions.html#af59646e9705460f08e3c6f376a452432">rank</a>)) {}</div>
+<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160; </div>
+<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T, <span class="keyword">typename</span>&gt;</div>
+<div class="line"><a name="l00162"></a><span class="lineno"><a class="line" href="classLLU_1_1MArrayDimensions.html#a39058ecf9e15dd01f3b12e0f4d285601">  162</a></span>&#160;    <a class="code" href="classLLU_1_1MArrayDimensions.html#ae110526a5685bad175cfdd285b04217e">MArrayDimensions::MArrayDimensions</a>(<span class="keyword">const</span> std::vector&lt;T&gt;&amp; dimensions) : <a class="code" href="classLLU_1_1MArrayDimensions.html">MArrayDimensions</a>(std::cbegin(dimensions), std::cend(dimensions)) {}</div>
+<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160; </div>
+<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> InputIter, <span class="keyword">typename</span>&gt;</div>
+<div class="line"><a name="l00165"></a><span class="lineno"><a class="line" href="classLLU_1_1MArrayDimensions.html#a0f2bba2b546065ecfa42de6e8e541e09">  165</a></span>&#160;    <a class="code" href="classLLU_1_1MArrayDimensions.html#ae110526a5685bad175cfdd285b04217e">MArrayDimensions::MArrayDimensions</a>(InputIter dimsBegin, InputIter dimsEnd) {</div>
+<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;        <span class="keywordflow">if</span> (mint depth = checkContainerSize(std::distance(dimsBegin, dimsEnd)); depth &gt;= 1) {</div>
+<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;            <span class="keyword">auto</span> dimsOk = std::all_of(dimsBegin, dimsEnd - 1, [](<span class="keyword">auto</span> d) { <span class="keywordflow">return</span> (d &gt; 0) &amp;&amp; (<span class="keyword">static_cast&lt;</span>std::size_t<span class="keyword">&gt;</span>(d) &lt;= MAX_DIM); }) &amp;&amp;</div>
+<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;                          (dimsBegin[depth - 1] &gt;= 0) &amp;&amp; (<span class="keyword">static_cast&lt;</span>std::size_t<span class="keyword">&gt;</span>(dimsBegin[depth - 1]) &lt;= MAX_DIM);</div>
+<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;            <span class="keywordflow">if</span> (!dimsOk) {</div>
+<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;                <a class="code" href="classLLU_1_1ErrorManager.html#af7f8ceaa432c2521f75f1a0550d4968c">ErrorManager::throwExceptionWithDebugInfo</a>(<a class="code" href="namespaceLLU_1_1ErrorName.html#a3e6566604f83d04481836a9431871e07">ErrorName::DimensionsError</a>, <span class="stringliteral">&quot;Invalid input vector with array dimensions&quot;</span>);</div>
+<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;            }</div>
+<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;            dims.reserve(depth);</div>
+<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;        }</div>
+<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;        std::copy(dimsBegin, dimsEnd, std::back_inserter(dims));</div>
+<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;        flattenedLength = totalLengthFromDims();</div>
+<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;        fillOffsets();</div>
+<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;    }</div>
+<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160; </div>
+<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;    mint MArrayDimensions::checkContainerSize(T s)<span class="keyword"> const </span>{</div>
+<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;        <span class="keywordflow">if</span> (s &lt; 0 || <span class="keyword">static_cast&lt;</span>std::size_t<span class="keyword">&gt;</span>(s) &gt; MAX_DIM) {</div>
+<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;            <a class="code" href="classLLU_1_1ErrorManager.html#addc65020e68159f0114dba9058e461fc">ErrorManager::throwException</a>(<a class="code" href="namespaceLLU_1_1ErrorName.html#a3e6566604f83d04481836a9431871e07">ErrorName::DimensionsError</a>);</div>
+<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;        }</div>
+<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">static_cast&lt;</span>mint<span class="keyword">&gt;</span>(s);</div>
+<div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;    }</div>
+<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160; </div>
+<div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;} <span class="comment">/* namespace LLU */</span></div>
+<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160; </div>
+<div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* LLU_CONTAINERS_MARRAYDIMENSIONS_H_ */</span><span class="preprocessor"></span></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <div class="ttc" id="aclassLLU_1_1ErrorManager_html_af7f8ceaa432c2521f75f1a0550d4968c"><div class="ttname"><a href="classLLU_1_1ErrorManager.html#af7f8ceaa432c2521f75f1a0550d4968c">LLU::ErrorManager::throwExceptionWithDebugInfo</a></div><div class="ttdeci">static void throwExceptionWithDebugInfo(const std::string &amp;errorName, const std::string &amp;debugInfo, T &amp;&amp;... args)</div><div class="ttdoc">Throw exception with given name and additional information that might be helpful in debugging.</div><div class="ttdef"><b>Definition:</b> ErrorManager.h:214</div></div>
-<div class="ttc" id="aclassLLU_1_1MArrayDimensions_html_ad90e14f9078d197d973c48b9f0c324ce"><div class="ttname"><a href="classLLU_1_1MArrayDimensions.html#ad90e14f9078d197d973c48b9f0c324ce">LLU::MArrayDimensions::flatCount</a></div><div class="ttdeci">mint flatCount() const noexcept</div><div class="ttdoc">Get total number of elements.</div><div class="ttdef"><b>Definition:</b> MArrayDimensions.h:123</div></div>
+<div class="ttc" id="aclassLLU_1_1MArrayDimensions_html_ad90e14f9078d197d973c48b9f0c324ce"><div class="ttname"><a href="classLLU_1_1MArrayDimensions.html#ad90e14f9078d197d973c48b9f0c324ce">LLU::MArrayDimensions::flatCount</a></div><div class="ttdeci">mint flatCount() const noexcept</div><div class="ttdoc">Get total number of elements.</div><div class="ttdef"><b>Definition:</b> MArrayDimensions.h:126</div></div>
 <div class="ttc" id="anamespaceLLU_html"><div class="ttname"><a href="namespaceLLU.html">LLU</a></div><div class="ttdoc">Main namespace of LibraryLink Utilities.</div><div class="ttdef"><b>Definition:</b> Queue.h:13</div></div>
 <div class="ttc" id="aclassLLU_1_1MArrayDimensions_html_ae110526a5685bad175cfdd285b04217e"><div class="ttname"><a href="classLLU_1_1MArrayDimensions.html#ae110526a5685bad175cfdd285b04217e">LLU::MArrayDimensions::MArrayDimensions</a></div><div class="ttdeci">MArrayDimensions()=default</div><div class="ttdoc">Default constructor.</div></div>
 <div class="ttc" id="aLibraryData_8h_html"><div class="ttname"><a href="LibraryData_8h.html">LibraryData.h</a></div></div>
 <div class="ttc" id="anamespaceLLU_1_1ErrorName_html_a3e6566604f83d04481836a9431871e07"><div class="ttname"><a href="namespaceLLU_1_1ErrorName.html#a3e6566604f83d04481836a9431871e07">LLU::ErrorName::DimensionsError</a></div><div class="ttdeci">const std::string DimensionsError</div><div class="ttdoc">same as LIBRARY_DIMENSIONS_ERROR</div></div>
-<div class="ttc" id="aclassLLU_1_1MArrayDimensions_html_acde8732e654021c7752fb1e458187622"><div class="ttname"><a href="classLLU_1_1MArrayDimensions.html#acde8732e654021c7752fb1e458187622">LLU::MArrayDimensions::get</a></div><div class="ttdeci">const std::vector&lt; mint &gt; &amp; get() const noexcept</div><div class="ttdoc">Get container dimensions in the form of const&amp; to std::vector.</div><div class="ttdef"><b>Definition:</b> MArrayDimensions.h:83</div></div>
+<div class="ttc" id="aclassLLU_1_1MArrayDimensions_html_acde8732e654021c7752fb1e458187622"><div class="ttname"><a href="classLLU_1_1MArrayDimensions.html#acde8732e654021c7752fb1e458187622">LLU::MArrayDimensions::get</a></div><div class="ttdeci">const std::vector&lt; mint &gt; &amp; get() const noexcept</div><div class="ttdoc">Get container dimensions in the form of const&amp; to std::vector.</div><div class="ttdef"><b>Definition:</b> MArrayDimensions.h:86</div></div>
 <div class="ttc" id="aclassLLU_1_1MArrayDimensions_html"><div class="ttname"><a href="classLLU_1_1MArrayDimensions.html">LLU::MArrayDimensions</a></div><div class="ttdoc">Helper class that carries meta-information about container's size and dimensions.</div><div class="ttdef"><b>Definition:</b> MArrayDimensions.h:23</div></div>
-<div class="ttc" id="aclassLLU_1_1MArrayDimensions_html_af1a2bfa4c060b1bcf7826f14dc0e0a04"><div class="ttname"><a href="classLLU_1_1MArrayDimensions.html#af1a2bfa4c060b1bcf7826f14dc0e0a04">LLU::MArrayDimensions::getIndex</a></div><div class="ttdeci">mint getIndex(const std::vector&lt; mint &gt; &amp;indices) const</div><div class="ttdoc">Convert coordinates of an element in a multidimensional MArray to the corresponding index in a flat l...</div><div class="ttdef"><b>Definition:</b> MArrayDimensions.cpp:67</div></div>
+<div class="ttc" id="aclassLLU_1_1MArrayDimensions_html_af1a2bfa4c060b1bcf7826f14dc0e0a04"><div class="ttname"><a href="classLLU_1_1MArrayDimensions.html#af1a2bfa4c060b1bcf7826f14dc0e0a04">LLU::MArrayDimensions::getIndex</a></div><div class="ttdeci">mint getIndex(const std::vector&lt; mint &gt; &amp;indices) const</div><div class="ttdoc">Convert coordinates of an element in a multidimensional MArray to the corresponding index in a flat l...</div><div class="ttdef"><b>Definition:</b> MArrayDimensions.cpp:66</div></div>
 <div class="ttc" id="aclassLLU_1_1MArrayDimensions_html_a2c8ba7b9fda93fccdd2d053fcc133310"><div class="ttname"><a href="classLLU_1_1MArrayDimensions.html#a2c8ba7b9fda93fccdd2d053fcc133310">LLU::MArrayDimensions::data</a></div><div class="ttdeci">const mint * data() const noexcept</div><div class="ttdoc">Get raw pointer to container dimensions.</div><div class="ttdef"><b>Definition:</b> MArrayDimensions.h:76</div></div>
 <div class="ttc" id="aErrorManager_8h_html"><div class="ttname"><a href="ErrorManager_8h.html">ErrorManager.h</a></div><div class="ttdoc">Definition of the ErrorManager class responsible for error registration and throwing.</div></div>
 <div class="ttc" id="aclassLLU_1_1MArrayDimensions_html_af59646e9705460f08e3c6f376a452432"><div class="ttname"><a href="classLLU_1_1MArrayDimensions.html#af59646e9705460f08e3c6f376a452432">LLU::MArrayDimensions::rank</a></div><div class="ttdeci">mint rank() const noexcept</div><div class="ttdoc">Get container rank.</div><div class="ttdef"><b>Definition:</b> MArrayDimensions.h:69</div></div>
-<div class="ttc" id="aclassLLU_1_1MArrayDimensions_html_a017d82dbf9351a425f5e02c150b517a6"><div class="ttname"><a href="classLLU_1_1MArrayDimensions.html#a017d82dbf9351a425f5e02c150b517a6">LLU::MArrayDimensions::getIndexChecked</a></div><div class="ttdeci">mint getIndexChecked(const std::vector&lt; mint &gt; &amp;indices) const</div><div class="ttdoc">Check if given coordinates are valid for this container.</div><div class="ttdef"><b>Definition:</b> MArrayDimensions.cpp:47</div></div>
+<div class="ttc" id="aclassLLU_1_1MArrayDimensions_html_a017d82dbf9351a425f5e02c150b517a6"><div class="ttname"><a href="classLLU_1_1MArrayDimensions.html#a017d82dbf9351a425f5e02c150b517a6">LLU::MArrayDimensions::getIndexChecked</a></div><div class="ttdeci">mint getIndexChecked(const std::vector&lt; mint &gt; &amp;indices) const</div><div class="ttdoc">Check if given coordinates are valid for this container.</div><div class="ttdef"><b>Definition:</b> MArrayDimensions.cpp:46</div></div>
 <div class="ttc" id="aclassLLU_1_1ErrorManager_html_addc65020e68159f0114dba9058e461fc"><div class="ttname"><a href="classLLU_1_1ErrorManager.html#addc65020e68159f0114dba9058e461fc">LLU::ErrorManager::throwException</a></div><div class="ttdeci">static void throwException(const std::string &amp;errorName, T &amp;&amp;... args)</div><div class="ttdoc">Throw exception with given name.</div><div class="ttdef"><b>Definition:</b> ErrorManager.h:199</div></div>
 <div class="ttc" id="anamespaceLLU_1_1ErrorName_html_ab065a9ca184cc8dcd1c4618897c443c6"><div class="ttname"><a href="namespaceLLU_1_1ErrorName.html#ab065a9ca184cc8dcd1c4618897c443c6">LLU::ErrorName::MArrayDimensionIndexError</a></div><div class="ttdeci">const std::string MArrayDimensionIndexError</div><div class="ttdoc">attempting to access MArray dimension at invalid index</div></div>
 <div class="ttc" id="aUtilities_8hpp_html"><div class="ttname"><a href="Utilities_8hpp.html">Utilities.hpp</a></div><div class="ttdoc">Short but generally useful functions.</div></div>
-<div class="ttc" id="aclassLLU_1_1MArrayDimensions_html_a41dd0fc1e8334e6760a45714974fc281"><div class="ttname"><a href="classLLU_1_1MArrayDimensions.html#a41dd0fc1e8334e6760a45714974fc281">LLU::MArrayDimensions::get</a></div><div class="ttdeci">mint get(mint dim) const</div><div class="ttdoc">Get single dimension.</div><div class="ttdef"><b>Definition:</b> MArrayDimensions.h:92</div></div>
+<div class="ttc" id="aclassLLU_1_1MArrayDimensions_html_a41dd0fc1e8334e6760a45714974fc281"><div class="ttname"><a href="classLLU_1_1MArrayDimensions.html#a41dd0fc1e8334e6760a45714974fc281">LLU::MArrayDimensions::get</a></div><div class="ttdeci">mint get(mint dim) const</div><div class="ttdoc">Get single dimension.</div><div class="ttdef"><b>Definition:</b> MArrayDimensions.h:95</div></div>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="dir_bc5807a946fff986543f686f28e6d10f.html">LLU</a></li><li class="navelem"><a class="el" href="dir_dee3f738df87362dedf9ac7c6f24aa7e.html">Containers</a></li><li class="navelem"><a class="el" href="MArrayDimensions_8h.html">MArrayDimensions.h</a></li>
-    <li class="footer">Generated on Tue Oct 20 2020 08:15:41 for LibraryLink Utilities by
+    <li class="footer">Generated on Wed Feb 24 2021 11:32:19 for LibraryLink Utilities by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.18 </li>
   </ul>

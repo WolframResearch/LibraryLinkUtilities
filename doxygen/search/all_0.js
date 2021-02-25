@@ -16,8 +16,9 @@ var searchData=
   ['association_13',['Association',['../structLLU_1_1WS_1_1Association.html',1,'LLU::WS::Association'],['../structLLU_1_1WS_1_1Association.html#a41fd39a87ebc6c86e511359480b9febf',1,'LLU::WS::Association::Association()'],['../structLLU_1_1WS_1_1Association.html#a19964566d9b4d64b6459eb4f228cf490',1,'LLU::WS::Association::Association(int argCount)']]],
   ['astypedimage_14',['asTypedImage',['../namespaceLLU.html#a63b98f1b11b2bf0a4fa47952e02df8cd',1,'LLU']]],
   ['astypednumericarray_15',['asTypedNumericArray',['../namespaceLLU.html#a774de8facff788ab23f7ba1cba545faa',1,'LLU']]],
-  ['astypedtensor_16',['asTypedTensor',['../namespaceLLU.html#a38dcef843ace924ca56e722a224922e9',1,'LLU']]],
-  ['asvector_17',['asVector',['../classLLU_1_1IterableContainer.html#af66aee992031feec7f2c41a50b71a8b6',1,'LLU::IterableContainer']]],
-  ['at_18',['at',['../classLLU_1_1MArray.html#a709e1c06e4891e210bca65c67cdbaad2',1,'LLU::MArray::at(mint index)'],['../classLLU_1_1MArray.html#a4eba03b34a730d7a372ebd4081409509',1,'LLU::MArray::at(mint index) const'],['../classLLU_1_1MArray.html#a97b1d5b38f646fb55c0855699f648012',1,'LLU::MArray::at(const std::vector&lt; mint &gt; &amp;indices)'],['../classLLU_1_1MArray.html#a336ad439eabceff0ec49bcd01ff5e251',1,'LLU::MArray::at(const std::vector&lt; mint &gt; &amp;indices) const']]],
-  ['utilities_2eh_19',['Utilities.h',['../Async_2Utilities_8h.html',1,'']]]
+  ['astypedsparsearray_16',['asTypedSparseArray',['../namespaceLLU.html#a3c8560806a2e85d9456ec2776e96ae38',1,'LLU']]],
+  ['astypedtensor_17',['asTypedTensor',['../namespaceLLU.html#a38dcef843ace924ca56e722a224922e9',1,'LLU']]],
+  ['asvector_18',['asVector',['../classLLU_1_1IterableContainer.html#af66aee992031feec7f2c41a50b71a8b6',1,'LLU::IterableContainer']]],
+  ['at_19',['at',['../classLLU_1_1MArray.html#a709e1c06e4891e210bca65c67cdbaad2',1,'LLU::MArray::at(mint index)'],['../classLLU_1_1MArray.html#a4eba03b34a730d7a372ebd4081409509',1,'LLU::MArray::at(mint index) const'],['../classLLU_1_1MArray.html#a97b1d5b38f646fb55c0855699f648012',1,'LLU::MArray::at(const std::vector&lt; mint &gt; &amp;indices)'],['../classLLU_1_1MArray.html#a336ad439eabceff0ec49bcd01ff5e251',1,'LLU::MArray::at(const std::vector&lt; mint &gt; &amp;indices) const']]],
+  ['utilities_2eh_20',['Utilities.h',['../Async_2Utilities_8h.html',1,'']]]
 ];

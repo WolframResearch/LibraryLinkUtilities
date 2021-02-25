@@ -12,7 +12,7 @@
 <!-- Node0 -->
 <g id="node1" class="node">
 <title>Node0</title>
-<g id="a_node1"><a xlink:href="classLLU_1_1MContainer.html" target="_top" xlink:title="MContainer is an abstract class template for generic containers. Only specializations shall be used.">
+<g id="a_node1"><a xlink:href="classLLU_1_1MContainer.html" target="_top" xlink:title="MContainer is an abstract class template for generic containers. Only specializations shall be used.">
 <polygon fill="white" stroke="black" points="0,-0.5 0,-19.5 133,-19.5 133,-0.5 0,-0.5"/>
 <text text-anchor="middle" x="66.5" y="-7.5" font-family="Helvetica,sans-Serif" font-size="10.00">LLU::MContainer&lt; Type, &gt;</text>
 </a>

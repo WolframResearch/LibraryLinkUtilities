@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Containers &mdash; LibraryLink Utilities 3.0.1 documentation</title>
+  <title>Containers &mdash; LibraryLink Utilities 3.1.0 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="LibraryLink Utilities 3.0.1 documentation" href="../index.html"/>
+    <link rel="top" title="LibraryLink Utilities 3.1.0 documentation" href="../index.html"/>
         <link rel="next" title="Error handling" href="error_handling.html"/>
         <link rel="prev" title="Library functions" href="functions.html"/> 
 
@@ -71,7 +71,7 @@
             
             
               <div class="version">
-                3.0
+                3.1
               </div>
             
           
@@ -116,6 +116,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#llu-genericimage"><code class="xref cpp cpp-type docutils literal notranslate"><span class="pre">LLU::GenericImage</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#llu-genericnumericarray"><code class="xref cpp cpp-type docutils literal notranslate"><span class="pre">LLU::GenericNumericArray</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#llu-generictensor"><code class="xref cpp cpp-type docutils literal notranslate"><span class="pre">LLU::GenericTensor</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#llu-genericsparsearray"><code class="xref cpp cpp-type docutils literal notranslate"><span class="pre">LLU::GenericSparseArray</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#typed-wrappers">Typed Wrappers</a><ul>
@@ -123,6 +124,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#llu-image-t"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">LLU::Image&lt;T&gt;</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#llu-numericarray-t"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">LLU::NumericArray&lt;T&gt;</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#llu-tensor-t"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">LLU::Tensor&lt;T&gt;</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#llu-sparsearray-t"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">LLU::SparseArray&lt;T&gt;</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#iterators">Iterators</a></li>
@@ -239,8 +241,8 @@ generic, datatype-agnostic wrappers and full-fledged wrappers templated with the
 <td><p><a class="reference internal" href="#datalist-label"><span class="std std-ref">DataList&lt;T&gt;</span></a></p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#msparsearray-label"><span class="std std-ref">MSparseArray</span></a></p></td>
-<td><p>⊝</p></td>
-<td><p>⊝</p></td>
+<td><p><a class="reference internal" href="#genericsa-label"><span class="std std-ref">GenericSparseArray</span></a></p></td>
+<td><p><a class="reference internal" href="#spararr-label"><span class="std std-ref">SparseArray&lt;T&gt;</span></a></p></td>
 </tr>
 </tbody>
 </table>
@@ -1495,6 +1497,298 @@ perform operations on the underlying data.</p>
 </dd></dl>
 
 </div>
+<div class="section" id="llu-genericsparsearray">
+<span id="genericsa-label"></span><h3><a class="reference internal" href="#_CPPv4N3LLU18GenericSparseArrayE" title="LLU::GenericSparseArray"><code class="xref cpp cpp-type docutils literal notranslate"><span class="pre">LLU::GenericSparseArray</span></code></a><a class="headerlink" href="#llu-genericsparsearray" title="Permalink to this headline"> 🔗</a></h3>
+<p>GenericSparseArray is a light-weight wrapper over <a class="reference internal" href="#msparsearray-label"><span class="std std-ref">MSparseArray</span></a>. It offers the same API that LibraryLink has for MSparseArray, except for access
+to the underlying array data because GenericSparseArray is not aware of the array data type. Typically one would use GenericSparseArray to take an MSparseArray
+of an unknown type from LibraryLink, investigate its properties and data type, then upgrade the GenericSparseArray to the strongly-typed one in order to
+perform operations on the underlying data.</p>
+<dl class="cpp type">
+<dt id="_CPPv4N3LLU18GenericSparseArrayE">
+<span id="_CPPv3N3LLU18GenericSparseArrayE"></span><span id="_CPPv2N3LLU18GenericSparseArrayE"></span><span class="target" id="namespaceLLU_1a64e0da42320bd3b51aa4eea7d05bd88a"></span><em class="property">using </em><code class="sig-prename descclassname">LLU<code class="sig-prename descclassname">::</code></code><code class="sig-name descname">GenericSparseArray</code> = <a class="reference internal" href="#_CPPv4IEN3LLU10MContainerIN13MArgumentType11SparseArrayEEE" title="LLU::MContainer&lt;MArgumentType::SparseArray&gt;">MContainer</a>&lt;MArgumentType::SparseArray&gt;<a class="headerlink" href="#_CPPv4N3LLU18GenericSparseArrayE" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>MContainer specialization for MSparseArray is called GenericSparseArray. </p>
+</dd></dl>
+
+<dl class="cpp class">
+<dt id="_CPPv4IEN3LLU10MContainerIN13MArgumentType11SparseArrayEEE">
+<span id="_CPPv3IEN3LLU10MContainerIN13MArgumentType11SparseArrayEEE"></span><span id="_CPPv2IEN3LLU10MContainerIN13MArgumentType11SparseArrayEEE"></span>template&lt;&gt;<br /><span class="target" id="classLLU_1_1MContainer_3_01MArgumentType_1_1SparseArray_01_4"></span><em class="property">class </em><code class="sig-prename descclassname">LLU<code class="sig-prename descclassname">::</code></code><code class="sig-name descname">MContainer</code>&lt;MArgumentType::SparseArray&gt; : <em class="property">public</em> LLU::MContainerBase&lt;MArgumentType::SparseArray&gt;<a class="headerlink" href="#_CPPv4IEN3LLU10MContainerIN13MArgumentType11SparseArrayEEE" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>MContainer specialization for MSparseArray. </p>
+<p>Subclassed by <a class="reference internal" href="#classLLU_1_1SparseArray"><span class="std std-ref">LLU::SparseArray&lt; T &gt;</span></a></p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Types</p>
+<dl class="cpp type">
+<dt id="_CPPv4N3LLU10MContainerIN13MArgumentType11SparseArrayEE9ContainerE">
+<span id="_CPPv3N3LLU10MContainerIN13MArgumentType11SparseArrayEE9ContainerE"></span><span id="_CPPv2N3LLU10MContainerIN13MArgumentType11SparseArrayEE9ContainerE"></span><span class="target" id="classLLU_1_1MContainerBase_1a943d513079b8ae6999e3ee1762967366"></span><em class="property">using </em><code class="sig-name descname">Container</code> = Argument::CType&lt;Type&gt;<a class="headerlink" href="#_CPPv4N3LLU10MContainerIN13MArgumentType11SparseArrayEE9ContainerE" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>The type of underlying LibraryLink structure (e.g. MTensor, MImage, etc.) will be called “Container”. </p>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Functions</p>
+<dl class="cpp function">
+<dt id="_CPPv4N3LLU10MContainerIN13MArgumentType11SparseArrayEE10MContainerEv">
+<span id="_CPPv3N3LLU10MContainerIN13MArgumentType11SparseArrayEE10MContainerEv"></span><span id="_CPPv2N3LLU10MContainerIN13MArgumentType11SparseArrayEE10MContainerEv"></span><span id="LLU::MContainer:MArgumentType::SparseArray:::MContainer"></span><span class="target" id="classLLU_1_1MContainer_3_01MArgumentType_1_1SparseArray_01_4_1a9db306b54dcaf5926192fc392d10d197"></span><code class="sig-name descname">MContainer</code><span class="sig-paren">(</span><span class="sig-paren">)</span> = default<a class="headerlink" href="#_CPPv4N3LLU10MContainerIN13MArgumentType11SparseArrayEE10MContainerEv" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Default constructor, the MContainer does not manage any instance of MSparseArray. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4N3LLU10MContainerIN13MArgumentType11SparseArrayEE10MContainerERK13GenericTensorRK13GenericTensorRK13GenericTensorRK13GenericTensor">
+<span id="_CPPv3N3LLU10MContainerIN13MArgumentType11SparseArrayEE10MContainerERK13GenericTensorRK13GenericTensorRK13GenericTensorRK13GenericTensor"></span><span id="_CPPv2N3LLU10MContainerIN13MArgumentType11SparseArrayEE10MContainerERK13GenericTensorRK13GenericTensorRK13GenericTensorRK13GenericTensor"></span><span id="LLU::MContainer:MArgumentType::SparseArray:::MContainer__GenericTensorCR.GenericTensorCR.GenericTensorCR.GenericTensorCR"></span><span class="target" id="classLLU_1_1MContainer_3_01MArgumentType_1_1SparseArray_01_4_1aa08ea9c9082c1df771cd1d615a1fef14"></span><code class="sig-name descname">MContainer</code><span class="sig-paren">(</span><em class="property">const</em> <a class="reference internal" href="#_CPPv4N3LLU13GenericTensorE" title="LLU::GenericTensor">GenericTensor</a> &amp;<em>positions</em>, <em class="property">const</em> <a class="reference internal" href="#_CPPv4N3LLU13GenericTensorE" title="LLU::GenericTensor">GenericTensor</a> &amp;<em>values</em>, <em class="property">const</em> <a class="reference internal" href="#_CPPv4N3LLU13GenericTensorE" title="LLU::GenericTensor">GenericTensor</a> &amp;<em>dimensions</em>, <em class="property">const</em> <a class="reference internal" href="#_CPPv4N3LLU13GenericTensorE" title="LLU::GenericTensor">GenericTensor</a> &amp;<em>implicitValue</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3LLU10MContainerIN13MArgumentType11SparseArrayEE10MContainerERK13GenericTensorRK13GenericTensorRK13GenericTensorRK13GenericTensor" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Create a new <a class="reference internal" href="#classLLU_1_1SparseArray"><span class="std std-ref">SparseArray</span></a> from positions, values, dimensions and an implicit value. </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">positions</span></code>: - positions of all the explicit values in the array </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">values</span></code>: - explicit values to be stored in the array </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">dimensions</span></code>: - dimensions of the new <a class="reference internal" href="#classLLU_1_1SparseArray"><span class="std std-ref">SparseArray</span></a> </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">implicitValue</span></code>: - implicit value (the one that is not stored) of the new <a class="reference internal" href="#classLLU_1_1SparseArray"><span class="std std-ref">SparseArray</span></a> </p></li>
+</ul>
+</dd>
+<dt><strong>See</strong></dt><dd><p><a class="reference external" href="https://reference.wolfram.com/language/LibraryLink/ref/callback/MSparseArray_fromExplicitPositions.html">https://reference.wolfram.com/language/LibraryLink/ref/callback/MSparseArray_fromExplicitPositions.html</a> </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4N3LLU10MContainerIN13MArgumentType11SparseArrayEE10MContainerERK13GenericTensorRK13GenericTensor">
+<span id="_CPPv3N3LLU10MContainerIN13MArgumentType11SparseArrayEE10MContainerERK13GenericTensorRK13GenericTensor"></span><span id="_CPPv2N3LLU10MContainerIN13MArgumentType11SparseArrayEE10MContainerERK13GenericTensorRK13GenericTensor"></span><span id="LLU::MContainer:MArgumentType::SparseArray:::MContainer__GenericTensorCR.GenericTensorCR"></span><span class="target" id="classLLU_1_1MContainer_3_01MArgumentType_1_1SparseArray_01_4_1a4f9b93236f72a28d37cd2bf0071dbe40"></span><code class="sig-name descname">MContainer</code><span class="sig-paren">(</span><em class="property">const</em> <a class="reference internal" href="#_CPPv4N3LLU13GenericTensorE" title="LLU::GenericTensor">GenericTensor</a> &amp;<em>data</em>, <em class="property">const</em> <a class="reference internal" href="#_CPPv4N3LLU13GenericTensorE" title="LLU::GenericTensor">GenericTensor</a> &amp;<em>implicitValue</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3LLU10MContainerIN13MArgumentType11SparseArrayEE10MContainerERK13GenericTensorRK13GenericTensor" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Create a new <a class="reference internal" href="#classLLU_1_1SparseArray"><span class="std std-ref">SparseArray</span></a> from data array and an implicit value. </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">data</span></code>: - a tensor whose contents will be copied and sparsified </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">implicitValue</span></code>: - implicit value (the one that is not stored) of the new <a class="reference internal" href="#classLLU_1_1SparseArray"><span class="std std-ref">SparseArray</span></a> </p></li>
+</ul>
+</dd>
+<dt><strong>See</strong></dt><dd><p><a class="reference external" href="https://reference.wolfram.com/language/LibraryLink/ref/callback/MSparseArray_fromMTensor.html">https://reference.wolfram.com/language/LibraryLink/ref/callback/MSparseArray_fromMTensor.html</a> </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4N3LLU10MContainerIN13MArgumentType11SparseArrayEE10MContainerERK18GenericSparseArrayRK13GenericTensor">
+<span id="_CPPv3N3LLU10MContainerIN13MArgumentType11SparseArrayEE10MContainerERK18GenericSparseArrayRK13GenericTensor"></span><span id="_CPPv2N3LLU10MContainerIN13MArgumentType11SparseArrayEE10MContainerERK18GenericSparseArrayRK13GenericTensor"></span><span id="LLU::MContainer:MArgumentType::SparseArray:::MContainer__GenericSparseArrayCR.GenericTensorCR"></span><span class="target" id="classLLU_1_1MContainer_3_01MArgumentType_1_1SparseArray_01_4_1aac84338ef4cab01477c228a06638be83"></span><code class="sig-name descname">MContainer</code><span class="sig-paren">(</span><em class="property">const</em> <a class="reference internal" href="#_CPPv4N3LLU18GenericSparseArrayE" title="LLU::GenericSparseArray">GenericSparseArray</a> &amp;<em>s</em>, <em class="property">const</em> <a class="reference internal" href="#_CPPv4N3LLU13GenericTensorE" title="LLU::GenericTensor">GenericTensor</a> &amp;<em>implicitValue</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3LLU10MContainerIN13MArgumentType11SparseArrayEE10MContainerERK18GenericSparseArrayRK13GenericTensor" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Create a copy of given <a class="reference internal" href="#classLLU_1_1SparseArray"><span class="std std-ref">SparseArray</span></a> with different implicit value. </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">s</span></code>: - other <a class="reference internal" href="#classLLU_1_1SparseArray"><span class="std std-ref">SparseArray</span></a> </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">implicitValue</span></code>: - implicit value (the one that is not stored) of the new <a class="reference internal" href="#classLLU_1_1SparseArray"><span class="std std-ref">SparseArray</span></a> </p></li>
+</ul>
+</dd>
+<dt><strong>See</strong></dt><dd><p><a class="reference external" href="https://reference.wolfram.com/language/LibraryLink/ref/callback/MSparseArray_resetImplicitValue.html">https://reference.wolfram.com/language/LibraryLink/ref/callback/MSparseArray_resetImplicitValue.html</a> </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4NK3LLU10MContainerIN13MArgumentType11SparseArrayEE5cloneEv">
+<span id="_CPPv3NK3LLU10MContainerIN13MArgumentType11SparseArrayEE5cloneEv"></span><span id="_CPPv2NK3LLU10MContainerIN13MArgumentType11SparseArrayEE5cloneEv"></span><span id="LLU::MContainer:MArgumentType::SparseArray:::cloneC"></span><span class="target" id="classLLU_1_1MContainer_3_01MArgumentType_1_1SparseArray_01_4_1a7f423c613bec0591ff269abbebe255f5"></span><a class="reference internal" href="#_CPPv4N3LLU10MContainerIN13MArgumentType11SparseArrayEE10MContainerEv" title="LLU::MContainer&lt;MArgumentType::SparseArray&gt;::MContainer">MContainer</a> <code class="sig-name descname">clone</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK3LLU10MContainerIN13MArgumentType11SparseArrayEE5cloneEv" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Clone this MContainer, performs a deep copy of the underlying MSparseArray. </p>
+<p><dl class="simple">
+<dt><strong>Note</strong></dt><dd><p>The cloned MContainer always belongs to the library (<a class="reference internal" href="#namespaceLLU_1a046343d3a2eebf70fd1b042ebfecadaea4d70254b3a8e2bc38b6147fa6ee813be"><span class="std std-ref">Ownership::Library</span></a>) because LibraryLink has no idea of its existence. </p>
+</dd>
+<dt><strong>Return</strong></dt><dd><p>new MContainer, by value </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4NK3LLU10MContainerIN13MArgumentType11SparseArrayEE24getImplicitValueAsTensorEv">
+<span id="_CPPv3NK3LLU10MContainerIN13MArgumentType11SparseArrayEE24getImplicitValueAsTensorEv"></span><span id="_CPPv2NK3LLU10MContainerIN13MArgumentType11SparseArrayEE24getImplicitValueAsTensorEv"></span><span id="LLU::MContainer:MArgumentType::SparseArray:::getImplicitValueAsTensorC"></span><span class="target" id="classLLU_1_1MContainer_3_01MArgumentType_1_1SparseArray_01_4_1a9a211070a2972d586240f486f8c733c5"></span><a class="reference internal" href="#_CPPv4N3LLU13GenericTensorE" title="LLU::GenericTensor">GenericTensor</a> <code class="sig-name descname">getImplicitValueAsTensor</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK3LLU10MContainerIN13MArgumentType11SparseArrayEE24getImplicitValueAsTensorEv" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Get the implicit value of this sparse array. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>Rank 0 tensor of the same type as the value type of this sparse array. </p>
+</dd>
+<dt><strong>See</strong></dt><dd><p><a class="reference external" href="https://reference.wolfram.com/language/LibraryLink/ref/callback/MSparseArray_getImplicitValue.html">https://reference.wolfram.com/language/LibraryLink/ref/callback/MSparseArray_getImplicitValue.html</a> </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4N3LLU10MContainerIN13MArgumentType11SparseArrayEE26setImplicitValueFromTensorERK13GenericTensor">
+<span id="_CPPv3N3LLU10MContainerIN13MArgumentType11SparseArrayEE26setImplicitValueFromTensorERK13GenericTensor"></span><span id="_CPPv2N3LLU10MContainerIN13MArgumentType11SparseArrayEE26setImplicitValueFromTensorERK13GenericTensor"></span><span id="LLU::MContainer:MArgumentType::SparseArray:::setImplicitValueFromTensor__GenericTensorCR"></span><span class="target" id="classLLU_1_1MContainer_3_01MArgumentType_1_1SparseArray_01_4_1af4c1d6ed5edb883231438720e1ba684a"></span>void <code class="sig-name descname">setImplicitValueFromTensor</code><span class="sig-paren">(</span><em class="property">const</em> <a class="reference internal" href="#_CPPv4N3LLU13GenericTensorE" title="LLU::GenericTensor">GenericTensor</a> &amp;<em>implicitValue</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3LLU10MContainerIN13MArgumentType11SparseArrayEE26setImplicitValueFromTensorERK13GenericTensor" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Change the implicit value of this array. </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">implicitValue</span></code>: - new implicit value </p></li>
+</ul>
+</dd>
+<dt><strong>Note</strong></dt><dd><p>The underlying MSparseArray object may be replaced in the process. </p>
+</dd>
+<dt><strong>See</strong></dt><dd><p><a class="reference external" href="https://reference.wolfram.com/language/LibraryLink/ref/callback/MSparseArray_resetImplicitValue.html">https://reference.wolfram.com/language/LibraryLink/ref/callback/MSparseArray_resetImplicitValue.html</a> </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4NK3LLU10MContainerIN13MArgumentType11SparseArrayEE7getRankEv">
+<span id="_CPPv3NK3LLU10MContainerIN13MArgumentType11SparseArrayEE7getRankEv"></span><span id="_CPPv2NK3LLU10MContainerIN13MArgumentType11SparseArrayEE7getRankEv"></span><span id="LLU::MContainer:MArgumentType::SparseArray:::getRankC"></span><span class="target" id="classLLU_1_1MContainer_3_01MArgumentType_1_1SparseArray_01_4_1a880c657eea250c0077a657b8df2da063"></span>mint <code class="sig-name descname">getRank</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK3LLU10MContainerIN13MArgumentType11SparseArrayEE7getRankEv" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Get the rank (number of dimensions) of this sparse array. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>the rank of this array </p>
+</dd>
+<dt><strong>See</strong></dt><dd><p><a class="reference external" href="https://reference.wolfram.com/language/LibraryLink/ref/callback/MSparseArray_getRank.html">https://reference.wolfram.com/language/LibraryLink/ref/callback/MSparseArray_getRank.html</a> </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4NK3LLU10MContainerIN13MArgumentType11SparseArrayEE13getDimensionsEv">
+<span id="_CPPv3NK3LLU10MContainerIN13MArgumentType11SparseArrayEE13getDimensionsEv"></span><span id="_CPPv2NK3LLU10MContainerIN13MArgumentType11SparseArrayEE13getDimensionsEv"></span><span id="LLU::MContainer:MArgumentType::SparseArray:::getDimensionsC"></span><span class="target" id="classLLU_1_1MContainer_3_01MArgumentType_1_1SparseArray_01_4_1abd78772083eaa3e033714248fb872784"></span>mint <em class="property">const</em> *<code class="sig-name descname">getDimensions</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK3LLU10MContainerIN13MArgumentType11SparseArrayEE13getDimensionsEv" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Get dimensions of this sparse array. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>a read-only raw array of container dimensions </p>
+</dd>
+<dt><strong>See</strong></dt><dd><p><a class="reference external" href="https://reference.wolfram.com/language/LibraryLink/ref/callback/MSparseArray_getDimensions.html">https://reference.wolfram.com/language/LibraryLink/ref/callback/MSparseArray_getDimensions.html</a> </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4NK3LLU10MContainerIN13MArgumentType11SparseArrayEE17getExplicitValuesEv">
+<span id="_CPPv3NK3LLU10MContainerIN13MArgumentType11SparseArrayEE17getExplicitValuesEv"></span><span id="_CPPv2NK3LLU10MContainerIN13MArgumentType11SparseArrayEE17getExplicitValuesEv"></span><span id="LLU::MContainer:MArgumentType::SparseArray:::getExplicitValuesC"></span><span class="target" id="classLLU_1_1MContainer_3_01MArgumentType_1_1SparseArray_01_4_1a56278e459d84d58ee0efeac1d9c0e5b5"></span><a class="reference internal" href="#_CPPv4N3LLU13GenericTensorE" title="LLU::GenericTensor">GenericTensor</a> <code class="sig-name descname">getExplicitValues</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK3LLU10MContainerIN13MArgumentType11SparseArrayEE17getExplicitValuesEv" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Get a tensor with the values corresponding to the explicitly stored positions in the sparse array. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>GenericTensor of rank 1 with length equal to the number of explicit positions in the array or an empty wrapper for “pattern sparse arrays” </p>
+</dd>
+<dt><strong>See</strong></dt><dd><p><a class="reference external" href="https://reference.wolfram.com/language/LibraryLink/ref/callback/MSparseArray_getExplicitValues.html">https://reference.wolfram.com/language/LibraryLink/ref/callback/MSparseArray_getExplicitValues.html</a> </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4NK3LLU10MContainerIN13MArgumentType11SparseArrayEE14getRowPointersEv">
+<span id="_CPPv3NK3LLU10MContainerIN13MArgumentType11SparseArrayEE14getRowPointersEv"></span><span id="_CPPv2NK3LLU10MContainerIN13MArgumentType11SparseArrayEE14getRowPointersEv"></span><span id="LLU::MContainer:MArgumentType::SparseArray:::getRowPointersC"></span><span class="target" id="classLLU_1_1MContainer_3_01MArgumentType_1_1SparseArray_01_4_1ab7089de352a7d13d76b0c494a88755e5"></span><a class="reference internal" href="#_CPPv4N3LLU13GenericTensorE" title="LLU::GenericTensor">GenericTensor</a> <code class="sig-name descname">getRowPointers</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK3LLU10MContainerIN13MArgumentType11SparseArrayEE14getRowPointersEv" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Get a row pointer array for this sparse array. </p>
+<p>The values returned are the cumulative number of explicitly represented elements for each row, so the values will be non-decreasing. <dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>GenericTensor of rank 1 and integer type or an empty GenericTensor </p>
+</dd>
+<dt><strong>See</strong></dt><dd><p><a class="reference external" href="https://reference.wolfram.com/language/LibraryLink/ref/callback/MSparseArray_getRowPointers.html">https://reference.wolfram.com/language/LibraryLink/ref/callback/MSparseArray_getRowPointers.html</a> </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4NK3LLU10MContainerIN13MArgumentType11SparseArrayEE16getColumnIndicesEv">
+<span id="_CPPv3NK3LLU10MContainerIN13MArgumentType11SparseArrayEE16getColumnIndicesEv"></span><span id="_CPPv2NK3LLU10MContainerIN13MArgumentType11SparseArrayEE16getColumnIndicesEv"></span><span id="LLU::MContainer:MArgumentType::SparseArray:::getColumnIndicesC"></span><span class="target" id="classLLU_1_1MContainer_3_01MArgumentType_1_1SparseArray_01_4_1a690a62b0cd980c2adeb008382b1bae48"></span><a class="reference internal" href="#_CPPv4N3LLU13GenericTensorE" title="LLU::GenericTensor">GenericTensor</a> <code class="sig-name descname">getColumnIndices</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK3LLU10MContainerIN13MArgumentType11SparseArrayEE16getColumnIndicesEv" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Get the column indices for the explicitly stored positions in this sparse array. </p>
+<p>The first dimension of the resulting tensor is the number of explicit positions, and the second dimension is equal to getRank() - 1. <dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>GenericTensor of rank 2 or an empty GenericTensor </p>
+</dd>
+<dt><strong>See</strong></dt><dd><p><a class="reference external" href="https://reference.wolfram.com/language/LibraryLink/ref/callback/MSparseArray_getColumnIndices.html">https://reference.wolfram.com/language/LibraryLink/ref/callback/MSparseArray_getColumnIndices.html</a> </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4NK3LLU10MContainerIN13MArgumentType11SparseArrayEE20getExplicitPositionsEv">
+<span id="_CPPv3NK3LLU10MContainerIN13MArgumentType11SparseArrayEE20getExplicitPositionsEv"></span><span id="_CPPv2NK3LLU10MContainerIN13MArgumentType11SparseArrayEE20getExplicitPositionsEv"></span><span id="LLU::MContainer:MArgumentType::SparseArray:::getExplicitPositionsC"></span><span class="target" id="classLLU_1_1MContainer_3_01MArgumentType_1_1SparseArray_01_4_1a0fb907eddff087c964f195177a274290"></span><a class="reference internal" href="#_CPPv4N3LLU13GenericTensorE" title="LLU::GenericTensor">GenericTensor</a> <code class="sig-name descname">getExplicitPositions</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK3LLU10MContainerIN13MArgumentType11SparseArrayEE20getExplicitPositionsEv" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Get the explicitly specified positions in this sparse array. </p>
+<p>The first dimension of the resulting tensor is the number of explicit positions, and the second dimension is equal to getRank(). <dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>GenericTensor of rank 2 or an empty GenericTensor </p>
+</dd>
+<dt><strong>See</strong></dt><dd><p><a class="reference external" href="https://reference.wolfram.com/language/LibraryLink/ref/callback/MSparseArray_getExplicitPositions.html">https://reference.wolfram.com/language/LibraryLink/ref/callback/MSparseArray_getExplicitPositions.html</a> </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4NK3LLU10MContainerIN13MArgumentType11SparseArrayEE15toGenericTensorEv">
+<span id="_CPPv3NK3LLU10MContainerIN13MArgumentType11SparseArrayEE15toGenericTensorEv"></span><span id="_CPPv2NK3LLU10MContainerIN13MArgumentType11SparseArrayEE15toGenericTensorEv"></span><span id="LLU::MContainer:MArgumentType::SparseArray:::toGenericTensorC"></span><span class="target" id="classLLU_1_1MContainer_3_01MArgumentType_1_1SparseArray_01_4_1a87c738ddcd337995d1f68263dc640b13"></span><a class="reference internal" href="#_CPPv4N3LLU13GenericTensorE" title="LLU::GenericTensor">GenericTensor</a> <code class="sig-name descname">toGenericTensor</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK3LLU10MContainerIN13MArgumentType11SparseArrayEE15toGenericTensorEv" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Expand this sparse array to a regular tensor. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>GenericTensor of the same data type as this array </p>
+</dd>
+<dt><strong>See</strong></dt><dd><p><a class="reference external" href="https://reference.wolfram.com/language/LibraryLink/ref/callback/MSparseArray_toMTensor.html">https://reference.wolfram.com/language/LibraryLink/ref/callback/MSparseArray_toMTensor.html</a> </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4N3LLU10MContainerIN13MArgumentType11SparseArrayEE10resparsifyEv">
+<span id="_CPPv3N3LLU10MContainerIN13MArgumentType11SparseArrayEE10resparsifyEv"></span><span id="_CPPv2N3LLU10MContainerIN13MArgumentType11SparseArrayEE10resparsifyEv"></span><span id="LLU::MContainer:MArgumentType::SparseArray:::resparsify"></span><span class="target" id="classLLU_1_1MContainer_3_01MArgumentType_1_1SparseArray_01_4_1a10184d988f1d276133c24bd86209606d"></span>void <code class="sig-name descname">resparsify</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3LLU10MContainerIN13MArgumentType11SparseArrayEE10resparsifyEv" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Use current implicit value to recalculate the sparse array after the data has been modified. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4NK3LLU10MContainerIN13MArgumentType11SparseArrayEE4typeEv">
+<span id="_CPPv3NK3LLU10MContainerIN13MArgumentType11SparseArrayEE4typeEv"></span><span id="_CPPv2NK3LLU10MContainerIN13MArgumentType11SparseArrayEE4typeEv"></span><span id="LLU::MContainer:MArgumentType::SparseArray:::typeC"></span><span class="target" id="classLLU_1_1MContainer_3_01MArgumentType_1_1SparseArray_01_4_1a88f859c1e4dcc265f658f3bb7ad884c3"></span>mint <code class="sig-name descname">type</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK3LLU10MContainerIN13MArgumentType11SparseArrayEE4typeEv" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Get the data type of this MSparseArray. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>type of elements (MType_Integer, MType_Real or MType_Complex) </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4NK3LLU10MContainerIN13MArgumentType11SparseArrayEE12getContainerEv">
+<span id="_CPPv3NK3LLU10MContainerIN13MArgumentType11SparseArrayEE12getContainerEv"></span><span id="_CPPv2NK3LLU10MContainerIN13MArgumentType11SparseArrayEE12getContainerEv"></span><span id="LLU::MContainer:MArgumentType::SparseArray:::getContainerC"></span><span class="target" id="classLLU_1_1MContainerBase_1ab8561bdf957227a53e43897a781aca2b"></span><a class="reference internal" href="#_CPPv4N3LLU10MContainerIN13MArgumentType11SparseArrayEE9ContainerE" title="LLU::MContainer&lt;MArgumentType::SparseArray&gt;::Container">Container</a> <code class="sig-name descname">getContainer</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em> <em class="property">noexcept</em><a class="headerlink" href="#_CPPv4NK3LLU10MContainerIN13MArgumentType11SparseArrayEE12getContainerEv" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Get internal container. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>a handle to the internal container </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4NK3LLU10MContainerIN13MArgumentType11SparseArrayEE16abandonContainerEv">
+<span id="_CPPv3NK3LLU10MContainerIN13MArgumentType11SparseArrayEE16abandonContainerEv"></span><span id="_CPPv2NK3LLU10MContainerIN13MArgumentType11SparseArrayEE16abandonContainerEv"></span><span id="LLU::MContainer:MArgumentType::SparseArray:::abandonContainerC"></span><span class="target" id="classLLU_1_1MContainerBase_1a7e78954325a22a380c5eb025bcadabe7"></span><a class="reference internal" href="#_CPPv4N3LLU10MContainerIN13MArgumentType11SparseArrayEE9ContainerE" title="LLU::MContainer&lt;MArgumentType::SparseArray&gt;::Container">Container</a> <code class="sig-name descname">abandonContainer</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em> <em class="property">noexcept</em><a class="headerlink" href="#_CPPv4NK3LLU10MContainerIN13MArgumentType11SparseArrayEE16abandonContainerEv" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Give a handle to internal container and stop owning it. </p>
+<p>Should be used with caution as it may potentially result with resource leak.</p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>a handle to the internal container </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4NK3LLU10MContainerIN13MArgumentType11SparseArrayEE10shareCountEv">
+<span id="_CPPv3NK3LLU10MContainerIN13MArgumentType11SparseArrayEE10shareCountEv"></span><span id="_CPPv2NK3LLU10MContainerIN13MArgumentType11SparseArrayEE10shareCountEv"></span><span id="LLU::MContainer:MArgumentType::SparseArray:::shareCountC"></span><span class="target" id="classLLU_1_1MContainerBase_1a5fb3a6aff83465d2a4cc8a771a56324a"></span>mint <code class="sig-name descname">shareCount</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em> <em class="property">noexcept</em><a class="headerlink" href="#_CPPv4NK3LLU10MContainerIN13MArgumentType11SparseArrayEE10shareCountEv" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Return share count of internal container, if present and 0 otherwise. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4NK3LLU10MContainerIN13MArgumentType11SparseArrayEE4passER9MArgument">
+<span id="_CPPv3NK3LLU10MContainerIN13MArgumentType11SparseArrayEE4passER9MArgument"></span><span id="_CPPv2NK3LLU10MContainerIN13MArgumentType11SparseArrayEE4passER9MArgument"></span><span id="LLU::MContainer:MArgumentType::SparseArray:::pass__MArgumentRC"></span><span class="target" id="classLLU_1_1MContainerBase_1ae48053120f40815eb7d6644415b3dcb7"></span>void <code class="sig-name descname">pass</code><span class="sig-paren">(</span>MArgument &amp;<em>res</em><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK3LLU10MContainerIN13MArgumentType11SparseArrayEE4passER9MArgument" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Pass the internal container as result of a LibraryLink function. </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">res</span></code>: - MArgument which will hold internal container of this MContainerBase </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4NK3LLU10MContainerIN13MArgumentType11SparseArrayEE8getOwnerEv">
+<span id="_CPPv3NK3LLU10MContainerIN13MArgumentType11SparseArrayEE8getOwnerEv"></span><span id="_CPPv2NK3LLU10MContainerIN13MArgumentType11SparseArrayEE8getOwnerEv"></span><span id="LLU::MContainer:MArgumentType::SparseArray:::getOwnerC"></span><span class="target" id="classLLU_1_1MContainerBase_1a77c35fac504b0e4111607332ae0020b5"></span><a class="reference internal" href="#_CPPv4N3LLU9OwnershipE" title="LLU::Ownership">Ownership</a> <code class="sig-name descname">getOwner</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em> <em class="property">noexcept</em><a class="headerlink" href="#_CPPv4NK3LLU10MContainerIN13MArgumentType11SparseArrayEE8getOwnerEv" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Get ownership information. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>the owner of the internal container </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</div>
 </div>
 <div class="section" id="typed-wrappers">
 <h2>Typed Wrappers<a class="headerlink" href="#typed-wrappers" title="Permalink to this headline"> 🔗</a></h2>
@@ -1538,7 +1832,7 @@ All typed wrappers are movable but non-copyable, instead they provide a <code cl
 <td><p>MTensor</p></td>
 </tr>
 <tr class="row-odd"><td><p>NodeType::SparseArray</p></td>
-<td><p>MSparseArray</p></td>
+<td><p>LLU::GenericSparseArray</p></td>
 <td><p>MSparseArray</p></td>
 </tr>
 <tr class="row-even"><td><p>NodeType::NumericArray</p></td>
@@ -1599,8 +1893,8 @@ All typed wrappers are movable but non-copyable, instead they provide a <code cl
 
 <dl class="cpp type">
 <dt id="_CPPv4N3LLU8Argument5Typed11SparseArrayE">
-<span id="_CPPv3N3LLU8Argument5Typed11SparseArrayE"></span><span id="_CPPv2N3LLU8Argument5Typed11SparseArrayE"></span><span class="target" id="namespaceLLU_1_1Argument_1_1Typed_1abcf2ce804d4cb651bd799d908e5cfeb6"></span><em class="property">using </em><code class="sig-name descname">SparseArray</code> = MSparseArray<a class="headerlink" href="#_CPPv4N3LLU8Argument5Typed11SparseArrayE" title="Permalink to this definition"> 🔗</a><br /></dt>
-<dd><p>SparseArray type corresponds to the “raw” MSparseArray as LLU does not have its own wrapper for this structure yet. </p>
+<span id="_CPPv3N3LLU8Argument5Typed11SparseArrayE"></span><span id="_CPPv2N3LLU8Argument5Typed11SparseArrayE"></span><span class="target" id="namespaceLLU_1_1Argument_1_1Typed_1ad486922a4bedb428470920418ab6ea62"></span><em class="property">using </em><code class="sig-name descname">SparseArray</code> = <a class="reference internal" href="#_CPPv4IEN3LLU10MContainerIN13MArgumentType11SparseArrayEEE" title="LLU::MContainer&lt;MArgumentType::SparseArray&gt;">MContainer</a>&lt;MArgumentType::SparseArray&gt;<a class="headerlink" href="#_CPPv4N3LLU8Argument5Typed11SparseArrayE" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p><a class="reference internal" href="#classLLU_1_1SparseArray"><span class="std std-ref">SparseArray</span></a> stands for a GenericSparseArray - type agnostic wrapper over MSparseArray. </p>
 </dd></dl>
 
 <dl class="cpp type">
@@ -4448,6 +4742,513 @@ Tensor supports only 3 types of data, meaning that <a class="reference internal"
 </dd></dl>
 
 </div>
+<div class="section" id="llu-sparsearray-t">
+<span id="spararr-label"></span><h3><a class="reference internal" href="#_CPPv4I0EN3LLU11SparseArrayE" title="LLU::SparseArray"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">LLU::SparseArray&lt;T&gt;</span></code></a><a class="headerlink" href="#llu-sparsearray-t" title="Permalink to this headline"> 🔗</a></h3>
+<p><code class="xref cpp cpp-expr docutils literal notranslate"><span class="pre">LLU</span><span class="pre">::</span><a class="reference internal" href="#_CPPv4I0EN3LLU11SparseArrayE" title="LLU::SparseArray"><span class="pre">SparseArray</span></a></code> is a wrapper over an MSparseArray which holds elements of type <code class="docutils literal notranslate"><span class="pre">T</span></code>. MSparseArray supports only 3 types of data,
+meaning that <a class="reference internal" href="#_CPPv4I0EN3LLU11SparseArrayE" title="LLU::SparseArray"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">template&lt;typename</span> <span class="pre">T&gt;</span> <span class="pre">LLU::SparseArray</span></code></a> class template can be instantiated with only 3 types <code class="docutils literal notranslate"><span class="pre">T</span></code>:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">mint</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">double</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">std::complex&lt;double&gt;</span></code></p></li>
+</ul>
+</div></blockquote>
+<p>Here is an example of the SparseArray class in action:</p>
+<div class="highlight-cpp notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="n">T</span><span class="o">&gt;</span>
+<span class="kt">void</span> <span class="n">sparseModifyValues</span><span class="p">(</span><span class="n">LLU</span><span class="o">::</span><span class="n">SparseArray</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;&amp;</span> <span class="n">sa</span><span class="p">,</span> <span class="n">LLU</span><span class="o">::</span><span class="n">TensorTypedView</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="n">newValues</span><span class="p">)</span> <span class="p">{</span>
+
+   <span class="c1">// extract a Tensor with explicit values of the SparseArray</span>
+   <span class="c1">// this does not make a copy of the values so modifying the Tensor will modify the values in the SparseArray</span>
+   <span class="k">auto</span> <span class="n">values</span> <span class="o">=</span> <span class="n">sa</span><span class="p">.</span><span class="n">explicitValues</span><span class="p">();</span>
+   <span class="k">if</span> <span class="p">(</span><span class="n">values</span><span class="p">.</span><span class="n">size</span><span class="p">()</span> <span class="o">&lt;</span> <span class="n">newValues</span><span class="p">.</span><span class="n">size</span><span class="p">())</span> <span class="p">{</span>
+     <span class="k">throw</span> <span class="n">std</span><span class="o">::</span><span class="n">runtime_error</span> <span class="p">{</span><span class="s">&quot;Too many values provided.&quot;</span><span class="p">};</span>
+   <span class="p">}</span>
+
+   <span class="c1">// copy new values in place of the old ones</span>
+   <span class="n">std</span><span class="o">::</span><span class="n">copy</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">cbegin</span><span class="p">(</span><span class="n">newValues</span><span class="p">),</span> <span class="n">std</span><span class="o">::</span><span class="n">cend</span><span class="p">(</span><span class="n">newValues</span><span class="p">),</span> <span class="n">std</span><span class="o">::</span><span class="n">begin</span><span class="p">(</span><span class="n">values</span><span class="p">));</span>
+
+   <span class="c1">// Recompute explicit positions (necessary since one of the new values might be equal to the implicit value of the SparseArray)</span>
+   <span class="n">sa</span><span class="p">.</span><span class="n">resparsify</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="n">LLU_LIBRARY_FUNCTION</span><span class="p">(</span><span class="n">ModifyValues</span><span class="p">)</span> <span class="p">{</span>
+   <span class="k">auto</span> <span class="n">sp</span> <span class="o">=</span> <span class="n">mngr</span><span class="p">.</span><span class="n">getGenericSparseArray</span><span class="o">&lt;</span><span class="n">LLU</span><span class="o">::</span><span class="n">Passing</span><span class="o">::</span><span class="n">Shared</span><span class="o">&gt;</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+   <span class="k">auto</span> <span class="n">values</span> <span class="o">=</span> <span class="n">mngr</span><span class="p">.</span><span class="n">getGenericTensor</span><span class="o">&lt;</span><span class="n">LLU</span><span class="o">::</span><span class="n">Passing</span><span class="o">::</span><span class="n">Constant</span><span class="o">&gt;</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+
+   <span class="c1">// Operate on the GenericSparseArray as if its type was known</span>
+   <span class="n">LLU</span><span class="o">::</span><span class="n">asTypedSparseArray</span><span class="p">(</span><span class="n">sp</span><span class="p">,</span> <span class="p">[</span><span class="o">&amp;</span><span class="n">values</span><span class="p">](</span><span class="k">auto</span><span class="o">&amp;&amp;</span> <span class="n">sparseArray</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">using</span> <span class="n">T</span> <span class="o">=</span> <span class="k">typename</span> <span class="n">std</span><span class="o">::</span><span class="n">remove_reference_t</span><span class="o">&lt;</span><span class="k">decltype</span><span class="p">(</span><span class="n">sparseArray</span><span class="p">)</span><span class="o">&gt;::</span><span class="n">value_type</span><span class="p">;</span>
+      <span class="n">sparseModifyValues</span><span class="p">(</span><span class="n">sparseArray</span><span class="p">,</span> <span class="n">LLU</span><span class="o">::</span><span class="n">TensorTypedView</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="p">{</span><span class="n">values</span><span class="p">});</span>
+   <span class="p">});</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table></div>
+<p>On the Wolfram Language side, we can load and use this function as follows:</p>
+<div class="highlight-wolfram-language notranslate"><div class="highlight"><pre><span></span><span class="c">(* Our function takes a shared SparseArray to modify it in-place. The SparseArray can be of any type. *)</span><span class="w"></span>
+<span class="nv">`LLU`PacletFunctionSet</span><span class="p">[</span><span class="nv">$ModifyValues</span><span class="p">,</span><span class="w"> </span><span class="p">{{</span><span class="nb">LibraryDataType</span><span class="p">[</span><span class="nb">SparseArray</span><span class="p">,</span><span class="w"> </span><span class="o">_</span><span class="p">,</span><span class="w"> </span><span class="o">_</span><span class="p">],</span><span class="w"> </span><span class="s">&quot;Shared&quot;</span><span class="p">},</span><span class="w"> </span><span class="p">{</span><span class="o">_</span><span class="p">,</span><span class="w"> </span><span class="o">_</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Constant&quot;</span><span class="p">}},</span><span class="w"> </span><span class="s">&quot;Void&quot;</span><span class="p">]</span><span class="o">;</span><span class="w"></span>
+
+<span class="nv">sparse</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">SparseArray</span><span class="p">[{{</span><span class="m">3.5</span><span class="p">,</span><span class="w"> </span><span class="m">0.</span><span class="p">,</span><span class="w"> </span><span class="m">0.</span><span class="p">,</span><span class="w"> </span><span class="m">0.</span><span class="p">},</span><span class="w"> </span><span class="p">{</span><span class="m">.5</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="m">7.</span><span class="p">,</span><span class="w"> </span><span class="m">0.</span><span class="p">,</span><span class="w"> </span><span class="m">0.</span><span class="p">},</span><span class="w"> </span><span class="p">{</span><span class="m">4.</span><span class="p">,</span><span class="w"> </span><span class="m">0.</span><span class="p">,</span><span class="w"> </span><span class="m">3.</span><span class="p">,</span><span class="w"> </span><span class="m">0.</span><span class="p">},</span><span class="w"> </span><span class="p">{</span><span class="m">0.</span><span class="p">,</span><span class="w"> </span><span class="m">0.</span><span class="p">,</span><span class="w"> </span><span class="m">0.</span><span class="p">,</span><span class="w"> </span><span class="m">1.</span><span class="p">}}]</span><span class="o">;</span><span class="w"></span>
+<span class="nv">$ModifyValues</span><span class="p">[</span><span class="nv">sparse</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="m">3.5</span><span class="p">,</span><span class="w"> </span><span class="m">.5</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="m">7.</span><span class="p">}]</span><span class="o">;</span><span class="w"></span>
+<span class="nb">Normal</span><span class="p">[</span><span class="nv">sparse</span><span class="p">]</span><span class="w"></span>
+
+<span class="c">(* Out[] = {{3.5, 0., 0., 0.}, {.5, -7., 0., 0.}, {4., 0., 3., 0.}, {0., 0., 0., 1.}} *)</span><span class="w"></span>
+</pre></div>
+</div>
+<dl class="cpp class">
+<dt id="_CPPv4I0EN3LLU11SparseArrayE">
+<span id="_CPPv3I0EN3LLU11SparseArrayE"></span><span id="_CPPv2I0EN3LLU11SparseArrayE"></span>template&lt;typename <code class="sig-name descname">T</code>&gt;<br /><span class="target" id="classLLU_1_1SparseArray"></span><em class="property">class </em><code class="sig-prename descclassname">LLU<code class="sig-prename descclassname">::</code></code><code class="sig-name descname">SparseArray</code> : <em class="property">public</em> LLU::<a class="reference internal" href="#_CPPv4IEN3LLU10MContainerIN13MArgumentType11SparseArrayEEE" title="LLU::MContainer&lt;MArgumentType::SparseArray&gt;">MContainer</a>&lt;MArgumentType::SparseArray&gt;<a class="headerlink" href="#_CPPv4I0EN3LLU11SparseArrayE" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Strongly typed wrapper for MSparseArray. </p>
+<p><dl class="simple">
+<dt><strong>Template Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">T</span></code>: - any type supported by MSparseArray (mint, double or std::complex&lt;double&gt;) </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Types</p>
+<dl class="cpp type">
+<dt id="_CPPv4N3LLU11SparseArray9ContainerE">
+<span id="_CPPv3N3LLU11SparseArray9ContainerE"></span><span id="_CPPv2N3LLU11SparseArray9ContainerE"></span><span class="target" id="classLLU_1_1MContainerBase_1a943d513079b8ae6999e3ee1762967366"></span><em class="property">using </em><code class="sig-name descname">Container</code> = Argument::CType&lt;Type&gt;<a class="headerlink" href="#_CPPv4N3LLU11SparseArray9ContainerE" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>The type of underlying LibraryLink structure (e.g. MTensor, MImage, etc.) will be called “Container”. </p>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Functions</p>
+<dl class="cpp function">
+<dt id="_CPPv4N3LLU11SparseArray11SparseArrayEv">
+<span id="_CPPv3N3LLU11SparseArray11SparseArrayEv"></span><span id="_CPPv2N3LLU11SparseArray11SparseArrayEv"></span><span id="LLU::SparseArray::SparseArray"></span><span class="target" id="classLLU_1_1SparseArray_1a45d659b5c42910a4e133970429e68673"></span><code class="sig-name descname">SparseArray</code><span class="sig-paren">(</span><span class="sig-paren">)</span> = default<a class="headerlink" href="#_CPPv4N3LLU11SparseArray11SparseArrayEv" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Default constructor, creates a <a class="reference internal" href="#classLLU_1_1SparseArray"><span class="std std-ref">SparseArray</span></a> that does not wrap over any raw MSparseArray. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4N3LLU11SparseArray11SparseArrayE12MSparseArray9Ownership">
+<span id="_CPPv3N3LLU11SparseArray11SparseArrayE12MSparseArray9Ownership"></span><span id="_CPPv2N3LLU11SparseArray11SparseArrayE12MSparseArray9Ownership"></span><span id="LLU::SparseArray::SparseArray__MSparseArray.Ownership"></span><span class="target" id="classLLU_1_1SparseArray_1ac2172c4c1ffa83e546d556ef5d0c1e03"></span><code class="sig-name descname">SparseArray</code><span class="sig-paren">(</span>MSparseArray <em>t</em>, <a class="reference internal" href="#_CPPv4N3LLU9OwnershipE" title="LLU::Ownership">Ownership</a> <em>owner</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3LLU11SparseArray11SparseArrayE12MSparseArray9Ownership" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Constructs <a class="reference internal" href="#classLLU_1_1SparseArray"><span class="std std-ref">SparseArray</span></a> based on MSparseArray. </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">t</span></code>: - LibraryLink structure to be wrapped </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">owner</span></code>: - who manages the memory the raw MSparseArray </p></li>
+</ul>
+</dd>
+<dt><strong>Exceptions</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">ErrorName::SparseArrayTypeError</span></code>: - if the <a class="reference internal" href="#classLLU_1_1SparseArray"><span class="std std-ref">SparseArray</span></a> template type <strong>T</strong> does not match the actual data type of the MSparseArray </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4N3LLU11SparseArray11SparseArrayE18GenericSparseArray">
+<span id="_CPPv3N3LLU11SparseArray11SparseArrayE18GenericSparseArray"></span><span id="_CPPv2N3LLU11SparseArray11SparseArrayE18GenericSparseArray"></span><span id="LLU::SparseArray::SparseArray__GenericSparseArray"></span><span class="target" id="classLLU_1_1SparseArray_1a18e4fa4f7426317a18c155497f07c687"></span><code class="sig-name descname">SparseArray</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4N3LLU18GenericSparseArrayE" title="LLU::GenericSparseArray">GenericSparseArray</a> <em>t</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3LLU11SparseArray11SparseArrayE18GenericSparseArray" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Create new <a class="reference internal" href="#classLLU_1_1SparseArray"><span class="std std-ref">SparseArray</span></a> from a GenericSparseArray. </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">t</span></code>: - generic <a class="reference internal" href="#classLLU_1_1SparseArray"><span class="std std-ref">SparseArray</span></a> to be wrapped into <a class="reference internal" href="#classLLU_1_1SparseArray"><span class="std std-ref">SparseArray</span></a> class </p></li>
+</ul>
+</dd>
+<dt><strong>Exceptions</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">ErrorName::SparseArrayTypeError</span></code>: - if the <a class="reference internal" href="#classLLU_1_1SparseArray"><span class="std std-ref">SparseArray</span></a> template type <strong>T</strong> does not match the actual data type of the generic <a class="reference internal" href="#classLLU_1_1SparseArray"><span class="std std-ref">SparseArray</span></a> </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4N3LLU11SparseArray11SparseArrayERK6TensorI4mintERK6TensorI1TERK6TensorI4mintE1T">
+<span id="_CPPv3N3LLU11SparseArray11SparseArrayERK6TensorI4mintERK6TensorI1TERK6TensorI4mintE1T"></span><span id="_CPPv2N3LLU11SparseArray11SparseArrayERK6TensorI4mintERK6TensorI1TERK6TensorI4mintE1T"></span><span id="LLU::SparseArray::SparseArray__Tensor:mint:CR.Tensor:T:CR.Tensor:mint:CR.T"></span><span class="target" id="classLLU_1_1SparseArray_1a2c67ecc43a7cef9d498f15aae14a47a9"></span><code class="sig-name descname">SparseArray</code><span class="sig-paren">(</span><em class="property">const</em> <a class="reference internal" href="#_CPPv4I0EN3LLU6TensorE" title="LLU::Tensor">Tensor</a>&lt;mint&gt; &amp;<em>positions</em>, <em class="property">const</em> <a class="reference internal" href="#_CPPv4I0EN3LLU6TensorE" title="LLU::Tensor">Tensor</a>&lt;<a class="reference internal" href="#_CPPv4I0EN3LLU11SparseArrayE" title="LLU::SparseArray::T">T</a>&gt; &amp;<em>values</em>, <em class="property">const</em> <a class="reference internal" href="#_CPPv4I0EN3LLU6TensorE" title="LLU::Tensor">Tensor</a>&lt;mint&gt; &amp;<em>dimensions</em>, <a class="reference internal" href="#_CPPv4I0EN3LLU11SparseArrayE" title="LLU::SparseArray::T">T</a> <em>implicitValue</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3LLU11SparseArray11SparseArrayERK6TensorI4mintERK6TensorI1TERK6TensorI4mintE1T" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Create a new <a class="reference internal" href="#classLLU_1_1SparseArray"><span class="std std-ref">SparseArray</span></a> from positions, values, dimensions and an implicit value. </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">positions</span></code>: - positions of all the explicit values in the array </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">values</span></code>: - explicit values to be stored in the array </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">dimensions</span></code>: - dimensions of the new <a class="reference internal" href="#classLLU_1_1SparseArray"><span class="std std-ref">SparseArray</span></a> </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">implicitValue</span></code>: - implicit value (the one that is not stored) of the new <a class="reference internal" href="#classLLU_1_1SparseArray"><span class="std std-ref">SparseArray</span></a> </p></li>
+</ul>
+</dd>
+<dt><strong>See</strong></dt><dd><p><a class="reference external" href="https://reference.wolfram.com/language/LibraryLink/ref/callback/MSparseArray_fromExplicitPositions.html">https://reference.wolfram.com/language/LibraryLink/ref/callback/MSparseArray_fromExplicitPositions.html</a> </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4N3LLU11SparseArray11SparseArrayERK6TensorI1TE1T">
+<span id="_CPPv3N3LLU11SparseArray11SparseArrayERK6TensorI1TE1T"></span><span id="_CPPv2N3LLU11SparseArray11SparseArrayERK6TensorI1TE1T"></span><span id="LLU::SparseArray::SparseArray__Tensor:T:CR.T"></span><span class="target" id="classLLU_1_1SparseArray_1a723331db0c213318bb8886f1597f681b"></span><code class="sig-name descname">SparseArray</code><span class="sig-paren">(</span><em class="property">const</em> <a class="reference internal" href="#_CPPv4I0EN3LLU6TensorE" title="LLU::Tensor">Tensor</a>&lt;<a class="reference internal" href="#_CPPv4I0EN3LLU11SparseArrayE" title="LLU::SparseArray::T">T</a>&gt; &amp;<em>data</em>, <a class="reference internal" href="#_CPPv4I0EN3LLU11SparseArrayE" title="LLU::SparseArray::T">T</a> <em>implicitValue</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3LLU11SparseArray11SparseArrayERK6TensorI1TE1T" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Create a new <a class="reference internal" href="#classLLU_1_1SparseArray"><span class="std std-ref">SparseArray</span></a> from data array and an implicit value. </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">data</span></code>: - a tensor whose contents will be copied and sparsified </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">implicitValue</span></code>: - implicit value (the one that is not stored) of the new <a class="reference internal" href="#classLLU_1_1SparseArray"><span class="std std-ref">SparseArray</span></a> </p></li>
+</ul>
+</dd>
+<dt><strong>See</strong></dt><dd><p><a class="reference external" href="https://reference.wolfram.com/language/LibraryLink/ref/callback/MSparseArray_fromMTensor.html">https://reference.wolfram.com/language/LibraryLink/ref/callback/MSparseArray_fromMTensor.html</a> </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4N3LLU11SparseArray11SparseArrayERK11SparseArray1T">
+<span id="_CPPv3N3LLU11SparseArray11SparseArrayERK11SparseArray1T"></span><span id="_CPPv2N3LLU11SparseArray11SparseArrayERK11SparseArray1T"></span><span id="LLU::SparseArray::SparseArray__SparseArrayCR.T"></span><span class="target" id="classLLU_1_1SparseArray_1a6da08f16e612bab2edaf56990dccba13"></span><code class="sig-name descname">SparseArray</code><span class="sig-paren">(</span><em class="property">const</em> <a class="reference internal" href="#_CPPv4N3LLU11SparseArray11SparseArrayERK11SparseArray1T" title="LLU::SparseArray::SparseArray">SparseArray</a> &amp;<em>s</em>, <a class="reference internal" href="#_CPPv4I0EN3LLU11SparseArrayE" title="LLU::SparseArray::T">T</a> <em>implicitValue</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3LLU11SparseArray11SparseArrayERK11SparseArray1T" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Create a copy of given <a class="reference internal" href="#classLLU_1_1SparseArray"><span class="std std-ref">SparseArray</span></a> with different implicit value. </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">s</span></code>: - other <a class="reference internal" href="#classLLU_1_1SparseArray"><span class="std std-ref">SparseArray</span></a> of type T </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">implicitValue</span></code>: - implicit value (the one that is not stored) of the new <a class="reference internal" href="#classLLU_1_1SparseArray"><span class="std std-ref">SparseArray</span></a> </p></li>
+</ul>
+</dd>
+<dt><strong>See</strong></dt><dd><p><a class="reference external" href="https://reference.wolfram.com/language/LibraryLink/ref/callback/MSparseArray_resetImplicitValue.html">https://reference.wolfram.com/language/LibraryLink/ref/callback/MSparseArray_resetImplicitValue.html</a> </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4NK3LLU11SparseArray4rankEv">
+<span id="_CPPv3NK3LLU11SparseArray4rankEv"></span><span id="_CPPv2NK3LLU11SparseArray4rankEv"></span><span id="LLU::SparseArray::rankC"></span><span class="target" id="classLLU_1_1SparseArray_1a07f23c98152f91c2fa8868e7f92aeb96"></span>mint <code class="sig-name descname">rank</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK3LLU11SparseArray4rankEv" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Get the rank (number of dimensions) of this sparse array. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>the rank of this array </p>
+</dd>
+<dt><strong>See</strong></dt><dd><p><a class="reference external" href="https://reference.wolfram.com/language/LibraryLink/ref/callback/MSparseArray_getRank.html">https://reference.wolfram.com/language/LibraryLink/ref/callback/MSparseArray_getRank.html</a> </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4NK3LLU11SparseArray13implicitValueEv">
+<span id="_CPPv3NK3LLU11SparseArray13implicitValueEv"></span><span id="_CPPv2NK3LLU11SparseArray13implicitValueEv"></span><span id="LLU::SparseArray::implicitValueC"></span><span class="target" id="classLLU_1_1SparseArray_1a85682e4d014275da730877ca1b4087e3"></span><a class="reference internal" href="#_CPPv4I0EN3LLU11SparseArrayE" title="LLU::SparseArray::T">T</a> <code class="sig-name descname">implicitValue</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK3LLU11SparseArray13implicitValueEv" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Get the implicit value of this sparse array. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>implicit value (the one that is not stored) </p>
+</dd>
+<dt><strong>See</strong></dt><dd><p><a class="reference external" href="https://reference.wolfram.com/language/LibraryLink/ref/callback/MSparseArray_getImplicitValue.html">https://reference.wolfram.com/language/LibraryLink/ref/callback/MSparseArray_getImplicitValue.html</a> </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4N3LLU11SparseArray16setImplicitValueE1T">
+<span id="_CPPv3N3LLU11SparseArray16setImplicitValueE1T"></span><span id="_CPPv2N3LLU11SparseArray16setImplicitValueE1T"></span><span id="LLU::SparseArray::setImplicitValue__T"></span><span class="target" id="classLLU_1_1SparseArray_1a5a094f1b5ce31c437d567654713ed70f"></span>void <code class="sig-name descname">setImplicitValue</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4I0EN3LLU11SparseArrayE" title="LLU::SparseArray::T">T</a> <em>newImplicitValue</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3LLU11SparseArray16setImplicitValueE1T" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Change the implicit value of this array. </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">newImplicitValue</span></code>: - new implicit value </p></li>
+</ul>
+</dd>
+<dt><strong>Note</strong></dt><dd><p>The underlying MSparseArray object may be replaced in the process. </p>
+</dd>
+<dt><strong>See</strong></dt><dd><p><a class="reference external" href="https://reference.wolfram.com/language/LibraryLink/ref/callback/MSparseArray_resetImplicitValue.html">https://reference.wolfram.com/language/LibraryLink/ref/callback/MSparseArray_resetImplicitValue.html</a> </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4NK3LLU11SparseArray14explicitValuesEv">
+<span id="_CPPv3NK3LLU11SparseArray14explicitValuesEv"></span><span id="_CPPv2NK3LLU11SparseArray14explicitValuesEv"></span><span id="LLU::SparseArray::explicitValuesC"></span><span class="target" id="classLLU_1_1SparseArray_1aae8869e888d0e001b6529c3ef86c7b23"></span><a class="reference internal" href="#_CPPv4I0EN3LLU6TensorE" title="LLU::Tensor">Tensor</a>&lt;<a class="reference internal" href="#_CPPv4I0EN3LLU11SparseArrayE" title="LLU::SparseArray::T">T</a>&gt; <code class="sig-name descname">explicitValues</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK3LLU11SparseArray14explicitValuesEv" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Get a tensor with the values corresponding to the explicitly stored positions in the sparse array. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="#classLLU_1_1Tensor"><span class="std std-ref">Tensor</span></a> of rank 1 with length equal to the number of explicit positions in the array </p>
+</dd>
+<dt><strong>See</strong></dt><dd><p><a class="reference external" href="https://reference.wolfram.com/language/LibraryLink/ref/callback/MSparseArray_getExplicitValues.html">https://reference.wolfram.com/language/LibraryLink/ref/callback/MSparseArray_getExplicitValues.html</a> </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4NK3LLU11SparseArray11rowPointersEv">
+<span id="_CPPv3NK3LLU11SparseArray11rowPointersEv"></span><span id="_CPPv2NK3LLU11SparseArray11rowPointersEv"></span><span id="LLU::SparseArray::rowPointersC"></span><span class="target" id="classLLU_1_1SparseArray_1a9fdd5b17202c3e19a3ec13e0f37a99fc"></span><a class="reference internal" href="#_CPPv4I0EN3LLU6TensorE" title="LLU::Tensor">Tensor</a>&lt;mint&gt; <code class="sig-name descname">rowPointers</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK3LLU11SparseArray11rowPointersEv" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Get a row pointer array for this sparse array. </p>
+<p>The values returned are the cumulative number of explicitly represented elements for each row, so the values will be non-decreasing. <dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="#classLLU_1_1Tensor"><span class="std std-ref">Tensor</span></a> of integers of rank 1 </p>
+</dd>
+<dt><strong>See</strong></dt><dd><p><a class="reference external" href="https://reference.wolfram.com/language/LibraryLink/ref/callback/MSparseArray_getRowPointers.html">https://reference.wolfram.com/language/LibraryLink/ref/callback/MSparseArray_getRowPointers.html</a> </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4NK3LLU11SparseArray13columnIndicesEv">
+<span id="_CPPv3NK3LLU11SparseArray13columnIndicesEv"></span><span id="_CPPv2NK3LLU11SparseArray13columnIndicesEv"></span><span id="LLU::SparseArray::columnIndicesC"></span><span class="target" id="classLLU_1_1SparseArray_1aa74bb46c7f82a79bd8f3533318c7b666"></span><a class="reference internal" href="#_CPPv4I0EN3LLU6TensorE" title="LLU::Tensor">Tensor</a>&lt;mint&gt; <code class="sig-name descname">columnIndices</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK3LLU11SparseArray13columnIndicesEv" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Get the column indices for the explicitly stored positions in this sparse array. </p>
+<p>The first dimension of the resulting tensor is the number of explicit positions, and the second dimension is equal to <a class="reference internal" href="#classLLU_1_1SparseArray_1a07f23c98152f91c2fa8868e7f92aeb96"><span class="std std-ref">rank()</span></a> - 1. <dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="#classLLU_1_1Tensor"><span class="std std-ref">Tensor</span></a> of rank 2 </p>
+</dd>
+<dt><strong>See</strong></dt><dd><p><a class="reference external" href="https://reference.wolfram.com/language/LibraryLink/ref/callback/MSparseArray_getColumnIndices.html">https://reference.wolfram.com/language/LibraryLink/ref/callback/MSparseArray_getColumnIndices.html</a> </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4NK3LLU11SparseArray17explicitPositionsEv">
+<span id="_CPPv3NK3LLU11SparseArray17explicitPositionsEv"></span><span id="_CPPv2NK3LLU11SparseArray17explicitPositionsEv"></span><span id="LLU::SparseArray::explicitPositionsC"></span><span class="target" id="classLLU_1_1SparseArray_1a6b539e1099e1a926fbfcaad0341af425"></span><a class="reference internal" href="#_CPPv4I0EN3LLU6TensorE" title="LLU::Tensor">Tensor</a>&lt;mint&gt; <code class="sig-name descname">explicitPositions</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK3LLU11SparseArray17explicitPositionsEv" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Get the explicitly specified positions in this sparse array. </p>
+<p>The first dimension of the resulting tensor is the number of explicit positions, and the second dimension is equal to <a class="reference internal" href="#classLLU_1_1SparseArray_1a07f23c98152f91c2fa8868e7f92aeb96"><span class="std std-ref">rank()</span></a>. <dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="#classLLU_1_1Tensor"><span class="std std-ref">Tensor</span></a> of rank 2 </p>
+</dd>
+<dt><strong>See</strong></dt><dd><p><a class="reference external" href="https://reference.wolfram.com/language/LibraryLink/ref/callback/MSparseArray_getExplicitPositions.html">https://reference.wolfram.com/language/LibraryLink/ref/callback/MSparseArray_getExplicitPositions.html</a> </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4NK3LLU11SparseArray8toTensorEv">
+<span id="_CPPv3NK3LLU11SparseArray8toTensorEv"></span><span id="_CPPv2NK3LLU11SparseArray8toTensorEv"></span><span id="LLU::SparseArray::toTensorC"></span><span class="target" id="classLLU_1_1SparseArray_1aacf252c02c250652576296ab20d47616"></span><a class="reference internal" href="#_CPPv4I0EN3LLU6TensorE" title="LLU::Tensor">Tensor</a>&lt;<a class="reference internal" href="#_CPPv4I0EN3LLU11SparseArrayE" title="LLU::SparseArray::T">T</a>&gt; <code class="sig-name descname">toTensor</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK3LLU11SparseArray8toTensorEv" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Expand this sparse array to a regular tensor. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="#classLLU_1_1Tensor"><span class="std std-ref">Tensor</span></a> of the same data type as this array </p>
+</dd>
+<dt><strong>See</strong></dt><dd><p><a class="reference external" href="https://reference.wolfram.com/language/LibraryLink/ref/callback/MSparseArray_toMTensor.html">https://reference.wolfram.com/language/LibraryLink/ref/callback/MSparseArray_toMTensor.html</a> </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4NK3LLU11SparseArray5cloneEv">
+<span id="_CPPv3NK3LLU11SparseArray5cloneEv"></span><span id="_CPPv2NK3LLU11SparseArray5cloneEv"></span><span id="LLU::SparseArray::cloneC"></span><span class="target" id="classLLU_1_1MContainer_3_01MArgumentType_1_1SparseArray_01_4_1a7f423c613bec0591ff269abbebe255f5"></span>MContainer <code class="sig-name descname">clone</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK3LLU11SparseArray5cloneEv" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Clone this MContainer, performs a deep copy of the underlying MSparseArray. </p>
+<p><dl class="simple">
+<dt><strong>Note</strong></dt><dd><p>The cloned MContainer always belongs to the library (<a class="reference internal" href="#namespaceLLU_1a046343d3a2eebf70fd1b042ebfecadaea4d70254b3a8e2bc38b6147fa6ee813be"><span class="std std-ref">Ownership::Library</span></a>) because LibraryLink has no idea of its existence. </p>
+</dd>
+<dt><strong>Return</strong></dt><dd><p>new MContainer, by value </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4NK3LLU11SparseArray24getImplicitValueAsTensorEv">
+<span id="_CPPv3NK3LLU11SparseArray24getImplicitValueAsTensorEv"></span><span id="_CPPv2NK3LLU11SparseArray24getImplicitValueAsTensorEv"></span><span id="LLU::SparseArray::getImplicitValueAsTensorC"></span><span class="target" id="classLLU_1_1MContainer_3_01MArgumentType_1_1SparseArray_01_4_1a9a211070a2972d586240f486f8c733c5"></span><a class="reference internal" href="#_CPPv4N3LLU13GenericTensorE" title="LLU::GenericTensor">GenericTensor</a> <code class="sig-name descname">getImplicitValueAsTensor</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK3LLU11SparseArray24getImplicitValueAsTensorEv" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Get the implicit value of this sparse array. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>Rank 0 tensor of the same type as the value type of this sparse array. </p>
+</dd>
+<dt><strong>See</strong></dt><dd><p><a class="reference external" href="https://reference.wolfram.com/language/LibraryLink/ref/callback/MSparseArray_getImplicitValue.html">https://reference.wolfram.com/language/LibraryLink/ref/callback/MSparseArray_getImplicitValue.html</a> </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4N3LLU11SparseArray26setImplicitValueFromTensorERK13GenericTensor">
+<span id="_CPPv3N3LLU11SparseArray26setImplicitValueFromTensorERK13GenericTensor"></span><span id="_CPPv2N3LLU11SparseArray26setImplicitValueFromTensorERK13GenericTensor"></span><span id="LLU::SparseArray::setImplicitValueFromTensor__GenericTensorCR"></span><span class="target" id="classLLU_1_1MContainer_3_01MArgumentType_1_1SparseArray_01_4_1af4c1d6ed5edb883231438720e1ba684a"></span>void <code class="sig-name descname">setImplicitValueFromTensor</code><span class="sig-paren">(</span><em class="property">const</em> <a class="reference internal" href="#_CPPv4N3LLU13GenericTensorE" title="LLU::GenericTensor">GenericTensor</a> &amp;<em>implicitValue</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3LLU11SparseArray26setImplicitValueFromTensorERK13GenericTensor" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Change the implicit value of this array. </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">implicitValue</span></code>: - new implicit value </p></li>
+</ul>
+</dd>
+<dt><strong>Note</strong></dt><dd><p>The underlying MSparseArray object may be replaced in the process. </p>
+</dd>
+<dt><strong>See</strong></dt><dd><p><a class="reference external" href="https://reference.wolfram.com/language/LibraryLink/ref/callback/MSparseArray_resetImplicitValue.html">https://reference.wolfram.com/language/LibraryLink/ref/callback/MSparseArray_resetImplicitValue.html</a> </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4NK3LLU11SparseArray7getRankEv">
+<span id="_CPPv3NK3LLU11SparseArray7getRankEv"></span><span id="_CPPv2NK3LLU11SparseArray7getRankEv"></span><span id="LLU::SparseArray::getRankC"></span><span class="target" id="classLLU_1_1MContainer_3_01MArgumentType_1_1SparseArray_01_4_1a880c657eea250c0077a657b8df2da063"></span>mint <code class="sig-name descname">getRank</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK3LLU11SparseArray7getRankEv" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Get the rank (number of dimensions) of this sparse array. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>the rank of this array </p>
+</dd>
+<dt><strong>See</strong></dt><dd><p><a class="reference external" href="https://reference.wolfram.com/language/LibraryLink/ref/callback/MSparseArray_getRank.html">https://reference.wolfram.com/language/LibraryLink/ref/callback/MSparseArray_getRank.html</a> </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4NK3LLU11SparseArray13getDimensionsEv">
+<span id="_CPPv3NK3LLU11SparseArray13getDimensionsEv"></span><span id="_CPPv2NK3LLU11SparseArray13getDimensionsEv"></span><span id="LLU::SparseArray::getDimensionsC"></span><span class="target" id="classLLU_1_1MContainer_3_01MArgumentType_1_1SparseArray_01_4_1abd78772083eaa3e033714248fb872784"></span>mint <em class="property">const</em> *<code class="sig-name descname">getDimensions</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK3LLU11SparseArray13getDimensionsEv" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Get dimensions of this sparse array. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>a read-only raw array of container dimensions </p>
+</dd>
+<dt><strong>See</strong></dt><dd><p><a class="reference external" href="https://reference.wolfram.com/language/LibraryLink/ref/callback/MSparseArray_getDimensions.html">https://reference.wolfram.com/language/LibraryLink/ref/callback/MSparseArray_getDimensions.html</a> </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4NK3LLU11SparseArray17getExplicitValuesEv">
+<span id="_CPPv3NK3LLU11SparseArray17getExplicitValuesEv"></span><span id="_CPPv2NK3LLU11SparseArray17getExplicitValuesEv"></span><span id="LLU::SparseArray::getExplicitValuesC"></span><span class="target" id="classLLU_1_1MContainer_3_01MArgumentType_1_1SparseArray_01_4_1a56278e459d84d58ee0efeac1d9c0e5b5"></span><a class="reference internal" href="#_CPPv4N3LLU13GenericTensorE" title="LLU::GenericTensor">GenericTensor</a> <code class="sig-name descname">getExplicitValues</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK3LLU11SparseArray17getExplicitValuesEv" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Get a tensor with the values corresponding to the explicitly stored positions in the sparse array. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>GenericTensor of rank 1 with length equal to the number of explicit positions in the array or an empty wrapper for “pattern sparse arrays” </p>
+</dd>
+<dt><strong>See</strong></dt><dd><p><a class="reference external" href="https://reference.wolfram.com/language/LibraryLink/ref/callback/MSparseArray_getExplicitValues.html">https://reference.wolfram.com/language/LibraryLink/ref/callback/MSparseArray_getExplicitValues.html</a> </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4NK3LLU11SparseArray14getRowPointersEv">
+<span id="_CPPv3NK3LLU11SparseArray14getRowPointersEv"></span><span id="_CPPv2NK3LLU11SparseArray14getRowPointersEv"></span><span id="LLU::SparseArray::getRowPointersC"></span><span class="target" id="classLLU_1_1MContainer_3_01MArgumentType_1_1SparseArray_01_4_1ab7089de352a7d13d76b0c494a88755e5"></span><a class="reference internal" href="#_CPPv4N3LLU13GenericTensorE" title="LLU::GenericTensor">GenericTensor</a> <code class="sig-name descname">getRowPointers</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK3LLU11SparseArray14getRowPointersEv" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Get a row pointer array for this sparse array. </p>
+<p>The values returned are the cumulative number of explicitly represented elements for each row, so the values will be non-decreasing. <dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>GenericTensor of rank 1 and integer type or an empty GenericTensor </p>
+</dd>
+<dt><strong>See</strong></dt><dd><p><a class="reference external" href="https://reference.wolfram.com/language/LibraryLink/ref/callback/MSparseArray_getRowPointers.html">https://reference.wolfram.com/language/LibraryLink/ref/callback/MSparseArray_getRowPointers.html</a> </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4NK3LLU11SparseArray16getColumnIndicesEv">
+<span id="_CPPv3NK3LLU11SparseArray16getColumnIndicesEv"></span><span id="_CPPv2NK3LLU11SparseArray16getColumnIndicesEv"></span><span id="LLU::SparseArray::getColumnIndicesC"></span><span class="target" id="classLLU_1_1MContainer_3_01MArgumentType_1_1SparseArray_01_4_1a690a62b0cd980c2adeb008382b1bae48"></span><a class="reference internal" href="#_CPPv4N3LLU13GenericTensorE" title="LLU::GenericTensor">GenericTensor</a> <code class="sig-name descname">getColumnIndices</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK3LLU11SparseArray16getColumnIndicesEv" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Get the column indices for the explicitly stored positions in this sparse array. </p>
+<p>The first dimension of the resulting tensor is the number of explicit positions, and the second dimension is equal to getRank() - 1. <dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>GenericTensor of rank 2 or an empty GenericTensor </p>
+</dd>
+<dt><strong>See</strong></dt><dd><p><a class="reference external" href="https://reference.wolfram.com/language/LibraryLink/ref/callback/MSparseArray_getColumnIndices.html">https://reference.wolfram.com/language/LibraryLink/ref/callback/MSparseArray_getColumnIndices.html</a> </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4NK3LLU11SparseArray20getExplicitPositionsEv">
+<span id="_CPPv3NK3LLU11SparseArray20getExplicitPositionsEv"></span><span id="_CPPv2NK3LLU11SparseArray20getExplicitPositionsEv"></span><span id="LLU::SparseArray::getExplicitPositionsC"></span><span class="target" id="classLLU_1_1MContainer_3_01MArgumentType_1_1SparseArray_01_4_1a0fb907eddff087c964f195177a274290"></span><a class="reference internal" href="#_CPPv4N3LLU13GenericTensorE" title="LLU::GenericTensor">GenericTensor</a> <code class="sig-name descname">getExplicitPositions</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK3LLU11SparseArray20getExplicitPositionsEv" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Get the explicitly specified positions in this sparse array. </p>
+<p>The first dimension of the resulting tensor is the number of explicit positions, and the second dimension is equal to getRank(). <dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>GenericTensor of rank 2 or an empty GenericTensor </p>
+</dd>
+<dt><strong>See</strong></dt><dd><p><a class="reference external" href="https://reference.wolfram.com/language/LibraryLink/ref/callback/MSparseArray_getExplicitPositions.html">https://reference.wolfram.com/language/LibraryLink/ref/callback/MSparseArray_getExplicitPositions.html</a> </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4NK3LLU11SparseArray15toGenericTensorEv">
+<span id="_CPPv3NK3LLU11SparseArray15toGenericTensorEv"></span><span id="_CPPv2NK3LLU11SparseArray15toGenericTensorEv"></span><span id="LLU::SparseArray::toGenericTensorC"></span><span class="target" id="classLLU_1_1MContainer_3_01MArgumentType_1_1SparseArray_01_4_1a87c738ddcd337995d1f68263dc640b13"></span><a class="reference internal" href="#_CPPv4N3LLU13GenericTensorE" title="LLU::GenericTensor">GenericTensor</a> <code class="sig-name descname">toGenericTensor</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK3LLU11SparseArray15toGenericTensorEv" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Expand this sparse array to a regular tensor. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>GenericTensor of the same data type as this array </p>
+</dd>
+<dt><strong>See</strong></dt><dd><p><a class="reference external" href="https://reference.wolfram.com/language/LibraryLink/ref/callback/MSparseArray_toMTensor.html">https://reference.wolfram.com/language/LibraryLink/ref/callback/MSparseArray_toMTensor.html</a> </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4N3LLU11SparseArray10resparsifyEv">
+<span id="_CPPv3N3LLU11SparseArray10resparsifyEv"></span><span id="_CPPv2N3LLU11SparseArray10resparsifyEv"></span><span id="LLU::SparseArray::resparsify"></span><span class="target" id="classLLU_1_1MContainer_3_01MArgumentType_1_1SparseArray_01_4_1a10184d988f1d276133c24bd86209606d"></span>void <code class="sig-name descname">resparsify</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3LLU11SparseArray10resparsifyEv" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Use current implicit value to recalculate the sparse array after the data has been modified. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4NK3LLU11SparseArray4typeEv">
+<span id="_CPPv3NK3LLU11SparseArray4typeEv"></span><span id="_CPPv2NK3LLU11SparseArray4typeEv"></span><span id="LLU::SparseArray::typeC"></span><span class="target" id="classLLU_1_1MContainer_3_01MArgumentType_1_1SparseArray_01_4_1a88f859c1e4dcc265f658f3bb7ad884c3"></span>mint <code class="sig-name descname">type</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK3LLU11SparseArray4typeEv" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Get the data type of this MSparseArray. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>type of elements (MType_Integer, MType_Real or MType_Complex) </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4NK3LLU11SparseArray12getContainerEv">
+<span id="_CPPv3NK3LLU11SparseArray12getContainerEv"></span><span id="_CPPv2NK3LLU11SparseArray12getContainerEv"></span><span id="LLU::SparseArray::getContainerC"></span><span class="target" id="classLLU_1_1MContainerBase_1ab8561bdf957227a53e43897a781aca2b"></span><a class="reference internal" href="#_CPPv4N3LLU11SparseArray9ContainerE" title="LLU::SparseArray::Container">Container</a> <code class="sig-name descname">getContainer</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em> <em class="property">noexcept</em><a class="headerlink" href="#_CPPv4NK3LLU11SparseArray12getContainerEv" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Get internal container. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>a handle to the internal container </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4NK3LLU11SparseArray16abandonContainerEv">
+<span id="_CPPv3NK3LLU11SparseArray16abandonContainerEv"></span><span id="_CPPv2NK3LLU11SparseArray16abandonContainerEv"></span><span id="LLU::SparseArray::abandonContainerC"></span><span class="target" id="classLLU_1_1MContainerBase_1a7e78954325a22a380c5eb025bcadabe7"></span><a class="reference internal" href="#_CPPv4N3LLU11SparseArray9ContainerE" title="LLU::SparseArray::Container">Container</a> <code class="sig-name descname">abandonContainer</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em> <em class="property">noexcept</em><a class="headerlink" href="#_CPPv4NK3LLU11SparseArray16abandonContainerEv" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Give a handle to internal container and stop owning it. </p>
+<p>Should be used with caution as it may potentially result with resource leak.</p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>a handle to the internal container </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4NK3LLU11SparseArray10shareCountEv">
+<span id="_CPPv3NK3LLU11SparseArray10shareCountEv"></span><span id="_CPPv2NK3LLU11SparseArray10shareCountEv"></span><span id="LLU::SparseArray::shareCountC"></span><span class="target" id="classLLU_1_1MContainerBase_1a5fb3a6aff83465d2a4cc8a771a56324a"></span>mint <code class="sig-name descname">shareCount</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em> <em class="property">noexcept</em><a class="headerlink" href="#_CPPv4NK3LLU11SparseArray10shareCountEv" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Return share count of internal container, if present and 0 otherwise. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4NK3LLU11SparseArray4passER9MArgument">
+<span id="_CPPv3NK3LLU11SparseArray4passER9MArgument"></span><span id="_CPPv2NK3LLU11SparseArray4passER9MArgument"></span><span id="LLU::SparseArray::pass__MArgumentRC"></span><span class="target" id="classLLU_1_1MContainerBase_1ae48053120f40815eb7d6644415b3dcb7"></span>void <code class="sig-name descname">pass</code><span class="sig-paren">(</span>MArgument &amp;<em>res</em><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK3LLU11SparseArray4passER9MArgument" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Pass the internal container as result of a LibraryLink function. </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">res</span></code>: - MArgument which will hold internal container of this MContainerBase </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4NK3LLU11SparseArray8getOwnerEv">
+<span id="_CPPv3NK3LLU11SparseArray8getOwnerEv"></span><span id="_CPPv2NK3LLU11SparseArray8getOwnerEv"></span><span id="LLU::SparseArray::getOwnerC"></span><span class="target" id="classLLU_1_1MContainerBase_1a77c35fac504b0e4111607332ae0020b5"></span><a class="reference internal" href="#_CPPv4N3LLU9OwnershipE" title="LLU::Ownership">Ownership</a> <code class="sig-name descname">getOwner</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em> <em class="property">noexcept</em><a class="headerlink" href="#_CPPv4NK3LLU11SparseArray8getOwnerEv" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Get ownership information. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>the owner of the internal container </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</div>
 </div>
 <div class="section" id="iterators">
 <h2>Iterators<a class="headerlink" href="#iterators" title="Permalink to this headline"> 🔗</a></h2>
@@ -4929,7 +5730,7 @@ utilize one of the <em>iterator adaptors</em> that LLU defines. For instance,</p
   <div role="contentinfo">
     <p>
         &copy; Copyright Wolfram Research.
-      Last updated on Oct 20, 2020.
+      Last updated on Feb 25, 2021.
 
     </p>
   </div>
@@ -4951,7 +5752,7 @@ utilize one of the <em>iterator adaptors</em> that LLU defines. For instance,</p
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'3.0.1',
+            VERSION:'3.1.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

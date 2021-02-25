@@ -62,6 +62,11 @@ var hierarchy =
         [ "LLU::NumericArray< T >", "classLLU_1_1NumericArray.html", null ]
       ] ]
     ] ],
+    [ "LLU::MContainerBase< MArgumentType::SparseArray >", "classLLU_1_1MContainerBase.html", [
+      [ "LLU::MContainer< MArgumentType::SparseArray >", "classLLU_1_1MContainer_3_01MArgumentType_1_1SparseArray_01_4.html", [
+        [ "LLU::SparseArray< T >", "classLLU_1_1SparseArray.html", null ]
+      ] ]
+    ] ],
     [ "LLU::MContainerBase< MArgumentType::Tensor >", "classLLU_1_1MContainerBase.html", [
       [ "LLU::MContainer< MArgumentType::Tensor >", "classLLU_1_1MContainer_3_01MArgumentType_1_1Tensor_01_4.html", [
         [ "LLU::Tensor< T >", "classLLU_1_1Tensor.html", null ],

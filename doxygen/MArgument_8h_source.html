@@ -112,7 +112,7 @@ $(document).ready(function(){initNavTree('MArgument_8h_source.html',''); initRes
 <div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;        Real = MType_Real,</div>
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;        Complex = MType_Complex,</div>
 <div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;        <a class="code" href="classLLU_1_1Tensor.html">Tensor</a> = MType_Tensor,</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;        SparseArray = MType_SparseArray,</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;        <a class="code" href="classLLU_1_1SparseArray.html">SparseArray</a> = MType_SparseArray,</div>
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;        <a class="code" href="classLLU_1_1NumericArray.html">NumericArray</a> = MType_NumericArray,</div>
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;        <a class="code" href="classLLU_1_1Image.html">Image</a> = MType_Image,</div>
 <div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;        UTF8String = MType_UTF8String,</div>
@@ -192,7 +192,7 @@ $(document).ready(function(){initNavTree('MArgument_8h_source.html',''); initRes
 <div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;    LLU_ARGUMENT_DEFINE_SPECIALIZATIONS_OF_MEMBER_FUNCTIONS(Complex)</div>
 <div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;    LLU_ARGUMENT_DEFINE_SPECIALIZATIONS_OF_MEMBER_FUNCTIONS(<a class="code" href="classLLU_1_1Tensor.html">Tensor</a>)</div>
 <div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;    LLU_ARGUMENT_DEFINE_SPECIALIZATIONS_OF_MEMBER_FUNCTIONS(DataStore)</div>
-<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;    LLU_ARGUMENT_DEFINE_SPECIALIZATIONS_OF_MEMBER_FUNCTIONS(SparseArray)</div>
+<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;    LLU_ARGUMENT_DEFINE_SPECIALIZATIONS_OF_MEMBER_FUNCTIONS(<a class="code" href="classLLU_1_1SparseArray.html">SparseArray</a>)</div>
 <div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;    LLU_ARGUMENT_DEFINE_SPECIALIZATIONS_OF_MEMBER_FUNCTIONS(<a class="code" href="classLLU_1_1NumericArray.html">NumericArray</a>)</div>
 <div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;    LLU_ARGUMENT_DEFINE_SPECIALIZATIONS_OF_MEMBER_FUNCTIONS(<a class="code" href="classLLU_1_1Image.html">Image</a>)</div>
 <div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;    LLU_ARGUMENT_DEFINE_SPECIALIZATIONS_OF_MEMBER_FUNCTIONS(UTF8String)</div>
@@ -237,6 +237,7 @@ $(document).ready(function(){initNavTree('MArgument_8h_source.html',''); initRes
 <div class="ttc" id="aclassLLU_1_1PrimitiveWrapper_html_a4871371893b690eaa9927f8520ca9379"><div class="ttname"><a href="classLLU_1_1PrimitiveWrapper.html#a4871371893b690eaa9927f8520ca9379">LLU::PrimitiveWrapper::PrimitiveWrapper</a></div><div class="ttdeci">PrimitiveWrapper(MArgument &amp;a)</div><div class="ttdoc">Construct PrimitiveWrapper from a reference to MArgument.</div><div class="ttdef"><b>Definition:</b> MArgument.h:86</div></div>
 <div class="ttc" id="aclassLLU_1_1PrimitiveWrapper_html_accb33f9fa2b2b9cc8e690e97a79aeedc"><div class="ttname"><a href="classLLU_1_1PrimitiveWrapper.html#accb33f9fa2b2b9cc8e690e97a79aeedc">LLU::PrimitiveWrapper::get</a></div><div class="ttdeci">value_type &amp; get()</div><div class="ttdoc">Get the value stored in MArgument.</div></div>
 <div class="ttc" id="anamespaceLLU_html_a6f1820c98edfdbceb11ed54c902fe9df"><div class="ttname"><a href="namespaceLLU.html#a6f1820c98edfdbceb11ed54c902fe9df">LLU::MArgumentType</a></div><div class="ttdeci">MArgumentType</div><div class="ttdoc">Strongly type enum with possible types of data stored in MArgument.</div><div class="ttdef"><b>Definition:</b> MArgument.h:22</div></div>
+<div class="ttc" id="aclassLLU_1_1SparseArray_html"><div class="ttname"><a href="classLLU_1_1SparseArray.html">LLU::SparseArray</a></div><div class="ttdoc">Strongly typed wrapper for MSparseArray.</div><div class="ttdef"><b>Definition:</b> SparseArray.h:20</div></div>
 <div class="ttc" id="anamespaceLLU_html_a526ba20abeaf0370d8b5cbbd2a058d67"><div class="ttname"><a href="namespaceLLU.html#a526ba20abeaf0370d8b5cbbd2a058d67">LLU::alwaysFalse</a></div><div class="ttdeci">constexpr bool alwaysFalse</div><div class="ttdoc">Helper template variable that is always false.</div><div class="ttdef"><b>Definition:</b> MArgument.h:67</div></div>
 <div class="ttc" id="aclassLLU_1_1PrimitiveWrapper_html_a30cabc8afac9e4e8cb4330134478dd4e"><div class="ttname"><a href="classLLU_1_1PrimitiveWrapper.html#a30cabc8afac9e4e8cb4330134478dd4e">LLU::PrimitiveWrapper::value_type</a></div><div class="ttdeci">Argument::CType&lt; T &gt; value_type</div><div class="ttdoc">This is the actual type of data stored in arg.</div><div class="ttdef"><b>Definition:</b> MArgument.h:79</div></div>
 <div class="ttc" id="aclassLLU_1_1PrimitiveWrapper_html_a5165e3d425192900db5407ed5360b3e7"><div class="ttname"><a href="classLLU_1_1PrimitiveWrapper.html#a5165e3d425192900db5407ed5360b3e7">LLU::PrimitiveWrapper::addDataStoreNode</a></div><div class="ttdeci">static void addDataStoreNode(DataStore ds, value_type val)</div><div class="ttdoc">Add val to the DataStore ds inside an unnamed node This is a static method because there is no MArgum...</div></div>
@@ -246,7 +247,7 @@ $(document).ready(function(){initNavTree('MArgument_8h_source.html',''); initRes
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="dir_bc5807a946fff986543f686f28e6d10f.html">LLU</a></li><li class="navelem"><a class="el" href="MArgument_8h.html">MArgument.h</a></li>
-    <li class="footer">Generated on Tue Oct 20 2020 08:15:41 for LibraryLink Utilities by
+    <li class="footer">Generated on Wed Feb 24 2021 11:32:18 for LibraryLink Utilities by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.18 </li>
   </ul>

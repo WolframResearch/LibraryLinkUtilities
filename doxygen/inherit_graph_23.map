@@ -1,3 +1,5 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$classLLU_1_1MContainerBase.html" title="Template of the base class for all generic containers." alt="" coords="5,5,156,47"/>
+<area shape="rect" id="node1" href="$classLLU_1_1MContainerBase.html" title=" " alt="" coords="5,5,227,47"/>
+<area shape="rect" id="node2" href="$classLLU_1_1MContainer_3_01MArgumentType_1_1SparseArray_01_4.html" title="MContainer specialization for MSparseArray." alt="" coords="275,5,475,47"/>
+<area shape="rect" id="node3" href="$classLLU_1_1SparseArray.html" title="Strongly typed wrapper for MSparseArray." alt="" coords="523,13,681,39"/>
 </map>

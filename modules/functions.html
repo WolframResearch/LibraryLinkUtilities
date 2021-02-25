@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Library functions &mdash; LibraryLink Utilities 3.0.1 documentation</title>
+  <title>Library functions &mdash; LibraryLink Utilities 3.1.0 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="LibraryLink Utilities 3.0.1 documentation" href="../index.html"/>
+    <link rel="top" title="LibraryLink Utilities 3.1.0 documentation" href="../index.html"/>
         <link rel="next" title="Containers" href="containers.html"/>
         <link rel="prev" title="How to use" href="../basic/how_to_use.html"/> 
 
@@ -71,7 +71,7 @@
             
             
               <div class="version">
-                3.0
+                3.1
               </div>
             
           
@@ -826,6 +826,69 @@ if you are not careful enough.</p>
 </dd></dl>
 
 <dl class="cpp function">
+<dt id="_CPPv4I0_7PassingENK3LLU16MArgumentManager14getSparseArrayE11SparseArrayI1TE9size_type">
+<span id="_CPPv3I0_7PassingENK3LLU16MArgumentManager14getSparseArrayE9size_type"></span><span id="_CPPv2I0_7PassingENK3LLU16MArgumentManager14getSparseArrayE9size_type"></span>template&lt;typename <code class="sig-name descname">T</code>, <a class="reference internal" href="containers.html#_CPPv4N3LLU7PassingE" title="LLU::Passing">Passing</a> <code class="sig-name descname">Mode</code> = <a class="reference internal" href="containers.html#_CPPv4N3LLU7PassingE" title="LLU::Passing">Passing</a>::<a class="reference internal" href="containers.html#_CPPv4N3LLU7Passing9AutomaticE" title="LLU::Passing::Automatic">Automatic</a>&gt;<br /><span class="target" id="classLLU_1_1MArgumentManager_1a956b19f26437ec6cc9829d33acdd2798"></span><a class="reference internal" href="containers.html#_CPPv4I0EN3LLU11SparseArrayE" title="LLU::SparseArray">SparseArray</a>&lt;<a class="reference internal" href="#_CPPv4I0_7PassingENK3LLU16MArgumentManager14getSparseArrayE11SparseArrayI1TE9size_type" title="LLU::MArgumentManager::getSparseArray::T">T</a>&gt; <code class="sig-name descname">getSparseArray</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4N3LLU16MArgumentManager9size_typeE" title="LLU::MArgumentManager::size_type">size_type</a> <em>index</em><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4I0_7PassingENK3LLU16MArgumentManager14getSparseArrayE11SparseArrayI1TE9size_type" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Get MArgument of type MSparseArray at position <code class="docutils literal notranslate"><span class="pre">index</span></code> and wrap it into <a class="reference internal" href="containers.html#classLLU_1_1SparseArray"><span class="std std-ref">SparseArray</span></a>. </p>
+<p><dl class="simple">
+<dt><strong>Template Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">T</span></code>: - type of data stored in <a class="reference internal" href="containers.html#classLLU_1_1SparseArray"><span class="std std-ref">SparseArray</span></a> </p></li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">index</span></code>: - position of desired MArgument in <code class="docutils literal notranslate"><span class="pre">Args</span></code> </p></li>
+</ul>
+</dd>
+<dt><strong>Exceptions</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">ErrorName::MArgumentIndexError</span></code>: - if <code class="docutils literal notranslate"><span class="pre">index</span></code> is out-of-bounds </p></li>
+</ul>
+</dd>
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="containers.html#classLLU_1_1SparseArray"><span class="std std-ref">SparseArray</span></a> wrapper of MArgument at position <code class="docutils literal notranslate"><span class="pre">index</span></code> </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4I_7PassingENK3LLU16MArgumentManager21getGenericSparseArrayE18GenericSparseArray9size_type">
+<span id="_CPPv3I_7PassingENK3LLU16MArgumentManager21getGenericSparseArrayE9size_type"></span><span id="_CPPv2I_7PassingENK3LLU16MArgumentManager21getGenericSparseArrayE9size_type"></span>template&lt;<a class="reference internal" href="containers.html#_CPPv4N3LLU7PassingE" title="LLU::Passing">Passing</a> <code class="sig-name descname">Mode</code> = <a class="reference internal" href="containers.html#_CPPv4N3LLU7PassingE" title="LLU::Passing">Passing</a>::<a class="reference internal" href="containers.html#_CPPv4N3LLU7Passing9AutomaticE" title="LLU::Passing::Automatic">Automatic</a>&gt;<br /><span class="target" id="classLLU_1_1MArgumentManager_1ab5b1162cda9e2e861cba59a6120c45ab"></span><a class="reference internal" href="containers.html#_CPPv4N3LLU18GenericSparseArrayE" title="LLU::GenericSparseArray">GenericSparseArray</a> <code class="sig-name descname">getGenericSparseArray</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4N3LLU16MArgumentManager9size_typeE" title="LLU::MArgumentManager::size_type">size_type</a> <em>index</em><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4I_7PassingENK3LLU16MArgumentManager21getGenericSparseArrayE18GenericSparseArray9size_type" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Get MArgument of type MSparseArray at position <code class="docutils literal notranslate"><span class="pre">index</span></code> and wrap it into generic MContainer wrapper. </p>
+<p><dl class="simple">
+<dt><strong>Template Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Mode</span></code>: - passing mode to be used </p></li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">index</span></code>: - position of desired MArgument in <code class="docutils literal notranslate"><span class="pre">Args</span></code> </p></li>
+</ul>
+</dd>
+<dt><strong>Return</strong></dt><dd><p>MContainer wrapper of MSparseArray with given passing mode </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4NK3LLU16MArgumentManager15getMSparseArrayE9size_type">
+<span id="_CPPv3NK3LLU16MArgumentManager15getMSparseArrayE9size_type"></span><span id="_CPPv2NK3LLU16MArgumentManager15getMSparseArrayE9size_type"></span><span id="LLU::MArgumentManager::getMSparseArray__size_typeC"></span><span class="target" id="classLLU_1_1MArgumentManager_1ab9f5135e0dd29a11afae60fdee7b7767"></span>MSparseArray <code class="sig-name descname">getMSparseArray</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4N3LLU16MArgumentManager9size_typeE" title="LLU::MArgumentManager::size_type">size_type</a> <em>index</em><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK3LLU16MArgumentManager15getMSparseArrayE9size_type" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Get MArgument of type MSparseArray at position <code class="docutils literal notranslate"><span class="pre">index</span></code>. </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">index</span></code>: - position of desired MArgument in <code class="docutils literal notranslate"><span class="pre">Args</span></code> </p></li>
+</ul>
+</dd>
+<dt><strong>Exceptions</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">ErrorName::MArgumentIndexError</span></code>: - if <code class="docutils literal notranslate"><span class="pre">index</span></code> is out-of-bounds </p></li>
+</ul>
+</dd>
+<dt><strong>Warning</strong></dt><dd><p>Use of this function is discouraged. Use getSparseArray instead, if possible. </p>
+</dd>
+<dt><strong>Return</strong></dt><dd><p>MArgument at position <code class="docutils literal notranslate"><span class="pre">index</span></code> interpreted as MSparseArray </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
 <dt id="_CPPv4I0_7PassingENK3LLU16MArgumentManager8getImageE5ImageI1TE9size_type">
 <span id="_CPPv3I0_7PassingENK3LLU16MArgumentManager8getImageE9size_type"></span><span id="_CPPv2I0_7PassingENK3LLU16MArgumentManager8getImageE9size_type"></span>template&lt;typename <code class="sig-name descname">T</code>, <a class="reference internal" href="containers.html#_CPPv4N3LLU7PassingE" title="LLU::Passing">Passing</a> <code class="sig-name descname">Mode</code> = <a class="reference internal" href="containers.html#_CPPv4N3LLU7PassingE" title="LLU::Passing">Passing</a>::<a class="reference internal" href="containers.html#_CPPv4N3LLU7Passing9AutomaticE" title="LLU::Passing::Automatic">Automatic</a>&gt;<br /><span class="target" id="classLLU_1_1MArgumentManager_1ab86f91cdfe25094a523b4c585f6b6265"></span><a class="reference internal" href="containers.html#_CPPv4I0EN3LLU5ImageE" title="LLU::Image">Image</a>&lt;<a class="reference internal" href="#_CPPv4I0_7PassingENK3LLU16MArgumentManager8getImageE5ImageI1TE9size_type" title="LLU::MArgumentManager::getImage::T">T</a>&gt; <code class="sig-name descname">getImage</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4N3LLU16MArgumentManager9size_typeE" title="LLU::MArgumentManager::size_type">size_type</a> <em>index</em><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4I0_7PassingENK3LLU16MArgumentManager8getImageE5ImageI1TE9size_type" title="Permalink to this definition"> 🔗</a><br /></dt>
 <dd><p>Get MArgument of type MImage at position <code class="docutils literal notranslate"><span class="pre">index</span></code> and wrap it into <a class="reference internal" href="containers.html#classLLU_1_1Image"><span class="std std-ref">Image</span></a> object. </p>
@@ -1269,8 +1332,25 @@ if you are not careful enough.</p>
 </dd></dl>
 
 <dl class="cpp function">
-<dt id="_CPPv4N3LLU16MArgumentManager14setSparseArrayE12MSparseArray">
-<span id="_CPPv3N3LLU16MArgumentManager14setSparseArrayE12MSparseArray"></span><span id="_CPPv2N3LLU16MArgumentManager14setSparseArrayE12MSparseArray"></span><span id="LLU::MArgumentManager::setSparseArray__MSparseArray"></span><span class="target" id="classLLU_1_1MArgumentManager_1a335c472c1f964b634ac36948efb74b4b"></span>void <code class="sig-name descname">setSparseArray</code><span class="sig-paren">(</span>MSparseArray <em>sa</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3LLU16MArgumentManager14setSparseArrayE12MSparseArray" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dt id="_CPPv4I0EN3LLU16MArgumentManager14setSparseArrayEvRK11SparseArrayI1TE">
+<span id="_CPPv3I0EN3LLU16MArgumentManager14setSparseArrayERK11SparseArrayI1TE"></span><span id="_CPPv2I0EN3LLU16MArgumentManager14setSparseArrayERK11SparseArrayI1TE"></span>template&lt;typename <code class="sig-name descname">T</code>&gt;<br /><span class="target" id="classLLU_1_1MArgumentManager_1aad3813626f07b8e1db49b680a0c9e4a2"></span>void <code class="sig-name descname">setSparseArray</code><span class="sig-paren">(</span><em class="property">const</em> <a class="reference internal" href="containers.html#_CPPv4I0EN3LLU11SparseArrayE" title="LLU::SparseArray">SparseArray</a>&lt;<a class="reference internal" href="#_CPPv4I0EN3LLU16MArgumentManager14setSparseArrayEvRK11SparseArrayI1TE" title="LLU::MArgumentManager::setSparseArray::T">T</a>&gt; &amp;<em>sa</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0EN3LLU16MArgumentManager14setSparseArrayEvRK11SparseArrayI1TE" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Set MSparseArray wrapped by <code class="docutils literal notranslate"><span class="pre">sa</span></code> as output MArgument. </p>
+<p><dl class="simple">
+<dt><strong>Template Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">T</span></code>: - <a class="reference internal" href="containers.html#classLLU_1_1SparseArray"><span class="std std-ref">SparseArray</span></a> data type </p></li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">sa</span></code>: - reference to <a class="reference internal" href="containers.html#classLLU_1_1SparseArray"><span class="std std-ref">SparseArray</span></a> which should pass its internal MSparseArray to LibraryLink </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4N3LLU16MArgumentManager15setMSparseArrayE12MSparseArray">
+<span id="_CPPv3N3LLU16MArgumentManager15setMSparseArrayE12MSparseArray"></span><span id="_CPPv2N3LLU16MArgumentManager15setMSparseArrayE12MSparseArray"></span><span id="LLU::MArgumentManager::setMSparseArray__MSparseArray"></span><span class="target" id="classLLU_1_1MArgumentManager_1ab22c969348a845ff7a903cac8e804d05"></span>void <code class="sig-name descname">setMSparseArray</code><span class="sig-paren">(</span>MSparseArray <em>sa</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3LLU16MArgumentManager15setMSparseArrayE12MSparseArray" title="Permalink to this definition"> 🔗</a><br /></dt>
 <dd><p>Set MSparseArray as output MArgument. </p>
 <p><dl class="simple">
 <dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
@@ -1398,6 +1478,36 @@ if you are not careful enough.</p>
 <p><dl class="simple">
 <dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">na</span></code>: - reference to generic <a class="reference internal" href="containers.html#classLLU_1_1NumericArray"><span class="std std-ref">NumericArray</span></a> which should pass its internal MNumericArray to LibraryLink </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4I0EN3LLU16MArgumentManager3setEvRK11SparseArrayI1TE">
+<span id="_CPPv3I0EN3LLU16MArgumentManager3setERK11SparseArrayI1TE"></span><span id="_CPPv2I0EN3LLU16MArgumentManager3setERK11SparseArrayI1TE"></span>template&lt;typename <code class="sig-name descname">T</code>&gt;<br /><span class="target" id="classLLU_1_1MArgumentManager_1acfa844f507595ff10412185cd83b0cd6"></span>void <code class="sig-name descname">set</code><span class="sig-paren">(</span><em class="property">const</em> <a class="reference internal" href="containers.html#_CPPv4I0EN3LLU11SparseArrayE" title="LLU::SparseArray">SparseArray</a>&lt;<a class="reference internal" href="#_CPPv4I0EN3LLU16MArgumentManager3setEvRK11SparseArrayI1TE" title="LLU::MArgumentManager::set::T">T</a>&gt; &amp;<em>ten</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0EN3LLU16MArgumentManager3setEvRK11SparseArrayI1TE" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Set MSparseArray wrapped by <code class="docutils literal notranslate"><span class="pre">sa</span></code> as output MArgument. </p>
+<p><dl class="simple">
+<dt><strong>Template Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">T</span></code>: - <a class="reference internal" href="containers.html#classLLU_1_1SparseArray"><span class="std std-ref">SparseArray</span></a> data type </p></li>
+</ul>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">sa</span></code>: - reference to <a class="reference internal" href="containers.html#classLLU_1_1SparseArray"><span class="std std-ref">SparseArray</span></a> which should pass its internal MSparseArray to LibraryLink </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4N3LLU16MArgumentManager3setERK18GenericSparseArray">
+<span id="_CPPv3N3LLU16MArgumentManager3setERK18GenericSparseArray"></span><span id="_CPPv2N3LLU16MArgumentManager3setERK18GenericSparseArray"></span><span id="LLU::MArgumentManager::set__GenericSparseArrayCR"></span><span class="target" id="classLLU_1_1MArgumentManager_1a98fa3b14fa94c86a4c0a238b5a0d144f"></span>void <code class="sig-name descname">set</code><span class="sig-paren">(</span><em class="property">const</em> <a class="reference internal" href="containers.html#_CPPv4N3LLU18GenericSparseArrayE" title="LLU::GenericSparseArray">GenericSparseArray</a> &amp;<em>t</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3LLU16MArgumentManager3setERK18GenericSparseArray" title="Permalink to this definition"> 🔗</a><br /></dt>
+<dd><p>Set MSparseArray wrapped by <code class="docutils literal notranslate"><span class="pre">t</span></code> as output MArgument. </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">t</span></code>: - reference to generic <a class="reference internal" href="containers.html#classLLU_1_1SparseArray"><span class="std std-ref">SparseArray</span></a> which should pass its internal MSparseArray to LibraryLink </p></li>
 </ul>
 </dd>
 </dl>
@@ -1839,7 +1949,7 @@ if you are not careful enough.</p>
   <div role="contentinfo">
     <p>
         &copy; Copyright Wolfram Research.
-      Last updated on Oct 20, 2020.
+      Last updated on Feb 25, 2021.
 
     </p>
   </div>
@@ -1861,7 +1971,7 @@ if you are not careful enough.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'3.0.1',
+            VERSION:'3.1.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
