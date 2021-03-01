@@ -619,7 +619,7 @@ namespace LLU {
 		 *   @warning		Operator::operator() has to be a template that takes a const NumericArray<T>& as first argument
 		 **/
 		template<Passing Mode, class Operator, class... OpArgs>
-		void operateOnNumericArray(size_type index, OpArgs&&... opArgs);
+		decltype(auto) operateOnNumericArray(size_type index, OpArgs&&... opArgs);
 
 		/**
 		 *   @brief         Perform operation on NumericArray created from MNumericArray argument at position \p index in \c Args
@@ -630,7 +630,7 @@ namespace LLU {
 		 *   @throws        ErrorName::MArgumentIndexError - if \c index is out-of-bounds
 		 **/
 		template<Passing Mode = Passing::Automatic, class Operator>
-		void operateOnNumericArray(size_type index, Operator&& op);
+		decltype(auto) operateOnNumericArray(size_type index, Operator&& op);
 
 		/**
 		 *   @brief         Get type of MTensor at position \c index in \c Args
@@ -652,7 +652,7 @@ namespace LLU {
 		 *   @warning		Operator::operator() has to be a template that takes a const Tensor<T>& as first argument
 		 **/
 		template<Passing Mode, class Operator, class... Args>
-		void operateOnTensor(size_type index, Args&&... opArgs);
+		decltype(auto) operateOnTensor(size_type index, Args&&... opArgs);
 
 		/**
 		 *   @brief         Perform operation on Tensor created from MTensor argument at position \p index in \c Args
@@ -664,7 +664,7 @@ namespace LLU {
 		 *   @throws        ErrorName::MArgumentTensorError - if MTensor argument has incorrect type
 		 **/
 		template<Passing Mode = Passing::Automatic, class Operator>
-		void operateOnTensor(size_type index, Operator&& op);
+		decltype(auto) operateOnTensor(size_type index, Operator&& op);
 
 		/**
 		 *   @brief         Get type of MImage at position \c index in \c Args
@@ -686,7 +686,7 @@ namespace LLU {
 		 *   @warning		Operator::operator() has to be a template that takes a const Image<T>& as first argument
 		 **/
 		template<Passing Mode, class Operator, class... Args>
-		void operateOnImage(size_type index, Args&&... opArgs);
+		decltype(auto) operateOnImage(size_type index, Args&&... opArgs);
 
 		/**
 		 *   @brief         Perform operation on Image created from MImage argument at position \p index in \c Args
@@ -698,7 +698,7 @@ namespace LLU {
 		 *   @throws        ErrorName::MArgumentImageError - if MImage argument has incorrect type
 		 **/
 		template<Passing Mode = Passing::Automatic, class Operator>
-		void operateOnImage(size_type index, Operator&& op);
+		decltype(auto) operateOnImage(size_type index, Operator&& op);
 
 		/************************************ User-defined types registration ************************************/
 
@@ -958,21 +958,21 @@ namespace LLU {
 	}
 
 	template<Passing Mode, class Operator, class... Args>
-	void MArgumentManager::operateOnNumericArray(size_type index, Args&&... opArgs) {
+	decltype(auto) MArgumentManager::operateOnNumericArray(size_type index, Args&&... opArgs) {
 		Operator op;
 		switch (getNumericArrayType(index)) {
-			case MNumericArray_Type_Bit8: op(this->getNumericArray<int8_t, Mode>(index), std::forward<Args>(opArgs)...); break;
-			case MNumericArray_Type_UBit8: op(this->getNumericArray<uint8_t, Mode>(index), std::forward<Args>(opArgs)...); break;
-			case MNumericArray_Type_Bit16: op(this->getNumericArray<int16_t, Mode>(index), std::forward<Args>(opArgs)...); break;
-			case MNumericArray_Type_UBit16: op(this->getNumericArray<uint16_t, Mode>(index), std::forward<Args>(opArgs)...); break;
-			case MNumericArray_Type_Bit32: op(this->getNumericArray<int32_t, Mode>(index), std::forward<Args>(opArgs)...); break;
-			case MNumericArray_Type_UBit32: op(this->getNumericArray<uint32_t, Mode>(index), std::forward<Args>(opArgs)...); break;
-			case MNumericArray_Type_Bit64: op(this->getNumericArray<int64_t, Mode>(index), std::forward<Args>(opArgs)...); break;
-			case MNumericArray_Type_UBit64: op(this->getNumericArray<uint64_t, Mode>(index), std::forward<Args>(opArgs)...); break;
-			case MNumericArray_Type_Real32: op(this->getNumericArray<float, Mode>(index), std::forward<Args>(opArgs)...); break;
-			case MNumericArray_Type_Real64: op(this->getNumericArray<double, Mode>(index), std::forward<Args>(opArgs)...); break;
-			case MNumericArray_Type_Complex_Real32: op(this->getNumericArray<std::complex<float>, Mode>(index), std::forward<Args>(opArgs)...); break;
-			case MNumericArray_Type_Complex_Real64: op(this->getNumericArray<std::complex<double>, Mode>(index), std::forward<Args>(opArgs)...); break;
+			case MNumericArray_Type_Bit8: return std::invoke(op, this->getNumericArray<int8_t, Mode>(index), std::forward<Args>(opArgs)...);
+			case MNumericArray_Type_UBit8: return std::invoke(op, this->getNumericArray<uint8_t, Mode>(index), std::forward<Args>(opArgs)...);
+			case MNumericArray_Type_Bit16: return std::invoke(op, this->getNumericArray<int16_t, Mode>(index), std::forward<Args>(opArgs)...);
+			case MNumericArray_Type_UBit16: return std::invoke(op, this->getNumericArray<uint16_t, Mode>(index), std::forward<Args>(opArgs)...);
+			case MNumericArray_Type_Bit32: return std::invoke(op, this->getNumericArray<int32_t, Mode>(index), std::forward<Args>(opArgs)...);
+			case MNumericArray_Type_UBit32: return std::invoke(op, this->getNumericArray<uint32_t, Mode>(index), std::forward<Args>(opArgs)...);
+			case MNumericArray_Type_Bit64: return std::invoke(op, this->getNumericArray<int64_t, Mode>(index), std::forward<Args>(opArgs)...);
+			case MNumericArray_Type_UBit64: return std::invoke(op, this->getNumericArray<uint64_t, Mode>(index), std::forward<Args>(opArgs)...);
+			case MNumericArray_Type_Real32: return std::invoke(op, this->getNumericArray<float, Mode>(index), std::forward<Args>(opArgs)...);
+			case MNumericArray_Type_Real64: return std::invoke(op, this->getNumericArray<double, Mode>(index), std::forward<Args>(opArgs)...);
+			case MNumericArray_Type_Complex_Real32: return std::invoke(op, this->getNumericArray<std::complex<float>, Mode>(index), std::forward<Args>(opArgs)...);
+			case MNumericArray_Type_Complex_Real64: return std::invoke(op, this->getNumericArray<std::complex<double>, Mode>(index), std::forward<Args>(opArgs)...);
 			default:
 				ErrorManager::throwExceptionWithDebugInfo(ErrorName::MArgumentNumericArrayError,
 														  "Incorrect type of NumericArray argument. Argument index: " + std::to_string(index));
@@ -980,20 +980,20 @@ namespace LLU {
 	}
 
 	template<Passing Mode, class Operator>
-	void MArgumentManager::operateOnNumericArray(size_type index, Operator&& op) {
+	decltype(auto) MArgumentManager::operateOnNumericArray(size_type index, Operator&& op) {
 		switch (getNumericArrayType(index)) {
-			case MNumericArray_Type_Bit8: op(this->getNumericArray<int8_t, Mode>(index)); break;
-			case MNumericArray_Type_UBit8: op(this->getNumericArray<uint8_t, Mode>(index)); break;
-			case MNumericArray_Type_Bit16: op(this->getNumericArray<int16_t, Mode>(index)); break;
-			case MNumericArray_Type_UBit16: op(this->getNumericArray<uint16_t, Mode>(index)); break;
-			case MNumericArray_Type_Bit32: op(this->getNumericArray<int32_t, Mode>(index)); break;
-			case MNumericArray_Type_UBit32: op(this->getNumericArray<uint32_t, Mode>(index)); break;
-			case MNumericArray_Type_Bit64: op(this->getNumericArray<int64_t, Mode>(index)); break;
-			case MNumericArray_Type_UBit64: op(this->getNumericArray<uint64_t, Mode>(index)); break;
-			case MNumericArray_Type_Real32: op(this->getNumericArray<float, Mode>(index)); break;
-			case MNumericArray_Type_Real64: op(this->getNumericArray<double, Mode>(index)); break;
-			case MNumericArray_Type_Complex_Real32: op(this->getNumericArray<std::complex<float>, Mode>(index)); break;
-			case MNumericArray_Type_Complex_Real64: op(this->getNumericArray<std::complex<double>, Mode>(index)); break;
+			case MNumericArray_Type_Bit8: return std::invoke(op, this->getNumericArray<int8_t, Mode>(index));
+			case MNumericArray_Type_UBit8: return std::invoke(op, this->getNumericArray<uint8_t, Mode>(index));
+			case MNumericArray_Type_Bit16: return std::invoke(op, this->getNumericArray<int16_t, Mode>(index));
+			case MNumericArray_Type_UBit16: return std::invoke(op, this->getNumericArray<uint16_t, Mode>(index));
+			case MNumericArray_Type_Bit32: return std::invoke(op, this->getNumericArray<int32_t, Mode>(index));
+			case MNumericArray_Type_UBit32: return std::invoke(op, this->getNumericArray<uint32_t, Mode>(index));
+			case MNumericArray_Type_Bit64: return std::invoke(op, this->getNumericArray<int64_t, Mode>(index));
+			case MNumericArray_Type_UBit64: return std::invoke(op, this->getNumericArray<uint64_t, Mode>(index));
+			case MNumericArray_Type_Real32: return std::invoke(op, this->getNumericArray<float, Mode>(index));
+			case MNumericArray_Type_Real64: return std::invoke(op, this->getNumericArray<double, Mode>(index));
+			case MNumericArray_Type_Complex_Real32: return std::invoke(op, this->getNumericArray<std::complex<float>, Mode>(index));
+			case MNumericArray_Type_Complex_Real64: return std::invoke(op, this->getNumericArray<std::complex<double>, Mode>(index));
 			default:
 				ErrorManager::throwExceptionWithDebugInfo(ErrorName::MArgumentNumericArrayError,
 														  "Incorrect type of NumericArray argument. Argument index: " + std::to_string(index));
@@ -1011,12 +1011,12 @@ namespace LLU {
 	}
 
 	template<Passing Mode, class Operator, class... Args>
-	void MArgumentManager::operateOnTensor(size_type index, Args&&... opArgs) {
+	decltype(auto) MArgumentManager::operateOnTensor(size_type index, Args&&... opArgs) {
 		Operator op;
 		switch (getTensorType(index)) {
-			case MType_Integer: op(this->getTensor<mint, Mode>(index), std::forward<Args>(opArgs)...); break;
-			case MType_Real: op(this->getTensor<double, Mode>(index), std::forward<Args>(opArgs)...); break;
-			case MType_Complex: op(this->getTensor<std::complex<double>, Mode>(index), std::forward<Args>(opArgs)...); break;
+			case MType_Integer: return std::invoke(op, this->getTensor<mint, Mode>(index), std::forward<Args>(opArgs)...);
+			case MType_Real: return std::invoke(op, this->getTensor<double, Mode>(index), std::forward<Args>(opArgs)...);
+			case MType_Complex: return std::invoke(op, this->getTensor<std::complex<double>, Mode>(index), std::forward<Args>(opArgs)...);
 			default:
 				ErrorManager::throwExceptionWithDebugInfo(ErrorName::MArgumentTensorError,
 														  "Incorrect type of Tensor argument. Argument index: " + std::to_string(index));
@@ -1024,11 +1024,11 @@ namespace LLU {
 	}
 
 	template<Passing Mode, class Operator>
-	void MArgumentManager::operateOnTensor(size_type index, Operator&& op) {
+	decltype(auto) MArgumentManager::operateOnTensor(size_type index, Operator&& op) {
 		switch (getTensorType(index)) {
-			case MType_Integer: op(this->getTensor<mint, Mode>(index)); break;
-			case MType_Real: op(this->getTensor<double, Mode>(index)); break;
-			case MType_Complex: op(this->getTensor<std::complex<double>, Mode>(index)); break;
+			case MType_Integer: return std::invoke(op, this->getTensor<mint, Mode>(index));
+			case MType_Real: return std::invoke(op, this->getTensor<double, Mode>(index));
+			case MType_Complex: return std::invoke(op, this->getTensor<std::complex<double>, Mode>(index));
 			default:
 				ErrorManager::throwExceptionWithDebugInfo(ErrorName::MArgumentTensorError,
 														  "Incorrect type of Tensor argument. Argument index: " + std::to_string(index));
@@ -1046,14 +1046,14 @@ namespace LLU {
 	}
 
 	template<Passing Mode, class Operator, class... Args>
-	void MArgumentManager::operateOnImage(size_type index, Args&&... opArgs) {
+	decltype(auto) MArgumentManager::operateOnImage(size_type index, Args&&... opArgs) {
 		Operator op;
 		switch (getImageType(index)) {
-			case MImage_Type_Bit: op(this->getImage<int8_t, Mode>(index), std::forward<Args>(opArgs)...); break;
-			case MImage_Type_Bit8: op(this->getImage<uint8_t, Mode>(index), std::forward<Args>(opArgs)...); break;
-			case MImage_Type_Bit16: op(this->getImage<uint16_t, Mode>(index), std::forward<Args>(opArgs)...); break;
-			case MImage_Type_Real32: op(this->getImage<float, Mode>(index), std::forward<Args>(opArgs)...); break;
-			case MImage_Type_Real: op(this->getImage<double, Mode>(index), std::forward<Args>(opArgs)...); break;
+			case MImage_Type_Bit: return std::invoke(op, this->getImage<int8_t, Mode>(index), std::forward<Args>(opArgs)...);
+			case MImage_Type_Bit8: return std::invoke(op, this->getImage<uint8_t, Mode>(index), std::forward<Args>(opArgs)...);
+			case MImage_Type_Bit16: return std::invoke(op, this->getImage<uint16_t, Mode>(index), std::forward<Args>(opArgs)...);
+			case MImage_Type_Real32: return std::invoke(op, this->getImage<float, Mode>(index), std::forward<Args>(opArgs)...);
+			case MImage_Type_Real: return std::invoke(op, this->getImage<double, Mode>(index), std::forward<Args>(opArgs)...);
 			default:
 				ErrorManager::throwExceptionWithDebugInfo(ErrorName::MArgumentImageError,
 														  "Incorrect type of Image argument. Argument index: " + std::to_string(index));
@@ -1061,13 +1061,13 @@ namespace LLU {
 	}
 
 	template<Passing Mode, class Operator>
-	void MArgumentManager::operateOnImage(size_type index, Operator&& op) {
+	decltype(auto) MArgumentManager::operateOnImage(size_type index, Operator&& op) {
 		switch (getImageType(index)) {
-			case MImage_Type_Bit: op(std::move(this->getImage<int8_t, Mode>(index))); break;
-			case MImage_Type_Bit8: op(this->getImage<uint8_t, Mode>(index)); break;
-			case MImage_Type_Bit16: op(this->getImage<uint16_t, Mode>(index)); break;
-			case MImage_Type_Real32: op(this->getImage<float, Mode>(index)); break;
-			case MImage_Type_Real: op(this->getImage<double, Mode>(index)); break;
+			case MImage_Type_Bit: return std::invoke(op, this->getImage<int8_t, Mode>(index));
+			case MImage_Type_Bit8: return std::invoke(op, this->getImage<uint8_t, Mode>(index));
+			case MImage_Type_Bit16: return std::invoke(op, this->getImage<uint16_t, Mode>(index));
+			case MImage_Type_Real32: return std::invoke(op, this->getImage<float, Mode>(index));
+			case MImage_Type_Real: return std::invoke(op, this->getImage<double, Mode>(index));
 			default:
 				ErrorManager::throwExceptionWithDebugInfo(ErrorName::MArgumentImageError,
 														  "Incorrect type of Image argument. Argument index: " + std::to_string(index));

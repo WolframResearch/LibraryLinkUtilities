@@ -15,11 +15,11 @@ constexpr double negator<double> = 1.;
 
 struct ImageNegator {
 	template<typename T>
-	void operator()(LLU::Image<T> in, LLU::MArgumentManager& mngr) {
+	LLU::GenericImage operator()(LLU::Image<T> in) {
 		LLU::Image<T> out {in.clone()};
 
 		std::transform(std::cbegin(in), std::cend(in), std::begin(out), [](T inElem) { return negator<T> - inElem; });
-		mngr.setImage(out);
+		return out;
 	}
 
 	template<typename T>
@@ -29,7 +29,7 @@ struct ImageNegator {
 };
 
 LLU_LIBRARY_FUNCTION(ImageNegate) {
-	mngr.operateOnImage<LLU::Passing::Automatic, ImageNegator>(0, mngr);
+	mngr.set(mngr.operateOnImage<LLU::Passing::Automatic, ImageNegator>(0));
 }
 
 LLU_LIBRARY_FUNCTION(NegateImages) {

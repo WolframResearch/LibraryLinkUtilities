@@ -69,11 +69,11 @@ LLU_LIBRARY_FUNCTION(echoNumericArrays) {
  * Numeric array library functions
  */
 LLU_LIBRARY_FUNCTION(getNumericArrayLength) {
-	mngr.operateOnNumericArray(0, [&mngr](auto&& rarray) { mngr.setInteger(rarray.size()); });
+	mngr.set(mngr.operateOnNumericArray(0, [](auto&& rarray) { return rarray.size(); }));
 }
 
 LLU_LIBRARY_FUNCTION(getNumericArrayRank) {
-	mngr.operateOnNumericArray(0, [&mngr](auto&& rarray) { mngr.setInteger(rarray.rank()); });
+	mngr.set(mngr.operateOnNumericArray(0, [](auto&& rarray) { return rarray.rank(); }));
 }
 
 // create new numeric array
