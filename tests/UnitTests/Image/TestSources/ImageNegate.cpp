@@ -17,9 +17,8 @@ struct ImageNegator {
 	template<typename T>
 	LLU::GenericImage operator()(LLU::Image<T> in) {
 		LLU::Image<T> out {in.clone()};
-
 		std::transform(std::cbegin(in), std::cend(in), std::begin(out), [](T inElem) { return negator<T> - inElem; });
-		return out;
+		return std::move(out);
 	}
 
 	template<typename T>
