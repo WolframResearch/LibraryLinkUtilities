@@ -82,6 +82,14 @@ LLU_LIBRARY_FUNCTION(ModifyValues) {
 	});
 }
 
+LLU_LIBRARY_FUNCTION(ModifyValues2) {
+	auto values = mngr.getGenericTensor<LLU::Passing::Constant>(1);
+	mngr.operateOnSparseArray<LLU::Passing::Shared>(0, [](auto&& sparseArray, const LLU::GenericTensor& values) {
+		using T = typename std::remove_reference_t<decltype(sparseArray)>::value_type;
+		sparseModifyValues(sparseArray, LLU::TensorTypedView<T> {values});
+	}, values);
+}
+
 LLU_LIBRARY_FUNCTION(GetImplicitValueTyped) {
 	const auto sp = mngr.getSparseArray<double, LLU::Passing::Constant>(0);
 	auto implVal = sp.implicitValue();

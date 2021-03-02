@@ -616,7 +616,7 @@ namespace LLU {
 		 *   @param[in]     index - position of MNumericArray in \c Args
 		 *   @param[in]     opArgs - arguments of Operator::operator()
 		 *   @throws        ErrorName::MArgumentIndexError - if \c index is out-of-bounds
-		 *   @warning		Operator::operator() has to be a template that takes a const NumericArray<T>& as first argument
+		 *   @note		    Operator::operator() has to be a template that takes a const NumericArray<T>& as first argument
 		 **/
 		template<Passing Mode, class Operator, class... OpArgs>
 		decltype(auto) operateOnNumericArray(size_type index, OpArgs&&... opArgs);
@@ -649,7 +649,7 @@ namespace LLU {
 		 *   @param[in]     opArgs - arguments of Operator::operator()
 		 *   @throws        ErrorName::MArgumentIndexError - if \c index is out-of-bounds
 		 *   @throws        ErrorName::MArgumentTensorError - if MTensor argument has incorrect type
-		 *   @warning		Operator::operator() has to be a template that takes a const Tensor<T>& as first argument
+		 *   @note		    Operator::operator() has to be a template that takes a const Tensor<T>& as first argument
 		 **/
 		template<Passing Mode, class Operator, class... Args>
 		decltype(auto) operateOnTensor(size_type index, Args&&... opArgs);
@@ -683,7 +683,7 @@ namespace LLU {
 		 *   @param[in]     opArgs - arguments of Operator::operator()
 		 *   @throws        ErrorName::MArgumentIndexError - if \c index is out-of-bounds
 		 *   @throws        ErrorName::MArgumentImageError - if MImage argument has incorrect type
-		 *   @warning		Operator::operator() has to be a template that takes a const Image<T>& as first argument
+		 *   @note		    Operator::operator() has to be a template that takes a const Image<T>& as first argument
 		 **/
 		template<Passing Mode, class Operator, class... Args>
 		decltype(auto) operateOnImage(size_type index, Args&&... opArgs);
@@ -699,6 +699,20 @@ namespace LLU {
 		 **/
 		template<Passing Mode = Passing::Automatic, class Operator>
 		decltype(auto) operateOnImage(size_type index, Operator&& op);
+
+		/**
+		 * @brief       Perform operation on SparseArray created from MSparseArray argument at position \p index in \c Args
+		 * @tparam      Mode - passing mode of the Image that will be processed
+		 * @tparam      Operator - any callable class
+		 * @tparam      Args... - types of arguments of \c operator() in class \c Operator
+		 * @param[in]   index - position of MImage in \c Args
+		 * @param[in]   op - callable object (possibly lambda) that takes only one argument - an Image
+		 * @param[in]   pArgs - arguments of Operator::operator()
+		 * @return      Forwards the return value of Operator::operator()
+		 * @note        Operator::operator() has to be a template that takes a const SparseArray<T>& as first argument
+		 */
+		template<Passing Mode, class Operator, class... Args>
+		decltype(auto) operateOnSparseArray(size_type index, Operator&& op, Args&&... opArgs);
 
 		/************************************ User-defined types registration ************************************/
 
@@ -1118,6 +1132,19 @@ namespace LLU {
 	template<Passing Mode>
 	GenericSparseArray MArgumentManager::getGenericSparseArray(size_type index) const {
 		return GenericSparseArray(getMSparseArray(index), getOwner(Mode));
+	}
+
+	template<Passing Mode, class Operator, class... Args>
+	decltype(auto) MArgumentManager::operateOnSparseArray(size_type index, Operator&& op, Args&&... opArgs) {
+		auto sparseArr = getGenericSparseArray<Mode>(index);
+		switch (sparseArr.type()) {
+			case MType_Integer: return std::invoke(op, SparseArray<mint> {std::move(sparseArr)}, std::forward<Args>(opArgs)...);
+			case MType_Real: return std::invoke(op, SparseArray<double> {std::move(sparseArr)}, std::forward<Args>(opArgs)...);
+			case MType_Complex: return std::invoke(op, SparseArray<std::complex<double>> {std::move(sparseArr)}, std::forward<Args>(opArgs)...);
+			default:
+				ErrorManager::throwExceptionWithDebugInfo(ErrorName::SparseArrayTypeError,
+				                                          "Incorrect type of SparseArray argument. Argument index: " + std::to_string(index));
+		}
 	}
 
 	template<class ManagedExpr, class DynamicType>

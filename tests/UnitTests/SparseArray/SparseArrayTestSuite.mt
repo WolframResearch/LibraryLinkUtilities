@@ -30,6 +30,7 @@ TestExecute[
 	`LLU`PacletFunctionSet[$ToTensor, {{LibraryDataType[SparseArray, _, _], "Constant"}}, {_, _}];
 	`LLU`PacletFunctionSet[$SetImplicitValue, {LibraryDataType[SparseArray, _, _], {_, _, "Constant"}}, LibraryDataType[SparseArray]];
 	`LLU`PacletFunctionSet[$ModifyValues, {{LibraryDataType[SparseArray, _, _], "Shared"}, {_, _, "Constant"}}, "Void"];
+	`LLU`PacletFunctionSet[$ModifyValues2, {{LibraryDataType[SparseArray, _, _], "Shared"}, {_, _, "Constant"}}, "Void"];
 	`LLU`PacletFunctionSet[$GetImplicitValueTyped, {{LibraryDataType[SparseArray, Real], "Constant"}}, Real];
 	`LLU`PacletFunctionSet[$GetExplicitValuesTyped, {{LibraryDataType[SparseArray, Real], "Constant"}}, {Real, _}];
 	`LLU`PacletFunctionSet[$GetRowPointersTyped, {{LibraryDataType[SparseArray, Real], "Constant"}}, {Integer, _}];
@@ -171,6 +172,28 @@ Test[
 	{3.5, .5, -7., 4., 3., 1.}
 	,
 	TestID->"SparseArrayTestSuite-20210115-J6F3M0"
+];
+
+Test[
+	$ModifyValues2[sparse, {-2.3, .5, -7.1}];
+	$GetExplicitValues[sparse]
+	,
+	{-2.3, .5, -7.1, 4., 3., 1.}
+	,
+	TestID->"SparseArrayTestSuite-20210115-N8G4F8"
+];
+
+TestMatch[
+	Catch[$ModifyValues2[sparse, {-5.4 + 3.5 * I}], _]
+	,
+	Failure["TensorTypeError", <|
+		"MessageTemplate" -> "An error was caused by an MTensor type mismatch.",
+		"MessageParameters" -> <||>,
+		"ErrorCode" -> _?CppErrorCodeQ,
+		"Parameters" -> {}|>
+	]
+	,
+	TestID->"SparseArrayTestSuite-20210115-B7V1P0"
 ];
 
 TestExecute[
