@@ -427,25 +427,27 @@ PacletFunctionLoad[fname_?StringQ, fParams_, retType : Except[_?OptionQ], opts :
 PacletFunctionLoad[libName_?StringQ, fname_?StringQ, fParams_, retType : Except[_?OptionQ], opts : OptionsPattern[]] :=
 Module[{errorHandler, pmSymbol, newParams, f, functionOptions, loadOptions},
 	functionOptions = FilterRules[{opts}, Options[PacletFunctionLoad]];
-    errorHandler = If[TrueQ[OptionValue[Automatic, functionOptions, "Throws"]],
-	    CatchAndThrowLibraryFunctionError
+	errorHandler = If[TrueQ[OptionValue[Automatic, functionOptions, "Throws"]],
+		CatchAndThrowLibraryFunctionError
 		,
-	    CatchLibraryFunctionError
-    ];
-    pmSymbol = OptionValue[Automatic, functionOptions, "ProgressMonitor", Hold];
+		CatchLibraryFunctionError
+	];
+	pmSymbol = OptionValue[Automatic, functionOptions, "ProgressMonitor", Hold];
 	loadOptions = FilterRules[{opts}, Options[SafeLibraryFunctionLoad]];
-    If[fParams === LinkObject || pmSymbol === Hold[None],
-	    errorHandler @* SafeLibraryFunctionLoad[libName, fname, fParams, retType, loadOptions]
-	    , (* else *)
-	    If[Not @ Developer`SymbolQ @ ReleaseHold @ pmSymbol,
-		    ThrowPacletFailure["ProgressMonInvalidValue"];
-	    ];
-	    newParams = Append[fParams, {Real, 1, "Shared"}];
-	    f = errorHandler @* SafeLibraryFunctionLoad[libName, fname, newParams, retType, loadOptions];
-	    (
-		    holdSet[pmSymbol, Developer`ToPackedArray[{0.0}]];
-		    f[##, ReleaseHold[pmSymbol]]
-	    )&
+	If[fParams === LinkObject || pmSymbol === Hold[None],
+		errorHandler @* SafeLibraryFunctionLoad[libName, fname, fParams, retType, loadOptions]
+		, (* else *)
+		If[Not @ Developer`SymbolQ @ ReleaseHold @ pmSymbol,
+			ThrowPacletFailure["ProgressMonInvalidValue"];
+		];
+		newParams = Append[fParams, {Real, 1, "Shared"}];
+		With[
+			{ps = pmSymbol, lf = errorHandler @* SafeLibraryFunctionLoad[libName, fname, newParams, retType, loadOptions]},
+			(
+				holdSet[ps, Developer`ToPackedArray[{0.0}]];
+				lf[##, ReleaseHold[ps]]
+			)&
+		]
     ]
 ];
 

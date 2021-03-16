@@ -3,8 +3,17 @@
 # A collection of functions for easy checkout of CVS dependencies, specifically for paclets developed at Wolfram.
 #
 
+
+# Helper function to idiot-check developer machine setup; otherwise cmake produces an Extremely Cryptic Error
+function(check_cvsroot)
+	if(NOT DEFINED ENV{CVSROOT})
+		message(FATAL_ERROR "\n[[ ~ \\/\\/\\/\\/\\/\\ ~ CVSROOT is not defined! ~ /\\/\\/\\/\\/\\/ ~ ]]\n")
+	endif()
+endfunction()
+
 #Helper function to check whether given CVS module exists.
 function(cvsmoduleQ MODULE WORKINGDIR RES)
+	check_cvsroot()
 	execute_process(
 			COMMAND cvs -d $ENV{CVSROOT} rdiff -r HEAD ${MODULE}
 			WORKING_DIRECTORY ${WORKINGDIR}
@@ -20,6 +29,7 @@ endfunction()
 
 # Helper function to download content from CVS.
 function(download_cvs_content content_name download_path module_path DOWNLOAD_LOCATION_OUT)
+	check_cvsroot()
 	include(FetchContent)
 	FetchContent_declare(
 			${content_name}
