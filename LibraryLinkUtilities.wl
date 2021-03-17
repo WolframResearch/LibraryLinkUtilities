@@ -425,7 +425,7 @@ PacletFunctionLoad[fname_?StringQ, fParams_, retType : Except[_?OptionQ], opts :
     PacletFunctionLoad[$PacletLibrary, fname, fParams, retType, opts];
 
 PacletFunctionLoad[libName_?StringQ, fname_?StringQ, fParams_, retType : Except[_?OptionQ], opts : OptionsPattern[]] :=
-Module[{errorHandler, pmSymbol, newParams, f, functionOptions, loadOptions},
+Module[{errorHandler, pmSymbol, newParams, functionOptions, loadOptions},
 	functionOptions = FilterRules[{opts}, Options[PacletFunctionLoad]];
 	errorHandler = If[TrueQ[OptionValue[Automatic, functionOptions, "Throws"]],
 		CatchAndThrowLibraryFunctionError
@@ -441,14 +441,13 @@ Module[{errorHandler, pmSymbol, newParams, f, functionOptions, loadOptions},
 			ThrowPacletFailure["ProgressMonInvalidValue"];
 		];
 		newParams = Append[fParams, {Real, 1, "Shared"}];
-		With[
-			{ps = pmSymbol, lf = errorHandler @* SafeLibraryFunctionLoad[libName, fname, newParams, retType, loadOptions]},
+		With[{ps = pmSymbol, lf = errorHandler @* SafeLibraryFunctionLoad[libName, fname, newParams, retType, loadOptions]},
 			(
 				holdSet[ps, Developer`ToPackedArray[{0.0}]];
 				lf[##, ReleaseHold[ps]]
 			)&
 		]
-    ]
+	]
 ];
 
 MemberFunctionLoad[exprHead_][libName_, fname_String, fParams_, retType : Except[_?OptionQ], opts : OptionsPattern[PacletFunctionLoad]] :=

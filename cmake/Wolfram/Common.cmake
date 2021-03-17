@@ -332,7 +332,6 @@ function(install_dependency_files PACLET_NAME DEP_TARGET_NAME)
 		endif()
 		if(DEP_LIBS_DLL)
 			# Copy over dependency libraries into LibraryResources/$SystemID
-			# we could consider codesigning these libraries for local builds
 			detect_system_id(SYSTEMID)
 			install(FILES
 					${DEP_LIBS_DLL}
