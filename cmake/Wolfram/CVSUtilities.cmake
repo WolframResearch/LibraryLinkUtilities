@@ -4,7 +4,7 @@
 #
 
 
-# Helper function to idiot-check developer machine setup; otherwise cmake produces an Extremely Cryptic Error
+# Helper function to check developer machine setup; otherwise cmake produces an Extremely Cryptic Error
 function(check_cvsroot)
 	if(NOT DEFINED ENV{CVSROOT})
 		message(FATAL_ERROR "\n[[ ~ \\/\\/\\/\\/\\/\\ ~ CVSROOT is not defined! ~ /\\/\\/\\/\\/\\/ ~ ]]\n")
