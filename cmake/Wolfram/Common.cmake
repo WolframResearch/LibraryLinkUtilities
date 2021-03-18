@@ -30,29 +30,34 @@ function(get_default_mathematica_dir MATHEMATICA_VERSION DEFAULT_MATHEMATICA_INS
 	set(${DEFAULT_MATHEMATICA_INSTALL_DIR} "${_M_INSTALL_DIR}" PARENT_SCOPE)
 endfunction()
 
-function(get_wolfram_product_default_dirs PRODUCT_NAME PRODUCT_VERSION DEFAULT_PRODUCT_INSTALL_DIR)
+
+# Give a list of possible installation of a given Wolfram product
+# This function checks default installation directories for existing subdirectories
+# It does not verify if all subdirectories actually contain a valid installation. This is done later.
+function(get_wolfram_product_default_dirs PRODUCT_NAME DEFAULT_PRODUCT_INSTALL_DIRS)
 	set(_DEFAULT_INSTALL_DIR NOTFOUND)
 	if(APPLE)
-		set(_DEFAULT_INSTALL_DIR
-			"/Applications/${PRODUCT_NAME} ${PRODUCT_VERSION}.app"
-			"/Applications/${PRODUCT_NAME}.app")
+		file(GLOB _DEFAULT_INSTALL_DIR "/Applications/${PRODUCT_NAME}*.app")
 	elseif(WIN32)
-		set(_DEFAULT_INSTALL_DIR "C:/Program\ Files/Wolfram\ Research/${PRODUCT_NAME}/${PRODUCT_VERSION}")
+		file(GLOB _DEFAULT_INSTALL_DIR "C:/Program\ Files/Wolfram\ Research/${PRODUCT_NAME}/*")
 	else()
-		set(_DEFAULT_INSTALL_DIR "/usr/local/Wolfram/${PRODUCT_NAME}/${PRODUCT_VERSION}")
+		file(GLOB _DEFAULT_INSTALL_DIR "/usr/local/Wolfram/${PRODUCT_NAME}/*")
 	endif()
-	set(${DEFAULT_PRODUCT_INSTALL_DIR} "${_DEFAULT_INSTALL_DIR}" PARENT_SCOPE)
+	message(DEBUG "Found possible installations of ${PRODUCT_NAME}: ${_DEFAULT_INSTALL_DIR}")
+	set(${DEFAULT_PRODUCT_INSTALL_DIRS} "${_DEFAULT_INSTALL_DIR}" PARENT_SCOPE)
 endfunction()
 
-function(get_default_wolfram_dirs WL_VERSION DEFAULT_INSTALL_DIRS)
-	get_wolfram_product_default_dirs(WolframDesktop ${WL_VERSION} _WD_INSTALL_DIRS)
-	get_wolfram_product_default_dirs(Mathematica ${WL_VERSION} _M_INSTALL_DIRS)
-	get_wolfram_product_default_dirs(WolframEngine ${WL_VERSION} _WE_INSTALL_DIRS)
-	set(${DEFAULT_INSTALL_DIRS}
+function(get_default_wolfram_dirs DEFAULT_INSTALL_DIRS)
+	get_wolfram_product_default_dirs(WolframDesktop _WD_INSTALL_DIRS)
+	get_wolfram_product_default_dirs(Mathematica _M_INSTALL_DIRS)
+	get_wolfram_product_default_dirs(WolframEngine _WE_INSTALL_DIRS)
+	set(_ALL_INSTALL_DIRS
 		"${_WD_INSTALL_DIRS}"
 		"${_M_INSTALL_DIRS}"
-		"${_WE_INSTALL_DIRS}"
-		PARENT_SCOPE)
+		"${_WE_INSTALL_DIRS}")
+	list(SORT _ALL_INSTALL_DIRS COMPARE FILE_BASENAME ORDER DESCENDING)
+	message(VERBOSE "Found possible Wolfram Language installations: ${_ALL_INSTALL_DIRS}")
+	set(${DEFAULT_INSTALL_DIRS} "${_ALL_INSTALL_DIRS}" PARENT_SCOPE)
 endfunction()
 
 function(detect_system_id DETECTED_SYSTEM_ID)
