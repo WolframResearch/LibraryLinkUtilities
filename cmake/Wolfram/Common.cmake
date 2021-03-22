@@ -372,14 +372,30 @@ function(set_default_compile_options TARGET_NAME OPTIMIZATION_LEVEL)
 	endif()
 endfunction()
 
-# Forces static runtime on Windows. See https://gitlab.kitware.com/cmake/community/wikis/FAQ#dynamic-replace
+# Forces static runtime on Windows. For CMake 3.15+ you must provide target name as an argument for this macro unless you disable policy CMP0091.
 macro(set_windows_static_runtime)
 	if(WIN32)
-		foreach(flag_var CMAKE_CXX_FLAGS CMAKE_CXX_FLAGS_DEBUG CMAKE_CXX_FLAGS_RELEASE CMAKE_CXX_FLAGS_MINSIZEREL CMAKE_CXX_FLAGS_RELWITHDEBINFO)
-			if(${flag_var} MATCHES "/MD")
-				string(REGEX REPLACE "/MD" "/MT" ${flag_var} "${${flag_var}}")
+		cmake_policy(GET CMP0091 _MSVC_RUNTIME_POLICY)
+		if(_MSVC_RUNTIME_POLICY STREQUAL NEW)
+			# If CMAKE_MSVC_RUNTIME_LIBRARY is not set, one cannot specify this property per target, so we need to provide some initial value
+			# See https://cmake.org/cmake/help/latest/variable/CMAKE_MSVC_RUNTIME_LIBRARY.html
+			if(NOT CMAKE_MSVC_RUNTIME_LIBRARY)
+				set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 			endif()
-		endforeach()
+			# See https://cmake.org/cmake/help/latest/prop_tgt/MSVC_RUNTIME_LIBRARY.html
+			if(${ARGC} GREATER 0)
+				# If the user provided target name, set MSVC_RUNTIME_LIBRARY only for this target
+				set(TARGET_NAME ${ARGV0})
+				set_target_properties(${TARGET_NAME} PROPERTIES MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+			endif()
+		else()
+			# See https://gitlab.kitware.com/cmake/community/wikis/FAQ#dynamic-replace
+			foreach(flag_var CMAKE_CXX_FLAGS CMAKE_CXX_FLAGS_DEBUG CMAKE_CXX_FLAGS_RELEASE CMAKE_CXX_FLAGS_MINSIZEREL CMAKE_CXX_FLAGS_RELWITHDEBINFO)
+				if(${flag_var} MATCHES "/MD")
+					string(REGEX REPLACE "/MD" "/MT" ${flag_var} "${${flag_var}}")
+				endif()
+			endforeach()
+		endif()
 	endif()
 endmacro()
 

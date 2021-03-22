@@ -51,7 +51,7 @@ set_target_properties(Demo PROPERTIES
 set_default_compile_options(Demo O2)
 
 # We need to link statically to runtime library on Windows because this is how LLU is built, on other platforms this command is a no-op
-set_windows_static_runtime()
+set_windows_static_runtime(Demo)
 
 # link to LLU
 target_link_libraries(Demo PRIVATE LLU::LLU)
