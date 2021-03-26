@@ -239,7 +239,7 @@ endfunction()
 # Detects whether a library is shared or static.
 # This should be used to set the type in add_library() for dependency libraries.
 function(detect_library_type LIBRARY TYPE_VAR)
-	get_filename_component(_EXT ${LIBRARY} EXT)
+	get_filename_component(_EXT "${LIBRARY}" LAST_EXT)
 	if("${_EXT}" STREQUAL "${CMAKE_SHARED_LIBRARY_SUFFIX}")
 		set(${TYPE_VAR} SHARED PARENT_SCOPE)
 	elseif("${_EXT}" STREQUAL "${CMAKE_STATIC_LIBRARY_SUFFIX}")
@@ -247,7 +247,7 @@ function(detect_library_type LIBRARY TYPE_VAR)
 			# On Windows, the .lib is present for both static and shared libraries, so check whether it contains exported symbols.
 			# Failing that, check whether a similarly named .dll file exists in the same directory.
 			execute_process(
-					COMMAND dumpbin /exports ${LIBRARY}
+					COMMAND dumpbin /exports "${LIBRARY}"
 					COMMAND grep -w Exports
 					RESULT_VARIABLE _RESULT
 					OUTPUT_VARIABLE _OUTPUT
@@ -259,9 +259,9 @@ function(detect_library_type LIBRARY TYPE_VAR)
 					set(${TYPE_VAR} STATIC PARENT_SCOPE)
 				endif()
 			else()
-				get_filename_component(_PATH ${LIBRARY} DIRECTORY)
-				get_filename_component(_NAME ${LIBRARY} NAME_WE)
-				if(EXISTS ${_PATH}/${_NAME}.dll)
+				get_filename_component(_PATH "${LIBRARY}" DIRECTORY)
+				get_filename_component(_NAME "${LIBRARY}" NAME_WLE)
+				if(EXISTS "${_PATH}/${_NAME}.dll")
 					set(${TYPE_VAR} SHARED PARENT_SCOPE)
 				else()
 					set(${TYPE_VAR} STATIC PARENT_SCOPE)
@@ -280,14 +280,14 @@ endfunction()
 # Creating the target with the correct type allows useful target properties to be automatically set such as TYPE, RUNTIME_OUTPUT_NAME etc.
 # Optional 3rd arg is a variable to return the detected library type in.
 function(add_imported_target_detect_type TARGET_NAME LIBRARY)
-	fail_if_dne(${LIBRARY})
-	detect_library_type(${LIBRARY} LIBRARY_TYPE)
+	fail_if_dne("${LIBRARY}")
+	detect_library_type("${LIBRARY}" LIBRARY_TYPE)
 	add_library(${TARGET_NAME} ${LIBRARY_TYPE} IMPORTED)
 	# IMPORTED_LOCATION is the .dll component for SHARED targets on Windows. See: https://cmake.org/cmake/help/latest/prop_tgt/IMPORTED_LOCATION.html
 	if(${LIBRARY_TYPE} STREQUAL SHARED)
 		string(REPLACE ".lib" ".dll" LIBRARY_DLL "${LIBRARY}")
 	else()
-		set(LIBRARY_DLL ${LIBRARY})
+		set(LIBRARY_DLL "${LIBRARY}")
 	endif()
 	# IMPORTED_IMPLIB is the .lib component for imported targets on Windows. See: https://cmake.org/cmake/help/latest/prop_tgt/IMPORTED_IMPLIB.html
 	string(REPLACE ".dll" ".lib" LIBRARY_LIB "${LIBRARY}")
@@ -304,9 +304,9 @@ endfunction()
 # Optional arguments are the libraries to copy (defaults to main target file plus its dependencies).
 function(install_dependency_files PACLET_NAME DEP_TARGET_NAME)
 	get_target_property(_DEP_TYPE ${DEP_TARGET_NAME} TYPE)
-	if("${_DEP_TYPE}" STREQUAL UNKNOWN_LIBRARY)
+	if("${_DEP_TYPE}" MATCHES "UNKNOWN(_LIBRARY)?")
 		get_target_property(_DEP_LIBRARY ${DEP_TARGET_NAME} IMPORTED_LOCATION)
-		detect_library_type(${_DEP_LIBRARY} _DEP_TYPE)
+		detect_library_type("${_DEP_LIBRARY}" _DEP_TYPE)
 	endif()
 	if("${_DEP_TYPE}" MATCHES "SHARED(_LIBRARY)?")
 		if(ARGC GREATER_EQUAL 3)
@@ -329,9 +329,9 @@ function(install_dependency_files PACLET_NAME DEP_TARGET_NAME)
 				list(REMOVE_DUPLICATES DEP_AUX_LIBS)
 			endif()
 			string(REPLACE "${CMAKE_STATIC_LIBRARY_SUFFIX}" "${CMAKE_SHARED_LIBRARY_SUFFIX}" DEP_AUX_LIBS_DLL "${DEP_AUX_LIBS}")
-			foreach(lib ${DEP_AUX_LIBS_DLL})
-				if(EXISTS ${lib})
-					list(APPEND DEP_LIBS_DLL ${lib})
+			foreach(lib IN LISTS DEP_AUX_LIBS_DLL)
+				if(EXISTS "${lib}")
+					list(APPEND DEP_LIBS_DLL "${lib}")
 				endif()
 			endforeach()
 		endif()
