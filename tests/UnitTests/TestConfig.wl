@@ -6,7 +6,7 @@ $installDir = If[StringQ[$LLUInstallDir], $LLUInstallDir, FileNameJoin[{$baseDir
 (* Path to directory containing include folder from LibraryLinkUtilities installation *)
 $LLUIncDir = FileNameJoin[{$installDir, "include"}];
 
-$lib = FileNames[RegularExpression[".*LLU\\.(a|lib|" <> System`Dump`LibraryExtension[] <> ")"], $installDir, 2];
+$lib = FileNames[RegularExpression[".*LLU\\.(a|lib|" <> Internal`DynamicLibraryExtension[] <> ")"], $installDir, 2];
 If[Length[$lib] =!= 1,
 	Throw["Could not find LLU library.", "LLUTestConfig"];
 ];
