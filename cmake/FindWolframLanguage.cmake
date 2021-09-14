@@ -10,6 +10,7 @@
 #   - WolframLibrary
 #   - WSTP
 #   - wolframscript
+#   - FrontEnd
 #
 # Components are searched for in the same installation where the executable was found but this can be overriden by specifying WOLFRAM_LIBRARY_PATH
 # or WSTP_PATH as custom locations of Wolfram Library and WSTP, respectively.
@@ -44,13 +45,18 @@
 #    WolframLanguage_wolframscript_FOUND
 #    WolframLanguage_wolframscript_EXE
 #
+# FrontEnd:
+#    WolframLanguage_FrontEnd_FOUND
+#    WolframLanguage_FrontEnd_EXE
+#
 # Author: Rafal Chojna - rafalc@wolfram.com
 
 include("${CMAKE_CURRENT_LIST_DIR}/Wolfram/Common.cmake")
 
-set(_MMA_FIND_NAMES WolframDesktop wolframdesktop Mathematica mathematica WolframKernel wolfram)
-set(_MMA_FIND_SUFFIXES Executables MacOS Contents/MacOS)
-set(_MMA_FIND_DOC "Location of WolframLanguage interpreter executable")
+set(_WL_KERNEL_FIND_NAMES WolframKernel wolfram math MathKernel)
+set(_WL_FRONTEND_FIND_NAMES WolframDesktop wolframdesktop Mathematica mathematica)
+set(_WL_FIND_SUFFIXES Executables MacOS Contents/MacOS)
+set(_WL_FIND_DOC "Location of WolframLanguage interpreter executable")
 
 if(NOT WolframLanguage_ROOT AND Mathematica_INSTALL_DIR)
 	set(WolframLanguage_ROOT ${Mathematica_INSTALL_DIR})
@@ -59,9 +65,9 @@ if(NOT WolframLanguage_ROOT AND MATHEMATICA_INSTALL_DIR)
 	set(WolframLanguage_ROOT ${MATHEMATICA_INSTALL_DIR})
 endif()
 
-set(_MMA_FIND_QUIETLY)
+set(_WL_FIND_QUIETLY)
 if(WolframLanguage_FIND_QUIETLY)
-	set(_MMA_FIND_QUIETLY QUIET)
+	set(_WL_FIND_QUIETLY QUIET)
 endif()
 
 ###############################################################################
@@ -90,10 +96,10 @@ endfunction()
 macro(find_wolfram_language_from_hint)
 	if(WolframLanguage_ROOT OR WolframLanguage_INSTALL_DIR)
 		find_program(WolframLanguage_EXE
-			NAMES ${_MMA_FIND_NAMES}
+			NAMES ${_WL_KERNEL_FIND_NAMES}
 			HINTS ${WolframLanguage_ROOT} ${WolframLanguage_INSTALL_DIR}
-			PATH_SUFFIXES ${_MMA_FIND_SUFFIXES}
-			DOC ${_MMA_FIND_DOC}
+			PATH_SUFFIXES ${_WL_FIND_SUFFIXES}
+			DOC ${_WL_FIND_DOC}
 			NO_DEFAULT_PATH)
 
 		if(NOT WolframLanguage_EXE AND NOT WolframLanguage_FIND_QUIETLY)
@@ -107,28 +113,28 @@ endmacro()
 macro(find_wolfram_language_from_env)
 	if(IS_DIRECTORY "$ENV{MATHEMATICA_HOME}")
 		find_program(WolframLanguage_EXE
-			NAMES ${_MMA_FIND_NAMES}
+			NAMES ${_WL_KERNEL_FIND_NAMES}
 			HINTS "$ENV{MATHEMATICA_HOME}"
-			PATH_SUFFIXES ${_MMA_FIND_SUFFIXES}
-			DOC ${_MMA_FIND_DOC}
+			PATH_SUFFIXES ${_WL_FIND_SUFFIXES}
+			DOC ${_WL_FIND_DOC}
 			NO_DEFAULT_PATH)
 	endif()
 endmacro()
 
 macro(find_wolfram_language_on_path)
 	find_program(WolframLanguage_EXE
-		NAMES ${_MMA_FIND_NAMES}
-		PATH_SUFFIXES ${_MMA_FIND_SUFFIXES}
-		DOC ${_MMA_FIND_DOC})
+		NAMES ${_WL_KERNEL_FIND_NAMES}
+		PATH_SUFFIXES ${_WL_FIND_SUFFIXES}
+		DOC ${_WL_FIND_DOC})
 endmacro()
 
 function(find_wolfram_language_in_default_dir)
 	get_default_wolfram_dirs(_DEFAULT_DIRS)
 	find_program(WolframLanguage_EXE
-		NAMES ${_MMA_FIND_NAMES}
+		NAMES ${_WL_KERNEL_FIND_NAMES}
 		HINTS ${_DEFAULT_DIRS}
-		PATH_SUFFIXES ${_MMA_FIND_SUFFIXES}
-		DOC ${_MMA_FIND_DOC}
+		PATH_SUFFIXES ${_WL_FIND_SUFFIXES}
+		DOC ${_WL_FIND_DOC}
 		NO_DEFAULT_PATH
 		NAMES_PER_DIR)
 endfunction()
@@ -140,10 +146,22 @@ function(find_wolframscript)
 	find_program(WolframLanguage_wolframscript_EXE
 		NAMES wolframscript
 		HINTS ${WolframLanguage_INSTALL_DIR}
-		PATH_SUFFIXES ${_MMA_FIND_SUFFIXES}
+		PATH_SUFFIXES ${_WL_FIND_SUFFIXES}
 		DOC "Path to wolframscript executable."
 		NO_DEFAULT_PATH)
 endfunction()
+
+# Locate WolframLanguage front-end (either Mathematica or WolframDesktop, we do not count WolframPlayer as a real front-end),
+# preferably within WolframLanguage_INSTALL_DIR, if defined
+function(find_wolfram_language_front_end)
+	find_program(WolframLanguage_FrontEnd_EXE
+		NAMES ${_WL_FRONTEND_FIND_NAMES}
+		HINTS ${WolframLanguage_INSTALL_DIR}
+		PATH_SUFFIXES ${_WL_FIND_SUFFIXES}
+		DOC "Path to a WolframLanguage FrontEnd executable."
+		NO_DEFAULT_PATH)
+endfunction()
+
 
 ###############################################################################
 # Action starts here
@@ -187,14 +205,21 @@ endif()
 
 foreach(_COMP IN LISTS WolframLanguage_FIND_COMPONENTS)
 	if(_COMP STREQUAL "WolframLibrary")
-		find_package(WolframLibrary ${_MMA_FIND_QUIETLY})
+		find_package(WolframLibrary ${_WL_FIND_QUIETLY})
 		set(WolframLanguage_${_COMP}_FOUND ${WolframLibrary_FOUND})
 	elseif(_COMP STREQUAL "WSTP")
-		find_package(WSTP ${_MMA_FIND_QUIETLY})
+		find_package(WSTP ${_WL_FIND_QUIETLY})
 		set(WolframLanguage_${_COMP}_FOUND ${WSTP_FOUND})
 	elseif(_COMP STREQUAL "wolframscript")
 		find_wolframscript(WolframLanguage_wolframscript_EXE)
 		if(EXISTS ${WolframLanguage_wolframscript_EXE})
+			set(WolframLanguage_${_COMP}_FOUND TRUE)
+		else()
+			set(WolframLanguage_${_COMP}_FOUND FALSE)
+		endif()
+	elseif(_COMP STREQUAL "FrontEnd")
+		find_wolfram_language_front_end(WolframLanguage_FrontEnd_EXE)
+		if(EXISTS ${WolframLanguage_FrontEnd_EXE})
 			set(WolframLanguage_${_COMP}_FOUND TRUE)
 		else()
 			set(WolframLanguage_${_COMP}_FOUND FALSE)
