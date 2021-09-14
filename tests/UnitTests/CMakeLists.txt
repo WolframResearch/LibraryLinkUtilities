@@ -38,47 +38,54 @@ set(TEST_MODULES
 find_package(WolframLanguage 12.0 COMPONENTS wolframscript)
 if(WolframLanguage_wolframscript_EXE)
 	message(STATUS "Unit tests will be run with: ${WolframLanguage_wolframscript_EXE}")
-
-	foreach(UnitTest ${TEST_MODULES})
-		set(MODULE_CODE
-			[===[
-				Needs["MUnit`"];
-				$LLUInstallDir = "${CMAKE_INSTALL_PREFIX}";
-				report = Catch[
-					TestReport["${UnitTest}TestSuite.mt", MemoryConstraint -> Quantity[500, "MB"], TimeConstraint -> 30],
-					_String,
-					Function[{value, tag}, Print["ERROR: " <> ToString[value]]; Exit[1]]
-				];
-				report = report /. resObj_TestResultObject :> RuleCondition[TextString[resObj[{
-					"TestID",
-					"ExpectedOutput",
-					"ActualOutput",
-					"ExpectedMessages",
-					"ActualMessages",
-					"AbsoluteTimeUsed",
-					"MemoryUsed"
-				}], AssociationFormat -> {"{\n\t\t", ",\n\t\t", "\n\t}", " -> "}]];
-				propertiesToPrint = {"Title", "TimeElapsed", "Aborted", "TestsSucceededCount", "TestsFailedCount"};
-				failedCount = report["TestsFailedCount"];
-				If[failedCount > 0,
-					AppendTo[propertiesToPrint, "TestsFailedIndices"];
-					Scan[If[report["TestsFailed" <> # <> "Count"] > 0,
-						propertiesToPrint = Join[propertiesToPrint, {"TestsFailed" <> # <> "Count", "TestsFailed" <> # <> "Indices", "TestsFailed" <> #}];
-					]&, {"WrongResults", "WithMessages", "WithErrors"}];
-				];
-				Print[TextString[AssociationMap[report, propertiesToPrint], AssociationFormat -> {"{\n\t", ",\n\t", "\n}", ": "}]];
-				exitCode = 1 - Boole[report["AllTestsSucceeded"]];
-				Exit[exitCode]
-			]===])
-		string(REGEX REPLACE "[\t\r\n]+" "" MODULE_CODE "${MODULE_CODE}")
-		string(CONFIGURE "${MODULE_CODE}" MODULE_CODE)
-
-		add_test(NAME ${UnitTest}
-			WORKING_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}/${UnitTest}"
-			COMMAND ${WolframLanguage_wolframscript_EXE} -code "${MODULE_CODE}"
-			)
-	endforeach()
-
+	set(_WL_KERNEL_EXE ${WolframLanguage_wolframscript_EXE})
+	set(_WL_KERNEL_OPTION "-code")
+elseif(WolframLanguage_EXE)
+	message(STATUS "Unit tests will be run with: ${WolframLanguage_EXE}")
+	set(_WL_KERNEL_EXE ${WolframLanguage_EXE})
+	set(_WL_KERNEL_OPTION "-run")
 else()
-	message(STATUS "Could not find wolframscript. Unit tests target will not be generated.")
+	message(STATUS "Could not find any instance of the WolframLanguage Kernel. Unit tests target will not be generated.")
+	return()
 endif()
+
+foreach(UnitTest ${TEST_MODULES})
+	set(MODULE_CODE
+		[===[
+			Needs["MUnit`"];
+			$LLUInstallDir = "${CMAKE_INSTALL_PREFIX}";
+			report = Catch[
+				TestReport["${UnitTest}TestSuite.mt", MemoryConstraint -> Quantity[500, "MB"], TimeConstraint -> 30],
+				_String,
+				Function[{value, tag}, Print["ERROR: " <> ToString[value]]; Exit[1]]
+			];
+			report = report /. resObj_TestResultObject :> RuleCondition[TextString[resObj[{
+				"TestID",
+				"ExpectedOutput",
+				"ActualOutput",
+				"ExpectedMessages",
+				"ActualMessages",
+				"AbsoluteTimeUsed",
+				"MemoryUsed"
+			}], AssociationFormat -> {"{\n\t\t", ",\n\t\t", "\n\t}", " -> "}]];
+			propertiesToPrint = {"Title", "TimeElapsed", "Aborted", "TestsSucceededCount", "TestsFailedCount"};
+			failedCount = report["TestsFailedCount"];
+			If[failedCount > 0,
+				AppendTo[propertiesToPrint, "TestsFailedIndices"];
+				Scan[If[report["TestsFailed" <> # <> "Count"] > 0,
+					propertiesToPrint = Join[propertiesToPrint, {"TestsFailed" <> # <> "Count", "TestsFailed" <> # <> "Indices", "TestsFailed" <> #}];
+				]&, {"WrongResults", "WithMessages", "WithErrors"}];
+			];
+			Print[TextString[AssociationMap[report, propertiesToPrint], AssociationFormat -> {"{\n\t", ",\n\t", "\n}", ": "}]];
+			exitCode = 1 - Boole[report["AllTestsSucceeded"]];
+			Exit[exitCode]
+		]===])
+	string(REGEX REPLACE "[\t\r\n]+" "" MODULE_CODE "${MODULE_CODE}")
+	string(CONFIGURE "${MODULE_CODE}" MODULE_CODE)
+
+	add_test(NAME ${UnitTest}
+		WORKING_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}/${UnitTest}"
+		COMMAND ${_WL_KERNEL_EXE} ${_WL_KERNEL_OPTION} "${MODULE_CODE}"
+		)
+endforeach()
+
