@@ -41,6 +41,13 @@ namespace LLU {
 		template<typename T>
 		inline constexpr MArgumentType PrimitiveIndex = static_cast<MArgumentType>(variant_index<PrimitiveAny, T>());
 
+		// PrimitiveIndex for mint should always return MArgumentType::Integer. Explicit specialization is needed because on 32-bit platforms
+		// mint and mbool are the same type and so PrimitiveIndex<mint> would incorrectly return MArgumentType::Boolean.
+		// With explicit specialization, however, we have the opposite problem: PrimitiveIndex<mbool> returns MArgumentType::Integer, but this
+		// is considered the lesser evil. For this and other reasons it is best to avoid mbool type in C++ code and use bool instead.
+		template<>
+		inline constexpr MArgumentType PrimitiveIndex<mint> = MArgumentType::Integer;
+
 		/// Type trait for checking if \p T is a primitive LibraryLink type (belongs to the MArgument union)
 		template<typename T>
 		inline constexpr bool PrimitiveQ = (variant_index<PrimitiveAny, T>() < std::variant_size_v<PrimitiveAny>);

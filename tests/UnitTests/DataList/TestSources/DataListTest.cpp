@@ -315,7 +315,10 @@ LLU_LIBRARY_FUNCTION(PullAndPush) {
 	auto rawB = static_cast<mbool>(b);
 
 	dsOut.push_back(b);
-	dsOut.push_back(rawB);
+	// dsOut.push_back(rawB); - this would push a Boolean node on 64-bit platforms and an Integer node on 32-bit,
+	// because on 32-bit platforms mbool and mint are the same type, and we chose to prefer Integer nodes in such cases.
+	// It's best to avoid using the mbool type in C++ code in general.
+	dsOut.push_back<MArgumentType::Boolean>(rawB); // this will always push a Boolean node because we request it explicitly
 	dsOut.push_back<MArgumentType::Boolean>("bool", b);
 	dsOut.push_back<MArgumentType::Boolean>("mbool", rawB);
 
