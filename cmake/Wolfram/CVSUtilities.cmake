@@ -144,7 +144,11 @@ function(find_and_parse_library_conf)
 		endif()
 
 		set(_LIBRARY_CONF_LIBRARY_STRING ${_LIBRARY_CONF_STRINGS})
-		list(FILTER _LIBRARY_CONF_LIBRARY_STRING INCLUDE REGEX "${${LIB_SYSTEMID}}[ \t]+${LIBRARY}")
+		if ("${${LIB_VERSION}}")
+			list(FILTER _LIBRARY_CONF_LIBRARY_STRING INCLUDE REGEX "${${LIB_SYSTEMID}}[ \t]+${LIBRARY}[ \t]+${${LIB_VERSION}}")
+		else()
+			list(FILTER _LIBRARY_CONF_LIBRARY_STRING INCLUDE REGEX "${${LIB_SYSTEMID}}[ \t]+${LIBRARY}")
+		endif()
 
 		if(NOT _LIBRARY_CONF_LIBRARY_STRING)
 			list(APPEND UNUSED_LIBRARIES ${LIBRARY})
@@ -182,7 +186,7 @@ function(find_cvs_dependency LIB_NAME)
 	set(_LIB_DIR_SUFFIX ${LIB_VERSION}/${LIB_SYSTEMID}/${LIB_BUILD_PLATFORM})
 
 	if(NOT LIB_SYSTEMID)
-		message(STATUS "[find_cvs_dependency] ${LIB_NAME}_SYSTEMID not defined. Returning.")
+		message(STATUS "[find_cvs_dependency] ${_LIB_NAME}_SYSTEMID not defined. Returning.")
 		return()
 	endif()
 
