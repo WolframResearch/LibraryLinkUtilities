@@ -151,6 +151,13 @@ function(find_and_parse_library_conf)
 		endif()
 
 		if(NOT _LIBRARY_CONF_LIBRARY_STRING)
+			# second chance: try "All" as system id, this is often used for header-only libraries
+			set(${LIB_SYSTEMID} All)
+			set(_LIBRARY_CONF_LIBRARY_STRING ${_LIBRARY_CONF_STRINGS})
+			list(FILTER _LIBRARY_CONF_LIBRARY_STRING INCLUDE REGEX "${${LIB_SYSTEMID}}[ \t]+${LIBRARY}")
+		endif()
+
+		if(NOT _LIBRARY_CONF_LIBRARY_STRING)
 			list(APPEND UNUSED_LIBRARIES ${LIBRARY})
 			message(STATUS "Skipping library ${LIBRARY}")
 			continue()
