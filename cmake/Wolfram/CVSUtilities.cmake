@@ -139,7 +139,8 @@ function(find_and_parse_library_conf)
 		set(LIB_VERSION ${_LIBRARY}_VERSION)
 		set(LIB_BUILD_PLATFORM ${_LIBRARY}_BUILD_PLATFORM)
 
-		if(NOT ${LIB_SYSTEMID})
+		set(LIB_SYSTEMID_ORIG ${${LIB_SYSTEMID}})
+		if(NOT LIB_SYSTEMID_ORIG)
 			set(${LIB_SYSTEMID} ${SYSTEMID})
 		endif()
 
@@ -150,8 +151,8 @@ function(find_and_parse_library_conf)
 			list(FILTER _LIBRARY_CONF_LIBRARY_STRING INCLUDE REGEX "${${LIB_SYSTEMID}}[ \t]+${LIBRARY}")
 		endif()
 
-		if(NOT _LIBRARY_CONF_LIBRARY_STRING)
-			# second chance: try "All" as system id, this is often used for header-only libraries
+		if(NOT LIB_SYSTEMID_ORIG AND NOT _LIBRARY_CONF_LIBRARY_STRING)
+			# If system ID was not explicitly specified and we have found nothing, try "All". This is often used for header-only libraries.
 			set(${LIB_SYSTEMID} All)
 			set(_LIBRARY_CONF_LIBRARY_STRING ${_LIBRARY_CONF_STRINGS})
 			list(FILTER _LIBRARY_CONF_LIBRARY_STRING INCLUDE REGEX "${${LIB_SYSTEMID}}[ \t]+${LIBRARY}")
