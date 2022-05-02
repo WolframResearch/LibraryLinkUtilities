@@ -63,7 +63,7 @@ function(get_library_from_cvs PACKAGE_NAME PACKAGE_VERSION PACKAGE_SYSTEM_ID PAC
 	endif()
 
 	# Download component library
-	download_cvs_content(${PACKAGE_NAME}
+	download_cvs_content(${PACKAGE_NAME}_${PACKAGE_VERSION}
 	                     "${${PACKAGE_LOCATION}}/${_PACKAGE_PATH_SUFFIX}"
 	                     "Components/${PACKAGE_NAME}/${_PACKAGE_PATH_SUFFIX}"
 	                     _PACKAGE_LOCATION
