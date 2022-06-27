@@ -45,6 +45,16 @@ function(download_cvs_content content_name download_path module_path DOWNLOAD_LO
 	endif()
 	# store the download location in a variable
 	set(${DOWNLOAD_LOCATION_OUT} "${${lc_content_name}_SOURCE_DIR}" PARENT_SCOPE)
+
+	if(DEFINED ENV{CVS_LOG_FILE})
+		# record cvs checkout "LibraryName" "LibraryVersion" SystemID and such info in ENV{CVS_LOG_FILE}
+		if(${module_path} MATCHES "^Components/.*")
+			#remove prefix "Components/"
+			string(SUBSTRING ${module_path} 11 -1 striped_cvs_path)
+			string(REPLACE "/" "\t\t" module_info ${striped_cvs_path})
+			file(APPEND $ENV{CVS_LOG_FILE} "${module_info}\n")
+		endif()
+	endif()
 endfunction()
 
 # Download a library from Wolfram's CVS repository and set PACKAGE_LOCATION to the download location.
