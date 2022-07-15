@@ -11,6 +11,12 @@ function(check_cvsroot)
 	endif()
 endfunction()
 
+function(check_nexus_root)
+	if(NOT DEFINED ENV{NEXUSROOT})
+		message(FATAL_ERROR "\n[[ ~ \\/\\/\\/\\/\\/\\ ~ NEXUSROOT is not defined! ~ /\\/\\/\\/\\/\\/ ~ ]]\n")
+	endif()
+endfunction()
+
 #Helper function to check whether given CVS module exists.
 function(cvsmoduleQ MODULE WORKINGDIR RES)
 	check_cvsroot()
@@ -103,30 +109,8 @@ function(split_string_to_list STR LIST)
 	set(${LIST} ${_STR} PARENT_SCOPE)
 endfunction()
 
-# Finds library.conf and for each library therein sets:
-# ${LIBRARY_NAME}_SYSTEMID
-# ${LIBRARY_NAME}_VERSION
-# ${LIBRARY_NAME}_BUILD_PLATFORM
-# Also sets DOWNLOAD_CVS_SOURCE variable to control Source download (default is OFF for Release config, ON otherwise).
-function(find_and_parse_library_conf)
-	if(NOT DEFINED DOWNLOAD_CVS_SOURCE)
-		if("${CMAKE_BUILD_TYPE}" STREQUAL Release)
-			set(DOWNLOAD_CVS_SOURCE OFF CACHE BOOL "Download CVS Source directory for all dependencies if it exists.")
-		else()
-			set(DOWNLOAD_CVS_SOURCE ON CACHE BOOL "Download CVS Source directory for all dependencies if it exists.")
-		endif()
-	endif()
-
-	# path to library.conf. Located in scripts directory by default, but custom location can be passed in.
-	if(ARGC GREATER_EQUAL 1)
-		set(LIBRARY_CONF "${ARGV0}")
-	else()
-		set(LIBRARY_CONF "${CMAKE_CURRENT_SOURCE_DIR}/scripts/library.conf")
-	endif()
-	if(NOT EXISTS ${LIBRARY_CONF})
-		message(FATAL_ERROR "Unable to find ${LIBRARY_CONF}")
-	endif()
-
+macro(parse_old_library_conf LIBRARY_CONF)
+	message(DEPRECATION "library.conf file is now deprecated in favor of library.conf.json")
 	file(STRINGS ${LIBRARY_CONF} _LIBRARY_CONF_STRINGS)
 	# lines beginning with '#' shall be ignored.
 	list(FILTER _LIBRARY_CONF_STRINGS EXCLUDE REGEX "^#")
@@ -135,12 +119,10 @@ function(find_and_parse_library_conf)
 	list(FILTER _LIBRARY_CONF_LIBRARY_LIST INCLUDE REGEX "\\[Library\\]")
 
 	string(REGEX REPLACE
-	       "\\[Library\\][ \t]+(.*)" "\\1"
-	       _LIBRARY_CONF_LIBRARY_LIST "${_LIBRARY_CONF_LIBRARY_LIST}"
-	       )
+		"\\[Library\\][ \t]+(.*)" "\\1"
+		_LIBRARY_CONF_LIBRARY_LIST "${_LIBRARY_CONF_LIBRARY_LIST}"
+		)
 	split_string_to_list(${_LIBRARY_CONF_LIBRARY_LIST} _LIBRARY_CONF_LIBRARY_LIST)
-
-	detect_system_id(SYSTEMID)
 
 	foreach(LIBRARY ${_LIBRARY_CONF_LIBRARY_LIST})
 		string(TOUPPER ${LIBRARY} _LIBRARY)
@@ -175,9 +157,9 @@ function(find_and_parse_library_conf)
 		endif()
 
 		string(REGEX REPLACE
-		       "${${LIB_SYSTEMID}}[ \t]+${LIBRARY}[ \t]+([A-Za-z0-9.]+)[ \t]+([A-Za-z0-9_\\-]+)" "\\1;\\2"
-		       _LIB_VERSION_BUILD_PLATFORM "${_LIBRARY_CONF_LIBRARY_STRING}"
-		       )
+			"${${LIB_SYSTEMID}}[ \t]+${LIBRARY}[ \t]+([A-Za-z0-9.]+)[ \t]+([A-Za-z0-9_\\-]+)" "\\1;\\2"
+			_LIB_VERSION_BUILD_PLATFORM "${_LIBRARY_CONF_LIBRARY_STRING}"
+			)
 
 		list(GET _LIB_VERSION_BUILD_PLATFORM 0 _LIB_VERSION)
 		list(GET _LIB_VERSION_BUILD_PLATFORM 1 _LIB_BUILD_PLATFORM)
@@ -186,6 +168,94 @@ function(find_and_parse_library_conf)
 		set(${LIB_BUILD_PLATFORM} ${_LIB_BUILD_PLATFORM} PARENT_SCOPE)
 		set(${LIB_SYSTEMID} ${${LIB_SYSTEMID}} PARENT_SCOPE)
 	endforeach()
+endmacro()
+
+# Finds library.conf and for each library therein sets:
+# ${LIBRARY_NAME}_SYSTEMID
+# ${LIBRARY_NAME}_VERSION
+# ${LIBRARY_NAME}_BUILD_PLATFORM
+# Also sets DOWNLOAD_CVS_SOURCE variable to control Source download (default is OFF for Release config, ON otherwise).
+function(find_and_parse_library_conf)
+	if(NOT DEFINED DOWNLOAD_CVS_SOURCE)
+		if("${CMAKE_BUILD_TYPE}" STREQUAL Release)
+			set(DOWNLOAD_CVS_SOURCE OFF CACHE BOOL "Download CVS Source directory for all dependencies if it exists.")
+		else()
+			set(DOWNLOAD_CVS_SOURCE ON CACHE BOOL "Download CVS Source directory for all dependencies if it exists.")
+		endif()
+	endif()
+
+	# path to library.conf. Located in scripts directory by default, but custom location can be passed in.
+	if(ARGC GREATER_EQUAL 1)
+		set(LIBRARY_CONF "${ARGV0}")
+	else()
+		set(LIBRARY_CONF "${CMAKE_CURRENT_SOURCE_DIR}/scripts/library.conf")
+	endif()
+	if(NOT EXISTS ${LIBRARY_CONF})
+		message(FATAL_ERROR "Unable to find ${LIBRARY_CONF}")
+	endif()
+
+	detect_system_id(SYSTEMID)
+
+	if (LIBRARY_CONF MATCHES .*\\.json)
+		file(READ ${LIBRARY_CONF} LIBRARY_CONF_JSON)
+
+		string(JSON _LIBRARY_LIST GET ${LIBRARY_CONF_JSON} ${SYSTEMID})
+		string(JSON _LIBRARY_LIST_LENGTH LENGTH ${_LIBRARY_LIST})
+		math(EXPR _MAX_LIBRARY_INDEX "${_LIBRARY_LIST_LENGTH} - 1")
+		foreach(INDEX RANGE ${_MAX_LIBRARY_INDEX})
+			string(JSON _LIB_OBJECT GET ${_LIBRARY_LIST} ${INDEX})
+			string(JSON _LIB_NAME GET ${_LIB_OBJECT} "Library")
+			string(JSON _LIB_VERSION GET ${_LIB_OBJECT} "Version")
+			string(JSON _LIB_BUILD_PLATFORM ERROR_VARIABLE JSON_ERROR GET ${_LIB_OBJECT} "Platform")
+			string(JSON _LIB_BUILD_ID ERROR_VARIABLE JSON_ERROR GET ${_LIB_OBJECT} "BuildID")
+			string(JSON _LIB_CHECKSUM_MD5 ERROR_VARIABLE JSON_ERROR GET ${_LIB_OBJECT} "MD5")
+
+			set(${_LIB_NAME}_SYSTEM_ID ${SYSTEMID} PARENT_SCOPE)
+			set(${_LIB_NAME}_VERSION ${_LIB_VERSION} PARENT_SCOPE)
+			set(${_LIB_NAME}_BUILD_PLATFORM ${_LIB_BUILD_PLATFORM} PARENT_SCOPE)
+			set(${_LIB_NAME}_BUILD_ID ${_LIB_BUILD_ID} PARENT_SCOPE)
+			set(${_LIB_NAME}_CHECKSUM_MD5 ${_LIB_CHECKSUM_MD5} PARENT_SCOPE)
+		endforeach()
+	else()
+		parse_old_library_conf(${LIBRARY_CONF})
+	endif()
+endfunction()
+
+
+function(fetch_dependency_from_nexus LIB_NAME LIB_VERSION LIB_SYSTEM_ID LIB_BUILD_PLATFORM LIB_BUILD_ID LIB_CHECKSUM_MD5 DOWNLOAD_LOCATION_OUT)
+	check_nexus_root()
+	set(NXS_ASSET_PATH "${LIB_NAME}/${LIB_VERSION}/${LIB_SYSTEM_ID}/${LIB_BUILD_PLATFORM}/${LIB_BUILD_ID}")
+
+	# This search must return a single result, so including the Build ID is a good idea
+	set(NXS_SEARCH_URL "$ENV{NEXUSROOT}/service/rest/v1/search/assets?repository=re-components&group=/${NXS_ASSET_PATH}")
+	file(DOWNLOAD
+		${NXS_SEARCH_URL}
+		nexus_assets.json
+		STATUS NXS_ASSETS_STATUS)
+
+	list(GET NXS_ASSETS_STATUS 0 STATUS_CODE)
+	if(NOT STATUS_CODE EQUAL 0)
+		message(FATAL_ERROR "Invalid Nexus search request.")
+	endif()
+
+	file(READ "${CMAKE_CURRENT_BINARY_DIR}/nexus_assets.json" NXS_ASSETS_JSON)
+
+	string(JSON ASSETS_ALL_ITEMS GET ${NXS_ASSETS_JSON} "items")
+	string(JSON REQUESTED_ASSET GET ${ASSETS_ALL_ITEMS} 0)
+	string(JSON ASSET_DOWNLOAD_URL GET ${REQUESTED_ASSET} "downloadUrl")
+	string(JSON ASSET_MD5 GET ${REQUESTED_ASSET} "checksum" "md5")
+	message(${ASSET_MD5})
+	if(NOT ASSET_MD5 STREQUAL LIB_CHECKSUM_MD5)
+		message(FATAL_ERROR "Expected asset with MD5 ${LIB_CHECKSUM_MD5} but server has ${ASSET_MD5}.")
+	endif()
+	include(FetchContent)
+	FetchContent_declare(
+		${LIB_NAME}
+		URL ${ASSET_DOWNLOAD_URL}
+		URL_HASH MD5=${LIB_CHECKSUM_MD5}
+	)
+	FetchContent_MakeAvailable(${LIB_NAME})
+	set(${DOWNLOAD_LOCATION_OUT} "${${LIB_NAME}_SOURCE_DIR}/${LIB_BUILD_PLATFORM}" PARENT_SCOPE)
 endfunction()
 
 # Resolve full path to a CVS dependency, downloading if necessary
@@ -195,23 +265,24 @@ endfunction()
 function(find_cvs_dependency LIB_NAME)
 
 	# helper variables
-	string(TOUPPER ${LIB_NAME} _LIB_NAME)
-	set(LIB_DIR "${${_LIB_NAME}_DIR}")
-	set(LIB_LOCATION "${${_LIB_NAME}_LOCATION}")
-	set(LIB_VERSION ${${_LIB_NAME}_VERSION})
-	set(LIB_SYSTEMID ${${_LIB_NAME}_SYSTEMID})
-	set(LIB_BUILD_PLATFORM ${${_LIB_NAME}_BUILD_PLATFORM})
-	set(_LIB_DIR_SUFFIX ${LIB_VERSION}/${LIB_SYSTEMID}/${LIB_BUILD_PLATFORM})
+	set(LIB_DIR "${${LIB_NAME}_DIR}")
+	set(LIB_LOCATION "${${LIB_NAME}_LOCATION}")
+	set(LIB_VERSION ${${LIB_NAME}_VERSION})
+	set(LIB_SYSTEMID ${${LIB_NAME}_SYSTEM_ID})
+	set(LIB_BUILD_PLATFORM ${${LIB_NAME}_BUILD_PLATFORM})
+	set(LIB_BUILD_ID ${${LIB_NAME}_BUILD_ID})
+	set(LIB_CHECKSUM_MD5 ${${LIB_NAME}_CHECKSUM_MD5})
+	set(_LIB_DIR_SUFFIX ${LIB_VERSION}/${LIB_SYSTEM_ID}/${LIB_BUILD_PLATFORM})
 
 	if(NOT LIB_SYSTEMID)
-		message(STATUS "[find_cvs_dependency] ${_LIB_NAME}_SYSTEMID not defined. Returning.")
+		message(STATUS "[find_cvs_dependency] ${LIB_NAME}_SYSTEMID not defined. Returning.")
 		return()
 	endif()
 
 	# Check if there is a full path to the dependency with version, system id and build platform.
 	if(NOT ${LIB_DIR} STREQUAL "")
 		if(NOT EXISTS ${LIB_DIR})
-			message(FATAL_ERROR "Specified full path to Lib does not exist: ${LIB_DIR}")
+			message(FATAL_ERROR "Specified full path to ${LIB_NAME} does not exist: ${LIB_DIR}")
 		endif()
 		return()
 	endif()
@@ -219,9 +290,9 @@ function(find_cvs_dependency LIB_NAME)
 	# Check if there is a path to the Lib component
 	if(NOT ${LIB_LOCATION} STREQUAL "")
 		if(NOT EXISTS ${LIB_LOCATION})
-			message(FATAL_ERROR "Specified location of Lib does not exist: ${LIB_LOCATION}")
+			message(FATAL_ERROR "Specified location of ${LIB_NAME} does not exist: ${LIB_LOCATION}")
 		elseif(EXISTS ${LIB_LOCATION}/${_LIB_DIR_SUFFIX})
-			set(${_LIB_NAME}_DIR ${LIB_LOCATION}/${_LIB_DIR_SUFFIX} PARENT_SCOPE)
+			set(${LIB_NAME}_DIR ${LIB_LOCATION}/${_LIB_DIR_SUFFIX} PARENT_SCOPE)
 			return()
 		endif()
 	endif()
@@ -237,16 +308,20 @@ function(find_cvs_dependency LIB_NAME)
 		if(NOT EXISTS ${_CVS_COMPONENTS_DIR})
 			message(FATAL_ERROR "Specified location of CVS components does not exist: ${_CVS_COMPONENTS_DIR}")
 		elseif(EXISTS ${_CVS_COMPONENTS_DIR}/${LIB_NAME}/${_LIB_DIR_SUFFIX})
-			set(${_LIB_NAME}_DIR ${_CVS_COMPONENTS_DIR}/${LIB_NAME}/${_LIB_DIR_SUFFIX} PARENT_SCOPE)
+			set(${LIB_NAME}_DIR ${_CVS_COMPONENTS_DIR}/${LIB_NAME}/${_LIB_DIR_SUFFIX} PARENT_SCOPE)
 			return()
 		endif()
 	endif()
 
-	# Finally download component from cvs
-	# Set location of library sources checked out from cvs
-	set(LIB_LOCATION "${CMAKE_BINARY_DIR}/Components/${LIB_NAME}")
-	set(${_LIB_NAME}_LOCATION ${LIB_LOCATION} CACHE PATH "Location of ${LIB_NAME} root directory.")
+	# The library is not on a local drive so we need to download it.
+	if (LIB_BUILD_ID)
+		fetch_dependency_from_nexus(${LIB_NAME} ${LIB_VERSION} ${LIB_SYSTEMID} ${LIB_BUILD_PLATFORM} ${LIB_BUILD_ID} ${LIB_CHECKSUM_MD5} LIB_LOCATION)
+	else()
+		# Set location for artifacts to be downloaded:
+		set(LIB_LOCATION "${CMAKE_BINARY_DIR}/Components/${LIB_NAME}")
+		get_library_from_cvs(${LIB_NAME} ${LIB_VERSION} ${LIB_SYSTEMID} ${LIB_BUILD_PLATFORM} LIB_LOCATION)
+	endif()
 
-	get_library_from_cvs(${LIB_NAME} ${LIB_VERSION} ${LIB_SYSTEMID} ${LIB_BUILD_PLATFORM} LIB_LOCATION)
-	set(${_LIB_NAME}_DIR ${LIB_LOCATION} PARENT_SCOPE)
+	set(${LIB_NAME}_LOCATION ${LIB_LOCATION} CACHE PATH "Location of ${LIB_NAME} root directory.")
+	set(${LIB_NAME}_DIR ${LIB_LOCATION} PARENT_SCOPE)
 endfunction()
