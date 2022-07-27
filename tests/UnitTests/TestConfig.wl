@@ -3,7 +3,7 @@ $baseDir = FileNameDrop[$TestFileName, -3];
 
 $installDir = If[StringQ[$LLUInstallDir], $LLUInstallDir, FileNameJoin[{$baseDir, "install"}]];
 
-$CRTLinkingFlag = Switch[$LinkToCRTStaticallyQ,
+$CRTLinkingFlag = Switch[$CRTLinkingMode,
 	"MultiThreaded", "/MT",
 	"MultiThreadedDLL", "/MD",
 	"MultiThreadedDebug", "/MTd",

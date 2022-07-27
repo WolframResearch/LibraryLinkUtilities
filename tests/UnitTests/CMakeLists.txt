@@ -59,7 +59,7 @@ foreach(UnitTest ${TEST_MODULES})
 		[===[
 			Needs["MUnit`"];
 			$LLUInstallDir = "${CMAKE_INSTALL_PREFIX}";
-			$LinkToCRTStaticallyQ = "${LLU_CRT_LINKING}";
+			$CRTLinkingMode = "${LLU_CRT_LINKING}";
 			report = Catch[
 				TestReport["${UnitTest}TestSuite.mt", MemoryConstraint -> Quantity[500, "MB"], TimeConstraint -> 30],
 				_String,
