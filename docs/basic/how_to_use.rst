@@ -18,7 +18,7 @@ Since the source code uses C++17 features, you have to make sure your compiler s
 
 Plus:
 
- * **CMake** >= 3.14
+ * **CMake** >= 3.15
  * **Wolfram Language** >= 12.0 (products that implement the Wolfram Language include Wolfram Engine, Wolfram Desktop, and Mathematica), or more specifically
 
    - **WSTP** interface version 4 or later

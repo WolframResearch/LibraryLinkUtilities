@@ -4,7 +4,7 @@
 ######
 ################################################################################
 
-cmake_minimum_required(VERSION 3.14.0)
+cmake_minimum_required(VERSION 3.15.0)
 
 project(Demo
 		VERSION     0.0.1

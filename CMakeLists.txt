@@ -5,7 +5,7 @@
 ###### Author: Rafal Chojna - rafalc@wolfram.com
 #################################################################################
 
-cmake_minimum_required(VERSION 3.14.0)
+cmake_minimum_required(VERSION 3.15.0)
 
 #set minimum MacOS target version if not defined as environment variable
 if(APPLE AND NOT DEFINED ENV{MACOSX_DEPLOYMENT_TARGET})
