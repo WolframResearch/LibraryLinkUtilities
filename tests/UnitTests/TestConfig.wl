@@ -3,6 +3,14 @@ $baseDir = FileNameDrop[$TestFileName, -3];
 
 $installDir = If[StringQ[$LLUInstallDir], $LLUInstallDir, FileNameJoin[{$baseDir, "install"}]];
 
+$CRTLinkingFlag = Switch[$LinkToCRTStaticallyQ,
+	"MultiThreaded", "/MT",
+	"MultiThreadedDLL", "/MD",
+	"MultiThreadedDebug", "/MTd",
+	"MultiThreadedDebugDLL", "/MDd",
+	_, "/MD"
+];
+
 (* Path to directory containing include folder from LibraryLinkUtilities installation *)
 $LLUIncDir = FileNameJoin[{$installDir, "include"}];
 
@@ -32,7 +40,7 @@ options := {
 	"CompileOptions" ->
 		Switch[$OperatingSystem,
 			"Windows",
-				"/EHsc /W3 /std:" <> $CppVersion <> " /D_SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING",
+				"/EHsc /W3 " <> $CRTLinkingFlag <> " /std:" <> $CppVersion <> " /D_SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING",
 			"Unix",
 				"-Wall --pedantic -fvisibility=hidden -std=" <> $CppVersion,
 			"MacOSX",

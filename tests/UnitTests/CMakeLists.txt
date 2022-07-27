@@ -49,35 +49,38 @@ else()
 	return()
 endif()
 
+get_target_property(LLU_CRT_LINKING LLU MSVC_RUNTIME_LIBRARY)
+if(NOT LLU_CRT_LINKING)
+	set(LLU_CRT_LINKING ${CMAKE_MSVC_RUNTIME_LIBRARY})
+endif()
+
 foreach(UnitTest ${TEST_MODULES})
 	set(MODULE_CODE
 		[===[
 			Needs["MUnit`"];
 			$LLUInstallDir = "${CMAKE_INSTALL_PREFIX}";
+			$LinkToCRTStaticallyQ = "${LLU_CRT_LINKING}";
 			report = Catch[
 				TestReport["${UnitTest}TestSuite.mt", MemoryConstraint -> Quantity[500, "MB"], TimeConstraint -> 30],
 				_String,
 				Function[{value, tag}, Print["ERROR: " <> ToString[value]]; Exit[1]]
 			];
-			report = report /. resObj_TestResultObject :> RuleCondition[TextString[resObj[{
-				"TestID",
-				"ExpectedOutput",
-				"ActualOutput",
-				"ExpectedMessages",
-				"ActualMessages",
-				"AbsoluteTimeUsed",
-				"MemoryUsed"
-			}], AssociationFormat -> {"{\n\t\t", ",\n\t\t", "\n\t}", " -> "}]];
-			propertiesToPrint = {"Title", "TimeElapsed", "Aborted", "TestsSucceededCount", "TestsFailedCount"};
-			failedCount = report["TestsFailedCount"];
+			indexKeyword = If[$VersionNumber >= 13, "Keys", "Indices"];
+			propertiesToPrint = {"Title", "Aborted"};
+			failedCount = 0;
+			Scan[
+				If[report["TestsFailed" <> # <> indexKeyword] != {},
+					AppendTo[propertiesToPrint, "TestsFailed" <> # <> indexKeyword];
+					failedCount += Length @ report["TestsFailed" <> # <> indexKeyword];
+				]&, {"WrongResults", "WithMessages", "WithErrors"}
+			];
 			If[failedCount > 0,
-				AppendTo[propertiesToPrint, "TestsFailedIndices"];
-				Scan[If[report["TestsFailed" <> # <> "Count"] > 0,
-					propertiesToPrint = Join[propertiesToPrint, {"TestsFailed" <> # <> "Count", "TestsFailed" <> # <> "Indices", "TestsFailed" <> #}];
-				]&, {"WrongResults", "WithMessages", "WithErrors"}];
+				If[#["Outcome"] =!= "Success",
+					Print @ TextString[#, AssociationFormat -> {"{\n\t", ",\n\t", "\n}", ": "}]
+				]& /@ report["TestResults"];
 			];
 			Print[TextString[AssociationMap[report, propertiesToPrint], AssociationFormat -> {"{\n\t", ",\n\t", "\n}", ": "}]];
-			exitCode = 1 - Boole[report["AllTestsSucceeded"]];
+			exitCode = Boole[failedCount > 0];
 			Exit[exitCode]
 		]===])
 	string(REGEX REPLACE "[\t\r\n]+" "" MODULE_CODE "${MODULE_CODE}")
