@@ -19,7 +19,7 @@ project(LLU
 
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 
-#LLU is designed to be used as a static library but if you really want to try shared, swith to ON
+#LLU is designed to be used as a static library but if you really want to try shared, switch to ON
 option(BUILD_SHARED_LIBS "Whether to build LLU as a shared library (default is static).")
 mark_as_advanced(BUILD_SHARED_LIBS)
 
@@ -88,7 +88,10 @@ if(NOT TARGET LLU)
 		# Remove default warning level. It will be set later.
 		string(REGEX REPLACE "/W[0-4]" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
 
-		set_windows_static_runtime(LLU)
+		option(LLU_USE_STATIC_CRT "Whether LLU should link statically to Microsoft C runtime library.")
+		if(LLU_USE_STATIC_CRT)
+			set_windows_static_runtime(LLU)
+		endif()
 
 		target_compile_options(LLU
 			PRIVATE "/W4"

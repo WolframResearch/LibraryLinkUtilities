@@ -80,6 +80,7 @@ Let's consider a number of possible scenarios:
 Other useful cmake variables used by LLU include:
 
  - ``BUILD_SHARED_LIBS`` - Whether to build LLU as shared library. A static library is created by default and it is the recommended choice.
+ - ``LLU_USE_STATIC_CRT`` - Whether LLU should link statically to Microsoft C runtime library (default is OFF).
  - ``CMAKE_BUILD_TYPE`` - Choose the type of build. This should match the type of build of your project.
  - ``CMAKE_INSTALL_PREFIX`` - Where to install LLU. The default location is the :file:`install/` directory in the source tree.
  - ``CMAKE_VERBOSE_MAKEFILE`` - Useful for debugging.

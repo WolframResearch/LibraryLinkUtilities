@@ -50,8 +50,8 @@ set_target_properties(Demo PROPERTIES
 # here we use a utility function from cmake/Wolfram/Common.cmake which sets a basic set of compiler flags in a cross-platform way
 set_default_compile_options(Demo O2)
 
-# We need to link statically to runtime library on Windows because this is how LLU is built, on other platforms this command is a no-op
-set_windows_static_runtime(Demo)
+# Uncomment the line below if you built LLU on Windows with static linking to the Microsoft CRT
+# set_windows_static_runtime(Demo)
 
 # link to LLU
 target_link_libraries(Demo PRIVATE LLU::LLU)
