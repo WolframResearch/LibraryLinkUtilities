@@ -18,7 +18,7 @@ Since the source code uses C++17 features, you have to make sure your compiler s
 
 Plus:
 
- * **CMake** >= 3.14
+ * **CMake** >= 3.15
  * **Wolfram Language** >= 12.0 (products that implement the Wolfram Language include Wolfram Engine, Wolfram Desktop, and Mathematica), or more specifically
 
    - **WSTP** interface version 4 or later
@@ -80,6 +80,7 @@ Let's consider a number of possible scenarios:
 Other useful cmake variables used by LLU include:
 
  - ``BUILD_SHARED_LIBS`` - Whether to build LLU as shared library. A static library is created by default and it is the recommended choice.
+ - ``LLU_USE_STATIC_CRT`` - Whether LLU should link statically to Microsoft C runtime library (default is OFF).
  - ``CMAKE_BUILD_TYPE`` - Choose the type of build. This should match the type of build of your project.
  - ``CMAKE_INSTALL_PREFIX`` - Where to install LLU. The default location is the :file:`install/` directory in the source tree.
  - ``CMAKE_VERBOSE_MAKEFILE`` - Useful for debugging.
