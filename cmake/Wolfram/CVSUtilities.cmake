@@ -227,10 +227,10 @@ endfunction()
 
 function(fetch_dependency_from_nexus LIB_NAME LIB_VERSION LIB_SYSTEM_ID LIB_BUILD_PLATFORM LIB_BUILD_ID LIB_CHECKSUM_MD5 DOWNLOAD_LOCATION_OUT)
 	check_nexus_root()
-	set(NXS_ASSET_PATH "${LIB_NAME}/${LIB_VERSION}/${LIB_SYSTEM_ID}/${LIB_BUILD_PLATFORM}/${LIB_BUILD_ID}")
+	set(NXS_ASSET_PATH "${LIB_NAME}/${LIB_VERSION}/${LIB_SYSTEM_ID}/${LIB_BUILD_PLATFORM}/${LIB_NAME}-${LIB_BUILD_ID}*")
 
 	# This search must return a single result, so including the Build ID is a good idea
-	set(NXS_SEARCH_URL "$ENV{NEXUSROOT}/service/rest/v1/search/assets?repository=re-components&group=/${NXS_ASSET_PATH}")
+	set(NXS_SEARCH_URL "$ENV{NEXUSROOT}/service/rest/v1/search?repository=re-components&name=${NXS_ASSET_PATH}")
 	file(DOWNLOAD
 		${NXS_SEARCH_URL}
 		nexus_assets.json
@@ -241,21 +241,20 @@ function(fetch_dependency_from_nexus LIB_NAME LIB_VERSION LIB_SYSTEM_ID LIB_BUIL
 		message(FATAL_ERROR "Invalid Nexus search request.")
 	endif()
 
-	file(READ "${CMAKE_CURRENT_BINARY_DIR}/nexus_assets.json" NXS_ASSETS_JSON)
+	file(READ "${CMAKE_CURRENT_BINARY_DIR}/nexus_assets.json" NXS_COMPONENTS_JSON)
 
-	string(JSON ASSETS_ALL_ITEMS GET ${NXS_ASSETS_JSON} "items")
-	string(JSON REQUESTED_ASSET GET ${ASSETS_ALL_ITEMS} 0)
+	string(JSON FIRST_COMPONENT GET ${NXS_COMPONENTS_JSON} "items" 0)
+	string(JSON REQUESTED_ASSET GET ${FIRST_COMPONENT} "assets" 0)
 	string(JSON ASSET_DOWNLOAD_URL GET ${REQUESTED_ASSET} "downloadUrl")
 	string(JSON ASSET_MD5 GET ${REQUESTED_ASSET} "checksum" "md5")
-	message(${ASSET_MD5})
-	if(NOT ASSET_MD5 STREQUAL LIB_CHECKSUM_MD5)
+	if(LIB_CHECKSUM_MD5 AND NOT (ASSET_MD5 STREQUAL LIB_CHECKSUM_MD5))
 		message(FATAL_ERROR "Expected asset with MD5 ${LIB_CHECKSUM_MD5} but server has ${ASSET_MD5}.")
 	endif()
 	include(FetchContent)
 	FetchContent_declare(
 		${LIB_NAME}
 		URL ${ASSET_DOWNLOAD_URL}
-		URL_HASH MD5=${LIB_CHECKSUM_MD5}
+		URL_HASH MD5=${ASSET_MD5}
 	)
 	FetchContent_MakeAvailable(${LIB_NAME})
 	set(${DOWNLOAD_LOCATION_OUT} "${${LIB_NAME}_SOURCE_DIR}/${LIB_BUILD_PLATFORM}" PARENT_SCOPE)
