@@ -110,7 +110,7 @@ function(split_string_to_list STR LIST)
 endfunction()
 
 macro(parse_old_library_conf LIBRARY_CONF)
-	message(DEPRECATION "library.conf file is now deprecated in favor of library.conf.json")
+	message(DEPRECATION "library.conf file is now deprecated in favor of components.json")
 	file(STRINGS ${LIBRARY_CONF} _LIBRARY_CONF_STRINGS)
 	# lines beginning with '#' shall be ignored.
 	list(FILTER _LIBRARY_CONF_STRINGS EXCLUDE REGEX "^#")
@@ -170,7 +170,7 @@ macro(parse_old_library_conf LIBRARY_CONF)
 	endforeach()
 endmacro()
 
-# Finds library.conf and for each library therein sets:
+# Finds components.json and for each library therein sets:
 # ${LIBRARY_NAME}_SYSTEMID
 # ${LIBRARY_NAME}_VERSION
 # ${LIBRARY_NAME}_BUILD_PLATFORM
@@ -184,11 +184,14 @@ function(find_and_parse_library_conf)
 		endif()
 	endif()
 
-	# path to library.conf. Located in scripts directory by default, but custom location can be passed in.
+	# path to components.json. Located in scripts directory by default, but custom location and file name can be passed in.
 	if(ARGC GREATER_EQUAL 1)
 		set(LIBRARY_CONF "${ARGV0}")
 	else()
-		set(LIBRARY_CONF "${CMAKE_CURRENT_SOURCE_DIR}/scripts/library.conf")
+		set(LIBRARY_CONF "${CMAKE_CURRENT_SOURCE_DIR}/scripts/components.json")
+		if(NOT EXISTS ${LIBRARY_CONF})
+			set(LIBRARY_CONF "${CMAKE_CURRENT_SOURCE_DIR}/scripts/library.conf") # for better backwards compatibility
+		endif()
 	endif()
 	if(NOT EXISTS ${LIBRARY_CONF})
 		message(FATAL_ERROR "Unable to find ${LIBRARY_CONF}")
