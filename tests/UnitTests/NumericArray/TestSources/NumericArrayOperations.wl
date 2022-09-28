@@ -26,3 +26,4 @@ GetLargest = `LLU`PacletFunctionLoad["GetLargest", {NumericArray, {NumericArray,
 EmptyView = `LLU`PacletFunctionLoad["EmptyView", {}, {Integer, 1}];
 SumLargestDimensions = `LLU`PacletFunctionLoad["SumLargestDimensions", {NumericArray, {NumericArray, "Constant"}}, Integer];
 ReverseNA = `LLU`PacletFunctionLoad["Reverse", {{NumericArray, "Constant"}}, NumericArray];
+ReverseBA = `LLU`PacletFunctionLoad["Reverse", {{ByteArray, "Constant"}}, ByteArray];

@@ -311,4 +311,31 @@ Test[
 	TestID -> "NumericArrayTestSuite-20191129-Y2C7M0"
 ];
 
+(**************************** ByteArray tests ****************************************)
+
+Test[
+	ReverseNA[ByteArray @ Range[100]] (* ByteArray can be passed where NumericArray is expected *)
+	,
+	NumericArray[Reverse @ Range[100], "UnsignedInteger8"]
+	,
+	TestID -> "NumericArrayTestSuite-20220928-A6JF9V"
+];
+
+Test[
+	ReverseBA[ByteArray @ Range[100]]
+	,
+	ByteArray[Reverse @ Range[100]]
+	,
+	TestID -> "NumericArrayTestSuite-20220928-G63DKU"
+];
+
+Test[
+	ReverseBA[NumericArray[{{2,3},{4,5}}, "UnsignedInteger8"]]
+	,
+	$Failed
+	,
+	Message[LibraryFunction::nanull, ByteArray]
+	,
+	TestID -> "NumericArrayTestSuite-20220928-BP4D5F"
+];
 EndRequirement[]
