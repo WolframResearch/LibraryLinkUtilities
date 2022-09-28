@@ -227,10 +227,13 @@ endfunction()
 
 function(fetch_dependency_from_nexus LIB_NAME LIB_VERSION LIB_SYSTEM_ID LIB_BUILD_PLATFORM LIB_BUILD_ID LIB_CHECKSUM_MD5 DOWNLOAD_LOCATION_OUT)
 	check_nexus_root()
+	if(NOT LIB_BUILD_ID)
+		set(LIB_BUILD_ID "")
+	endif()
 	set(NXS_ASSET_PATH "${LIB_NAME}/${LIB_VERSION}/${LIB_SYSTEM_ID}/${LIB_BUILD_PLATFORM}/${LIB_NAME}-${LIB_BUILD_ID}*")
 
 	# This search must return a single result, so including the Build ID is a good idea
-	set(NXS_SEARCH_URL "$ENV{NEXUSROOT}/service/rest/v1/search?repository=re-components&name=${NXS_ASSET_PATH}")
+	set(NXS_SEARCH_URL "$ENV{NEXUSROOT}/service/rest/v1/search?sort=name&repository=re-components&name=${NXS_ASSET_PATH}")
 	file(DOWNLOAD
 		${NXS_SEARCH_URL}
 		nexus_assets.json
@@ -243,8 +246,19 @@ function(fetch_dependency_from_nexus LIB_NAME LIB_VERSION LIB_SYSTEM_ID LIB_BUIL
 
 	file(READ "${CMAKE_CURRENT_BINARY_DIR}/nexus_assets.json" NXS_COMPONENTS_JSON)
 
-	string(JSON FIRST_COMPONENT GET ${NXS_COMPONENTS_JSON} "items" 0)
-	string(JSON REQUESTED_ASSET GET ${FIRST_COMPONENT} "assets" 0)
+	string(JSON ALL_COMPONENTS GET ${NXS_COMPONENTS_JSON} "items")
+	string(JSON COMPONENT_COUNT LENGTH ${ALL_COMPONENTS})
+	if(COMPONENT_COUNT LESS_EQUAL 0)
+		if(NOT LIB_BUILD_ID OR LIB_BUILD_ID STREQUAL "*")
+			message(STATUS "No matching components found in Nexus for ${LIB_NAME} version ${LIB_VERSION}. Attempting CVS checkout...")
+			return()
+		else()
+			message(FATAL_ERROR "Could not find ${LIB_NAME} version ${LIB_VERSION} with build id ${LIB_BUILD_ID} in Nexus.")
+		endif()
+	endif()
+	math(EXPR MAX_COMPONENT_INDEX "${COMPONENT_COUNT} - 1")
+	string(JSON LAST_COMPONENT GET ${ALL_COMPONENTS} ${MAX_COMPONENT_INDEX})
+	string(JSON REQUESTED_ASSET GET ${LAST_COMPONENT} "assets" 0)
 	string(JSON ASSET_DOWNLOAD_URL GET ${REQUESTED_ASSET} "downloadUrl")
 	string(JSON ASSET_MD5 GET ${REQUESTED_ASSET} "checksum" "md5")
 	if(LIB_CHECKSUM_MD5 AND NOT (ASSET_MD5 STREQUAL LIB_CHECKSUM_MD5))
@@ -316,9 +330,8 @@ function(find_cvs_dependency LIB_NAME)
 	endif()
 
 	# The library is not on a local drive so we need to download it.
-	if (LIB_BUILD_ID)
-		fetch_dependency_from_nexus(${LIB_NAME} ${LIB_VERSION} ${LIB_SYSTEMID} ${LIB_BUILD_PLATFORM} ${LIB_BUILD_ID} ${LIB_CHECKSUM_MD5} LIB_LOCATION)
-	else()
+	fetch_dependency_from_nexus(${LIB_NAME} ${LIB_VERSION} ${LIB_SYSTEMID} ${LIB_BUILD_PLATFORM} ${LIB_BUILD_ID} ${LIB_CHECKSUM_MD5} LIB_LOCATION)
+	if (NOT LIB_LOCATION)
 		# Set location for artifacts to be downloaded:
 		set(LIB_LOCATION "${CMAKE_BINARY_DIR}/Components/${LIB_NAME}")
 		get_library_from_cvs(${LIB_NAME} ${LIB_VERSION} ${LIB_SYSTEMID} ${LIB_BUILD_PLATFORM} LIB_LOCATION)
