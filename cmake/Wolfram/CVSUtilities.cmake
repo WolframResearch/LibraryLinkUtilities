@@ -329,8 +329,10 @@ function(find_cvs_dependency LIB_NAME)
 		endif()
 	endif()
 
-	# The library is not on a local drive so we need to download it.
-	fetch_dependency_from_nexus(${LIB_NAME} ${LIB_VERSION} ${LIB_SYSTEMID} ${LIB_BUILD_PLATFORM} ${LIB_BUILD_ID} ${LIB_CHECKSUM_MD5} LIB_LOCATION)
+	# The library is not on a local drive so we need to download it. Unless cvs checkout is explicitly requested try Nexus first:
+	if(NOT LIB_BUILD_ID STREQUAL "cvs")
+		fetch_dependency_from_nexus(${LIB_NAME} ${LIB_VERSION} ${LIB_SYSTEMID} ${LIB_BUILD_PLATFORM} ${LIB_BUILD_ID} ${LIB_CHECKSUM_MD5} LIB_LOCATION)
+	endif()
 	if (NOT LIB_LOCATION)
 		# Set location for artifacts to be downloaded:
 		set(LIB_LOCATION "${CMAKE_BINARY_DIR}/Components/${LIB_NAME}")
