@@ -274,11 +274,11 @@ function(fetch_dependency_from_nexus LIB_NAME LIB_VERSION LIB_SYSTEM_ID LIB_BUIL
 	set(${DOWNLOAD_LOCATION_OUT} "${${LIB_NAME}_SOURCE_DIR}/${LIB_BUILD_PLATFORM}" PARENT_SCOPE)
 endfunction()
 
-# Resolve full path to a CVS dependency, downloading if necessary
-# Prioritize ${LIB_NAME}_DIR, ${LIB_NAME}_LOCATION, CVS_COMPONENTS_DIR, then CVS download
+# Resolve full path to an external dependency, downloading if necessary
+# Prioritize ${LIB_NAME}_DIR, ${LIB_NAME}_LOCATION, CVS_COMPONENTS_DIR, then Nexus download then CVS download
 # Do not download if ${LIB_NAME}_DIR or ${LIB_NAME}_LOCATION are set
 # ${LIB_NAME}_VERSION|SYSTEMID|BUILD_PLATFORM are expected to be previously set
-function(find_cvs_dependency LIB_NAME)
+function(find_component LIB_NAME)
 
 	# helper variables
 	set(LIB_DIR "${${LIB_NAME}_DIR}")
