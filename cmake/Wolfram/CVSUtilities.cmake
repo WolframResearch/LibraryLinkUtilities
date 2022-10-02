@@ -264,6 +264,7 @@ function(fetch_dependency_from_nexus LIB_NAME LIB_VERSION LIB_SYSTEM_ID LIB_BUIL
 	if(LIB_CHECKSUM_MD5 AND NOT (ASSET_MD5 STREQUAL LIB_CHECKSUM_MD5))
 		message(FATAL_ERROR "Expected asset with MD5 ${LIB_CHECKSUM_MD5} but server has ${ASSET_MD5}.")
 	endif()
+	message(STATUS "Attempting ${LIB_NAME} checkout from Nexus: ${ASSET_DOWNLOAD_URL}")
 	include(FetchContent)
 	FetchContent_declare(
 		${LIB_NAME}
