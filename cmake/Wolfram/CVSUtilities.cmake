@@ -170,12 +170,12 @@ macro(parse_old_library_conf LIBRARY_CONF)
 	endforeach()
 endmacro()
 
-# Finds components.json and for each library therein sets:
+# Reads components.json and for each library therein sets:
 # ${LIBRARY_NAME}_SYSTEMID
 # ${LIBRARY_NAME}_VERSION
 # ${LIBRARY_NAME}_BUILD_PLATFORM
 # Also sets DOWNLOAD_CVS_SOURCE variable to control Source download (default is OFF for Release config, ON otherwise).
-function(find_and_parse_library_conf)
+function(parse_components_config)
 	if(NOT DEFINED DOWNLOAD_CVS_SOURCE)
 		if("${CMAKE_BUILD_TYPE}" STREQUAL Release)
 			set(DOWNLOAD_CVS_SOURCE OFF CACHE BOOL "Download CVS Source directory for all dependencies if it exists.")
@@ -292,7 +292,7 @@ function(find_component LIB_NAME)
 	set(_LIB_DIR_SUFFIX ${LIB_VERSION}/${LIB_SYSTEM_ID}/${LIB_BUILD_PLATFORM})
 
 	if(NOT LIB_SYSTEMID)
-		message(STATUS "[find_cvs_dependency] ${LIB_NAME}_SYSTEMID not defined. Returning.")
+		message(STATUS "[find_component] ${LIB_NAME}_SYSTEMID not defined. Returning.")
 		return()
 	endif()
 
