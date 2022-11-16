@@ -222,7 +222,7 @@ endfunction()
 
 # Sets a flag for GCC to use old ABI on Linux-x86-64. Does nothing on other platforms.
 function(use_old_gcc_abi TARGET_NAME)
-	if(CMAKE_COMPILER_ID STREQUAL "GNU" AND CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64")
+	if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64")
 		target_compile_definitions(${TARGET_NAME} PUBLIC _GLIBCXX_USE_CXX11_ABI=0)
 	endif()
 endfunction()
