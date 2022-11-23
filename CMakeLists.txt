@@ -27,7 +27,7 @@ mark_as_advanced(BUILD_SHARED_LIBS)
 option(LLU_USE_STATIC_CRT "Whether LLU should link statically to Microsoft C runtime library.")
 
 # By default LLU will use the C++11 ABI of GCC on all Linux platforms. With this option the old ABI can be used on Linux-x86-64.
-option(LLU_USE_CXX11_GCC_ABI "Whether LLU should use the C++11 ABI on Linux-x86-64." ON)
+option(LLU_USE_OLD_GCC_ABI "Whether LLU should use the pre-C++11 ABI on Linux-x86-64.")
 
 # set default build type to Release
 if(NOT CMAKE_BUILD_TYPE)
@@ -108,7 +108,7 @@ if(NOT TARGET LLU)
 			PRIVATE _SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING
 		)
 	else()
-		if(NOT LLU_USE_CXX11_GCC_ABI)
+		if(LLU_USE_OLD_GCC_ABI)
 			use_old_gcc_abi(LLU)
 		endif()
 
