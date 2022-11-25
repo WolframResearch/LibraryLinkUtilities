@@ -271,7 +271,8 @@ function(fetch_dependency_from_nexus LIB_NAME LIB_VERSION LIB_SYSTEMID LIB_BUILD
 		URL_HASH MD5=${ASSET_MD5}
 	)
 	FetchContent_MakeAvailable(${LIB_NAME})
-	set(${DOWNLOAD_LOCATION_OUT} "${${LIB_NAME}_SOURCE_DIR}/${LIB_BUILD_PLATFORM}" PARENT_SCOPE)
+	string(TOLOWER ${LIB_NAME} LC_LIB_NAME)
+	set(${DOWNLOAD_LOCATION_OUT} "${${LC_LIB_NAME}_SOURCE_DIR}/${LIB_BUILD_PLATFORM}" PARENT_SCOPE)
 endfunction()
 
 # Resolve full path to an external dependency, downloading if necessary
