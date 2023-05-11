@@ -144,7 +144,7 @@ function(add_paclet_target TARGET_NAME)
 				Print @ StringJoin @ {"Paclet directory \"", pacDir, "\" does not exist. Make sure you ran the install target."};
 				Exit[1]
 			];
-			paclet = If[$VersionNumber >= 13,
+			paclet = If[PacletObjectQ @ First[PacletFind["PacletTools"], $Failed],
 				Needs["PacletTools`" -> None];
 				result = PacletTools`PacletBuild[pacDir];
 				If[Head[result] =!= Success,
