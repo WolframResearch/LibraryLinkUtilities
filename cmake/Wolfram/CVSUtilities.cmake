@@ -135,7 +135,7 @@ macro(parse_old_library_conf LIBRARY_CONF)
 		endif()
 
 		set(_LIBRARY_CONF_LIBRARY_STRING ${_LIBRARY_CONF_STRINGS})
-		# ${LIBRARY}_VERSION can be set ahead of time in case there are multpile versions of the library
+		# ${LIBRARY}_VERSION can be set ahead of time in case there are multiple versions of the library
 		if ("${${LIB_VERSION}}")
 			list(FILTER _LIBRARY_CONF_LIBRARY_STRING INCLUDE REGEX "${${LIB_SYSTEMID}}[ \t]+${LIBRARY}[ \t]+${${LIB_VERSION}}")
 		else()
@@ -213,7 +213,7 @@ function(parse_components_config)
 			string(JSON _LIB_BUILD_ID ERROR_VARIABLE JSON_ERROR GET ${_LIB_OBJECT} "BuildID")
 			string(JSON _LIB_CHECKSUM_MD5 ERROR_VARIABLE JSON_ERROR GET ${_LIB_OBJECT} "MD5")
 
-			# ${LIBRARY}_VERSION can be set ahead of time in case there are multpile versions of the library to choose from
+			# ${LIBRARY}_VERSION can be set ahead of time in case there are multiple versions of the library to choose from
 			if(${_LIB_NAME}_VERSION AND NOT ${${_LIB_NAME}_VERSION} STREQUAL ${_LIB_VERSION})
 				continue()
 			endif()
