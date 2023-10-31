@@ -103,6 +103,7 @@ endfunction()
 #
 #   add_paclet_target(paclet        # target name, can be anything [required]
 #       NAME Demo                   # paclet name [required]
+#       USE_PACLET_TOOLS            # whether to simply call CreatePacletArchive on the paclet directory or trigger the build via PacletTools`PacletBuild
 #       VERIFY                      # verify contents of the .paclet file [optional]
 #       INSTALL                     # install to the user paclet directory [optional]
 #       TEST_FILE Tests/test.wl     # run tests if the paclet has any [optional]
@@ -110,7 +111,7 @@ endfunction()
 #
 # For this function to work, install target must be built beforehand and wolframscript from WolframLanguage v12.1 or later must be available.
 function(add_paclet_target TARGET_NAME)
-	set(OPTIONS VERIFY INSTALL)
+	set(OPTIONS USE_PACLET_TOOLS VERIFY INSTALL)
 	set(ONE_VALUE_ARGS NAME TEST_FILE)
 	set(MULTI_VALUE_ARGS)
 	cmake_parse_arguments(MAKE_PACLET "${OPTIONS}" "${ONE_VALUE_ARGS}" "${MULTI_VALUE_ARGS}" ${ARGN})
@@ -144,7 +145,7 @@ function(add_paclet_target TARGET_NAME)
 				Print @ StringJoin @ {"Paclet directory \"", pacDir, "\" does not exist. Make sure you ran the install target."};
 				Exit[1]
 			];
-			paclet = If[PacletObjectQ @ First[PacletFind["PacletTools"], $Failed],
+			paclet = If["${MAKE_PACLET_USE_PACLET_TOOLS}" === "TRUE" && PacletObjectQ @ First[PacletFind["PacletTools"], $Failed],
 				Needs["PacletTools`" -> None];
 				result = PacletTools`PacletBuild[pacDir];
 				If[Head[result] =!= Success,
@@ -156,7 +157,7 @@ function(add_paclet_target TARGET_NAME)
 				CreatePacletArchive[pacDir]
 			];
 			If[FailureQ[paclet],
-				Print["ERROR: Could not create paclet."];
+				Print["ERROR: Could not create paclet - ", paclet];
 				Exit[1]
 				,
 				Print["Paclet successfully created:"];
