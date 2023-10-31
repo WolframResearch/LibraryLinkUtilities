@@ -269,6 +269,12 @@ function(fetch_dependency_from_nexus LIB_NAME LIB_VERSION LIB_SYSTEMID LIB_BUILD
 		message(FATAL_ERROR "Expected asset with MD5 ${LIB_CHECKSUM_MD5} but server has ${ASSET_MD5}.")
 	endif()
 	message(STATUS "Attempting ${LIB_NAME} checkout from Nexus: ${ASSET_DOWNLOAD_URL}")
+
+	# In CMake 3.24+ use timestamps from extraction time and not those from the archive. Older CMake has no such option.
+	if(POLICY CMP0135)
+		cmake_policy(SET CMP0135 NEW)
+	endif()
+
 	include(FetchContent)
 	FetchContent_declare(
 		${LIB_NAME}
