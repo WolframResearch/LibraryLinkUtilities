@@ -46,4 +46,7 @@ namespace LLU {
 		return API()->ioLibraryFunctions;
 	}
 
+	const st_WolframDataVectorLibrary_Functions* LibraryData::DataVectorAPI() {
+		return API()->dataVectorLibraryFunctions;
+	}
 }  // namespace LLU

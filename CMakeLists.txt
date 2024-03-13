@@ -13,7 +13,7 @@ if(APPLE AND NOT DEFINED ENV{MACOSX_DEPLOYMENT_TARGET})
 endif()
 
 project(LLU
-	VERSION 3.2.2
+	VERSION 3.3.0
 	DESCRIPTION "Modern C++ wrapper over LibraryLink and WSTP"
 	LANGUAGES CXX)
 
@@ -45,7 +45,7 @@ if(NOT TARGET LLU)
 	#==== WolframLanguage (WSTP/LibraryLink) =====
 	#=============================================
 
-	find_package(WolframLanguage 12.0 COMPONENTS WolframLibrary WSTP MODULE)
+	find_package(WolframLanguage 14.1 COMPONENTS WolframLibrary WSTP MODULE)
 
 	#=============================================
 	#=========== MAIN PACLET LIBRARY =============
@@ -76,7 +76,8 @@ if(NOT TARGET LLU)
 		${LLU_SOURCE_DIR}/TypedMArgument.cpp
 		${LLU_SOURCE_DIR}/Containers/DataStore.cpp
 		${LLU_SOURCE_DIR}/Containers/NumericArray.cpp
-		${LLU_SOURCE_DIR}/Containers/SparseArray.cpp)
+		${LLU_SOURCE_DIR}/Containers/SparseArray.cpp
+		${LLU_SOURCE_DIR}/Containers/BitVector.cpp)
 
 	#add the main library
 	add_library(LLU ${LLU_SOURCE_FILES})
