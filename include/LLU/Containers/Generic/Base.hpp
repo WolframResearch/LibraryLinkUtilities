@@ -159,8 +159,8 @@ namespace LLU {
 			if (!container || !LibraryData::hasLibraryData()) {
 				return;
 			}
-			if constexpr (Type == MArgumentType::DataStore) {
-				// Disowning does nothing for DataStore as it cannot be shared.
+			if constexpr (Type == MArgumentType::DataStore || Type == MArgumentType::DataVector) {
+				// Disowning does nothing for DataStore and DataVector as they can't be shared.
 			} else if constexpr (Type == MArgumentType::Image) {
 				LibraryData::ImageAPI()->MImage_disown(container);
 			} else if constexpr (Type == MArgumentType::NumericArray) {
@@ -181,6 +181,8 @@ namespace LLU {
 			}
 			if constexpr (Type == MArgumentType::DataStore) {
 				LibraryData::DataStoreAPI()->deleteDataStore(container);
+			} else if constexpr (Type == MArgumentType::DataVector) {
+				LibraryData::DataVectorAPI()->DataVector_release(container);
 			} else if constexpr (Type == MArgumentType::Image) {
 				LibraryData::ImageAPI()->MImage_free(container);
 			} else if constexpr (Type == MArgumentType::NumericArray) {

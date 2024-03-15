@@ -77,14 +77,15 @@ if(NOT TARGET LLU)
 		${LLU_SOURCE_DIR}/Containers/DataStore.cpp
 		${LLU_SOURCE_DIR}/Containers/NumericArray.cpp
 		${LLU_SOURCE_DIR}/Containers/SparseArray.cpp
-		${LLU_SOURCE_DIR}/Containers/BitVector.cpp)
+		${LLU_SOURCE_DIR}/Containers/BitVector.cpp
+		${LLU_SOURCE_DIR}/Containers/DataVector.cpp)
 
 	#add the main library
 	add_library(LLU ${LLU_SOURCE_FILES})
 
 	#compilation options
 	set_target_properties(LLU PROPERTIES
-		CXX_STANDARD 17
+		CXX_STANDARD 20
 		CXX_STANDARD_REQUIRED YES
 		CXX_EXTENSIONS NO
 		CXX_VISIBILITY_PRESET hidden
@@ -121,10 +122,10 @@ if(NOT TARGET LLU)
 		)
 	endif()
 
-	# tell all targets importing LLU that public part of LLU uses C++17 features
+	# tell all targets importing LLU that public part of LLU uses C++20 features
 	target_compile_features(LLU
 		INTERFACE
-			cxx_std_17
+			cxx_std_20
 	)
 
 	#add the include directory for the project

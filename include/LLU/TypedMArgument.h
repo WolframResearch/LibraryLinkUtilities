@@ -21,6 +21,9 @@
 template<>
 class LLU::MContainer<LLU::MArgumentType::DataStore>;
 
+template<>
+class LLU::MContainer<LLU::MArgumentType::DataVector>;
+
 /**
  * @brief Namespace for functionality related to arguments passed from LibraryLink to library functions and their types.
  */
@@ -60,11 +63,14 @@ namespace LLU::Argument {
 
 		/// DataStore stands for a GenericDataList - type agnostic wrapper over DataStore
 		using DataStore = MContainer<MArgumentType::DataStore>;
+
+		/// DataVectpr stands for GenericDataVector - type agnostic wrapper over LibraryLink's DataVector
+		using DataVector = MContainer<MArgumentType::DataVector>;
 	} // namespace Typed
 
 	/// C++ wrapper over LibraryLink's MArgument, which is a plain union
 	using TypedArgument = std::variant<std::monostate, Typed::Boolean, Typed::Integer, Typed::Real, Typed::Complex, Typed::Tensor, Typed::SparseArray,
-									   Typed::NumericArray, Typed::Image, Typed::UTF8String, Typed::DataStore>;
+									   Typed::NumericArray, Typed::Image, Typed::UTF8String, Typed::DataStore, Typed::DataVector>;
 	namespace Typed {
 		/// Any is a union of all supported types. Typed::Any can be used as a template parameter for DataList to get a heterogeneous DataList.
 		using Any = TypedArgument;

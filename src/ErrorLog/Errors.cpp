@@ -106,5 +106,12 @@ namespace LLU::ErrorName {
 	LLU_DEFINE_ERROR_NAME(PathNotValidated);
 	LLU_DEFINE_ERROR_NAME(InvalidOpenMode);
 	LLU_DEFINE_ERROR_NAME(OpenFileFailed);
-	/// @endcond
+
+	LLU_DEFINE_ERROR_NAME(DVShared);
+	LLU_DEFINE_ERROR_NAME(DVAPIError);
+	LLU_DEFINE_ERROR_NAME(DVConstructorType);
+
+	LLU_DEFINE_ERROR_NAME(BitVectorNew);
+	LLU_DEFINE_ERROR_NAME(BitVectorClone);
+
 }	 // namespace LLU::ErrorName

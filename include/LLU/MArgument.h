@@ -30,12 +30,13 @@ namespace LLU {
 		NumericArray = MType_NumericArray,
 		Image = MType_Image,
 		UTF8String = MType_UTF8String,
-		DataStore = MType_DataStore
+		DataStore = MType_DataStore,
+		DataVector = MType_DataVector
 	};
 
 	namespace Argument {
 		/// A variant holding all possible MArgument types
-		using PrimitiveAny = std::variant<std::monostate, mbool, mint, mreal, mcomplex, MTensor, MSparseArray, MNumericArray, MImage, char*, DataStore>;
+		using PrimitiveAny = std::variant<std::monostate, mbool, mint, mreal, mcomplex, MTensor, MSparseArray, MNumericArray, MImage, char*, DataStore, DataVector>;
 
 		/// PrimitiveIndex<T> is the index of type T in the PrimitiveAny variant converted to MArgumentType enum.
 		template<typename T>
@@ -44,7 +45,7 @@ namespace LLU {
 		// PrimitiveIndex for mint should always return MArgumentType::Integer. Explicit specialization is needed because on 32-bit platforms
 		// mint and mbool are the same type and so PrimitiveIndex<mint> would incorrectly return MArgumentType::Boolean.
 		// With explicit specialization, however, we have the opposite problem: PrimitiveIndex<mbool> returns MArgumentType::Integer, but this
-		// is considered the lesser evil. For this and other reasons it is best to avoid mbool type in C++ code and use bool instead.
+		// is considered the lesser evil. For this and other reasons, it is best to avoid mbool type in C++ code and use bool instead.
 		template<>
 		inline constexpr MArgumentType PrimitiveIndex<mint> = MArgumentType::Integer;
 
@@ -64,7 +65,7 @@ namespace LLU {
 		 */
 		template<MArgumentType T>
 		inline constexpr bool ContainerTypeQ = (T == MArgumentType::Tensor || T == MArgumentType::Image || T == MArgumentType::NumericArray ||
-										 T == MArgumentType::DataStore || T == MArgumentType::SparseArray);
+										 T == MArgumentType::DataStore || T == MArgumentType::SparseArray || T == MArgumentType::DataVector);
 	} // namespace Argument
 
 	/**

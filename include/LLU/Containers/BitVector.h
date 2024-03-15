@@ -7,13 +7,18 @@
 #ifndef LLU_CONTAINERS_BITVECTOR_H
 #define LLU_CONTAINERS_BITVECTOR_H
 
+#include "LLU/Containers/Generic/Base.hpp"
 #include "LLU/LibraryData.h"
 
 namespace LLU {
 
 	class BitVector {
 	public:
+		BitVector() = default;
+
 		explicit BitVector(mint length, bool setQ = false);
+
+		BitVector(bitvector_t raw, Ownership owner = Ownership::LibraryLink);
 
 		BitVector(const BitVector& other);
 
@@ -33,12 +38,13 @@ namespace LLU {
 
 		bool test(mint position) const;
 
-		bitvector_t rawData();
+		bitvector_t rawData() const;
 
 		friend void swap(BitVector& lhs, BitVector& rhs) noexcept;
 
 	private:
-		bitvector_t bv;
+		bitvector_t bv = nullptr;
+		Ownership owner = Ownership::Library;
 	};
 
 }
