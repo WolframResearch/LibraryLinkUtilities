@@ -28,8 +28,8 @@ $LLULib = "LLU";
 (* Path to LibraryLinkUtilities shared resources *)
 $LLUSharedDir = FileNameJoin[{$installDir, "share"}];
 
-(* C++ version to build unit tests with. Some parts of LLU require C++17. *)
-$CppVersion = "c++17";
+(* C++ version to build unit tests with. Some parts of LLU require C++20. *)
+$CppVersion = "c++20";
 
 (* Compilations options for all tests *)
 options := {
