@@ -7,6 +7,8 @@
 
 #include "LLU/Containers/Generic/DataVector.hpp"
 
+#include <numeric>
+
 namespace LLU {
 
 	namespace DV {
@@ -50,18 +52,38 @@ namespace LLU {
 		reset(result);
 	}
 
-	GenericDataVector::MContainer(const char* string_data, std::span<mint> offsets, const BitVector& validity) {
+	GenericDataVector::MContainer(mint str_count, UniquePtr<const char>&& string_data, UniquePtr<mint[]>&& offsets, const BitVector& validity) {
 		const auto* api = LibraryData::DataVectorAPI();
 		Container result;
-		checkAPICall(api->DataVector_newString(offsets.size() - 1, string_data, offsets.data(), validity.rawData(), &result));
+		checkAPICall(api->DataVector_newString(str_count, string_data.release(), offsets.release(), validity.rawData(), &result));
 		reset(result);
 	}
 
-	GenericDataVector::MContainer(GenericNumericArray&& array, std::span<mint> offsets, const BitVector& validity) {
+	GenericDataVector::MContainer(const std::vector<std::string_view>& string_data, const BitVector& validity) {
+		const auto str_count = string_data.size();
+		auto offsets = LLU::makeUnique<mint[]>(str_count + 1);
+
+		offsets[0] = 0;
+		auto offsets_span = std::span<mint> {offsets.get() + 1, str_count};
+		std::transform_inclusive_scan(string_data.begin(), string_data.end(), offsets_span.begin(), std::plus<mint>{}, [](auto sv) { return sv.length(); });
+
+		const auto total_chars = offsets_span.back();
+		auto characters = LLU::makeUnique<char[]>(total_chars);
+		offsets_span = std::span<mint> {offsets.get(), str_count};
+		for (std::size_t i = 0; i < str_count; ++i) {
+			std::copy(string_data[i].begin(), string_data[i].end(), characters.get() + offsets_span[i]);
+		}
+		const auto* api = LibraryData::DataVectorAPI();
+		Container result;
+		checkAPICall(api->DataVector_newString(str_count, characters.release(), offsets.release(), validity.rawData(), &result));
+		reset(result);
+	}
+
+	GenericDataVector::MContainer(GenericNumericArray&& array, mint elem_count, UniquePtr<mint[]>&& offsets, const BitVector& validity) {
 		const auto* api = LibraryData::DataVectorAPI();
 		auto internal = array.getContainer();
 		Container result;
-		checkAPICall(api->DataVector_newBinary(offsets.size() - 1, &internal, offsets.data(), validity.rawData(), &result));
+		checkAPICall(api->DataVector_newBinary(elem_count, &internal, offsets.release(), validity.rawData(), &result));
 		reset(result);
 	}
 

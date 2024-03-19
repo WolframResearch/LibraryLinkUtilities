@@ -6,6 +6,7 @@
 #ifndef LLU_CONTAINERS_GENERIC_DATAVECTOR_HPP
 #define LLU_CONTAINERS_GENERIC_DATAVECTOR_HPP
 
+#include <numeric>
 #include <span>
 #include <string_view>
 #include <variant>
@@ -13,6 +14,7 @@
 #include "LLU/Containers/BitVector.h"
 #include "LLU/Containers/Generic/Base.hpp"
 #include "LLU/Containers/Generic/NumericArray.hpp"
+#include "LLU/UniquePtr.h"
 
 namespace LLU {
 
@@ -51,6 +53,15 @@ namespace LLU {
 		};
 
 		using Data = std::variant<GenericNumericArray, StringData, BitVector, BinaryData, GenericNumericArray, DateData, TimeData>;
+
+		template<typename T>
+		UniquePtr<mint[]> lengthsToOffsets(std::span<T> lengths) {
+			const auto elem_count = lengths.size();
+			auto offsets = makeUnique<mint[]>(elem_count + 1);
+			offsets[0] = 0;
+			std::partial_sum(lengths.begin(), lengths.end(), offsets.get() + 1);
+			return offsets;
+		}
 	}
 
 	/**
@@ -78,11 +89,13 @@ namespace LLU {
 
 		MContainer(DV::Type type, GenericNumericArray&& array, const BitVector& validity = {});
 
-		MContainer(const char* string_data, std::span<mint> offsets, const BitVector& validity = {});
+		MContainer(mint str_count, UniquePtr<const char>&& string_data, UniquePtr<mint[]>&& offsets, const BitVector& validity = {});
+
+		MContainer(const std::vector<std::string_view>& string_data, const BitVector& validity = {});
 
 		MContainer(BitVector&& boolean_data, const BitVector& validity = {});
 
-		MContainer(GenericNumericArray&& array, std::span<mint> offsets, const BitVector& validity = {});
+		MContainer(GenericNumericArray&& array, mint elem_count, UniquePtr<mint[]>&& offsets, const BitVector& validity = {});
 
 		MContainer(GenericNumericArray&& array, mint granularity, mint precision, const std::string& time_zone, const BitVector& validity = {});
 
