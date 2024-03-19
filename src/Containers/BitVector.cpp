@@ -15,6 +15,14 @@ namespace LLU {
 		}
 	}
 
+	BitVector::BitVector(const std::vector<bool>& vector) : BitVector(vector.size(), false) {
+		for (std::size_t i = 0; i < vector.size(); ++i) {
+			if (vector[i]) {
+				set(static_cast<mint>(i));
+			}
+		}
+	}
+
 	BitVector::BitVector(bitvector_t raw, Ownership owner) : bv{raw}, owner{owner} {
 	}
 

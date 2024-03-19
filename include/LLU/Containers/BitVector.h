@@ -7,6 +7,8 @@
 #ifndef LLU_CONTAINERS_BITVECTOR_H
 #define LLU_CONTAINERS_BITVECTOR_H
 
+#include <vector>
+
 #include "LLU/Containers/Generic/Base.hpp"
 #include "LLU/LibraryData.h"
 
@@ -17,6 +19,8 @@ namespace LLU {
 		BitVector() = default;
 
 		explicit BitVector(mint length, bool setQ = false);
+
+		explicit BitVector(const std::vector<bool>& vector);
 
 		BitVector(bitvector_t raw, Ownership owner = Ownership::LibraryLink);
 
