@@ -262,6 +262,15 @@ namespace LLU {
 		GenericDataList getGenericDataList(size_type index) const;
 
 		/**
+		 *	@brief		Get MArgument of type DataVector at position \p index and wrap it into generic MContainer wrapper
+		 * 	@tparam 	Mode - passing mode to be used
+		 * 	@param 		index - position of desired MArgument in \c Args
+		 * 	@return		MContainer wrapper of DataVector with given passing mode
+		 */
+		template<Passing Mode = Passing::Automatic>
+		GenericDataVector getGenericDataVector(size_type index) const;
+
+		/**
 		 *   @brief         Get MArgument of type DataStore at position \c index.
 		 *   @warning       Use of this function is discouraged. Use getDataList instead.
 		 *   @param[in]     index - position of desired MArgument in \c Args
@@ -269,6 +278,15 @@ namespace LLU {
 		 *   @throws        ErrorName::MArgumentIndexError - if \c index is out-of-bounds
 		 **/
 		DataStore getDataStore(size_type index) const;
+
+		/**
+		 *   @brief         Get MArgument of type DataVector at position \c index.
+		 *   @warning       Use of this function is discouraged. Use getGenericDataVector instead.
+		 *   @param[in]     index - position of desired MArgument in \c Args
+		 *   @returns       DataVector of MArgument at position \c index
+		 *   @throws        ErrorName::MArgumentIndexError - if \c index is out-of-bounds
+		 **/
+		DataVector getDataVector(size_type index) const;
 
 		/**
 		 * @brief   Get a reference to an instance of Managed Expression that was sent from Wolfram Language as argument to a library function
@@ -460,6 +478,18 @@ namespace LLU {
 		void setDataStore(DataStore ds);
 
 		/**
+		 *   @brief         Set DataVector wrapped in DataList \c ds as output MArgument
+		 *   @param[in]     dv - const reference to DataList which should pass its internal DataVector to LibraryLink
+		 **/
+		void setGenericDataVector(const GenericDataVector& dv);
+		
+		/**
+		 *   @brief         Set DataVector as output MArgument
+		 *   @param[in]     dv - DataVector to be passed to LibraryLink
+		 **/
+		void setDataVector(DataVector dv);
+		
+		/**
 		 *   @brief         Set MSparseArray wrapped by \c sa as output MArgument
 		 *   @tparam        T - SparseArray data type
 		 *   @param[in]     sa - reference to SparseArray which should pass its internal MSparseArray to LibraryLink
@@ -578,6 +608,14 @@ namespace LLU {
 		 */
 		void set(const GenericDataList& ds) {
 			ds.pass(res);
+		}
+
+		/**
+		 *  Set DataVector wrapped by \c dv as output MArgument
+		 *  @param[in]  dv - reference to GenericDataVector which should pass its internal DataVector to LibraryLink
+		 */
+		void set(const GenericDataVector& dv) {
+			dv.pass(res);
 		}
 
 		/**
@@ -1117,6 +1155,12 @@ namespace LLU {
 	GenericDataList MArgumentManager::getGenericDataList(size_type index) const {
 		static_assert(Mode != Passing::Shared, "DataStore cannot be passed as \"Shared\".");
 		return {getDataStore(index), getOwner(Mode)};
+	}
+
+	template<Passing Mode>
+	GenericDataVector MArgumentManager::getGenericDataVector(size_type index) const {
+		static_assert(Mode != Passing::Shared, "DataVector cannot be passed as \"Shared\".");
+		return {getDataVector(index), getOwner(Mode)};
 	}
 
 	template<typename T, Passing Mode>

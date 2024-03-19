@@ -119,6 +119,11 @@ namespace LLU {
 		return MArgument_getDataStore(getArgs(index));
 	}
 
+	DataVector MArgumentManager::getDataVector(size_type index) const {
+		return MArgument_getDataVector(getArgs(index));
+	}
+
+
 	MSparseArray MArgumentManager::getMSparseArray(size_type index) const {
 		return MArgument_getMSparseArray(getArgs(index));
 	}
@@ -138,6 +143,14 @@ namespace LLU {
 	void MArgumentManager::setDataStore(DataStore ds) {
 		//NOLINTNEXTLINE(cppcoreguidelines-pro-type-cstyle-cast): c-style cast used in a macro in WolframIOLibraryFunctions.h
 		MArgument_setDataStore(res, ds);
+	}
+
+	void MArgumentManager::setGenericDataVector(const GenericDataVector& dv) {
+		dv.pass(res);
+	}
+
+	void MArgumentManager::setDataVector(DataVector dv) {
+		MArgument_setDataVector(res, dv);
 	}
 
 	void MArgumentManager::setMSparseArray(MSparseArray sa) {
