@@ -11,6 +11,7 @@
 
 /* Containers */
 #include "LLU/Containers/DataList.h"
+#include "LLU/Containers/Generic/DataVector.hpp"
 #include "LLU/Containers/Image.h"
 #include "LLU/Containers/NumericArray.h"
 #include "LLU/Containers/SparseArray.h"
