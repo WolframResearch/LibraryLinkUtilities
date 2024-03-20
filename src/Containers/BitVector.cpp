@@ -75,6 +75,12 @@ namespace LLU {
 		return bv;
 	}
 
+	bitvector_t BitVector::release() {
+		owner = Ownership::LibraryLink; // so that nothing is done in destructor
+		return bv;
+	}
+
+
 	void swap(BitVector& lhs, BitVector& rhs) noexcept {
 		using std::swap;
 		swap(lhs.bv, rhs.bv);

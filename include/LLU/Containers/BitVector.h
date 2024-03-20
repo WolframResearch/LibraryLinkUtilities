@@ -44,6 +44,8 @@ namespace LLU {
 
 		bitvector_t rawData() const;
 
+		bitvector_t release();
+
 		friend void swap(BitVector& lhs, BitVector& rhs) noexcept;
 
 	private:
