@@ -24,6 +24,12 @@ namespace LLU {
 			}
 			return "<Unknown>";
 		}
+
+		LLU::BitVector exceptionalValuesAsMissing(const GenericNumericArray& array) {
+			return LLU::asTypedNumericArray(array, [](const auto& typedNA) {
+				return exceptionalValuesAsMissing(typedNA);
+			});
+		}
 	}
 
 	void checkAPICall(error_t status) {
@@ -49,6 +55,7 @@ namespace LLU {
 		} else {
 			ErrorManager::throwException(ErrorName::DVConstructorType, DV::typeName(type));
 		}
+		array.abandonContainer(); // now the NumericArray belongs to the DataVector and DataVector must free it when it dies
 		reset(result);
 	}
 
@@ -84,6 +91,15 @@ namespace LLU {
 		auto internal = array.getContainer();
 		Container result;
 		checkAPICall(api->DataVector_newBinary(elem_count, &internal, offsets.release(), validity.rawData(), &result));
+		array.abandonContainer(); // now the NumericArray belongs to the DataVector and DataVector must free it when it dies
+		reset(result);
+	}
+
+	GenericDataVector::MContainer(BitVector&& boolean_data, const BitVector& validity) {
+		const auto* api = LibraryData::DataVectorAPI();
+		Container result;
+		checkAPICall(api->DataVector_newBoolean(boolean_data.rawData(), validity.rawData(), &result));
+		boolean_data.release();
 		reset(result);
 	}
 
@@ -93,6 +109,7 @@ namespace LLU {
 		const char* zone = time_zone.empty()? nullptr : time_zone.c_str();
 		Container result;
 		checkAPICall(api->DataVector_newDate(&internal, granularity, precision, zone, validity.rawData(), &result));
+		array.abandonContainer(); // now the NumericArray belongs to the DataVector and DataVector must free it when it dies
 		reset(result);
 	}
 
@@ -101,6 +118,7 @@ namespace LLU {
 		auto internal = array.getContainer();
 		Container result;
 		checkAPICall(api->DataVector_newTime(&internal, granularity, precision, validity.rawData(), &result));
+		array.abandonContainer(); // now the NumericArray belongs to the DataVector and DataVector must free it when it dies
 		reset(result);
 	}
 

@@ -14,6 +14,7 @@
 #include "LLU/Containers/BitVector.h"
 #include "LLU/Containers/Generic/Base.hpp"
 #include "LLU/Containers/Generic/NumericArray.hpp"
+#include "LLU/Containers/Views/NumericArray.hpp"
 #include "LLU/UniquePtr.h"
 
 namespace LLU {
@@ -62,6 +63,24 @@ namespace LLU {
 			std::partial_sum(lengths.begin(), lengths.end(), offsets.get() + 1);
 			return offsets;
 		}
+
+		template<typename T>
+		LLU::BitVector exceptionalValuesAsMissing(const NumericArrayTypedView<T>& array) {
+			if constexpr (std::is_floating_point_v<T>) {
+				const auto elem_count = array.getFlattenedLength();
+				LLU::BitVector validity {elem_count, true};
+				for (mint i = 0; i < elem_count; ++i) {
+					if (std::isinf(array[i]) || std::isnan(array[i])) {
+						validity.clear(i);
+					}
+				}
+				return validity;
+			} else {
+				return {};
+			}
+		}
+
+		LLU::BitVector exceptionalValuesAsMissing(const GenericNumericArray& array);
 	}
 
 	/**
