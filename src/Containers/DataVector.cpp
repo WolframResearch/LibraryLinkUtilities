@@ -46,7 +46,7 @@ namespace LLU {
 
 	GenericDataVector::MContainer(DV::Type type, GenericNumericArray&& array, const BitVector& validity) {
 		const auto* api = LibraryData::DataVectorAPI();
-		auto internal = array.getContainer();
+		auto internal = array.abandonContainer(); // now the NumericArray belongs to the DataVector and DataVector must free it when it dies
 		Container result;
 		if (type == DV::Type::Numeric) {
 			checkAPICall(api->DataVector_newNumeric(&internal, validity.rawData(), &result));
@@ -55,7 +55,6 @@ namespace LLU {
 		} else {
 			ErrorManager::throwException(ErrorName::DVConstructorType, DV::typeName(type));
 		}
-		array.abandonContainer(); // now the NumericArray belongs to the DataVector and DataVector must free it when it dies
 		reset(result);
 	}
 
@@ -88,10 +87,9 @@ namespace LLU {
 
 	GenericDataVector::MContainer(GenericNumericArray&& array, mint elem_count, UniquePtr<mint[]>&& offsets, const BitVector& validity) {
 		const auto* api = LibraryData::DataVectorAPI();
-		auto internal = array.getContainer();
+		auto internal = array.abandonContainer();
 		Container result;
 		checkAPICall(api->DataVector_newBinary(elem_count, &internal, offsets.release(), validity.rawData(), &result));
-		array.abandonContainer(); // now the NumericArray belongs to the DataVector and DataVector must free it when it dies
 		reset(result);
 	}
 
@@ -105,20 +103,18 @@ namespace LLU {
 
 	GenericDataVector::MContainer(GenericNumericArray&& array, mint granularity, mint precision, const std::string& time_zone, const BitVector& validity) {
 		const auto* api = LibraryData::DataVectorAPI();
-		auto internal = array.getContainer();
+		auto internal = array.abandonContainer();
 		const char* zone = time_zone.empty()? nullptr : time_zone.c_str();
 		Container result;
 		checkAPICall(api->DataVector_newDate(&internal, granularity, precision, zone, validity.rawData(), &result));
-		array.abandonContainer(); // now the NumericArray belongs to the DataVector and DataVector must free it when it dies
 		reset(result);
 	}
 
 	GenericDataVector::MContainer(GenericNumericArray&& array, mint granularity, mint precision, const BitVector& validity) {
 		const auto* api = LibraryData::DataVectorAPI();
-		auto internal = array.getContainer();
+		auto internal = array.abandonContainer();
 		Container result;
 		checkAPICall(api->DataVector_newTime(&internal, granularity, precision, validity.rawData(), &result));
-		array.abandonContainer(); // now the NumericArray belongs to the DataVector and DataVector must free it when it dies
 		reset(result);
 	}
 
