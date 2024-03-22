@@ -11,9 +11,9 @@
 #include <string_view>
 #include <variant>
 
-#include "LLU/Containers/BitVector.h"
 #include "LLU/Containers/Generic/Base.hpp"
 #include "LLU/Containers/Generic/NumericArray.hpp"
+#include "LLU/Containers/NumericArray.h"
 #include "LLU/Containers/Views/NumericArray.hpp"
 #include "LLU/UniquePtr.h"
 
@@ -53,7 +53,7 @@ namespace LLU {
 			mint precision;
 		};
 
-		using Data = std::variant<GenericNumericArray, StringData, BitVector, BinaryData, GenericNumericArray, DateData, TimeData>;
+		using Data = std::variant<GenericNumericArray, StringData, GenericNumericArray, BinaryData, GenericNumericArray, DateData, TimeData>;
 
 		template<typename T>
 		UniquePtr<mint[]> lengthsToOffsets(std::span<T> lengths) {
@@ -65,13 +65,13 @@ namespace LLU {
 		}
 
 		template<typename T>
-		LLU::BitVector exceptionalValuesAsMissing(const NumericArrayTypedView<T>& array) {
+		Int8Array exceptionalValuesAsMissing(const NumericArrayTypedView<T>& array) {
 			if constexpr (std::is_floating_point_v<T>) {
 				const auto elem_count = array.getFlattenedLength();
-				LLU::BitVector validity {elem_count, true};
+				Int8Array validity {static_cast<std::uint8_t>(true), MArrayDimensions {elem_count}};
 				for (mint i = 0; i < elem_count; ++i) {
 					if (std::isinf(array[i]) || std::isnan(array[i])) {
-						validity.clear(i);
+						validity[i] = 0;
 					}
 				}
 				return validity;
@@ -80,7 +80,7 @@ namespace LLU {
 			}
 		}
 
-		LLU::BitVector exceptionalValuesAsMissing(const GenericNumericArray& array);
+		Int8Array exceptionalValuesAsMissing(const GenericNumericArray& array);
 	}
 
 	/**
@@ -106,19 +106,19 @@ namespace LLU {
 		MContainer(Container c, Ownership owner);
 
 
-		MContainer(DV::Type type, GenericNumericArray&& array, const BitVector& validity = {});
+		MContainer(DV::Type type, GenericNumericArray&& array, const Int8Array& validity = {});
 
-		MContainer(mint str_count, UniquePtr<const char>&& string_data, UniquePtr<mint[]>&& offsets, const BitVector& validity = {});
+		MContainer(mint str_count, UniquePtr<const char>&& string_data, UniquePtr<mint[]>&& offsets, const Int8Array& validity = {});
 
-		MContainer(const std::vector<std::string_view>& string_data, const BitVector& validity = {});
+		MContainer(const std::vector<std::string_view>& string_data, const Int8Array& validity = {});
 
-		MContainer(BitVector&& boolean_data, const BitVector& validity = {});
+		MContainer(const Int8Array& boolean_data, const Int8Array& validity = {});
 
-		MContainer(GenericNumericArray&& array, mint elem_count, UniquePtr<mint[]>&& offsets, const BitVector& validity = {});
+		MContainer(GenericNumericArray&& array, mint elem_count, UniquePtr<mint[]>&& offsets, const Int8Array& validity = {});
 
-		MContainer(GenericNumericArray&& array, mint granularity, mint precision, const std::string& time_zone, const BitVector& validity = {});
+		MContainer(GenericNumericArray&& array, mint granularity, mint precision, const std::string& time_zone, const Int8Array& validity = {});
 
-		MContainer(GenericNumericArray&& array, mint granularity, mint precision, const BitVector& validity = {});
+		MContainer(GenericNumericArray&& array, mint granularity, mint precision, const Int8Array& validity = {});
 		/**
 		 * @brief   Clone this MContainer, performs a deep copy of the underlying DataVector.
 		 * @note    The cloned MContainer always belongs to the library (Ownership::Library) because LibraryLink has no idea of its existence.
@@ -140,7 +140,7 @@ namespace LLU {
 
 		mint missingCount() const;
 
-		BitVector validity() const;
+		Int8Array validity() const;
 
 		DV::Data viewData();
 

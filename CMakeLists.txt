@@ -77,7 +77,6 @@ if(NOT TARGET LLU)
 		${LLU_SOURCE_DIR}/Containers/DataStore.cpp
 		${LLU_SOURCE_DIR}/Containers/NumericArray.cpp
 		${LLU_SOURCE_DIR}/Containers/SparseArray.cpp
-		${LLU_SOURCE_DIR}/Containers/BitVector.cpp
 		${LLU_SOURCE_DIR}/Containers/DataVector.cpp)
 
 	#add the main library

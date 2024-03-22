@@ -194,6 +194,18 @@ namespace LLU {
 	NumericArray<T>::NumericArray(const GenericNumericArray& other, NA::ConversionMethod method, double param)
 		: TypedNumericArray<T>({other.getDimensions(), other.getRank()}), GenericBase(other.convert(NumericArrayType<T>, method, param)) {}
 
+
+	using Int8Array = NumericArray<std::int8_t>;
+	using UInt8Array = NumericArray<std::uint8_t>;
+	using Int16Array = NumericArray<std::int16_t>;
+	using UInt16Array = NumericArray<std::uint16_t>;
+	using Int32Array = NumericArray<std::int32_t>;
+	using UInt32Array = NumericArray<std::uint32_t>;
+	using Int64Array = NumericArray<std::int64_t>;
+	using UInt64Array = NumericArray<std::uint64_t>;
+
+	using Real32Array = NumericArray<float>;
+	using Real64Array = NumericArray<double>;
 } /* namespace LLU */
 
 #endif /* LLU_CONTAINERS_NUMERICARRAY_H_ */

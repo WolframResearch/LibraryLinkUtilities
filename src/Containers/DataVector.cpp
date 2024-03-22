@@ -25,7 +25,7 @@ namespace LLU {
 			return "<Unknown>";
 		}
 
-		LLU::BitVector exceptionalValuesAsMissing(const GenericNumericArray& array) {
+		LLU::Int8Array exceptionalValuesAsMissing(const GenericNumericArray& array) {
 			return LLU::asTypedNumericArray(array, [](const auto& typedNA) {
 				return exceptionalValuesAsMissing(typedNA);
 			});
@@ -44,28 +44,28 @@ namespace LLU {
 		}
 	}
 
-	GenericDataVector::MContainer(DV::Type type, GenericNumericArray&& array, const BitVector& validity) {
+	GenericDataVector::MContainer(DV::Type type, GenericNumericArray&& array, const Int8Array& validity) {
 		const auto* api = LibraryData::DataVectorAPI();
 		auto internal = array.abandonContainer(); // now the NumericArray belongs to the DataVector and DataVector must free it when it dies
 		Container result;
 		if (type == DV::Type::Numeric) {
-			checkAPICall(api->DataVector_newNumeric(&internal, validity.rawData(), &result));
+			checkAPICall(api->DataVector_newNumeric(&internal, validity.getContainer(), &result));
 		} else if (type == DV::Type::FixedWidthBinary) {
-			checkAPICall(api->DataVector_newFixedWidthBinary(&internal, validity.rawData(), &result));
+			checkAPICall(api->DataVector_newFixedWidthBinary(&internal, validity.getContainer(), &result));
 		} else {
 			ErrorManager::throwException(ErrorName::DVConstructorType, DV::typeName(type));
 		}
 		reset(result);
 	}
 
-	GenericDataVector::MContainer(mint str_count, UniquePtr<const char>&& string_data, UniquePtr<mint[]>&& offsets, const BitVector& validity) {
+	GenericDataVector::MContainer(mint str_count, UniquePtr<const char>&& string_data, UniquePtr<mint[]>&& offsets, const Int8Array& validity) {
 		const auto* api = LibraryData::DataVectorAPI();
 		Container result;
-		checkAPICall(api->DataVector_newString(str_count, string_data.release(), offsets.release(), validity.rawData(), &result));
+		checkAPICall(api->DataVector_newString(str_count, string_data.release(), offsets.release(), validity.getContainer(), &result));
 		reset(result);
 	}
 
-	GenericDataVector::MContainer(const std::vector<std::string_view>& string_data, const BitVector& validity) {
+	GenericDataVector::MContainer(const std::vector<std::string_view>& string_data, const Int8Array& validity) {
 		const auto str_count = string_data.size();
 		auto offsets = LLU::makeUnique<mint[]>(str_count + 1);
 
@@ -81,40 +81,39 @@ namespace LLU {
 		}
 		const auto* api = LibraryData::DataVectorAPI();
 		Container result;
-		checkAPICall(api->DataVector_newString(str_count, characters.release(), offsets.release(), validity.rawData(), &result));
+		checkAPICall(api->DataVector_newString(str_count, characters.release(), offsets.release(), validity.getContainer(), &result));
 		reset(result);
 	}
 
-	GenericDataVector::MContainer(GenericNumericArray&& array, mint elem_count, UniquePtr<mint[]>&& offsets, const BitVector& validity) {
+	GenericDataVector::MContainer(GenericNumericArray&& array, mint elem_count, UniquePtr<mint[]>&& offsets, const Int8Array& validity) {
 		const auto* api = LibraryData::DataVectorAPI();
 		auto internal = array.abandonContainer();
 		Container result;
-		checkAPICall(api->DataVector_newBinary(elem_count, &internal, offsets.release(), validity.rawData(), &result));
+		checkAPICall(api->DataVector_newBinary(elem_count, &internal, offsets.release(), validity.getContainer(), &result));
 		reset(result);
 	}
 
-	GenericDataVector::MContainer(BitVector&& boolean_data, const BitVector& validity) {
+	GenericDataVector::MContainer(const Int8Array& boolean_data, const Int8Array& validity) {
 		const auto* api = LibraryData::DataVectorAPI();
 		Container result;
-		checkAPICall(api->DataVector_newBoolean(boolean_data.rawData(), validity.rawData(), &result));
-		boolean_data.release();
+		checkAPICall(api->DataVector_newBoolean(boolean_data.getContainer(), validity.getContainer(), &result));
 		reset(result);
 	}
 
-	GenericDataVector::MContainer(GenericNumericArray&& array, mint granularity, mint precision, const std::string& time_zone, const BitVector& validity) {
+	GenericDataVector::MContainer(GenericNumericArray&& array, mint granularity, mint precision, const std::string& time_zone, const Int8Array& validity) {
 		const auto* api = LibraryData::DataVectorAPI();
 		auto internal = array.abandonContainer();
 		const char* zone = time_zone.empty()? nullptr : time_zone.c_str();
 		Container result;
-		checkAPICall(api->DataVector_newDate(&internal, granularity, precision, zone, validity.rawData(), &result));
+		checkAPICall(api->DataVector_newDate(&internal, granularity, precision, zone, validity.getContainer(), &result));
 		reset(result);
 	}
 
-	GenericDataVector::MContainer(GenericNumericArray&& array, mint granularity, mint precision, const BitVector& validity) {
+	GenericDataVector::MContainer(GenericNumericArray&& array, mint granularity, mint precision, const Int8Array& validity) {
 		const auto* api = LibraryData::DataVectorAPI();
 		auto internal = array.abandonContainer();
 		Container result;
-		checkAPICall(api->DataVector_newTime(&internal, granularity, precision, validity.rawData(), &result));
+		checkAPICall(api->DataVector_newTime(&internal, granularity, precision, validity.getContainer(), &result));
 		reset(result);
 	}
 
@@ -167,10 +166,10 @@ namespace LLU {
 		return count;
 	}
 
-	BitVector GenericDataVector::validity() const {
-		bitvector_t validity;
+	Int8Array GenericDataVector::validity() const {
+		MNumericArray validity;
 		checkAPICall(LibraryData::DataVectorAPI()->DataVector_getValidity(this->getContainer(), &validity));
-		return BitVector{validity};
+		return Int8Array {validity, Ownership::Library};
 	}
 
 	DV::Data GenericDataVector::viewData() {
@@ -196,10 +195,11 @@ namespace LLU {
 				return DV::Data {std::move(result)};
 			}
 			case DV::Type::Boolean: {
-				bitvector_t raw_result;
-				checkAPICall(api->DataVector_getDataBoolean(this->getContainer(), &raw_result));
+				constexpr auto variant_index = std::in_place_index<static_cast<std::size_t>(DV::Type::Boolean)>;
+				MNumericArray raw_data;
+				checkAPICall(api->DataVector_getDataBoolean(this->getContainer(), &raw_data));
 				// raw_result is a copy of DataVector data, so the caller is responsible for freeing it
-				return DV::Data {BitVector{raw_result, Ownership::Library}};
+				return DV::Data {variant_index, Int8Array {raw_data, Ownership::Library}};
 			}
 			case DV::Type::Binary: {
 				MNumericArray raw_data;
