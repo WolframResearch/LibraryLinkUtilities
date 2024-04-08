@@ -33,7 +33,7 @@
 
 #endif	/* DLLIMPORT */
 
-#include "WolframDataVectorLibrary.h"
+#include "WolframTabularColumnLibrary.h"
 #include "WolframIOLibraryFunctions.h"
 #include "WolframImageLibrary.h"
 #include "WolframNumericArrayLibrary.h"
@@ -92,10 +92,10 @@ namespace LLU {
 		static const st_WolframIOLibrary_Functions* DataStoreAPI();
 
 		/**
-		 * @brief   Get a pointer to structure with function pointers to DataVector API
-		 * @return  a pointer to raw LibraryLink DataVector API
+		 * @brief   Get a pointer to structure with function pointers to Tabular API
+		 * @return  a pointer to raw LibraryLink Tabular API
 		 */
-		static const st_WolframDataVectorLibrary_Functions* DataVectorAPI();
+		static const st_WolframTabularColumnLibrary_Functions* TabularAPI();
 
 		/**
 		 * @brief   Get currently owned WolframLibraryData, even if it is a nullptr.

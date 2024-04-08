@@ -119,8 +119,8 @@ namespace LLU {
 		return MArgument_getDataStore(getArgs(index));
 	}
 
-	DataVector MArgumentManager::getDataVector(size_type index) const {
-		return MArgument_getDataVector(getArgs(index));
+	TabularColumn MArgumentManager::getTabularColumn(size_type index) const {
+		return MArgument_getTabularColumn(getArgs(index));
 	}
 
 
@@ -145,12 +145,12 @@ namespace LLU {
 		MArgument_setDataStore(res, ds);
 	}
 
-	void MArgumentManager::setGenericDataVector(const GenericDataVector& dv) {
+	void MArgumentManager::setDataVector(const DataVector& dv) {
 		dv.pass(res);
 	}
 
-	void MArgumentManager::setDataVector(DataVector dv) {
-		MArgument_setDataVector(res, dv);
+	void MArgumentManager::setTabularColumn(TabularColumn dv) {
+		MArgument_setTabularColumn(res, dv);
 	}
 
 	void MArgumentManager::setMSparseArray(MSparseArray sa) {

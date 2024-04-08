@@ -1,6 +1,6 @@
 /**
- * @file    DataVector.hpp
- * @brief   Definition and implementation of generic DataVector wrapper.
+ * @file    TabularColumn.hpp
+ * @brief   Definition and implementation of generic TabularColumn wrapper.
  */
 
 #ifndef LLU_CONTAINERS_GENERIC_DATAVECTOR_HPP
@@ -84,24 +84,24 @@ namespace LLU {
 	}
 
 	/**
-	 *  @brief  MContainer specialization for DataVector, provides basic list interface for the underlying raw DataVector.
+	 *  @brief  MContainer specialization for TabularColumn, provides basic list interface for the underlying raw TabularColumn.
 	 */
 	template<>
-	class MContainer<MArgumentType::DataVector> : public MContainerBase<MArgumentType::DataVector> {
+	class MContainer<MArgumentType::TabularColumn> : public MContainerBase<MArgumentType::TabularColumn> {
 	public:
 		/// Inherit constructors from MContainerBase
-		using MContainerBase<MArgumentType::DataVector>::MContainerBase;
+		using MContainerBase<MArgumentType::TabularColumn>::MContainerBase;
 
 		/**
-		 * @brief   Default constructor, the MContainer does not manage any instance of DataVector.
+		 * @brief   Default constructor, the MContainer does not manage any instance of TabularColumn.
 		 */
 		MContainer() = default;
 
 		/**
-		 * @brief   Create new MContainer wrapping a given raw DataVector
-		 * @param   c - a DataVector
-		 * @param   owner - who manages the memory the raw DataVector
-		 * @note    An exception will be thrown if you try to create a Shared DataVector because LibraryLink does not allow for shared DataVectors.
+		 * @brief   Create new MContainer wrapping a given raw TabularColumn
+		 * @param   c - a TabularColumn
+		 * @param   owner - who manages the memory the raw TabularColumn
+		 * @note    An exception will be thrown if you try to create a Shared TabularColumn because LibraryLink does not allow for shared DataVectors.
 		 */
 		MContainer(Container c, Ownership owner);
 
@@ -120,7 +120,7 @@ namespace LLU {
 
 		MContainer(GenericNumericArray&& array, mint granularity, mint precision, const Int8Array& validity = {});
 		/**
-		 * @brief   Clone this MContainer, performs a deep copy of the underlying DataVector.
+		 * @brief   Clone this MContainer, performs a deep copy of the underlying TabularColumn.
 		 * @note    The cloned MContainer always belongs to the library (Ownership::Library) because LibraryLink has no idea of its existence.
 		 * @return  new MContainer, by value
 		 */
@@ -129,8 +129,8 @@ namespace LLU {
 		}
 
 		/**
-		 * @brief   Get the length of the DataVector.
-		 * @return  total number of data elements in the DataVector
+		 * @brief   Get the length of the TabularColumn.
+		 * @return  total number of data elements in the TabularColumn
 		 */
 		mint length() const;
 
@@ -150,7 +150,7 @@ namespace LLU {
 
 		/**
 		 * @brief   Get a share count.
-		 * @return  always 0 to indicate that DataVector cannot be shared
+		 * @return  always 0 to indicate that TabularColumn cannot be shared
 		 */
 		mint shareCountImpl() const noexcept override {
 			return 0;
@@ -162,12 +162,12 @@ namespace LLU {
 		 */
 		void passImpl(MArgument& res) const noexcept override {
 			//NOLINTNEXTLINE(cppcoreguidelines-pro-type-cstyle-cast): c-style cast used in a macro in WolframIOLibraryFunctions.h
-			MArgument_setDataVector(res, this->getContainer());
+			MArgument_setTabularColumn(res, this->getContainer());
 		}
 	};
 
-	/// MContainer specialization for DataVector is called GenericDataList
-	using GenericDataVector = MContainer<MArgumentType::DataVector>;
+	/// MContainer specialization for TabularColumn is called GenericDataList
+	using DataVector = MContainer<MArgumentType::TabularColumn>;
 
 }  // namespace LLU
 

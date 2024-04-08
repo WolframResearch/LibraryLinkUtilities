@@ -22,7 +22,7 @@ template<>
 class LLU::MContainer<LLU::MArgumentType::DataStore>;
 
 template<>
-class LLU::MContainer<LLU::MArgumentType::DataVector>;
+class LLU::MContainer<LLU::MArgumentType::TabularColumn>;
 
 /**
  * @brief Namespace for functionality related to arguments passed from LibraryLink to library functions and their types.
@@ -64,8 +64,8 @@ namespace LLU::Argument {
 		/// DataStore stands for a GenericDataList - type agnostic wrapper over DataStore
 		using DataStore = MContainer<MArgumentType::DataStore>;
 
-		/// DataVectpr stands for GenericDataVector - type agnostic wrapper over LibraryLink's DataVector
-		using DataVector = MContainer<MArgumentType::DataVector>;
+		/// DataVectpr stands for TabularColumn - type agnostic wrapper over LibraryLink's TabularColumn
+		using DataVector = MContainer<MArgumentType::TabularColumn>;
 	} // namespace Typed
 
 	/// C++ wrapper over LibraryLink's MArgument, which is a plain union

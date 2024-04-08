@@ -77,8 +77,8 @@ namespace LLU {
 			case MArgumentType::DataStore:
 				PrimitiveWrapper<MArgumentType::DataStore>::addDataStoreNode(getContainer(), name, std::get_if<GenericDataList>(&node)->abandonContainer());
 				break;
-			case MArgumentType::DataVector:
-				PrimitiveWrapper<MArgumentType::DataVector>::addDataStoreNode(getContainer(), name, std::get_if<GenericDataVector>(&node)->abandonContainer());
+			case MArgumentType::TabularColumn:
+				PrimitiveWrapper<MArgumentType::TabularColumn>::addDataStoreNode(getContainer(), name, std::get_if<DataVector>(&node)->abandonContainer());
 				break;
 		}
 	}
@@ -116,8 +116,8 @@ namespace LLU {
 			case MArgumentType::DataStore:
 				PrimitiveWrapper<MArgumentType::DataStore>::addDataStoreNode(getContainer(), std::get_if<GenericDataList>(&node)->abandonContainer());
 				break;
-			case MArgumentType::DataVector:
-				PrimitiveWrapper<MArgumentType::DataVector>::addDataStoreNode(getContainer(), std::get_if<GenericDataVector>(&node)->abandonContainer());
+			case MArgumentType::TabularColumn:
+				PrimitiveWrapper<MArgumentType::TabularColumn>::addDataStoreNode(getContainer(), std::get_if<DataVector>(&node)->abandonContainer());
 				break;
 		}
 	}

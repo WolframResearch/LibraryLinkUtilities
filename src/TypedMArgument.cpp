@@ -32,7 +32,7 @@ namespace LLU::Argument {
 			case MArgumentType::UTF8String: return std::string_view {MArgument_getUTF8String(m)};
 			//NOLINTNEXTLINE(cppcoreguidelines-pro-type-cstyle-cast): c-style cast used in a macro in WolframIOLibraryFunctions.h
 			case MArgumentType::DataStore: return GenericDataList {MArgument_getDataStore(m), Ownership::LibraryLink};
-			case MArgumentType::DataVector: return GenericDataVector {MArgument_getDataVector(m), Ownership::LibraryLink};
+			case MArgumentType::TabularColumn: return DataVector {MArgument_getTabularColumn(m), Ownership::LibraryLink};
 		}
 		ErrorManager::throwException(ErrorName::TypeError);
 	}
@@ -57,7 +57,7 @@ namespace LLU::Argument {
 			case MArgumentType::UTF8String: MArgument_setUTF8String(res, const_cast<char*>(std::get_if<std::string_view>(&tma)->data())); break;
 			//NOLINTNEXTLINE(cppcoreguidelines-pro-type-cstyle-cast): c-style cast used in a macro in WolframIOLibraryFunctions.h
 			case MArgumentType::DataStore: MArgument_setDataStore(res, std::get_if<GenericDataList>(&tma)->abandonContainer()); break;
-			case MArgumentType::DataVector: MArgument_setDataVector(res, std::get_if<GenericDataVector>(&tma)->abandonContainer()); break;
+			case MArgumentType::TabularColumn: MArgument_setTabularColumn(res, std::get_if<DataVector>(&tma)->abandonContainer()); break;
 		}
 	}
 }  // namespace LLU::Argument

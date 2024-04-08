@@ -58,7 +58,7 @@ namespace LLU {
 	//NOLINTNEXTLINE(cppcoreguidelines-pro-type-const-cast)
 	LLU_ARGUMENT_DEFINE_SPECIALIZATIONS_OF_MEMBER_FUNCTIONS(Image, MArgument_getM, MArgument_setM, addNamedMImage, addMImage)
 	//NOLINTNEXTLINE(cppcoreguidelines-pro-type-const-cast)
-	LLU_ARGUMENT_DEFINE_SPECIALIZATIONS_OF_MEMBER_FUNCTIONS(DataVector, MArgument_get, MArgument_set, addNamedDataVector, addDataVector)
+	LLU_ARGUMENT_DEFINE_SPECIALIZATIONS_OF_MEMBER_FUNCTIONS(TabularColumn, MArgument_get, MArgument_set, addNamedTabularColumn, addTabularColumn)
 
 #undef LLU_ARGUMENT_DEFINE_SPECIALIZATIONS_OF_MEMBER_FUNCTIONS
 
@@ -92,7 +92,7 @@ namespace LLU {
 			case MArgumentType::SparseArray: PrimitiveWrapper<MArgumentType::SparseArray>(arg).addToDataStore(ds, name); break;
 			case MArgumentType::NumericArray: PrimitiveWrapper<MArgumentType::NumericArray>(arg).addToDataStore(ds, name); break;
 			case MArgumentType::Image: PrimitiveWrapper<MArgumentType::Image>(arg).addToDataStore(ds, name); break;
-			case MArgumentType::DataVector: PrimitiveWrapper<MArgumentType::DataVector>(arg).addToDataStore(ds, name); break;
+			case MArgumentType::TabularColumn: PrimitiveWrapper<MArgumentType::TabularColumn>(arg).addToDataStore(ds, name); break;
 		}
 	}
 /// @endcond

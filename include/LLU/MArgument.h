@@ -31,12 +31,12 @@ namespace LLU {
 		Image = MType_Image,
 		UTF8String = MType_UTF8String,
 		DataStore = MType_DataStore,
-		DataVector = MType_DataVector
+		TabularColumn = MType_TabularColumn
 	};
 
 	namespace Argument {
 		/// A variant holding all possible MArgument types
-		using PrimitiveAny = std::variant<std::monostate, mbool, mint, mreal, mcomplex, MTensor, MSparseArray, MNumericArray, MImage, char*, DataStore, DataVector>;
+		using PrimitiveAny = std::variant<std::monostate, mbool, mint, mreal, mcomplex, MTensor, MSparseArray, MNumericArray, MImage, char*, DataStore, TabularColumn>;
 
 		/// PrimitiveIndex<T> is the index of type T in the PrimitiveAny variant converted to MArgumentType enum.
 		template<typename T>
@@ -65,7 +65,7 @@ namespace LLU {
 		 */
 		template<MArgumentType T>
 		inline constexpr bool ContainerTypeQ = (T == MArgumentType::Tensor || T == MArgumentType::Image || T == MArgumentType::NumericArray ||
-										 T == MArgumentType::DataStore || T == MArgumentType::SparseArray || T == MArgumentType::DataVector);
+										 T == MArgumentType::DataStore || T == MArgumentType::SparseArray || T == MArgumentType::TabularColumn);
 	} // namespace Argument
 
 	/**

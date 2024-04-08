@@ -143,10 +143,10 @@ namespace LLU {
 		extern const std::string InvalidOpenMode;		///< Specified open mode is invalid
 		extern const std::string OpenFileFailed;		///< Could not open file
 
-		// DataVector errors:
-		extern const std::string DVShared;	 	 	///< Trying to create a Shared DataVector. DataVector can only be passed as Automatic or Manual.
-		extern const std::string DVAPIError;	 	///< DataVector LibraryLink API returned error.
-		extern const std::string DVConstructorType; ///< DataVector types passed to the constructor does not match other arguments.
+		// TabularColumn errors:
+		extern const std::string DVShared;	 	 	///< Trying to create a Shared TabularColumn. TabularColumn can only be passed as Automatic or Manual.
+		extern const std::string DVAPIError;	 	///< TabularColumn LibraryLink API returned error.
+		extern const std::string DVConstructorType; ///< TabularColumn types passed to the constructor does not match other arguments.
 
 		// BitVector errors:
 		extern const std::string BitVectorNew;      ///< Could not create a new BitVector.
