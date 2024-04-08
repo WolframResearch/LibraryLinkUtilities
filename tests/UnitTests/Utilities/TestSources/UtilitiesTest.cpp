@@ -98,7 +98,7 @@ static std::wstring toWideStr(const std::u16string& u16) {
 }
 
 LLU_LIBRARY_FUNCTION(WideStringUTF8UTF16Conversion) {
-	std::string u8 = u8"z\u00df\u6c34\U0001f34c";
+	std::string u8 = "z\u00df\u6c34\U0001f34c";
 	std::wstring u16wide = toWideStr(u"z\u00df\u6c34\U0001f34c");
 
 	auto u16to8 = LLU::fromUTF16toUTF8(u16wide);
@@ -111,7 +111,7 @@ LLU_LIBRARY_FUNCTION(WideStringUTF8UTF16Conversion) {
 }
 
 LLU_LIBRARY_FUNCTION(Char16UTF8UTF16Conversion) {
-	std::string u8 = u8"z\u00df\u6c34\U0001f34c";
+	std::string u8 = "z\u00df\u6c34\U0001f34c";
 	std::u16string u16 = u"z\u00df\u6c34\U0001f34c";
 
 	auto u16to8 = LLU::fromUTF16toUTF8(u16);
@@ -142,7 +142,7 @@ LLU_LIBRARY_FUNCTION(UTF16BytesToUTF8) {
 }
 
 LLU_LIBRARY_FUNCTION(Char32UTF8UTF32Conversion) {
-	std::string u8 = u8"z\u00df\u6c34\U0001f34c";
+	std::string u8 = "z\u00df\u6c34\U0001f34c";
 	std::u32string u32 = U"z\u00df\u6c34\U0001f34c";
 
 	auto u32to8 = LLU::fromUTF32toUTF8(u32);
