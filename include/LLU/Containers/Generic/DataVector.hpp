@@ -30,30 +30,41 @@ namespace LLU {
 			Time
 		};
 
+		struct NumericData {
+			void* raw_data;
+			numericarray_data_t type;
+			std::size_t length;
+		};
+
 		struct StringData {
 			std::string_view characters;
 			std::span<mint> offsets;
 		};
 
 		struct BinaryData {
-			GenericNumericArray array;
+			std::span<std::uint8_t> array;
 			std::span<mint> offsets;
 		};
 
+		struct FixedWidthBinaryData {
+			std::span<std::uint8_t> array;
+			mint width;
+		};
+
 		struct DateData {
-			GenericNumericArray array;
+			NumericData numeric_data;
 			mint granularity;
 			mint precision;
 			std::string time_zone;
 		};
 
 		struct TimeData {
-			GenericNumericArray array;
+			NumericData numeric_data;
 			mint granularity;
 			mint precision;
 		};
 
-		using Data = std::variant<GenericNumericArray, StringData, GenericNumericArray, BinaryData, GenericNumericArray, DateData, TimeData>;
+		using Data = std::variant<NumericData, StringData, Int8Array, BinaryData, FixedWidthBinaryData, DateData, TimeData>;
 
 		template<typename T>
 		UniquePtr<mint[]> lengthsToOffsets(std::span<T> lengths) {

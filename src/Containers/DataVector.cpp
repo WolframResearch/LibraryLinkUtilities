@@ -49,9 +49,9 @@ namespace LLU {
 		auto internal = array.abandonContainer(); // now the NumericArray belongs to the TabularColumn and TabularColumn must free it when it dies
 		Container result;
 		if (type == DV::Type::Numeric) {
-			checkAPICall(api->TabularColumn_newNumeric(&internal, validity.getContainer(), &result));
+			checkAPICall(api->TabularColumn_newNumeric(internal, validity.getContainer(), &result));
 		} else if (type == DV::Type::FixedWidthBinary) {
-			checkAPICall(api->TabularColumn_newFixedWidthBinary(&internal, validity.getContainer(), &result));
+			checkAPICall(api->TabularColumn_newFixedWidthBinary(internal, validity.getContainer(), &result));
 		} else {
 			ErrorManager::throwException(ErrorName::DVConstructorType, DV::typeName(type));
 		}
@@ -89,7 +89,7 @@ namespace LLU {
 		const auto* api = LibraryData::TabularAPI();
 		auto internal = array.abandonContainer();
 		Container result;
-		checkAPICall(api->TabularColumn_newBinary(elem_count, &internal, offsets.release(), validity.getContainer(), &result));
+		checkAPICall(api->TabularColumn_newBinary(elem_count, internal, offsets.release(), validity.getContainer(), &result));
 		reset(result);
 	}
 
@@ -105,7 +105,7 @@ namespace LLU {
 		auto internal = array.abandonContainer();
 		const char* zone = time_zone.empty()? nullptr : time_zone.c_str();
 		Container result;
-		checkAPICall(api->TabularColumn_newDate(&internal, granularity, precision, zone, validity.getContainer(), &result));
+		checkAPICall(api->TabularColumn_newDate(internal, granularity, precision, zone, validity.getContainer(), &result));
 		reset(result);
 	}
 
@@ -113,7 +113,7 @@ namespace LLU {
 		const auto* api = LibraryData::TabularAPI();
 		auto internal = array.abandonContainer();
 		Container result;
-		checkAPICall(api->TabularColumn_newTime(&internal, granularity, precision, validity.getContainer(), &result));
+		checkAPICall(api->TabularColumn_newTime(internal, granularity, precision, validity.getContainer(), &result));
 		reset(result);
 	}
 
@@ -177,11 +177,10 @@ namespace LLU {
 		const auto dv_type = type();
 		switch (dv_type) {
 			case DV::Type::Numeric: {
-				MNumericArray raw_result;
-				checkAPICall(api->TabularColumn_getDataNumeric(this->getContainer(), &raw_result));
-				constexpr auto variant_index = std::in_place_index<static_cast<std::size_t>(DV::Type::Numeric)>;
-				// MNumericArray shares memory with TabularColumn.
-				return DV::Data {variant_index, GenericNumericArray {raw_result, Ownership::LibraryLink}};
+				void* raw_data;
+				numericarray_data_t data_type;
+				checkAPICall(api->TabularColumn_getDataNumeric(this->getContainer(), &raw_data, &data_type));
+				return DV::Data {DV::NumericData {raw_data, data_type, size()}};
 			}
 			case DV::Type::String: {
 				const auto num_offsets = size() + 1;
@@ -195,40 +194,40 @@ namespace LLU {
 				return DV::Data {std::move(result)};
 			}
 			case DV::Type::Boolean: {
-				constexpr auto variant_index = std::in_place_index<static_cast<std::size_t>(DV::Type::Boolean)>;
 				MNumericArray raw_data;
 				checkAPICall(api->TabularColumn_getDataBoolean(this->getContainer(), &raw_data));
-				// raw_result is a copy of TabularColumn data, so the caller is responsible for freeing it
-				return DV::Data {variant_index, Int8Array {raw_data, Ownership::Library}};
+				// raw_data is a copy of TabularColumn data, so the caller is responsible for freeing it
+				return DV::Data {Int8Array {raw_data, Ownership::Library}};
 			}
 			case DV::Type::Binary: {
-				MNumericArray raw_data;
+				std::uint8_t* raw_data;
 				mint* offsets;
 				checkAPICall(api->TabularColumn_getDataBinary(this->getContainer(), &raw_data, &offsets));
-				DV::BinaryData result {{raw_data, Ownership::LibraryLink}, {offsets, static_cast<std::size_t>(length() + 1)}};
+				DV::BinaryData result {{raw_data, size()}, {offsets, static_cast<std::size_t>(length() + 1)}};
 				return DV::Data {std::move(result)};
 			}
 			case DV::Type::FixedWidthBinary: {
-				MNumericArray raw_result;
-				checkAPICall(api->TabularColumn_getDataFixedWidthBinary(this->getContainer(), &raw_result));
-				constexpr auto variant_index = std::in_place_index<static_cast<std::size_t>(DV::Type::FixedWidthBinary)>;
-				// MNumericArray shares memory with TabularColumn.
-				return DV::Data {variant_index, GenericNumericArray {raw_result, Ownership::LibraryLink}};
+				std::uint8_t* raw_data;
+				mint width;
+				checkAPICall(api->TabularColumn_getDataFixedWidthBinary(this->getContainer(), &raw_data, &width));
+				return DV::Data {DV::FixedWidthBinaryData {{raw_data, size()}, width}};
 			}
 			case DV::Type::Date: {
-				MNumericArray raw_data;
+				void* raw_data;
+				numericarray_data_t data_type;
 				char* raw_time_zone;
 				DV::DateData result;
-				checkAPICall(api->TabularColumn_getDataDate(this->getContainer(), &raw_data, &result.granularity, &result.precision, &raw_time_zone));
-				result.array = GenericNumericArray {raw_data, Ownership::LibraryLink};
+				checkAPICall(api->TabularColumn_getDataDate(this->getContainer(), &raw_data, &data_type, &result.granularity, &result.precision, &raw_time_zone));
+				result.numeric_data = {raw_data, data_type, size()};
 				result.time_zone = raw_time_zone? raw_time_zone : "";
 				return DV::Data {std::move(result)};
 			}
 			case DV::Type::Time: {
-				MNumericArray raw_data;
+				void* raw_data;
+				numericarray_data_t data_type;
 				DV::TimeData result;
-				checkAPICall(api->TabularColumn_getDataTime(this->getContainer(), &raw_data, &result.granularity, &result.precision));
-				result.array = GenericNumericArray {raw_data, Ownership::LibraryLink};
+				checkAPICall(api->TabularColumn_getDataTime(this->getContainer(), &raw_data, &data_type, &result.granularity, &result.precision));
+				result.numeric_data = {raw_data, data_type, size()};
 				return DV::Data {std::move(result)};
 			}
 		}
