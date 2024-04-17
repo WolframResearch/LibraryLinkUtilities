@@ -71,7 +71,8 @@ namespace LLU {
 
 		offsets[0] = 0;
 		auto offsets_span = std::span<mint> {offsets.get() + 1, str_count};
-		std::transform_inclusive_scan(string_data.begin(), string_data.end(), offsets_span.begin(), std::plus<mint>{}, [](auto sv) { return sv.length(); });
+		std::transform_inclusive_scan(string_data.begin(), string_data.end(), offsets_span.begin(), std::plus<mint>{}, [](auto sv) { return sv.length(); },
+									  static_cast<mint>(0));
 
 		const auto total_chars = offsets_span.back();
 		auto characters = LLU::makeUnique<char[]>(std::max(total_chars, static_cast<mint>(1))); // allocate a dummy 1-byte block if there are no characters
