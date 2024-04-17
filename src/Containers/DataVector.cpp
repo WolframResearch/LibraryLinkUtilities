@@ -32,7 +32,7 @@ namespace LLU {
 		}
 	}
 
-	void checkAPICall(error_t status) {
+	void checkAPICall(errcode_t status) {
 		if (status) {
 			ErrorManager::throwException(ErrorName::DVAPIError, status);
 		}
