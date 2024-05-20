@@ -51,7 +51,7 @@ namespace LLU {
 		if (type == DV::Type::Numeric) {
 			checkAPICall(api->TabularColumn_newNumeric(internal, validity.getContainer(), &result));
 		} else if (type == DV::Type::FixedWidthBinary) {
-			checkAPICall(api->TabularColumn_newFixedWidthBinary(internal, validity.getContainer(), &result));
+			checkAPICall(api->TabularColumn_newFixedWidthByteArray(internal, validity.getContainer(), &result));
 		} else {
 			ErrorManager::throwException(ErrorName::DVConstructorType, DV::typeName(type));
 		}
@@ -90,7 +90,7 @@ namespace LLU {
 		const auto* api = LibraryData::TabularAPI();
 		auto internal = array.abandonContainer();
 		Container result;
-		checkAPICall(api->TabularColumn_newBinary(elem_count, internal, offsets.release(), validity.getContainer(), &result));
+		checkAPICall(api->TabularColumn_newByteArray(elem_count, internal, offsets.release(), validity.getContainer(), &result));
 		reset(result);
 	}
 
@@ -146,10 +146,10 @@ namespace LLU {
 		if (True == api->TabularColumn_booleanTypeQ(getContainer())) {
 			return DV::Type::Boolean;
 		}
-		if (True == api->TabularColumn_binaryTypeQ(getContainer())) {
+		if (True == api->TabularColumn_byteArrayTypeQ(getContainer())) {
 			return DV::Type::Binary;
 		}
-		if (True == api->TabularColumn_fixedWidthBinaryTypeQ(getContainer())) {
+		if (True == api->TabularColumn_fixedWidthByteArrayTypeQ(getContainer())) {
 			return DV::Type::FixedWidthBinary;
 		}
 		if (True == api->TabularColumn_dateTypeQ(getContainer())) {
@@ -203,14 +203,14 @@ namespace LLU {
 			case DV::Type::Binary: {
 				std::uint8_t* raw_data;
 				mint* offsets;
-				checkAPICall(api->TabularColumn_getDataBinary(this->getContainer(), &raw_data, &offsets));
+				checkAPICall(api->TabularColumn_getDataByteArray(this->getContainer(), &raw_data, &offsets));
 				DV::BinaryData result {{raw_data, size()}, {offsets, static_cast<std::size_t>(length() + 1)}};
 				return DV::Data {std::move(result)};
 			}
 			case DV::Type::FixedWidthBinary: {
 				std::uint8_t* raw_data;
 				mint width;
-				checkAPICall(api->TabularColumn_getDataFixedWidthBinary(this->getContainer(), &raw_data, &width));
+				checkAPICall(api->TabularColumn_getDataFixedWidthByteArray(this->getContainer(), &raw_data, &width));
 				return DV::Data {DV::FixedWidthBinaryData {{raw_data, size()}, width}};
 			}
 			case DV::Type::Date: {
