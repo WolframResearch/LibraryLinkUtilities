@@ -220,13 +220,6 @@ function(set_machine_flags TARGET_NAME)
 	endif()
 endfunction()
 
-# Sets a flag for GCC to use old ABI on Linux-x86-64. Does nothing on other platforms.
-function(use_old_gcc_abi TARGET_NAME)
-	if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64")
-		target_compile_definitions(${TARGET_NAME} PUBLIC _GLIBCXX_USE_CXX11_ABI=0)
-	endif()
-endfunction()
-
 # Sets rpath for a target. If second argument is false then "Wolfram-default" rpath is set:
 # - $ORIGIN on Linux
 # - @loader_path on Mac
