@@ -449,6 +449,18 @@ function(add_frameworks TARGET_NAME)
 			)
 endfunction()
 
+# Hide symbols from static libraries on Linux
+function(linker_hide_symbols TARGET_NAME)
+	if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+		foreach(tgt ${ARGN})
+			list(APPEND EXCLUDE_LIBS "LINKER:--exclude-libs,$<TARGET_LINKER_FILE_NAME:${tgt}>")
+		endforeach()
+		target_link_options(${TARGET_NAME} PRIVATE
+			${EXCLUDE_LIBS}
+		)
+	endif()
+endfunction()
+
 # Checks if variable VAR is set either as a regular or an environment variable and if so, sets variable RES.
 function(set_from_env VAR RES)
 	if(${VAR})
