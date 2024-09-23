@@ -247,7 +247,8 @@ $CorePacletFailureLUT = <|
 	"UnknownFailure" -> {23, "The error `ErrorName` has not been registered."},
 	"ProgressMonInvalidValue" -> {24, "Expecting None or a Symbol for the option \"ProgressMonitor\"."},
 	"InvalidManagedExpressionID" -> {25, "`Expr` is not a valid ManagedExpression." },
-	"UnexpectedManagedExpression" -> {26, "Expected managed `Expected`, got `Actual`." }
+	"UnexpectedManagedExpression" -> {26, "Expected managed `Expected`, got `Actual`." },
+	"LibraryFunctionFailure" -> {27, "Failed to evaluate LibraryFunction." }
 |>;
 
 (* Every error used in the paclet must have unique ID. We distinguish 4 ranges of IDs:
@@ -682,8 +683,8 @@ With[{result = Quiet[f, {
 		LibraryFunction::rterr
 	}]},
 
-	If[Head[result] === LibraryFunctionError,
-		CreatePacletFailure[ErrorCodeToName[result[[2]]]]
+	If[MatchQ[Head[result], LibraryFunctionError | _LibraryFunction],
+		CreatePacletFailure[Replace[result, {LibraryFunctionError[_, e_] :> ErrorCodeToName[e], _ :> "LibraryFunctionFailure"}]]
 		, (* else *)
 		result
 	]
@@ -700,8 +701,8 @@ With[{result = Quiet[f, {
 		LibraryFunction::rterr
 	}]},
 
-	If[Head[result] === LibraryFunctionError,
-		ThrowPacletFailure[ErrorCodeToName[result[[2]]]]
+	If[MatchQ[Head[result], LibraryFunctionError | _LibraryFunction],
+		ThrowPacletFailure[Replace[result, {LibraryFunctionError[_, e_] :> ErrorCodeToName[e], _ :> "LibraryFunctionFailure"}]]
 		, (* else *)
 		result
 	]
