@@ -672,8 +672,10 @@ ThrowPacletFailure[type_?StringQ, tag_, opts : OptionsPattern[CreatePacletFailur
 Attributes[CatchLibraryFunctionError] = {HoldAll};
 Attributes[CatchAndThrowLibraryFunctionError] = {HoldAll};
 
-CatchLibraryFunctionError[f_] :=
-With[{result = Quiet[f, {
+handleLibraryFunctionError[handler_] :=
+Function[
+	f,
+	With[{result = Quiet[f, {
 		LibraryFunction::typerr,
 		LibraryFunction::rnkerr,
 		LibraryFunction::dimerr,
@@ -683,30 +685,18 @@ With[{result = Quiet[f, {
 		LibraryFunction::rterr
 	}]},
 
-	If[MatchQ[Head[result], LibraryFunctionError | _LibraryFunction],
-		CreatePacletFailure[Replace[result, {LibraryFunctionError[_, e_] :> ErrorCodeToName[e], _ :> "LibraryFunctionFailure"}]]
-		, (* else *)
-		result
-	]
+		If[MatchQ[Head[result], LibraryFunctionError | _LibraryFunction],
+			handler[Replace[result, {LibraryFunctionError[_, e_] :> ErrorCodeToName[e], _ :> "LibraryFunctionFailure"}]]
+			, (* else *)
+			result
+		]
+	],
+	HoldAll
 ];
 
-CatchAndThrowLibraryFunctionError[f_] :=
-With[{result = Quiet[f, {
-		LibraryFunction::typerr,
-		LibraryFunction::rnkerr,
-		LibraryFunction::dimerr,
-		LibraryFunction::numerr,
-		LibraryFunction::memerr,
-		LibraryFunction::verserr,
-		LibraryFunction::rterr
-	}]},
+CatchLibraryFunctionError = handleLibraryFunctionError[CreatePacletFailure];
 
-	If[MatchQ[Head[result], LibraryFunctionError | _LibraryFunction],
-		ThrowPacletFailure[Replace[result, {LibraryFunctionError[_, e_] :> ErrorCodeToName[e], _ :> "LibraryFunctionFailure"}]]
-		, (* else *)
-		result
-	]
-];
+CatchAndThrowLibraryFunctionError = handleLibraryFunctionError[ThrowPacletFailure];
 
 End[]; (* `Private` *)
 
