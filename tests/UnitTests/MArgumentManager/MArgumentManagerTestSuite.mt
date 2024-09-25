@@ -114,7 +114,10 @@ Test[
 ];
 
 TestMatch[
-	$DescribePerson[james] (* should fail because this function is not registered to handle Person expression *)
+	Catch[
+		$DescribePerson[james], (* should fail because this function is not registered to handle Person expression *)
+		"LLUExceptionTag"
+	]
 	,
 	_?FailureQ(*unevaluated LibraryFunction*)
 	,

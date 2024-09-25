@@ -78,8 +78,8 @@ Test[
 	TestID -> "DataListTestSuite-20180907-E5N8N9"
 ];
 
-Test[
-	PassDataStore[foo, True]
+TestMatch[
+	Catch[PassDataStore[foo, True], "LLUExceptionTag"]
 	,
 	_?FailureQ(*unevaluated LibraryFunction*)
 	,
@@ -88,8 +88,8 @@ Test[
 	TestID -> "DataListTestSuite-20180903-O2B2Y6"
 ];
 
-Test[
-	PassDataStore[{}, True]
+TestMatch[
+	Catch[PassDataStore[{}, True], "LLUExceptionTag"]
 	,
 	_?FailureQ(*unevaluated LibraryFunction*)
 	,
@@ -98,8 +98,8 @@ Test[
 	TestID -> "DataListTestSuite-20180903-B6P7O2"
 ];
 
-Test[
-	PassDataStore[Developer`DataStore[{1, "a"}], True]
+TestMatch[
+	Catch[PassDataStore[Developer`DataStore[{1, "a"}], True], "LLUExceptionTag"]
 	,
 	_?FailureQ(*unevaluated LibraryFunction*)
 	,
