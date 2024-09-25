@@ -116,7 +116,7 @@ Test[
 TestMatch[
 	$DescribePerson[james] (* should fail because this function is not registered to handle Person expression *)
 	,
-	LibraryFunction[_?StringQ, "DescribePerson", {"UTF8String", Integer, Real}, "UTF8String"][Person["James", 43, 1.73]]
+	_?FailureQ(*unevaluated LibraryFunction*)
 	,
 	{Message[LibraryFunction::cfct, 1, 3]}
 	,

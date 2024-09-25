@@ -81,7 +81,7 @@ Test[
 Test[
 	PassDataStore[foo, True]
 	,
-	LibraryFunction[lib, "PassDataStore", {"DataStore", True | False}, "DataStore"][foo, True]
+	_?FailureQ(*unevaluated LibraryFunction*)
 	,
 	{Message[LibraryFunction::cfsa, foo, 1, "DataStore object"]}
 	,
@@ -91,7 +91,7 @@ Test[
 Test[
 	PassDataStore[{}, True]
 	,
-	LibraryFunction[lib, "PassDataStore", {"DataStore", True | False}, "DataStore"][{}, True]
+	_?FailureQ(*unevaluated LibraryFunction*)
 	,
 	{Message[LibraryFunction::cfsa, {}, 1, "DataStore object"]}
 	,
@@ -101,7 +101,7 @@ Test[
 Test[
 	PassDataStore[Developer`DataStore[{1, "a"}], True]
 	,
-	LibraryFunction[lib, "PassDataStore", {"DataStore", True | False}, "DataStore"][Developer`DataStore[{1, "a"}], True]
+	_?FailureQ(*unevaluated LibraryFunction*)
 	,
 	{Message[LibraryFunction::cfsa, Developer`DataStore[{1, "a"}], 1, "DataStore object"]}
 	,
