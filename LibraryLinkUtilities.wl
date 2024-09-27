@@ -599,7 +599,7 @@ Options[CreatePacletFailure] = {
 CreatePacletFailure[type_?StringQ, opts:OptionsPattern[]] :=
 Block[{msgParam, param, errorCode, msgTemplate, errorType},
 	msgParam = Replace[OptionValue["MessageParameters"], Except[_?AssociationQ | _List] -> <||>];
-	param = Replace[OptionValue["Parameters"], {p_?StringQ :> {p}, Except[{_?StringQ.. }] -> {}}];
+	param = Replace[OptionValue["Parameters"], p: Except[_?AssociationQ | _List] :> {p}];
 	{errorCode, msgTemplate} =
 		Lookup[
 			$CorePacletFailureLUT

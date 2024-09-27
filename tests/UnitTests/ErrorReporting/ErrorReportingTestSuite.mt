@@ -89,7 +89,7 @@ TestMatch[
 		"MessageTemplate" -> "This top-level error has a static error message.",
 		"MessageParameters" -> <||>,
 		"ErrorCode" -> n_?TopLevelErrorCodeQ,
-		"Parameters" -> {}
+		"Parameters" -> {1, 2}
 	|>]
 	,
 	TestID -> "ErrorReportingTestSuite-20190320-N4O5P9"
