@@ -688,7 +688,7 @@ Function[
 		If[MatchQ[Head[result], LibraryFunctionError | _LibraryFunction],
 			handler @ Replace[result, {
 				LibraryFunctionError[_, e_] :> ErrorCodeToName[e],
-				(e_LibraryFunction)[a___] :> Sequence["LibraryFunctionFailure", "MessageParameters" -> <|"Function" -> e, "Arguments" -> {a}|>],
+				(e_LibraryFunction)[a___] :> Sequence["LibraryFunctionFailure", "Parameters" -> <|"Function" -> e, "Arguments" -> {a}|>],
 				_ :> "LibraryFunctionFailure"
 			}]
 			, (* else *)
