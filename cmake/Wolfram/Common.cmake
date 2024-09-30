@@ -220,13 +220,6 @@ function(set_machine_flags TARGET_NAME)
 	endif()
 endfunction()
 
-# Sets a flag for GCC to use old ABI on Linux-x86-64. Does nothing on other platforms.
-function(use_old_gcc_abi TARGET_NAME)
-	if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64")
-		target_compile_definitions(${TARGET_NAME} PUBLIC _GLIBCXX_USE_CXX11_ABI=0)
-	endif()
-endfunction()
-
 # Sets rpath for a target. If second argument is false then "Wolfram-default" rpath is set:
 # - $ORIGIN on Linux
 # - @loader_path on Mac
@@ -454,6 +447,18 @@ function(add_frameworks TARGET_NAME)
 			${FRAMEWORKS}
 			"-headerpad_max_install_names"
 			)
+endfunction()
+
+# Hide symbols from static libraries on Linux
+function(linker_hide_symbols TARGET_NAME)
+	if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+		foreach(tgt ${ARGN})
+			list(APPEND EXCLUDE_LIBS "LINKER:--exclude-libs,$<TARGET_LINKER_FILE_NAME:${tgt}>")
+		endforeach()
+		target_link_options(${TARGET_NAME} PRIVATE
+			${EXCLUDE_LIBS}
+		)
+	endif()
 endfunction()
 
 # Checks if variable VAR is set either as a regular or an environment variable and if so, sets variable RES.

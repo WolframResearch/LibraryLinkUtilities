@@ -35,7 +35,7 @@ TestExecute[
 	`LLU`PacletFunctionSet[$GetExplicitValuesTyped, {{LibraryDataType[SparseArray, Real], "Constant"}}, {Real, _}];
 	`LLU`PacletFunctionSet[$GetRowPointersTyped, {{LibraryDataType[SparseArray, Real], "Constant"}}, {Integer, _}];
 	`LLU`PacletFunctionSet[$GetColumnIndicesTyped, {{LibraryDataType[SparseArray, Real], "Constant"}}, {Integer, _}];
-	`LLU`PacletFunctionSet[$GetExplicitPositionsTyped, {{LibraryDataType[SparseArray, Real], "Constant"}}, {Integer, 2}];
+	`LLU`PacletFunctionSet[$GetExplicitPositionsTyped, {{LibraryDataType[SparseArray, Real], "Constant"}}, {Integer, _}];
 	`LLU`PacletFunctionSet[$ToTensorTyped, {{LibraryDataType[SparseArray, Real], "Constant"}}, {Real, _}];
 	`LLU`PacletFunctionSet[$SetImplicitValueTyped, {LibraryDataType[SparseArray, Real], Real}, LibraryDataType[SparseArray]];
 
@@ -238,6 +238,14 @@ Test[
 	{{1, 1}, {2, 1}, {2, 2}, {3, 1}, {3, 3}, {4, 4}}
 	,
 	TestID->"SparseArrayTestSuite-20210202-O6A5L7"
+];
+
+Test[
+	$GetExplicitPositionsTyped[zero]
+	,
+	{}
+	,
+	TestID->"SparseArrayTestSuite-20240912-K4H7B6"
 ];
 
 Test[

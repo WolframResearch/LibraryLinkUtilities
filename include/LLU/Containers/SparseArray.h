@@ -202,7 +202,13 @@ namespace LLU {
 	}
 	template<typename T>
 	Tensor<mint> SparseArray<T>::explicitPositions() const {
-		return Tensor<mint> {MContainer::getExplicitPositions()};
+		auto generic = MContainer::getExplicitPositions();
+		// When there are no explicit values, LibraryLink returns an MTensor with dimensions {0, 2}, which is invalid in LLU,
+		// so instead we return an empty Tensor with dimensions {0}
+		if (generic.getFlattenedLength() == 0) {
+			return Tensor<mint>(mint {0}, MArrayDimensions{{}});
+		}
+		return Tensor<mint> {std::move(generic)};
 	}
 	template<typename T>
 	Tensor<T> SparseArray<T>::toTensor() const {
