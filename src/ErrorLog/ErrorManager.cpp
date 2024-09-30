@@ -124,6 +124,15 @@ namespace LLU {
 			{ErrorName::PathNotValidated, "File path `path` could not be validated under desired open mode."},
 			{ErrorName::InvalidOpenMode, "Specified open mode is invalid."},
 			{ErrorName::OpenFileFailed,	"Could not open file `f`."},
+
+				// TabularColumn errors:
+			{ErrorName::DVShared, "Trying to create a Shared TabularColumn. TabularColumn can only be passed as Automatic or Manual."},
+			{ErrorName::DVAPIError, "TabularColumn LibraryLink API returned error `1`."},
+			{ErrorName::DVConstructorType, "TabularColumn type `1` passed to the constructor does not match other arguments."},
+
+			// BitVector errors:
+			{ErrorName::BitVectorNew, "Could not create a new BitVector."},
+			{ErrorName::BitVectorClone, "Could not clone a BitVector."},
 		});
 		return errMap;
 	}

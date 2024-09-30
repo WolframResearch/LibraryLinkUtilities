@@ -7,6 +7,7 @@
 #define LLU_CONTAINERS_GENERIC_DATASTORE_HPP
 
 #include "LLU/Containers/Generic/Base.hpp"
+#include "LLU/Containers/Generic/DataVector.hpp"
 #include "LLU/Containers/Iterators/DataStore.hpp"
 #include "LLU/MArgument.h"
 #include "LLU/TypedMArgument.h"

@@ -7,6 +7,8 @@
 
 #include "LLU/Containers/Generic/DataStore.hpp"
 
+#include "LLU/Containers/Generic/DataVector.hpp"
+
 namespace LLU {
 
 	GenericDataNode GenericDataNode::next() const noexcept {
@@ -75,6 +77,9 @@ namespace LLU {
 			case MArgumentType::DataStore:
 				PrimitiveWrapper<MArgumentType::DataStore>::addDataStoreNode(getContainer(), name, std::get_if<GenericDataList>(&node)->abandonContainer());
 				break;
+			case MArgumentType::TabularColumn:
+				PrimitiveWrapper<MArgumentType::TabularColumn>::addDataStoreNode(getContainer(), name, std::get_if<DataVector>(&node)->abandonContainer());
+				break;
 		}
 	}
 
@@ -110,6 +115,9 @@ namespace LLU {
 			} break;
 			case MArgumentType::DataStore:
 				PrimitiveWrapper<MArgumentType::DataStore>::addDataStoreNode(getContainer(), std::get_if<GenericDataList>(&node)->abandonContainer());
+				break;
+			case MArgumentType::TabularColumn:
+				PrimitiveWrapper<MArgumentType::TabularColumn>::addDataStoreNode(getContainer(), std::get_if<DataVector>(&node)->abandonContainer());
 				break;
 		}
 	}

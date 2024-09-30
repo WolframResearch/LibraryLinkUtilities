@@ -20,6 +20,7 @@ message(STATUS "Creating test targets.")
 set(TEST_MODULES
 	"Async"
 	"DataList"
+	"DataVector"
 	"ErrorReporting"
 	"GenericContainers"
 	"Image"

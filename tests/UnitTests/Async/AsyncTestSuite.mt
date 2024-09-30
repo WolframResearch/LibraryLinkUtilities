@@ -12,9 +12,6 @@ TestExecute[
 	(* Get configuration (path to LLU sources, compilation options, etc.) *)
 	Get[FileNameJoin[{ParentDirectory[currentDirectory], "TestConfig.wl"}]];
 
-	(* Thread pool functionality requires C++17 *)
-	$CppVersion = "c++17";
-
 	Get[FileNameJoin[{$LLUSharedDir, "LibraryLinkUtilities.wl"}]];
 
 	(* A function that will build the test library and load it initializing LLU. We don't want it to run immediately. It must be evaluated only once,

@@ -142,6 +142,15 @@ namespace LLU {
 		extern const std::string PathNotValidated;		///< Given file path could not be validated under desired open mode
 		extern const std::string InvalidOpenMode;		///< Specified open mode is invalid
 		extern const std::string OpenFileFailed;		///< Could not open file
+
+		// TabularColumn errors:
+		extern const std::string DVShared;	 	 	///< Trying to create a Shared TabularColumn. TabularColumn can only be passed as Automatic or Manual.
+		extern const std::string DVAPIError;	 	///< TabularColumn LibraryLink API returned error.
+		extern const std::string DVConstructorType; ///< TabularColumn types passed to the constructor does not match other arguments.
+
+		// BitVector errors:
+		extern const std::string BitVectorNew;      ///< Could not create a new BitVector.
+		extern const std::string BitVectorClone;    ///< Could not clone a BitVector.
 	}  // namespace ErrorName
 
 }  // namespace LLU
