@@ -1,5 +1,5 @@
 /**
- * @file	TabularColumn.cpp
+ * @file	DataVector.cpp
  * @author	Rafal Chojna <rafalc@wolfram.com>
  * @date	March 11, 2024
  * @brief

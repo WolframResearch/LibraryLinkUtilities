@@ -1,5 +1,5 @@
 /**
- * @file    TabularColumn.hpp
+ * @file    DataVector.hpp
  * @brief   Definition and implementation of generic TabularColumn wrapper.
  */
 
