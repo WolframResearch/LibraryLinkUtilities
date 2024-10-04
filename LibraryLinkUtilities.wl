@@ -200,9 +200,9 @@ LoadWSTPLibrary[] :=
 SetAttributes[LazyInitializePacletLibrary, HoldFirst];
 LazyInitializePacletLibrary[libPath_] := LazyLoad[$PacletLibrary, $InitializePacletLibrary[libPath]];
 
-InitializePacletLibrary[libPath_?StringQ] := (LazyInitializePacletLibrary[libPath]; $PacletLibrary);
+InitializePacletLibrary[libPath_] := (LazyInitializePacletLibrary[libPath]; $PacletLibrary);
 
-$InitializePacletLibrary[libPath_?StringQ] := (
+$InitializePacletLibrary[libPath_] := (
 	(* Load WSTP *)
 	LoadWSTPLibrary[];
 
@@ -359,7 +359,7 @@ ArgumentParser[specialArgs_?AssociationQ] := Sequence @@ MapIndexed[MArgumentTra
 
 SafeLibraryLoad[lib_] :=
 	Quiet[
-		If[FailureQ @ LibraryLoad[lib],
+		If[MatchQ[LibraryLoad[lib], _?FailureQ | _LibraryLoad],
 			ThrowPacletFailure[
 				"LibraryLoadFailure",
 				"MessageParameters" -> <|"LibraryName" -> lib, "Details" -> ToString @ LibraryLink`$LibraryError|>
@@ -395,7 +395,7 @@ SafeLibraryFunctionLoad[libName_?StringQ, fname_?StringQ, fParams_, retType : Ex
 				,
 				LibraryFunctionLoad[libName, fname, fParams, actualRetType]
 			];
-			If[FailureQ[libFunction],
+			If[MatchQ[libFunction, _?FailureQ | _LibraryFunctionLoad],
 				If[TrueQ @ OptionValue["Optional"],
 					Missing["NotInLibrary"]
 					,
