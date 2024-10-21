@@ -1,5 +1,5 @@
 (* Wolfram Language Test file *)
-TestRequirement[$VersionNumber >= 14.1];
+TestRequirement[$VersionNumber >= 14.2];
 (***************************************************************************************************************************************)
 (*
 	Set of test cases to test LLU functionality related to DataVector
@@ -19,30 +19,28 @@ TestExecute[
 
 	`LLU`InitializePacletLibrary[lib];
 
-	NewNumericDataVector = `LLU`PacletFunctionLoad["newNumericDataVector", {}, DataVector, "Throws" -> False];
-	NewStringDataVector = `LLU`PacletFunctionLoad["newStringDataVector", {}, LibraryDataType[DataVector], "Throws" -> False];
-	NewBinaryDataVector = `LLU`PacletFunctionLoad["newBinaryDataVector", {}, LibraryDataType[DataVector], "Throws" -> False];
-	NewBooleanDataVector = `LLU`PacletFunctionLoad["newBooleanDataVector", {}, LibraryDataType[DataVector], "Throws" -> False];
-	NewFixedWidthBinaryDataVector = `LLU`PacletFunctionLoad["newFixedWidthBinaryDataVector", {}, LibraryDataType[DataVector], "Throws" -> False];
-	NewDateDataVector = `LLU`PacletFunctionLoad["newDateDataVector", {}, LibraryDataType[DataVector], "Throws" -> False];
-	NewTimeDataVector = `LLU`PacletFunctionLoad["newTimeDataVector", {}, LibraryDataType[DataVector], "Throws" -> False];
+	NewNumericTabularColumn = `LLU`PacletFunctionLoad["newNumericTabularColumn", {}, TabularColumn, "Throws" -> False];
+	NewStringTabularColumn = `LLU`PacletFunctionLoad["newStringTabularColumn", {}, TabularColumn, "Throws" -> False];
+	NewBinaryTabularColumn = `LLU`PacletFunctionLoad["newByteArrayTabularColumn", {}, TabularColumn, "Throws" -> False];
+	NewBooleanTabularColumn = `LLU`PacletFunctionLoad["newBooleanTabularColumn", {}, TabularColumn, "Throws" -> False];
+	NewFixedWidthBinaryTabularColumn = `LLU`PacletFunctionLoad["newFixedWidthByteArrayTabularColumn", {}, TabularColumn, "Throws" -> False];
+	NewDateTabularColumn = `LLU`PacletFunctionLoad["newDateTabularColumn", {}, TabularColumn, "Throws" -> False];
+	NewTimeTabularColumn = `LLU`PacletFunctionLoad["newTimeTabularColumn", {}, TabularColumn, "Throws" -> False];
 
-	PassDataVector = `LLU`PacletFunctionLoad["PassDataVector", {DataVector, "Boolean"}, DataVector];
-	NewNumericDV = `LLU`PacletFunctionLoad["NewNumericDV", {NumericArray}, DataVector];
-	NewStringDV = `LLU`PacletFunctionLoad["NewStringDV", {"DataStore"}, DataVector];
-	NewBinaryDV = `LLU`PacletFunctionLoad["NewBinaryDV", {NumericArray, NumericArray}, DataVector];
-	NewBooleanDV = `LLU`PacletFunctionLoad["NewBooleanDV", {}, DataVector];
-	NewFixedWidthBinaryDV = `LLU`PacletFunctionLoad["NewFixedWidthBinaryDV", {NumericArray}, DataVector];
-	NewDateDV = `LLU`PacletFunctionLoad["NewDateDV", {NumericArray, Integer, Integer, String}, DataVector];
-	NewTimeDV = `LLU`PacletFunctionLoad["NewTimeDV", {NumericArray, Integer, Integer}, DataVector];
+	PassDataVector = `LLU`PacletFunctionLoad["PassDataVector", {TabularColumn, "Boolean"}, TabularColumn];
+	NewNumericDV = `LLU`PacletFunctionLoad["NewNumericDV", {NumericArray}, TabularColumn];
+	NewStringDV = `LLU`PacletFunctionLoad["NewStringDV", {"DataStore"}, TabularColumn];
+	NewBinaryDV = `LLU`PacletFunctionLoad["NewBinaryDV", {NumericArray, NumericArray}, TabularColumn];
+	NewBooleanDV = `LLU`PacletFunctionLoad["NewBooleanDV", {}, TabularColumn];
+	NewFixedWidthBinaryDV = `LLU`PacletFunctionLoad["NewFixedWidthBinaryDV", {NumericArray}, TabularColumn];
+	NewDateDV = `LLU`PacletFunctionLoad["NewDateDV", {NumericArray, Integer, Integer, String}, TabularColumn];
+	NewTimeDV = `LLU`PacletFunctionLoad["NewTimeDV", {NumericArray, Integer, Integer}, TabularColumn];
 ];
-
-
 
 (* Numeric *)
 VerificationTest[
-	numericDV = NewNumericDataVector[];
-	DataVectorQ[numericDV]
+	numericDV = NewNumericTabularColumn[];
+	TabularColumnQ[numericDV]
 	,
 	TestID -> "DataVectorTestSuite-FFHFMMDKLH"
 ];
@@ -50,13 +48,13 @@ VerificationTest[
 Test[
 	Normal[numericDV]
 	,
-	{0, 1, 2, Missing[], 4}
+	{0, 1, 2, Missing["NotAvailable"], 4}
 	,
 	TestID -> "DataVectorTestSuite-EJ1CYNYKDP"
 ];
 
 VerificationTest[
-	MUnit`TestMemoryLeak[NewNumericDataVector[]]
+	MUnit`TestMemoryLeak[NewNumericTabularColumn[]]
 	,
 	TestID -> "DataVectorTestSuite-HYTQGCX3IC"
 ];
@@ -64,8 +62,8 @@ VerificationTest[
 
 (* String *)
 VerificationTest[
-	stringDV = NewStringDataVector[];
-	DataVectorQ[stringDV]
+	stringDV = NewStringTabularColumn[];
+	TabularColumnQ[stringDV]
 	,
 	TestID -> "DataVectorTestSuite-FFHFMMDKLH"
 ];
@@ -73,13 +71,13 @@ VerificationTest[
 Test[
 	Normal[stringDV]
 	,
-	{"one", "two", "three", Missing[], "five"}
+	{"one", "two", "three", Missing["NotAvailable"], "five"}
 	,
 	TestID -> "DataVectorTestSuite-EJ1CYNYKDP"
 ];
 
 VerificationTest[
-	MUnit`TestMemoryLeak[NewStringDataVector[]]
+	MUnit`TestMemoryLeak[NewStringTabularColumn[]]
 	,
 	TestID -> "DataVectorTestSuite-HYTQGCX3IC"
 ];
@@ -87,8 +85,8 @@ VerificationTest[
 
 (* Boolean *)
 VerificationTest[
-	booleanDV = NewBooleanDataVector[];
-	DataVectorQ[booleanDV]
+	booleanDV = NewBooleanTabularColumn[];
+	TabularColumnQ[booleanDV]
 	,
 	TestID -> "DataVectorTestSuite-FFHFMMDKLH"
 ];
@@ -96,13 +94,13 @@ VerificationTest[
 Test[
 	Normal[booleanDV]
 	,
-	{True, False, False, Missing[], True}
+	{True, False, False, Missing["NotAvailable"], True}
 	,
 	TestID -> "DataVectorTestSuite-EJ1CYNYKDP"
 ];
 
 VerificationTest[
-	MUnit`TestMemoryLeak[NewBooleanDataVector[]]
+	MUnit`TestMemoryLeak[NewBooleanTabularColumn[]]
 	,
 	TestID -> "DataVectorTestSuite-HYTQGCX3IC"
 ];
@@ -110,8 +108,8 @@ VerificationTest[
 
 (* Binary *)
 VerificationTest[
-	binaryDV = NewBinaryDataVector[];
-	DataVectorQ[binaryDV]
+	binaryDV = NewBinaryTabularColumn[];
+	TabularColumnQ[binaryDV]
 	,
 	TestID -> "DataVectorTestSuite-FFHFMMDKLH"
 ];
@@ -119,13 +117,13 @@ VerificationTest[
 Test[
 	Normal[binaryDV]
 	,
-	{ByteArray[{0}], ByteArray[{1, 2}], ByteArray[{3, 4, 5}], Missing[], ByteArray[{6, 7, 8, 9, 10}]}
+	{ByteArray[{0}], ByteArray[{1, 2}], ByteArray[{3, 4, 5}], Missing["NotAvailable"], ByteArray[{6, 7, 8, 9, 10}]}
 	,
 	TestID -> "DataVectorTestSuite-EJ1CYNYKDP"
 ];
 
 VerificationTest[
-	MUnit`TestMemoryLeak[NewBinaryDataVector[]]
+	MUnit`TestMemoryLeak[NewBinaryTabularColumn[]]
 	,
 	TestID -> "DataVectorTestSuite-HYTQGCX3IC"
 ];
@@ -133,8 +131,8 @@ VerificationTest[
 
 (* FixedWidthBinary *)
 VerificationTest[
-	fixedWidthBinaryDV = NewFixedWidthBinaryDataVector[];
-	DataVectorQ[fixedWidthBinaryDV]
+	fixedWidthBinaryDV = NewFixedWidthBinaryTabularColumn[];
+	TabularColumnQ[fixedWidthBinaryDV]
 	,
 	TestID -> "DataVectorTestSuite-FFHFMMDKLH"
 ];
@@ -142,13 +140,13 @@ VerificationTest[
 Test[
 	Map[Normal, Normal[fixedWidthBinaryDV]]
 	,
-	{{0, 1, 2, 3}, {4, 5, 6, 7}, {8, 9, 10, 11}, Missing[], {16, 17, 18, 19}}
+	{{0, 1, 2, 3}, {4, 5, 6, 7}, {8, 9, 10, 11}, Missing["NotAvailable"], {16, 17, 18, 19}}
 	,
 	TestID -> "DataVectorTestSuite-EJ1CYNYKDP"
 ];
 
 VerificationTest[
-	MUnit`TestMemoryLeak[NewFixedWidthBinaryDataVector[]]
+	MUnit`TestMemoryLeak[NewFixedWidthBinaryTabularColumn[]]
 	,
 	TestID -> "DataVectorTestSuite-HYTQGCX3IC"
 ];
@@ -156,8 +154,8 @@ VerificationTest[
 
 (* Date *)
 VerificationTest[
-	dateDV = NewDateDataVector[];
-	DataVectorQ[dateDV]
+	dateDV = NewDateTabularColumn[];
+	TabularColumnQ[dateDV]
 	,
 	TestID -> "DataVectorTestSuite-FFHFMMDKLH"
 ];
@@ -169,7 +167,7 @@ Test[
 		DateObject[{2024, 1, 18}, "Day"],
 		DateObject[{2024, 8, 17}, "Day"],
 		DateObject[{2024, 4, 11}, "Day"],
-		Missing[],
+		Missing["NotAvailable"],
 		DateObject[{2024, 6, 26}, "Day"]
 	}
 	,
@@ -177,7 +175,7 @@ Test[
 ];
 
 VerificationTest[
-	MUnit`TestMemoryLeak[NewDateDataVector[]]
+	MUnit`TestMemoryLeak[NewDateTabularColumn[]]
 	,
 	TestID -> "DataVectorTestSuite-HYTQGCX3IC"
 ];
@@ -185,8 +183,8 @@ VerificationTest[
 
 (* Time *)
 VerificationTest[
-	timeDV = NewTimeDataVector[];
-	DataVectorQ[timeDV]
+	timeDV = NewTimeTabularColumn[];
+	TabularColumnQ[timeDV]
 	,
 	TestID -> "DataVectorTestSuite-FFHFMMDKLH"
 ];
@@ -198,7 +196,7 @@ Test[
 		TimeObject[{2, 9, 55}, "Instant", None],
 		TimeObject[{21, 2, 17}, "Instant", None],
 		TimeObject[{2, 37, 7}, "Instant", None],
-		Missing[],
+		Missing["NotAvailable"],
 		TimeObject[{6, 22, 41}, "Instant", None]
 	}
 	,
@@ -206,7 +204,7 @@ Test[
 ];
 
 VerificationTest[
-	MUnit`TestMemoryLeak[NewTimeDataVector[]]
+	MUnit`TestMemoryLeak[NewTimeTabularColumn[]]
 	,
 	TestID -> "DataVectorTestSuite-HYTQGCX3IC"
 ];
@@ -214,7 +212,7 @@ VerificationTest[
 (* Length *)
 
 Test[
-	getLength = LibraryFunctionLoad[lib, "getDataVectorLength", {LibraryDataType[DataVector]}, Integer];
+	getLength = LibraryFunctionLoad[lib, "getTabularColumnLength", {TabularColumn}, Integer];
 	getLength[numericDV]
 	,
 	5
@@ -228,7 +226,7 @@ VerificationTest[
 
 (* Missing count *)
 Test[
-	getMissingCount = LibraryFunctionLoad[lib, "getDataVectorMissingCount", {LibraryDataType[DataVector]}, Integer];
+	getMissingCount = LibraryFunctionLoad[lib, "getTabularColumnMissingCount", {TabularColumn}, Integer];
 	getMissingCount[numericDV]
 	,
 	1
@@ -242,9 +240,9 @@ VerificationTest[
 
 (* Validity *)
 VerificationTest[
-	getValidity = LibraryFunctionLoad[lib, "getDataVectorValidity", {LibraryDataType[DataVector]}, LibraryDataType[DataVector]];
+	getValidity = LibraryFunctionLoad[lib, "getTabularColumnValidity", {TabularColumn}, TabularColumn];
 	validity = getValidity[numericDV];
-	DataVectorQ[validity]
+	TabularColumnQ[validity]
 ];
 
 Test[
@@ -262,7 +260,7 @@ VerificationTest[
 
 (* Numeric data *)
 Test[
-	getDataNumeric = LibraryFunctionLoad[lib, "getDataNumeric", {LibraryDataType[DataVector]}, LibraryDataType[NumericArray]];
+	getDataNumeric = LibraryFunctionLoad[lib, "getDataNumeric", {TabularColumn}, LibraryDataType[NumericArray]];
 	getDataNumeric[numericDV]
 	,
 	NumericArray[{0, 1, 2, 3, 4}, "Integer8"]
@@ -276,7 +274,7 @@ VerificationTest[
 
 (* String data *)
 Test[
-	getDataString = LibraryFunctionLoad[lib, "getDataString", {LibraryDataType[DataVector]}, "DataStore"];
+	getDataString = LibraryFunctionLoad[lib, "getDataString", {TabularColumn}, "DataStore"];
 	getDataString[stringDV]
 	,
 	Developer`DataStore["one", "two", "three", "", "five"]
@@ -290,15 +288,15 @@ VerificationTest[
 
 (* Boolean data *)
 VerificationTest[
-	getDataBoolean = LibraryFunctionLoad[lib, "getDataBoolean", {LibraryDataType[DataVector]}, LibraryDataType[DataVector]];
+	getDataBoolean = LibraryFunctionLoad[lib, "getDataBoolean", {TabularColumn}, TabularColumn];
 	boolData = getDataBoolean[booleanDV];
-	DataVectorQ[boolData]
+	TabularColumnQ[boolData]
 ];
 
 Test[
 	Normal[boolData]
 	,
-	{True, False, False, Missing[], True}
+	{True, False, False, Missing["NotAvailable"], True}
 ];
 
 VerificationTest[
@@ -309,15 +307,15 @@ VerificationTest[
 
 (* Binary data *)
 VerificationTest[
-	getDataBinary = LibraryFunctionLoad[lib, "getDataBinary", {LibraryDataType[DataVector]}, LibraryDataType[DataVector]];
+	getDataBinary = LibraryFunctionLoad[lib, "getDataBinary", {TabularColumn}, TabularColumn];
 	binaryData = getDataBinary[binaryDV];
-	DataVectorQ[binaryData]
+	TabularColumnQ[binaryData]
 ];
 
 Test[
 	Map[Normal, Normal[binaryData]]
 	,
-	{{0}, {1, 2}, {3, 4, 5}, Missing[], {6, 7, 8, 9, 10}}
+	{{0}, {1, 2}, {3, 4, 5}, Missing["NotAvailable"], {6, 7, 8, 9, 10}}
 ];
 
 VerificationTest[
@@ -329,7 +327,7 @@ VerificationTest[
 
 (* Fixed width binary data *)
 Test[
-	getDataFixedWidthBinary = LibraryFunctionLoad[lib, "getDataFixedWidthBinary", {LibraryDataType[DataVector]}, LibraryDataType[NumericArray]];
+	getDataFixedWidthBinary = LibraryFunctionLoad[lib, "getDataFixedWidthBinary", {TabularColumn}, LibraryDataType[NumericArray]];
 	getDataFixedWidthBinary[fixedWidthBinaryDV]
 	,
 	NumericArray[{{0, 1, 2, 3}, {4, 5, 6, 7}, {8, 9, 10, 11}, {0, 0, 0, 0}, {16, 17, 18, 19}}, "UnsignedInteger8"]
@@ -343,9 +341,9 @@ VerificationTest[
 
 (* Date data *)
 VerificationTest[
-	getDataDate = LibraryFunctionLoad[lib, "getDataDate", {LibraryDataType[DataVector]}, LibraryDataType[DataVector]];
+	getDataDate = LibraryFunctionLoad[lib, "getDataDate", {TabularColumn}, TabularColumn];
 	dateData = getDataDate[dateDV];
-	DataVectorQ[dateData]
+	TabularColumnQ[dateData]
 ];
 
 Test[
@@ -355,7 +353,7 @@ Test[
 		DateObject[{2024, 1, 18}, "Day"],
 		DateObject[{2024, 8, 17}, "Day"],
 		DateObject[{2024, 4, 11}, "Day"],
-		Missing[],
+		Missing["NotAvailable"],
 		DateObject[{2024, 6, 26}, "Day"]
 	}
 ];
@@ -368,9 +366,9 @@ VerificationTest[
 
 (* Time data *)
 VerificationTest[
-	getDataTime = LibraryFunctionLoad[lib, "getDataTime", {LibraryDataType[DataVector]}, LibraryDataType[DataVector]];
+	getDataTime = LibraryFunctionLoad[lib, "getDataTime", {TabularColumn}, TabularColumn];
 	timeData = getDataTime[timeDV];
-	DataVectorQ[timeData]
+	TabularColumnQ[timeData]
 ];
 
 Test[
@@ -380,7 +378,7 @@ Test[
 		TimeObject[{2, 9, 55}, "Instant", None],
 		TimeObject[{21, 2, 17}, "Instant", None],
 		TimeObject[{2, 37, 7}, "Instant", None],
-		Missing[],
+		Missing["NotAvailable"],
 		TimeObject[{6, 22, 41}, "Instant", None]
 	}
 ];
@@ -402,7 +400,7 @@ VerificationTest[
 (* Numeric *)
 VerificationTest[
 	numericDV = NewNumericDV[NumericArray[{1, 2, 3, 4, 5}, "Integer32"]];
-	DataVectorQ[numericDV]
+	TabularColumnQ[numericDV]
 	,
 	TestID -> "DataVectorTestSuite-FFHFMMDKLH"
 ];
@@ -418,7 +416,7 @@ Test[
 (* String *)
 VerificationTest[
 	stringDV = NewStringDV[Developer`DataStore["ala", "ma", "kota"]];
-	DataVectorQ[stringDV]
+	TabularColumnQ[stringDV]
 	,
 	TestID -> "DataVectorTestSuite-FFHFMMDKLH"
 ];
@@ -434,7 +432,7 @@ Test[
 (* Boolean *)
 VerificationTest[
 	booleanDV = NewBooleanDV[];
-	DataVectorQ[booleanDV]
+	TabularColumnQ[booleanDV]
 	,
 	TestID -> "DataVectorTestSuite-FFHFMMDKLH"
 ];
@@ -450,7 +448,7 @@ Test[
 (* Binary *)
 VerificationTest[
 	binaryDV = NewBinaryDV[ByteArray @ Range[6], {1, 2, 3}];
-	DataVectorQ[binaryDV]
+	TabularColumnQ[binaryDV]
 	,
 	TestID -> "DataVectorTestSuite-FFHFMMDKLH"
 ];
@@ -466,7 +464,7 @@ Test[
 (* FixedWidthBinary *)
 VerificationTest[
 	fixedWidthBinaryDV = NewFixedWidthBinaryDV[NumericArray[{{1, 2}, {3, 4}, {5, 6}}, "UnsignedInteger8"]];
-	DataVectorQ[fixedWidthBinaryDV]
+	TabularColumnQ[fixedWidthBinaryDV]
 	,
 	TestID -> "DataVectorTestSuite-FFHFMMDKLH"
 ];
@@ -482,7 +480,7 @@ Test[
 (* Date *)
 VerificationTest[
 	dateDV = NewDateDV[NumericArray[{1, 2, 3, 4, 5}, "Integer32"], 2, 3, ""];
-	DataVectorQ[dateDV]
+	TabularColumnQ[dateDV]
 	,
 	TestID -> "DataVectorTestSuite-FFHFMMDKLH"
 ];
@@ -498,7 +496,7 @@ Test[
 (* Time *)
 VerificationTest[
 	timeDV = NewTimeDV[NumericArray[{1, 2, 3, 4, 5}, "Integer32"], 2, 3];
-	DataVectorQ[timeDV]
+	TabularColumnQ[timeDV]
 	,
 	TestID -> "DataVectorTestSuite-FFHFMMDKLH"
 ];

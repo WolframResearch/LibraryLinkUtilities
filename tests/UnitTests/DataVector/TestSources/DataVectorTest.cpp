@@ -2,14 +2,13 @@
  * @file	DataVectorTest.cpp
  * @author	Rafal Chojna <rafalc@wolfram.com>
  * @date	March 15, 2024
- * @brief	Source code for unit tests of GenericDataVector.
+ * @brief	Source code for unit tests of DataVector.
  */
 
-#include <string.h>
-
-#include <LLU/Containers/BitVector.h>
 #include <LLU/LibraryLinkFunctionMacro.h>
 #include <LLU/LLU.h>
+
+#include "WolframTabularColumnLibrary.h"
 
 /* Initialize Library */
 EXTERN_C DLLEXPORT int WolframLibrary_initialize(WolframLibraryData libData) {
@@ -18,27 +17,31 @@ EXTERN_C DLLEXPORT int WolframLibrary_initialize(WolframLibraryData libData) {
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/// DataVector in plain LibraryLink tests
+/// TabularColumn in plain LibraryLink tests
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-static errcode_t constructValidity(WolframDataVectorLibrary_Functions dvFuns, mint length, mint missing_position, bitvector_t* validity) {
-	errcode_t err = dvFuns->BitVector_new(length, True, validity); /* True means that all elements are valid */
-	if (err) {
-		return err;
-	}
-	/* Mark element at position missing_position as invalid (missing) */
-	dvFuns->BitVector_clear(*validity, missing_position);
-	return 0;
+LLU::Int8Array constructValidity(mint length, mint missing_position) {
+	LLU::Int8Array validity(1, LLU::MArrayDimensions {length});
+	validity[missing_position] = 0;
+	return validity;
 }
 
-static errcode_t generateNumericDataVector(WolframLibraryData libData, DataVector* res) {
+LLU::GenericNumericArray numericArrayFromRawData(void* raw_data, numericarray_data_t type, mint num_elems) {
+	LLU::GenericNumericArray array {type, 1, &num_elems};
+	LLU::asTypedNumericArray(array, [&] <typename T> (LLU::NumericArrayTypedView<T> num_array) {
+		const T* typed_data = static_cast<T*>(raw_data);
+		std::copy_n(typed_data, num_elems, num_array.begin());
+	});
+	return array;
+}
+
+static errcode_t generateNumericTabularColumn(WolframLibraryData libData, TabularColumn* res) {
 	const mint length = 5;
 	const mint missing_position = 3;
-	MNumericArray na = NULL;
-	int8_t* na_data = NULL;
-	bitvector_t validity = NULL;
+	MNumericArray na = nullptr;
+	int8_t* na_data = nullptr;
 	errcode_t err = 0;
 	WolframNumericArrayLibrary_Functions naFuns = libData->numericarrayLibraryFunctions;
-	WolframDataVectorLibrary_Functions dvFuns = libData->dataVectorLibraryFunctions;
+	WolframTabularColumnLibrary_Functions dvFuns = libData->tabularColumnLibraryFunctions;
 	err = naFuns->MNumericArray_new(MNumericArray_Type_Bit8, 1, &length, &na);
 	if (err) {
 		return err;
@@ -47,44 +50,23 @@ static errcode_t generateNumericDataVector(WolframLibraryData libData, DataVecto
 	for (mint i = 0; i < length; i++) {
 		na_data[i] = i;
 	}
-	err = constructValidity(dvFuns, length, missing_position, &validity);
-	if (err) {
-		return err;
-	}
-	err = dvFuns->DataVector_newNumeric(&na, validity, res);
-	dvFuns->BitVector_release(validity);
-	if (err) {
-		return err;
-	}
-	return 0;
+	auto validity = constructValidity(length, missing_position);
+	return dvFuns->TabularColumn_newNumeric(na, validity.getContainer(), res);
 }
 
-static errcode_t generateStringDataVector(WolframLibraryData libData, DataVector* res) {
+static errcode_t generateStringTabularColumn(WolframLibraryData libData, TabularColumn* res) {
 	const mint size = 5;
-	const char* strings[size] =
-	{"one","two","three",NULL,"five"};
-		const mint length = 3 + 3 + 5 + 4;	  // missing_position = 3
+	const char* strings[size] = {"one", "two", "three", nullptr, "five"};
+	const mint length = 3 + 3 + 5 + 4;	  // missing_position = 3
 	const mint missing_position = 3;
-	bitvector_t validity = NULL;
-	const char* data = NULL;
-	char* buff = NULL;
-	mint* offsets = NULL;
 	errcode_t err = 0;
 	mint i = 0;
-	WolframDataVectorLibrary_Functions dvFuns = libData->dataVectorLibraryFunctions;
+	WolframTabularColumnLibrary_Functions dvFuns = libData->tabularColumnLibraryFunctions;
 
-	offsets = (mint*)libData->WL_malloc(sizeof(mint) * (size + 1));
-	if (offsets == NULL) {
-		err = -1;
-		goto cleanup;
-	}
+	auto offsets = LLU::makeUnique<mint[]>(size + 1);
 	offsets[0] = 0;
-	data = (const char*)libData->WL_malloc(sizeof(char) * length);
-	if (data == NULL) {
-		err = -1;
-		goto cleanup;
-	}
-	buff = (char*)data;
+	auto data = LLU::makeUnique<char[]>(length);
+	auto buff = data.get();
 	for (i = 0; i < size; i++) {
 		if (i != missing_position) {
 			offsets[i + 1] = offsets[i] + strlen(strings[i]);
@@ -95,97 +77,75 @@ static errcode_t generateStringDataVector(WolframLibraryData libData, DataVector
 			offsets[i + 1] = offsets[i];
 		}
 	}
-	err = constructValidity(dvFuns, size, missing_position, &validity);
+	auto validity = constructValidity(size, missing_position);
+	err = dvFuns->TabularColumn_newString(size, data.release(), offsets.release(), validity.getContainer(), res);
 	if (err) {
-		goto cleanup;
-	}
-	err = dvFuns->DataVector_newString(size, data, offsets, validity, res);
-cleanup:
-	dvFuns->BitVector_release(validity);
-	if (err) {
-		libData->WL_free((void*)offsets);
-		libData->WL_free((void*)data);
-		dvFuns->DataVector_release(*res);
+		dvFuns->TabularColumn_release(*res);
 	}
 	return err;
 }
 
-EXTERN_C DLLEXPORT int newNumericDataVector(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument res) {
-	DataVector dv = NULL;
+EXTERN_C DLLEXPORT int newNumericTabularColumn(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument res) {
+	TabularColumn dv = nullptr;
 	errcode_t err = 0;
-	err = generateNumericDataVector(libData, &dv);
+	err = generateNumericTabularColumn(libData, &dv);
 	if (err) {
 		return err;
 	}
-	MArgument_setDataVector(res, dv);
+	MArgument_setTabularColumn(res, dv);
 	return LIBRARY_NO_ERROR;
 }
 
-EXTERN_C DLLEXPORT int newStringDataVector(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument res) {
-	DataVector dv = NULL;
+EXTERN_C DLLEXPORT int newStringTabularColumn(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument res) {
+	TabularColumn dv = nullptr;
 	errcode_t err = 0;
-	err = generateStringDataVector(libData, &dv);
+	err = generateStringTabularColumn(libData, &dv);
 	if (err) {
 		return err;
 	}
-	MArgument_setDataVector(res, dv);
+	MArgument_setTabularColumn(res, dv);
 	return LIBRARY_NO_ERROR;
 }
 
-EXTERN_C DLLEXPORT int newBooleanDataVector(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument res) {
+EXTERN_C DLLEXPORT int newBooleanTabularColumn(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument res) {
 	const mint length = 5;
-	bitvector_t bvec = NULL;
-	DataVector dv = NULL;
-	bitvector_t validity = NULL;
+	const mint missing_position = 3;
+	TabularColumn dv = nullptr;
 	errcode_t err = 0;
-	WolframDataVectorLibrary_Functions dvFuns = libData->dataVectorLibraryFunctions;
-	err = dvFuns->BitVector_new(length, False, &bvec);
+	WolframTabularColumnLibrary_Functions dvFuns = libData->tabularColumnLibraryFunctions;
+	LLU::Int8Array bvec(0, LLU::MArrayDimensions {length});
+	bvec[0] = 1;
+	bvec[length - 1] = 1;
+	auto validity = constructValidity(length, missing_position);
+	err = dvFuns->TabularColumn_newBoolean(bvec.getContainer(), validity.getContainer(), &dv);
 	if (err) {
 		return err;
 	}
-	dvFuns->BitVector_set(bvec, 0);
-	dvFuns->BitVector_set(bvec, length - 1);
-	err = constructValidity(dvFuns, length, 3, &validity);
-	if (err) {
-		return err;
-	}
-	err = dvFuns->DataVector_newBoolean(bvec, validity, &dv);
-	dvFuns->BitVector_release(validity);
-	if (err) {
-		return err;
-	}
-	MArgument_setDataVector(res, dv);
+	MArgument_setTabularColumn(res, dv);
 	return LIBRARY_NO_ERROR;
 }
 
-EXTERN_C DLLEXPORT int newBinaryDataVector(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument res) {
-	mint i = 0;
+EXTERN_C DLLEXPORT int newByteArrayTabularColumn(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument res) {
 	const mint size = 5;
 	const mint length = 1 + 2 + 3 + 5;	  // missing_position = 3
 	const mint missing_position = 3;
-	MNumericArray array = NULL;
-	uint8_t* array_data = NULL;
-	mint* offsets = NULL;
-	DataVector dv = NULL;
-	bitvector_t validity = NULL;
+	MNumericArray array = nullptr;
+	uint8_t* array_data = nullptr;
+	TabularColumn dv = nullptr;
 	errcode_t err = 0;
 	int errCode = LIBRARY_FUNCTION_ERROR;
 	WolframNumericArrayLibrary_Functions naFuns = libData->numericarrayLibraryFunctions;
-	WolframDataVectorLibrary_Functions dvFuns = libData->dataVectorLibraryFunctions;
+	WolframTabularColumnLibrary_Functions dvFuns = libData->tabularColumnLibraryFunctions;
 
-	offsets = (mint*)libData->WL_malloc(sizeof(mint) * (size + 1));
-	if (offsets == NULL) {
-		err = -1;
-		goto cleanup;
-	}
+	auto offsets = LLU::makeUnique<mint[]>(size + 1);
 	offsets[0] = 0;
 	err = naFuns->MNumericArray_new(MNumericArray_Type_UBit8, 1, &length, &array);
 	if (err) {
-		goto cleanup;
+		return err;
 	}
 	array_data = (uint8_t*)(naFuns->MNumericArray_getData(array));
 
-	for (i = 0; i < size; i++) {
+	for (mint i = 0; i < size; i++) {
 		if (i != missing_position) {
 			offsets[i + 1] = offsets[i] + 1 + i;
 			for (mint j = offsets[i]; j < offsets[i + 1]; j++) {
@@ -195,34 +155,29 @@ EXTERN_C DLLEXPORT int newBinaryDataVector(WolframLibraryData libData, mint Argc
 			offsets[i + 1] = offsets[i];
 		}
 	}
-	err = constructValidity(dvFuns, size, missing_position, &validity);
+	auto validity = constructValidity(size, missing_position);
+	err = dvFuns->TabularColumn_newByteArray(size, array, offsets.release(), validity.getContainer(), &dv);
 	if (err) {
 		goto cleanup;
 	}
-	err = dvFuns->DataVector_newBinary(size, &array, offsets, validity, &dv);
-	if (err) {
-		goto cleanup;
-	}
-	MArgument_setDataVector(res, dv);
+	MArgument_setTabularColumn(res, dv);
 	errCode = LIBRARY_NO_ERROR;
 cleanup:
-	dvFuns->BitVector_release(validity);
 	if (errCode != LIBRARY_NO_ERROR) {
-		dvFuns->DataVector_release(dv);
+		dvFuns->TabularColumn_release(dv);
 	}
 	return errCode;
 }
 
-EXTERN_C DLLEXPORT int newFixedWidthBinaryDataVector(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument res) {
+EXTERN_C DLLEXPORT int newFixedWidthByteArrayTabularColumn(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument res) {
 	const mint length = 5;
 	const mint missing_position = 3;
 	mint dims[] = {length, 4};
-	MNumericArray array = NULL;
-	DataVector dv = NULL;
-	bitvector_t validity = NULL;
+	MNumericArray array = nullptr;
+	TabularColumn dv = nullptr;
 	errcode_t err = 0;
 	WolframNumericArrayLibrary_Functions naFuns = libData->numericarrayLibraryFunctions;
-	WolframDataVectorLibrary_Functions dvFuns = libData->dataVectorLibraryFunctions;
+	WolframTabularColumnLibrary_Functions dvFuns = libData->tabularColumnLibraryFunctions;
 	err = naFuns->MNumericArray_new(MNumericArray_Type_UBit8, 2, dims, &array);
 	if (err) {
 		return err;
@@ -235,29 +190,24 @@ EXTERN_C DLLEXPORT int newFixedWidthBinaryDataVector(WolframLibraryData libData,
 			}
 		}
 	}
-	err = constructValidity(dvFuns, length, missing_position, &validity);
+	auto validity = constructValidity(length, missing_position);
+	err = dvFuns->TabularColumn_newFixedWidthByteArray(array, validity.getContainer(), &dv);
 	if (err) {
 		return err;
 	}
-	err = dvFuns->DataVector_newFixedWidthBinary(&array, validity, &dv);
-	dvFuns->BitVector_release(validity);
-	if (err) {
-		return err;
-	}
-	MArgument_setDataVector(res, dv);
+	MArgument_setTabularColumn(res, dv);
 	return LIBRARY_NO_ERROR;
 }
 
-EXTERN_C DLLEXPORT int newDateDataVector(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument res) {
-	DataVector dv = NULL;
+EXTERN_C DLLEXPORT int newDateTabularColumn(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument res) {
+	TabularColumn dv = nullptr;
 	errcode_t err = 0;
 	const mint length = 5;
 	const mint missing_position = 3;
-	MNumericArray na = NULL;
-	int32_t* na_data = NULL;
-	bitvector_t validity = NULL;
+	MNumericArray na = nullptr;
+	int32_t* na_data = nullptr;
 	WolframNumericArrayLibrary_Functions naFuns = libData->numericarrayLibraryFunctions;
-	WolframDataVectorLibrary_Functions dvFuns = libData->dataVectorLibraryFunctions;
+	WolframTabularColumnLibrary_Functions dvFuns = libData->tabularColumnLibraryFunctions;
 	err = naFuns->MNumericArray_new(MNumericArray_Type_Bit32, 1, &length, &na);
 	if (err) {
 		return err;
@@ -268,33 +218,31 @@ EXTERN_C DLLEXPORT int newDateDataVector(WolframLibraryData libData, mint Argc, 
 	na_data[2] = 19824;
 	na_data[3] = 0;
 	na_data[4] = 19900;
-	err = constructValidity(dvFuns, length, missing_position, &validity);
+	auto validity = constructValidity(length, missing_position);
 	if (err) {
 		return err;
 	}
-	err = dvFuns->DataVector_newDate(&na, 40 /*DAY_GRANULARITY*/, -1 /*unused*/, NULL, validity, &dv);
-	dvFuns->BitVector_release(validity);
+	err = dvFuns->TabularColumn_newDate(na, 40 /*DAY_GRANULARITY*/, -1 /*unused*/, nullptr, validity.getContainer(), &dv);
 	if (err) {
 		return err;
 	}
-	MArgument_setDataVector(res, dv);
+	MArgument_setTabularColumn(res, dv);
 	return LIBRARY_NO_ERROR;
 }
 
-EXTERN_C DLLEXPORT int newTimeDataVector(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument res) {
+EXTERN_C DLLEXPORT int newTimeTabularColumn(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument res) {
 	int errCode = LIBRARY_FUNCTION_ERROR;
-	DataVector dv = NULL;
+	TabularColumn dv = nullptr;
 	errcode_t err = 0;
 	const mint length = 5;
 	const mint missing_position = 3;
-	MNumericArray na = NULL;
-	int32_t* na_data = NULL;
-	bitvector_t validity = NULL;
+	MNumericArray na = nullptr;
+	int32_t* na_data = nullptr;
 	WolframNumericArrayLibrary_Functions naFuns = libData->numericarrayLibraryFunctions;
-	WolframDataVectorLibrary_Functions dvFuns = libData->dataVectorLibraryFunctions;
+	WolframTabularColumnLibrary_Functions dvFuns = libData->tabularColumnLibraryFunctions;
 	err = naFuns->MNumericArray_new(MNumericArray_Type_Bit32, 1, &length, &na);
 	if (err) {
-		goto cleanup;
+		return err;
 	}
 	na_data = (int32_t*)(naFuns->MNumericArray_getData(na));
 	na_data[0] = 7795;
@@ -302,75 +250,74 @@ EXTERN_C DLLEXPORT int newTimeDataVector(WolframLibraryData libData, mint Argc, 
 	na_data[2] = 9427;
 	na_data[3] = 0;
 	na_data[4] = 22961;
-	err = constructValidity(dvFuns, length, missing_position, &validity);
+	auto validity = constructValidity(length, missing_position);
 	if (err) {
 		goto cleanup;
 	}
-	err = dvFuns->DataVector_newTime(&na, 0 /*SECOND_GRANULARITY*/, 0 /*SECOND_PREC*/, validity, &dv);
-	dvFuns->BitVector_release(validity);
+	err = dvFuns->TabularColumn_newTime(na, 0 /*SECOND_GRANULARITY*/, 0 /*SECOND_PREC*/, validity.getContainer(), &dv);
 	if (err) {
 		goto cleanup;
 	}
-	MArgument_setDataVector(res, dv);
+	MArgument_setTabularColumn(res, dv);
 	return LIBRARY_NO_ERROR;
 
 cleanup:
 	return errCode;
 }
 
-EXTERN_C DLLEXPORT int passDataVector(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument res) {
-	DataVector dv_in = NULL;
-	DataVector dv_out = NULL;
+EXTERN_C DLLEXPORT int passTabularColumn(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument res) {
+	TabularColumn dv_in = nullptr;
+	TabularColumn dv_out = nullptr;
 	mbool returnCopyQ = False;
 	int errCode = LIBRARY_FUNCTION_ERROR;
 	errcode_t err = 0;
 
-	WolframDataVectorLibrary_Functions dvFuns = libData->dataVectorLibraryFunctions;
+	WolframTabularColumnLibrary_Functions dvFuns = libData->tabularColumnLibraryFunctions;
 
 	if (Argc != 2) {
 		goto cleanup;
 	}
-	dv_in = MArgument_getDataVector(Args[0]);
-	if (dv_in == NULL) {
+	dv_in = MArgument_getTabularColumn(Args[0]);
+	if (dv_in == nullptr) {
 		goto cleanup;
 	}
 	returnCopyQ = MArgument_getBoolean(Args[1]);
 	if (returnCopyQ) {
-		err = dvFuns->DataVector_clone(dv_in, &dv_out);
+		err = dvFuns->TabularColumn_clone(dv_in, &dv_out);
 		if (err) {
 			goto cleanup;
 		}
 	} else {
 		dv_out = dv_in;
 	}
-	MArgument_setDataVector(res, dv_out);
+	MArgument_setTabularColumn(res, dv_out);
 	errCode = LIBRARY_NO_ERROR;
 
 cleanup:
 	if (errCode != LIBRARY_NO_ERROR) {
 		if (dv_out && dv_out != dv_in) {
-			dvFuns->DataVector_release(dv_out);
+			dvFuns->TabularColumn_release(dv_out);
 		}
 	}
 	return errCode;
 }
 
-EXTERN_C DLLEXPORT int getDataVectorLength(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument res) {
-	DataVector dv_in = NULL;
+EXTERN_C DLLEXPORT int getTabularColumnLength(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument res) {
+	TabularColumn dv_in = nullptr;
 	int errCode = LIBRARY_FUNCTION_ERROR;
 	errcode_t err = 0;
 	mint length = 0;
 
-	WolframDataVectorLibrary_Functions dvFuns = libData->dataVectorLibraryFunctions;
+	WolframTabularColumnLibrary_Functions dvFuns = libData->tabularColumnLibraryFunctions;
 
 	if (Argc != 1) {
 		goto cleanup;
 	}
-	dv_in = MArgument_getDataVector(Args[0]);
-	if (dv_in == NULL) {
+	dv_in = MArgument_getTabularColumn(Args[0]);
+	if (dv_in == nullptr) {
 		goto cleanup;
 	}
-	err = dvFuns->DataVector_getLength(dv_in, &length);
+	err = dvFuns->TabularColumn_getLength(dv_in, &length);
 	if (err) {
 		goto cleanup;
 	}
@@ -381,22 +328,22 @@ cleanup:
 	return errCode;
 }
 
-EXTERN_C DLLEXPORT int getDataVectorMissingCount(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument res) {
-	DataVector dv_in = NULL;
+EXTERN_C DLLEXPORT int getTabularColumnMissingCount(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument res) {
+	TabularColumn dv_in = nullptr;
 	int errCode = LIBRARY_FUNCTION_ERROR;
 	errcode_t err = 0;
 	mint missing_count = 0;
 
-	WolframDataVectorLibrary_Functions dvFuns = libData->dataVectorLibraryFunctions;
+	WolframTabularColumnLibrary_Functions dvFuns = libData->tabularColumnLibraryFunctions;
 
 	if (Argc != 1) {
 		goto cleanup;
 	}
-	dv_in = MArgument_getDataVector(Args[0]);
-	if (dv_in == NULL) {
+	dv_in = MArgument_getTabularColumn(Args[0]);
+	if (dv_in == nullptr) {
 		goto cleanup;
 	}
-	err = dvFuns->DataVector_getMissingCount(dv_in, &missing_count);
+	err = dvFuns->TabularColumn_getMissingCount(dv_in, &missing_count);
 	if (err) {
 		goto cleanup;
 	}
@@ -407,36 +354,31 @@ cleanup:
 	return errCode;
 }
 
-EXTERN_C DLLEXPORT int getDataVectorValidity(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument res) {
-	DataVector dv_in = NULL;
-	DataVector dv_out = NULL;
+EXTERN_C DLLEXPORT int getTabularColumnValidity(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument res) {
+	TabularColumn dv_in = nullptr;
+	TabularColumn dv_out = nullptr;
 	int errCode = LIBRARY_FUNCTION_ERROR;
 	errcode_t err = 0;
-	bitvector_t validity = NULL;
-	bitvector_t validity_copy = NULL;
+	MNumericArray validity = nullptr;
 
-	WolframDataVectorLibrary_Functions dvFuns = libData->dataVectorLibraryFunctions;
+	WolframTabularColumnLibrary_Functions dvFuns = libData->tabularColumnLibraryFunctions;
 
 	if (Argc != 1) {
 		goto cleanup;
 	}
-	dv_in = MArgument_getDataVector(Args[0]);
-	if (dv_in == NULL) {
+	dv_in = MArgument_getTabularColumn(Args[0]);
+	if (dv_in == nullptr) {
 		goto cleanup;
 	}
-	err = dvFuns->DataVector_getValidity(dv_in, &validity);
+	err = dvFuns->TabularColumn_getValidity(dv_in, &validity);
 	if (err) {
 		goto cleanup;
 	}
-	err = dvFuns->BitVector_clone(validity, &validity_copy);
+	err = dvFuns->TabularColumn_newBoolean(validity, nullptr, &dv_out);
 	if (err) {
 		goto cleanup;
 	}
-	err = dvFuns->DataVector_newBoolean(validity_copy, NULL, &dv_out);
-	if (err) {
-		goto cleanup;
-	}
-	MArgument_setDataVector(res, dv_out);
+	MArgument_setTabularColumn(res, dv_out);
 	errCode = LIBRARY_NO_ERROR;
 
 cleanup:
@@ -444,63 +386,60 @@ cleanup:
 }
 
 EXTERN_C DLLEXPORT int getDataNumeric(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument res) {
-	DataVector dv_in = NULL;
-	MNumericArray na = NULL;
-	MNumericArray na_copy = NULL;
+	TabularColumn dv_in = nullptr;
+	void* data = nullptr;
+	numericarray_data_t data_type;
+	mint num_elems;
 	int errCode = LIBRARY_FUNCTION_ERROR;
 	errcode_t err = 0;
 
-	WolframNumericArrayLibrary_Functions naFuns = libData->numericarrayLibraryFunctions;
-	WolframDataVectorLibrary_Functions dvFuns = libData->dataVectorLibraryFunctions;
+	WolframTabularColumnLibrary_Functions dvFuns = libData->tabularColumnLibraryFunctions;
 
 	if (Argc != 1) {
-		goto cleanup;
+		return errCode;
 	}
-	dv_in = MArgument_getDataVector(Args[0]);
-	if (dv_in == NULL) {
-		goto cleanup;
+	dv_in = MArgument_getTabularColumn(Args[0]);
+	if (dv_in == nullptr) {
+		return errCode;
 	}
-
-	err = dvFuns->DataVector_getDataNumeric(dv_in, &na);
+	err = dvFuns->TabularColumn_getLength(dv_in, &num_elems);
 	if (err) {
-		goto cleanup;
+		return errCode;
 	}
-	err = naFuns->MNumericArray_clone(na, &na_copy);
+	err = dvFuns->TabularColumn_getDataNumeric(dv_in, &data, &data_type);
 	if (err) {
-		goto cleanup;
+		return errCode;
 	}
-	MArgument_setMNumericArray(res, na_copy);
-	errCode = LIBRARY_NO_ERROR;
-
-cleanup:
-	return errCode;
+	auto na = numericArrayFromRawData(data, data_type, num_elems);
+	MArgument_setMNumericArray(res, na.abandonContainer());
+	return LIBRARY_NO_ERROR;
 }
 
 EXTERN_C DLLEXPORT int getDataString(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument res) {
-	DataVector dv_in = NULL;
-	DataStore ds = NULL;
+	TabularColumn dv_in = nullptr;
+	DataStore ds = nullptr;
 	int errCode = LIBRARY_FUNCTION_ERROR;
 	errcode_t err = 0;
-	char* data = NULL;
-	mint* offsets = NULL;
+	char* data = nullptr;
+	mint* offsets = nullptr;
 	mint length = 0;
 
-	WolframDataVectorLibrary_Functions dvFuns = libData->dataVectorLibraryFunctions;
+	WolframTabularColumnLibrary_Functions dvFuns = libData->tabularColumnLibraryFunctions;
 
 	if (Argc != 1) {
 		goto cleanup;
 	}
-	dv_in = MArgument_getDataVector(Args[0]);
-	if (dv_in == NULL) {
+	dv_in = MArgument_getTabularColumn(Args[0]);
+	if (dv_in == nullptr) {
 		goto cleanup;
 	}
 
-	err = dvFuns->DataVector_getLength(dv_in, &length);
+	err = dvFuns->TabularColumn_getLength(dv_in, &length);
 	if (err) {
 		goto cleanup;
 	}
 
-	err = dvFuns->DataVector_getDataString(dv_in, &data, &offsets);
+	err = dvFuns->TabularColumn_getDataString(dv_in, &data, &offsets);
 	if (err) {
 		goto cleanup;
 	}
@@ -528,40 +467,35 @@ cleanup:
 }
 
 EXTERN_C DLLEXPORT int getDataBoolean(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument res) {
-	DataVector dv_in = NULL;
-	DataVector dv_out = NULL;
+	TabularColumn dv_in = nullptr;
+	TabularColumn dv_out = nullptr;
 	int errCode = LIBRARY_FUNCTION_ERROR;
 	errcode_t err = 0;
-	bitvector_t data = NULL;
-	bitvector_t data_copy = NULL;
-	bitvector_t validity = NULL;
+	MNumericArray data = nullptr;
+	MNumericArray validity = nullptr;
 
-	WolframDataVectorLibrary_Functions dvFuns = libData->dataVectorLibraryFunctions;
+	WolframTabularColumnLibrary_Functions dvFuns = libData->tabularColumnLibraryFunctions;
 
 	if (Argc != 1) {
 		goto cleanup;
 	}
-	dv_in = MArgument_getDataVector(Args[0]);
-	if (dv_in == NULL) {
+	dv_in = MArgument_getTabularColumn(Args[0]);
+	if (dv_in == nullptr) {
 		goto cleanup;
 	}
-	err = dvFuns->DataVector_getDataBoolean(dv_in, &data);
+	err = dvFuns->TabularColumn_getDataBoolean(dv_in, &data);
 	if (err) {
 		goto cleanup;
 	}
-	err = dvFuns->BitVector_clone(data, &data_copy);
+	err = dvFuns->TabularColumn_getValidity(dv_in, &validity);
 	if (err) {
 		goto cleanup;
 	}
-	err = dvFuns->DataVector_getValidity(dv_in, &validity);
+	err = dvFuns->TabularColumn_newBoolean(data, validity, &dv_out);
 	if (err) {
 		goto cleanup;
 	}
-	err = dvFuns->DataVector_newBoolean(data_copy, validity, &dv_out);
-	if (err) {
-		goto cleanup;
-	}
-	MArgument_setDataVector(res, dv_out);
+	MArgument_setTabularColumn(res, dv_out);
 	errCode = LIBRARY_NO_ERROR;
 
 cleanup:
@@ -569,93 +503,90 @@ cleanup:
 }
 
 EXTERN_C DLLEXPORT int getDataBinary(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument res) {
-	DataVector dv_in = NULL;
-	DataVector dv_out = NULL;
+	TabularColumn dv_in = nullptr;
+	TabularColumn dv_out = nullptr;
 	int errCode = LIBRARY_FUNCTION_ERROR;
 	errcode_t err = 0;
-	MNumericArray data = NULL;
-	MNumericArray data_copy = NULL;
-	mint* offsets = NULL;
-	mint* offsets_copy = NULL;
+	uint8_t* data = nullptr;
+	mint* offsets = nullptr;
+	mint* offsets_copy = nullptr;
 	mint length = 0;
-	bitvector_t validity = NULL;
+	MNumericArray validity = nullptr;
 
-	WolframNumericArrayLibrary_Functions naFuns = libData->numericarrayLibraryFunctions;
-	WolframDataVectorLibrary_Functions dvFuns = libData->dataVectorLibraryFunctions;
+	WolframTabularColumnLibrary_Functions dvFuns = libData->tabularColumnLibraryFunctions;
 
 	if (Argc != 1) {
-		goto cleanup;
+		return errCode;
 	}
-	dv_in = MArgument_getDataVector(Args[0]);
-	if (dv_in == NULL) {
-		goto cleanup;
-	}
-
-	err = dvFuns->DataVector_getLength(dv_in, &length);
-	if (err) {
-		goto cleanup;
+	dv_in = MArgument_getTabularColumn(Args[0]);
+	if (dv_in == nullptr) {
+		return errCode;
 	}
 
-	err = dvFuns->DataVector_getValidity(dv_in, &validity);
+	err = dvFuns->TabularColumn_getLength(dv_in, &length);
 	if (err) {
-		goto cleanup;
+		return errCode;
 	}
 
-	err = dvFuns->DataVector_getDataBinary(dv_in, &data, &offsets);
+	err = dvFuns->TabularColumn_getValidity(dv_in, &validity);
 	if (err) {
-		goto cleanup;
+		return errCode;
 	}
 
-	err = naFuns->MNumericArray_clone(data, &data_copy);
+	err = dvFuns->TabularColumn_getDataByteArray(dv_in, &data, &offsets);
 	if (err) {
-		goto cleanup;
+		return errCode;
 	}
+
+	auto na = numericArrayFromRawData(data, MNumericArray_Type_UBit8, offsets[length]);
 
 	offsets_copy = (mint*)libData->WL_malloc(sizeof(mint) * (length + 1));
 	memcpy(offsets_copy, offsets, sizeof(mint) * (length + 1));
 
-	err = dvFuns->DataVector_newBinary(length, &data_copy, offsets_copy, validity, &dv_out);
+	err = dvFuns->TabularColumn_newByteArray(length, na.abandonContainer(), offsets_copy, validity, &dv_out);
 	if (err) {
 		goto cleanup;
 	}
-	MArgument_setDataVector(res, dv_out);
+	MArgument_setTabularColumn(res, dv_out);
 	errCode = LIBRARY_NO_ERROR;
 
 cleanup:
 	if (errCode != LIBRARY_NO_ERROR) {
 		libData->WL_free(offsets_copy);
-		naFuns->MNumericArray_free(data_copy);
 	}
 	return errCode;
 }
 
 EXTERN_C DLLEXPORT int getDataFixedWidthBinary(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument res) {
-	DataVector dv_in = NULL;
+	TabularColumn dv_in = nullptr;
 	int errCode = LIBRARY_FUNCTION_ERROR;
 	errcode_t err = 0;
-	MNumericArray data = NULL;
-	MNumericArray data_copy = NULL;
+	uint8_t* data = nullptr;
+	mint width, length;
+	LLU::GenericNumericArray data_copy;
 
-	WolframNumericArrayLibrary_Functions naFuns = libData->numericarrayLibraryFunctions;
-	WolframDataVectorLibrary_Functions dvFuns = libData->dataVectorLibraryFunctions;
+	WolframTabularColumnLibrary_Functions dvFuns = libData->tabularColumnLibraryFunctions;
 
 	if (Argc != 1) {
 		goto cleanup;
 	}
-	dv_in = MArgument_getDataVector(Args[0]);
-	if (dv_in == NULL) {
+	dv_in = MArgument_getTabularColumn(Args[0]);
+	if (dv_in == nullptr) {
 		goto cleanup;
 	}
 
-	err = dvFuns->DataVector_getDataFixedWidthBinary(dv_in, &data);
+	err = dvFuns->TabularColumn_getLength(dv_in, &length);
+	if (err) {
+		return errCode;
+	}
+
+	err = dvFuns->TabularColumn_getDataFixedWidthByteArray(dv_in, &data, &width);
 	if (err) {
 		goto cleanup;
 	}
-	err = naFuns->MNumericArray_clone(data, &data_copy);
-	if (err) {
-		goto cleanup;
-	}
-	MArgument_setMNumericArray(res, data_copy);
+	data_copy = numericArrayFromRawData(data, MNumericArray_Type_UBit8, width * length);
+
+	MArgument_setMNumericArray(res, data_copy.abandonContainer());
 	errCode = LIBRARY_NO_ERROR;
 
 cleanup:
@@ -663,48 +594,50 @@ cleanup:
 }
 
 EXTERN_C DLLEXPORT int getDataDate(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument res) {
-	DataVector dv_in = NULL;
-	DataVector dv_out = NULL;
+	TabularColumn dv_in = nullptr;
+	TabularColumn dv_out = nullptr;
 	int errCode = LIBRARY_FUNCTION_ERROR;
 	errcode_t err = 0;
-	MNumericArray data = NULL;
-	MNumericArray data_copy = NULL;
+	void* data = nullptr;
+	numericarray_data_t raw_type;
+	mint length;
 	mint granularity = -1;
 	mint precision = -1;
-	char* time_zone = NULL;
-	bitvector_t validity = NULL;
+	char* time_zone = nullptr;
+	MNumericArray validity = nullptr;
 
-	WolframNumericArrayLibrary_Functions naFuns = libData->numericarrayLibraryFunctions;
-	WolframDataVectorLibrary_Functions dvFuns = libData->dataVectorLibraryFunctions;
+	WolframTabularColumnLibrary_Functions dvFuns = libData->tabularColumnLibraryFunctions;
 
 	if (Argc != 1) {
-		goto cleanup;
+		return errCode;
 	}
-	dv_in = MArgument_getDataVector(Args[0]);
-	if (dv_in == NULL) {
-		goto cleanup;
+	dv_in = MArgument_getTabularColumn(Args[0]);
+	if (dv_in == nullptr) {
+		return errCode;
 	}
 
-	err = dvFuns->DataVector_getDataDate(dv_in, &data, &granularity, &precision, &time_zone);
+	err = dvFuns->TabularColumn_getLength(dv_in, &length);
+	if (err) {
+		return errCode;
+	}
+
+	err = dvFuns->TabularColumn_getDataDate(dv_in, &data, &raw_type, &granularity, &precision, &time_zone);
+	if (err) {
+		return errCode;
+	}
+
+	auto na = numericArrayFromRawData(data, raw_type, length);
+
+	err = dvFuns->TabularColumn_getValidity(dv_in, &validity);
 	if (err) {
 		goto cleanup;
 	}
 
-	err = naFuns->MNumericArray_clone(data, &data_copy);
+	err = dvFuns->TabularColumn_newDate(na.abandonContainer(), granularity, precision, time_zone, validity, &dv_out);
 	if (err) {
 		goto cleanup;
 	}
-
-	err = dvFuns->DataVector_getValidity(dv_in, &validity);
-	if (err) {
-		goto cleanup;
-	}
-
-	err = dvFuns->DataVector_newDate(&data_copy, granularity, precision, time_zone, validity, &dv_out);
-	if (err) {
-		goto cleanup;
-	}
-	MArgument_setDataVector(res, dv_out);
+	MArgument_setTabularColumn(res, dv_out);
 	errCode = LIBRARY_NO_ERROR;
 
 cleanup:
@@ -712,69 +645,71 @@ cleanup:
 }
 
 EXTERN_C DLLEXPORT int getDataTime(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument res) {
-	DataVector dv_in = NULL;
-	DataVector dv_out = NULL;
+	TabularColumn dv_in = nullptr;
+	TabularColumn dv_out = nullptr;
 	int errCode = LIBRARY_FUNCTION_ERROR;
 	errcode_t err = 0;
-	MNumericArray data = NULL;
-	MNumericArray data_copy = NULL;
+	void* data = nullptr;
+	numericarray_data_t raw_type;
+	mint length;
 	mint granularity = -1;
 	mint precision = -1;
-	bitvector_t validity = NULL;
+	MNumericArray validity = nullptr;
 
-	WolframNumericArrayLibrary_Functions naFuns = libData->numericarrayLibraryFunctions;
-	WolframDataVectorLibrary_Functions dvFuns = libData->dataVectorLibraryFunctions;
+	WolframTabularColumnLibrary_Functions dvFuns = libData->tabularColumnLibraryFunctions;
 
 	if (Argc != 1) {
-		goto cleanup;
+		return errCode;
 	}
-	dv_in = MArgument_getDataVector(Args[0]);
-	if (dv_in == NULL) {
-		goto cleanup;
+	dv_in = MArgument_getTabularColumn(Args[0]);
+	if (dv_in == nullptr) {
+		return errCode;
 	}
 
-	err = dvFuns->DataVector_getDataTime(dv_in, &data, &granularity, &precision);
+	err = dvFuns->TabularColumn_getLength(dv_in, &length);
+	if (err) {
+		return errCode;
+	}
+
+	err = dvFuns->TabularColumn_getDataTime(dv_in, &data, &raw_type, &granularity, &precision);
+	if (err) {
+		return errCode;
+	}
+
+	auto na = numericArrayFromRawData(data, raw_type, length);
+
+	err = dvFuns->TabularColumn_getValidity(dv_in, &validity);
 	if (err) {
 		goto cleanup;
 	}
 
-	err = naFuns->MNumericArray_clone(data, &data_copy);
+	err = dvFuns->TabularColumn_newTime(na.abandonContainer(), granularity, precision, validity, &dv_out);
 	if (err) {
 		goto cleanup;
 	}
-
-	err = dvFuns->DataVector_getValidity(dv_in, &validity);
-	if (err) {
-		goto cleanup;
-	}
-
-	err = dvFuns->DataVector_newTime(&data_copy, granularity, precision, validity, &dv_out);
-	if (err) {
-		goto cleanup;
-	}
-	MArgument_setDataVector(res, dv_out);
+	MArgument_setTabularColumn(res, dv_out);
 	errCode = LIBRARY_NO_ERROR;
 
 cleanup:
 	return errCode;
 }
 
-EXTERN_C DLLEXPORT int isNumericDataVector(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument res) {
-	DataVector dv_in = NULL;
+EXTERN_C DLLEXPORT int isNumericTabularColumn(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument res) {
+	TabularColumn dv_in = nullptr;
 	int errCode = LIBRARY_FUNCTION_ERROR;
 	mbool numericQ = False;
 
-	WolframDataVectorLibrary_Functions dvFuns = libData->dataVectorLibraryFunctions;
+	WolframTabularColumnLibrary_Functions dvFuns = libData->tabularColumnLibraryFunctions;
 
 	if (Argc != 1) {
 		goto cleanup;
 	}
-	dv_in = MArgument_getDataVector(Args[0]);
-	if (dv_in == NULL) {
+	dv_in = MArgument_getTabularColumn(Args[0]);
+	if (dv_in == nullptr) {
 		goto cleanup;
 	}
 
-	numericQ = dvFuns->DataVector_numericTypeQ(dv_in);
+	numericQ = dvFuns->TabularColumn_numericTypeQ(dv_in);
 	MArgument_setBoolean(res, numericQ);
 	errCode = LIBRARY_NO_ERROR;
 
@@ -783,41 +718,41 @@ cleanup:
 }
 
 EXTERN_C DLLEXPORT int getDataStore(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument res) {
-	DataStore ds = NULL;
-	DataVector dv1 = NULL;
-	DataVector dv2 = NULL;
+	DataStore ds = nullptr;
+	TabularColumn dv1 = nullptr;
+	TabularColumn dv2 = nullptr;
 	errcode_t err = 0;
 	ds = libData->ioLibraryFunctions->createDataStore();
-	if (ds == NULL) {
+	if (ds == nullptr) {
 		return LIBRARY_MEMORY_ERROR;
 	}
-	err = generateNumericDataVector(libData, &dv1);
+	err = generateNumericTabularColumn(libData, &dv1);
 	if (err) {
 		return err;
 	}
-	err = generateStringDataVector(libData, &dv2);
+	err = generateStringTabularColumn(libData, &dv2);
 	if (err) {
 		return err;
 	}
 	char col_name1[] = "column 1";
-	libData	->ioLibraryFunctions->DataStore_addNamedDataVector(ds, col_name1, dv1);
+	libData	->ioLibraryFunctions->DataStore_addNamedTabularColumn(ds, col_name1, dv1);
 	char col_name2[] = "column 2";
-	libData->ioLibraryFunctions->DataStore_addNamedDataVector(ds, col_name2, dv2);
+	libData->ioLibraryFunctions->DataStore_addNamedTabularColumn(ds, col_name2, dv2);
 	MArgument_setDataStore(res, ds);
     return LIBRARY_NO_ERROR;
 }
 
 static DataStore copyDataStore(WolframLibraryData libData, DataStore ds_in) {
 	MArgument data;
-	char* name = NULL;
+	char* name = nullptr;
 	int errCode = LIBRARY_FUNCTION_ERROR;
 
-	if (ds_in == NULL) {
-		return NULL;
+	if (ds_in == nullptr) {
+		return nullptr;
 	}
 	DataStore ds_out = libData->ioLibraryFunctions->createDataStore();
 	DataStoreNode dsn = libData->ioLibraryFunctions->DataStore_getFirstNode(ds_in);
-	while (dsn != NULL) {
+	while (dsn != nullptr) {
 		if (libData->ioLibraryFunctions->DataStoreNode_getData(dsn, &data) != 0) {
 			goto cleanup;
 		}
@@ -831,39 +766,39 @@ static DataStore copyDataStore(WolframLibraryData libData, DataStore ds_in) {
 			case MType_Complex: libData->ioLibraryFunctions->DataStore_addNamedComplex(ds_out, name, MArgument_getComplex(data)); break;
 			case MType_UTF8String: libData->ioLibraryFunctions->DataStore_addNamedString(ds_out, name, MArgument_getUTF8String(data)); break;
 			case MType_Tensor: {
-				MTensor outtensor = NULL;
+				MTensor outtensor = nullptr;
 				libData->MTensor_clone(MArgument_getMTensor(data), &outtensor);
 				libData->ioLibraryFunctions->DataStore_addNamedMTensor(ds_out, name, outtensor);
 				break;
 			}
 			case MType_NumericArray: {
-				MNumericArray outnumeric = NULL;
+				MNumericArray outnumeric = nullptr;
 				libData->numericarrayLibraryFunctions->MNumericArray_clone(MArgument_getMNumericArray(data), &outnumeric);
 				libData->ioLibraryFunctions->DataStore_addNamedMNumericArray(ds_out, name, outnumeric);
 				break;
 			}
 			case MType_Image: {
-				MImage outimg = NULL;
+				MImage outimg = nullptr;
 				libData->imageLibraryFunctions->MImage_clone(MArgument_getMImage(data), &outimg);
 				libData->ioLibraryFunctions->DataStore_addNamedMImage(ds_out, name, outimg);
 				break;
 			}
 			case MType_SparseArray: {
-				MSparseArray outsparse = NULL;
+				MSparseArray outsparse = nullptr;
 				libData->sparseLibraryFunctions->MSparseArray_clone(MArgument_getMSparseArray(data), &outsparse);
 				libData->ioLibraryFunctions->DataStore_addNamedMSparseArray(ds_out, name, outsparse);
 				break;
 			}
 			case MType_DataStore: {
-				DataStore outds = NULL;
+				DataStore outds = nullptr;
 				outds = libData->ioLibraryFunctions->copyDataStore(MArgument_getDataStore(data));
 				libData->ioLibraryFunctions->DataStore_addNamedDataStore(ds_out, name, outds);
 				break;
 			}
-			case MType_DataVector: {
-				DataVector outdv = NULL;
-				libData->dataVectorLibraryFunctions->DataVector_clone(MArgument_getDataVector(data), &outdv);
-				libData->ioLibraryFunctions->DataStore_addNamedDataVector(ds_out, name, outdv);
+			case MType_TabularColumn: {
+				TabularColumn outdv = nullptr;
+				libData->tabularColumnLibraryFunctions->TabularColumn_clone(MArgument_getTabularColumn(data), &outdv);
+				libData->ioLibraryFunctions->DataStore_addNamedTabularColumn(ds_out, name, outdv);
 				break;
 			}
 			default: goto cleanup;
@@ -877,14 +812,14 @@ cleanup:
 		if (ds_out) {
 			libData->ioLibraryFunctions->deleteDataStore(ds_out);
 		}
-		return NULL;
+		return nullptr;
 	}
 	return ds_out;
 }
 
 EXTERN_C DLLEXPORT int passDataStore(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument res) {
-	DataStore ds_in = NULL;
-	DataStore ds_out = NULL;
+	DataStore ds_in = nullptr;
+	DataStore ds_out = nullptr;
 	mbool returnCopyQ = False;
 	int errCode = LIBRARY_FUNCTION_ERROR;
 
@@ -893,13 +828,13 @@ EXTERN_C DLLEXPORT int passDataStore(WolframLibraryData libData, mint Argc, MArg
 	}
 
 	ds_in = MArgument_getDataStore(Args[0]);
-	if (ds_in == NULL) {
+	if (ds_in == nullptr) {
 		goto cleanup;
 	}
 	returnCopyQ = MArgument_getBoolean(Args[1]);
 	if (returnCopyQ) {
 		ds_out = copyDataStore(libData, ds_in);
-		if (ds_out == NULL) {
+		if (ds_out == nullptr) {
 			goto cleanup;
 		}
 	} else {
@@ -923,7 +858,7 @@ cleanup:
 
 /* Returns an input or a copy of an input */
 LLU_LIBRARY_FUNCTION(PassDataVector) {
-	auto dv = mngr.getGenericDataVector(0);
+	auto dv = mngr.getDataVector(0);
 	auto returnCopyQ = mngr.getBoolean(1);
 
 	if (returnCopyQ) {
@@ -937,7 +872,7 @@ LLU_LIBRARY_FUNCTION(PassDataVector) {
 /* Create numeric DataVector */
 LLU_LIBRARY_FUNCTION(NewNumericDV) {
 	auto num = mngr.getGenericNumericArray(0);
-	auto dv = LLU::GenericDataVector {LLU::DV::Type::Numeric, num.clone()};
+	auto dv = LLU::DataVector {LLU::DV::Type::Numeric, num.clone()};
 	mngr.set(dv);
 }
 
@@ -945,13 +880,15 @@ LLU_LIBRARY_FUNCTION(NewNumericDV) {
 LLU_LIBRARY_FUNCTION(NewStringDV) {
 	auto strings = mngr.getDataList<LLU::NodeType::UTF8String>(0);
 	const auto str_views = strings.values();
-	auto dv = LLU::GenericDataVector {str_views};
+	auto dv = LLU::DataVector {str_views};
 	mngr.set(dv);
 }
 
 /* Create boolean DataVector */
 LLU_LIBRARY_FUNCTION(NewBooleanDV) {
-	auto dv = LLU::GenericDataVector {LLU::BitVector({true, false, false, false})};
+	LLU::Int8Array boolean_data(0, LLU::MArrayDimensions {4});
+	boolean_data[0] = 1;
+	auto dv = LLU::DataVector {boolean_data};
 	mngr.set(dv);
 }
 
@@ -960,14 +897,14 @@ LLU_LIBRARY_FUNCTION(NewBinaryDV) {
 	auto binary_data = mngr.getNumericArray<std::uint8_t>(0);
 	auto lengths = mngr.getTensor<mint>(1);
 	const auto lengths_span = std::span<mint> {lengths.begin(), lengths.end()};
-	auto dv = LLU::GenericDataVector {binary_data.clone(), static_cast<mint>(lengths_span.size()), LLU::DV::lengthsToOffsets(lengths_span)};
+	auto dv = LLU::DataVector {binary_data.clone(), static_cast<mint>(lengths_span.size()), LLU::DV::lengthsToOffsets(lengths_span)};
 	mngr.set(dv);
 }
 
 /* Create fixed-width binary DataVector */
 LLU_LIBRARY_FUNCTION(NewFixedWidthBinaryDV) {
 	auto num = mngr.getGenericNumericArray(0);
-	auto dv = LLU::GenericDataVector {LLU::DV::Type::FixedWidthBinary, num.clone()};
+	auto dv = LLU::DataVector {LLU::DV::Type::FixedWidthBinary, num.clone()};
 	mngr.set(dv);
 }
 
@@ -977,7 +914,7 @@ LLU_LIBRARY_FUNCTION(NewDateDV) {
 	auto granularity = mngr.getInteger<mint>(1);
 	auto precision = mngr.getInteger<mint>(2);
 	auto time_zone = mngr.getString(3);
-	auto dv = LLU::GenericDataVector {data.clone(), granularity, precision, time_zone};
+	auto dv = LLU::DataVector {data.clone(), granularity, precision, time_zone};
 	mngr.set(dv);
 }
 
@@ -986,6 +923,6 @@ LLU_LIBRARY_FUNCTION(NewTimeDV) {
 	auto data = mngr.getGenericNumericArray(0);
 	auto granularity = mngr.getInteger<mint>(1);
 	auto precision = mngr.getInteger<mint>(2);
-	auto dv = LLU::GenericDataVector {data.clone(), granularity, precision};
+	auto dv = LLU::DataVector {data.clone(), granularity, precision};
 	mngr.set(dv);
 }
