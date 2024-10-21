@@ -116,20 +116,65 @@ namespace LLU {
 		 */
 		MContainer(Container c, Ownership owner);
 
-
+		/**
+		 * Create a new DataVector of numeric type or a fixed-width binary type
+		 * @param type - data type (either Numeric of FixedWidthBinary)
+		 * @param array - values to be stored in the DataVector
+		 * @param validity - missing values array
+		 */
 		MContainer(DV::Type type, GenericNumericArray&& array, const Int8Array& validity = {});
 
+		/**
+		 * Create a new DataVector of string type from a flat list of characters and an offset array
+		 * @param str_count - number of data elements
+		 * @param string_data - list of characters, no copies made, ownership passed to the DataVector
+		 * @param offsets - array of offsets for each string, ownership passed to the DataVector
+		 * @param validity - missing values array
+		 */
 		MContainer(mint str_count, UniquePtr<const char>&& string_data, UniquePtr<mint[]>&& offsets, const Int8Array& validity = {});
 
+		/**
+		 * Create a new DataVector of string type from a vector of string views
+		 * @param string_data
+		 * @param validity - missing values array
+		 */
 		MContainer(const std::vector<std::string_view>& string_data, const Int8Array& validity = {});
 
+		/**
+		 * Create a new DataVector of boolean type
+		 * @param boolean_data - array of boolean values (True = 1, False = 0)
+		 * @param validity - missing values array
+		 */
 		MContainer(const Int8Array& boolean_data, const Int8Array& validity = {});
 
+		/**
+		 * Create a new DataVector of binary type (a list of byte arrays)
+		 * @param array - byte values in a flat buffer, no copies made, data will be moved to the underlying structure
+		 * @param elem_count - number of byte arrays
+		 * @param offsets - offset of each byte array in the flat buffer
+		 * @param validity - missing values array
+		 */
 		MContainer(GenericNumericArray&& array, mint elem_count, UniquePtr<mint[]>&& offsets, const Int8Array& validity = {});
 
+		/**
+		 * Create a new DataVector of date type
+		 * @param array - date values, no copies made, data will be moved to the underlying structure
+		 * @param granularity - date granularity
+		 * @param precision - date precision
+		 * @param time_zone - time zone
+		 * @param validity - missing values array
+		 */
 		MContainer(GenericNumericArray&& array, mint granularity, mint precision, const std::string& time_zone, const Int8Array& validity = {});
 
+		/**
+		 * Create a new DataVector of time type
+		 * @param array - time values, no copies made, data will be moved to the underlying structure
+		 * @param granularity - time granularity
+		 * @param precision - time precision
+		 * @param validity - missing values array
+		 */
 		MContainer(GenericNumericArray&& array, mint granularity, mint precision, const Int8Array& validity = {});
+
 		/**
 		 * @brief   Clone this MContainer, performs a deep copy of the underlying TabularColumn.
 		 * @note    The cloned MContainer always belongs to the library (Ownership::Library) because LibraryLink has no idea of its existence.
@@ -140,19 +185,27 @@ namespace LLU {
 		}
 
 		/**
-		 * @brief   Get the length of the TabularColumn.
-		 * @return  total number of data elements in the TabularColumn
+		 * @brief   Get the length of the DataVector as mint
+		 * @return  total number of data elements in the DataVector
 		 */
 		mint length() const;
 
+		/**
+		 * @brief   Get the length of the DataVector as std::size_t
+		 * @return  total number of data elements in the DataVector
+		 */
 		std::size_t size() const;
 
+		/// Get DataVector type as an enum
 		DV::Type type() const;
 
+		/// Get the number of missing elements in the DataVector
 		mint missingCount() const;
 
+		/// Get the validity array (for each element: 0 -> missing, 1 -> present)
 		Int8Array validity() const;
 
+		/// See the underlying data without making any copies
 		DV::Data viewData();
 
 	private:
@@ -172,7 +225,6 @@ namespace LLU {
 		 * @param   res - MArgument which will hold the internal container of this MContainer
 		 */
 		void passImpl(MArgument& res) const noexcept override {
-			//NOLINTNEXTLINE(cppcoreguidelines-pro-type-cstyle-cast): c-style cast used in a macro in WolframIOLibraryFunctions.h
 			MArgument_setTabularColumn(res, this->getContainer());
 		}
 	};
