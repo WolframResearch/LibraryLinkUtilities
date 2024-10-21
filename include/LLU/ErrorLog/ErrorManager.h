@@ -153,6 +153,14 @@ namespace LLU {
 		 */
 		static void sendRegisteredErrorsViaWSTP(WSLINK mlp);
 
+		/**
+		 * @brief Find error by name.
+		 * @details This function can be used to translate exceptions from 3rd-party libraries to LLU error codes without rethrowing.
+		 * @param errorName - error name
+		 * @return const& to the desired error
+		 */
+		static const LibraryLinkError& findError(const std::string& errorName);
+
 	private:
 		/// Errors are stored in a map with elements of the form { "ErrorName", immutable LibraryLinkError object }
 		using ErrorMap = std::unordered_map<std::string, const LibraryLinkError>;
@@ -170,13 +178,6 @@ namespace LLU {
 		 * @return const& to the desired error
 		 */
 		static const LibraryLinkError& findError(int errorId);
-
-		/**
-		 * @brief Find error by name.
-		 * @param errorName - error name
-		 * @return const& to the desired error
-		 */
-		static const LibraryLinkError& findError(const std::string& errorName);
 
 		/***
 		 * @brief Initialization of static error map
