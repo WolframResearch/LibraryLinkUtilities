@@ -154,7 +154,7 @@ namespace LLU {
 		 * @param offsets - offset of each byte array in the flat buffer
 		 * @param validity - missing values array
 		 */
-		MContainer(GenericNumericArray&& array, mint elem_count, UniquePtr<mint[]>&& offsets, const Int8Array& validity = {});
+		MContainer(UInt8Array&& array, mint elem_count, UniquePtr<mint[]>&& offsets, const Int8Array& validity = {});
 
 		/**
 		 * Create a new DataVector of date type

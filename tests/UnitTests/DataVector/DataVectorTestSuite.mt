@@ -30,7 +30,7 @@ TestExecute[
 	PassDataVector = `LLU`PacletFunctionLoad["PassDataVector", {TabularColumn, "Boolean"}, TabularColumn];
 	NewNumericDV = `LLU`PacletFunctionLoad["NewNumericDV", {NumericArray}, TabularColumn];
 	NewStringDV = `LLU`PacletFunctionLoad["NewStringDV", {"DataStore"}, TabularColumn];
-	NewBinaryDV = `LLU`PacletFunctionLoad["NewBinaryDV", {NumericArray, NumericArray}, TabularColumn];
+	NewBinaryDV = `LLU`PacletFunctionLoad["NewBinaryDV", {NumericArray, {Integer, 1, "Constant"}}, TabularColumn];
 	NewBooleanDV = `LLU`PacletFunctionLoad["NewBooleanDV", {}, TabularColumn];
 	NewFixedWidthBinaryDV = `LLU`PacletFunctionLoad["NewFixedWidthBinaryDV", {NumericArray}, TabularColumn];
 	NewDateDV = `LLU`PacletFunctionLoad["NewDateDV", {NumericArray, Integer, Integer, String}, TabularColumn];
@@ -260,7 +260,7 @@ VerificationTest[
 
 (* Numeric data *)
 Test[
-	getDataNumeric = LibraryFunctionLoad[lib, "getDataNumeric", {TabularColumn}, LibraryDataType[NumericArray]];
+	getDataNumeric = LibraryFunctionLoad[lib, "getDataNumeric", {TabularColumn}, NumericArray];
 	getDataNumeric[numericDV]
 	,
 	NumericArray[{0, 1, 2, 3, 4}, "Integer8"]
@@ -327,7 +327,7 @@ VerificationTest[
 
 (* Fixed width binary data *)
 Test[
-	getDataFixedWidthBinary = LibraryFunctionLoad[lib, "getDataFixedWidthBinary", {TabularColumn}, LibraryDataType[NumericArray]];
+	getDataFixedWidthBinary = LibraryFunctionLoad[lib, "getDataFixedWidthBinary", {TabularColumn}, NumericArray];
 	getDataFixedWidthBinary[fixedWidthBinaryDV]
 	,
 	NumericArray[{{0, 1, 2, 3}, {4, 5, 6, 7}, {8, 9, 10, 11}, {0, 0, 0, 0}, {16, 17, 18, 19}}, "UnsignedInteger8"]
@@ -479,14 +479,14 @@ Test[
 
 (* Date *)
 VerificationTest[
-	dateDV = NewDateDV[NumericArray[{1, 2, 3, 4, 5}, "Integer32"], 2, 3, ""];
+	dateDV = NewDateDV[NumericArray[{1, 2, 3, 4, 5}, "Integer32"], -40, -1, ""];
 	TabularColumnQ[dateDV]
 	,
 	TestID -> "DataVectorTestSuite-FFHFMMDKLH"
 ];
 
 Test[
-	Normal[dateDV]
+	dateDV["RawData"] // Normal
 	,
 	{1, 2, 3, 4, 5}
 	,
@@ -495,14 +495,14 @@ Test[
 
 (* Time *)
 VerificationTest[
-	timeDV = NewTimeDV[NumericArray[{1, 2, 3, 4, 5}, "Integer32"], 2, 3];
+	timeDV = NewTimeDV[NumericArray[{1, 2, 3, 4, 5}, "Integer32"],-40, -1];
 	TabularColumnQ[timeDV]
 	,
 	TestID -> "DataVectorTestSuite-FFHFMMDKLH"
 ];
 
 Test[
-	Normal[timeDV]
+	timeDV["RawData"] // Normal
 	,
 	{1, 2, 3, 4, 5}
 	,

@@ -25,13 +25,17 @@ LLU::Int8Array constructValidity(mint length, mint missing_position) {
 	return validity;
 }
 
-LLU::GenericNumericArray numericArrayFromRawData(void* raw_data, numericarray_data_t type, mint num_elems) {
-	LLU::GenericNumericArray array {type, 1, &num_elems};
+LLU::GenericNumericArray numericArrayFromRawData(void* raw_data, numericarray_data_t type, const LLU::MArrayDimensions& dims) {
+	LLU::GenericNumericArray array {type, dims.rank(), dims.data()};
 	LLU::asTypedNumericArray(array, [&] <typename T> (LLU::NumericArrayTypedView<T> num_array) {
 		const T* typed_data = static_cast<T*>(raw_data);
-		std::copy_n(typed_data, num_elems, num_array.begin());
+		std::copy_n(typed_data, dims.flatCount(), num_array.begin());
 	});
 	return array;
+}
+
+LLU::GenericNumericArray numericArrayFromRawData(void* raw_data, numericarray_data_t type, mint num_elems) {
+	return numericArrayFromRawData(raw_data, type, LLU::MArrayDimensions {num_elems});
 }
 
 static errcode_t generateNumericTabularColumn(WolframLibraryData libData, TabularColumn* res) {
@@ -222,7 +226,7 @@ EXTERN_C DLLEXPORT int newDateTabularColumn(WolframLibraryData libData, mint Arg
 	if (err) {
 		return err;
 	}
-	err = dvFuns->TabularColumn_newDate(na, 40 /*DAY_GRANULARITY*/, -1 /*unused*/, nullptr, validity.getContainer(), &dv);
+	err = dvFuns->TabularColumn_newDate(na, -40 /*DAY_GRANULARITY*/, -1 /*unused*/, nullptr, validity.getContainer(), &dv);
 	if (err) {
 		return err;
 	}
@@ -378,6 +382,7 @@ EXTERN_C DLLEXPORT int getTabularColumnValidity(WolframLibraryData libData, mint
 	if (err) {
 		goto cleanup;
 	}
+	libData->numericarrayLibraryFunctions->MNumericArray_free(validity);
 	MArgument_setTabularColumn(res, dv_out);
 	errCode = LIBRARY_NO_ERROR;
 
@@ -499,6 +504,8 @@ EXTERN_C DLLEXPORT int getDataBoolean(WolframLibraryData libData, mint Argc, MAr
 	errCode = LIBRARY_NO_ERROR;
 
 cleanup:
+	libData->numericarrayLibraryFunctions->MNumericArray_free(data);
+	libData->numericarrayLibraryFunctions->MNumericArray_free(validity);
 	return errCode;
 }
 
@@ -554,6 +561,7 @@ cleanup:
 	if (errCode != LIBRARY_NO_ERROR) {
 		libData->WL_free(offsets_copy);
 	}
+	libData->numericarrayLibraryFunctions->MNumericArray_free(validity);
 	return errCode;
 }
 
@@ -584,7 +592,7 @@ EXTERN_C DLLEXPORT int getDataFixedWidthBinary(WolframLibraryData libData, mint 
 	if (err) {
 		goto cleanup;
 	}
-	data_copy = numericArrayFromRawData(data, MNumericArray_Type_UBit8, width * length);
+	data_copy = numericArrayFromRawData(data, MNumericArray_Type_UBit8, LLU::MArrayDimensions {length, width});
 
 	MArgument_setMNumericArray(res, data_copy.abandonContainer());
 	errCode = LIBRARY_NO_ERROR;
@@ -641,6 +649,7 @@ EXTERN_C DLLEXPORT int getDataDate(WolframLibraryData libData, mint Argc, MArgum
 	errCode = LIBRARY_NO_ERROR;
 
 cleanup:
+	libData->numericarrayLibraryFunctions->MNumericArray_free(validity);
 	return errCode;
 }
 
@@ -691,6 +700,7 @@ EXTERN_C DLLEXPORT int getDataTime(WolframLibraryData libData, mint Argc, MArgum
 	errCode = LIBRARY_NO_ERROR;
 
 cleanup:
+	libData->numericarrayLibraryFunctions->MNumericArray_free(validity);
 	return errCode;
 }
 
