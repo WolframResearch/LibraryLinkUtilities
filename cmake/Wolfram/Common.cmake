@@ -51,10 +51,12 @@ function(get_default_wolfram_dirs DEFAULT_INSTALL_DIRS)
 	get_wolfram_product_default_dirs(WolframDesktop _WD_INSTALL_DIRS)
 	get_wolfram_product_default_dirs(Mathematica _M_INSTALL_DIRS)
 	get_wolfram_product_default_dirs(WolframEngine _WE_INSTALL_DIRS)
+	get_wolfram_product_default_dirs(Wolfram _W_INSTALL_DIRS)
 	set(_ALL_INSTALL_DIRS
 		"${_WD_INSTALL_DIRS}"
 		"${_M_INSTALL_DIRS}"
-		"${_WE_INSTALL_DIRS}")
+		"${_WE_INSTALL_DIRS}"
+		"${_W_INSTALL_DIRS}")
 	list(SORT _ALL_INSTALL_DIRS COMPARE FILE_BASENAME ORDER DESCENDING)
 	message(VERBOSE "Found possible Wolfram Language installations: ${_ALL_INSTALL_DIRS}")
 	set(${DEFAULT_INSTALL_DIRS} "${_ALL_INSTALL_DIRS}" PARENT_SCOPE)

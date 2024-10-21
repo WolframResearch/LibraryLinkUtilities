@@ -54,7 +54,7 @@
 include("${CMAKE_CURRENT_LIST_DIR}/Wolfram/Common.cmake")
 
 set(_WL_KERNEL_FIND_NAMES WolframKernel wolfram math MathKernel)
-set(_WL_FRONTEND_FIND_NAMES WolframDesktop wolframdesktop Mathematica mathematica)
+set(_WL_FRONTEND_FIND_NAMES WolframDesktop wolframdesktop Mathematica mathematica WolframNB wolframnb)
 set(_WL_FIND_SUFFIXES Executables MacOS Contents/MacOS)
 set(_WL_FIND_DOC "Location of WolframLanguage interpreter executable")
 
