@@ -41,21 +41,14 @@ LLU::GenericNumericArray numericArrayFromRawData(void* raw_data, numericarray_da
 static errcode_t generateNumericTabularColumn(WolframLibraryData libData, TabularColumn* res) {
 	const mint length = 5;
 	const mint missing_position = 3;
-	MNumericArray na = nullptr;
-	int8_t* na_data = nullptr;
-	errcode_t err = 0;
-	WolframNumericArrayLibrary_Functions naFuns = libData->numericarrayLibraryFunctions;
 	WolframTabularColumnLibrary_Functions dvFuns = libData->tabularColumnLibraryFunctions;
-	err = naFuns->MNumericArray_new(MNumericArray_Type_Bit8, 1, &length, &na);
-	if (err) {
-		return err;
-	}
-	na_data = (int8_t*)(naFuns->MNumericArray_getData(na));
-	for (mint i = 0; i < length; i++) {
-		na_data[i] = i;
+	auto na = LLU::Int8Array(0, LLU::MArrayDimensions {length});
+	int8_t v = 0;
+	for (auto& elem : na) {
+		elem = v++;
 	}
 	auto validity = constructValidity(length, missing_position);
-	return dvFuns->TabularColumn_newNumeric(na, validity.getContainer(), res);
+	return dvFuns->TabularColumn_newNumeric(na.abandonContainer(), validity.getContainer(), res);
 }
 
 static errcode_t generateStringTabularColumn(WolframLibraryData libData, TabularColumn* res) {
@@ -73,7 +66,7 @@ static errcode_t generateStringTabularColumn(WolframLibraryData libData, Tabular
 	auto buff = data.get();
 	for (i = 0; i < size; i++) {
 		if (i != missing_position) {
-			offsets[i + 1] = offsets[i] + strlen(strings[i]);
+			offsets[i + 1] = offsets[i] + static_cast<mint>(strlen(strings[i]));
 			mint nbytes = offsets[i + 1] - offsets[i];
 			memcpy(buff, strings[i], nbytes);
 			buff += nbytes;
@@ -89,7 +82,7 @@ static errcode_t generateStringTabularColumn(WolframLibraryData libData, Tabular
 	return err;
 }
 
-EXTERN_C DLLEXPORT int newNumericTabularColumn(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument res) {
+EXTERN_C DLLEXPORT int newNumericTabularColumn(WolframLibraryData libData, mint /*Argc*/, MArgument* /*Args*/, MArgument res) {
 	TabularColumn dv = nullptr;
 	errcode_t err = 0;
 	err = generateNumericTabularColumn(libData, &dv);
@@ -100,7 +93,7 @@ EXTERN_C DLLEXPORT int newNumericTabularColumn(WolframLibraryData libData, mint 
 	return LIBRARY_NO_ERROR;
 }
 
-EXTERN_C DLLEXPORT int newStringTabularColumn(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument res) {
+EXTERN_C DLLEXPORT int newStringTabularColumn(WolframLibraryData libData, mint /*Argc*/, MArgument* /*Args*/, MArgument res) {
 	TabularColumn dv = nullptr;
 	errcode_t err = 0;
 	err = generateStringTabularColumn(libData, &dv);
@@ -111,7 +104,7 @@ EXTERN_C DLLEXPORT int newStringTabularColumn(WolframLibraryData libData, mint A
 	return LIBRARY_NO_ERROR;
 }
 
-EXTERN_C DLLEXPORT int newBooleanTabularColumn(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument res) {
+EXTERN_C DLLEXPORT int newBooleanTabularColumn(WolframLibraryData libData, mint /*Argc*/, MArgument* /*Args*/, MArgument res) {
 	const mint length = 5;
 	const mint missing_position = 3;
 	TabularColumn dv = nullptr;
@@ -129,7 +122,7 @@ EXTERN_C DLLEXPORT int newBooleanTabularColumn(WolframLibraryData libData, mint 
 	return LIBRARY_NO_ERROR;
 }
 
-EXTERN_C DLLEXPORT int newByteArrayTabularColumn(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument res) {
+EXTERN_C DLLEXPORT int newByteArrayTabularColumn(WolframLibraryData libData, mint /*Argc*/, MArgument* /*Args*/, MArgument res) {
 	const mint size = 5;
 	const mint length = 1 + 2 + 3 + 5;	  // missing_position = 3
 	const mint missing_position = 3;
@@ -173,20 +166,15 @@ cleanup:
 	return errCode;
 }
 
-EXTERN_C DLLEXPORT int newFixedWidthByteArrayTabularColumn(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument res) {
+EXTERN_C DLLEXPORT int newFixedWidthByteArrayTabularColumn(WolframLibraryData libData, mint /*Argc*/, MArgument* /*Args*/, MArgument res) {
 	const mint length = 5;
 	const mint missing_position = 3;
-	mint dims[] = {length, 4};
-	MNumericArray array = nullptr;
+	const mint dims[] = {length, 4};
 	TabularColumn dv = nullptr;
 	errcode_t err = 0;
-	WolframNumericArrayLibrary_Functions naFuns = libData->numericarrayLibraryFunctions;
 	WolframTabularColumnLibrary_Functions dvFuns = libData->tabularColumnLibraryFunctions;
-	err = naFuns->MNumericArray_new(MNumericArray_Type_UBit8, 2, dims, &array);
-	if (err) {
-		return err;
-	}
-	uint8_t* na_data = (uint8_t*)(naFuns->MNumericArray_getData(array));
+	auto array = LLU::UInt8Array(0, LLU::MArrayDimensions {dims, 2});
+	auto* na_data = array.data();
 	for (mint i = 0; i < dims[0]; i++) {
 		if (i != missing_position) {
 			for (mint j = 0; j < dims[1]; j++) {
@@ -195,7 +183,7 @@ EXTERN_C DLLEXPORT int newFixedWidthByteArrayTabularColumn(WolframLibraryData li
 		}
 	}
 	auto validity = constructValidity(length, missing_position);
-	err = dvFuns->TabularColumn_newFixedWidthByteArray(array, validity.getContainer(), &dv);
+	err = dvFuns->TabularColumn_newFixedWidthByteArray(array.abandonContainer(), validity.getContainer(), &dv);
 	if (err) {
 		return err;
 	}
@@ -203,7 +191,7 @@ EXTERN_C DLLEXPORT int newFixedWidthByteArrayTabularColumn(WolframLibraryData li
 	return LIBRARY_NO_ERROR;
 }
 
-EXTERN_C DLLEXPORT int newDateTabularColumn(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument res) {
+EXTERN_C DLLEXPORT int newDateTabularColumn(WolframLibraryData libData, mint /*Argc*/, MArgument* /*Args*/, MArgument res) {
 	TabularColumn dv = nullptr;
 	errcode_t err = 0;
 	const mint length = 5;
@@ -234,7 +222,7 @@ EXTERN_C DLLEXPORT int newDateTabularColumn(WolframLibraryData libData, mint Arg
 	return LIBRARY_NO_ERROR;
 }
 
-EXTERN_C DLLEXPORT int newTimeTabularColumn(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument res) {
+EXTERN_C DLLEXPORT int newTimeTabularColumn(WolframLibraryData libData, mint /*Argc*/, MArgument* /*Args*/, MArgument res) {
 	int errCode = LIBRARY_FUNCTION_ERROR;
 	TabularColumn dv = nullptr;
 	errcode_t err = 0;
@@ -727,7 +715,7 @@ cleanup:
 	return errCode;
 }
 
-EXTERN_C DLLEXPORT int getDataStore(WolframLibraryData libData, mint Argc, MArgument* Args, MArgument res) {
+EXTERN_C DLLEXPORT int getDataStore(WolframLibraryData libData, mint /*Argc*/, MArgument* /*Args*/, MArgument res) {
 	DataStore ds = nullptr;
 	TabularColumn dv1 = nullptr;
 	TabularColumn dv2 = nullptr;
