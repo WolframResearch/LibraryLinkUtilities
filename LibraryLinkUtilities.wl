@@ -438,7 +438,7 @@ Module[{errorHandler, pmSymbol, newParams, functionOptions, loadOptions},
 	If[fParams === LinkObject || pmSymbol === Hold[None],
 		errorHandler @* SafeLibraryFunctionLoad[libName, fname, fParams, retType, loadOptions]
 		, (* else *)
-		If[Not @ Developer`SymbolQ @ ReleaseHold @ pmSymbol,
+		If[Not @ Replace[pmSymbol, Hold[s_] :> Developer`SymbolQ[Unevaluated[s]]],
 			ThrowPacletFailure["ProgressMonInvalidValue"];
 		];
 		newParams = Append[fParams, {Real, 1, "Shared"}];
