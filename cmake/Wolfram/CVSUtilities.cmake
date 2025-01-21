@@ -37,17 +37,17 @@ endfunction()
 function(download_cvs_content content_name download_path module_path DOWNLOAD_LOCATION_OUT)
 	check_cvsroot()
 	include(FetchContent)
-	FetchContent_declare(
+	FetchContent_Declare(
 			${content_name}
 			SOURCE_DIR "${download_path}"
 			CVS_REPOSITORY $ENV{CVSROOT}
 			CVS_MODULE "${module_path}"
 	)
 	string(TOLOWER ${content_name} lc_content_name)
-	FetchContent_getproperties(${content_name})
+	FetchContent_GetProperties(${content_name})
 	if(NOT ${lc_content_name}_POPULATED)
 		message(STATUS "Downloading CVS module: ${module_path}")
-		FetchContent_populate(${content_name})
+		FetchContent_MakeAvailable(${content_name})
 	endif()
 	# store the download location in a variable
 	set(${DOWNLOAD_LOCATION_OUT} "${${lc_content_name}_SOURCE_DIR}" PARENT_SCOPE)
@@ -276,7 +276,7 @@ function(fetch_dependency_from_nexus LIB_NAME LIB_VERSION LIB_SYSTEMID LIB_BUILD
 	endif()
 
 	include(FetchContent)
-	FetchContent_declare(
+	FetchContent_Declare(
 		${LIB_NAME}
 		URL ${ASSET_DOWNLOAD_URL}
 		URL_HASH MD5=${ASSET_MD5}
