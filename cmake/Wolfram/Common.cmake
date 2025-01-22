@@ -330,6 +330,11 @@ function(install_dependency_files PACLET_NAME DEP_TARGET_NAME)
 			string(REPLACE ".lib" ".dll" DEP_LIBS_DLL "${DEP_LIBS}")
 		else()
 			get_target_property(DEP_LIBS ${DEP_TARGET_NAME} IMPORTED_LOCATION)
+			if (NOT DEP_LIBS AND CMAKE_BUILD_TYPE)
+				# some libraries only define IMPORTED_LOCATION_<CONFIG> and not IMPORTED_LOCATION
+				string(TOUPPER "${CMAKE_BUILD_TYPE}" UPPER_BUILD_TYPE)
+				get_target_property(DEP_LIBS ${DEP_TARGET_NAME} IMPORTED_LOCATION_${UPPER_BUILD_TYPE})
+			endif()
 			# this should already be correct if IMPORTED_LOCATION was set properly, but just in case...
 			string(REPLACE ".lib" ".dll" DEP_LIBS_DLL "${DEP_LIBS}")
 			# Check if the target has dependencies of its own to copy over. This could recursively check dependencies of dependencies but there's currently no use-case.
