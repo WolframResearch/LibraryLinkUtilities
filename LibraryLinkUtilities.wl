@@ -197,12 +197,19 @@ LoadWSTPLibrary[] :=
  * unless it failed. Failures are indicated by Throwing. In the lazy version, loading is triggered when the first library function is loaded.
  * libPath - path to the main paclet library (the one that LLU was linked into)
  *)
+Options[LazyInitializePacletLibrary] = Options[InitializePacletLibrary] = {"Dependencies" -> {}};
 SetAttributes[LazyInitializePacletLibrary, HoldFirst];
-LazyInitializePacletLibrary[libPath_] := LazyLoad[$PacletLibrary, $InitializePacletLibrary[libPath]];
+LazyInitializePacletLibrary[libPath_, OptionsPattern[]] := LazyLoad[
+	$PacletLibrary, 
+	$InitializePacletLibrary[libPath, OptionValue["Dependencies"]]
+];
 
-InitializePacletLibrary[libPath_] := (LazyInitializePacletLibrary[libPath]; $PacletLibrary);
+InitializePacletLibrary[libPath_, opts:OptionsPattern[]] := (LazyInitializePacletLibrary[libPath, opts]; $PacletLibrary);
 
-$InitializePacletLibrary[libPath_] := (
+$InitializePacletLibrary[libPath_, dependencies_] := (
+	(* Load user-provided dependencies *)
+	Map[SafeLibraryLoad, dependencies];
+
 	(* Load WSTP *)
 	LoadWSTPLibrary[];
 
