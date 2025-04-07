@@ -283,7 +283,11 @@ function(fetch_dependency_from_nexus LIB_NAME LIB_VERSION LIB_SYSTEMID LIB_BUILD
 	)
 	FetchContent_MakeAvailable(${LIB_NAME})
 	string(TOLOWER ${LIB_NAME} LC_LIB_NAME)
-	set(${DOWNLOAD_LOCATION_OUT} "${${LC_LIB_NAME}_SOURCE_DIR}/${LIB_BUILD_PLATFORM}" PARENT_SCOPE)
+	if(EXISTS "${${LC_LIB_NAME}_SOURCE_DIR}/${LIB_BUILD_PLATFORM}")
+		set(${DOWNLOAD_LOCATION_OUT} "${${LC_LIB_NAME}_SOURCE_DIR}/${LIB_BUILD_PLATFORM}" PARENT_SCOPE)
+	else()
+		set(${DOWNLOAD_LOCATION_OUT} "${${LC_LIB_NAME}_SOURCE_DIR}" PARENT_SCOPE)
+	endif()
 endfunction()
 
 # Resolve full path to an external dependency, downloading if necessary
