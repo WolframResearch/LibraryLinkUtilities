@@ -359,7 +359,7 @@ namespace LLU {
 		template<typename... ArgTypes>
 		std::tuple<RequestedType<ArgTypes>...> getTuple(size_type index = 0) const {
 			const auto indices = getOffsets(index, std::array<size_type, sizeof...(ArgTypes)> {getArgSlotCount<std::remove_cv_t<ArgTypes>>()...});
-			return MArgPackGetter<ArgTypes...>::template getImpl(*this, indices, std::index_sequence_for<ArgTypes...>{});
+			return MArgPackGetter<ArgTypes...>::getImpl(*this, indices, std::index_sequence_for<ArgTypes...>{});
 		}
 
 		/**
@@ -370,7 +370,7 @@ namespace LLU {
 		 */
 		template<typename... ArgTypes>
 		std::tuple<RequestedType<ArgTypes>...> getTuple(std::array<size_type, sizeof...(ArgTypes)> indices) const {
-			return MArgPackGetter<ArgTypes...>::template getImpl(*this, indices, std::index_sequence_for<ArgTypes...>{});
+			return MArgPackGetter<ArgTypes...>::getImpl(*this, indices, std::index_sequence_for<ArgTypes...>{});
 		}
 
 		/************************************ MArgument "setters" ************************************/
