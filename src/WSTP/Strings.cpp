@@ -8,6 +8,7 @@
 #include "LLU/WSTP/Strings.h"
 
 #include <algorithm>
+#include <span>
 
 namespace LLU::WS {
 
@@ -59,8 +60,8 @@ namespace LLU::WS {
 	template<>
 	PutStringFuncT<CharType<Encoding::UTF8>> String<Encoding::UTF8>::Put = [](WSLINK m, const unsigned char* strData, int len) {
 		constexpr unsigned char maxValidASCII = 127;
-		std::basic_string_view<unsigned char> strView {strData, static_cast<std::size_t>(len)};
-		if (EncodingConfig::useFastUTF8 && std::all_of(strView.cbegin(), strView.cend(), [&](unsigned char strChar) { return strChar <= maxValidASCII; })) {
+		std::span<const unsigned char> strView {strData, static_cast<std::size_t>(len)};
+		if (EncodingConfig::useFastUTF8 && std::all_of(strView.begin(), strView.end(), [&](unsigned char strChar) { return strChar <= maxValidASCII; })) {
 			return WSPutByteString(m, strData, len);
 		}
 		return WSPutUTF8String(m, strData, len);
