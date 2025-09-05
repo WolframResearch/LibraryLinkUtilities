@@ -288,6 +288,15 @@ namespace LLU {
 		WSStream& operator<<(const char* s);
 
 		/**
+		 *   @brief			Sends characters from a string view
+		 *   @param[in] 	s - a range of characters to be sent as String
+		 *
+		 *   @see			http://reference.wolfram.com/language/guide/WSTPCFunctionsForExchangingStrings.html
+		 *   @throws 		ErrorName::WSPutStringError
+		 **/
+		WSStream& operator<<(std::string_view s);
+
+		/**
 		 *   @brief			Sends a std::map via WSTP, it is translated to an Association in Mathematica
 		 *   @tparam		K - map key type, must be supported in WSStream
 		 *   @tparam		V - map value type, must be supported in WSStream
@@ -787,6 +796,12 @@ namespace LLU {
 	template<WS::Encoding EIn, WS::Encoding EOut>
 	auto WSStream<EIn, EOut>::operator<<(const char* s) -> WSStream& {
 		WS::String<EOut>::put(m, s, static_cast<int>(std::strlen(s)));
+		return *this;
+	}
+
+	template<WS::Encoding EIn, WS::Encoding EOut>
+	auto WSStream<EIn, EOut>::operator<<(std::string_view s) -> WSStream& {
+		WS::String<EOut>::put(m, s.data(), static_cast<int>(s.length()));
 		return *this;
 	}
 

@@ -395,7 +395,7 @@ LLU_WSTP_FUNCTION(TakeLibraryFunction) {
 	WS::Symbol s {"LinkObject"};
 	ml >> s;
 
-	ml << WS::NewPacket << llf << libDir << "ReverseSymbolsOrder" << s << WS::EndPacket;
+	ml << WS::NewPacket << llf << libDir << std::string_view {"ReverseSymbolsOrder"} << s << WS::EndPacket;
 }
 
 LLU_WSTP_FUNCTION(GetSet) {
