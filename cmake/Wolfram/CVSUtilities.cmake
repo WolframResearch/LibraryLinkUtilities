@@ -40,17 +40,16 @@ function(download_cvs_content content_name download_path module_path DOWNLOAD_LO
 	FetchContent_Declare(
 			${content_name}
 			SOURCE_DIR "${download_path}"
+			SOURCE_SUBDIR "no-such-path" # documented way to prevent CMake from configuring sources from CVS
 			CVS_REPOSITORY $ENV{CVSROOT}
 			CVS_MODULE "${module_path}"
 	)
-	string(TOLOWER ${content_name} lc_content_name)
-	FetchContent_GetProperties(${content_name})
-	if(NOT ${lc_content_name}_POPULATED)
-		message(STATUS "Downloading CVS module: ${module_path}")
-		FetchContent_MakeAvailable(${content_name})
-	endif()
+	message(STATUS "Downloading CVS module: ${module_path}")
+	FetchContent_MakeAvailable(${content_name})
+	FetchContent_GetProperties(${content_name} SOURCE_DIR _SRC_DIR)
+
 	# store the download location in a variable
-	set(${DOWNLOAD_LOCATION_OUT} "${${lc_content_name}_SOURCE_DIR}" PARENT_SCOPE)
+	set(${DOWNLOAD_LOCATION_OUT} "${_SRC_DIR}" PARENT_SCOPE)
 
 	if(DEFINED ENV{CVS_LOG_FILE})
 		# record cvs checkout "LibraryName" "LibraryVersion" SystemID and such info in ENV{CVS_LOG_FILE}
