@@ -81,7 +81,7 @@ namespace LLU {
 		 * @brief 	Get the actual type of node value. This is useful when working on a "generic" DataList.
 		 * @return	Actual type of node value
 		 */
-		MArgumentType type() noexcept {
+		MArgumentType type() const noexcept {
 			return node.type();
 		}
 
