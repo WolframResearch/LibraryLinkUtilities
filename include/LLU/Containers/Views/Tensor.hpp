@@ -125,7 +125,7 @@ namespace LLU {
 	 * @return  result of calling \p callable on a TensorTypedView over \p t
 	 */
 	template<typename TensorT, typename F>
-	auto asTypedTensor(TensorT&& t, F&& callable) {
+	decltype(auto) asTypedTensor(TensorT&& t, F&& callable) {
 		switch (t.type()) {
 			case MType_Integer: return std::forward<F>(callable)(TensorTypedView<mint> {std::forward<TensorT>(t)});
 			case MType_Real: return std::forward<F>(callable)(TensorTypedView<double> {std::forward<TensorT>(t)});
@@ -137,7 +137,7 @@ namespace LLU {
 	/// @cond
 	// Specialization of asTypedTensor for MTensor
 	template<typename F>
-	auto asTypedTensor(MTensor t, F&& callable) {
+	decltype(auto) asTypedTensor(MTensor t, F&& callable) {
 		return asTypedTensor(TensorView {t}, std::forward<F>(callable));
 	}
 	/// @endcond

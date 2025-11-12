@@ -156,7 +156,7 @@ namespace LLU {
 	 * @return  result of calling \p callable on a ImageTypedView over \p img
 	 */
 	template<typename ImageT, typename F>
-	auto asTypedImage(ImageT&& img, F&& callable) {
+	decltype(auto) asTypedImage(ImageT&& img, F&& callable) {
 		switch (img.type()) {
 			case MImage_Type_Bit: return std::forward<F>(callable)(ImageTypedView<std::int8_t>(std::forward<ImageT>(img)));
 			case MImage_Type_Bit8: return std::forward<F>(callable)(ImageTypedView<std::uint8_t>(std::forward<ImageT>(img)));
@@ -170,7 +170,7 @@ namespace LLU {
 	/// @cond
 	// Specialization of asTypedImage for MImage
 	template<typename F>
-	auto asTypedImage(MImage img, F&& callable) {
+	decltype(auto) asTypedImage(MImage img, F&& callable) {
 		return asTypedImage(ImageView {img}, std::forward<F>(callable));
 	}
 	/// @endcond

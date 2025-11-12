@@ -126,7 +126,7 @@ namespace LLU {
 	 * @return  result of calling \p callable on a NumericArrayTypedView over \p na
 	 */
 	template<typename NumericArrayT, typename F>
-	auto asTypedNumericArray(NumericArrayT&& na, F&& callable) {
+	decltype(auto) asTypedNumericArray(NumericArrayT&& na, F&& callable) {
 		switch (na.type()) {
 			case MNumericArray_Type_Bit8: return std::forward<F>(callable)(NumericArrayTypedView<std::int8_t> {std::forward<NumericArrayT>(na)});
 			case MNumericArray_Type_UBit8: return std::forward<F>(callable)(NumericArrayTypedView<std::uint8_t> {std::forward<NumericArrayT>(na)});
@@ -149,7 +149,7 @@ namespace LLU {
 	/// @cond
 	// Specialization of asTypedNumericArray for MNumericArray
 	template<typename F>
-	auto asTypedNumericArray(MNumericArray na, F&& callable) {
+	decltype(auto) asTypedNumericArray(MNumericArray na, F&& callable) {
 		return asTypedNumericArray(NumericArrayView {na}, std::forward<F>(callable));
 	}
 	/// @endcond
