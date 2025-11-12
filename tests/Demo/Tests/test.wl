@@ -1,20 +1,20 @@
 Needs["Demo`"];
 Needs["MUnit`"];
 
-$tests = Hold @ {
-	Test[
+$tests = {
+	TestCreate[
 		Demo`CaesarCipherDecode::usage
 		,
 		"CaesarCipherDecode[cipherText_String, shift_Integer] restores the original message encoded with Caesar's cipher given the encoded text and the shift."
 	],
 
-	Test[
+	TestCreate[
 		Demo`CaesarCipherDecode[Demo`CaesarCipherEncode["HelloWorld", 3], 3]
 		,
 		"HelloWorld"
 	],
 
-	Test[
+	TestCreate[
 		Demo`CaesarCipherDecode[Demo`CaesarCipherEncode["HelloWorld", 25], 25]
 		,
 		"HelloWorld"
@@ -31,10 +31,15 @@ $tests = Hold @ {
 	]
 };
 
-TestRun[
-	Evaluate @ $tests,
-	Loggers :> {VerbosePrintLogger[]},
-	TestRunTitle -> "Basic test suite of the Demo paclet",
+report = TestReport[
+	$tests,
 	MemoryConstraint -> Quantity[100, "Megabytes"],
 	TimeConstraint -> Quantity[60, "Seconds"]
+];
+
+If[TrueQ @ report["ReportSucceeded"],
+	Print["All tests passed!"]
+	,
+	Exit[1]
 ]
+
