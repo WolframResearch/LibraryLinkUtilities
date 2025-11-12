@@ -1,5 +1,3 @@
-(* Wolfram Language Test file *)
-TestRequirement[$VersionNumber >= 12.0]
 (***************************************************************************************************************************************)
 (*
 	Set of test cases to test LLU functionality related to WSTP
@@ -57,7 +55,7 @@ TestExecute[
 
 
 (* Compile-time errors *)
-Test[
+TestCreate[
 	CCompilerDriver`CreateLibrary[{FileNameJoin[{currentDirectory, "TestSources", "DataListCompilationErrors.cpp"}]}, "DataListErrors", options]
 	,
 	$Failed
@@ -69,7 +67,7 @@ Test[
 
 (* Basic tests *)
 
-Test[
+TestCreate[
 	EmptyDataStore = `LLU`PacletFunctionLoad["EmptyDataStore", {}, "DataStore"];
 	EmptyDataStore[]
 	,
@@ -83,7 +81,7 @@ TestMatch[
 	,
 	_?FailureQ(*unevaluated LibraryFunction*)
 	,
-	{Message[LibraryFunction::cfsa, foo, 1, "DataStore object"]}
+	{Message[LibraryFunction::cfsa, HoldCompleteForm @ foo, HoldCompleteForm @ 1, HoldCompleteForm @ "DataStore object"]}
 	,
 	TestID -> "DataListTestSuite-20180903-O2B2Y6"
 ];
@@ -93,7 +91,7 @@ TestMatch[
 	,
 	_?FailureQ(*unevaluated LibraryFunction*)
 	,
-	{Message[LibraryFunction::cfsa, {}, 1, "DataStore object"]}
+	{Message[LibraryFunction::cfsa, HoldCompleteForm @ {}, HoldCompleteForm @ 1, HoldCompleteForm @ "DataStore object"]}
 	,
 	TestID -> "DataListTestSuite-20180903-B6P7O2"
 ];
@@ -103,12 +101,12 @@ TestMatch[
 	,
 	_?FailureQ(*unevaluated LibraryFunction*)
 	,
-	{Message[LibraryFunction::cfsa, Developer`DataStore[{1, "a"}], 1, "DataStore object"]}
+	{Message[LibraryFunction::cfsa, HoldCompleteForm @ Developer`DataStore[{1, "a"}], HoldCompleteForm @ 1, HoldCompleteForm @ "DataStore object"]}
 	,
 	TestID -> "DataListTestSuite-20180903-M6K4Z6"
 ];
 
-Test[
+TestCreate[
 	PassDataStore[Developer`DataStore[{1, 2, 3}], True]
 	,
 	Developer`DataStore[{1, 2, 3}]
@@ -116,7 +114,7 @@ Test[
 	TestID -> "DataListTestSuite-20180903-Y4V3P7"
 ];
 
-Test[
+TestCreate[
 	PassDataStore[Developer`DataStore[1, 2, 3], True]
 	,
 	Developer`DataStore[1, 2, 3]
@@ -124,7 +122,7 @@ Test[
 	TestID -> "DataListTestSuite-20180903-S2C1I6"
 ];
 
-Test[
+TestCreate[
 	PassDataStore[Developer`DataStore[1, 2, "a"], True]
 	,
 	Developer`DataStore[1, 2, "a"]
@@ -132,7 +130,7 @@ Test[
 	TestID -> "DataListTestSuite-20180903-Y5Y7L3"
 ];
 
-Test[
+TestCreate[
 	PassDataStore[Developer`DataStore[Developer`DataStore[1, 2, 3]], True]
 	,
 	Developer`DataStore[Developer`DataStore[1, 2, 3]]
@@ -140,7 +138,7 @@ Test[
 	TestID -> "DataListTestSuite-20180903-N9I8U3"
 ];
 
-Test[
+TestCreate[
 	PassDataStore[Developer`DataStore["ąę" -> "ąę"], True]
 	,
 	Developer`DataStore["ąę" -> "ąę"]
@@ -148,7 +146,7 @@ Test[
 	TestID -> "DataListTestSuite-20180903-E8X1M1"
 ];
 
-Test[
+TestCreate[
 	PassDataStore[Developer`DataStore["" -> { -3.14 }], True]
 	,
 	Developer`DataStore[{ -3.14 }]
@@ -156,7 +154,7 @@ Test[
 	TestID -> "DataListTestSuite-20180903-T8C7S4"
 ];
 
-Test[
+TestCreate[
 	PassDataStore[Developer`DataStore[], #]& /@ { True, False }
 	,
 	{ Developer`DataStore[], Developer`DataStore[] }
@@ -164,7 +162,7 @@ Test[
 	TestID -> "DataListTestSuite-20180903-X7K0J0"
 ];
 
-Test[
+TestCreate[
 	PassDataStore[ds0, #]& /@ { True, False }
 	,
 	{ ds0, ds0 }
@@ -172,7 +170,7 @@ Test[
 	TestID -> "DataListTestSuite-20180903-K0Y6L5"
 ];
 
-Test[
+TestCreate[
 	PassDataStore[ds1, #]& /@ { True, False }
 	,
 	{ ds1, ds1 }
@@ -180,7 +178,7 @@ Test[
 	TestID -> "DataListTestSuite-20180903-T7W2E4"
 ];
 
-Test[
+TestCreate[
 	PassDataStore[ds2, #]& /@ { True, False }
 	,
 	{ ds2, ds2 }
@@ -188,7 +186,7 @@ Test[
 	TestID -> "DataListTestSuite-20180903-Y3R9B8"
 ];
 
-Test[
+TestCreate[
 	PassDataStore[ds3, #]& /@ { True, False }
 	,
 	{ ds3, ds3 }
@@ -196,7 +194,7 @@ Test[
 	TestID -> "DataListTestSuite-20180903-N7Z2V6"
 ];
 
-Test[
+TestCreate[
 	JoinDataStores[Developer`DataStore[], Developer`DataStore[], #] & /@ {True, False}
 	,
 	{Developer`DataStore[Developer`DataStore[], Developer`DataStore[]], Developer`DataStore[Developer`DataStore[], Developer`DataStore[]]}
@@ -204,7 +202,7 @@ Test[
 	TestID -> "DataListTestSuite-20180904-Z4Q5M1"
 ];
 
-Test[
+TestCreate[
 	JoinDataStores[ds0, Reverse[ds0], #]& /@ {True, False}
 	,
 	{Developer`DataStore[ds0, Reverse[ds0]], Developer`DataStore[ds0, Reverse[ds0]]}
@@ -212,7 +210,7 @@ Test[
 	TestID -> "DataListTestSuite-20180904-N5U8F0"
 ];
 
-Test[
+TestCreate[
 	JoinDataStores[ds1, Reverse[ds1], #]& /@ {True, False}
 	,
 	{Developer`DataStore[ds1, Reverse[ds1]], Developer`DataStore[ds1, Reverse[ds1]]}
@@ -220,7 +218,7 @@ Test[
 	TestID -> "DataListTestSuite-20180904-I2U6H7"
 ];
 
-Test[
+TestCreate[
 	JoinDataStores[ds2, Reverse[ds2], #]& /@ {True, False}
 	,
 	{Developer`DataStore[ds2, Reverse[ds2]], Developer`DataStore[ds2, Reverse[ds2]]}
@@ -228,7 +226,7 @@ Test[
 	TestID -> "DataListTestSuite-20180904-J7W2N2"
 ];
 
-Test[
+TestCreate[
 	JoinDataStores[ds3, Reverse[ds3], #]& /@ {True, False}
 	,
 	{Developer`DataStore[ds3, Reverse[ds3]], Developer`DataStore[ds3, Reverse[ds3]]}
@@ -237,7 +235,7 @@ Test[
 ];
 
 (* Self referential DataStore *)
-Test[
+TestCreate[
 	TestSelfReferencialDataStore[ds0]
 	,
 	Developer`DataStore[Sequence @@ ds0, Null]
@@ -247,7 +245,7 @@ Test[
 	TestID -> "DataListTestSuite-20180906-R1F1D5"
 ];
 
-Test[
+TestCreate[
 	TestSelfReferencialDataStore[ds1]
 	,
 	Developer`DataStore[Sequence @@ ds1, Null]
@@ -257,7 +255,7 @@ Test[
 	TestID -> "DataListTestSuite-20180906-E3A3S7"
 ];
 
-Test[
+TestCreate[
 	TestSelfReferencialDataStore[ds2]
 	,
 	Developer`DataStore[Sequence @@ ds2, Null]
@@ -267,7 +265,7 @@ Test[
 	TestID -> "DataListTestSuite-20180906-X6P9H5"
 ];
 
-Test[
+TestCreate[
 	TestSelfReferencialDataStore[ds3]
 	,
 	Developer`DataStore[Sequence @@ ds3, Null]
@@ -294,7 +292,7 @@ TestMatch[
 	TestID -> "DataListTestSuite-20180906-Z7K0I0"
 ];
 
-Test[
+TestCreate[
 	ReverseListOfStrings[Developer`DataStore[]]
 	,
 	Developer`DataStore[]
@@ -302,7 +300,7 @@ Test[
 	TestID -> "DataListTestSuite-20180907-X0G8X3"
 ];
 
-Test[
+TestCreate[
 	ReverseListOfStrings[Developer`DataStore["alpha", "beta", "gamma"]]
 	,
 	Developer`DataStore["ahpla", "ateb", "ammag"]
@@ -310,7 +308,7 @@ Test[
 	TestID -> "DataListTestSuite-20200429-S3Y8K2"
 ];
 
-Test[
+TestCreate[
 	SeparateKeysAndValues[Developer`DataStore["a" -> 1 + 2.5 * I, "b" -> -3. - 6.I, 2I]]
 	,
 	Developer`DataStore["Keys" -> Developer`DataStore["a", "b", ""], "Values" -> Developer`DataStore[1. + 2.5 * I, -3. - 6.I, 2.I]]
@@ -318,7 +316,7 @@ Test[
 	TestID -> "DataListTestSuite-20180907-U7I7O8"
 ];
 
-Test[
+TestCreate[
 	`LLU`PacletFunctionSet[SeparateKeysAndValuesViaAdaptors, {"DataStore"}, "DataStore"];
 	SeparateKeysAndValuesViaAdaptors[Developer`DataStore["a" -> 1 + 2.5 * I, "b" -> -3. - 6.I, 2I]]
 	,
@@ -327,7 +325,7 @@ Test[
 	TestID -> "DataListTestSuite-20200513-G3Y0I0"
 ];
 
-Test[
+TestCreate[
 	GetKeys[Developer`DataStore[]]
 	,
 	Developer`DataStore[]
@@ -335,7 +333,7 @@ Test[
 	TestID -> "DataListTestSuite-20180908-S5C4D2"
 ];
 
-Test[
+TestCreate[
 	GetKeys[Developer`DataStore[1]]
 	,
 	Developer`DataStore[""]
@@ -343,7 +341,7 @@ Test[
 	TestID -> "DataListTestSuite-20180908-J2I0I5"
 ];
 
-Test[
+TestCreate[
 	GetKeys[Developer`DataStore["x" -> 1, "x" -> 1, "y" -> RandomImage[]]]
 	,
 	Developer`DataStore["x", "x", "y"]
@@ -352,7 +350,7 @@ Test[
 ];
 
 
-Test[
+TestCreate[
 	GetValuesReversed[Developer`DataStore[]]
 	,
 	Developer`DataStore[]
@@ -360,7 +358,7 @@ Test[
 	TestID -> "DataListTestSuite-20180908-T1U8K8"
 ];
 
-Test[
+TestCreate[
 	GetValuesReversed[Developer`DataStore["a" -> 1 + 2.5 * I, "b" -> -3. - 6.I, 2I]]
 	,
 	Developer`DataStore[2.I, -3. - 6.I, 1. + 2.5I]
@@ -368,7 +366,7 @@ Test[
 	TestID -> "DataListTestSuite-20180908-S4T6Z9"
 ];
 
-Test[
+TestCreate[
 	GetValuesReversed[Developer`DataStore["a" -> 1, NumericArray[{3, 5, 7}]]]
 	,
 	Developer`DataStore[NumericArray[{3, 5, 7}, "UnsignedInteger8"], 1]
@@ -376,7 +374,7 @@ Test[
 	TestID -> "DataListTestSuite-20180908-C7I2J6"
 ];
 
-Test[
+TestCreate[
 	GetValuesReversed[Developer`DataStore[{3}, {4}, {5}]]
 	,
 	Developer`DataStore[{5}, {4}, {3}]
@@ -384,7 +382,7 @@ Test[
 	TestID->"DataListTestSuite-20180908-C7DJ8D"
 ];
 
-Test[
+TestCreate[
 	FrameDims[Developer`DataStore[RandomImage[1., 100], RandomImage[1., 300], RandomImage[1., 200]]]
 	,
 	NumericArray[{{100, 100}, {300, 300}, {200, 200}}, "UnsignedInteger64"]
@@ -392,7 +390,7 @@ Test[
 	TestID -> "DataListTestSuite-20180907-J9A6U6"
 ];
 
-Test[
+TestCreate[
 	StringsThroughVectorReversed[Developer`DataStore[]]
 	,
 	Developer`DataStore[]
@@ -400,7 +398,7 @@ Test[
 	TestID -> "DataListTestSuite-20180910-I1U7A9"
 ];
 
-Test[
+TestCreate[
 	los = Developer`DataStore @@ RandomWord[30];
 	StringsThroughVectorReversed[los]
 	,
@@ -409,18 +407,17 @@ Test[
 	TestID -> "DataListTestSuite-20180910-Q5U3A6"
 ];
 
-ConditionalTest[TestMatch,
+TestCreate[
 	IntsToNumericArray[Developer`DataStore[]]
 	,
-	{$VersionNumber == 12.0, {}, {}}
+	$Failed
 	,
-	(* eventually, the expected value should be {}, but for now empty NumericArrays are not supported in LibraryLink *)
-	{$VersionNumber > 12.0, $Failed, {Message[LibraryFunction::nanull, NumericArray]}}
+	{Message[LibraryFunction::nanull, HoldCompleteForm @ NumericArray]}
 	,
 	TestID -> "DataListTestSuite-20180910-J1W7Z6"
 ];
 
-Test[
+TestCreate[
 	ints = RandomInteger[2^22, 100];
 	IntsToNumericArray[Developer`DataStore @@ ints]
 	,
@@ -429,7 +426,7 @@ Test[
 	TestID -> "DataListTestSuite-20180910-P0I5K7"
 ];
 
-Test[
+TestCreate[
 	GetLength[Developer`DataStore[]]
 	,
 	0
@@ -437,7 +434,7 @@ Test[
 	TestID -> "DataListTestSuite-20190823-P9W5H6"
 ];
 
-Test[
+TestCreate[
 	GetLength[Developer`DataStore["x" -> 2, 3, 4, "y" -> Developer`DataStore[]]]
 	,
 	4
@@ -445,7 +442,7 @@ Test[
 	TestID -> "DataListTestSuite-20190823-L2D8R7"
 ];
 
-Test[
+TestCreate[
 	CheckSizeChange[5]
 	,
 	{5, 5, 5}
@@ -457,9 +454,7 @@ TestExecute[
 	oldDS1 = ds1;
 ];
 
-TestRequirement[$VersionNumber > 12.0];
-
-Test[
+TestCreate[
 	`LLU`PacletFunctionSet[PullAndPush, {"DataStore"}, "DataStore"];
 	PullAndPush[ds1]
 	,
@@ -485,7 +480,7 @@ VerificationTest[
 	TestID->"DataListTestSuite-20200505-N8W6E1"
 ];
 
-Test[
+TestCreate[
 	MemoryLeakTest[PullAndPush[ds1]]
 	,
 	0
@@ -493,9 +488,7 @@ Test[
 	TestID -> "DataListTestSuite-20180904-J9J5U5"
 ];
 
-EndRequirement[];
-
-Test[
+TestCreate[
 	`LLU`PacletFunctionSet[PullAndPush2, {"DataStore"}, "DataStore"];
 	PullAndPush2[ds1]
 	,
@@ -518,7 +511,7 @@ VerificationTest[
 	TestID->"DataListTestSuite-20200505-O3V6J8"
 ];
 
-Test[
+TestCreate[
 	MemoryLeakTest[PullAndPush2[ds1]]
 	,
 	0
@@ -526,7 +519,7 @@ Test[
 	TestID -> "DataListTestSuite-20200505-Z7Z9O7"
 ];
 
-Test[
+TestCreate[
 	`LLU`PacletFunctionSet[FromInitList, {}, "DataStore"];
 	FromInitList[]
 	,
@@ -574,7 +567,7 @@ VerificationTest[
 
 
 (* Memory leak tests *)
-Test[
+TestCreate[
 	MemoryLeakTest[PassDataStore[ds0, #]] & /@ {False, True}
 	,
 	{ 0, 0 }
@@ -582,7 +575,7 @@ Test[
 	TestID -> "DataListTestSuite-20200505-E5A4L8"
 ];
 
-Test[
+TestCreate[
 	MemoryLeakTest[PassDataStore[ds1, #]] & /@ {False, True}
 	,
 	{ 0, 0 }
@@ -590,7 +583,7 @@ Test[
 	TestID -> "DataListTestSuite-20180908-B6X4I7"
 ];
 
-Test[
+TestCreate[
 	MemoryLeakTest[PassDataStore[ds2, #]] & /@ {False, True}
 	,
 	{ 0, 0 }
@@ -598,7 +591,7 @@ Test[
 	TestID -> "DataListTestSuite-20180908-S3Q1N7"
 ];
 
-Test[
+TestCreate[
 	MemoryLeakTest[PassDataStore[ds3, #]] & /@ {False, True}
 	,
 	{ 0, 0 }
@@ -606,7 +599,7 @@ Test[
 	TestID -> "DataListTestSuite-20180908-S4C7Q2"
 ];
 
-Test[
+TestCreate[
 	LibraryFunctionUnload[Last @ PassDataStore];
 	PassDataStore = `LLU`PacletFunctionLoad["PassDataStore", {{"DataStore", "Manual"}, "Boolean"}, "DataStore"];
 	MemoryLeakTest[PassDataStore[ds0, #]] & /@ {False, True}
@@ -618,7 +611,7 @@ Test[
 	SameTest -> MatchQ
 ];
 
-Test[
+TestCreate[
 	MemoryLeakTest[PassDataStore[ds1, #]] & /@ {False, True}
 	,
 	{ 0, n_ } /; n > 0
@@ -628,7 +621,7 @@ Test[
 	SameTest -> MatchQ
 ];
 
-Test[
+TestCreate[
 	MemoryLeakTest[PassDataStore[ds2, #]] & /@ {False, True}
 	,
 	{ 0, n_ } /; n > 0
@@ -638,7 +631,7 @@ Test[
 	SameTest -> MatchQ
 ];
 
-Test[
+TestCreate[
 	MemoryLeakTest[PassDataStore[ds3, #]] & /@ {False, True}
 	,
 	{ 0, n_ } /; n > 0
