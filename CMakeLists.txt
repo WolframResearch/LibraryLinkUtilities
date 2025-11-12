@@ -13,7 +13,7 @@ if(APPLE AND NOT DEFINED ENV{MACOSX_DEPLOYMENT_TARGET})
 endif()
 
 project(LLU
-	VERSION 3.4.0
+	VERSION 3.5.0
 	DESCRIPTION "Modern C++ wrapper over LibraryLink and WSTP"
 	LANGUAGES CXX)
 
