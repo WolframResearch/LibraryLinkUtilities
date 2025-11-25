@@ -248,9 +248,10 @@ function(fetch_dependency_from_nexus LIB_NAME LIB_VERSION LIB_SYSTEMID LIB_BUILD
 
 	# This search must return a single result, so including the Build ID is a good idea
 	set(NXS_SEARCH_URL "$ENV{NEXUSROOT}/service/rest/v1/search?sort=name&repository=re-components&name=${NXS_ASSET_PATH}")
+	set(NXS_ASSETS_JSON_PATH "${CMAKE_CURRENT_BINARY_DIR}/nexus_assets.json")
 	file(DOWNLOAD
 		${NXS_SEARCH_URL}
-		nexus_assets.json
+		${NXS_ASSETS_JSON_PATH}
 		STATUS NXS_ASSETS_STATUS)
 
 	list(GET NXS_ASSETS_STATUS 0 STATUS_CODE)
@@ -258,7 +259,7 @@ function(fetch_dependency_from_nexus LIB_NAME LIB_VERSION LIB_SYSTEMID LIB_BUILD
 		message(FATAL_ERROR "Invalid Nexus search request.")
 	endif()
 
-	file(READ "${CMAKE_CURRENT_BINARY_DIR}/nexus_assets.json" NXS_COMPONENTS_JSON)
+	file(READ ${NXS_ASSETS_JSON_PATH} NXS_COMPONENTS_JSON)
 
 	string(JSON ALL_COMPONENTS GET ${NXS_COMPONENTS_JSON} "items")
 	string(JSON COMPONENT_COUNT LENGTH ${ALL_COMPONENTS})
