@@ -923,6 +923,8 @@ Constructor;
 
 NewManagedExpression[exprHead_][args___] :=
 	Block[{res, constructor = Constructor[exprHead]},
+		(* make sure the paclet library is loaded, otherwise CreateManagedLibraryExpression is doomed to fail *)
+		$PacletLibrary;
 		res = CreateManagedLibraryExpression[SymbolName[exprHead], exprHead];
 		constructor[ManagedLibraryExpressionID[res], args];
 		res
