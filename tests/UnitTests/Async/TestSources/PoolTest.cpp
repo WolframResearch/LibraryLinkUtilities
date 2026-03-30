@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <chrono>
 #include <numeric>
 #include <thread>
@@ -94,22 +95,35 @@ template<typename ThreadPool>
 void accumulateInPool(LLU::MArgumentManager& mngr) {
 	auto data = mngr.getGenericNumericArray<LLU::Passing::Constant>(0);
 	const auto numThreads = mngr.getInteger<mint>(1);
-	const auto jobSize = mngr.getInteger<mint>(2);
+	const auto jobSize = mngr.getInteger<std::size_t>(2);
 	ThreadPool tp {static_cast<unsigned int>(numThreads)};
 
-	const auto numJobs = (data.getFlattenedLength() + jobSize - 1) / jobSize;
 	LLU::asTypedNumericArray(data, [&](auto&& typedNA) {
 		using T = typename std::remove_reference_t<decltype(typedNA)>::value_type;
-		std::vector<std::future<T>> partialResults {static_cast<size_t>(numJobs) - 1};
-		auto blockBegin = std::cbegin(typedNA);
-		for (int i = 0; i < numJobs - 1; ++i) {
-			auto blockEnd = std::next(blockBegin, jobSize);
-			partialResults[i] = tp.submit(std::accumulate<typename NumericArray<T>::const_iterator, T>, blockBegin, blockEnd, T {});
-			blockBegin = blockEnd;
+		const auto length = static_cast<size_t>(typedNA.getFlattenedLength());
+		if (length == 0) {
+			mngr.set(NumericArray<T> {T {}});
+			return;
 		}
-		T remainderSum = std::accumulate(blockBegin, std::cend(typedNA), T {});
+
+		const auto blockCount = (length + jobSize - 1) / jobSize;
+		const auto workerCount = std::min(static_cast<size_t>(numThreads), blockCount);
+		const auto blocksPerWorker = (blockCount + workerCount - 1) / workerCount;
+
+		std::vector<std::future<T>> partialResults(workerCount);
+		auto beginIt = std::cbegin(typedNA);
+		for (size_t worker = 0; worker < workerCount; ++worker) {
+			const auto startBlock = worker * blocksPerWorker;
+			const auto endBlock = std::min(blockCount, startBlock + blocksPerWorker);
+			const auto startIndex = startBlock * jobSize;
+			const auto endIndex = std::min(length, endBlock * jobSize);
+			auto blockBegin = beginIt + static_cast<std::ptrdiff_t>(startIndex);
+			auto blockEnd = beginIt + static_cast<std::ptrdiff_t>(endIndex);
+			partialResults[worker] = tp.submit(std::accumulate<typename NumericArray<T>::const_iterator, T>, blockBegin, blockEnd, T {});
+		}
+
 		T totalSum =
-			std::accumulate(std::begin(partialResults), std::end(partialResults), remainderSum, [](T currentSum, auto& fut) { return currentSum + fut.get(); });
+			std::accumulate(std::begin(partialResults), std::end(partialResults), T {}, [](T currentSum, auto& fut) { return currentSum + fut.get(); });
 		mngr.set(NumericArray<T> {totalSum});
 	});
 }
