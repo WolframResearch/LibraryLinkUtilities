@@ -17,14 +17,14 @@ namespace LLU {
 	namespace ErrorCode {
 
 		// Original LibraryLink error codes:
-		constexpr int VersionError = 7;		  ///< same as LIBRARY_VERSION_ERROR
-		constexpr int FunctionError = 6;	  ///< same as LIBRARY_FUNCTION_ERROR
-		constexpr int MemoryError = 5;		  ///< same as LIBRARY_MEMORY_ERROR
-		constexpr int NumericalError = 4;	  ///< same as LIBRARY_NUMERICAL_ERROR
-		constexpr int DimensionsError = 3;	  ///< same as LIBRARY_DIMENSIONS_ERROR
-		constexpr int RankError = 2;		  ///< same as LIBRARY_RANK_ERROR
-		constexpr int TypeError = 1;		  ///< same as LIBRARY_TYPE_ERROR
-		constexpr int NoError = 0;			  ///< same as LIBRARY_NO_ERROR
+		inline constexpr int VersionError = 7;		 ///< same as LIBRARY_VERSION_ERROR
+		inline constexpr int FunctionError = 6;		 ///< same as LIBRARY_FUNCTION_ERROR
+		inline constexpr int MemoryError = 5;		 ///< same as LIBRARY_MEMORY_ERROR
+		inline constexpr int NumericalError = 4;	 ///< same as LIBRARY_NUMERICAL_ERROR
+		inline constexpr int DimensionsError = 3;	 ///< same as LIBRARY_DIMENSIONS_ERROR
+		inline constexpr int RankError = 2;			 ///< same as LIBRARY_RANK_ERROR
+		inline constexpr int TypeError = 1;			 ///< same as LIBRARY_TYPE_ERROR
+		inline constexpr int NoError = 0;			 ///< same as LIBRARY_NO_ERROR
 	}  // namespace ErrorCode
 
 	/**
