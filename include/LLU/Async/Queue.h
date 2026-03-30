@@ -138,7 +138,10 @@ namespace LLU::Async {
 			tail->next = std::move(p);
 			tail = new_tail;
 		}
-		data_cond.notify_one();
+		{
+			std::lock_guard<std::mutex> head_lock(head_mutex);
+			data_cond.notify_one();
+		}
 	}
 
 	template<typename T>
