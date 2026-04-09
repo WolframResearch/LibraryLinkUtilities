@@ -40,7 +40,7 @@ options := {
 	"CompileOptions" ->
 		Switch[$OperatingSystem,
 			"Windows",
-				"/EHsc /W3 " <> $CRTLinkingFlag <> " /std:" <> $CppVersion <> " /D_SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING",
+				"/EHsc /W3 /utf-8 " <> $CRTLinkingFlag <> " /std:" <> $CppVersion <> " /D_SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING",
 			"Unix",
 				"-Wall --pedantic -fvisibility=hidden -std=" <> $CppVersion,
 			"MacOSX",
